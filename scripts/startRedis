@@ -1,0 +1,39 @@
+#!/bin/sh
+set -ex
+clear
+
+CONTAINER="dred_redis"
+DOCKERHUB_IMG="redislabs/redismod"
+VOLUME=$(pwd)/../dredDb/dev
+REDIS_PORT=6379
+mkdir -pv $VOLUME
+CONTAINER_CONF_LOCATION=/usr/local/etc/redis/redis.conf
+[ -z "${RESET:-}" ] || {
+  echo "echo Recreating docker container [$CONTAINER]"
+  (docker kill $CONTAINER || :) &&
+  (rm -rf $VOLUME/* || : ) &&
+  (docker rm $CONTAINER || :) 
+} 
+
+( docker ps | grep $CONTAINER > /dev/null ) && {
+  echo "$CONTAINER is running"
+  exit
+} || {
+(docker ps -a | grep $CONTAINER > /dev/null) && 
+  echo "Starting $CONTAINER"
+  docker start $CONTAINER
+} || { 
+      #$ docker run --name some-redis -d redis redis-server --save 60 1 --loglevel warning
+  docker run \
+   -d \
+    -p $REDIS_PORT:$REDIS_PORT \
+    --name $CONTAINER \
+    --mount type=bind,source=$VOLUME,target=/data \
+    -v $(pwd)/redis.conf:$CONTAINER_CONF_LOCATION \
+    $DOCKERHUB_IMG $CONTAINER_CONF_LOCATION 
+}    
+echo "WAITING for redis-server [$CONTAINER] to start"
+until docker exec -i $CONTAINER redis-cli ping | grep PONG ; do { 
+  sleep 1
+} done
+sleep 1
