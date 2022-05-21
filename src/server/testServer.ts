@@ -5,17 +5,27 @@ import supertest from "supertest";
 import Redis from "ioredis";
 
 let app: Express;
-let server  : Server;
+let server: Server;
 
 afterAll(async () => {
-  app && app.get("redis").disconnect();
+  const redis = app && app.get("redis");
+  redis.disconnect();
   server && server.close();
+});
+afterEach(async () => {
+  const redis: Redis.Redis = app && app.get("redis");
+
+  await redis.flushdb();
+  // const stream = redis.scanStream();
+  // stream.on("data", (resultKeys) => {
+
+  // });
 });
 
 export async function testServer() {
-    app = app || await createServer();
-  
-    const server = app.listen();
-    const agent = supertest.agent(server);
-    return { agent, app }
+  app = app || (await createServer());
+
+  const server = app.listen();
+  const agent = supertest.agent(server);
+  return { agent, app };
 }

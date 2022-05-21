@@ -1,8 +1,7 @@
 import express, { Express } from "express";
 import Redis from "ioredis";
 import { RedisSet } from "../redis/RedisSet";
-const redis = new Redis();
-
+const redis: Redis.Redis = new Redis();
 export interface ExpressWithRedis extends Express {
   redis:  null | Redis.Redis;
 }
@@ -21,7 +20,8 @@ export async function createServer() {
     // console.log({ channelId });
     const found = await channelList.has(channelId);
     if (found) {
-      //!!! throw an error
+        res.status(400).json({ error: "channel already exists" })
+        return next();
     }
     await channelList.add(channelId);
     res.json({
