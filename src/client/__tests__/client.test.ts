@@ -9,11 +9,27 @@ describe("Dred client", () => {
         ({ server, client, agent } = test);
     });
 
-    it("does createChannel() on server", async () => {
-        const serverMethod = jest.spyOn(server, "createChannel");
-        const chanName = "hiThere";
-        await client.createChannel(chanName);
-        expect(server.channelList.has(chanName)).toBeTruthy()
-        expect(serverMethod).toHaveBeenCalled();
+    describe("createChannel", () => {
+        it("does createChannel() on server", async () => {
+            const serverMethod = jest.spyOn(server, "createChannel");
+            const chanName = "hiThere";
+            await client.createChannel(chanName);
+            expect(server.channelList.has(chanName)).toBeTruthy();
+            expect(serverMethod).toHaveBeenCalled();
+        });
+
+        it("throws any error json returned in a server error", async () => {
+            const serverMethod = jest
+                .spyOn(server, "createChannel")
+                .mockImplementation((req, res, next) => {
+                    res.status(400).json({ error: "some error" });
+                    next();
+                });
+            const chanName = "hiThere";
+            await expect(client.createChannel(chanName)).rejects.toThrow(
+                "some error"
+            );
+        });
     });
+    
 });
