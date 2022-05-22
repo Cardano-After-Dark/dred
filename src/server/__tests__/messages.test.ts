@@ -4,14 +4,15 @@ import { Express } from "express";
 import { testServer } from "../testServer";
 
 describe("channel messages", () => {
-let agent: SuperTestWithHost<Test>;
-beforeAll(async () => {
-  agent = (await testServer()).agent;
-});
+  let agent: SuperTestWithHost<Test>;
+  beforeAll(async () => {
+    agent = (await testServer()).agent;
+  });
 
   it("does not post messages to a non-existing channel", async () => {
     const channelId = "bogus";
-    const response = await agent.post(`/channel/${channelId}/message`)
+    const response = await agent
+      .post(`/channel/${channelId}/message`)
       .expect("Content-Type", /json/)
       .expect(404);
 
@@ -34,7 +35,6 @@ beforeAll(async () => {
           status: "created",
         });
       });
-
   });
 
 });
