@@ -1,33 +1,42 @@
 {
-  "name": "dred",
-  "version": "0.0.1",
-  "description": "Distributed event streams for web3",
-  "main": "src/index.ts",
-  "license": "MIT",
-  "packageManager": "yarn@3.2.1",
-  "scripts": {
-    "start": "scripts/startRedis && ts-node-dev --respawn index.ts",
-    "start:debug": "scripts/startRedis.sh && ts-node-dev --inspect --respawn index.ts",
-    "test": "ENV_FILE=./config/.env.test jest"
-  },
-  "dependencies": {
-    "express": "^4.18.1",
-    "ioredis": "^4.28.2"
-  },
-  "devDependencies": {
-    "@swc/cli": "^0.1.57",
-    "@swc/core": "^1.2.186",
-    "@swc/jest": "^0.2.21",
-    "@types/express": "^4.17.13",
-    "@types/ioredis": "^4.28.5",
-    "@types/jest": "^27.5.1",
-    "@types/node": "^17.0.35",
-    "@types/supertest": "^2.0.12",
-    "jest": "^28.1.0",
-    "supertest": "^6.2.3",
-    "ts-jest": "^28.0.2",
-    "ts-node": "^10.7.0",
-    "ts-node-dev": "^1.1.8",
-    "typescript": "^4.5.4"
-  }
+    "name": "dred",
+    "version": "0.0.1",
+    "description": "Distributed event streams for web3",
+    "main": "src/index.ts",
+    "license": "MIT",
+    "packageManager": "yarn@3.2.1",
+    "scripts": {
+        "start": "scripts/startRedis && ts-node-dev --respawn index.ts",
+        "start:debug": "scripts/startRedis.sh && ts-node-dev --inspect --respawn index.ts",
+        "test": "ENV_FILE=./config/.env.test jest",
+        "testing": "ENV_FILE=./config/.env.test jest --watch --runInBand",
+        "test:debug": "ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --runInBand",
+        "testing:debug": "ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --watch --runInBand"
+    },
+    "dependencies": {
+        "express": "^4.18.1",
+        "ioredis": "^4.28.2",
+        "node-fetch": "2"
+    },
+    "devDependencies": {
+        "@swc/cli": "^0.1.57",
+        "@swc/core": "^1.2.186",
+        "@swc/jest": "^0.2.21",
+        "@types/express": "^4.17.13",
+        "@types/ioredis": "^4.28.5",
+        "@types/jest": "^27.5.1",
+        "@types/node": "^17.0.35",
+        "@types/node-fetch": "^2.6.1",
+        "@types/supertest": "^2.0.12",
+        "jest": "^28.1.0",
+        "module-alias": "^2.2.2",
+        "supertest": "^6.2.3",
+        "ts-jest": "^28.0.2",
+        "ts-node": "^10.7.0",
+        "ts-node-dev": "^1.1.8",
+        "typescript": "^4.5.4"
+    },
+    "_moduleAliases": {
+        "@platform": "platform/server/"
+    }
 }

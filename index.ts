@@ -1,18 +1,20 @@
-import { createServer } from "./src/server/server";
+require('module-alias/register')
+import { createServer } from "./src/server";
 
 const concurrency = 50;
 const pendingTasks = new Set<Promise<any>>();
 
 init();
 async function init() {
-  const api = await createServer();
-  api.listen(3000);
+    const server = await createServer();
+    const port = process.env.PORT || 3000
+    server.listen(port);
 
-  console.log("hi");
+    console.log(`Dred server listening on port ${port}`);
 }
 
 async function asyncDelay(wait: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, wait);
-  });
+    return new Promise((resolve) => {
+        setTimeout(resolve, wait);
+    });
 }
