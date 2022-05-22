@@ -21,7 +21,20 @@ beforeAll(async () => {
   });
 
   it("posts messages to an existing channel", async () => {
-      // tested in channels.test
+    const channelName = "fooChannel";
+    const response = await agent.post(`/channel/${channelName}`);
+    // verifies that it can then post to the channel
+    const { id: channelId } = response.body;
+    await agent
+      .post(`/channel/${channelId}/message`)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toMatchObject({
+          status: "created",
+        });
+      });
+
   });
 
 });

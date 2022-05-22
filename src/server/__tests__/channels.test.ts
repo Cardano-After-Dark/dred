@@ -11,7 +11,7 @@ let agent: SuperTestWithHost<Test>;
     agent = (await testServer()).agent;
   });
 
-  it("creates a channel on request, and can post to it", async () => {
+  it("creates a channel on request", async () => {
     const channelName = "fooChannel";
     const response = await agent.post(`/channel/${channelName}`)
 //      .send({id: channelName})
@@ -23,16 +23,6 @@ let agent: SuperTestWithHost<Test>;
          status: "created"
       });
     
-      // verifies that it can then post to the channel    
-    const { id: channelId } = response.body;
-    await agent.post(`/channel/${channelId}/message`)
-      .expect("Content-Type", /json/)
-      .expect(200)
-      .then((res) => {
-        expect(res.body).toMatchObject({
-          status: "created",
-        });
-      });    
   });
 
   it("refuses to recreate a channel", async () => { 
