@@ -1,4 +1,4 @@
-import fetch, { Headers } from "@platform/fetch";
+import fetch from "cross-fetch";
 
 interface AddrDetails {
     address: any;

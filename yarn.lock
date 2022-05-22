@@ -1939,6 +1939,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cross-fetch@npm:^3.1.5":
+  version: 3.1.5
+  resolution: "cross-fetch@npm:3.1.5"
+  dependencies:
+    node-fetch: 2.6.7
+  checksum: f6b8c6ee3ef993ace6277fd789c71b6acf1b504fd5f5c7128df4ef2f125a429e29cd62dc8c127523f04a5f2fa4771ed80e3f3d9695617f441425045f505cf3bb
+  languageName: node
+  linkType: hard
+
 "cross-spawn@npm:^7.0.3":
   version: 7.0.3
   resolution: "cross-spawn@npm:7.0.3"
@@ -2078,6 +2087,7 @@ __metadata:
     "@types/node": ^17.0.35
     "@types/node-fetch": ^2.6.1
     "@types/supertest": ^2.0.12
+    cross-fetch: ^3.1.5
     express: ^4.18.1
     ioredis: ^4.28.2
     jest: ^28.1.0
@@ -3774,7 +3784,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:2":
+"node-fetch@npm:2, node-fetch@npm:2.6.7":
   version: 2.6.7
   resolution: "node-fetch@npm:2.6.7"
   dependencies:

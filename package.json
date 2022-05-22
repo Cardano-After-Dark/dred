@@ -14,6 +14,7 @@
         "testing:debug": "ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --watch --runInBand"
     },
     "dependencies": {
+        "cross-fetch": "^3.1.5",
         "express": "^4.18.1",
         "ioredis": "^4.28.2",
         "node-fetch": "2"
