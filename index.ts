@@ -12,9 +12,3 @@ async function init() {
 
     console.log(`Dred server listening on port ${port}`);
 }
-
-async function asyncDelay(wait: number) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, wait);
-    });
-}

@@ -12,11 +12,12 @@ export class DredClient {
     serverPort: any;
     addrFamily: any;
     insecure?: boolean;
+    subscriptions: Map<string, Array<Function>>;
     constructor({ address, family, port, insecure = false }: AddrDetails) {
         this.serverAddress = address;
         this.serverPort = port;
         this.addrFamily = family;
-
+        this.subscriptions = new Map();
         //!!! make this test-only
         this.insecure = insecure;
     }
@@ -48,5 +49,17 @@ export class DredClient {
             console.log("um", err.message || err);
             throw new Error(err.error || err);
         }
+    }
+    async postMessage(channelName: string, message: Object) {
+        
+    }
+
+    subscribeChannel(chan, callback) {
+        let existing = this.subscriptions.get(chan);
+        if (!existing) {
+            existing = [];
+            this.subscriptions.set(chan, existing);
+        }
+        existing.push(callback);
     }
 }

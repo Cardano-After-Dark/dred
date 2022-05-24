@@ -31,5 +31,17 @@ describe("Dred client", () => {
             );
         });
     });
-    
+
+    describe("subscribeChannel", () => {
+        it("keeps a list of callbacks for each channel", async () => {
+            const chan = "subscribeTest";
+
+            const callback1 = function () {};
+            const callback2 = function () {};
+            client.subscribeChannel(chan, callback1);
+            client.subscribeChannel(chan, callback2);
+            const subs = client.subscriptions.get(chan);
+            expect(subs).toMatchObject([callback1, callback2]);
+        });
+    });
 });

@@ -4,6 +4,7 @@ import { Express } from "express";
 import { testSetup } from "../testServer";
 import { DredClient } from "../../client";
 import { DredServer } from "../../server";
+import { asyncDelay } from "../../util/asyncDelay";
 
 describe("channel messages", () => {
     let agent: SuperTestWithHost<Test>;
@@ -11,8 +12,7 @@ describe("channel messages", () => {
     let client: DredClient;
     beforeAll(async () => {
         const test = await testSetup();
-        agent = test.agent;
-        server = test.server
+        ({ agent, server, client } = test);
     });
 
     it("does not post messages to a non-existing channel", async () => {
@@ -43,5 +43,19 @@ describe("channel messages", () => {
             });
     });
 
-
+    it.todo(
+        "publishes messages sent in a channel to other clients",
+        async () => {
+            const otherClient = server.mkClient();
+            const chan = "foo";
+            const msg = { hi: "there" };
+            await client.createChannel(chan);
+            otherClient.subscribeChannel(chan, (inbound) => {
+                expect(inbound).toMatchObject(msg);
+            });
+            await client.postMessage(chan, msg);
+            await asyncDelay(5);
+            expect.assertions(1);
+        }
+    );
 });
