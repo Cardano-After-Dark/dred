@@ -169,12 +169,17 @@ export class DredServer {
             return next();
         }
         const tunnel = await this.channelConn.use(channelId);
-        const cancel = () => {
-            cancelled = true;
-            this.channelConn.unsubscribe(tunnel);
-        };
         await this.channelConn.subscribe(tunnel);
 
+        const cleanup = () => {
+            subs.delete(subscriber);
+            this.channelConn.unsubscribe(tunnel);
+            next();
+        };
+        const cancel = () => {
+            cancelled = true;
+            cleanup();
+        };
         const subscriber: Subscriber = {
             notify: sendUpdate,
             cancel,
@@ -185,6 +190,7 @@ export class DredServer {
             this.subscribers.set(channelId, (subs = new Set()));
         }
         subs.add(subscriber);
+        res.on("close", cleanup);
 
         try {
             for await (const events of this.channelConn.consume(tunnel)) {
