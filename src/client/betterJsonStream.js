@@ -3,10 +3,9 @@
 import { Response } from "express";
 
 import { ReadableStream } from "node:stream/web";
-import nodeToWebStream from "./readable-stream-node-to-web";
 
 /*exported ndjsonStream*/
-// forking from ndjsonStream because the error handling is sub-par.
+// forked from can-ndjson-stream because its error handling is sub-par.
 
 let namespace = require("can-namespace");
 
@@ -16,11 +15,7 @@ export function ndjsonStream(responseBody) {
         cancellationRequest = false;
     return new ReadableStream({
         start: function (controller) {
-            const stream = responseBody.getReader
-                ? responseBody
-                : nodeToWebStream(responseBody);
-
-            var reader = stream.getReader();
+            var reader = responseBody.getReader();
             is_reader = reader;
             var decoder = new TextDecoder();
             var data_buf = "";

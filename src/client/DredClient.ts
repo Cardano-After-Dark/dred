@@ -1,4 +1,5 @@
 import fetch from "cross-fetch";
+import { fromPlatformFetchBody } from "../../platform/server/ReadableStream";
 import { ndjsonStream } from "./betterJsonStream";
 
 interface AddrDetails {
@@ -144,7 +145,8 @@ export class DredClient {
     async monitorSubscription(chan, callback, response) {
         if (!response.ok) throw new Error(`failure in subscribe...`);
 
-        const reader = ndjsonStream(response.body).getReader();
+        const compatResponse = fromPlatformFetchBody(response.body);
+        const reader = ndjsonStream(compatResponse).getReader();
         let e,
             connected = true;
 
