@@ -1,5 +1,6 @@
 import fetch from "cross-fetch";
 import { fromPlatformFetchBody } from "../../platform/server/ReadableStream";
+import { Subscriber } from "../Subscriber";
 import { ndjsonStream } from "./betterJsonStream";
 
 interface AddrDetails {
@@ -18,10 +19,7 @@ export class DredClient {
     insecure?: boolean;
     subscriptions: Map<
         string,
-        Array<{
-            callback: Function;
-            cancel: Function;
-        }>
+        Array<Subscriber>
     >;
     constructor({ address, family, port, insecure = false }: AddrDetails) {
         this.log("+client", {
@@ -101,7 +99,7 @@ export class DredClient {
         }
     }
 
-    subscribeChannel(chan, callback): void {
+    subscribeChannel(chan, notify): Subscriber {
         let subs = this.subscriptions.get(chan);
         if (!subs) {
             subs = [];
@@ -115,12 +113,12 @@ export class DredClient {
             abort.abort();
         };
 
-        subs.push({
+        const subscription : Subscriber = {
             cancel,
-            callback,
-        });
+            notify,
+        };
+        subs.push(subscription);
 
-        // everything
         let aborted;
         this.fetch(`/channel/${chan}/subscribe`, {
             parse: false,
@@ -138,8 +136,9 @@ export class DredClient {
             if (aborted) return false;
             if (!response) return false;
 
-            this.monitorSubscription(chan, callback, response);
+            this.monitorSubscription(chan, notify, response);
         });
+        return subscription;
     }
     
     async monitorSubscription(chan, callback, response) {

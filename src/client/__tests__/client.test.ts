@@ -45,8 +45,8 @@ describe("Dred client", () => {
             client.subscribeChannel(chan, callback2);
             const subs = client.subscriptions.get(chan);
             expect(subs).toMatchObject([
-                { callback: callback1 },
-                { callback: callback2 },
+                { notify: callback1 },
+                { notify: callback2 },
             ]);
         });
 

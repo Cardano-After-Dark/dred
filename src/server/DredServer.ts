@@ -7,6 +7,7 @@ import { DredClient } from "../client";
 import { RedisSet } from "../redis/RedisSet";
 
 import { RedisChannels } from "@hearit-io/redis-channels";
+import { Subscriber } from "../Subscriber";
 
 const logging = parseInt(process.env.LOGGING);
 
@@ -14,11 +15,6 @@ const redis: Redis.Redis = new Redis();
 export interface ExpressWithRedis extends Express {
     redis: null | Redis.Redis;
 }
-
-export type Subscriber = {
-    sendUpdate: Function;
-    cancel: Function;
-};
 
 const peers = new Set<DredClient>();
 function setupRedis() {
@@ -32,7 +28,7 @@ export class DredServer {
     listener: null | Server; // http.Server from node types
     channelList: RedisSet;
     producers: Map<string, any>;
-    subscribers: Map<string, Array<Subscriber>>;
+    subscribers: Map<string, Set<Subscriber>>;
     options: Object;
     constructor(options = {}) {
         this.log("+server with", { options });
@@ -180,14 +176,15 @@ export class DredServer {
         await this.channelConn.subscribe(tunnel);
 
         const subscriber: Subscriber = {
-            sendUpdate,
+            notify: sendUpdate,
             cancel,
         };
+
         let subs = this.subscribers.get(channelId);
         if (!subs) {
-            this.subscribers.set(channelId, (subs = []));
+            this.subscribers.set(channelId, (subs = new Set()));
         }
-        subs.push(subscriber);
+        subs.add(subscriber);
 
         try {
             for await (const events of this.channelConn.consume(tunnel)) {
