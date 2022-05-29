@@ -15,6 +15,11 @@ export interface ExpressWithRedis extends Express {
     redis: null | Redis.Redis;
 }
 
+export type Subscriber = {
+    sendUpdate: Function;
+    cancel: Function;
+};
+
 const peers = new Set<DredClient>();
 function setupRedis() {
     return redis;
@@ -27,7 +32,7 @@ export class DredServer {
     listener: null | Server; // http.Server from node types
     channelList: RedisSet;
     producers: Map<string, any>;
-    subscribers: Map<string, any>;
+    subscribers: Map<string, Array<Subscriber>>;
     options: Object;
     constructor(options = {}) {
         this.log("+server with", { options });
@@ -36,8 +41,8 @@ export class DredServer {
         this.listener = null;
 
         this.channelList = new RedisSet(redis, "channels");
-        this.producers = new Map<string, any>();
-        this.subscribers = new Map<string, any>();
+        this.producers = new Map();
+        this.subscribers = new Map();
 
         this.channelConn = new RedisChannels();
         this.channelConn._log.error = console.error.bind(console);
@@ -174,7 +179,7 @@ export class DredServer {
         };
         await this.channelConn.subscribe(tunnel);
 
-        const subscriber = {
+        const subscriber: Subscriber = {
             sendUpdate,
             cancel,
         };
@@ -184,7 +189,6 @@ export class DredServer {
         }
         subs.push(subscriber);
 
-        let consumeError;
         try {
             for await (const events of this.channelConn.consume(tunnel)) {
                 for (const e of events) {
