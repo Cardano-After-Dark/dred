@@ -9,15 +9,18 @@ import { AddressInfo } from "net";
 let app: Express;
 let listener: Server; // http.Server from node interfaces
 let server: DredServer;
+let clientCleanupList = [];
 
 afterAll(async () => {
-    const redis = server.redis
-    redis.disconnect();
-    listener && listener.close();
+    server && (await server.close());
 });
 afterEach(async () => {
-    const redis = server?.redis;
+    for (const client of clientCleanupList) {
+        client.disconnect();
+    }
+    clientCleanupList = [];
 
+    const redis = server?.redis;
     await redis.flushdb();
     // const stream = redis.scanStream();
     // stream.on("data", (resultKeys) => {
@@ -26,8 +29,18 @@ afterEach(async () => {
 });
 
 export async function testSetup() {
-    server = server || (await createServer());
+    if (process.env.JEST_TIMEOUT) {
+        jest.setTimeout(parseInt(process.env.JEST_TIMEOUT));
+    }
+    server = server || (await createServer({ insecure: true }));
     app = app || server.api;
+
+    const realMkClient = server.mkClient.bind(server);
+    jest.spyOn(server, "mkClient").mockImplementation(function (...args) {
+        const client = realMkClient(...args);
+        clientCleanupList.push(client);
+        return client;
+    });
 
     listener = server.listen();
     const addr = listener.address();
@@ -36,6 +49,6 @@ export async function testSetup() {
         throw new Error(`Unix socket not supported currently`);
 
     const agent = supertest.agent(listener);
-    const client = new DredClient({ ...addr, insecure: true });
+    const client = server.mkClient(); //new DredClient({ ...addr, insecure: true });
     return { agent, app, server, client };
 }

@@ -1,8 +1,15 @@
 import express, { Express, RequestHandler } from "express";
+var bodyParser = require("body-parser");
+
 import { Server } from "http";
 import Redis from "ioredis";
 import { DredClient } from "../client";
 import { RedisSet } from "../redis/RedisSet";
+
+import { RedisChannels } from "@hearit-io/redis-channels";
+
+const logging = parseInt(process.env.LOGGING);
+
 const redis: Redis.Redis = new Redis();
 export interface ExpressWithRedis extends Express {
     redis: null | Redis.Redis;
@@ -16,21 +23,35 @@ function setupRedis() {
 export class DredServer {
     api: Express;
     redis: Redis.Redis;
+    channelConn: RedisChannels;
     listener: null | Server; // http.Server from node types
     channelList: RedisSet;
+    producers: Map<string, any>;
+    subscribers: Map<string, any>;
     options: Object;
     constructor(options = {}) {
+        this.log("+server with", { options });
         this.api = express();
         this.redis = this.setupRedis();
         this.listener = null;
 
         this.channelList = new RedisSet(redis, "channels");
+        this.producers = new Map<string, any>();
+        this.subscribers = new Map<string, any>();
+
+        this.channelConn = new RedisChannels();
+        this.channelConn._log.error = console.error.bind(console);
         this.options = options;
 
         this.setupExpressHandlers();
     }
     listen(...args: any[]) {
         return (this.listener = this.api.listen(...args));
+    }
+    async close() {
+        this.cancelSubscribers();
+        this.redis?.disconnect();
+        this.listener?.close();
     }
     get address() {
         const { listener } = this;
@@ -55,12 +76,16 @@ export class DredServer {
         return new DredClient({ ...this.address, ...options, ...this.options });
     }
 
+    log(...args) {
+        logging && console.log(...args);
+    }
+
     setupExpressHandlers() {
         this.api.use((req, res, next) => {
-            process.env.LOGGING &&
-                console.log(`-> ${req.method} ${req.originalUrl}`);
+            this.log(`-> ${req.method} ${req.originalUrl}`);
             next();
         });
+        this.api.use(bodyParser.json());
 
         //! it allows handlers to be mocked
         this.api.post("/channel/:channelId", (...args) => {
@@ -68,6 +93,9 @@ export class DredServer {
         });
         this.api.post("/channel/:channelId/message", (...args) => {
             this.postMessageInChannel(...args);
+        });
+        this.api.get("/channel/:channelId/subscribe", (...args) => {
+            this.subscribeToChannel(...args);
         });
     }
 
@@ -78,7 +106,7 @@ export class DredServer {
             res.status(400).json({ error: "channel already exists" });
             return next();
         }
-        // console.log("chan create");
+        // this.log("chan create");
         await this.channelList.add(channelId);
         res.json({
             id: channelId,
@@ -87,6 +115,16 @@ export class DredServer {
         next();
     };
 
+    async mkChannelProducer(channelId) {
+        let producer = this.producers.get(channelId);
+        if (producer) return producer;
+
+        producer = await this.channelConn.use(channelId);
+        this.producers.set(channelId, producer);
+
+        return producer;
+    }
+
     postMessageInChannel: RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
         const found = await this.channelList.has(channelId);
@@ -94,14 +132,78 @@ export class DredServer {
             res.status(404).json({ error: "channel not found" });
             return next();
         }
+        const message = req.body;
+
+        this.log("server: postMessage", message);
+        const tunnelProducer = await this.mkChannelProducer(channelId);
+        await this.channelConn.produce(tunnelProducer, JSON.stringify(message));
 
         res.json({ status: "created" });
         next();
     };
+
+    cancelSubscribers() {
+        for (const [chan, subscribers] of this.subscribers) {
+            for (const sub of subscribers) {
+                sub.cancel();
+            }
+        }
+    }
+    subscribeToChannel: RequestHandler = async (req, res, next) => {
+        let cancelled = false;
+
+        function sendUpdate(json: Object) {
+            // if (json.event !== "keepalive") debugger
+            const update = JSON.stringify(json);
+            // debug("update: ", update)
+            res.write(update + "\n");
+
+            (res as any)._flush(); // writes through compression middleware
+        }
+
+        const { channelId } = req.params;
+        const found = await this.channelList.has(channelId);
+        if (!found) {
+            res.status(404).json({ error: "channel not found" });
+            return next();
+        }
+        const tunnel = await this.channelConn.use(channelId);
+        const cancel = () => {
+            cancelled = true;
+            this.channelConn.unsubscribe(tunnel);
+        };
+        await this.channelConn.subscribe(tunnel);
+
+        const subscriber = {
+            sendUpdate,
+            cancel,
+        };
+        let subs = this.subscribers.get(channelId);
+        if (!subs) {
+            this.subscribers.set(channelId, (subs = []));
+        }
+        subs.push(subscriber);
+
+        let consumeError;
+        try {
+            for await (const events of this.channelConn.consume(tunnel)) {
+                for (const e of events) {
+                    const { id, data } = e;
+                    this.log(`server: ${channelId} <- event ${id}: `, e.data);
+                    const parsed = JSON.parse(data);
+                    sendUpdate(parsed);
+                }
+            }
+        } catch (consumeError) {
+            if (!cancelled) {
+                this.log("consume error; TODO: reconnect/retry", consumeError);
+            }
+        }
+    };
 }
 
-export async function createServer() {
-    const server = new DredServer();
+export async function createServer({ ...options }) {
+    const server = new DredServer(options);
     const { api, redis } = server;
     api.set("redis", redis);
 
@@ -110,12 +212,3 @@ export async function createServer() {
 
     return server;
 }
-
-// import ndjsonStream from "./betterJsonStream";
-// res.sendUpdate = function sendUpdate(json) {
-//   // if (json.event !== "keepalive") debugger
-//   const update = JSON.stringify(json);
-//   // debug("update: ", update)
-//   res.write(update + "\n");
-//   res.flush(); // writes through compression middleware
-// };

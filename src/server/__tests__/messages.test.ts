@@ -43,19 +43,22 @@ describe("channel messages", () => {
             });
     });
 
-    it.todo(
-        "publishes messages sent in a channel to other clients",
-        async () => {
-            const otherClient = server.mkClient();
-            const chan = "foo";
-            const msg = { hi: "there" };
-            await client.createChannel(chan);
-            otherClient.subscribeChannel(chan, (inbound) => {
-                expect(inbound).toMatchObject(msg);
-            });
-            await client.postMessage(chan, msg);
-            await asyncDelay(5);
-            expect.assertions(1);
-        }
-    );
+    it("publishes messages sent in a channel to other clients", async () => {
+        const otherClient = server.mkClient();
+        const chan = "foo";
+        const msg = { hi: "there" };
+        await client.createChannel(chan);
+
+        otherClient.subscribeChannel(chan, (inbound) => {
+            expect(inbound).toMatchObject(msg);
+        });
+        await asyncDelay(15);
+        await client.postMessage(chan, msg);
+        await asyncDelay(15);
+        expect.assertions(1);
+
+        await client.postMessage(chan, msg);
+        await asyncDelay(15);
+        expect.assertions(2);
+    });
 });

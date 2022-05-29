@@ -10,10 +10,13 @@
         "start:debug": "scripts/startRedis.sh && ts-node-dev --inspect --respawn index.ts",
         "test": "ENV_FILE=./config/.env.test jest",
         "testing": "ENV_FILE=./config/.env.test jest --watch --runInBand",
-        "test:debug": "ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --runInBand",
-        "testing:debug": "ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --watch --runInBand"
+        "test:debug": "JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --runInBand",
+        "testing:debug": "JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --watch --runInBand"
     },
     "dependencies": {
+        "@hearit-io/redis-channels": "^1.2.1",
+        "body-parser": "^1.20.0",
+        "can-namespace": "^1.0.0",
         "cross-fetch": "^3.1.5",
         "express": "^4.18.1",
         "ioredis": "^4.28.2",
