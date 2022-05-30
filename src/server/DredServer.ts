@@ -150,6 +150,9 @@ export class DredServer {
             }
         }
     }
+    get subscribeTimeout() {
+        return 10000;
+    }
     subscribeToChannel: RequestHandler = async (req, res, next) => {
         let cancelled = false;
 
@@ -193,7 +196,12 @@ export class DredServer {
         res.on("close", cleanup);
 
         try {
-            for await (const events of this.channelConn.consume(tunnel)) {
+            for await (const events of this.channelConn.consume(
+                tunnel,
+                "all",
+                10,
+                this.subscribeTimeout
+            )) {
                 for (const e of events) {
                     const { id, data } = e;
                     this.log(`server: ${channelId} <- event ${id}: `, e.data);

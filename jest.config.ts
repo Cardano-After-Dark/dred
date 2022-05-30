@@ -6,6 +6,7 @@ import type { Config } from "@jest/types";
 const config: Config.InitialOptions = {
     verbose: true,
     preset: "ts-jest",
+    restoreMocks: true,
     testEnvironment: "node",
     transform: {
         "^.+\\.(t|j)sx?$": ["@swc/jest"],

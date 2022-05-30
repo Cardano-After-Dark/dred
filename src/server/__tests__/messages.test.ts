@@ -43,22 +43,50 @@ describe("channel messages", () => {
             });
     });
 
-    it("publishes messages sent in a channel to other clients", async () => {
-        const otherClient = server.mkClient();
-        const chan = "foo";
-        const msg = { hi: "there" };
-        await client.createChannel(chan);
+    describe("subscriptions: ", () => {
+        it("notifies subscribers when messages are sent in a channel", async () => {
+            const otherClient = server.mkClient();
+            const chan = "foo";
+            const msg = { hi: "there" };
+            await client.createChannel(chan);
 
-        otherClient.subscribeChannel(chan, (inbound) => {
-            expect(inbound).toMatchObject(msg);
+            otherClient.subscribeChannel(chan, (inbound) => {
+                expect(inbound).toMatchObject(msg);
+            });
+            await asyncDelay(15);
+            await client.postMessage(chan, msg);
+            await asyncDelay(15);
+            expect.assertions(1);
+
+            await client.postMessage(chan, msg);
+            await asyncDelay(15);
+            expect.assertions(2);
         });
-        await asyncDelay(15);
-        await client.postMessage(chan, msg);
-        await asyncDelay(15);
-        expect.assertions(1);
 
-        await client.postMessage(chan, msg);
-        await asyncDelay(15);
-        expect.assertions(2);
+        it("continues consuming events from redis after a first batch", async () => {
+            const otherClient = server.mkClient();
+            const shortSubscribe = jest
+                .spyOn(server, "subscribeTimeout", "get")
+                .mockReturnValue(150);
+
+            const chan = "keepgoing";
+            const msg = { keepConsuming: "please" };
+            await client.createChannel(chan);
+
+            const subscription = otherClient.subscribeChannel(
+                chan,
+                (inbound) => {
+                    expect(inbound).toMatchObject(msg);
+                }
+            );
+            await asyncDelay(15);
+            await client.postMessage(chan, msg);
+            await asyncDelay(200);
+            expect.assertions(1);
+
+            await client.postMessage(chan, msg);
+            await asyncDelay(15);
+            expect.assertions(2);
+        });
     });
 });

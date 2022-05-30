@@ -30,7 +30,6 @@ describe("Dred client", () => {
             await expect(client.createChannel(chanName)).rejects.toThrow(
                 "some error"
             );
-            serverMethod.mockRestore();
         });
     });
 
