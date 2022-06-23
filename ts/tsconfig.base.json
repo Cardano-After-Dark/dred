@@ -10,10 +10,11 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "types": ["node", "jest"]
+        "types": ["node", "jest"],
+        "noImplicitAny": false
     },
     "include": ["src"],
-    "ts-node": {
+    "ts-node-dev": {
         "swc": true
     }
 }
