@@ -5,15 +5,15 @@ import { Server } from "http";
 import Redis from "ioredis";
 import { DredClient } from "../client";
 import { RedisSet } from "../redis/RedisSet";
-
+//@ts-ignore
 import { RedisChannels } from "@hearit-io/redis-channels";
 import { Subscriber } from "../Subscriber";
 
-const logging = parseInt(process.env.LOGGING);
+const logging = parseInt("1");
 
-const redis: Redis.Redis = new Redis();
+const redis = new Redis();
 export interface ExpressWithRedis extends Express {
-    redis: null | Redis.Redis;
+    redis: null | typeof Redis;
 }
 
 const peers = new Set<DredClient>();
@@ -23,8 +23,8 @@ function setupRedis() {
 
 export class DredServer {
     api: Express;
-    redis: Redis.Redis;
-    channelConn: RedisChannels;
+    redis: Redis;
+    channelConn: any; //RedisChannels;
     listener: null | Server; // http.Server from node types
     channelList: RedisSet;
     producers: Map<string, any>;
@@ -77,7 +77,7 @@ export class DredServer {
         return new DredClient({ ...this.address, ...options, ...this.options });
     }
 
-    log(...args) {
+    log(...args: any[]) {
         logging && console.log(...args);
     }
 
@@ -116,7 +116,7 @@ export class DredServer {
         next();
     };
 
-    async mkChannelProducer(channelId) {
+    async mkChannelProducer(channelId: any) {
         let producer = this.producers.get(channelId);
         if (producer) return producer;
 
@@ -175,7 +175,7 @@ export class DredServer {
         await this.channelConn.subscribe(tunnel);
 
         const cleanup = () => {
-            subs.delete(subscriber);
+            subs?.delete(subscriber);
             this.channelConn.unsubscribe(tunnel);
             next();
         };
