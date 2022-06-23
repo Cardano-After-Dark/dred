@@ -9,7 +9,7 @@ const config: Config.InitialOptions = {
     restoreMocks: true,
     testEnvironment: "node",
     transform: {
-        "^.+\\.(t|j)sx?$": ["@swc/jest"],
+        "^.+\\.(t|j)sx?$": "@swc/jest",
     },
     moduleNameMapper: {
         "@platform/(.*)": "<rootDir>/platform/server/$1",
