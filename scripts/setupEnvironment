@@ -1,6 +1,9 @@
-#!/bin/sh
-set -ex
+#!/bin/bash
+set -e
 clear
+
+. $(dirname $0)/needsNvm
+
 
 CONTAINER="dred_redis"
 DOCKERHUB_IMG="redislabs/redismod"

@@ -6,12 +6,12 @@
     "license": "MIT",
     "packageManager": "yarn@3.2.1",
     "scripts": {
-        "start": "scripts/startRedis && ts-node-dev --respawn index.ts",
-        "start:debug": "scripts/startRedis && ts-node-dev --inspect --respawn index.ts",
-        "test": "ENV_FILE=./config/.env.test jest --runInBand",
-        "testing": "ENV_FILE=./config/.env.test jest --watch --runInBand",
-        "test:debug": "JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --runInBand",
-        "testing:debug": "JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --watch --runInBand"
+        "start": "scripts/setupEnvironment && ts-node-dev --respawn index.ts",
+        "start:debug": "scripts/setupEnvironment  && ts-node-dev --inspect --respawn index.ts",
+        "test": "scripts/setupEnvironment ; ENV_FILE=./config/.env.test jest --runInBand",
+        "testing": "scripts/setupEnvironment ; ENV_FILE=./config/.env.test jest --watch --runInBand",
+        "test:debug": "scripts/setupEnvironment ; JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --runInBand",
+        "testing:debug": "scripts/setupEnvironment ; JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --watch --runInBand"
     },
     "dependencies": {
         "@hearit-io/redis-channels": "^1.2.1",

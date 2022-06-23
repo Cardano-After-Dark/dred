@@ -1,0 +1,10 @@
+[[ -z "${NVM_DIR}" ]] && {
+    echo "NVM isn't installed :~( " >&2
+    echo ""
+    echo "... see install instructions at https://github.com/nvm-sh/nvm" >&2
+    exit 1;
+}
+source $NVM_DIR/nvm.sh
+
+nvm use
+
