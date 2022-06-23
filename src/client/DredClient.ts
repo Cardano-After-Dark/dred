@@ -10,17 +10,14 @@ interface AddrDetails {
     insecure?: boolean;
 }
 
-const logging = parseInt(process.env.LOGGING);
+const logging = parseInt(process.env.LOGGING || "");
 export class DredClient {
     _log: undefined | Function;
     serverAddress: any;
     serverPort: any;
     addrFamily: any;
     insecure?: boolean;
-    subscriptions: Map<
-        string,
-        Array<Subscriber>
-    >;
+    subscriptions: Map<string, Array<Subscriber>>;
     constructor({ address, family, port, insecure = false }: AddrDetails) {
         this.log("+client", {
             options: { insecure },
@@ -40,7 +37,7 @@ export class DredClient {
         );
     }
 
-    async fetch(path, { parse = true, ...options }) {
+    async fetch(path: string, { parse = true, ...options }) {
         const proto = this.insecure ? "http" : "https";
         let addr = this.serverAddress;
         if (addr == "::") addr = "localhost";
@@ -72,7 +69,7 @@ export class DredClient {
                 method: "POST",
                 headers: { accept: "application/json" },
             });
-        } catch (err) {
+        } catch (err: any) {
             this.log("createChannel at server failed:", err.message || err);
             throw new Error(err.error || err);
         }
@@ -113,7 +110,7 @@ export class DredClient {
             abort.abort();
         };
 
-        const subscription : Subscriber = {
+        const subscription: Subscriber = {
             cancel,
             notify,
         };
@@ -124,23 +121,25 @@ export class DredClient {
             parse: false,
             signal: abortSignal,
             headers: { "content-type": "application/json" },
-        }).catch((e) => {
-            if (this.isAbortError(e)) {
-                // this.log("abort happened before fetch response headers");
-                aborted = true;
-            } else {
-                this.log(`fetch error; see debugger - `, e);
-                debugger;
-            }
-        }).then((response) => {
-            if (aborted) return false;
-            if (!response) return false;
+        })
+            .catch((e) => {
+                if (this.isAbortError(e)) {
+                    // this.log("abort happened before fetch response headers");
+                    aborted = true;
+                } else {
+                    this.log(`fetch error; see debugger - `, e);
+                    debugger;
+                }
+            })
+            .then((response) => {
+                if (aborted) return false;
+                if (!response) return false;
 
-            this.monitorSubscription(chan, notify, response);
-        });
+                this.monitorSubscription(chan, notify, response);
+            });
         return subscription;
     }
-    
+
     async monitorSubscription(chan, callback, response) {
         if (!response.ok) throw new Error(`failure in subscribe...`);
 
