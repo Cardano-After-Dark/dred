@@ -53,13 +53,13 @@ describe("channel messages", () => {
             otherClient.subscribeChannel(chan, (inbound) => {
                 expect(inbound).toMatchObject(msg);
             });
-            await asyncDelay(15);
+            await asyncDelay(200);
             await client.postMessage(chan, msg);
-            await asyncDelay(15);
+            await asyncDelay(200);
             expect.assertions(1);
 
             await client.postMessage(chan, msg);
-            await asyncDelay(15);
+            await asyncDelay(200);
             expect.assertions(2);
         });
 
@@ -85,7 +85,7 @@ describe("channel messages", () => {
             expect.assertions(1);
 
             await client.postMessage(chan, msg);
-            await asyncDelay(15);
+            await asyncDelay(200);
             expect.assertions(2);
         });
     });
