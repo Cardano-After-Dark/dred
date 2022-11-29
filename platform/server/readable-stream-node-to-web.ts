@@ -1,9 +1,9 @@
+//! see ./ReadableStream.ts
 
 // !!! compare to
 //  https://raw.githubusercontent.com/xuset/readable-stream-node-to-web/master/index.js
 
 import { ReadableStream } from "node:stream/web";
-
 
 export function nodeToWebStream(nodeStream) {
     // Assumes the nodeStream has not ended/closed
