@@ -9,7 +9,7 @@ import { RedisSet } from "../redis/RedisSet";
 import { RedisChannels } from "@hearit-io/redis-channels";
 import { Subscriber } from "../Subscriber";
 
-const logging = parseInt("1");
+const logging = parseInt(process.env.LOGGING || "0");
 
 const redis = new Redis();
 export interface ExpressWithRedis extends Express {
@@ -196,6 +196,7 @@ export class DredServer {
         res.on("close", cleanup);
 
         try {
+            //NOTE: during tests, this can fail due to race with flushdb() : (
             for await (const events of this.channelConn.consume(
                 tunnel,
                 "all",

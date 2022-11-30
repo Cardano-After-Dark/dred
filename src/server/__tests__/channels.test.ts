@@ -29,12 +29,14 @@ describe("channels", () => {
 
     it("refuses to recreate a channel", async () => {
         const channelName = "fooChannel2";
+        // normal creation:
         const response = await agent
             .post(`/channel/${channelName}`)
             //      .send({id: channelName})
             .expect("Content-Type", /json/)
             .expect(200);
 
+        // failed duplicate creation:
         await agent
             .post(`/channel/${channelName}`)
             //      .send({id: channelName})

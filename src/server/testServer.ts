@@ -5,15 +5,17 @@ import supertest from "supertest";
 import Redis from "ioredis";
 import { DredClient } from "../client";
 import { AddressInfo } from "net";
+import { asyncDelay } from "src/util/asyncDelay";
 
 let app: Express;
 let listener: Server; // http.Server from node interfaces
 let server: DredServer;
-let clientCleanupList = [];
+let clientCleanupList: Array<DredClient> = [];
 
 afterAll(async () => {
     server && (await server.close());
 });
+
 afterEach(async () => {
     for (const client of clientCleanupList) {
         client.disconnect();
@@ -21,6 +23,8 @@ afterEach(async () => {
     clientCleanupList = [];
 
     const redis = server?.redis;
+    await asyncDelay(150); // avoid race with existing channel-subscriptions?
+    await asyncDelay(150); // avoid race with existing channel-subscriptions?
     await redis.flushdb();
     // const stream = redis.scanStream();
     // stream.on("data", (resultKeys) => {
