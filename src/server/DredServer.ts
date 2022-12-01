@@ -8,7 +8,7 @@ import { RedisSet } from "../redis/RedisSet";
 //@ts-ignore
 import { RedisChannels } from "@hearit-io/redis-channels";
 import { Subscriber } from "../Subscriber";
-import { JSONValueAdapter, RedisHash } from "src/redis/RedisHash";
+import { JSONValueAdapter, RedisHash, ValueAdapter } from "src/redis/RedisHash";
 import { ChannelOptions } from "src/types/ChannelOptions";
 
 import nacl from "tweetnacl";
@@ -28,6 +28,20 @@ function setupRedis() {
     return redis;
 }
 
+const optionsSerializer: ValueAdapter<ChannelOptions> = {
+    toRedis(v: ChannelOptions) {
+        if ("member" !== v.approveJoins) v.approveJoins = "owner";
+
+        return JSONValueAdapter.toRedis(v);
+    },
+    fromRedis(v: string) {
+        const g = JSONValueAdapter.fromRedis(v) as any;
+        const opts = { ...g } as ChannelOptions;
+        opts.createdAt = new Date(g.createdAt);
+        g.expiresAt && (opts.expiresAt = new Date(g.expiresAt));
+        return opts;
+    },
+};
 export class DredServer {
     api: Express;
     redis: Redis;
@@ -48,7 +62,7 @@ export class DredServer {
         this.channelOptions = new RedisHash(
             redis,
             "channelOptions",
-            JSONValueAdapter
+            optionsSerializer
         );
         this.producers = new Map();
         this.subscribers = new Map();
@@ -182,10 +196,12 @@ export class DredServer {
             expiresAt,
             messageLifetime,
             signature,
+            createdAt: new Date(),
         };
 
         await this.setChanOptions(channelId, opts);
         await this.channelList.add(channelId);
+        await this.channelCreated(channelId, opts);
         res.json({
             id: channelId,
             status: "created",
@@ -193,6 +209,10 @@ export class DredServer {
         });
         next();
     };
+    async channelCreated(channelId, opts) {
+        //! it allows specific subclass of dred server to be notified of channel-creation
+    }
+
     async getChanOptions(channelName: string): Promise<ChannelOptions> {
         const obj = await this.channelOptions.get(channelName);
         return obj as ChannelOptions;

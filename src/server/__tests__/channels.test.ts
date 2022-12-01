@@ -66,12 +66,11 @@ describe("channels", () => {
         beforeAll(() => {
             key = sign.keyPair();
             pubKey = key.publicKey;
-            debugger;
             pubKeyString = encodeBase64(pubKey);
         });
         it("refuses to create a channel without a provided 'owner' pubKey and valid signature", async () => {
             const channelName = "encChannel3";
-            console.log("no owner");
+            // console.log("no owner");
             let noOwner = await agent
                 .post(`/channel/${channelName}`)
                 .send({
@@ -84,7 +83,7 @@ describe("channels", () => {
                 /missing required 'owner' setting/
             );
 
-            console.log("no sig");
+            // console.log("no sig");
             let noSig = await agent
                 .post(`/channel/${channelName}`)
                 .send({
@@ -97,7 +96,7 @@ describe("channels", () => {
 
             expect(noSig.body.error).toMatch(/missing signature/);
 
-            console.log("bad sig");
+            // console.log("bad sig");
             let badSig = await agent
                 .post(`/channel/${channelName}`)
                 .send({
@@ -147,11 +146,34 @@ describe("channels", () => {
             const options = (await server.getChanOptions(channelName)) as any;
             expect(options.randomValue).toBeUndefined();
         });
+        it("triggers channelCreated method on server object", async () => {
+            const created = jest.spyOn(server, "channelCreated");
+            client.generateKey();
+            await client.createChannel("createAndCallback", {
+                encrypted: true,
+                allowJoining: true,
+            });
+            expect(created).toBeCalled();
+        });
 
-        it.todo(
-            "fills createdAt, ignoring any client-provided value"
-            // async () => {}
-        );
+        it("fills createdAt, ignoring any client-provided value", async () => {
+            client.generateKey();
+            const channelName = "createdAt-enc";
+            await client.createChannel(channelName, {
+                encrypted: true,
+                allowJoining: true,
+                createdAt: new Date(new Date().getTime() - 100000),
+            });
+
+            const opts = await server.getChanOptions(channelName);
+            expect(opts.createdAt).not.toBeUndefined();
+            if (!opts.createdAt)
+                throw new Error(`never thrown but makes typescript happy`);
+
+            expect(
+                new Date().getTime() - opts.createdAt.getTime()
+            ).toBeLessThan(200);
+        });
         describe("members", () => {
             it.todo(
                 "allows owner to join others with their pubKey"

@@ -1,7 +1,13 @@
 import fetch from "cross-fetch";
+import { ChannelOptions } from "src/types/ChannelOptions";
 import { fromPlatformFetchBody } from "../../platform/server/ReadableStream";
 import { Subscriber } from "../Subscriber";
 import { ndjsonStream } from "./betterJsonStream";
+
+import nacl from "tweetnacl";
+const { sign } = nacl;
+import util from "tweetnacl-util";
+const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
 interface AddrDetails {
     address: any;
@@ -16,6 +22,8 @@ export class DredClient {
     serverAddress: any;
     serverPort: any;
     addrFamily: any;
+    identity?: nacl.SignKeyPair;
+    pubKeyString?: string;
     insecure?: boolean;
     subscriptions: Map<string, Array<Subscriber>>;
     constructor({ address, family, port, insecure = false }: AddrDetails) {
@@ -61,12 +69,49 @@ export class DredClient {
             );
         return Promise.reject(bad);
     }
+    generateKey() {
+        const key = (this.identity = sign.keyPair());
+        this.pubKeyString = encodeBase64(key.publicKey);
+    }
 
-    async createChannel(channelName: string) {
+    async createChannel(
+        channelName: string,
+        options: ChannelOptions = {
+            encrypted: false,
+        }
+    ) {
         // this.log({ fetching: true, url });
+        const {
+            encrypted,
+            members = [],
+            allowJoining,
+            memberLimit,
+            expiresAt,
+            messageLifetime,
+        } = options;
+        if (encrypted) {
+            if (!this.identity) {
+                throw new Error(
+                    `createChannel: encrypted channel requires a prior call to generateKey()`
+                );
+            }
+            if (!allowJoining && !members.length) {
+                throw new Error(
+                    `createChannel (encrypted: true): must specify member list and/or allowJoining: true`
+                );
+            }
+            const chanBuf = decodeUTF8(channelName);
+            const signature = encodeBase64(
+                sign(chanBuf, this.identity.secretKey)
+            );
+            options.owner = this.pubKeyString;
+            options.signature = signature;
+        }
+
         try {
             return await this.fetch(`/channel/${channelName}`, {
                 method: "POST",
+                body: JSON.stringify(options),
                 headers: { accept: "application/json" },
             });
         } catch (err: any) {

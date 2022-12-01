@@ -1,7 +1,7 @@
 import Redis from "ioredis";
 
 type keyType = "_abstract" | string;
-interface ValueAdapter<V> {
+export interface ValueAdapter<V> {
     toRedis: (v: V) => string;
     fromRedis: (v: string) => V;
 }

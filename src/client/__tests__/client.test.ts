@@ -72,4 +72,33 @@ describe("Dred client", () => {
             });
         });
     });
+
+    describe("encrypted chan:", () => {
+        it("requires key creation", async () => {
+            const chanName = "client1";
+            await expect(
+                client.createChannel(chanName, {
+                    encrypted: true,
+                })
+            ).rejects.toThrow(/generateKey/);
+        });
+        describe("after keygen:", () => {
+            beforeEach(async () => {
+                return client.generateKey();
+            });
+            describe("createChannel", () => {
+                it("does createChannel() on server", async () => {
+                    const serverMethod = jest.spyOn(server, "createChannel");
+                    const chanName = "client1";
+                    await client.createChannel(chanName, {
+                        encrypted: true,
+                        allowJoining: true,
+                    });
+                    expect(server.channelList.has(chanName)).toBeTruthy();
+                    expect(serverMethod).toHaveBeenCalled();
+                });
+
+            });
+        });
+    });
 });
