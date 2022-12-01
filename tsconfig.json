@@ -3,7 +3,8 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "@platform/*": ["platform/server/*"]
+            "@platform/*": ["platform/server/*"],
+            "src/*": ["src/*"]
         }
     }
 }

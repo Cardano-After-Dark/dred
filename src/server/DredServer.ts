@@ -1,4 +1,4 @@
-import express, { Express, RequestHandler } from "express";
+import express, { Express, RequestHandler, Response } from "express";
 var bodyParser = require("body-parser");
 
 import { Server } from "http";
@@ -8,6 +8,13 @@ import { RedisSet } from "../redis/RedisSet";
 //@ts-ignore
 import { RedisChannels } from "@hearit-io/redis-channels";
 import { Subscriber } from "../Subscriber";
+import { JSONValueAdapter, RedisHash } from "src/redis/RedisHash";
+import { ChannelOptions } from "src/types/ChannelOptions";
+
+import nacl from "tweetnacl";
+const { sign } = nacl;
+import util from "tweetnacl-util";
+const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
 const logging = parseInt(process.env.LOGGING || "0");
 
@@ -27,6 +34,7 @@ export class DredServer {
     channelConn: any; //RedisChannels;
     listener: null | Server; // http.Server from node types
     channelList: RedisSet;
+    channelOptions: RedisHash<string, object>;
     producers: Map<string, any>;
     subscribers: Map<string, Set<Subscriber>>;
     options: Object;
@@ -37,6 +45,11 @@ export class DredServer {
         this.listener = null;
 
         this.channelList = new RedisSet(redis, "channels");
+        this.channelOptions = new RedisHash(
+            redis,
+            "channelOptions",
+            JSONValueAdapter
+        );
         this.producers = new Map();
         this.subscribers = new Map();
 
@@ -92,6 +105,9 @@ export class DredServer {
         this.api.post("/channel/:channelId", (...args) => {
             this.createChannel(...args);
         });
+        this.api.post("/channel/:channelId/join", (...args) => {
+            this.joinInChannel(...args);
+        });
         this.api.post("/channel/:channelId/message", (...args) => {
             this.postMessageInChannel(...args);
         });
@@ -102,16 +118,110 @@ export class DredServer {
 
     createChannel: RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
+        const options: ChannelOptions = req.body;
+        options.createdAt = new Date();
+
         const found = await this.channelList.has(channelId);
         if (found) {
             res.status(400).json({ error: "channel already exists" });
             return next();
         }
+        const {
+            encrypted,
+            owner,
+            members = [],
+            allowJoining,
+            memberLimit,
+            expiresAt,
+            messageLifetime,
+            signature,
+        } = options;
+
         // this.log("chan create");
+        if (encrypted) {
+            if (!owner) {
+                res.status(400).json({
+                    error: "missing required 'owner' setting for an encrypted channel",
+                });
+                return next();
+            }
+            if (!signature) {
+                res.status(400).json({
+                    error: "missing signature; use the result of sign(channelName)",
+                });
+                return next();
+            }
+            let pubKey, sig;
+            try {
+                pubKey = decodeBase64(owner);
+            } catch (e: any) {
+                console.warn("failure to decode pubkey:", e.message);
+            }
+            try {
+                sig = decodeBase64(signature);
+            } catch (e: any) {
+                console.warn("failure to decode signature:", e.message);
+            }
+            const verified = sig && pubKey && sign.open(sig, pubKey);
+            const verifiedStr = verified && encodeUTF8(verified);
+            if (!verified || verifiedStr !== channelId) {
+                res.status(400).json({
+                    error: "bad signature; use the result of sign(channelName)",
+                });
+                return next();
+            }
+        }
+        //! it doesn't allow any extraneous JSON keys to leak through the options during channel-creation
+        //   note: have a use-case for storing more details with the channel options?  Let's discuss.
+        const opts: ChannelOptions = {
+            encrypted,
+            owner,
+            members,
+            allowJoining,
+            memberLimit,
+            expiresAt,
+            messageLifetime,
+            signature,
+        };
+
+        await this.setChanOptions(channelId, opts);
         await this.channelList.add(channelId);
         res.json({
             id: channelId,
             status: "created",
+            ...options,
+        });
+        next();
+    };
+    async getChanOptions(channelName: string): Promise<ChannelOptions> {
+        const obj = await this.channelOptions.get(channelName);
+        return obj as ChannelOptions;
+    }
+    async setChanOptions(
+        channelName: string,
+        options: ChannelOptions
+    ): Promise<void> {
+        await this.channelOptions.set(channelName, options);
+    }
+
+    joinInChannel: RequestHandler = async (req, res, next) => {
+        const { channelId } = req.params;
+        const found = await this.channelList.has(channelId);
+        if (!found) {
+            res.status(400).json({ error: "invalid channel" });
+            return next();
+        }
+        //! the channel must be encrypted (non-encrypted channels are open by definition)
+
+        //! trying to join an expired channel produces an error
+        //! the owner can join someone by pubKey, even if the memberLimit is reached
+        //! non-owners cannot exceed the memberLimit (if configured)
+        //! a non-member can join themself if allowJoining is true
+        //! a member can join someone by pubKey if approveJoins: member
+
+        //! if allowed, it returns a success indicator
+        res.json({
+            status: "joined",
         });
         next();
     };

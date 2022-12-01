@@ -13,6 +13,7 @@ const config: Config.InitialOptions = {
     },
     moduleNameMapper: {
         "@platform/(.*)": "<rootDir>/platform/server/$1",
+        "src/(.*)": "<rootDir>/src/$1",
     },
 };
 export default config;

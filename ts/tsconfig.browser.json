@@ -3,7 +3,8 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "@platform/*": ["platform/browser/*"]
+            "@platform/*": ["platform/browser/*"],
+            "src/*": ["src/*"]
         }
     }
 }
