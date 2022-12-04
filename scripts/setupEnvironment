@@ -19,8 +19,10 @@ CONTAINER_CONF_LOCATION=/usr/local/etc/redis/redis.conf
 } 
 
 ( docker ps | grep $CONTAINER > /dev/null ) && {
-  echo "$CONTAINER is running"
-  exit
+    echo
+    echo "  ✓ Docker container $CONTAINER is running"
+    echo
+    exit
 } || {
 (docker ps -a | grep $CONTAINER > /dev/null) && 
   echo "Starting $CONTAINER"

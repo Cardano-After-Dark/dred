@@ -1,3 +1,5 @@
+import { expect, jest, test } from "@jest/globals";
+
 // import request from 'supertest';
 import { Express } from "express";
 import { SuperTestWithHost, Test } from "supertest";
@@ -78,9 +80,9 @@ describe("channels", () => {
         let key, pubKey, pubKeyString;
 
         beforeAll(() => {
-            key = sign.keyPair();
-            pubKey = key.publicKey;
-            pubKeyString = encodeBase64(pubKey);
+            key = client.identity;
+            // pubKey = key.publicKey;
+            pubKeyString = client.pubKeyString as string;
         });
         it("refuses to create a channel without a provided 'owner' pubKey and valid signature", async () => {
             const channelName = "encChannel3";
@@ -103,7 +105,7 @@ describe("channels", () => {
                 .send({
                     encrypted: true,
                     allowInvites: true,
-                    owner: pubKey,
+                    owner: pubKeyString,
                 })
                 .expect("Content-Type", /json/)
                 .expect(400);
@@ -127,10 +129,7 @@ describe("channels", () => {
 
         it("fills the creator's key into channel's 'owner' setting", async () => {
             const channelName = "enc-chan-creation";
-            const chanBuf = decodeUTF8(channelName);
-            const signature = encodeBase64(
-                sign.detached(chanBuf, key.secretKey)
-            );
+            const signature = await client.signString(channelName);
             await agent
                 .post(`/channel/${channelName}`)
                 .send({
@@ -146,10 +145,8 @@ describe("channels", () => {
         });
         it("fills encrypted option and doesn't allow extra keys in channel options", async () => {
             const channelName = "enc-chan-creation-no-extra-stuff";
-            const chanBuf = decodeUTF8(channelName);
-            const signature = encodeBase64(
-                sign.detached(chanBuf, key.secretKey)
-            );
+
+            const signature = await client.signString(channelName);
             await agent
                 .post(`/channel/${channelName}`)
                 .send({
@@ -167,7 +164,6 @@ describe("channels", () => {
         });
         it("triggers channelCreated method on server object", async () => {
             const created = jest.spyOn(server, "channelCreated");
-            client.generateKey();
             await client.createChannel("createAndCallback", {
                 encrypted: true,
                 allowJoining: true,
@@ -176,7 +172,6 @@ describe("channels", () => {
         });
 
         it("fills createdAt, ignoring any client-provided value", async () => {
-            client.generateKey();
             const channelName = "createdAt-enc";
             await client.createChannel(channelName, {
                 encrypted: true,
@@ -195,7 +190,6 @@ describe("channels", () => {
         });
         describe("joining members", () => {
             it("allows owner to join others with their pubKey and an approval signature", async () => {
-                client.generateKey();
                 const channelName = "owner-joins-someone";
                 await client.createChannel(channelName, {
                     encrypted: true,
@@ -203,7 +197,7 @@ describe("channels", () => {
                 });
 
                 const c2 = server.mkClient();
-                c2.generateKey();
+                await c2.generateKey();
 
                 // console.log("missing-sig");
                 const missingSig = await agent
@@ -232,7 +226,7 @@ describe("channels", () => {
                 expect(badSig.text).toMatch(/bad signature/);
 
                 // console.log("wrong-sig");
-                let signature = c2.signString(c2.pubKeyString as string);
+                let signature = await c2.signString(c2.pubKeyString as string);
                 let wrongSig = await agent
                     .post(`/channel/${channelName}/join`)
                     .send({
@@ -245,7 +239,7 @@ describe("channels", () => {
                 expect(wrongSig.text).toMatch(/bad signature/);
 
                 // console.log("good-sig");
-                signature = client.signString(c2.pubKeyString as string);
+                signature = await client.signString(c2.pubKeyString as string);
                 await agent
                     .post(`/channel/${channelName}/join`)
                     .send({
@@ -264,7 +258,6 @@ describe("channels", () => {
             });
             describe("requests", () => {
                 it("denies join requests by default", async () => {
-                    client.generateKey();
                     const channelName = "no-joins-by-default";
                     await client.createChannel(channelName, {
                         encrypted: true,
@@ -272,8 +265,9 @@ describe("channels", () => {
                     });
 
                     const nonMember = server.mkClient();
-                    nonMember.generateKey();
-                    let signature = nonMember.signString(
+                    await nonMember.generateKey();
+
+                    let signature = await nonMember.signString(
                         nonMember.pubKeyString as string
                     );
                     const denyJoin = await agent
@@ -288,7 +282,6 @@ describe("channels", () => {
                     expect(denyJoin.text).toMatch(/unauthorized/);
                 });
                 it("allows any join requests to be added if allowJoining is enabled", async () => {
-                    client.generateKey();
                     const channelName = "allowJoining";
                     await client.createChannel(channelName, {
                         encrypted: true,
@@ -297,9 +290,9 @@ describe("channels", () => {
                     });
 
                     const nonMember = server.mkClient();
-                    nonMember.generateKey();
+                    await nonMember.generateKey();
 
-                    let signature = nonMember.signString(
+                    let signature = await nonMember.signString(
                         nonMember.pubKeyString as string
                     );
                     await agent
@@ -328,10 +321,10 @@ describe("channels", () => {
 
                 it("doesn't allow joining an expired channel", async () => {
                     const nonMember = server.mkClient();
-                    nonMember.generateKey();
+                    await nonMember.generateKey();
 
                     const nonMember2 = server.mkClient();
-                    nonMember2.generateKey();
+                    await nonMember2.generateKey();
 
                     const offset = 400;
                     const nearFuture = new Date(new Date().getTime() + offset);
@@ -365,16 +358,15 @@ describe("channels", () => {
                 });
             });
             it("allows members to join others with approveJoins: 'member' ", async () => {
-                client.generateKey();
                 const channelName = "member-joins-others";
                 const member = server.mkClient();
-                member.generateKey();
+                await member.generateKey();
 
                 const nonMember1 = server.mkClient();
-                nonMember1.generateKey();
+                await nonMember1.generateKey();
 
                 const nonMember2 = server.mkClient();
-                nonMember2.generateKey();
+                await nonMember2.generateKey();
 
                 await client.createChannel(channelName, {
                     encrypted: true,

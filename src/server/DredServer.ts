@@ -1,5 +1,6 @@
 import express, { Express, RequestHandler, Response } from "express";
-var bodyParser = require("body-parser");
+import bodyParser from "body-parser";
+// var bodyParser = require("body-parser");
 
 import { Server } from "http";
 import Redis from "ioredis";
@@ -11,11 +12,7 @@ import { Subscriber } from "../Subscriber";
 import { JSONValueAdapter, RedisHash, ValueAdapter } from "src/redis/RedisHash";
 import { ChannelOptions } from "src/types/ChannelOptions";
 
-import nacl from "tweetnacl";
-const { sign } = nacl;
-import util from "tweetnacl-util";
 import { StringNacl } from "src/util/StringNacl";
-const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
 const logging = parseInt(process.env.LOGGING || "0");
 
@@ -46,7 +43,7 @@ const optionsSerializer: ValueAdapter<ChannelOptions> = {
 export class DredServer {
     api: Express;
     redis: Redis;
-    channelConn: any; //RedisChannels;
+    channelConn: RedisChannels;
     listener: null | Server; // http.Server from node types
     channelList: RedisSet;
     channelOptions: RedisHash<string, object>;
@@ -81,7 +78,10 @@ export class DredServer {
     }
     async close() {
         this.cancelSubscribers();
-        this.redis?.disconnect();
+        await this.channelConn.cleanup();
+        await this.channelConn.this?.redis?.quit();
+        this.channelConn.this?.redis?.disconnect();
+        await this.redis.quit();
         this.listener?.close();
     }
     get address() {
@@ -176,20 +176,11 @@ export class DredServer {
                 });
                 return next();
             }
-            let pubKey, sig;
-            try {
-                pubKey = decodeBase64(owner);
-            } catch (e: any) {
-                console.warn("failure to decode pubkey:", e.message);
-            }
-            try {
-                sig = decodeBase64(signature);
-            } catch (e: any) {
-                console.warn("failure to decode signature:", e.message);
-            }
-            const chanBuf = decodeUTF8(channelId);
-            const verified =
-                sig && pubKey && sign.detached.verify(chanBuf, sig, pubKey);
+            const verified = await this.verifier.verifySig(
+                channelId,
+                signature,
+                owner
+            );
             if (!verified) {
                 res.status(400).json({
                     error: "bad signature; use the result of sign(channelName)",
@@ -298,7 +289,7 @@ export class DredServer {
         }
         let verified, error;
         try {
-            verified = this.verifier.verifySig(
+            verified = await this.verifier.verifySig(
                 member,
                 signature,
                 approvedVerifier

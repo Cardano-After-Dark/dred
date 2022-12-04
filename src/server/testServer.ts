@@ -1,3 +1,5 @@
+import { expect, jest, test } from "@jest/globals";
+
 import { createServer, DredServer } from "./DredServer";
 import { Express } from "express";
 import { Server } from "http";
@@ -54,6 +56,6 @@ export async function testSetup() {
 
     const agent = supertest.agent(listener);
     const client = server.mkClient(); //new DredClient({ ...addr, insecure: true });
-    client.generateKey();
+    await client.generateKey();
     return { agent, app, server, client };
 }

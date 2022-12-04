@@ -72,13 +72,17 @@ export class DredClient {
             );
         return Promise.reject(bad);
     }
-    generateKey() {
-        const key = (this.identity = sign.keyPair());
+    async generateKey() {
+        if (this.identity) {
+            console.warn(`generateKey() already called; no-op duplicate call`);
+            return;
+        }
+        const key = (this.identity = await StringNacl.newKeyPair());
         this.pubKeyString = encodeBase64(key.publicKey);
         this.signer = new StringNacl(this.identity);
     }
 
-    signString(s: string): string {
+    async signString(s: string): Promise<string> {
         if (!this.identity || !this.signer)
             throw new Error(
                 `DredClient: can't sign() without a prior call to generateKey()`
@@ -87,7 +91,11 @@ export class DredClient {
         return this.signer.sign(s);
     }
 
-    verifySig(s: string, sigBase64: string, keyBase64: string): boolean {
+    async verifySig(
+        s: string,
+        sigBase64: string,
+        keyBase64: string
+    ): Promise<boolean> {
         if (!this.signer) {
             throw new Error(`DredClient: no signer; use generateKey() first`);
         }
@@ -121,7 +129,7 @@ export class DredClient {
                     `createChannel (encrypted: true): must specify member list and/or allowJoining: true`
                 );
             }
-            const signature = this.signer.sign(channelName);
+            const signature = await this.signString(channelName);
             options.owner = this.pubKeyString;
             options.signature = signature;
         }
@@ -167,7 +175,7 @@ export class DredClient {
                 body: JSON.stringify({
                     myId: this.pubKeyString,
                     member: memberKeyBase64,
-                    signature: this.signString(memberKeyBase64),
+                    signature: await this.signString(memberKeyBase64),
                 }),
             });
         } catch (err: any) {

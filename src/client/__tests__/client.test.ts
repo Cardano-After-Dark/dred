@@ -1,3 +1,5 @@
+import { expect, jest, test } from "@jest/globals";
+
 import { DredServer } from "../../server";
 import { DredClient } from "../../client";
 import { testSetup } from "../../server/testServer";
@@ -84,9 +86,6 @@ describe("Dred client", () => {
             ).rejects.toThrow(/generateKey/);
         });
         describe("after keygen:", () => {
-            beforeEach(async () => {
-                return client.generateKey();
-            });
             describe("createChannel", () => {
                 it("does createChannel() on server", async () => {
                     const serverMethod = jest.spyOn(server, "createChannel");

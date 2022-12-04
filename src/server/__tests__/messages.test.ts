@@ -1,3 +1,5 @@
+import { expect, jest, test } from "@jest/globals";
+
 import request, { SuperTestWithHost, Test } from "supertest";
 import { Express } from "express";
 
@@ -57,12 +59,12 @@ describe("channel messages", () => {
                     expect(inbound).toMatchObject(msg);
                     received += 1;
                 });
-                await asyncDelay(200);
+                await asyncDelay(20);
                 await client.postMessage(chan, msg);
-                await asyncDelay(200);
+                await asyncDelay(20);
 
                 await client.postMessage(chan, msg);
-                await asyncDelay(200);
+                await asyncDelay(20);
                 expect(received).toBe(2);
             });
 

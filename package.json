@@ -6,12 +6,12 @@
     "license": "MIT",
     "packageManager": "yarn@3.2.1",
     "scripts": {
-        "start": "scripts/setupEnvironment && ts-node-dev --respawn index.ts",
-        "start:debug": "scripts/setupEnvironment  && ts-node-dev --inspect --respawn index.ts",
-        "test": "scripts/setupEnvironment ; ENV_FILE=./config/.env.test jest --runInBand",
-        "testing": "scripts/setupEnvironment ; ENV_FILE=./config/.env.test jest --watch --runInBand",
-        "test:debug": "scripts/setupEnvironment ; JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --runInBand",
-        "testing:debug": "scripts/setupEnvironment ; JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --watch --runInBand"
+        "start": "scripts/setupEnvironment && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --respawn index.ts",
+        "start:debug": "scripts/setupEnvironment  && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --inspect --respawn index.ts",
+        "test": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' ENV_FILE=./config/.env.test jest --runInBand --detectOpenHandles",
+        "testing": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' ENV_FILE=./config/.env.test jest --watch --runInBand",
+        "test:debug": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --runInBand --detectOpenHandles",
+        "testing:debug": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --watch --runInBand"
     },
     "dependencies": {
         "@hearit-io/redis-channels": "^1.2.1",
@@ -22,7 +22,8 @@
         "ioredis": "^5.0.6",
         "node-fetch": "^2",
         "tweetnacl": "^1.0.3",
-        "tweetnacl-util": "^0.15.1"
+        "tweetnacl-util": "^0.15.1",
+        "watsign": "^0.1.8"
     },
     "devDependencies": {
         "@swc/cli": "^0.1.57",
@@ -31,13 +32,13 @@
         "@types/express": "^4.17.13",
         "@types/ioredis": "^4.28.10",
         "@types/jest": "^28.1.3",
-        "@types/node": "^18.0.0",
+        "@types/node": "^18.11.10",
         "@types/node-fetch": "^2.6.2",
         "@types/supertest": "^2.0.12",
-        "jest": "^28.1.1",
+        "jest": "29",
         "module-alias": "^2.2.2",
         "supertest": "^6.2.3",
-        "ts-jest": "^28.0.5",
+        "ts-jest": "^29.0.3",
         "ts-node": "^10.8.1",
         "ts-node-dev": "^2.0.0",
         "typescript": "^4.7.4"
