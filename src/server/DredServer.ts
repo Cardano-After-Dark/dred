@@ -241,6 +241,8 @@ export class DredServer {
         }
         //! the channel must be encrypted (non-encrypted channels are open by definition)
         const opts = await this.getChanOptions(channelId);
+
+        //! trying to join an expired channel produces an error
         if (opts.expiresAt && now > opts.expiresAt) {
             this.log(
                 `expiration '${opts.expiresAt.getTime() % 100000}, now '${
@@ -252,6 +254,7 @@ export class DredServer {
             });
             return next();
         }
+
         if (!opts.encrypted) {
             res.status(400).json({
                 error: "/channel/:id/join is not needed for non-encrypted channels",
@@ -264,18 +267,34 @@ export class DredServer {
             });
             return next();
         }
+        opts.members = opts.members || [];
+
+        //! non-owners cannot exceed the memberLimit (if configured)
+        let overMemberLimit =
+            opts.memberLimit && opts.members.length >= opts.memberLimit;
 
         let approvedVerifier;
         if (opts.owner == myId) {
-            this.log("owner-approved join");
+            //! the owner can join someone by pubKey, even if the memberLimit is reached
+            overMemberLimit = false;
             approvedVerifier = myId;
+
+            this.log("owner-approved join");
         } else if (
             "member" == opts.approveJoins &&
             (opts.members || []).includes(myId)
         ) {
+            //! a member can join someone by pubKey if approveJoins: member
             this.log("member-approved join");
             approvedVerifier = myId;
         } else if (opts.allowJoining) {
+            //! a non-member can join themself if allowJoining is true and approveJoins is "open"
+
+            //! todo: non-member joins are requests unless approveJoins = "open"
+
+            //! todo: join requests, when not open, are simple messages in the channel,
+            //!    which clients can read, prompting members or owner to issue an approval.
+
             this.log("self-join");
             approvedVerifier = myId;
         }
@@ -287,6 +306,17 @@ export class DredServer {
             });
             return next();
         }
+
+        if (opts.members.includes(member)) overMemberLimit = false;
+        if (overMemberLimit) {
+            console.log("over channel memberLimit");
+
+            res.status(403).json({
+                error: "channel is full",
+            });
+            return next();
+        }
+
         let verified, error;
         try {
             verified = await this.verifier.verifySig(
@@ -305,13 +335,6 @@ export class DredServer {
             return next();
         }
 
-        //! trying to join an expired channel produces an error
-        //! the owner can join someone by pubKey, even if the memberLimit is reached
-        //! non-owners cannot exceed the memberLimit (if configured)
-        //! a non-member can join themself if allowJoining is true
-        //! a member can join someone by pubKey if approveJoins: member
-
-        opts.members = opts.members || [];
         opts.members.push(member);
         await this.setChanOptions(channelId, opts);
 

@@ -326,7 +326,7 @@ describe("channels", () => {
                     const nonMember2 = server.mkClient();
                     await nonMember2.generateKey();
 
-                    const offset = 400;
+                    const offset = 200;
                     const nearFuture = new Date(new Date().getTime() + offset);
                     const channelName = "expiration";
                     await expect(
@@ -386,20 +386,73 @@ describe("channels", () => {
                     )
                 ).resolves.toMatchObject({ status: "joined" });
             });
-            describe("beyond memberLimit:", () => {
+            describe("inviting members beyond memberLimit:", () => {
                 // use allowJoining, approvJoins: member
-                it.todo(
-                    "can be added by owner"
-                    // async () => { }
-                );
-                it.todo(
-                    "joins fail for members"
-                    // async () => { }
-                );
-                it.todo(
-                    "joins fail for regular users"
-                    // async () => { }
-                );
+                it("can be added by owner", async () => {
+                    const channelName = "owner-joins-over-memberLimit";
+                    const member1 = server.mkClient();
+                    await member1.generateKey();
+
+                    await client.createChannel(channelName, {
+                        encrypted: true,
+                        memberLimit: 1,
+                        members: [
+                            client.pubKeyString as string,
+                            member1.pubKeyString as string,
+                        ],
+                    });
+
+                    const member2 = server.mkClient();
+                    await member2.generateKey();
+
+                    await expect(
+                        client.addMemberToChannel(
+                            channelName,
+                            member2.pubKeyString as string
+                        )
+                    ).resolves.toMatchObject({ status: "joined" });
+                });
+                it("joins fail for members", async () => {
+                    const channelName = "no-over-memberLimit";
+
+                    const member1 = server.mkClient();
+                    await member1.generateKey();
+
+                    const member2 = server.mkClient();
+                    await member2.generateKey();
+
+                    await client.createChannel(channelName, {
+                        encrypted: true,
+                        memberLimit: 1,
+                        approveJoins: "member",
+                        members: [
+                            client.pubKeyString as string,
+                            member1.pubKeyString as string,
+                            member2.pubKeyString as string,
+                        ],
+                    });
+
+                    //! adding an existing member 2 works even though the channel is over-limit,
+                    //  because they were already in the channel!
+                    // console.log("add already-existing member");
+                    await expect(
+                        member1.addMemberToChannel(
+                            channelName,
+                            member2.pubKeyString as string
+                        )
+                    ).resolves.toMatchObject({ status: "joined" });
+
+                    const member3 = server.mkClient();
+                    await member3.generateKey();
+
+                    // console.log("try to add new member");
+                    await expect(
+                        member1.addMemberToChannel(
+                            channelName,
+                            member3.pubKeyString as string
+                        )
+                    ).rejects.toThrow(/channel is full/);
+                });
             });
         });
     });

@@ -1,6 +1,6 @@
-import nacl from "tweetnacl";
-const { sign: slowSyncSign } = nacl;
-const { verify: slowSyncVerify } = slowSyncSign;
+// import nacl from "tweetnacl";
+// const { sign: slowSyncSign } = nacl;
+// const { verify: slowSyncVerify } = slowSyncSign;
 
 import util from "tweetnacl-util";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
