@@ -14,6 +14,7 @@ import { ChannelOptions } from "src/types/ChannelOptions";
 import nacl from "tweetnacl";
 const { sign } = nacl;
 import util from "tweetnacl-util";
+import { StringNacl } from "src/util/StringNacl";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
 const logging = parseInt(process.env.LOGGING || "0");
@@ -52,11 +53,13 @@ export class DredServer {
     producers: Map<string, any>;
     subscribers: Map<string, Set<Subscriber>>;
     options: Object;
+    verifier: StringNacl;
     constructor(options = {}) {
         this.log("+server with", { options });
         this.api = express();
         this.redis = this.setupRedis();
         this.listener = null;
+        this.verifier = new StringNacl();
 
         this.channelList = new RedisSet(redis, "channels");
         this.channelOptions = new RedisHash(
@@ -133,23 +136,31 @@ export class DredServer {
     createChannel: RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
         const options: ChannelOptions = req.body;
-        options.createdAt = new Date();
-
         const found = await this.channelList.has(channelId);
         if (found) {
             res.status(400).json({ error: "channel already exists" });
             return next();
         }
-        const {
+        let {
             encrypted,
             owner,
             members = [],
             allowJoining,
+            approveJoins,
             memberLimit,
             expiresAt,
             messageLifetime,
             signature,
         } = options;
+
+        expiresAt = expiresAt ? new Date(expiresAt) : undefined;
+        const now = new Date();
+        if (expiresAt && now > expiresAt) {
+            res.status(422).json({
+                error: "channel expiresAt is already in the past",
+            });
+            return next();
+        }
 
         // this.log("chan create");
         if (encrypted) {
@@ -176,9 +187,10 @@ export class DredServer {
             } catch (e: any) {
                 console.warn("failure to decode signature:", e.message);
             }
-            const verified = sig && pubKey && sign.open(sig, pubKey);
-            const verifiedStr = verified && encodeUTF8(verified);
-            if (!verified || verifiedStr !== channelId) {
+            const chanBuf = decodeUTF8(channelId);
+            const verified =
+                sig && pubKey && sign.detached.verify(chanBuf, sig, pubKey);
+            if (!verified) {
                 res.status(400).json({
                     error: "bad signature; use the result of sign(channelName)",
                 });
@@ -192,6 +204,7 @@ export class DredServer {
             owner,
             members,
             allowJoining,
+            approveJoins,
             memberLimit,
             expiresAt,
             messageLifetime,
@@ -205,7 +218,7 @@ export class DredServer {
         res.json({
             id: channelId,
             status: "created",
-            ...options,
+            ...opts,
         });
         next();
     };
@@ -226,18 +239,90 @@ export class DredServer {
 
     joinInChannel: RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
+        const { myId, member, signature } = req.body;
         const found = await this.channelList.has(channelId);
+
+        const now = new Date();
+
         if (!found) {
             res.status(400).json({ error: "invalid channel" });
             return next();
         }
         //! the channel must be encrypted (non-encrypted channels are open by definition)
+        const opts = await this.getChanOptions(channelId);
+        if (opts.expiresAt && now > opts.expiresAt) {
+            this.log(
+                `expiration '${opts.expiresAt.getTime() % 100000}, now '${
+                    now.getTime() % 100000
+                }`
+            );
+            res.status(422).json({
+                error: "this channel's expiresAt is already past",
+            });
+            return next();
+        }
+        if (!opts.encrypted) {
+            res.status(400).json({
+                error: "/channel/:id/join is not needed for non-encrypted channels",
+            });
+            return next();
+        }
+        if (!signature) {
+            res.status(400).json({
+                error: "missing required 'signature' field in body",
+            });
+            return next();
+        }
+
+        let approvedVerifier;
+        if (opts.owner == myId) {
+            this.log("owner-approved join");
+            approvedVerifier = myId;
+        } else if (
+            "member" == opts.approveJoins &&
+            (opts.members || []).includes(myId)
+        ) {
+            this.log("member-approved join");
+            approvedVerifier = myId;
+        } else if (opts.allowJoining) {
+            this.log("self-join");
+            approvedVerifier = myId;
+        }
+        if (!approvedVerifier) {
+            console.log("unauthorized");
+
+            res.status(403).json({
+                error: "unauthorized",
+            });
+            return next();
+        }
+        let verified, error;
+        try {
+            verified = this.verifier.verifySig(
+                member,
+                signature,
+                approvedVerifier
+            );
+            if (!verified) error = "verify failed";
+        } catch (e: any) {
+            error = e.message;
+        }
+        if (!verified) {
+            res.status(400).json({
+                error: `bad signature: ${error}`,
+            });
+            return next();
+        }
 
         //! trying to join an expired channel produces an error
         //! the owner can join someone by pubKey, even if the memberLimit is reached
         //! non-owners cannot exceed the memberLimit (if configured)
         //! a non-member can join themself if allowJoining is true
         //! a member can join someone by pubKey if approveJoins: member
+
+        opts.members = opts.members || [];
+        opts.members.push(member);
+        await this.setChanOptions(channelId, opts);
 
         //! if allowed, it returns a success indicator
         res.json({

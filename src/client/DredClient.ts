@@ -7,6 +7,7 @@ import { ndjsonStream } from "./betterJsonStream";
 import nacl from "tweetnacl";
 const { sign } = nacl;
 import util from "tweetnacl-util";
+import { StringNacl } from "src/util/StringNacl";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
 interface AddrDetails {
@@ -23,6 +24,7 @@ export class DredClient {
     serverPort: any;
     addrFamily: any;
     identity?: nacl.SignKeyPair;
+    signer?: StringNacl;
     pubKeyString?: string;
     insecure?: boolean;
     subscriptions: Map<string, Array<Subscriber>>;
@@ -45,7 +47,7 @@ export class DredClient {
         );
     }
 
-    async fetch(path: string, { parse = true, ...options }) {
+    async fetch(path: string, { parse = true, debug = false, ...options }) {
         const proto = this.insecure ? "http" : "https";
         let addr = this.serverAddress;
         if (addr == "::") addr = "localhost";
@@ -54,6 +56,7 @@ export class DredClient {
 
         const url = `${proto}://${addr}:${this.serverPort}${path}`;
         const result = await fetch(url, options);
+        if (debug) debugger;
         if (result.ok) {
             if (!parse) return result;
 
@@ -72,6 +75,24 @@ export class DredClient {
     generateKey() {
         const key = (this.identity = sign.keyPair());
         this.pubKeyString = encodeBase64(key.publicKey);
+        this.signer = new StringNacl(this.identity);
+    }
+
+    signString(s: string): string {
+        if (!this.identity || !this.signer)
+            throw new Error(
+                `DredClient: can't sign() without a prior call to generateKey()`
+            );
+
+        return this.signer.sign(s);
+    }
+
+    verifySig(s: string, sigBase64: string, keyBase64: string): boolean {
+        if (!this.signer) {
+            throw new Error(`DredClient: no signer; use generateKey() first`);
+        }
+
+        return this.signer.verifySig(s, sigBase64, keyBase64);
     }
 
     async createChannel(
@@ -90,7 +111,7 @@ export class DredClient {
             messageLifetime,
         } = options;
         if (encrypted) {
-            if (!this.identity) {
+            if (!this.identity || !this.signer) {
                 throw new Error(
                     `createChannel: encrypted channel requires a prior call to generateKey()`
                 );
@@ -100,22 +121,57 @@ export class DredClient {
                     `createChannel (encrypted: true): must specify member list and/or allowJoining: true`
                 );
             }
-            const chanBuf = decodeUTF8(channelName);
-            const signature = encodeBase64(
-                sign(chanBuf, this.identity.secretKey)
-            );
+            const signature = this.signer.sign(channelName);
             options.owner = this.pubKeyString;
             options.signature = signature;
         }
-
+        const body = JSON.stringify(options);
         try {
             return await this.fetch(`/channel/${channelName}`, {
                 method: "POST",
-                body: JSON.stringify(options),
-                headers: { accept: "application/json" },
+                body,
+                headers: {
+                    "content-type": "application/json",
+                    accept: "application/json",
+                },
             });
         } catch (err: any) {
             this.log("createChannel at server failed:", err.message || err);
+            throw new Error(err.error || err);
+        }
+    }
+
+    async joinChannel(channelName: string) {
+        if (!this.pubKeyString) {
+            throw new Error(
+                `joinChannel: requires a prior call to generateKey()`
+            );
+        }
+        return this.addMemberToChannel(channelName, this.pubKeyString);
+    }
+
+    async addMemberToChannel(channelName, memberKeyBase64: string) {
+        if (!this.pubKeyString) {
+            throw new Error(
+                `joinChannel: requires a prior call to generateKey()`
+            );
+        }
+        try {
+            return await this.fetch(`/channel/${channelName}/join`, {
+                method: "POST",
+                // debug: true,
+                headers: {
+                    "content-type": "application/json",
+                    accept: "application/json",
+                },
+                body: JSON.stringify({
+                    myId: this.pubKeyString,
+                    member: memberKeyBase64,
+                    signature: this.signString(memberKeyBase64),
+                }),
+            });
+        } catch (err: any) {
+            this.log("join-channel at server failed:", err.message || err);
             throw new Error(err.error || err);
         }
     }

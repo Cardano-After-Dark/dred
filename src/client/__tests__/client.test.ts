@@ -61,12 +61,12 @@ describe("Dred client", () => {
                     expect(inbound).toMatchObject(msg);
                     received += 1;
                 });
-                await asyncDelay(200);
+                await asyncDelay(20);
                 await client.postMessage(chan, msg);
-                await asyncDelay(200);
+                await asyncDelay(20);
 
                 await client.postMessage(chan, msg);
-                await asyncDelay(200);
+                await asyncDelay(20);
 
                 expect(received).toBe(2);
             });
@@ -76,8 +76,9 @@ describe("Dred client", () => {
     describe("encrypted chan:", () => {
         it("requires key creation", async () => {
             const chanName = "client1";
+            const c = server.mkClient();
             await expect(
-                client.createChannel(chanName, {
+                c.createChannel(chanName, {
                     encrypted: true,
                 })
             ).rejects.toThrow(/generateKey/);

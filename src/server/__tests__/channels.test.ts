@@ -10,6 +10,20 @@ const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
 import { testSetup } from "../testServer";
 import { DredServer } from "src/server/DredServer";
+import { asyncDelay } from "src/util/asyncDelay";
+
+// This test uses a blend of direct** requests to the Dred server (to prove
+//   each key function working at a HTTP level), along with some requests
+//   using the DredClient class (to set up contextual scenarios more efficiently
+//   than would be possible with the direct-request approach).
+//
+//  ** using supertest / superagent
+//
+//   DredClient requests are also sometimes used for more efficiently
+//   testing server-side functions, but these SHOULD only be used
+//   after having triggered those same essential functions using a lower-
+//   level, dependency-free** code-path, in order to exercise variations
+//   more efficiently.
 
 describe("channels", () => {
     let agent: SuperTestWithHost<Test>;
@@ -114,7 +128,9 @@ describe("channels", () => {
         it("fills the creator's key into channel's 'owner' setting", async () => {
             const channelName = "enc-chan-creation";
             const chanBuf = decodeUTF8(channelName);
-            const signature = encodeBase64(sign(chanBuf, key.secretKey));
+            const signature = encodeBase64(
+                sign.detached(chanBuf, key.secretKey)
+            );
             await agent
                 .post(`/channel/${channelName}`)
                 .send({
@@ -128,10 +144,12 @@ describe("channels", () => {
             const options = await server.getChanOptions(channelName);
             expect(options.owner).toBe(pubKeyString);
         });
-        it("doesn't allow extra keys in channel options", async () => {
+        it("fills encrypted option and doesn't allow extra keys in channel options", async () => {
             const channelName = "enc-chan-creation-no-extra-stuff";
             const chanBuf = decodeUTF8(channelName);
-            const signature = encodeBase64(sign(chanBuf, key.secretKey));
+            const signature = encodeBase64(
+                sign.detached(chanBuf, key.secretKey)
+            );
             await agent
                 .post(`/channel/${channelName}`)
                 .send({
@@ -144,6 +162,7 @@ describe("channels", () => {
                 .expect(200);
 
             const options = (await server.getChanOptions(channelName)) as any;
+            expect(options.encrypted).toBeTruthy();
             expect(options.randomValue).toBeUndefined();
         });
         it("triggers channelCreated method on server object", async () => {
@@ -174,24 +193,206 @@ describe("channels", () => {
                 new Date().getTime() - opts.createdAt.getTime()
             ).toBeLessThan(200);
         });
-        describe("members", () => {
-            it.todo(
-                "allows owner to join others with their pubKey"
-                // async () => {}
-            );
-            it.todo(
-                "allows members to join others with approveJoins: 'members' "
-                // async () => {}
-            );
+        describe("joining members", () => {
+            it("allows owner to join others with their pubKey and an approval signature", async () => {
+                client.generateKey();
+                const channelName = "owner-joins-someone";
+                await client.createChannel(channelName, {
+                    encrypted: true,
+                    members: [client.pubKeyString as string],
+                });
+
+                const c2 = server.mkClient();
+                c2.generateKey();
+
+                // console.log("missing-sig");
+                const missingSig = await agent
+                    .post(`/channel/${channelName}/join`)
+                    .send({
+                        myId: client.pubKeyString,
+                        member: c2.pubKeyString,
+                    })
+                    .expect("Content-Type", /json/)
+                    .expect(400);
+
+                expect(missingSig.text).toMatch(
+                    /missing required 'signature' field in body/
+                );
+
+                // console.log("bad-sig");
+                const badSig = await agent
+                    .post(`/channel/${channelName}/join`)
+                    .send({
+                        myId: client.pubKeyString,
+                        member: c2.pubKeyString,
+                        signature: "badSig",
+                    })
+                    .expect("Content-Type", /json/)
+                    .expect(400);
+                expect(badSig.text).toMatch(/bad signature/);
+
+                // console.log("wrong-sig");
+                let signature = c2.signString(c2.pubKeyString as string);
+                let wrongSig = await agent
+                    .post(`/channel/${channelName}/join`)
+                    .send({
+                        myId: client.pubKeyString,
+                        member: c2.pubKeyString,
+                        signature,
+                    })
+                    .expect("Content-Type", /json/)
+                    .expect(400);
+                expect(wrongSig.text).toMatch(/bad signature/);
+
+                // console.log("good-sig");
+                signature = client.signString(c2.pubKeyString as string);
+                await agent
+                    .post(`/channel/${channelName}/join`)
+                    .send({
+                        myId: client.pubKeyString,
+                        member: c2.pubKeyString,
+                        signature,
+                    })
+                    .expect("Content-Type", /json/)
+                    .expect(200);
+
+                const opts = await server.getChanOptions(channelName);
+                if (!opts.members) throw new Error(`make ts happy`);
+                expect(
+                    opts.members.find((x) => c2.pubKeyString === x)
+                ).toBeDefined();
+            });
             describe("requests", () => {
-                it.todo(
-                    "denies join requests by default"
-                    // async () => { }
-                );
-                it.todo(
-                    "allows any join requests to be added if allowJoining is enabled"
-                    // async () => {}
-                );
+                it("denies join requests by default", async () => {
+                    client.generateKey();
+                    const channelName = "no-joins-by-default";
+                    await client.createChannel(channelName, {
+                        encrypted: true,
+                        members: [client.pubKeyString as string],
+                    });
+
+                    const nonMember = server.mkClient();
+                    nonMember.generateKey();
+                    let signature = nonMember.signString(
+                        nonMember.pubKeyString as string
+                    );
+                    const denyJoin = await agent
+                        .post(`/channel/${channelName}/join`)
+                        .send({
+                            myId: nonMember.pubKeyString,
+                            member: nonMember.pubKeyString,
+                            signature,
+                        })
+                        .expect("Content-Type", /json/)
+                        .expect(403);
+                    expect(denyJoin.text).toMatch(/unauthorized/);
+                });
+                it("allows any join requests to be added if allowJoining is enabled", async () => {
+                    client.generateKey();
+                    const channelName = "allowJoining";
+                    await client.createChannel(channelName, {
+                        encrypted: true,
+                        members: [client.pubKeyString as string],
+                        allowJoining: true,
+                    });
+
+                    const nonMember = server.mkClient();
+                    nonMember.generateKey();
+
+                    let signature = nonMember.signString(
+                        nonMember.pubKeyString as string
+                    );
+                    await agent
+                        .post(`/channel/${channelName}/join`)
+                        .send({
+                            myId: nonMember.pubKeyString,
+                            member: nonMember.pubKeyString,
+                            signature,
+                        })
+                        .expect("Content-Type", /json/)
+                        .expect(200);
+                });
+            });
+            describe("channel expiration", () => {
+                it("doesn't allow creating an expired channel", async () => {
+                    const past = new Date();
+                    const channelName = "expiration";
+                    await expect(
+                        client.createChannel(channelName, {
+                            encrypted: true,
+                            members: [client.pubKeyString as string],
+                            expiresAt: past,
+                        })
+                    ).rejects.toThrow(/already in the past/);
+                });
+
+                it("doesn't allow joining an expired channel", async () => {
+                    const nonMember = server.mkClient();
+                    nonMember.generateKey();
+
+                    const nonMember2 = server.mkClient();
+                    nonMember2.generateKey();
+
+                    const offset = 400;
+                    const nearFuture = new Date(new Date().getTime() + offset);
+                    const channelName = "expiration";
+                    await expect(
+                        client.createChannel(channelName, {
+                            encrypted: true,
+                            members: [client.pubKeyString as string],
+                            expiresAt: nearFuture,
+                        })
+                    ).resolves.toMatchObject({
+                        status: "created",
+                    });
+
+                    // console.log("join - shouldn't yet be expired");
+                    await expect(
+                        client.addMemberToChannel(
+                            channelName,
+                            nonMember.pubKeyString as string
+                        )
+                    ).resolves.toMatchObject({ status: "joined" });
+
+                    await asyncDelay(offset);
+                    // console.log("join - should now be expired");
+                    await expect(
+                        client.addMemberToChannel(
+                            channelName,
+                            nonMember.pubKeyString as string
+                        )
+                    ).rejects.toThrow(/expiresAt is already past/);
+                });
+            });
+            it("allows members to join others with approveJoins: 'member' ", async () => {
+                client.generateKey();
+                const channelName = "member-joins-others";
+                const member = server.mkClient();
+                member.generateKey();
+
+                const nonMember1 = server.mkClient();
+                nonMember1.generateKey();
+
+                const nonMember2 = server.mkClient();
+                nonMember2.generateKey();
+
+                await client.createChannel(channelName, {
+                    encrypted: true,
+                    members: [member.pubKeyString as string],
+                    approveJoins: "member",
+                });
+                await expect(
+                    nonMember1.addMemberToChannel(
+                        channelName,
+                        nonMember2.pubKeyString as string
+                    )
+                ).rejects.toThrow(/unauthorized/);
+                await expect(
+                    member.addMemberToChannel(
+                        channelName,
+                        nonMember2.pubKeyString as string
+                    )
+                ).resolves.toMatchObject({ status: "joined" });
             });
             describe("beyond memberLimit:", () => {
                 // use allowJoining, approvJoins: member

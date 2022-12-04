@@ -54,5 +54,6 @@ export async function testSetup() {
 
     const agent = supertest.agent(listener);
     const client = server.mkClient(); //new DredClient({ ...addr, insecure: true });
+    client.generateKey();
     return { agent, app, server, client };
 }
