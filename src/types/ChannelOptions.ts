@@ -4,12 +4,13 @@ export type ChannelOptions = {
     encrypted?: boolean;
     owner?: ChannelMember;
     members?: Array<ChannelMember>;
+    requests?: Array<ChannelMember>;
 
     //! it can allow members to (request) joining the channel
     allowJoining?: boolean;
 
     //! it can require join-requests to be approved by channel-owner or by any other member
-    approveJoins?: "owner" | "member";
+    approveJoins?: "owner" | "member" | "open";
 
     //! it can limit members to a maximum count
     memberLimit?: number;

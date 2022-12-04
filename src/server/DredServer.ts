@@ -28,7 +28,8 @@ function setupRedis() {
 
 const optionsSerializer: ValueAdapter<ChannelOptions> = {
     toRedis(v: ChannelOptions) {
-        if ("member" !== v.approveJoins) v.approveJoins = "owner";
+        if ("member" !== v.approveJoins && "open" !== v.approveJoins)
+            v.approveJoins = "owner";
 
         return JSONValueAdapter.toRedis(v);
     },
@@ -145,6 +146,7 @@ export class DredServer {
             encrypted,
             owner,
             members = [],
+            requests = [],
             allowJoining,
             approveJoins,
             memberLimit,
@@ -194,6 +196,7 @@ export class DredServer {
             encrypted,
             owner,
             members,
+            requests,
             allowJoining,
             approveJoins,
             memberLimit,
@@ -268,11 +271,13 @@ export class DredServer {
             return next();
         }
         opts.members = opts.members || [];
+        opts.requests = opts.requests || [];
 
         //! non-owners cannot exceed the memberLimit (if configured)
         let overMemberLimit =
             opts.memberLimit && opts.members.length >= opts.memberLimit;
 
+        let requestOnly = false;
         let approvedVerifier;
         if (opts.owner == myId) {
             //! the owner can join someone by pubKey, even if the memberLimit is reached
@@ -289,16 +294,26 @@ export class DredServer {
             approvedVerifier = myId;
         } else if (opts.allowJoining) {
             //! a non-member can join themself if allowJoining is true and approveJoins is "open"
+            if (member !== myId) {
+                res.status(400).json({
+                    error: "can't invite others",
+                });
+                return next();
+            }
 
-            //! todo: non-member joins are requests unless approveJoins = "open"
-
-            //! todo: join requests, when not open, are simple messages in the channel,
-            //!    which clients can read, prompting members or owner to issue an approval.
-
-            this.log("self-join");
-            approvedVerifier = myId;
+            //! non-member joins are requests unless approveJoins = "open"
+            if ("open" !== opts.approveJoins) {
+                requestOnly = true;
+                opts.requests.push(myId);
+                approvedVerifier = myId;
+                //!!! todo: join requests, when not open, are simple messages in the channel,
+                //!    which clients can read, prompting members or owner to issue an approval.
+            } else {
+                this.log("self-join");
+                approvedVerifier = myId;
+            }
         }
-        if (!approvedVerifier) {
+        if (!approvedVerifier && !requestOnly) {
             console.log("unauthorized");
 
             res.status(403).json({
@@ -335,7 +350,11 @@ export class DredServer {
             return next();
         }
 
-        opts.members.push(member);
+        if (requestOnly) {
+            opts.requests.push(myId);
+        } else {
+            opts.members.push(member);
+        }
         await this.setChanOptions(channelId, opts);
 
         //! if allowed, it returns a success indicator

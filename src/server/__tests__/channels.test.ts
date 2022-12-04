@@ -256,7 +256,7 @@ describe("channels", () => {
                     opts.members.find((x) => c2.pubKeyString === x)
                 ).toBeDefined();
             });
-            describe("requests", () => {
+            describe("join-requests from non-members", () => {
                 it("denies join requests by default", async () => {
                     const channelName = "no-joins-by-default";
                     await client.createChannel(channelName, {
@@ -281,12 +281,35 @@ describe("channels", () => {
                         .expect(403);
                     expect(denyJoin.text).toMatch(/unauthorized/);
                 });
-                it("allows any join requests to be added if allowJoining is enabled", async () => {
-                    const channelName = "allowJoining";
+                it("denies non-member requests to add anyone else", async () => {
+                    const channelName = "noPublicInvitingOthers";
                     await client.createChannel(channelName, {
                         encrypted: true,
                         members: [client.pubKeyString as string],
                         allowJoining: true,
+                        approveJoins: "open",
+                    });
+
+                    const nonMember = server.mkClient();
+                    await nonMember.generateKey();
+
+                    const nonMember2 = server.mkClient();
+                    await nonMember2.generateKey();
+
+                    await expect(
+                        nonMember.addMemberToChannel(
+                            channelName,
+                            nonMember2.pubKeyString as string
+                        )
+                    ).rejects.toThrow(/can't invite others/);
+                });
+                it("allows join REQUESTS if allowJoining is enabled and approveJoins isn't 'open'", async () => {
+                    const channelName = "allowJoinRequest";
+                    await client.createChannel(channelName, {
+                        encrypted: true,
+                        members: [client.pubKeyString as string],
+                        allowJoining: true,
+                        approveJoins: "member",
                     });
 
                     const nonMember = server.mkClient();
@@ -304,6 +327,54 @@ describe("channels", () => {
                         })
                         .expect("Content-Type", /json/)
                         .expect(200);
+
+                    const settings = await server.getChanOptions(channelName);
+                    const requests = settings.requests || [];
+                    const members = settings.members || [];
+                    expect(
+                        members.includes(nonMember.pubKeyString as string)
+                    ).toBeFalsy();
+                    expect(
+                        requests.includes(nonMember.pubKeyString as string)
+                    ).toBeTruthy();
+                });
+                it.todo(
+                    "posts a 'join-request' message to the channel to notify members of pending requests"
+                );
+                it("allows joining directly if allowJoining and approveJoins: 'open'", async () => {
+                    const channelName = "allowJoinRequest";
+                    await client.createChannel(channelName, {
+                        encrypted: true,
+                        members: [client.pubKeyString as string],
+                        allowJoining: true,
+                        approveJoins: "open",
+                    });
+
+                    const newMember = server.mkClient();
+                    await newMember.generateKey();
+
+                    let signature = await newMember.signString(
+                        newMember.pubKeyString as string
+                    );
+                    await agent
+                        .post(`/channel/${channelName}/join`)
+                        .send({
+                            myId: newMember.pubKeyString,
+                            member: newMember.pubKeyString,
+                            signature,
+                        })
+                        .expect("Content-Type", /json/)
+                        .expect(200);
+
+                    const settings = await server.getChanOptions(channelName);
+                    const requests = settings.requests || [];
+                    const members = settings.members || [];
+                    expect(
+                        members.includes(newMember.pubKeyString as string)
+                    ).toBeTruthy();
+                    expect(
+                        requests.includes(newMember.pubKeyString as string)
+                    ).toBeFalsy();
                 });
             });
             describe("channel expiration", () => {
