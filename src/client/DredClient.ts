@@ -20,6 +20,7 @@ interface AddrDetails {
 const logging = parseInt(process.env.LOGGING || "");
 export class DredClient {
     _log: undefined | Function;
+    _warn: undefined | Function;
     serverAddress: any;
     serverPort: any;
     addrFamily: any;
@@ -44,6 +45,12 @@ export class DredClient {
         return (
             this._log ||
             (this._log = logging ? console.log.bind(console) : () => {})
+        );
+    }
+    get warn() {
+        return (
+            this._warn ||
+            (this._warn = logging ? console.warn.bind(console) : () => {})
         );
     }
 
@@ -79,7 +86,7 @@ export class DredClient {
         }
         const key = (this.identity = await StringNacl.newKeyPair());
         this.pubKeyString = encodeBase64(key.publicKey);
-        this.signer = new StringNacl(this.identity);
+        this.signer = new StringNacl(this.identity, this);
     }
 
     async signString(s: string): Promise<string> {

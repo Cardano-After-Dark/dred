@@ -57,7 +57,7 @@ export class DredServer {
         this.api = express();
         this.redis = this.setupRedis();
         this.listener = null;
-        this.verifier = new StringNacl();
+        this.verifier = new StringNacl(undefined, this);
 
         this.channelList = new RedisSet(redis, "channels");
         this.channelOptions = new RedisHash(
@@ -110,6 +110,9 @@ export class DredServer {
 
     log(...args: any[]) {
         logging && console.log(...args);
+    }
+    warn(...args: any[]) {
+        logging && console.warn(...args);
     }
 
     setupExpressHandlers() {
@@ -314,7 +317,7 @@ export class DredServer {
             }
         }
         if (!approvedVerifier && !requestOnly) {
-            console.log("unauthorized");
+            this.warn("unauthorized");
 
             res.status(403).json({
                 error: "unauthorized",
@@ -324,7 +327,7 @@ export class DredServer {
 
         if (opts.members.includes(member)) overMemberLimit = false;
         if (overMemberLimit) {
-            console.log("over channel memberLimit");
+            this.warn("over channel memberLimit");
 
             res.status(403).json({
                 error: "channel is full",

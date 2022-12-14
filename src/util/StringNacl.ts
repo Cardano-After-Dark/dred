@@ -6,11 +6,17 @@ import util from "tweetnacl-util";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 import { newKeyPair, sign, verify } from "watsign";
 
+type LoggerType = {
+    log: Function;
+    warn: Function;
+};
 export class StringNacl {
     static newKeyPair = newKeyPair;
     identity?: nacl.SignKeyPair;
-    constructor(keyPair?: nacl.SignKeyPair) {
+    logger: LoggerType;
+    constructor(keyPair?: nacl.SignKeyPair, logger: LoggerType = console) {
         this.identity = keyPair;
+        this.logger = logger;
     }
     async sign(s: string): Promise<string> {
         if (!this.identity)
@@ -30,19 +36,19 @@ export class StringNacl {
         try {
             strBuf = decodeUTF8(s);
         } catch (e: any) {
-            console.warn("failure to decode string:", e.message);
+            this.logger.warn("failure to decode string:", e.message);
             return false;
         }
         try {
             sigBuf = decodeBase64(sigBase64);
         } catch (e: any) {
-            console.warn("failure to decode signature:", e.message);
+            this.logger.warn("failure to decode signature:", e.message);
             return false;
         }
         try {
             keyBuf = decodeBase64(keyBase64);
         } catch (e: any) {
-            console.warn("failure to decode pubkey:", e.message);
+            this.logger.warn("failure to decode pubkey:", e.message);
             return false;
         }
         return verify(strBuf, sigBuf, keyBuf);
