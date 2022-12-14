@@ -13,6 +13,11 @@ const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 import { testSetup } from "../testServer";
 import { DredServer } from "src/server/DredServer";
 import { asyncDelay } from "src/util/asyncDelay";
+import {
+    Key,
+    KeyExchanger,
+    KeyExchangerDerivationProof,
+} from "src/KeyExchanger";
 
 // This test uses a blend of direct** requests to the Dred server (to prove
 //   each key function working at a HTTP level), along with some requests
@@ -281,6 +286,7 @@ describe("channels", () => {
                         .expect(403);
                     expect(denyJoin.text).toMatch(/unauthorized/);
                 });
+
                 it("denies non-member requests to add anyone else", async () => {
                     const channelName = "noPublicInvitingOthers";
                     await client.createChannel(channelName, {
@@ -303,6 +309,7 @@ describe("channels", () => {
                         )
                     ).rejects.toThrow(/can't invite others/);
                 });
+
                 it("allows join REQUESTS if allowJoining is enabled and approveJoins isn't 'open'", async () => {
                     const channelName = "allowJoinRequest";
                     await client.createChannel(channelName, {
@@ -525,6 +532,18 @@ describe("channels", () => {
                     ).rejects.toThrow(/channel is full/);
                 });
             });
+        });
+
+        describe("key exchange", () => {
+            it.todo(
+                "emits a clear-text key-exchange message on the channel when members are added"
+            ); //, async () => {
+            it.todo(
+                "forwards kEx messages with limited keys (->messages or -> peers test)"
+            ); //, async () => {
+            it.todo(
+                "continues processing messages that used the prior key (->messages or -> peers test)"
+            ); //, async () => {
         });
     });
 });
