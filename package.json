@@ -15,7 +15,6 @@
         "testing:debug": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --watch --runInBand"
     },
     "dependencies": {
-        "@hearit-io/redis-channels": "^1.2.1",
         "body-parser": "^1.20.0",
         "can-namespace": "^1.0.0",
         "cross-fetch": "^3.1.5",

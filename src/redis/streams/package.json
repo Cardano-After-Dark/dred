@@ -10,8 +10,9 @@
     "test": " npm run unit",
     "test:ci": "npm run lint && npm run unit -- --cov --coverage-report=lcovonly",
     "test:report": "npm run lint && npm run unit:report",
-    "unit": "tap --100 --timeout=0 ./test/*.test.js ./test/cleanup/*.test.js",
-    "test:debug": "tap --jobs=1 --node-arg=--inspect-brk=9392 --100 --timeout=0 ./test/*.test.js ./test/cleanup/*.test.js",
+    "unit": "tap --timeout=0 ./test/*.test.js ./test/cleanup/*.test.js",
+    "test:debug": "tap --jobs=1 --node-arg=--inspect-brk=9392  --timeout=0 ./test/*.test.js ./test/cleanup/*.test.js",
+    "test:debug:one": "tap --jobs=1 --node-arg=--inspect-brk=9392  --timeout=0 --test-regex ",
     "unit:junit": "tap-mocha-reporter xunit < out.tap > test/junit-testresults.xml",
     "unit:report": "tap -J ./test/*.test.js ./test/cleanup/*.test.js --cov --coverage-report=html --coverage-report=cobertura | tee out.tap"
   },

@@ -52,15 +52,29 @@ const {
 
 const { RedisChannelsError } = require("./errors.js");
 
+function redisFieldsToHash(a) {
+    //! converts a flat list of keys into a hash of the keys & primitive values.
+    const result = {};
+    for (let i = 0; i < a.length; i += 2) {
+        result[a[i]] = a[i + 1];
+    }
+    return result;
+}
+function hashToRedisFields(h) {
+    // converts a hash into a flat list of keys and primitive values
+    const r = [];
+    for (const [k, v] of Object.entries(h)) {
+        r.push(k, v);
+    }
+    return r;
+}
+
 /*
  * Usage example:
  *
  * const {RedisChannels} = require('@hearit-io/redis-channel')
- *
  * const channels = new RedisChannels()
- *
  * const tunnel = await channels.use('group')
- *
  * await channels.subscribe(tunnel)
  *
  * async function process(tunnel) {
@@ -76,14 +90,10 @@ const { RedisChannelsError } = require("./errors.js");
  * });
  *
  * await channels.produce(tunnel, 'message')
- *
  * await channels.unsubscribe(tunnel)
  *
  * await channels.delete('group')
- *
  * await channels.cleanup()
- *
- *
  */
 // ----------------------------------------------------------------------------|
 class RedisChannels {
@@ -250,9 +260,7 @@ class RedisChannels {
 
             await this._nonBlockRedisClient.zincrby([this._keyZset, 1, set]);
 
-            return {
-                [tun.KEY]: keyStream,
-            };
+            return {[tun.KEY]: keyStream };
         } catch (error) {
             this._log.error("Use error: %o", error);
             throw new RedisChannelsError(
@@ -325,13 +333,13 @@ class RedisChannels {
      *
      * tunnel - a tunnel object to use.
      *
-     * team - a name (string) of the consumer group. If not specified a
-     *        consumer name will be used instead.
+     * team - a name (string) of the consumer group. If not specified, every
+     *        consumer consumer will be its own unique team
      *
      * consumer - a unique consumer name (string) within a team . If not specified
      *            a UUID version 4 will be generated.
      *
-     * A subscription is necessary only for a consumer not for a producer.
+     * A subscription is necessary only for a consumer, not for a producer.
      *
      * On error throws an exception.
      */
@@ -402,22 +410,21 @@ class RedisChannels {
                     "Can not unsubscribe, no valid tunnel object"
                 );
             }
-            const field = {
-                [origin.CONTEXT]: context.UNSUBSCRIBE,
-                [origin.CONTENT]: {
-                    [tun.TEAM]: tunnel[tun.TEAM],
-                    [tun.CONSUMER]: tunnel[tun.CONSUMER],
-                },
-            };
+            const { [tun.TEAM]: team, [tun.CONSUMER]: consumer } = tunnel;
 
+            const fields = {
+                _action: "unsubscribe",
+                _team: team,
+                _consumer: consumer,
+            };
+            const f = hashToRedisFields(fields)
             await this._nonBlockRedisClient.xadd([
                 tunnel[tun.KEY],
                 "MAXLEN",
                 "~",
                 this._overflow,
                 "*",
-                JSON.stringify(field),
-                "",
+                ...f
             ]);
         } catch (error) {
             this._log.error("Unsubscribe error: %o", error);
@@ -432,41 +439,51 @@ class RedisChannels {
     }
 
     /*
-     * Produces a message in a channel with a give type.
+     * Produces a message in a channel with a given tag for the type of message.
      *
      * Parameters:
      *
      * tunnel - a tunnel object (result form use)
      *
-     * message - a string, message to produce.
+     * message - a string, message to produce.  Stored as a 'data'  key in the 
+     *          RedisStreams message.
      *
-     * type - a string, can be used to distinguish between message sources.
-     *        Default value is 'all'.
+     * options: an object.  its keys and values are included in the RedisStreams 
+     *          message.  
+     *
+     * options.type - a string, can be used to distinguish between message sources.
+     *        Default value is 'all'.  Stored as _type in RedisStreams.
      *
      * Returns the id of the produced message
      *
      * On error throws an error
      */
     // --------------------------------------------------------------------------|
-    async produce(tunnel, message, type = defaultOriginType) {
-        try {
-            const field = {
-                [origin.CONTEXT]: context.ORIGIN,
-                [origin.CONTENT]: type,
-            };
+    async produce(
+        tunnel,
+        message,
+        { type = defaultOriginType, ...appFields } = {}
+    ) {
 
+        try {
+            const data = message;
+            const redisFields = hashToRedisFields({
+                _type: type,
+                _data: data,
+                ...appFields,
+            });
             const id = await this._nonBlockRedisClient.xadd([
                 tunnel[tun.KEY],
                 "MAXLEN",
                 "~",
                 this._overflow,
                 "*",
-                JSON.stringify(field),
-                message,
+                ...redisFields,
             ]);
             return id;
         } catch (error) {
-            this._log.error("Produce error: %o", error);
+            this._log.error("Produce error:", error.stack || error.message || JSON.stringify(error));
+            debugger
             throw new RedisChannelsError(
                 "Can not produce in the tunnel: " + tunnel,
                 error
@@ -478,7 +495,9 @@ class RedisChannels {
      * Consumes messages for a given type from a tun.
      *
      * It is an asynchronous iterator, returns an array of messages.
-     * Every message is an object {id: <string>, data: <string>}.
+     * Every message is an object {id: <string>, data: <string>, ...appAttrs},
+     * where appAttrs are any additional keys and values provided in arg3 
+     * to the produce() method
      *
      * Parameters:
      *
@@ -537,32 +556,23 @@ class RedisChannels {
      * which should be recieved by all outher consumers within the same team.
      */
     // --------------------------------------------------------------------------|
+
     async *consume(
         tunnel,
-        type = defaultOriginType,
+        targetType = defaultOriginType,
         count = maxMessageStreamConsumePerRun,
         timeout = blockStreamConsumerTimeOutMs,
         fromId = ">",
         messageOnTimeOut = false
     ) {
         try {
-            let unsubscribe = false;
-            /*
-      let pendingEntries = false
-      */
-
+            let unsubscribing = false;
             let currentId = fromId;
             let lastId;
 
             if (fromId === ">" && this._workInTeam === false) {
                 currentId = "$";
             }
-
-            /*
-      if (currentId !== '>' && this._workInTeam) {
-        pendingEntries = true
-      }
-      */
 
             while (true) {
                 const result = [];
@@ -624,80 +634,75 @@ class RedisChannels {
           currentId = '>'
         }
         */
+
                 for (const stream of data) {
-                    for (const event of stream[1]) {
-                        const id = event[0];
-                        const messages = event[1];
-                        for (let i = 0; i < messages.length; i += 2) {
-                            const field = JSON.parse(messages[i]);
-                            const message = messages[i + 1];
-                            if (this._workInTeam === false) {
-                                currentId = id;
-                            }
-                            /*
+                    for (const [id, f] of stream[1]) {
+                        const fields = redisFieldsToHash(f);
+
+                        const {
+                            _type,
+                            _data,
+                            _team,
+                            _action,
+                            _consumer,
+                            ...appAttrs
+                        } = fields;
+
+                        const unsubscribe = ("unsubscribe" === _action);
+                        if (_action && !unsubscribe) throw new Error(`bad _action value in message`);
+                        if (_team && !unsubscribe) throw new Error(`_team is only valid for _action=unsubscribe messages`);
+                        if (_consumer && !unsubscribe) throw new Error(`_consumer is only valid for _action=unsubscribe messages`);
+
+                        if (this._workInTeam === false) {
+                            currentId = id;
+                        }
+                        /*
               if (pendingEntries) {
                 currentId = id
               }
               */
 
-                            // --------------------------------------------------------------------------|
+                        //!!! todo: convert to typescript
+                        // --------------------------------------------------------------------------|
+                        if (!unsubscribe && _type === targetType) {
+                            result.push({ id, data:_data, ...appAttrs });
+                            lastId = id;
+                        } else if (unsubscribe) {
                             if (
-                                field[origin.CONTEXT] === context.ORIGIN &&
-                                field[origin.CONTENT] === type
+                                _team === tunnel.team &&
+                                _consumer === tunnel.consumer
                             ) {
-                                result.push({
-                                    [msg.ID]: id,
-                                    [msg.DATA]: message,
-                                });
-                                lastId = id;
-                            } else if (
-                                field[origin.CONTEXT] === context.UNSUBSCRIBE
-                            ) {
-                                if (
-                                    field[origin.CONTENT][tun.TEAM] ===
-                                        tunnel[tun.TEAM] &&
-                                    field[origin.CONTENT][tun.CONSUMER] ===
-                                        tunnel[tun.CONSUMER]
-                                ) {
-                                    // Delete a unsubscribe message with a common nonblocking
-                                    // Redis client.
-                                    // Multiple unsubscribe messages are possible
-                                    // for the same consumer and a team!!!
-                                    await this._nonBlockRedisClient.xdel([
-                                        tunnel[tun.KEY],
-                                        id,
-                                    ]);
+                                // Delete a unsubscribe message with a common nonblocking
+                                // Redis client.
+                                // Multiple unsubscribe messages are possible
+                                // for the same consumer and a team!!!
+                                await this._nonBlockRedisClient.xdel(
+                                    [tunnel.key],
+                                    id
+                                );
 
-                                    if (unsubscribe === false) {
-                                        // Cleanup a redis consumer and a group
-                                        await this._deleteRedisConsumerAndGroup(
-                                            tunnel
-                                        );
-                                        unsubscribe = true;
-                                    }
-                                } else {
-                                    // Create a message with an unsubscribe context for the right
-                                    // consumer (only in a team work case).
-                                    if (this._workInTeam) {
-                                        const toUnsubscribeTunnel = {
-                                            [tun.TEAM]:
-                                                field[origin.CONTENT][tun.TEAM],
-                                            [tun.CONSUMER]:
-                                                field[origin.CONTENT][
-                                                    tun.CONSUMER
-                                                ],
-                                            [tun.KEY]: tunnel[tun.KEY],
-                                        };
-                                        await this.unsubscribe(
-                                            toUnsubscribeTunnel
-                                        );
-                                    }
+                                if (!unsubscribing) {
+                                    // Cleanup a redis consumer and a group
+                                    await this._deleteRedisConsumerAndGroup(
+                                        tunnel
+                                    );
+                                    unsubscribing = true;
+                                }
+                            } else {
+                                // Create a message with an unsubscribe context for the right
+                                // consumer (only in a team work case).
+                                if (this._workInTeam) {
+                                    await this.unsubscribe({
+                                        team: _team,
+                                        consumer: _consumer,
+                                        key: tunnel.key,
+                                    });
                                 }
                             }
                         }
                     }
                 }
-                if (unsubscribe) {
+                if (unsubscribing) {
                     return result;
                 }
                 yield result;

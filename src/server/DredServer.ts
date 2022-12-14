@@ -7,7 +7,7 @@ import Redis from "ioredis";
 import { DredClient } from "../client";
 import { RedisSet } from "../redis/RedisSet";
 //@ts-ignore
-import { RedisChannels } from "@hearit-io/redis-channels";
+import { RedisChannels } from "src/redis/streams";
 import { Subscriber } from "../Subscriber";
 import { JSONValueAdapter, RedisHash, ValueAdapter } from "src/redis/RedisHash";
 import { ChannelOptions } from "src/types/ChannelOptions";
@@ -68,7 +68,8 @@ export class DredServer {
         this.producers = new Map();
         this.subscribers = new Map();
 
-        this.channelConn = new RedisChannels();
+        //!!! todo: allows the application name to override 'dred' setting in channel names created in Redis
+        this.channelConn = new RedisChannels({application: "dred"});
         this.channelConn._log.error = console.error.bind(console);
         this.options = options;
 

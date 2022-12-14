@@ -122,7 +122,7 @@ async function main () {
         let isProduced = false
         for (const g in t.context.groups) {
           await t.context.channels.produce(t.context.groups[g], i)
-          await t.context.channels.produce(t.context.groups[g], i, 'mytype')
+          await t.context.channels.produce(t.context.groups[g], i, {type: 'mytype'})
           await t.pass('Message : ' + i + ' with a specific type.')
           isProduced = true
         }

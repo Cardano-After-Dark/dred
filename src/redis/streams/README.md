@@ -229,7 +229,7 @@ Creates a `tunnel` Object required to do any further operation with the channel 
 
 Returns a **Promise** to a `tunnel` Object.
 
-#### channels.produce(tunnel, message[, type = 'all'])
+#### channels.produce(tunnel, message[, {type = 'all'}])
 
 Produces a message to a channel.
 
@@ -237,7 +237,8 @@ Produces a message to a channel.
 | --- | --- | --- | --- |
 | tunnel | Object | | A tunnel required to peform any operation with the channel |
 | message | string | | A message to produce |
-| type | string | 'all' | Identifies a message source (origination) |
+| options | object | {} | additional options.  any settings other than 'type' are passed as top-level field/value pairs to Redix XADD |
+| options.type | string | 'all' | Identifies a message source (origination) |
 
 Returns a **Promise**.
 
