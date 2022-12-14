@@ -1,0 +1,57 @@
+{
+  "name": "@hearit-io/redis-channels",
+  "version": "1.2.1",
+  "description": "Redis pre-sharded chanells implementation",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "coverage": "nyc --reporter=html --reporter=text npm run unit",
+    "lint": "npx standard --verbose | npx snazzy",
+    "test": "npm run lint && npm run unit",
+    "test:ci": "npm run lint && npm run unit -- --cov --coverage-report=lcovonly",
+    "test:report": "npm run lint && npm run unit:report",
+    "unit": "tap --100 --timeout=0 ./test/*.test.js ./test/cleanup/*.test.js",
+    "unit:junit": "tap-mocha-reporter xunit < out.tap > test/junit-testresults.xml",
+    "unit:report": "tap -J ./test/*.test.js ./test/cleanup/*.test.js --cov --coverage-report=html --coverage-report=cobertura | tee out.tap"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hearit-io/redis-channels.git"
+  },
+  "keywords": [
+    "redis",
+    "cluster",
+    "pre-sharded",
+    "channel",
+    "stream",
+    "message broker",
+    "produce",
+    "consume",
+    "pub/sub",
+    "websocket",
+    "SSE",
+    "eventsource"
+  ],
+  "author": "Emil Usunov <emil@hearit.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hearit-io/redis-channels/issues"
+  },
+  "homepage": "https://github.com/hearit-io/redis-channels#readme",
+  "dependencies": {
+    "abstract-logging": "^2.0.1",
+    "ioredis": "^4.27.9",
+    "uuid": "^8.3.2"
+  },
+  "engines": {
+    "node": ">=10.16.0"
+  },
+  "devDependencies": {
+    "coveralls": "^3.1.1",
+    "nyc": "^15.1.0",
+    "snazzy": "^9.0.0",
+    "standard": "^16.0.3",
+    "tap": "^15.0.9",
+    "tap-mocha-reporter": "^5.0.1"
+  }
+}

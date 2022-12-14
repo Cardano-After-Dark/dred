@@ -11,6 +11,7 @@ const config: Config.InitialOptions = {
     transform: {
         "^.+\\.(t|j)sx?$": "@swc/jest",
     },
+    modulePathIgnorePatterns: ["<rootDir>/src/redis/streams/"],
     moduleNameMapper: {
         "^@platform/(.*)": "<rootDir>/platform/server/$1",
         "^src/(.*)": "<rootDir>/src/$1",

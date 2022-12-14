@@ -5,15 +5,13 @@ Objective: support a network of nodes sharing many event channel where clients c
 
 ## Status
 
-Early.
+In development.  This code has not been audited for security.
 
 ## Running
 
 Docker is needed for running Redis.
 
 `yarn ; yarn start`
-
-Make sure you run this once before running tests.  It ensures that a Docker container is started for Redis.
 
 Note that a `data` directory for tests is created in 
    ../dredDb
@@ -36,7 +34,13 @@ Configure chrome://inspect to listen on port 9230 and on the same screen, use De
 
 `yarn testing:debug` for continuous debugging
 
+## License
+
+TODO: dual-licensing, with non-commercial use under terms of a suitable source-available license, with commercial use constrained to paying customers.  
+
+Some code in this package is forked from @hearit-io/redis-channels and modified under the terms of its MIT license.  Accordingly, THOSE code modifications are licensed under the same MIT licensing terms.  See src/redis/streams/LICENSE.
+
 ## Support
 
-This project is in early alpha and is not suitable for production use.  
+This project is in early alpha and is not suitable for production use.  Support is provided on a best-effort, collaborative basis.
 

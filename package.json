@@ -9,6 +9,7 @@
         "start": "scripts/setupEnvironment && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --respawn index.ts",
         "start:debug": "scripts/setupEnvironment  && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --inspect --respawn index.ts",
         "test": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' ENV_FILE=./config/.env.test jest --runInBand --detectOpenHandles",
+        "test:streams": "cd src/redis/streams/ ; yarn ; yarn test",
         "testing": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' ENV_FILE=./config/.env.test jest --watch --runInBand",
         "test:debug": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --runInBand --detectOpenHandles",
         "testing:debug": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --watch --runInBand"
