@@ -13,4 +13,7 @@ export type EncryptedMessage = {
     content: {
         [key: PubKey]: string;
     };
-};
+    //! it supports group-targeted content and/or direct-message content, 
+    //   simply by encrypting the data to the appropriate pubkeys and 
+    //   labeling the ciphertext with those pubkeys in the 'content' structure.
+ };

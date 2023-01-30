@@ -1,12 +1,9 @@
 "use strict";
 
-import { Response } from "express";
-
 import { ReadableStream } from "node:stream/web";
 
 /*exported ndjsonStream*/
 // forked from can-ndjson-stream because its error handling is sub-par.
-import namespace from "can-namespace";
 
 export function ndjsonStream(responseBody) {
     // For cancellation

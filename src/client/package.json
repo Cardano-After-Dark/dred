@@ -1,0 +1,70 @@
+{
+    "name": "dred-client",
+    "version": "0.0.1",
+    "description": "Distributed event streams for web3 (client)",
+    "type": "module",
+    "exports": {
+        ".": {
+            "module": "./dist/dred-client.mjs",
+            "browser": "./dist/dred-client.mjs",
+            "types": "./dist/dred-client.mjs",
+            "node": "./dist/dred-client-nodejs.mjs",
+            "default": "./dist/dred-client.js"
+        },
+        "./node": {
+            "module": "./dist/dred-client-nodejs.mjs",
+            "types": "./dist/dred-client-nodejs.mjs",
+            "default": "./dist/dred-client-nodejs.js"
+        }
+    },
+    "__notes": [
+        "a) Entries 'main' and 'types' are for legacy purposes.  ",
+        "   The 'exports' entry is the primary resolution path for modern versions of node.",
+        "b) Pointing 'types' to the .js/.mjs file is the recommended way ",
+        "   to indicate that typescript should resolve the .d.ts file in dist/",
+        "c) the './node' section of imports provides a nodejs-specific build, ",
+        "    as a compatible server-side alternative to the default browser build in './'"
+    ],
+    "main": "./dist/dred-client.js",
+    "module": "./dist/dred-client.mjs",
+    "types": "./dist/dred-client.js",
+    "license": "MIT",
+    "packageManager": "yarn@3.2.1",
+    "scripts": {
+        "app": "cd sampleApp ; vite",
+        "preview": "vite preview",
+        "clean": "rm dist/*",
+        "build": "FORCE_COLOR=1 concurrently --names \"browser,nodejs\" -c \"bgBlue.bold,bgMagenta.bold\" \"rollup -c rollup.browser.config.js\"  \"rollup -c rollup.nodejs.config.js\"",
+        "build:watch": "concurrently --names \"browser,nodejs\" -c \"bgBlue.bold,bgMagenta.bold\" \"rollup -c rollup.browser.config.js -w\" \"rollup -c  rollup.nodejs.config.js -w\"  "
+    },
+    "dependencies": {
+        "@rollup/plugin-alias": "^4.0.3",
+        "body-parser": "^1.20.0",
+        "cross-fetch": "^3.1.5",
+        "node-fetch": "^2",
+        "tweetnacl": "^1.0.3",
+        "tweetnacl-util": "^0.15.1",
+        "watsign": "^0.1.8"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.4.3",
+        "@babel/plugin-proposal-class-properties": "^7.4.0",
+        "@babel/preset-env": "^7.4.3",
+        "@preact/preset-vite": "^2.4.0",
+        "@rollup/plugin-node-resolve": "^15.0.1",
+        "@swc/cli": "^0.1.57",
+        "@swc/core": "^1.2.204",
+        "@types/node": "^18.11.10",
+        "@types/node-fetch": "^2.6.2",
+        "concurrently": "^7.6.0",
+        "esbuild": "^0.16.10",
+        "module-alias": "^2.2.2",
+        "preact": "^10.11.3",
+        "rollup": "3",
+        "rollup-plugin-dts": "^5.1.0",
+        "rollup-plugin-esbuild": "^5.0.0",
+        "rollup-plugin-node-externals": "^5.0.3",
+        "typescript": "^4.9.3",
+        "vite": "^4.0.0"
+    }
+}

@@ -3,7 +3,8 @@ import { ChannelOptions } from "src/types/ChannelOptions";
 import { fromPlatformFetchBody } from "../../platform/server/ReadableStream";
 import { Subscriber } from "../Subscriber";
 import { ndjsonStream } from "./betterJsonStream";
-
+import type { Response } from "cross-fetch";
+import type { ReadableStreamDefaultReadResult } from "node:stream/web";
 import nacl from "tweetnacl";
 const { sign } = nacl;
 import util from "tweetnacl-util";
@@ -21,9 +22,17 @@ const logging = parseInt(process.env.LOGGING || "");
 export class DredClient {
     _log: undefined | Function;
     _warn: undefined | Function;
-    serverAddress: any;
-    serverPort: any;
-    addrFamily: any;
+    // serviceDiscovery: string;
+    neighborhoodId: string = "cardano-after-dark";
+    neighborhoodContractAddress = "9bef...";
+    // neighborhoodServers: Array<{
+    //     serverAddress: any;
+    //     serverPort: any;
+    //     addrFamily: any;
+    // }>;
+    serverAddress: string;
+    serverPort: number;
+    addrFamily: string;
     identity?: nacl.SignKeyPair;
     signer?: StringNacl;
     pubKeyString?: string;
@@ -165,7 +174,7 @@ export class DredClient {
         return this.addMemberToChannel(channelName, this.pubKeyString);
     }
 
-    async addMemberToChannel(channelName, memberKeyBase64: string) {
+    async addMemberToChannel(channelName: string, memberKeyBase64: string) {
         if (!this.pubKeyString) {
             throw new Error(
                 `joinChannel: requires a prior call to generateKey()`
@@ -191,8 +200,10 @@ export class DredClient {
         }
     }
 
+    
     async postMessage(channelName: string, message: Object) {
         this.log("posting message ", message);
+        
         return await this.fetch(`/channel/${channelName}/message`, {
             method: "POST",
             body: JSON.stringify(message),
@@ -212,7 +223,7 @@ export class DredClient {
         }
     }
 
-    subscribeChannel(chan, notify): Subscriber {
+    subscribeChannel(chan : string, notify: Function): Subscriber {
         let subs = this.subscriptions.get(chan);
         if (!subs) {
             subs = [];
@@ -232,7 +243,7 @@ export class DredClient {
         };
         subs.push(subscription);
 
-        let aborted;
+        let aborted = false;
         this.fetch(`/channel/${chan}/subscribe`, {
             parse: false,
             signal: abortSignal,
@@ -256,12 +267,12 @@ export class DredClient {
         return subscription;
     }
 
-    async monitorSubscription(chan, callback, response) {
+    async monitorSubscription(chan : string, callback : Function, response : Response) {
         if (!response.ok) throw new Error(`failure in subscribe...`);
 
         const compatResponse = fromPlatformFetchBody(response.body);
         const reader = ndjsonStream(compatResponse).getReader();
-        let e,
+        let event : undefined | ReadableStreamDefaultReadResult<{value: string, done: boolean}>,
             connected = true;
 
         const detectReadError = (e: Error) => {
@@ -272,11 +283,15 @@ export class DredClient {
                 this.log(`fetch error during read; see debugger - `, e);
                 debugger;
             }
-            return false;
+            return undefined;
         };
 
-        while (connected && (e = await reader.read().catch(detectReadError))) {
-            const { value, done } = e;
+        while (connected) {
+            event  = await reader.read().catch(detectReadError);
+            if (!event) break;
+            if (!connected) break;
+            
+            const { value, done } = event;
             this.log(`client: ${chan} <- event: `, value);
             callback(value);
         }

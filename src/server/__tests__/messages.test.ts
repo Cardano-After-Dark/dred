@@ -4,8 +4,8 @@ import request, { SuperTestWithHost, Test } from "supertest";
 import { Express } from "express";
 
 import { testSetup } from "../testServer";
-import { DredClient } from "../../client";
-import { DredServer } from "../../server";
+import { DredClient } from "../../client/DredClient";
+import { DredServer } from "../../server/DredServer";
 import { asyncDelay } from "../../util/asyncDelay";
 
 describe("channel messages", () => {

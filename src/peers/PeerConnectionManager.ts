@@ -167,6 +167,7 @@ export abstract class PeerConnectionManager<T extends Peer<any>> {
                     this.newState("underconnected");
                     const msg = `Connected to only ${successCount} peers, out of ${thrs.minimal} needed for convergence`;
                     console.error(msg);
+                    //!!! todo: consider: in development, we should fake a cycle through all possible states
                     rejectMe(
                         new Error(msg, {
                             cause: {

@@ -2,9 +2,10 @@ import express, { Express, RequestHandler, Response } from "express";
 import bodyParser from "body-parser";
 // var bodyParser = require("body-parser");
 
+
 import { Server } from "http";
 import Redis from "ioredis";
-import { DredClient } from "../client";
+import { DredClient } from "../client/DredClient";
 import { RedisSet } from "../redis/RedisSet";
 //@ts-ignore
 import { RedisChannels } from "src/redis/streams";
@@ -135,6 +136,10 @@ export class DredServer {
         });
         this.api.get("/channel/:channelId/subscribe", (...args) => {
             this.subscribeToChannel(...args);
+        });
+        this.api.get("/channels/subscribe", (...args) => {
+            //! it allows clients to subscribe to many channels and receive notification about updates in any of them
+            // this.subscribeToChannel(...args);
         });
     }
 

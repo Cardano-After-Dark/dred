@@ -1,0 +1,10 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "paths": {
+            "@platform/*": ["../../platform/browser"],
+            "src/*": ["../../src/*"]
+        }
+    },
+    "include": ["index.ts"]
+}

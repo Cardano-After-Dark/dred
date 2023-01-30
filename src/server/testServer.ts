@@ -5,7 +5,7 @@ import { Express } from "express";
 import { Server } from "http";
 import supertest from "supertest";
 import Redis from "ioredis";
-import { DredClient } from "../client";
+import { DredClient } from "src/client";
 import { AddressInfo } from "net";
 import { asyncDelay } from "src/util/asyncDelay";
 

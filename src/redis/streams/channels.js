@@ -28,6 +28,8 @@
 // ============================================================================|
 "use strict";
 
+//!!! todo: update ioredis dependency to a more recent version
+
 const { v4: uuidv4 } = require("uuid");
 const Redis = require("ioredis");
 

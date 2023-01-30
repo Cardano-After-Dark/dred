@@ -98,6 +98,28 @@ describe("Dred client", () => {
                     expect(serverMethod).toHaveBeenCalled();
                 });
 
+                describe("subscribeChannel", () => {
+                    it("triggers the subscriber's callback when messages are posted", async () => {
+                        const otherClient = server.mkClient();
+                        const chan = "client4subscribeCallback";
+                        const msg = { roses: "red", violets: "blue" };
+                        await client.createChannel(chan);
+
+                        let received = 0;
+                        otherClient.subscribeChannel(chan, (inbound) => {
+                            expect(inbound).toMatchObject(msg);
+                            received += 1;
+                        });
+                        await asyncDelay(20);
+                        await client.postMessage(chan, msg);
+                        await asyncDelay(20);
+
+                        await client.postMessage(chan, msg);
+                        await asyncDelay(20);
+
+                        expect(received).toBe(2);
+                    });
+                });
             });
         });
     });

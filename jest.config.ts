@@ -1,6 +1,9 @@
+/** xxx @xxxtype { import('@types/jest').Config.InitialOptions } */
 /** @type { import('@jest/types').Config.InitialOptions } */
+
 /** xxx @xxxtype {import('ts-jest/dist/types').InitialOptionsTsJest} */
 import type { Config } from "@jest/types";
+// import { Config } from "jest";
 
 // Sync object
 const config: Config.InitialOptions = {
