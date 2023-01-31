@@ -1,0 +1,13 @@
+packages:
+  - 'src/client'  
+  - 'src/client/sampleApp'
+  - '.'
+
+  # works better with yarn used in that subdir:
+  # - 'src/redis/streams'
+  
+  # exclude packages that are inside test directories
+  - '!**/test/**'
+  - '!**/__tests__/**'
+  
+

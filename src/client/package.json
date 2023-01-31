@@ -32,6 +32,7 @@
     "packageManager": "yarn@3.2.1",
     "scripts": {
         "app": "cd sampleApp ; vite",
+        "dev": "cd sampleApp; vite",
         "preview": "vite preview",
         "clean": "rm dist/*",
         "build": "FORCE_COLOR=1 concurrently --names \"browser,nodejs\" -c \"bgBlue.bold,bgMagenta.bold\" \"rollup -c rollup.browser.config.js\"  \"rollup -c rollup.nodejs.config.js\"",

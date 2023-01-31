@@ -32,10 +32,6 @@
 // ============================================================================|
 'use strict'
 
-const { RedisChannels } = require('./channels.js')
-const { RedisChannelsError } = require('./errors.js')
+export { RedisChannels } from './channels.js';
+export { RedisChannelsError } from './errors.js';
 
-module.exports = {
-  RedisChannels,
-  RedisChannelsError
-}

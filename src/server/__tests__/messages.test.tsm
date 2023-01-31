@@ -1,11 +1,14 @@
-import { expect, jest, test } from "@jest/globals";
+/// <reference types="jest" />
+//@xxts-expect-error
+// import { expect, jest, test } from "@jest/globals";
+// why, jest... why?? ^^^  or maybe @typescript or @vscode ...
 
 import request, { SuperTestWithHost, Test } from "supertest";
 import { Express } from "express";
 
 import { testSetup } from "../testServer";
 import { DredClient } from "../../client/DredClient";
-import { DredServer } from "../../server/DredServer";
+import { DredServer } from "../DredServer";
 import { asyncDelay } from "../../util/asyncDelay";
 
 describe("channel messages", () => {

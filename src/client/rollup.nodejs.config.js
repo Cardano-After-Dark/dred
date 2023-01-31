@@ -3,7 +3,7 @@ import dts from "rollup-plugin-dts";
 import esbuild from 'rollup-plugin-esbuild';
 import externals from "rollup-plugin-node-externals";
 import resolve from "@rollup/plugin-node-resolve";
-import { modulePaths, twoModulesOut } from "./rollup.lib.js";
+import { modulePaths, twoModulesOut } from "../../rollup.lib.js";
 
 import packageJson from "./package.json" assert { type: 'json' };
 const name = packageJson.main.replace(/\.js$/, "");
@@ -59,7 +59,7 @@ export default [
                 define: {
                     __VERSION__: JSON.stringify(packageJson.version),
                 },
-                tsconfig: "tsconfig.server.json", // default
+                tsconfig: "tsconfig.server.json", 
                 // Add extra loaders
                 loaders: {
                     // Add .json files support

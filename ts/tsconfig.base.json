@@ -10,6 +10,7 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
+        "experimentalDecorators": true,
         "types": ["node", "jest"],
         "noImplicitAny": false
     },

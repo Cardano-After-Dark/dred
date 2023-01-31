@@ -28,7 +28,7 @@
 // ----------------------------------------------------------------------------|
 
 // Separators used to compose Redis keys and indexes.
-const sep = {
+export const sep = {
   HASH: '#',
   STREAM: '|',
   INDEX: ':',
@@ -51,7 +51,7 @@ Object.freeze(sep)
 // update the mapping.
 // ----------------------------------------------------------------------------|
 
-const shards32 = [
+export const shards32 = [
   '{10}', '{113}', '{21}', '{3}',
   '{61}', '{72}', '{50}', '{43}',
   '{11}', '{112}', '{20}', '{2}',
@@ -62,7 +62,7 @@ const shards32 = [
   '{62}', '{71}', '{53}', '{40}'
 ]
 
-const shards64 = [
+export const shards64 = [
   '{10}', '{18}', '{113}', '{342}', '{29}', '{21}',
   '{3}', '{122}', '{69}', '{61}', '{72}', '{162}',
   '{50}', '{58}', '{153}', '{43}', '{11}', '{19}',
@@ -76,19 +76,19 @@ const shards64 = [
   '{53}', '{143}', '{48}', '{40}'
 ]
 
-const shards = {
+export const shards = {
   32: shards32,
   64: shards64
 }
 Object.freeze(shards)
 
-const origin = {
+export const origin = {
   CONTEXT: 'context',
   CONTENT: 'content'
 }
 Object.freeze(origin)
 
-const context = {
+export const context = {
   UNSUBSCRIBE: 'unsubscribe',
   ORIGIN: 'origin'
 }
@@ -99,7 +99,7 @@ Object.freeze(context)
 // ----------------------------------------------------------------------------|
 // Property names used in the option properites.
 //
-const opt = {
+export const opt = {
   // Channels options
   CHANNELS: 'channels',
   LOG: 'log',
@@ -116,7 +116,7 @@ const opt = {
 }
 Object.freeze(opt)
 
-const tun = {
+export const tun = {
   TEAM: 'team',
   CONNECTION: 'connection',
   CONSUMER: 'consumer',
@@ -124,7 +124,7 @@ const tun = {
 }
 Object.freeze(tun)
 
-const msg = {
+export const msg = {
   ID: 'id',
   DATA: 'data'
 }
@@ -132,7 +132,7 @@ Object.freeze(msg)
 
 // ----------------------------------------------------------------------------|
 // Key parts used in the pre-sharded mapping (hash and sorted sets).
-const pre = {
+export const pre = {
   KEYS: 'keys',
   SHARDS: 'shards'
 }
@@ -141,46 +141,28 @@ Object.freeze(pre)
 //
 // The maximum number of elements in a stream before overflow (overwrite).
 //
-const overflowStreamElemNumber = 100
+export const overflowStreamElemNumber = 100
 
 //
 // Consumer block time out in milliseconds (used in XREADGROUP).
 //
-const blockStreamConsumerTimeOutMs = 10000
+export const blockStreamConsumerTimeOutMs = 10000
 
 //
 // The maximum number of elements to consume in one run (used in XREADGROUP).
 //
-const maxMessageStreamConsumePerRun = 100
+export const maxMessageStreamConsumePerRun = 100
 
 //
 // Defaults
 //
-const defaultAppName = 'app'
+export const defaultAppName = 'app'
 
-const defaultVersion = 1
+export const defaultVersion = 1
 
-const defaultSlotsNumb = 32
+export const defaultSlotsNumb = 32
 
-const defaultSchema = 'channels'
+export const defaultSchema = 'channels'
 
-const defaultOriginType = 'all'
+export const defaultOriginType = 'all'
 
-module.exports = {
-  sep,
-  opt,
-  pre,
-  tun,
-  msg,
-  origin,
-  shards,
-  context,
-  defaultSchema,
-  defaultAppName,
-  defaultVersion,
-  defaultSlotsNumb,
-  defaultOriginType,
-  overflowStreamElemNumber,
-  blockStreamConsumerTimeOutMs,
-  maxMessageStreamConsumePerRun
-}

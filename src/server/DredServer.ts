@@ -1,24 +1,30 @@
-import express, { Express, RequestHandler, Response } from "express";
+//@ts-check
+
+// import express, {  RequestHandler, Express, Response } from "express";
+import express from "express";
+// import type {  RequestHandler } from "express-serve-static-core";
+// import type Express from "express";
+// Express, Express.RequestHandler, Response
+
 import bodyParser from "body-parser";
 // var bodyParser = require("body-parser");
-
 
 import { Server } from "http";
 import Redis from "ioredis";
 import { DredClient } from "../client/DredClient";
 import { RedisSet } from "../redis/RedisSet";
 //@ts-ignore
-import { RedisChannels } from "src/redis/streams";
+import { RedisChannels } from "../redis/streams";
 import { Subscriber } from "../Subscriber";
-import { JSONValueAdapter, RedisHash, ValueAdapter } from "src/redis/RedisHash";
-import { ChannelOptions } from "src/types/ChannelOptions";
+import { JSONValueAdapter, RedisHash, ValueAdapter } from "../redis/RedisHash";
+import { ChannelOptions } from "../types/ChannelOptions";
 
-import { StringNacl } from "src/util/StringNacl";
+import { StringNacl } from "../util/StringNacl";
 
 const logging = parseInt(process.env.LOGGING || "0");
 
 const redis = new Redis();
-export interface ExpressWithRedis extends Express {
+export interface ExpressWithRedis extends express.Application {
     redis: null | typeof Redis;
 }
 
@@ -43,7 +49,7 @@ const optionsSerializer: ValueAdapter<ChannelOptions> = {
     },
 };
 export class DredServer {
-    api: Express;
+    api: express.Application;
     redis: Redis;
     channelConn: RedisChannels;
     listener: null | Server; // http.Server from node types
@@ -56,6 +62,7 @@ export class DredServer {
     constructor(options = {}) {
         this.log("+server with", { options });
         this.api = express();
+        const t= express();
         this.redis = this.setupRedis();
         this.listener = null;
         this.verifier = new StringNacl(undefined, this);
@@ -143,7 +150,7 @@ export class DredServer {
         });
     }
 
-    createChannel: RequestHandler = async (req, res, next) => {
+    createChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
         const options: ChannelOptions = req.body;
         const found = await this.channelList.has(channelId);
@@ -240,7 +247,7 @@ export class DredServer {
         await this.channelOptions.set(channelName, options);
     }
 
-    joinInChannel: RequestHandler = async (req, res, next) => {
+    joinInChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
         const { myId, member, signature } = req.body;
         const found = await this.channelList.has(channelId);
@@ -383,7 +390,7 @@ export class DredServer {
         return producer;
     }
 
-    postMessageInChannel: RequestHandler = async (req, res, next) => {
+    postMessageInChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
         const found = await this.channelList.has(channelId);
         if (!found) {
@@ -410,7 +417,7 @@ export class DredServer {
     get subscribeTimeout() {
         return 10000;
     }
-    subscribeToChannel: RequestHandler = async (req, res, next) => {
+    subscribeToChannel: express.RequestHandler = async (req, res, next) => {
         let cancelled = false;
 
         function sendUpdate(json: Object) {

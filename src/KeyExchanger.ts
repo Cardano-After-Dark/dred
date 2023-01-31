@@ -136,7 +136,7 @@ export class KeyExchanger {
         const derivations: Array<KeyExchDerivationEntry> = this
             .partialDerivation as any;
 
-        let intermediateSecret: Key, intermediatePublic: Key;
+        let intermediateSecret: Key | null = null, intermediatePublic: Key;
         if ("kex3" === this._name) debugger;
         if (this.seedKey) {
             ({ secretKey: intermediateSecret, publicKey: intermediatePublic } =
@@ -199,15 +199,17 @@ export class KeyExchanger {
             intermediatePublic = computedNextKeyPair?.publicKey;
             this.exchangeAtOffset = 1 + i;
         }
+        if (!intermediateSecret) throw new Error(`partial derivation didn't work`);
+        
         this.sharedSecret = intermediateSecret;
     }
     logDerivation(de: KeyExchDerivationEntry, ns: Key) {
         const i = de.offset;
-        console.log(
-            `${this._name} - pub ${de.partialPubKey[0]},${de.partialPubKey[1]} @${i}\n` +
-                " ".repeat(this._name.length) +
-                `priv ${ns[0]},${ns[1]}`
-        );
+        // console.log(
+        //     `${this._name} - pub ${de.partialPubKey[0]},${de.partialPubKey[1]} @${i}\n` +
+        //         " ".repeat(this._name.length) +
+        //         `priv ${ns[0]},${ns[1]}`
+        // );
     }
     notifyKeyProgress() {
         const { partialDerivation, sharedSecret } = this;

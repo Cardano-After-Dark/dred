@@ -1,10 +1,13 @@
 {
     "extends": "./ts/tsconfig.base",
     "compilerOptions": {
+        "experimentalDecorators": true,
         "baseUrl": ".",
         "paths": {
             "@platform/*": ["platform/server/*"],
             "src/*": ["src/*"]
         }
-    }
+    },
+    "include": [ "**/*.ts", "**/*.js" ],
+    "exclude": [ "src/client/sampleApp", "**/node_modules/" ]
 }

@@ -1,9 +1,12 @@
+// @ts-expect-error
 import { expect, jest, test } from "@jest/globals";
 
-import { DredServer } from "../../server";
-import { DredClient } from "../../client";
+import { DredServer } from "../../server/DredServer";
+import { DredClient } from "../../client/DredClient";
 import { testSetup } from "../../server/testServer";
 import { asyncDelay } from "../../util/asyncDelay";
+
+import type {JsonMessagePayload} from "src/types/JsonMessagePayload";
 
 describe("Dred client", () => {
     let server: DredServer, agent, client: DredClient;
@@ -24,6 +27,7 @@ describe("Dred client", () => {
             it("throws any error json returned in a server error", async () => {
                 const serverMethod = jest
                     .spyOn(server, "createChannel")
+                    //@ts-expect-error
                     .mockImplementation((req, res, next) => {
                         res.status(400).json({ error: "some error" });
                         next();
@@ -59,7 +63,7 @@ describe("Dred client", () => {
 
                 let received = 0;
 
-                otherClient.subscribeChannel(chan, (inbound) => {
+                otherClient.subscribeChannel(chan, (inbound : JsonMessagePayload) => {
                     expect(inbound).toMatchObject(msg);
                     received += 1;
                 });
@@ -106,7 +110,7 @@ describe("Dred client", () => {
                         await client.createChannel(chan);
 
                         let received = 0;
-                        otherClient.subscribeChannel(chan, (inbound) => {
+                        otherClient.subscribeChannel(chan, (inbound : JsonMessagePayload ) => {
                             expect(inbound).toMatchObject(msg);
                             received += 1;
                         });

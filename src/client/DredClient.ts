@@ -8,7 +8,7 @@ import type { ReadableStreamDefaultReadResult } from "node:stream/web";
 import nacl from "tweetnacl";
 const { sign } = nacl;
 import util from "tweetnacl-util";
-import { StringNacl } from "src/util/StringNacl";
+import { StringNacl } from "../util/StringNacl";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
 interface AddrDetails {

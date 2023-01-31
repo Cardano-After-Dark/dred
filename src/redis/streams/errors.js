@@ -22,7 +22,7 @@
 // ============================================================================|
 'use strict'
 
-class RedisChannelsError extends Error {
+export class RedisChannelsError extends Error {
   constructor (message, error = null) {
     super(message)
     this.error = error
@@ -30,4 +30,3 @@ class RedisChannelsError extends Error {
   }
 }
 
-module.exports = { RedisChannelsError }

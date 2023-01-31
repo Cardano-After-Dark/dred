@@ -1,4 +1,4 @@
-import { expect, jest, test } from "@jest/globals";
+// import { expect, jest, test } from "@jest/globals";
 
 describe("peer connections", () => {
     it.todo("uses on-chain registration to discover peers");

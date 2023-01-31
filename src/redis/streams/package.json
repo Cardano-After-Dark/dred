@@ -2,8 +2,8 @@
   "name": "@hearit-io/redis-channels",
   "version": "1.2.1",
   "description": "Redis pre-sharded chanells implementation",
-  "main": "index.js",
-  "type": "commonjs",
+  "main": "index.mjs",
+  "type": "module",
   "scripts": {
     "coverage": "nyc --reporter=html --reporter=text npm run unit",
     "lint": "npx standard --verbose | npx snazzy",

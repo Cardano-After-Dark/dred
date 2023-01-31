@@ -30,10 +30,11 @@
 
 //!!! todo: update ioredis dependency to a more recent version
 
-const { v4: uuidv4 } = require("uuid");
-const Redis = require("ioredis");
+import { v4 as uuidv4 } from 'uuid';
+import Redis from "ioredis";
+import * as abstractLoggingInterface from "abstract-logging";
 
-const {
+import {
     opt,
     sep,
     pre,
@@ -50,9 +51,9 @@ const {
     defaultVersion,
     defaultSlotsNumb,
     defaultOriginType,
-} = require("./constants.js");
+} from "./constants.js";
 
-const { RedisChannelsError } = require("./errors.js");
+import  { RedisChannelsError }  from "./errors";
 
 function redisFieldsToHash(a) {
     //! converts a flat list of keys into a hash of the keys & primitive values.
@@ -98,7 +99,7 @@ function hashToRedisFields(h) {
  * await channels.cleanup()
  */
 // ----------------------------------------------------------------------------|
-class RedisChannels {
+export class RedisChannels {
     constructor(options = {}) {
         let { channels, redis } = options;
         channels = channels || {};
@@ -111,7 +112,7 @@ class RedisChannels {
         this._consumerIsGennerated = true;
 
         if (typeof channels[opt.LOG] === "undefined") {
-            this._log = require("abstract-logging");
+            this._log = { ...abstractLoggingInterface }
         } else {
             this._log = channels[opt.LOG];
         }
@@ -849,6 +850,3 @@ class RedisChannels {
     }
 }
 
-module.exports = {
-    RedisChannels,
-};

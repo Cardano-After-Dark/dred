@@ -1,6 +1,7 @@
 {
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
+        "experimentalDecorators": true
         // gives vscode a handle on expected config
     },
 }

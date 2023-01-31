@@ -1,0 +1,10 @@
+{
+    "extends": "./ts/tsconfig.base",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@platform/*": ["platform/browser/*"],
+            "src/*": ["src/*"]
+        }
+    }
+}

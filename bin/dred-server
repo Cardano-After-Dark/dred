@@ -1,8 +1,6 @@
-import "module-alias/register";
-import { createServer } from "./src/server";
+import { createServer } from "../src/server/DredServer";
 
-// const concurrency = 50;
-// const pendingTasks = new Set<Promise<any>>();
+//!!!! todo: read config from a JSON file 
 
 init();
 async function init() {

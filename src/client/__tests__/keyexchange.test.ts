@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { KeyExchanger, KeyExchangerDerivationProof } from "src/KeyExchanger";
 import nacl from "tweetnacl";
 const { sign } = nacl;
@@ -35,11 +37,11 @@ describe("key exchange", () => {
             keys,
             myself: kp4,
             async onReady(p: KeyExchangerDerivationProof) {
-                console.log(
-                    "kex4 ready (",
-                    new Date().getTime() - startTime,
-                    "ms )"
-                );
+                // console.log(
+                //     "kex4 ready (",
+                //     new Date().getTime() - startTime,
+                //     "ms )"
+                // );
                 expect(ss1).toBeTruthy();
                 expect(ss2).toBeTruthy();
                 expect(ss3).toBeTruthy();
@@ -57,11 +59,11 @@ describe("key exchange", () => {
             keys,
             myself: kp3,
             async onReady(p: KeyExchangerDerivationProof) {
-                console.log(
-                    "kex3 ready (",
-                    new Date().getTime() - startTime,
-                    "ms )"
-                );
+                // console.log(
+                //     "kex3 ready (",
+                //     new Date().getTime() - startTime,
+                //     "ms )"
+                // );
                 expect(ss1).toBeTruthy();
                 expect(ss2).toBeTruthy();
                 ss3 = kex3.sharedSecret;
@@ -80,11 +82,11 @@ describe("key exchange", () => {
             async onReady(p: KeyExchangerDerivationProof) {
                 // can fail race where #1 and #2 both trigger kex seed.
                 // expect(ss1).toBeTruthy();
-                console.log(
-                    "kex2 ready (",
-                    new Date().getTime() - startTime,
-                    "ms )"
-                );
+                // console.log(
+                //     "kex2 ready (",
+                //     new Date().getTime() - startTime,
+                //     "ms )"
+                // );
                 ss2 = kex2.sharedSecret;
                 expect(ss2).toBeTruthy();
                 await kex3.receiveKeyProgress(p.derivation);
@@ -100,11 +102,11 @@ describe("key exchange", () => {
             myself: kp1,
             async onReady(p: KeyExchangerDerivationProof) {
                 ss1 = kex1.sharedSecret;
-                console.log(
-                    "kex1 ready (",
-                    new Date().getTime() - startTime,
-                    "ms )"
-                );
+                // console.log(
+                //     "kex1 ready (",
+                //     new Date().getTime() - startTime,
+                //     "ms )"
+                // );
                 expect(ss1).toBeTruthy();
                 await kex2.receiveKeyProgress(p.derivation);
                 if (!kex2.sharedSecret)
@@ -112,7 +114,7 @@ describe("key exchange", () => {
                 expect(nacl.verify(kex2.sharedSecret, ss1)).toBeTruthy();
             },
         });
-        console.log("waiting for kex4");
+        // console.log("waiting for kex4");
         await expect(kex4done).resolves.toBeTruthy();
         console.log(
             "4x key exchange completed in",

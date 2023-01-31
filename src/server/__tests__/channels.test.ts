@@ -1,9 +1,10 @@
+// @ts-expect-error
 import { expect, jest, test } from "@jest/globals";
 
 // import request from 'supertest';
 import { Express } from "express";
 import { SuperTestWithHost, Test } from "supertest";
-import { DredClient } from "../../client";
+import { DredClient } from "../../client/DredClient.js";
 
 import nacl from "tweetnacl";
 const { sign } = nacl;
@@ -17,7 +18,7 @@ import {
     Key,
     KeyExchanger,
     KeyExchangerDerivationProof,
-} from "src/KeyExchanger";
+} from "src/KeyExchanger.js";
 
 // This test uses a blend of direct** requests to the Dred server (to prove
 //   each key function working at a HTTP level), along with some requests
