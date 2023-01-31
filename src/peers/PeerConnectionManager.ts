@@ -6,7 +6,7 @@ import {
     Peers,
     PromisedPeers,
     ThresholdChoice,
-} from "src/peers/PeerDiscovery";
+} from "./PeerDiscovery";
 
 
 export abstract class PeerConnectionManager<T extends Peer<any>> {

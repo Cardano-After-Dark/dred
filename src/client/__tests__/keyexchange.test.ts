@@ -1,6 +1,6 @@
 //@ts-nocheck
 
-import { KeyExchanger, KeyExchangerDerivationProof } from "src/KeyExchanger";
+import { KeyExchanger, KeyExchangerDerivationProof } from "../../KeyExchanger";
 import nacl from "tweetnacl";
 const { sign } = nacl;
 import util from "tweetnacl-util";

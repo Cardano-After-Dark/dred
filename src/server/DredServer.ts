@@ -1,25 +1,21 @@
 //@ts-check
 
-// import express, {  RequestHandler, Express, Response } from "express";
-import express from "express";
-// import type {  RequestHandler } from "express-serve-static-core";
-// import type Express from "express";
-// Express, Express.RequestHandler, Response
-
-import bodyParser from "body-parser";
-// var bodyParser = require("body-parser");
-
-import { Server } from "http";
 import Redis from "ioredis";
-import { DredClient } from "../client/DredClient";
-import { RedisSet } from "../redis/RedisSet";
+import { Server } from "http";
+import express from "express";
+import bodyParser from "body-parser";
+
 //@ts-ignore
 import { RedisChannels } from "../redis/streams";
+
+import { DredClient, DredClientArgs } from "../client/DredClient";
+import { RedisSet } from "../redis/RedisSet";
 import { Subscriber } from "../Subscriber";
 import { JSONValueAdapter, RedisHash, ValueAdapter } from "../redis/RedisHash";
 import { ChannelOptions } from "../types/ChannelOptions";
-
 import { StringNacl } from "../util/StringNacl";
+import { Discovery } from "../types/Discovery";
+import { DredHostDetails } from "../types/DredHostDetails";
 
 const logging = parseInt(process.env.LOGGING || "0");
 

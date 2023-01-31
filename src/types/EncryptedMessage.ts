@@ -2,7 +2,7 @@
 //  member of an encrypted Dred channel to the other members of
 //  the channel
 
-import { PubKey } from "src/types/PubKey";
+import { PubKey } from "./PubKey";
 
 export type EncryptedMessage = {
     //! it has the public key of the message originator

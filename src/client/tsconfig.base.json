@@ -17,7 +17,7 @@
         "jsx": "react-jsx",
         "jsxImportSource": "preact",
         "paths": {
-            // "src/*": ["../../src/*"]
+            // "sXXrc/*": ["../../src/*"]
         }
     },
     "include": [ "../**/*.ts" ]

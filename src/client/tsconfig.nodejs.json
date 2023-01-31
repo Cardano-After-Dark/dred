@@ -3,7 +3,7 @@
     "compilerOptions": {
         "paths": {
             "@platform/*": ["../../platform/server"],
-            "src/*": ["../../src/*"]
+            // "sXXrc/*": ["../../src/*"]
         }
     },
     "include": ["index.ts"]

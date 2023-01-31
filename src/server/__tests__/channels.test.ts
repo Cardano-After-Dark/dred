@@ -12,8 +12,8 @@ import util from "tweetnacl-util";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
 import { testSetup } from "../testServer";
-import { DredServer } from "src/server/DredServer";
-import { asyncDelay } from "src/util/asyncDelay";
+import { DredServer } from "../DredServer";
+import { asyncDelay } from "../../util/asyncDelay";
 import {
     Key,
     KeyExchanger,

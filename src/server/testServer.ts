@@ -1,13 +1,17 @@
 import { expect, jest, test } from "@jest/globals";
 
-import { createServer, DredServer } from "./DredServer";
 import { Express } from "express";
 import { Server } from "http";
 import supertest from "supertest";
 import Redis from "ioredis";
-import { DredClient } from "src/client";
 import { AddressInfo } from "net";
-import { asyncDelay } from "src/util/asyncDelay";
+
+import { createServer, DredServer } from "./DredServer";
+import { DredClient } from "../client/DredClient";
+import { asyncDelay } from "../util/asyncDelay";
+import { DevEnvLocalDiscovery } from "../peers/DevEnvLocalDiscovery";
+import { DredHostDetails } from "../types/DredHostDetails";
+
 
 let app: Express;
 let listener: Server; // http.Server from node interfaces

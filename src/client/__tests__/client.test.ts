@@ -1,18 +1,27 @@
 // @ts-expect-error
 import { expect, jest, test } from "@jest/globals";
 
+import express from "express";
 import { DredServer } from "../../server/DredServer";
 import { DredClient } from "../../client/DredClient";
 import { testSetup } from "../../server/testServer";
 import { asyncDelay } from "../../util/asyncDelay";
 
-import type {JsonMessagePayload} from "src/types/JsonMessagePayload";
+import type {JsonMessagePayload} from "../../types/JsonMessagePayload";
+import { DevEnvLocalDiscovery } from "../../peers/DevEnvLocalDiscovery";
 
 describe("Dred client", () => {
     let server: DredServer, agent, client: DredClient;
     beforeAll(async () => {
         const test = await testSetup();
         ({ server, client, agent } = test);
+    });
+    describe("discovery", () => {
+        it("can resolveDiscovery", async () => {
+            const result = await DredClient.resolveDiscovery({
+                discovery: new DevEnvLocalDiscovery()
+            });
+        });
     });
     describe("unencrypted chan:", () => {
         describe("createChannel", () => {
@@ -27,11 +36,10 @@ describe("Dred client", () => {
             it("throws any error json returned in a server error", async () => {
                 const serverMethod = jest
                     .spyOn(server, "createChannel")
-                    //@ts-expect-error
-                    .mockImplementation((req, res, next) => {
+                    .mockImplementation(((req, res, next) => {
                         res.status(400).json({ error: "some error" });
                         next();
-                    });
+                    }) as express.RequestHandler);
                 const chanName = "client2";
                 await expect(client.createChannel(chanName)).rejects.toThrow(
                     "some error"

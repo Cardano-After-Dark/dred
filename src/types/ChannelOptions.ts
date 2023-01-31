@@ -1,4 +1,4 @@
-import { ChannelMember } from "src/types/ChannelMember";
+import { ChannelMember } from "./ChannelMember";
 
 export type ChannelOptions = {
     encrypted?: boolean;

@@ -17,7 +17,7 @@ const config: Config.InitialOptions = {
     modulePathIgnorePatterns: ["<rootDir>/src/redis/streams/"],
     moduleNameMapper: {
         "^@platform/(.*)": "<rootDir>/platform/server/$1",
-        "^src/(.*)": "<rootDir>/src/$1",
+        // "^srXXc/(.*)": "<rootDir>/src/$1",
         "#crypto": "<rootDir>/node_modules/watsign/src/crypto.node.js",
     },
 };

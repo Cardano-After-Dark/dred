@@ -1,4 +1,4 @@
-import { asyncDelay } from "src/util/asyncDelay";
+import { asyncDelay } from "./util/asyncDelay";
 import nacl from "tweetnacl";
 import util from "tweetnacl-util";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;

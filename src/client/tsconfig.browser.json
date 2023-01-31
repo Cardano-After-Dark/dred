@@ -3,7 +3,7 @@
     "compilerOptions": {
         "paths": {
             "@platform/*": ["../../platform/browser"],
-            "src/*": ["../../src/*"]
+            // "sXXrc/*": ["../../src/*"]
         }
     },
     "include": ["index.ts"]
