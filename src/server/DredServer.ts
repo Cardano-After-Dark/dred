@@ -18,16 +18,11 @@ import { Discovery } from "../types/Discovery";
 import { DredHostDetails } from "../types/DredHostDetails";
 
 const logging = parseInt(process.env.LOGGING || "0");
-
-const redis = new Redis();
 export interface ExpressWithRedis extends express.Application {
     redis: null | typeof Redis;
 }
 
 const peers = new Set<DredClient>();
-function setupRedis() {
-    return redis;
-}
 
 const optionsSerializer: ValueAdapter<ChannelOptions> = {
     toRedis(v: ChannelOptions) {
@@ -46,6 +41,7 @@ const optionsSerializer: ValueAdapter<ChannelOptions> = {
 };
 export class DredServer {
     api: express.Application;
+    discovery: Discovery;
     redis: Redis;
     channelConn: RedisChannels;
     listener: null | Server; // http.Server from node types
@@ -53,19 +49,24 @@ export class DredServer {
     channelOptions: RedisHash<string, object>;
     producers: Map<string, any>;
     subscribers: Map<string, Set<Subscriber>>;
-    options: Object;
+    clientArgs: DredClientArgs;
     verifier: StringNacl;
-    constructor(options = {}) {
-        this.log("+server with", { options });
+    serverId: string;
+    myServerInfo?: DredHostDetails;
+    constructor(clientArgs: DredClientArgs, serverId: string, ) {
+        this.serverId = serverId;
+        this.discovery = DredClient.resolveDiscovery(clientArgs);
+
+        this.log(`+server '${serverId}'`, JSON.stringify(this.discovery, null, 2));
         this.api = express();
         const t= express();
         this.redis = this.setupRedis();
         this.listener = null;
         this.verifier = new StringNacl(undefined, this);
 
-        this.channelList = new RedisSet(redis, "channels");
+        this.channelList = new RedisSet(this.redis, "channels");
         this.channelOptions = new RedisHash(
-            redis,
+            this.redis,
             "channelOptions",
             optionsSerializer
         );
@@ -75,22 +76,41 @@ export class DredServer {
         //!!! todo: allows the application name to override 'dred' setting in channel names created in Redis
         this.channelConn = new RedisChannels({application: "dred"});
         this.channelConn._log.error = console.error.bind(console);
-        this.options = options;
+        this.clientArgs = clientArgs;
 
         this.setupExpressHandlers();
     }
-    listen(...args: any[]) {
-        return (this.listener = this.api.listen(...args));
-    }
+
+    //
+    async listen() {
+        const myInfo = this.myServerInfo = this.myServerInfo || await this.discovery.myServerInfo(this.serverId);
+        if (!myInfo) throw new Error(`can't identify my own info`);
+        const {port, address} = myInfo;
+        (this.listener = this.api.listen(port, address));
+        console.warn(`server '${this.serverId}' listening at ${address}:${port}`);
+        return this.listener
+        // express
+        //       listen(port: number, hostname: string, backlog: number, callback?: () => void): http.Server;
+        //       listen(port: number, hostname: string, callback?: () => void): http.Server;
+}
     async close() {
         this.cancelSubscribers();
-        await this.channelConn.cleanup();
-        await this.channelConn.this?.redis?.quit();
+        await this.channelConn.cleanup().catch(warning("channelConn.cleanup()"));
+        await this.channelConn.this?.redis?.quit().catch(warning("channelConn.redis.quit()"));
         this.channelConn.this?.redis?.disconnect();
-        await this.redis.quit();
+        await this.redis.quit().catch(warning("redis.quit()"));
         this.listener?.close();
+
+        function warning(activityName) {
+            return (e) => { console.warn(`during close: error in ${activityName}:\n\t`, e.message || e) }
+        }
     }
+    async listenDetails() {
+
+    }
+
     get address() {
+throw new Error(`is this needed?`        );
         const { listener } = this;
         if (null === listener) throw new Error(`not yet listening`);
 
@@ -102,15 +122,18 @@ export class DredServer {
         return addr;
     }
     setupRedis() {
+        if (this.redis) throw new Error(`redis connection is already set up`)
         // redis.subscribe(...).on("message", (event) => {
         //     for (const peer of peers) {
         //         peer.addEvent(event)
         //     }
         // })
-        return redis;
+
+        //!!! todo: use configured Redis connection details
+        return new Redis();
     }
-    mkClient({ ...options } = {}): DredClient {
-        return new DredClient({ ...this.address, ...options, ...this.options });
+    mkClient(): DredClient {
+        return new DredClient(this.clientArgs);
     }
 
     log(...args: any[]) {
@@ -478,8 +501,8 @@ export class DredServer {
     };
 }
 
-export async function createServer({ ...options }) {
-    const server = new DredServer(options);
+export async function createServer(options: DredClientArgs, serverId: string) {
+    const server = new DredServer(options, serverId);
     const { api, redis } = server;
     api.set("redis", redis);
 

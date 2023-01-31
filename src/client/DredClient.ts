@@ -16,43 +16,42 @@ import { NeighborhoodDiscovery } from "../peers/NeighborhoodDiscovery";
 
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
-interface AddrDetails {
-    address: any;
-    family: any;
-    port: any;
-    insecure?: boolean;
+export interface DredClientArgs {
+    neighborhood?: string;
+    discovery?: Discovery
 }
 
 const logging = parseInt(process.env.LOGGING || "");
+
 export class DredClient {
     _log: undefined | Function;
     _warn: undefined | Function;
     // serviceDiscovery: string;
     neighborhoodId: string = "cardano-after-dark";
-    neighborhoodContractAddress = "9bef...";
-    // neighborhoodServers: Array<{
-    //     serverAddress: any;
-    //     serverPort: any;
-    //     addrFamily: any;
-    // }>;
-    serverAddress: string;
-    serverPort: number;
-    addrFamily: string;
+    // neighborhoodContractAddress = "9bef...";
+    discovery:  Discovery;
     identity?: nacl.SignKeyPair;
     signer?: StringNacl;
     pubKeyString?: string;
     insecure?: boolean;
     subscriptions: Map<string, Array<Subscriber>>;
-    constructor({ address, family, port, insecure = false }: AddrDetails) {
-        this.log("+client", {
-            options: { insecure },
-        });
-        this.serverAddress = address;
-        this.serverPort = port;
-        this.addrFamily = family;
+
+    static resolveDiscovery({ neighborhood, discovery }: DredClientArgs) : Discovery {
+        if (neighborhood) discovery = new NeighborhoodDiscovery(neighborhood);
+        if (!discovery) throw new Error(`required: 'discovery' object or 'neighborhood' name`);
+
+        return discovery
+    }
+    constructor(args: DredClientArgs ) {
+        const discovery = (this.constructor as typeof DredClient).resolveDiscovery(args)
+
+        this.discovery = discovery;
+        // this.serverAddress = address;
+        // this.serverPort = port;
+        // this.addrFamily = family;
         this.subscriptions = new Map();
         //!!! make this test-only
-        this.insecure = insecure;
+        // this.insecure = insecure;
     }
 
     get log() {
@@ -69,13 +68,24 @@ export class DredClient {
     }
 
     async fetch(path: string, { parse = true, debug = false, ...options }) {
-        const proto = this.insecure ? "http" : "https";
-        let addr = this.serverAddress;
-        if (addr == "::") addr = "localhost";
+
+        //!!!! todo: starts up to two requests from discovered servers
+        //!!!! if one of them does not respond within 100ms, it issues
+        //   the same req to additional servers
+
+        //!!!! it logs the pending request to an observable queue of 
+        //    requests and keeps it updated with progress.
+        //!!!! it exposes the progress info in a way that is easily consumed 
+        //    by a React component.
 
         if (path[0] !== "/") path = `/${path}`;
+        
+        let host = (await this.discovery.getHostList())[0];        
+        const proto = host.insecure ? "http" : "https";
+        const shortServer = `${host.address}:${host.port}`;
+        const url = `${proto}://${shortServer}${path}`;
+        // console.warn(`+fetch`, options.method, shortServer, path)
 
-        const url = `${proto}://${addr}:${this.serverPort}${path}`;
         const result = await fetch(url, options);
         if (debug) debugger;
         if (result.ok) {
@@ -91,8 +101,11 @@ export class DredClient {
                         `${result.status} ${result.statusText} for ${path}`
                     )
             );
-        return Promise.reject(bad);
+        //!!! if one of the requests fails, it notifies the PeerConnectionManager
+        //     of the problem server
+         return Promise.reject(bad);
     }
+
     async generateKey() {
         if (this.identity) {
             console.warn(`generateKey() already called; no-op duplicate call`);
@@ -165,8 +178,14 @@ export class DredClient {
                 },
             });
         } catch (err: any) {
-            this.log("createChannel at server failed:", err.message || err);
-            throw new Error(err.error || err);
+            let e : Error; if (err instanceof Error ) {
+                e = err 
+             } else {
+                console.warn(err.stack || err.message || JSON.stringify(err, null, 2))
+                e = new Error(err.error || err.message || err);
+             }
+            this.log("createChannel at server failed:", e.stack);
+            throw e;
         }
     }
 

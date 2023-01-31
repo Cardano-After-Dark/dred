@@ -1,3 +1,4 @@
+//@ts-expect-error
 import { expect, jest, test } from "@jest/globals";
 
 import { Express } from "express";
@@ -12,14 +13,24 @@ import { asyncDelay } from "../util/asyncDelay";
 import { DevEnvLocalDiscovery } from "../peers/DevEnvLocalDiscovery";
 import { DredHostDetails } from "../types/DredHostDetails";
 
+if (process.env.JEST_TIMEOUT) {
+    console.log("using jest timeout override", process.env.JEST_TIMEOUT);
+    jest.setTimeout(parseInt(process.env.JEST_TIMEOUT));
+}
+
 
 let app: Express;
 let listener: Server; // http.Server from node interfaces
-let server: DredServer;
+let servers: DredServer[] = [];
+let server: DredServer; // a single server that tests can push stuff through by default
 let clientCleanupList: Array<DredClient> = [];
 
 afterAll(async () => {
-    server && (await server.close());
+    debugger
+    for (const s of servers) {
+        debugger
+        await  s.close();
+    }
 });
 
 afterEach(async () => {
@@ -29,9 +40,11 @@ afterEach(async () => {
     clientCleanupList = [];
 
     const redis = server?.redis;
-    await asyncDelay(150); // avoid race with existing channel-subscriptions?
-    await asyncDelay(150); // avoid race with existing channel-subscriptions?
-    await redis.flushdb();
+    if (redis) {
+        await asyncDelay(150); // avoid race with existing channel-subscriptions?
+        await asyncDelay(150); // avoid race with existing channel-subscriptions?
+        await redis.flushdb();
+    }
     // const stream = redis.scanStream();
     // stream.on("data", (resultKeys) => {
 
@@ -39,27 +52,36 @@ afterEach(async () => {
 });
 
 export async function testSetup() {
-    if (process.env.JEST_TIMEOUT) {
-        jest.setTimeout(parseInt(process.env.JEST_TIMEOUT));
+    const hosts: DredHostDetails[] = [
+        {serverId: "primary", address: "localhost", port: "3030", insecure: true },
+        {serverId: "second", address: "localhost", port: "3031", insecure: true}
+    ]
+    for (const server of hosts) {
+        //! creates a separate discovery agent for each server; each one uses the same full list of hosts.
+        const discovery = new DevEnvLocalDiscovery(hosts);
+        const s = await createServer({discovery}, server.serverId);
+        await s.listen();
+        servers.push(s)
     }
-    server = server || (await createServer({ insecure: true }));
-    app = app || server.api;
+    server = server || servers[0]
+    app = app || server.api
+    // server = server || (await createServer({ insecure: true }));
+    // app = app || server.api;
 
     const realMkClient = server.mkClient.bind(server);
     jest.spyOn(server, "mkClient").mockImplementation(function (...args) {
-        const client = realMkClient(...args);
+        const client = realMkClient();
         clientCleanupList.push(client);
         return client;
     });
 
-    listener = server.listen();
-    const addr = listener.address();
-    if (addr === null) throw new Error(`server is not listening`);
-    if ("string" === typeof addr)
+    const info = server.myServerInfo;
+    if (info === null) throw new Error(`server is not listening`);
+    if ("string" === typeof info)
         throw new Error(`Unix socket not supported currently`);
 
-    const agent = supertest.agent(listener);
+    const agent = supertest.agent(app);
     const client = server.mkClient(); //new DredClient({ ...addr, insecure: true });
     await client.generateKey();
-    return { agent, app, server, client };
+    return { agent, app, server, client, servers };
 }
