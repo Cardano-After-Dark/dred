@@ -25,6 +25,7 @@
     "packageManager": "yarn@3.2.1",
     "scripts": {
         "dev": "pnpm build:watch & nodemon -w dist/dredServer.mjs --enable-source-maps dist/dredServer.mjs",
+        "doc": "cd docs/ ; pnpm dev",
         "start": "scripts/setupEnvironment && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --respawn index.ts",
         "start:debug": "scripts/setupEnvironment  && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --inspect --respawn index.ts",
         "test": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' ENV_FILE=./config/.env.test jest --runInBand --detectOpenHandles",

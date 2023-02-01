@@ -10,7 +10,7 @@ export class DevEnvLocalDiscovery extends Discovery {
             h.push({
                 serverId: "singleton",
                 address: "localhost",
-                port: 3000,
+                port: 3029,
                 insecure: true,
             });
         }

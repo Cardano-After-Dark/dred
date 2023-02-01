@@ -53,8 +53,8 @@ afterEach(async () => {
 
 export async function testSetup() {
     const hosts: DredHostDetails[] = [
-        {serverId: "primary", address: "localhost", port: "3030", insecure: true },
-        {serverId: "second", address: "localhost", port: "3031", insecure: true}
+        {serverId: "primary", address: "localhost", port: "3032", insecure: true },
+        {serverId: "second", address: "localhost", port: "3033", insecure: true}
     ]
     for (const server of hosts) {
         //! creates a separate discovery agent for each server; each one uses the same full list of hosts.

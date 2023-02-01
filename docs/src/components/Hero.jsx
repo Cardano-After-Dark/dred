@@ -10,15 +10,16 @@ import blurIndigoImage from '@/images/blur-indigo.png'
 
 const codeLanguage = 'javascript'
 const code = `export default {
-  strategy: 'predictive',
-  engine: {
-    cpus: 12,
-    backups: ['./storage/cache.wtf'],
-  },
+    serverId: 'x1b42yum',
+    neighborhoods: [
+        'cardano-after-dark',
+    ],
+    listenAddress: "191.168.42.42",
+    port: "4242"
 }`
 
 const tabs = [
-  { name: 'cache-advance.config.js', isActive: true },
+  { name: 'dredServer.config.js', isActive: true },
   { name: 'package.json', isActive: false },
 ]
 
@@ -49,10 +50,10 @@ export function Hero() {
             />
             <div className="relative">
               <p className="inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
-                Decentralized REDIS state channels.
+                Decentralized REDIS state channels
               </p>
               <p className="mt-3 text-2xl tracking-tight text-slate-400">
-                Lorem Ipsum Dolor
+              Realtime message channels for dApps
               </p>
               <div className="mt-8 flex gap-4 md:justify-center lg:justify-start">
                 <Button href="/docs/installation">Get started</Button>

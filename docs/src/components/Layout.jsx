@@ -22,19 +22,20 @@ const navigation = [
   {
     title: 'Core concepts',
     links: [
-      { title: 'Understanding Dred', href: '/docs/understanding-dred' },
+        { title: 'Understanding Dred', href: '/docs/understanding-dred' },
     ],
   },
   {
-    title: 'Advanced guides',
+    title: 'Ecosystem guides',
     links: [
-      { title: 'Writing plugins', href: '/docs/writing-plugins' },
+        { title: 'Operating a Dred node', href: '/docs/node-operations' },
+        { title: 'Registering a Neighbor', href: '/docs/register-neighbor' },
     ],
   },
   {
     title: 'API reference',
     links: [
-      { title: 'CacheAdvance.predict()', href: '/docs/cacheadvance-predict' },
+        { title: 'Dred Client', href: '/docs/api-DredClient' },
     ],
   },
   {

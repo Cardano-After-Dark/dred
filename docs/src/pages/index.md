@@ -1,7 +1,7 @@
 ---
 title: Getting started
-pageTitle: Dred - Decentralized REDIS state channels.
-description: lorm ipsum dolor.
+pageTitle: Dred - Decentralized REDIS state channels
+description: Realtime message channels for dApps
 ---
 
 Learn how to get Dred set up in your project in under thirty minutes or it's free. {% .lead %}
@@ -43,13 +43,15 @@ This is what a disclaimer message looks like. You might want to include inline `
 Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
 
 ```js
-// cache-advance.config.js
+// dredServer.config.json
 export default {
-  strategy: 'predictive',
-  engine: {
-    cpus: 12,
-    backups: ['./storage/cache.wtf'],
-  },
+    serverId: 'x1b42yum',
+    neighborhoods: [
+        'cardano-after-dark',
+        'done-collectively-dao',
+    ],
+    listenAddress: "191.168.42.42",
+    port: "4242"
 }
 ```
 

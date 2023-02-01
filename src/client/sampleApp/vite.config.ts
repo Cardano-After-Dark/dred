@@ -7,6 +7,9 @@ export default defineConfig({
     plugins: [
         preact()
     ],
+    server: {
+        port: 3030
+     }
     // root: "sampleApp/",
     // base: resolve(__dirname, "sampleApp/"),
     // publicDir:  "sampleApp/public",

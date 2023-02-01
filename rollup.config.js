@@ -53,7 +53,7 @@ const esbuildConfig = esbuild({
 // console.log(JSON.stringify(browserRollupConfig, null, 2))
 export default [
     serverBundle({
-        input: "bin/dred-server",
+        input: "bin/dredServer",
         plugins: [
             externals(),
             resolve({
