@@ -118,11 +118,51 @@ importers:
       prettier: 2.8.3
       prettier-plugin-tailwindcss: 0.1.13_prettier@2.8.3
 
+  sampleApp:
+    specifiers:
+      '@babel/core': ^7.4.3
+      '@babel/plugin-proposal-class-properties': ^7.4.0
+      '@babel/preset-env': ^7.4.3
+      '@preact/compat': ^17.1.2
+      '@preact/preset-vite': ^2.4.0
+      '@rollup/plugin-node-resolve': ^15.0.1
+      '@swc/cli': ^0.1.57
+      '@swc/core': ^1.2.204
+      '@types/node': ^18.11.10
+      '@types/prop-types': ^15.7.5
+      dred-client: workspace:*
+      esbuild: ^0.16.10
+      module-alias: ^2.2.2
+      preact: ^10.11.3
+      prop-types: ^15.8.1
+      typescript: ^4.9.3
+      vite: ^4.0.0
+    dependencies:
+      dred-client: link:../src/client
+    devDependencies:
+      '@babel/core': 7.20.12
+      '@babel/plugin-proposal-class-properties': 7.18.6_@babel+core@7.20.12
+      '@babel/preset-env': 7.20.2_@babel+core@7.20.12
+      '@preact/compat': 17.1.2_preact@10.11.3
+      '@preact/preset-vite': 2.5.0_25sf7uab2oyz6i4hy2v7ycl3kq
+      '@rollup/plugin-node-resolve': 15.0.1
+      '@swc/cli': 0.1.59_@swc+core@1.3.31
+      '@swc/core': 1.3.31
+      '@types/node': 18.11.18
+      '@types/prop-types': 15.7.5
+      esbuild: 0.16.17
+      module-alias: 2.2.2
+      preact: 10.11.3
+      prop-types: 15.8.1
+      typescript: 4.9.5
+      vite: 4.0.4_@types+node@18.11.18
+
   src/client:
     specifiers:
       '@babel/core': ^7.4.3
       '@babel/plugin-proposal-class-properties': ^7.4.0
       '@babel/preset-env': ^7.4.3
+      '@preact/compat': ^17.1.2
       '@preact/preset-vite': ^2.4.0
       '@rollup/plugin-alias': ^4.0.3
       '@rollup/plugin-node-resolve': ^15.0.1
@@ -158,6 +198,7 @@ importers:
       '@babel/core': 7.20.12
       '@babel/plugin-proposal-class-properties': 7.18.6_@babel+core@7.20.12
       '@babel/preset-env': 7.20.2_@babel+core@7.20.12
+      '@preact/compat': 17.1.2_preact@10.11.3
       '@preact/preset-vite': 2.5.0_25sf7uab2oyz6i4hy2v7ycl3kq
       '@rollup/plugin-node-resolve': 15.0.1_rollup@3.12.0
       '@swc/cli': 0.1.59_@swc+core@1.3.31
@@ -2243,6 +2284,14 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
 
+  /@preact/compat/17.1.2_preact@10.11.3:
+    resolution: {integrity: sha512-7pOZN9lMDDRQ+6aWvjwTp483KR8/zOpfS83wmOo3zfuLKdngS8/5RLbsFWzFZMGdYlotAhX980hJ75bjOHTwWg==}
+    peerDependencies:
+      preact: '*'
+    dependencies:
+      preact: 10.11.3
+    dev: true
+
   /@preact/preset-vite/2.5.0_25sf7uab2oyz6i4hy2v7ycl3kq:
     resolution: {integrity: sha512-BUhfB2xQ6ex0yPkrT1Z3LbfPzjpJecOZwQ/xJrXGFSZD84+ObyS//41RdEoQCMWsM0t7UHGaujUxUBub7WM1Jw==}
     peerDependencies:
@@ -2310,6 +2359,23 @@ packages:
       slash: 4.0.0
     dev: false
 
+  /@rollup/plugin-node-resolve/15.0.1:
+    resolution: {integrity: sha512-ReY88T7JhJjeRVbfCyNj+NXAG3IIsVMsX9b5/9jC98dRP8/yxlZdz7mHZbHk5zHr24wZZICS5AcXsFZAXYUQEg==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^2.78.0||^3.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@rollup/pluginutils': 5.0.2
+      '@types/resolve': 1.20.2
+      deepmerge: 4.3.0
+      is-builtin-module: 3.2.0
+      is-module: 1.0.0
+      resolve: 1.22.1
+    dev: true
+
   /@rollup/plugin-node-resolve/15.0.1_rollup@3.12.0:
     resolution: {integrity: sha512-ReY88T7JhJjeRVbfCyNj+NXAG3IIsVMsX9b5/9jC98dRP8/yxlZdz7mHZbHk5zHr24wZZICS5AcXsFZAXYUQEg==}
     engines: {node: '>=14.0.0'}
@@ -2332,6 +2398,20 @@ packages:
     resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
     engines: {node: '>= 8.0.0'}
     dependencies:
+      estree-walker: 2.0.2
+      picomatch: 2.3.1
+    dev: true
+
+  /@rollup/pluginutils/5.0.2:
+    resolution: {integrity: sha512-pTd9rIsP92h+B6wWwFbW8RkZv4hiR/xKsqre4SIuAOaOEQRxi0lqLke9k2/7WegC85GgUs9pjmOjCUi3In4vwA==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@types/estree': 1.0.0
       estree-walker: 2.0.2
       picomatch: 2.3.1
     dev: true
@@ -2692,6 +2772,10 @@ packages:
 
   /@types/prettier/2.7.2:
     resolution: {integrity: sha512-KufADq8uQqo1pYKVIYzfKbJfBAc0sOeXqGbFaSpv8MRmC/zXgowNZmFcbngndGk922QDmOASEXUZCaY48gs4cg==}
+    dev: true
+
+  /@types/prop-types/15.7.5:
+    resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
     dev: true
 
   /@types/qs/6.9.7:

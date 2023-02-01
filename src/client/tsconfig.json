@@ -1,7 +1,11 @@
+// gives vscode a handle on expected config
+
 {
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
-        "experimentalDecorators": true
-        // gives vscode a handle on expected config
-    },
+        "experimentalDecorators": true,
+        "paths": {
+            "@platform/*": ["../../platform/browser/*"]
+        }
+    }
 }

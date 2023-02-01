@@ -1,6 +1,6 @@
 "use strict";
 
-import { ReadableStream } from "node:stream/web";
+import { ReadableStream } from "@platform/ReadableStream";
 
 /*exported ndjsonStream*/
 // forked from can-ndjson-stream because its error handling is sub-par.

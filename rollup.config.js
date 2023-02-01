@@ -2,12 +2,15 @@ import dts from "rollup-plugin-dts";
 import esbuild from "rollup-plugin-esbuild";
 import externals from "rollup-plugin-node-externals";
 import resolve from "@rollup/plugin-node-resolve";
-import { modulePaths } from "./rollup.lib.js";
+import { platformModulePaths } from "./rollup.lib.js";
 
 import packageJson from "./package.json" assert { type: "json" };
 const name = packageJson.main.replace(/\.js$/, "");
 
-const serverBundledModules = ["@platform/fetch.ts", "@platform/ReadableStream"];
+const serverBundledModules = [
+    // "@platform/fetch.ts",
+     "@platform/ReadableStream"
+];
 const forcedServerExternals = [];
 
 // import { join } from "path";
@@ -57,7 +60,7 @@ export default [
         plugins: [
             externals(),
             resolve({
-                ...modulePaths("server"),
+                ...platformModulePaths("server"),
                 extensions: [".mjs", ".js", ".json", ".ts"],
             }),
             esbuildConfig,
@@ -69,7 +72,7 @@ export default [
         plugins: [
             externals(),
             resolve({
-                ...modulePaths("server"),
+                ...platformModulePaths("server"),
                 extensions: [".mjs", ".js", ".json", ".ts"],
             }),
             esbuildConfig,

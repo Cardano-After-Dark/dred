@@ -7,6 +7,18 @@ export default defineConfig({
     plugins: [
         preact()
     ],
+    resolve: {
+        conditions: ["browser" ],
+        alias: {
+            react: '@preact/compat',
+            'react-dom': '@preact/compat',
+            // 'dred-client': '../dist/dred-client.mjs'
+        },
+    },
+    define: {
+        "process.env.LOGGING": JSON.stringify(process.env.LOGGING),
+        
+    },        
     server: {
         port: 3030
      }

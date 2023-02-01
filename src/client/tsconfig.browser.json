@@ -2,7 +2,8 @@
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
         "paths": {
-            "@platform/*": ["../../platform/browser"],
+            "@platform/*": ["../../platform/browser/*"],
+            // "dred-client": ["./dist/dred-client.mjs"]
             // "sXXrc/*": ["../../src/*"]
         }
     },

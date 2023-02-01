@@ -4,6 +4,7 @@
   "description": "Redis pre-sharded chanells implementation",
   "main": "index.mjs",
   "type": "module",
+  "packageManager": "yarn@1.22.19",
   "scripts": {
     "coverage": "nyc --reporter=html --reporter=text npm run unit",
     "lint": "npx standard --verbose | npx snazzy",
