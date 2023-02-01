@@ -1,6 +1,6 @@
 import { join } from "path";
 
-export function modulePaths(platform) {
+export function platformModulePaths(platform) {
     return { modulePaths: [
         join(process.cwd(), `platform/${platform}`)
     ]}

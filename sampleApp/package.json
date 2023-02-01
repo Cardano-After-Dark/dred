@@ -1,0 +1,45 @@
+{
+    "name": "dred-sample-app",
+    "version": "0.0.1",
+    "description": "Simple app for testing & demo",
+    "type": "module",
+    "exports": {
+        ".": {
+            "module": "./dist/dredSampleApp.mjs",
+            "browser": "./dist/dredSampleApp.mjs",
+            "default": "./dist/dredSampleApp.js"
+        }
+    },
+    "main": "./dist/dredSampleApp.js",
+    "module": "./dist/dredSampleApp.mjs",
+    "license": "MIT",
+    "packageManager": "pnpm@7.25.1",
+    "scripts": {
+        "app": "vite",
+        "dev": "vite --clearScreen=false",
+        "preview": "vite preview",
+        "clean": "rm dist/*",
+        "build": "vite build"
+    },
+    "dependencies": {
+        "dred-client": "workspace:*"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.4.3",
+        "@babel/plugin-proposal-class-properties": "^7.4.0",
+        "@babel/preset-env": "^7.4.3",
+        "@preact/compat": "^17.1.2",
+        "@preact/preset-vite": "^2.4.0",
+        "@rollup/plugin-node-resolve": "^15.0.1",
+        "@swc/cli": "^0.1.57",
+        "@swc/core": "^1.2.204",
+        "@types/node": "^18.11.10",
+        "@types/prop-types": "^15.7.5",
+        "esbuild": "^0.16.10",
+        "module-alias": "^2.2.2",
+        "preact": "^10.11.3",
+        "prop-types": "^15.8.1",
+        "typescript": "^4.9.3",
+        "vite": "^4.0.0"
+    }
+}

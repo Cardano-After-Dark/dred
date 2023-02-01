@@ -2,7 +2,7 @@
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
         "paths": {
-            "@platform/*": ["../../platform/server"],
+            "@platform/*": ["../../platform/server/*"],
             // "sXXrc/*": ["../../src/*"]
         }
     },

@@ -1,7 +1,7 @@
 packages:
   - 'src/client'  
   - 'docs'
-  - 'src/client/sampleApp'
+  - 'sampleApp'
   - '.'
 
   # works better with yarn used in that subdir:

@@ -29,14 +29,14 @@
     "module": "./dist/dred-client.mjs",
     "types": "./dist/dred-client.js",
     "license": "MIT",
-    "packageManager": "yarn@3.2.1",
+    "packageManager": "pnpm@7.25.1",
     "scripts": {
-        "app": "cd sampleApp ; vite",
-        "dev": "cd sampleApp; vite",
-        "preview": "vite preview",
+        "dev": "pnpm build:watch",
         "clean": "rm dist/*",
-        "build": "FORCE_COLOR=1 concurrently --names \"browser,nodejs\" -c \"bgBlue.bold,bgMagenta.bold\" \"rollup -c rollup.browser.config.js\"  \"rollup -c rollup.nodejs.config.js\"",
-        "build:watch": "concurrently --names \"browser,nodejs\" -c \"bgBlue.bold,bgMagenta.bold\" \"rollup -c rollup.browser.config.js -w\" \"rollup -c  rollup.nodejs.config.js -w\"  "
+        "build": "FORCE_COLOR=1 concurrently --names \"client:browser,client:node.js\" -c \"bgBlue.bold,bgMagenta.bold\" \"rollup -c rollup.browser.config.js\"  \"rollup -c rollup.nodejs.config.js\"",
+        "build:watch": "concurrently --names \"client:browser,client:node.js\" -c \"bgBlue.bold,bgMagenta.bold\" \"rollup -c rollup.browser.config.js -w\" \"rollup -c  rollup.nodejs.config.js -w\"  ",
+        "build:browser": "rollup -c rollup.browser.config.js",
+        "build:browser:watch": "rollup -c rollup.browser.config.js -w"
     },
     "dependencies": {
         "@rollup/plugin-alias": "^4.0.3",
@@ -51,6 +51,7 @@
         "@babel/core": "^7.4.3",
         "@babel/plugin-proposal-class-properties": "^7.4.0",
         "@babel/preset-env": "^7.4.3",
+        "@preact/compat": "^17.1.2",
         "@preact/preset-vite": "^2.4.0",
         "@rollup/plugin-node-resolve": "^15.0.1",
         "@swc/cli": "^0.1.57",

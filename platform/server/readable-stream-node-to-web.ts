@@ -5,17 +5,16 @@
 
 import { ReadableStream } from "node:stream/web";
 
+//! converts a nodejs Readable Stream as returned by `node-fetch` and `cross-fetch`
+//  ... into a web-readable-stream "node:stream/web"
 export function nodeToWebStream(nodeStream) {
     // Assumes the nodeStream has not ended/closed
-    //   if (!module.exports.WEBSTREAM_SUPPORT) throw new Error('No web ReadableStream support')
-    // ^^^^^ not needed with node readable stream.
-
     var destroyed = false;
     var listeners = {};
 
     function start(controller) {
         listeners["data"] = onData;
-        listeners["end"] = onData;
+        listeners["end"] = onData; // wtf no-op, see next line
         listeners["end"] = onDestroy;
         listeners["close"] = onDestroy;
         listeners["error"] = onDestroy;

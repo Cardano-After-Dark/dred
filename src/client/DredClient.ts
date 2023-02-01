@@ -3,10 +3,9 @@ import nacl from "tweetnacl";
 const { sign } = nacl;
 import util from "tweetnacl-util";
 import type { Response } from "cross-fetch";
-import type { ReadableStreamDefaultReadResult } from "node:stream/web";
 
 import { ChannelOptions } from "../types/ChannelOptions";
-import { fromPlatformFetchBody } from "../../platform/server/ReadableStream";
+import { fromPlatformFetchBody } from "@platform/ReadableStream";
 import { Subscriber } from "../Subscriber";
 import { ndjsonStream } from "./betterJsonStream";
 import { StringNacl } from "../util/StringNacl";
@@ -296,7 +295,7 @@ export class DredClient {
 
         const compatResponse = fromPlatformFetchBody(response.body);
         const reader = ndjsonStream(compatResponse).getReader();
-        let event : undefined | ReadableStreamDefaultReadResult<{value: string, done: boolean}>,
+        let event : undefined | {value?: string, done: boolean},
             connected = true;
 
         const detectReadError = (e: Error) => {

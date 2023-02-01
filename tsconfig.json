@@ -9,5 +9,5 @@
         }
     },
     "include": [ "**/*.ts", "**/*.js" ],
-    "exclude": [ "src/client/sampleApp", "**/node_modules/" ]
+    "exclude": [ "src/sampleApp", "**/node_modules/" ]
 }

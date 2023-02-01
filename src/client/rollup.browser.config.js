@@ -5,13 +5,15 @@ import externals from "rollup-plugin-node-externals";
 
 // used for finding modules to bundle, using Node's resolution algo
 import resolve from "@rollup/plugin-node-resolve";
-import { modulePaths, twoModulesOut } from "./rollup.lib.js";
+import { twoModulesOut } from "../../rollup.lib.js";
+import { platformModulePaths } from "./rollup.lib.js";
+
 
 import packageJson from "./package.json" assert { type: 'json' };
 const name = packageJson.main.replace(/\.js$/, "");
 
 const browserBundledModules = [
-    "@platform/fetch.ts",
+    // "@platform/fetch.ts",
     "@platform/ReadableStream",
     "tweetnacl",
     "tweetnacl-util",
@@ -39,7 +41,7 @@ export default [
             externals(),
             resolve({
                 browser: true,
-                ...modulePaths("browser"),
+                ...platformModulePaths("browser"),
                 extensions: [".mjs", ".js", ".json", ".ts"],
             }),
             // for rollup-plugin-ts
