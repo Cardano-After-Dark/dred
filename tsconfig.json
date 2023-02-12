@@ -3,6 +3,7 @@
     "compilerOptions": {
         "experimentalDecorators": true,
         "baseUrl": ".",
+        "moduleResolution": "node16",
         "paths": {
             "@platform/*": ["platform/server/*"],
             // "sXXrc/*": ["src/*"]

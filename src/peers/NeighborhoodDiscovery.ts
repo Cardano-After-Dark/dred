@@ -6,12 +6,15 @@ export class NeighborhoodDiscovery extends Discovery {
     static forNeighborhood(n: string) {
         return new this(n);
     }
+    async getNeighborhoods() {
+        return ["cardano-after-dark"]; //!!! todo: use discovery service to find registered neighborhoods
+    }
     constructor(s: string) {
         super();
         this.neighborhood = s;
     }
     async getHostList(): findingDredHosts {
-        console.warn(`Neighborhood discovery has no impl yet.  Try DevEnvLocalDiscovery for now`);
+        console.warn(`Discovery in neighborhood has no impl yet.  Try DevEnvLocalDiscovery for now`);
         return [];
     }
 }
