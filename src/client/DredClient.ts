@@ -59,6 +59,7 @@ export class DredClient {
             (this._log = logging ? console.log.bind(console) : () => {})
         );
     }
+
     get warn() {
         return (
             this._warn ||
@@ -67,7 +68,6 @@ export class DredClient {
     }
 
     async fetch(path: string, { parse = true, debug = false, ...options }) {
-
         //!!!! todo: starts up to two requests from discovered servers
         //!!!! if one of them does not respond within 100ms, it issues
         //   the same req to additional servers
@@ -103,6 +103,10 @@ export class DredClient {
         //!!! if one of the requests fails, it notifies the PeerConnectionManager
         //     of the problem server
          return Promise.reject(bad);
+    }
+
+    async getNeighborhoods() {
+        return this.discovery.getNeighborhoods()
     }
 
     async generateKey() {

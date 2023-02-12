@@ -58,7 +58,7 @@ export async function testSetup() {
     ]
     for (const server of hosts) {
         //! creates a separate discovery agent for each server; each one uses the same full list of hosts.
-        const discovery = new DevEnvLocalDiscovery(hosts);
+        const discovery = new DevEnvLocalDiscovery().reset(hosts);
         const s = await createServer({discovery}, server.serverId);
         await s.listen();
         servers.push(s)
