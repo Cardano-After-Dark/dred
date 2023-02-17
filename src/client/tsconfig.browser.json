@@ -7,5 +7,5 @@
             // "sXXrc/*": ["../../src/*"]
         }
     },
-    "include": ["index.ts"]
+    "include": ["index.ts", "peers/**/*.ts"]
 }

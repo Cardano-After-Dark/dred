@@ -1,10 +1,18 @@
+import React from "react";
+
+import { Reactor, NotificationArea } from "@poshplum/poshplum";
 import { useState } from "preact/hooks";
 import "./app.css";
 import { ChatApp } from "./ChatApp";
 
-export function App() {
+
+@Reactor
+export class App extends React.Component {
+    hasNotifications = true
+    render() {
     return (
         <>
+            <NotificationArea name="root"/>
             <div class="float-left">
                 <img
                     src="/cad-logo.webp"
@@ -22,11 +30,11 @@ export function App() {
             <h1>Dred</h1>
             <div>
                 <p>
-                    Realtime decentralized communications platform for web3
+                    Realtime decentralized event-messaging platform for web3
                     dapps
                 </p>
             </div>
             <ChatApp />
         </>
     );
-}
+    } }

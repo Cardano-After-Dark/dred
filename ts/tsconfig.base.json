@@ -4,6 +4,7 @@
         "target": "es2020",
         "module": "commonjs",
         "moduleResolution": "node",
+        "importHelpers": true,
         "outDir": "dist",
         "rootDirs": ["../src"],
         "strict": true,

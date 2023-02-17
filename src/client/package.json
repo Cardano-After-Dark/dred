@@ -39,9 +39,12 @@
         "build:browser:watch": "rollup -c rollup.browser.config.js -w"
     },
     "dependencies": {
+        "@poshplum/poshplum": "../../plum/poshplum",
+        "@poshplum/utils": "../../plum/utils",
         "@rollup/plugin-alias": "^4.0.3",
         "body-parser": "^1.20.0",
         "cross-fetch": "^3.1.5",
+        "eventemitter3": "^5.0.0",
         "node-fetch": "^2",
         "tweetnacl": "^1.0.3",
         "tweetnacl-util": "^0.15.1",
@@ -59,7 +62,7 @@
         "@types/node": "^18.11.10",
         "@types/node-fetch": "^2.6.2",
         "concurrently": "^7.6.0",
-        "esbuild": "^0.16.10",
+        "esbuild": "^0.17.10",
         "module-alias": "^2.2.2",
         "preact": "^10.11.3",
         "rollup": "3",
