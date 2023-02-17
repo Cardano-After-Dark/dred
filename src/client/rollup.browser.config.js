@@ -58,7 +58,10 @@ export default [
                 // exclude: /node_modules/, // default
                 sourceMap: true, // default
                 minify: process.env.NODE_ENV === "production",
-                target: "es2017", // default, or 'es20XX', 'esnext'
+                supported: {
+                    "async-await": false,
+                        },        
+                target: "es2016", // default, or 'es20XX', 'esnext'
                 // jsx: 'transform', // default, or 'preserve'
                 // jsxFactory: 'React.createElement',
                 // jsxFragment: 'React.Fragment',

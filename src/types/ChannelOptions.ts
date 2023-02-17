@@ -1,6 +1,14 @@
 import { ChannelMember } from "./ChannelMember";
 
+export type ClientChannelState = {
+    options: ChannelOptions;
+    bookmark: { a: string, c: string }; // last known position in admin, content channels
+
+}
+
 export type ChannelOptions = {
+    channelId: string;
+
     encrypted?: boolean;
     owner?: ChannelMember;
     members?: Array<ChannelMember>;

@@ -2,10 +2,10 @@
     "extends": "./ts/tsconfig.base",
     "compilerOptions": {
         "experimentalDecorators": true,
-        "baseUrl": ".",
+        // "baseUrl": ".",
         "moduleResolution": "node16",
         "paths": {
-            "@platform/*": ["platform/server/*"],
+            "@platform/*": ["./platform/server/*"],
             // "sXXrc/*": ["src/*"]
         }
     },

@@ -8,14 +8,14 @@ import bodyParser from "body-parser";
 //@ts-ignore
 import { RedisChannels } from "../redis/streams";
 
-import { DredClient, DredClientArgs } from "../client/DredClient";
-import { RedisSet } from "../redis/RedisSet";
-import { Subscriber } from "../Subscriber";
-import { JSONValueAdapter, RedisHash, ValueAdapter } from "../redis/RedisHash";
-import { ChannelOptions } from "../types/ChannelOptions";
-import { StringNacl } from "../util/StringNacl";
-import { Discovery } from "../types/Discovery";
-import { DredHostDetails } from "../types/DredHostDetails";
+import { DredClient, DredClientArgs } from "../client/DredClient.js";
+import { RedisSet } from "../redis/RedisSet.js";
+import { Subscriber } from "../Subscriber.js";
+import { JSONValueAdapter, RedisHash, ValueAdapter } from "../redis/RedisHash.js";
+import { ChannelOptions } from "../types/ChannelOptions.js";
+import { StringNacl } from "../util/StringNacl.js";
+import { Discovery } from "../types/Discovery.js";
+import { DredHostDetails } from "../types/DredHosts.js";
 
 const logging = parseInt(process.env.LOGGING || "0");
 export interface ExpressWithRedis extends express.Application {
@@ -183,7 +183,9 @@ throw new Error(`is this needed?`        );
             res.status(400).json({ error: "channel already exists" });
             return next();
         }
+
         let {
+            channelId: invalidChanId,
             encrypted,
             owner,
             members = [],
@@ -195,6 +197,13 @@ throw new Error(`is this needed?`        );
             messageLifetime,
             signature,
         } = options;
+
+        if (invalidChanId) {
+            res.status(422).json({
+                error: "body.channelId is invalid; use params.channelId instead.",
+            });
+            return next();          
+        }
 
         expiresAt = expiresAt ? new Date(expiresAt) : undefined;
         const now = new Date();
@@ -234,6 +243,7 @@ throw new Error(`is this needed?`        );
         //! it doesn't allow any extraneous JSON keys to leak through the options during channel-creation
         //   note: have a use-case for storing more details with the channel options?  Let's discuss.
         const opts: ChannelOptions = {
+            channelId,
             encrypted,
             owner,
             members,

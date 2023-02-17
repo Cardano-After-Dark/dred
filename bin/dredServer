@@ -6,8 +6,14 @@ import { asyncDelay } from "../src/util/asyncDelay";
 
 init();
 async function init() {
-    const discovery = new DevEnvLocalDiscovery();
-    const server = await createServer({ discovery }, discovery.hosts[0].serverId);
+    const discovery = new DevEnvLocalDiscovery({});
+    const server = await createServer({ 
+        discovery ,
+        waitFor: "healthy",
+        // connectionSettings: {
+
+        // }
+    }, discovery.hosts[0].serverId);
     const { port, address } = discovery.hosts[0];
     await server.listen();
 

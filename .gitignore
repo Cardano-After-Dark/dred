@@ -2,3 +2,4 @@
 /.yarn/
 /.vscode/
 dist
+config/keys/

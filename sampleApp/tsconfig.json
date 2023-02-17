@@ -7,11 +7,14 @@
         "allowJs": false,
         "skipLibCheck": true,
         "esModuleInterop": false,
+        "importHelpers": true,        
+        "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
         "strict": true,
         "forceConsistentCasingInFileNames": true,
         "module": "esnext",
-        "moduleResolution": "node",
+        "moduleResolution": "node16",
+        "traceResolution": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
@@ -23,8 +26,10 @@
         "paths": {
             "react": ["@preact/compat"],
             "preact": ["@preact/compat"],
-            "react-dom": ["@preact/compat"]
+            "react-dom": ["@preact/compat"],
+            "@poshplum/utils": ["../../plum/utils/dist/browser.mjs"],
+            "@poshplum/poshplum": ["../../plum/poshplum/dist/browser.mjs"],
         }
     },
-    "include": ["src"]
+    "include": ["src/**/*.tsx?", "../**/*.ts"]
 }

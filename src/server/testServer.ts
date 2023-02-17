@@ -11,7 +11,7 @@ import { createServer, DredServer } from "./DredServer";
 import { DredClient } from "../client/DredClient";
 import { asyncDelay } from "../util/asyncDelay";
 import { DevEnvLocalDiscovery } from "../peers/DevEnvLocalDiscovery";
-import { DredHostDetails } from "../types/DredHostDetails";
+import { DredHostDetails } from "../types/DredHosts";
 
 if (process.env.JEST_TIMEOUT) {
     console.log("using jest timeout override", process.env.JEST_TIMEOUT);
@@ -60,6 +60,7 @@ export async function testSetup() {
         //! creates a separate discovery agent for each server; each one uses the same full list of hosts.
         const discovery = new DevEnvLocalDiscovery().reset(hosts);
         const s = await createServer({discovery}, server.serverId);
+
         await s.listen();
         servers.push(s)
     }

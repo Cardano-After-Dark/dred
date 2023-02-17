@@ -52,7 +52,11 @@ export default [
                 // exclude: /node_modules/, // default
                 sourceMap: true, // default
                 minify: process.env.NODE_ENV === "production",
-                target: "es2017", // default, or 'es20XX', 'esnext'
+                target: "ES2016", // default, or 'es20XX', 'esnext'
+                supported: {
+                    "async-await": false,
+                    "async-generator": false,
+                },        
                 // jsx: 'transform', // default, or 'preserve'
                 // jsxFactory: 'React.createElement',
                 // jsxFragment: 'React.Fragment',
@@ -60,7 +64,7 @@ export default [
                 define: {
                     __VERSION__: JSON.stringify(packageJson.version),
                 },
-                tsconfig: "tsconfig.server.json", 
+                tsconfig: "tsconfig.nodejs.json", 
                 // Add extra loaders
                 loaders: {
                     // Add .json files support

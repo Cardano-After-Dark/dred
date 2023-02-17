@@ -56,7 +56,7 @@ describe("Dred client", () => {
                 const callback2 = function () {};
                 client.subscribeChannel(chan, callback1);
                 client.subscribeChannel(chan, callback2);
-                const subs = client.subscriptions.get(chan);
+                const subs = client.subscribers.get(chan);
                 expect(subs).toMatchObject([
                     { notify: callback1 },
                     { notify: callback2 },
@@ -130,6 +130,27 @@ describe("Dred client", () => {
                         await asyncDelay(20);
 
                         expect(received).toBe(2);
+                    });
+                });
+
+                describe("postMessage", () => {
+                    it("fails when the channel is encrypted", async () => {
+                        const encryptedChan = "postMessageBad";
+                        await client.createChannel(encryptedChan, {
+                            encrypted: true,
+                            allowJoining: true,
+                        });
+                        await expect(
+                            client.postMessage(encryptedChan, {anything: true})
+                        ).rejects.toThrow(/postEncrypted/);
+                    });
+                })
+                describe("postEncrypted", () => {
+                    it("fails when the channel doesn't have encryption enabled", async () => {
+                        
+                    });
+                    it("encodes the provided message as a JSON with an encryption wrapper", async () => {
+                        
                     });
                 });
             });

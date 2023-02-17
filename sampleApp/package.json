@@ -22,6 +22,8 @@
         "build": "vite build"
     },
     "dependencies": {
+        "@poshplum/poshplum": "../../plum/poshplum",
+        "@poshplum/utils": "../../plum/utils",
         "dred-client": "workspace:*",
         "rollup-plugin-modify": "^3.0.0"
     },
