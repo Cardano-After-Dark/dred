@@ -5,7 +5,7 @@ import util from "tweetnacl-util";
 import type { Response } from "cross-fetch";
 
 import EventEmitter from "eventemitter3";
-import { autobind, StateMachine } from "@poshplum/utils";
+import { asyncDelay, autobind, StateMachine } from "@poshplum/utils";
 
 import { ConnectionManager } from "./ConnectionManager";
 
@@ -100,7 +100,7 @@ const clientStates = {
         async onEntry(this: dred) {
             this.emitState()
             await this.discovery.getHostList();
-            this.transition("getChannelLIst")
+            this.transition("getChannelList")
         },
         getChannelList: "discoveringChannels",
     },
@@ -125,7 +125,8 @@ const clientStates = {
     },
     ready: {
         async onEntry(this: dred) {
-            this.emitState()
+            this.emitState();
+            // this.
         }
     }
 };
@@ -152,9 +153,13 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     channelSub?: ChannelSubscription;
     authSub?: ChannelSubscription;
 
+    setNeighborhood(n: NbhId) {
+        this.neighborhoodId = n;
+        asyncDelay(1).then(this.mkTransition("nbhSelected"));
+    }
     onTransition() {
         //! tbd if we need to use this hook, perhaps for persisting the bookmark state of channels
-        debugger
+        // debugger
     }
     static resolveDiscovery({ neighborhood, discovery }: DredClientArgs): Discovery {
         if (neighborhood) discovery = new NeighborhoodDiscovery({neighborhood});
@@ -221,9 +226,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             waitFor: this.args.waitFor,
             connectionSettings: this.args.connectionSettings || {},
         });
-debugger
         this.transition("default");
-        debugger
         //!!! make this test-only
         // this.insecure = insecure;
     }

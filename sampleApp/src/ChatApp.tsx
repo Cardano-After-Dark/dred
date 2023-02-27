@@ -12,8 +12,7 @@ import { DevEnvLocalDiscovery } from "dred-client";
 
 const codec = 'audio/webm; codecs="vorbis"';
 import { Component } from "preact";
-import { ChanId } from "../../src/types/ChannelSubscriptions";
-import { DredEvent } from "../../src/types/DredEvents";
+import type { ChanId, NbhId, DredEvent } from "dred-client";
 
 type myProps = {};
 type MyState = {
@@ -99,9 +98,10 @@ export class ChatApp extends Component<myProps, MyState> {
     }
 
     @autobind
-    setChannelList( e: DredEvent & {channels: ChanId[]} ) {
-        const {channels } = e;
+    setChannelList( e: DredEvent & {nbh: NbhId, channels: ChanId[]} ) {
+        const {channels} = e;
         this.setState({channels})
+        this.transition("hasChannels")
     }
     @autobind
     clientStateChanged(e: ClientState) {
@@ -116,7 +116,8 @@ export class ChatApp extends Component<myProps, MyState> {
     @autobind
     async chooseNeighborhood(e) {
         const neighborhood = this.neighborhoodSelector.current.value;
-        this.setState({ neighborhood, message: "" });
+        this.setState({ neighborhood, message: `selected neighborhood '${neighborhood}'` });
+        this.client.setNeighborhood(neighborhood);
 
         await this.transition("findChannels");
         await asyncDelay(100);
@@ -128,7 +129,7 @@ export class ChatApp extends Component<myProps, MyState> {
     // async findChannelsInNeighborhood() {
     //     //!!!!!! todo: gets channel list via client
     //     const channels = ["discussion", "news"];
-    //     this.client.
+    //     this.client.transition("findChannels")
     //     await asyncDelay(400);
     //     this.setState({ channels });
     // }
@@ -141,7 +142,9 @@ export class ChatApp extends Component<myProps, MyState> {
     }
 
     didTransition(trans: string, nextState: string) {
-        this.state.msgs.push(`${trans} -> ${nextState}`);
+        const msg = `⤻${trans} ➜ ${nextState}`;
+        this.state.msgs.push(msg);
+        console.log("app transition from", this.state.currentState, msg);
         this.bump();
     }
 
@@ -187,20 +190,7 @@ export class ChatApp extends Component<myProps, MyState> {
                 {this.showConsoleMessages()}
 
                 {this.hasState("chatReady", "recording", "finishRecording") && (
-                    <button
-                        onMouseDown={this.mkTransition("record")}
-                        onMouseUp={this.mkTransition("stop")}
-                        onKeyUp={this.mkTransition("cancel")}
-                    >
-                        <div
-                            style={{
-                                fontSize: "300%",
-                            }}
-                        >
-                            🔴
-                        </div>
-                        record
-                    </button>
+                    this.showRecordButton()
                 )}
 
                 <State
@@ -219,7 +209,10 @@ export class ChatApp extends Component<myProps, MyState> {
 
                 <State
                     name="choosingNeighborhood"
-                    transitions={{ findChannels: "findingChannels" }}
+                    transitions={{ 
+                        findChannels: "findingChannels",
+                        // hasChannels: "chooseChannels",
+                    }}
                 >
                     <p className="card read-the-docs">
                         <select
@@ -239,7 +232,12 @@ export class ChatApp extends Component<myProps, MyState> {
                 <State
                     name="findingChannels"
                     transitions= {{
+                        //! it is triggered to move to the next state when the client gives us a channel list.
                         hasChannels: "chooseChannels"
+                        //!!!! todo: ensure that any potential failure of fetching channel-list is handled
+                        //   ... that wouldn't be normal, but still useful to handle.  Ideally that condition 
+                        //   ... can be routed through a generic state/warning notification, and otherise,
+                        //   ... provided entirely by the Client object.
                     }}
                 >
                    <small className="card read-the-docs"> ... finding channels in neighborhood ...</small>
@@ -318,6 +316,23 @@ export class ChatApp extends Component<myProps, MyState> {
                 />
             </div>
         );
+    }
+
+    private showRecordButton() {
+        return <button
+            onMouseDown={this.mkTransition("record")}
+            onMouseUp={this.mkTransition("stop")}
+            onKeyUp={this.mkTransition("cancel")}
+        >
+            <div
+                style={{
+                    fontSize: "300%",
+                }}
+            >
+                🔴
+            </div>
+            record
+        </button>;
     }
 
     cancelledRecording() {

@@ -15,7 +15,7 @@ export interface DiscoveryEvents {
     "hosts:updated": [DredEvent & {nbh: NbhId}]
 }
 export interface GenericDiscoveryOptions {
-    neighborhood: NbhId
+    neighborhood?: NbhId
 }
 export abstract class Discovery implements discovery {
     nbh!: string; // neighborhood
