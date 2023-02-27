@@ -11,8 +11,8 @@ export interface discovery {
 export type findingDredHosts = Promise<DredHostDetails[]>;
 export interface DiscoveryEvents {
     "hosts:discovering": [DredEvent & {nbh: NbhId}]
-    "hosts:ready": [DredEvent & {nbh: NbhId}]
-    "hosts:updated": [DredEvent & {nbh: NbhId}]
+    "hosts:ready": [DredEvent & {nbh: NbhId, hosts: DredHostDetails[]}]
+    "hosts:updated": [DredEvent & {nbh: NbhId, hosts: DredHostDetails[]}]
 }
 export interface GenericDiscoveryOptions {
     neighborhood?: NbhId
@@ -34,6 +34,8 @@ export abstract class Discovery implements discovery {
     constructor(options : GenericDiscoveryOptions) {
         const {neighborhood} = options
         if (neighborhood) this.setNeighborhood(neighborhood);
+
+        //! it prevents subclasses from overriding restartHostDiscovery() logic; see initHostDiscovery() instead.
         if (this.restartHostDiscovery !== Discovery.prototype.restartHostDiscovery) {
             throw new Error(`restartHostDiscovery must not be overridden by Discovery subclass `+ this.constructor.name)
         }
@@ -42,11 +44,15 @@ export abstract class Discovery implements discovery {
     hasNeighborhood() : boolean {
         return !!this.nbh;
     }
+
+    //! it allows concrete subclasses to implement custom behavior during initHostDiscovery()
     async initHostDiscovery() {
     }
 
     protected async restartHostDiscovery() {
         if (!this.nbh) throw new Error(`can't start host discovery without nbh`);
+
+        //!!! todo: it emits a host-discovery-timeout event if hosts can't be discovered promptly.
 
         await this.initHostDiscovery();
         this.events.emit("hosts:discovering", {
@@ -54,16 +60,17 @@ export abstract class Discovery implements discovery {
             nbh: this.nbh,
             [devMessage]: "suggested: update user with this status message"
         });
-        const h = await this.getHostList();
+        const hosts = await this.getHostList();
         const e = {
-            message: `found ${h.length} hosts serving neighborhood`,
+            hosts,
+            message: `found ${hosts.length} hosts serving neighborhood`,
             nbh: this.nbh,
             [devMessage]: "suggested: update user with this status message"
         }
         if (!this.hosts) {
             this.events.emit("hosts:ready", e)
         }
-        this.hosts = h;
+        this.hosts = hosts;
         this.events.emit("hosts:updated", e)
     }
     setNeighborhood(nbh : NbhId) {

@@ -47,7 +47,7 @@ const connectionManagerStates = {
         async onEntry(this: cm) {
             //! it moves directly to host discovery if there is already a nbh
             if (this.discovery.hasNeighborhood()) {
-                return this.transition("findHosts")
+                return this.transition("setupPending");
             } else {
                 this.events.emit("needsNeighborhood", {
                     message: "select a neighborhood",
@@ -58,13 +58,19 @@ const connectionManagerStates = {
                         "Set a default neighborhood with the new DredClient{{neighborhood}) option",
                         "...or, use ‹clientObject›.discovery.setNeighborhood(nbhId)"                        
                     ]
-                })
+                });
             }
         },
-        findHosts: "discoveringHosts",
+        setupPending: "pendingSetup",
     },
-    discoveringHosts: {
-        foundHostList: "connecting",
+    pendingSetup: {
+        async onEntry(this: cm)  {
+            if (this.hosts?.length && this.channelSubs?.length) return this.transition("readyToConnect")
+
+        },
+        updatedHostList: { nextState: "pendingSetup", reEntry: true },
+        hasSubscriptions: { nextState: "pendingSetup", reEntry: true },
+        readyToConnect: "connecting",
     },
     replacingSubs: {
         // equivalent to connecting, except:
@@ -83,6 +89,10 @@ const connectionManagerStates = {
             });
             this.connectToHosts();
         },
+        updatedHostList: {
+            nextState: "connecting",
+            reEntry: true
+        },
         partial: "partiallyConnected",
         replaceSubs: "replacingSubs",
     },
@@ -96,7 +106,7 @@ const connectionManagerStates = {
     },
     healthy: {
         onEntry(this: cm) {
-            //@ts-expect-error
+            //@ts-expect-error - until state-machine provides us an indicator of previous state
             if (this.previousState) throw new Error("hurray, we can change this next line");
             const previousState = this.currentState as string;
 
@@ -132,6 +142,7 @@ const connectionManagerStates = {
             reEntry: false,
         },
         partial: "degraded",
+        updatedHostList: "connecting"
     },
     degraded: {
         onEntry(this: cm) {
@@ -150,13 +161,14 @@ const connectionManagerStates = {
             });
         },
         sufficient: "sufficient",
+        updatedHostList: "connecting"
     },
     disconnecting: {
         onEntry(this: cm) {
             this.events.emit("disconnecting", {
                 message: "disconnecting from neighborhood hosts",
                 [devMessage]: [
-                    `disconnecting on request of client object`
+                    `disconnecting on request (probably from client object)`
                 ]
             });
             this.disconnect();
@@ -187,7 +199,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
 ) {
     state: ConnectionState = "pending";
     discovery: Discovery;
-    private hosts?: DredHostDetails[];
+    hosts?: DredHostDetails[];
     events = new EventEmitter<ManagerEvents>();
     waitFor: ThresholdChoice;
 
@@ -239,9 +251,24 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
         this.connectionSettings = HostConnection.settingsWithDefaults(options.connectionSettings);
         this.discovery = options.discovery;
+        this.discovery.events.on("hosts:updated", this.setHostList)
         this.waitFor = options.waitFor;
         this.transition("default");
     }
+
+    @autobind
+    async setHostList({hosts} : {hosts: DredHostDetails[]}) {
+        if (this.hosts) {
+            this.retireObsoleteConnections(hosts)
+        }
+        this.hosts = hosts;
+        this.transition("updatedHostList");
+    }
+
+    retireObsoleteConnections(hosts: DredHostDetails[]) {
+        //!!!!! todo implement retireObsoleteConnections
+    }
+
     async getChannelList(): Promise<ChanId[]> {
         return ["discussion", "general", "ALL_ARE_MOCKED"]
     }
@@ -262,7 +289,19 @@ export class ConnectionManager extends StateMachine.withDefinition(
         }
         this.transition("disconnected");
     }
+
     async setSubscriptions(subs: ChannelSubs) {
+        if (this.channelSubs) return this.replaceSubscriptions(subs);
+
+        this.channelSubs = subs;
+        if (!this.hosts) {
+            await new Promise(resolve => 
+                this.discovery.events.once("hosts:ready", resolve))
+        }
+        this.connectToHosts()
+    }
+
+    async replaceSubscriptions(subs: ChannelSubs) {
         this.lastChannelSubs = this.channelSubs;
         this.channelSubs = subs;
 
@@ -276,15 +315,21 @@ export class ConnectionManager extends StateMachine.withDefinition(
         await Promise.all(promises);
         this.lastChannelSubs = undefined;
     }
+
     connectToHosts() {
         //! it EXPECTS to be called after the state machine has already done discovery
         if (!this.hosts) throw new Error(`no hosts; discovery not complete?`);
+
+        //! it EXPECTS to have subscription settings before connecting
+        if (!this.channelSubs) throw new Error(`no channel subscriptions yet.`);
+
         for (const h of this.hosts) {
             //!!!!! todo recycle existing connections matching current channelSubs
             this.connectTo(h)
 
         }
     }
+
     connectTo(host: DredHostDetails) {
         if (!this.channelSubs) throw new Error(  // makes typescript happy
             `missing channelSubs; should already have a reasonable default value`
@@ -307,13 +352,19 @@ export class ConnectionManager extends StateMachine.withDefinition(
         return conn
     }
 
+    logger!: any;
     @autobind
     healthyConnection(event: ConnectionEvent) {
         const {connection, message: msg} = event;
-        //!!! log the message at info level
-
+        //! it records the active state of the connection
         this.moveConnTo(connection, "active")
-        //!!!!!! update state
+        this.logger.info({summary: `connection to ${connection.host.address}`},
+            "healthy"
+        );
+
+        //! it does NOT need to trigger event 'replacedBy', because replaceHostConnection() takes that responsibility
+
+        this.checkConnectionState();
     }
 
     @autobind
@@ -346,33 +397,38 @@ export class ConnectionManager extends StateMachine.withDefinition(
     }
 
     async replaceHostConnection(host: DredHostDetails): Promise<HostConnection> {
-        const currentConn = this.hostToConn.get(host);
+        const replacingConn = this.hostToConn.get(host);
 
         const replacement = this.connectTo(host)
-        //! it starts a replacement connection in hopes of completing the new connection quickly.
-        //! if it completes quickly, the original connection is seamlessly replaced in the active-connections list.
-        //! if the new connection doesn't connect promptly, it...
-        //   * moves the old connection to obsolete
-        //   * adds the pending connection to pending
-        //   * triggers replacedBy event on the prior connection
-        //   * has a clear outlet/codepath for completing the resolution of the new connection (same as for any connection)
+        //! it starts a replacement connection and hopes to complete the new connection quickly.
         return new Promise<HostConnection>((resolve, reject) => {
             let timeout : boolean;
-            asyncDelay(this.connectionSettings.connectionWaitTimeMs).then(() => {
-                this.moveConnTo(replacement, "pending");
-                currentConn && this.moveConnTo(currentConn, "obsolete");
-                if (timeout !== false) {
-                    timeout = true;
-                    resolve(replacement);
-                }
-            });
             replacement.events.once("connected", ({ connection }) => {
-                currentConn?.replacedBy(replacement);
-                currentConn && this.moveConnTo(currentConn, "obsolete");
+                const oldConnection = replacingConn
+                //! if it completes quickly, the original connection is seamlessly replaced in the active-connections list
+                oldConnection?.replacedBy(replacement);
+                //! if the connection didn't connect promptly and was moved to pending, it's made active when connected
                 this.moveConnFromTo(replacement, "pending", "active");
+                //! it moves the old connection
+                oldConnection && this.moveConnTo(oldConnection, "obsolete");
+                oldConnection && this.graveyard.add(oldConnection);
 
                 if (!timeout) {
                     timeout = false;
+                    resolve(replacement);
+                }
+            });
+            //! if the new connection doesn't connect promptly, it...
+            //   * moves the old connection to obsolete
+            //   * adds the pending connection to pending
+            //   * triggers replacedBy event on the prior connection
+            //   * has a clear outlet/codepath for completing the resolution of the new connection (same as for any connection)
+            asyncDelay(this.connectionSettings.connectionWaitTimeMs).then(() => {
+                this.moveConnTo(replacement, "pending");
+                const oldConnection = replacingConn;
+                oldConnection && this.moveConnTo(oldConnection, "obsolete");
+                if (timeout !== false) {
+                    timeout = true;
                     resolve(replacement);
                 }
             });
@@ -480,6 +536,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
         // await this.checkConnectionState(newCache)
         return (this.hosts = newCache);
     }
+
     newState(cs: ConnectionState) {
         this.state = cs;
 
