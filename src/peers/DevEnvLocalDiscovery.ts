@@ -6,6 +6,7 @@ import { DredHostDetails } from "../types/DredHosts.js";
 import { Discovery, GenericDiscoveryOptions, promisedConnectionThresholds } from "../types/Discovery.js";
 import { StringNacl } from "../util/StringNacl.js";
 import { NbhId } from "../types/ChannelSubscriptions.js";
+import { asyncDelay } from "@poshplum/utils";
 
 
 const localNbh = "localhost-nbh";
@@ -16,6 +17,7 @@ interface DevDiscoveryOptions extends GenericDiscoveryOptions {
 export class DevEnvLocalDiscovery extends Discovery {
     // hosts: DredHostDetails[];
     async getNeighborhoods() {
+        await asyncDelay(1);
         return [ localNbh ];
     }
 
@@ -70,6 +72,7 @@ export class DevEnvLocalDiscovery extends Discovery {
     }
     async getHostList() {
         if (!this.hosts) throw new Error(`call setupDefaultHosts()`);
+        await asyncDelay(1);
         return this.hosts;
     }
     async getConnectionThresholds() : promisedConnectionThresholds {
