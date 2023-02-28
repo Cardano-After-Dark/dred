@@ -1,13 +1,14 @@
 services:
   redis:
     image: redis:latest
-    container_name: dred-redis
+    command: ["redis-server", "--bind", "redis", "--port", "6379"]
     ports:
       - '6379:6379'
   dred:
     build: ./
-    container_name: dred
+    environment:
+      - 'REDIS_URL=redis://default:@redis:6379'
     ports:
-      - '3000:3000'
+      - '3000:3029'
     depends_on:
       - 'redis'
