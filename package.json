@@ -41,7 +41,8 @@
         "testing:debug": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --watch --runInBand",
         "note": "abstract-logging and uuid packages are in service of src/redis/streams.",
         "note2": "also ioredis, although at an earlier version.  If that's a problem, then... ",
-        "note3": "yarn:build can be set up to run `yarn` in src/redis/streams and let its deps be installed over there; in that case, revert this commit!"
+        "note3": "yarn:build can be set up to run `yarn` in src/redis/streams and let its deps be installed over there; in that case, revert this commit!",
+        "run": "NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' node dist/dredServer.mjs"
     },
     "dependencies": {
         "abstract-logging": "^2.0.1",
