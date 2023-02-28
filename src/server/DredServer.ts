@@ -130,7 +130,13 @@ throw new Error(`is this needed?`        );
         // })
 
         //!!! todo: use configured Redis connection details
-        return new Redis();
+        const redisUrl = process.env.REDIS_URL
+        console.log(`REDIS_URL ${redisUrl}`)
+        if (redisUrl) {
+            return new Redis(redisUrl);
+        } else {
+            return new Redis();
+        }
     }
     mkClient(): DredClient {
         return new DredClient(this.clientArgs);

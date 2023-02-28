@@ -1,7 +1,5 @@
 FROM node:latest as foundation
 
-#SHELL ["/bin/bash", "--login", "-c"]
-
 ENV NODE_ENV development
 ENV SHELL /bin/bash
 ENV TMP_DIR /mnt/tmp
@@ -44,4 +42,4 @@ RUN pnpm install
 
 RUN pnpm build
 
-ENTRYPOINT [ "/sbin/pid1", "--timeout", "10", "docker-entrypoint.sh" ]
+CMD ["pnpm", "run", "run"]
