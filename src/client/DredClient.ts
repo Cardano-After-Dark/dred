@@ -96,10 +96,14 @@ const clientStates = {
     },
     discoveringHosts: {
         async onEntry(this: dred) {
-            await this.discovery.getHostList();
-            this.transition("getChannelList")
+            //! it completes the transition WITHOUT waiting for host discovery,
+            // ... and it will continue to channel-discovery later, once hosts are discovered.
+            {
+                this.discovery.getHostList().then(this.mkTransition("haveHostList"))
+            }
+            return
         },
-        getChannelList: "discoveringChannels",
+        haveHostList: "discoveringChannels",
     },
     discoveringChannels: {
         async onEntry(this: dred) {
