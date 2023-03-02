@@ -271,12 +271,22 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
             return result.json();
         }
-        const bad = await result
+        const err = await result
             .json()
             .catch(() => new Error(`${result.status} ${result.statusText} for ${path}`));
         //!!! if one of the requests fails, it notifies the PeerConnectionManager
         //     of the problem server
-        return Promise.reject(bad);
+
+        const {error, message, reason, recommendation, "?developer?": devMsg} = err;
+        const m = message || error;
+        this.events.emit("error", {
+            reason: reason || err,
+            message: `host said: ${m}`,
+            recommendation: recommendation || "try again or choose a different channel",
+            [devMessage]: devMsg || "Developers should check whether the request is properly formed"
+        })
+
+        return Promise.reject(err);
     }
 
     async getNeighborhoods() {
