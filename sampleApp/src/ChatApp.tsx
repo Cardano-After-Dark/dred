@@ -7,7 +7,7 @@ const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 import { withStateMachine, State, ErrorTrigger } from "@poshplum/poshplum";
 import { autobind, asyncDelay } from "@poshplum/utils";
 
-import { DredClient, ClientState } from "dred-client";
+import { DredClient, ClientState, DredError } from "dred-client";
 import { DevEnvLocalDiscovery } from "dred-client";
 
 const codec = 'audio/webm; codecs="vorbis"';
@@ -19,6 +19,8 @@ type MyState = {
     gen: number;
     audioInputDevices: any[];
     currentState?: string;
+    recommendation?: string;
+    lastError?: string;
     clientStatus?: string;
     message: string;
     msgs: string[];
@@ -43,7 +45,6 @@ export class ChatApp extends Component<myProps, MyState> {
     mkTransition(t: string): () => Promise<any>;
     //@ts-expect-error missing implementation (provided by withStateMachine)
     hasState(...t: string[]): boolean;
-
 
     debugState = 1;
     recordingChunkInterval = 1500;
@@ -72,14 +73,27 @@ export class ChatApp extends Component<myProps, MyState> {
     ensureClient() {
         if (this.client) return this.client;
 
-        const c : DredClient = this.client || new DredClient({ 
-            discovery: new DevEnvLocalDiscovery({}),
-            waitFor: "minimal",
-            name: "Dred Communicator dev-0.1.2",
-        });
-        c.events.on("hasChannels", this.setChannelList)
+        const c: DredClient =
+            this.client ||
+            new DredClient({
+                discovery: new DevEnvLocalDiscovery({}),
+                waitFor: "minimal",
+                name: "Dred Communicator dev-0.1.2",
+            });
+        c.events.on("hasChannels", this.setChannelList);
         c.events.on("state:changed", this.clientStateChanged);
-        return this.client = c;
+        c.events.on("error", this.notifyClientError);
+        return (this.client = c);
+    }
+
+    @autobind
+    notifyClientError(e: DredError) {
+        const { message, reason, recommendation } = e;
+        this.bump({
+            message: "error: " + message + "\n  -> Reason:" + JSON.stringify(reason),
+            lastError: message,
+            recommendation,
+        });
     }
 
     @autobind
@@ -98,25 +112,27 @@ export class ChatApp extends Component<myProps, MyState> {
     }
 
     @autobind
-    setChannelList( e: DredEvent & {nbh: NbhId, channels: ChanId[]} ) {
-        const {channels} = e;
-        this.setState({channels})
-        this.transition("hasChannels")
+    setChannelList(e: DredEvent & { nbh: NbhId; channels: ChanId[] }) {
+        const { channels } = e;
+        this.setState({ channels });
+        this.transition("hasChannels");
     }
+
     @autobind
     clientStateChanged(e: ClientState) {
-        const {
-            channels,
-            status
-        } = e;
-        // alert("client " + status)
-        this.bump({message: status, clientStatus: status, channels})
+        const { channels, status } = e;
+        const message = `${status}; ${channels?.length || "no"} channels`;
+        console.log("client state:", message);
+        this.bump({ message, clientStatus: status, channels });
     }
 
     @autobind
     async chooseNeighborhood(e) {
         const neighborhood = this.neighborhoodSelector.current.value;
-        this.setState({ neighborhood, message: `selected neighborhood '${neighborhood}'` });
+        this.setState({
+            neighborhood,
+            message: `selected neighborhood '${neighborhood}'`,
+        });
         this.client.setNeighborhood(neighborhood);
 
         await this.transition("findChannels");
@@ -143,7 +159,7 @@ export class ChatApp extends Component<myProps, MyState> {
 
     didTransition(trans: string, nextState: string) {
         const msg = `⤻${trans} ➜ ${nextState}`;
-        this.state.msgs.push(msg);
+        this.state.msgs.push(msg); 
         console.log("app transition from", this.state.currentState, msg);
         this.bump();
     }
@@ -153,6 +169,8 @@ export class ChatApp extends Component<myProps, MyState> {
             currentState = "",
             neighborhoods = [],
             channels = [],
+            lastError = "",
+            recommendation = "",
             isPlaying,
             queue,
             audioInputDevices,
@@ -189,9 +207,8 @@ export class ChatApp extends Component<myProps, MyState> {
                 {this.showControlsAndStatus()}
                 {this.showConsoleMessages()}
 
-                {this.hasState("chatReady", "recording", "finishRecording") && (
-                    this.showRecordButton()
-                )}
+                {this.hasState("chatReady", "recording", "finishRecording") &&
+                    this.showRecordButton()}
 
                 <State
                     name="default"
@@ -209,7 +226,7 @@ export class ChatApp extends Component<myProps, MyState> {
 
                 <State
                     name="choosingNeighborhood"
-                    transitions={{ 
+                    transitions={{
                         findChannels: "findingChannels",
                         // hasChannels: "chooseChannels",
                     }}
@@ -231,16 +248,19 @@ export class ChatApp extends Component<myProps, MyState> {
                 </State>
                 <State
                     name="findingChannels"
-                    transitions= {{
+                    transitions={{
                         //! it is triggered to move to the next state when the client gives us a channel list.
-                        hasChannels: "chooseChannels"
+                        hasChannels: "chooseChannels",
                         //!!!! todo: ensure that any potential failure of fetching channel-list is handled
-                        //   ... that wouldn't be normal, but still useful to handle.  Ideally that condition 
+                        //   ... that wouldn't be normal, but still useful to handle.  Ideally that condition
                         //   ... can be routed through a generic state/warning notification, and otherise,
                         //   ... provided entirely by the Client object.
                     }}
                 >
-                   <small className="card read-the-docs"> ... finding channels in neighborhood ...</small>
+                    <small className="card read-the-docs">
+                        {" "}
+                        ... finding channels in neighborhood ...
+                    </small>
                 </State>
 
                 <State
@@ -286,10 +306,11 @@ export class ChatApp extends Component<myProps, MyState> {
                 <State
                     name="finishRecording"
                     onEntry={this.finishRecording}
-                    transitions={{ 
+                    transitions={{
                         play: "playing",
-                        record: [() => false, "finishRecording"]
-                     }}
+                        stop: "finishRecording", //no-op
+                        record: [() => false, "finishRecording"],
+                    }}
                 />
 
                 <State
@@ -319,20 +340,23 @@ export class ChatApp extends Component<myProps, MyState> {
     }
 
     private showRecordButton() {
-        return <button
-            onMouseDown={this.mkTransition("record")}
-            onMouseUp={this.mkTransition("stop")}
-            onKeyUp={this.mkTransition("cancel")}
-        >
-            <div
-                style={{
-                    fontSize: "300%",
-                }}
+        const label = this.hasState("recording") ? "recording" : "record";
+        return (
+            <button
+                onMouseDown={this.mkTransition("record")}
+                onMouseUp={this.mkTransition("stop")}
+                onKeyUp={this.mkTransition("cancel")}
             >
-                🔴
-            </div>
-            record
-        </button>;
+                <div
+                    style={{
+                        fontSize: "300%",
+                    }}
+                >
+                    🔴
+                </div>
+                {label}
+            </button>
+        );
     }
 
     cancelledRecording() {
@@ -367,50 +391,17 @@ export class ChatApp extends Component<myProps, MyState> {
             video: false,
         });
         const audioTrack = audioStream.getAudioTracks()[0];
-        const foundCapabilities = audioTrack.getCapabilities();
-
-        // Set the echoCancellation property if supported
-        if (foundCapabilities.echoCancellation) {
-            audioTrack.applyConstraints({
-                echoCancellation: { ideal: true },
-            });
-        }
-
-        // Set the noiseSuppression property if supported
-        if (foundCapabilities.noiseSuppression) {
-            audioTrack.applyConstraints({
-                noiseSuppression: { ideal: true },
-            });
-        }
-
-        // Set the autoGainControl property if supported
-        if (foundCapabilities.autoGainControl) {
-            msgs.push("agc is available");
-            audioTrack.applyConstraints({
-                autoGainControl: { exact: false },
-            });
-        } else {
-            msgs.push("agc not available; capabilities:");
-        }
-        const t = JSON.stringify(foundCapabilities, null, 2);
-        console.log(t);
-        //!! the output is below at 
-        const settings = audioTrack.getSettings();
-        console.log("settings", settings);
-        const capabilities : string[] = [];
-        for (const s in settings) {
-            const v = settings[s]
-            if ("boolean" == typeof v) {
-                capabilities.push(`${v ? "" : "no "}${s}`)
-            }
-        }
+        const capabilities: string[] = this.getRecordingCapabilities(
+            audioTrack,
+            msgs
+        );
 
         const recordedChunks: Blob[] = [];
-        this.setState({ 
-            message: "recording...", 
-            audioStream, 
+        this.setState({
+            message: "recording...",
+            audioStream,
             audioTrack,
-            capabilities 
+            capabilities,
         });
         const recorder = (this.recorder = new MediaRecorder(
             audioStream,
@@ -433,45 +424,48 @@ export class ChatApp extends Component<myProps, MyState> {
 
         if (!this.recorder) {
             const message = `can't finishRecording before starting recording`;
-            this.bump({message})
+            this.bump({ message });
             console.error(message);
             return;
         }
 
-        this.doCaptureRecording()
-        this.recorder.stop(); 
-        this.stopCapture();
+        this.doCaptureRecording();
+        this.recorder.stop();
+        await this.stopCapture();
     }
     _liveNow: boolean = false;
     doCaptureRecording() {
         if (this._liveNow) return;
-
+        if (!this.recorder) throw new Error(`no recorder!`);
         this._liveNow = true;
-        this.recorder?.addEventListener("dataavailable", this.captureRecording)
+        this.recorder?.addEventListener("dataavailable", this.captureRecording);
     }
-    stopCapture() {
-        this._liveNow = false;
-        this.recorder?.removeEventListener("dataavailable", this.captureRecording)
+    async stopCapture() {
+        while (this._liveNow) await asyncDelay(5);
+        this.recorder?.removeEventListener(
+            "dataavailable",
+            this.captureRecording
+        );
     }
 
     @autobind
     captureRecording(e) {
         const { channel, audioTrack } = this.state;
 
-        //! it disconnects from the microphone when not actively recording.            
+        //! it disconnects from the microphone when not actively recording.
         audioTrack?.stop();
 
         if (!channel) {
-            return this.bump({message: "no channel selected"})
+            return this.bump({ message: "no channel selected" });
         }
 
         if (e.data.size > 0) {
             const recording = e.data;
             this.client.postMessage(channel, {
-                msg: encodeBase64(recording)
+                msg: encodeBase64(recording),
             });
 
-
+            this._liveNow = false;
             this.bump({
                 recording,
                 message: "what you said...",
@@ -481,7 +475,11 @@ export class ChatApp extends Component<myProps, MyState> {
         }
     }
 
-    @autobind bump({ message = "", msgs = [], ...state }: Partial<MyState> = {}) {
+    @autobind bump({
+        message = "",
+        msgs = [],
+        ...state
+    }: Partial<MyState> = {}) {
         if (message) (msgs as string[]).push(message);
 
         this.setState(({ gen }) => ({ message, ...state, gen: 1 + gen }));
@@ -549,7 +547,13 @@ export class ChatApp extends Component<myProps, MyState> {
     }
 
     private showControlsAndStatus() {
-        const { message, currentState, capabilities } = this.state;
+        const {
+            message,
+            currentState,
+            capabilities,
+            lastError,
+            recommendation,
+        } = this.state;
         return (
             <div
                 style={{
@@ -564,13 +568,30 @@ export class ChatApp extends Component<myProps, MyState> {
                     // borderTopRightRadius: "0.3em",
                 }}
             >
-                {this.showMicSelector()}
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                    }}
+                >
+                    <div style={{
+                        // float: "right",
+                        fontSize: "75%",
+                        color: "#595",
+                        alignSelf: "start",
+                        marginLeft: "0.5em",
+                    }}>{recommendation && <span>Suggested:
+                        {recommendation}</span>}
+                    </div>
+                    {this.showMicSelector()}
+                </div>
 
                 <div
                     style={{
                         display: "flex",
+                        flexShrink: 0,
                         justifyContent: "space-between",
-
                         padding: "0.2em 0.4em",
                         fontSize: "80%",
                         borderBottomLeftRadius: "0.8em",
@@ -581,7 +602,29 @@ export class ChatApp extends Component<myProps, MyState> {
                         color: "#ccc",
                     }}
                 >
-                    <span style={{ float: "left", fontSize: "90%", color:"#fff" }}>{message}</span>
+                    <span
+                        style={{
+                            float: "left",
+                            alignSelf: "start",
+                            fontSize: "90%",
+                            color: "#fff",
+                        }}
+                    >
+                        {message}
+                    </span>
+                    {lastError && (
+                        <code
+                            style={{
+                                // float: "right",
+                                fontSize: "85%",
+                                color: "#c55",
+                                alignSelf: "start",
+                            }}
+                        >
+                            {lastError}
+                        </code>
+                    )}
+
                     <code
                         style={{
                             // float: "right",
@@ -620,6 +663,50 @@ export class ChatApp extends Component<myProps, MyState> {
                 </div> */}
             </div>
         );
+    }
+
+    private getRecordingCapabilities(
+        audioTrack: MediaStreamTrack,
+        msgs: string[]
+    ) {
+        const foundCapabilities = audioTrack.getCapabilities();
+
+        // Set the echoCancellation property if supported
+        if (foundCapabilities.echoCancellation) {
+            audioTrack.applyConstraints({
+                echoCancellation: { ideal: true },
+            });
+        }
+
+        // Set the noiseSuppression property if supported
+        if (foundCapabilities.noiseSuppression) {
+            audioTrack.applyConstraints({
+                noiseSuppression: { ideal: true },
+            });
+        }
+
+        // Set the autoGainControl property if supported
+        if (foundCapabilities.autoGainControl) {
+            msgs.push("agc is available");
+            audioTrack.applyConstraints({
+                autoGainControl: { exact: false },
+            });
+        } else {
+            msgs.push("agc not available; capabilities:");
+        }
+        const t = JSON.stringify(foundCapabilities, null, 2);
+        console.log(t);
+        //!! the output is below at
+        const settings = audioTrack.getSettings();
+        console.log("settings", settings);
+        const capabilities: string[] = [];
+        for (const s in settings) {
+            const v = settings[s];
+            if ("boolean" == typeof v) {
+                capabilities.push(`${v ? "" : "no "}${s}`);
+            }
+        }
+        return capabilities;
     }
 
     private showMicSelector() {
@@ -674,42 +761,32 @@ function humanize(n: number): string {
     return `${formatted}${idx > 0 ? ALPHABET[idx - 1] : ""}`;
 }
 
-
-
-
-
-
-
-
-
-
-
 //!! ref: 8ycggee
-        // msgs.push(JSON.stringify(capabilities, null, 2));
-        // from chromium 2023-02:
-        // {
-        //     autoGainControl: [true, false],
-        //     channelCount: {
-        //         max: 2,
-        //         min: 1,
-        //     },
-        //     deviceId:
-        //         "...a long hex number...",
-        //     echoCancellation: [true, false],
-        //     groupId:
-        //         ""...another long hex number...",,
-        //     latency: {
-        //         max: 0.023219,
-        //         min: 0.01,
-        //     },
-        //     noiseSuppression: [true, false],
-        //     sampleRate: {
-        //         max: 48000,
-        //         min: 44100,
-        //     },
-        //     sampleSize: {
-        //         max: 16,
-        //         min: 16,
-        //     },
-        // };
+// msgs.push(JSON.stringify(capabilities, null, 2));
+// from chromium 2023-02:
+// {
+//     autoGainControl: [true, false],
+//     channelCount: {
+//         max: 2,
+//         min: 1,
+//     },
+//     deviceId:
+//         "...a long hex number...",
+//     echoCancellation: [true, false],
+//     groupId:
+//         ""...another long hex number...",,
+//     latency: {
+//         max: 0.023219,
+//         min: 0.01,
+//     },
+//     noiseSuppression: [true, false],
+//     sampleRate: {
+//         max: 48000,
+//         min: 44100,
+//     },
+//     sampleSize: {
+//         max: 16,
+//         min: 16,
+//     },
+// };
 //!/ref
