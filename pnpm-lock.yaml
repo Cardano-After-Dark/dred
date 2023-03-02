@@ -11,6 +11,7 @@ importers:
       '@swc/cli': ^0.1.57
       '@swc/core': ^1.2.204
       '@swc/jest': ^0.2.21
+      '@types/body-parser': ^1.19.2
       '@types/express': 4.17.13
       '@types/ioredis': ^4.28.10
       '@types/jest': ^29.4.0
@@ -19,6 +20,7 @@ importers:
       '@types/supertest': ^2.0.12
       abstract-logging: ^2.0.1
       body-parser: ^1.20.0
+      cors: ^2.8.5
       cross-fetch: ^3.1.5
       esbuild: ^0.17.10
       eventemitter3: ^5.0.0
@@ -36,6 +38,7 @@ importers:
       ts-jest: ^29.0.3
       ts-node: ^10.8.1
       ts-node-dev: ^2.0.0
+      tslib: ^2.4.1
       tweetnacl: ^1.0.3
       tweetnacl-util: ^0.15.1
       typescript: ^4.9.4
@@ -46,11 +49,13 @@ importers:
       '@poshplum/utils': link:../plum/utils
       abstract-logging: 2.0.1
       body-parser: 1.20.1
+      cors: 2.8.5
       cross-fetch: 3.1.5
       eventemitter3: 5.0.0
       express: 4.17.3
       ioredis: 5.3.0
       ts-essentials: 9.3.0_typescript@4.9.5
+      tslib: 2.5.0
       tweetnacl: 1.0.3
       tweetnacl-util: 0.15.1
       uuid: 8.3.2
@@ -61,6 +66,7 @@ importers:
       '@swc/cli': 0.1.59_@swc+core@1.3.31
       '@swc/core': 1.3.31
       '@swc/jest': 0.2.24_@swc+core@1.3.31
+      '@types/body-parser': 1.19.2
       '@types/express': 4.17.13
       '@types/ioredis': 4.28.10
       '@types/jest': 29.4.0
@@ -3923,6 +3929,14 @@ packages:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
     dev: true
 
+  /cors/2.8.5:
+    resolution: {integrity: sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==}
+    engines: {node: '>= 0.10'}
+    dependencies:
+      object-assign: 4.1.1
+      vary: 1.1.2
+    dev: false
+
   /create-require/1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
     dev: true
@@ -6637,7 +6651,6 @@ packages:
   /object-assign/4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
-    dev: true
 
   /object-hash/3.0.0:
     resolution: {integrity: sha512-RSn9F68PjH9HqtltsSnqYC1XXoWe9Bju5+213R98cNGttag9q9yAOTzdbsqvIa7aNm5WffBZFpWYr2aWrklWAw==}

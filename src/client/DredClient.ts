@@ -17,7 +17,7 @@ import { ConnectionThresholds, Discovery } from "../types/Discovery";
 import { NeighborhoodDiscovery } from "../peers/NeighborhoodDiscovery";
 import { HostConnection } from "./HostConnection";
 import { ChanId, ChannelSubs, ChannelSubscription, NbhId } from "../types/ChannelSubscriptions";
-import { devMessage, DredEvent } from "../types/DredEvents";
+import { devMessage, DredError, DredEvent } from "../types/DredEvents";
 
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
@@ -43,6 +43,7 @@ interface ClientEvents {
         channel: ChanId 
     }],
     "state:changed": [DredEvent & ClientState]
+    "error": [DredError]
 }
 
 export interface DredClientArgs {
@@ -65,11 +66,10 @@ type dred = DredClient;
 //! it runs onEntry() and predicate() hooks always in context
 //    of the machine's context-object, which is a DredClient.
 const clientStates = {
-    logLevel: "info",
+    // logLevel: "info",
     default: {
         //! it automatically advances to next states, when it can make progress
         async onEntry(this: dred) {
-            this.emitState()
             if (this.args.neighborhood) return this.transition("nbhSelected");
             return this.transition("findNbhs");
         },
@@ -78,7 +78,6 @@ const clientStates = {
     },
     findingNbhs: {
         async onEntry(this: dred) {
-            this.emitState()
             await this.getNeighborhoods();
             const next = await this.transition("needsNbhSelection");
             return 
@@ -87,7 +86,6 @@ const clientStates = {
     },
     selectingNbh: {
         async onEntry(this: dred) {
-            this.emitState()
             this.events.emit("needsNeighborhood", {
                 message: "select a neighborhood",
                 [devMessage]: "Developers: offer these nbhs to a user or pick one by policy",
@@ -98,7 +96,6 @@ const clientStates = {
     },
     discoveringHosts: {
         async onEntry(this: dred) {
-            this.emitState()
             await this.discovery.getHostList();
             this.transition("getChannelList")
         },
@@ -106,7 +103,6 @@ const clientStates = {
     },
     discoveringChannels: {
         async onEntry(this: dred) {
-            this.emitState()
             this.connManager.setSubscriptions(this.getDefaultOrConfiguredChannelSubs())
             const chans = await this.connManager.getChannelList();
             this.channels = chans;
@@ -125,7 +121,6 @@ const clientStates = {
     },
     ready: {
         async onEntry(this: dred) {
-            this.emitState();
             // this.
         }
     }
@@ -161,12 +156,14 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         //! tbd if we need to use this hook, perhaps for persisting the bookmark state of channels
         // debugger
     }
+
     static resolveDiscovery({ neighborhood, discovery }: DredClientArgs): Discovery {
         if (neighborhood) discovery = new NeighborhoodDiscovery({neighborhood});
         if (!discovery) throw new Error(`required: 'discovery' object or 'neighborhood' name`);
 
         return discovery;
     }
+
     private _status: string;
     //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
     set currentState(v : string) {

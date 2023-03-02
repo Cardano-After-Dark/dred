@@ -1,9 +1,11 @@
 //@ts-check
 
-import Redis from "ioredis";
+import { Redis } from "ioredis";
 import { Server } from "http";
 import express from "express";
+import type { Application } from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 
 //@ts-ignore
 import { RedisChannels } from "../redis/streams";
@@ -11,11 +13,13 @@ import { RedisChannels } from "../redis/streams";
 import { DredClient, DredClientArgs } from "../client/DredClient.js";
 import { RedisSet } from "../redis/RedisSet.js";
 import { Subscriber } from "../Subscriber.js";
-import { JSONValueAdapter, RedisHash, ValueAdapter } from "../redis/RedisHash.js";
+import { JSONValueAdapter, RedisHash, StringValueAdapter, ValueAdapter } from "../redis/RedisHash.js";
 import { ChannelOptions } from "../types/ChannelOptions.js";
 import { StringNacl } from "../util/StringNacl.js";
 import { Discovery } from "../types/Discovery.js";
 import { DredHostDetails } from "../types/DredHosts.js";
+import { ChanId, ChannelSubs } from "../types/ChannelSubscriptions.js";
+import { autobind } from "@poshplum/utils";
 
 const logging = parseInt(process.env.LOGGING || "0");
 export interface ExpressWithRedis extends express.Application {
@@ -45,8 +49,8 @@ export class DredServer {
     redis: Redis;
     channelConn: RedisChannels;
     listener: null | Server; // http.Server from node types
-    channelList: RedisSet;
-    channelOptions: RedisHash<string, object>;
+    channelList: RedisHash<string, string>;
+    channelOptions: RedisHash<string, ChannelOptions>;
     producers: Map<string, any>;
     subscribers: Map<string, Set<Subscriber>>;
     clientArgs: DredClientArgs;
@@ -64,17 +68,13 @@ export class DredServer {
         this.listener = null;
         this.verifier = new StringNacl(undefined, this);
 
-        this.channelList = new RedisSet(this.redis, "channels");
-        this.channelOptions = new RedisHash(
-            this.redis,
-            "channelOptions",
-            optionsSerializer
-        );
+        this.channelList = new RedisHash<string,string>(this.redis, "channels", StringValueAdapter);
+        this.channelOptions = new RedisHash(this.redis, "channelOptions", optionsSerializer);
         this.producers = new Map();
         this.subscribers = new Map();
 
         //!!! todo: allows the application name to override 'dred' setting in channel names created in Redis
-        this.channelConn = new RedisChannels({application: "dred"});
+        this.channelConn = new RedisChannels({ application: "dred" });
         this.channelConn._log.error = console.error.bind(console);
         this.clientArgs = clientArgs;
 
@@ -122,7 +122,7 @@ throw new Error(`is this needed?`        );
         return addr;
     }
     setupRedis() {
-        if (this.redis) throw new Error(`redis connection is already set up`)
+        if (this.redis) throw new Error(`redis connection is already set up`);
         // redis.subscribe(...).on("message", (event) => {
         //     for (const peer of peers) {
         //         peer.addEvent(event)
@@ -154,6 +154,8 @@ throw new Error(`is this needed?`        );
             this.log(`-> ${req.method} ${req.originalUrl}`);
             next();
         });
+        this.api.use(cors<Request>());
+
         this.api.use(bodyParser.json());
 
         //! it allows handlers to be mocked
@@ -166,6 +168,9 @@ throw new Error(`is this needed?`        );
         this.api.post("/channel/:channelId/message", (...args) => {
             this.postMessageInChannel(...args);
         });
+        this.api.get("/channels", (...args) => {
+            this.getChannels(...args);           
+        })
         this.api.get("/channel/:channelId/subscribe", (...args) => {
             this.subscribeToChannel(...args);
         });
@@ -173,8 +178,16 @@ throw new Error(`is this needed?`        );
             //! it allows clients to subscribe to many channels and receive notification about updates in any of them
             // this.subscribeToChannel(...args);
         });
+        this.api.use(this.resultLogger)
     }
 
+    resultLogger: express.RequestHandler = (req, res, next) => {
+         this.log(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url}`);
+    }
+    getChannels: express.RequestHandler = async(req, res, next) => {
+        const channels = await this.channelList.keys();
+        res.status(200).json({channels})        
+    }
     createChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
         const options: ChannelOptions = req.body;
@@ -202,7 +215,7 @@ throw new Error(`is this needed?`        );
             res.status(422).json({
                 error: "body.channelId is invalid; use params.channelId instead.",
             });
-            return next();          
+            return next();
         }
 
         expiresAt = expiresAt ? new Date(expiresAt) : undefined;
@@ -258,7 +271,7 @@ throw new Error(`is this needed?`        );
         };
 
         await this.setChanOptions(channelId, opts);
-        await this.channelList.add(channelId);
+        await this.channelList.set(channelId, "1");
         await this.channelCreated(channelId, opts);
         res.json({
             id: channelId,
@@ -275,10 +288,7 @@ throw new Error(`is this needed?`        );
         const obj = await this.channelOptions.get(channelName);
         return obj as ChannelOptions;
     }
-    async setChanOptions(
-        channelName: string,
-        options: ChannelOptions
-    ): Promise<void> {
+    async setChanOptions(channelName: string, options: ChannelOptions): Promise<void> {
         await this.channelOptions.set(channelName, options);
     }
 
