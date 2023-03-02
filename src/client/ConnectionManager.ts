@@ -2,7 +2,7 @@ import { autobind, StateMachine } from "@poshplum/utils";
 import { EventEmitter } from "eventemitter3";
 
 import { Discovery } from "../types/Discovery.js";
-import { ChanId, ChannelSubs, ChannelSubscription, DredChannelMessage } from "../types/ChannelSubscriptions.js";
+import { ChanId, ChannelSubs, ChannelSubscription, DredChannelMessage, NbhId } from "../types/ChannelSubscriptions.js";
 import { DredHostDetails, connnectionSettings } from "../types/DredHosts.js";
 import { devMessage, DredError, DredEvent } from "../types/DredEvents.js";
 
@@ -16,6 +16,8 @@ import {
     ThresholdChoice,
 } from "../types/PeerDiscovery.js";
 import { asyncDelay } from "../util/asyncDelay.js";
+import { fetcher } from "./fetcher.js";
+
 
 // | "pending"
 // | "discovering"
@@ -34,6 +36,8 @@ type ManagerEvents = {
     "connected": [DredEvent],
     "disconnecting": [DredEvent],
     "disconnected": [DredEvent],
+    "channel:added": [DredEvent & { nbh: NbhId; channel: ChanId }];
+    "channel:removed": [DredEvent & { nbh: NbhId; channel: ChanId }];
 }
 
 type connStatus = "active" | "pending" | "disconnected" | "obsolete";
@@ -237,7 +241,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
     get currentState() {
         return this._status
     }
-
+    channels?: ChanId[];
 
     constructor(options: ConnectionManagerOptions) {
         super({
@@ -270,7 +274,42 @@ export class ConnectionManager extends StateMachine.withDefinition(
     }
 
     async getChannelList(): Promise<ChanId[]> {
-        return ["discussion", "general", "ALL_ARE_MOCKED"]
+        if (this.channels) return this.channels;
+        //!!!!! ensure that channels are always fresh (watch host connections for updates in '_chans' stream)
+        if (!this.hosts) throw new Error(`no hosts discovered yet`);
+
+        const channels = new Set<string>();
+        let hostNumber = 1;
+        let responses = 0;
+        let completed = false;
+        let errors : Error[] = [];
+        for (const host of this.hosts as DredHostDetails[]) {
+            if (hostNumber > 2) await asyncDelay(100 * Math.pow(1.27, hostNumber));
+
+            try {
+                const {channels:foundChans} = await fetcher("/channels", {
+                    host,
+                })
+                for (const chan of foundChans) {
+                    if (!channels.has(chan)) {
+                        //!!!!! todo: do this for channels found in the neighborhood's _chans channel later
+                        this.events.emit("channel:added", {
+                            nbh: this.discovery.nbh,
+                            channel: chan,
+                            message: "new channel discovered",
+                            [devMessage]: [
+                                "ensure this channel makes it into the state of the client & application",
+                            ],
+                        });
+                    }
+                    channels.add(chan);
+                }
+                return (this.channels = [...channels]);
+            } catch(e) {
+                console.warn(`host ${host.address}:${host.port}: fetching /channels failed: `, e)
+            }
+        }
+        return []
     }
 
     // async getPeers(): PromisedPeers<T> {
