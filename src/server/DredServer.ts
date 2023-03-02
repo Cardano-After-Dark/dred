@@ -26,12 +26,32 @@ export interface ExpressWithRedis extends express.Application {
     redis: null | typeof Redis;
 }
 
+type ListenerSubscriptionList = ChannelSubscriber[];
+
+export type ChannelSubscriber = {
+    channel: ChanId,
+    stream: streamHandle,
+}
+type changeFeedUpdater = (...messages: rStreamMsg[]) => void;
+type consumerErrorNotifier = (channel: ChanId, e: Error) => void;
+type rStreamMsg = (rMsgRaw | rMsgParsed) & {
+    id: string,
+    channel: ChanId,
+    data: string,
+    [key: string]: string | undefined,
+}
+
+type streamHandle = {
+    team: any,              //!!! todo: enhance these types
+    consumer: any,
+}; 
+
+
 const peers = new Set<DredClient>();
 
 const optionsSerializer: ValueAdapter<ChannelOptions> = {
     toRedis(v: ChannelOptions) {
-        if ("member" !== v.approveJoins && "open" !== v.approveJoins)
-            v.approveJoins = "owner";
+        if ("member" !== v.approveJoins && "open" !== v.approveJoins) v.approveJoins = "owner";
 
         return JSONValueAdapter.toRedis(v);
     },
@@ -43,12 +63,14 @@ const optionsSerializer: ValueAdapter<ChannelOptions> = {
         return opts;
     },
 };
+
 export class DredServer {
     api: express.Application;
     discovery: Discovery;
     redis: Redis;
     channelConn: RedisChannels;
     listener: null | Server; // http.Server from node types
+    args: DredClientArgs & { api?: express.Application };
     channelList: RedisHash<string, string>;
     channelOptions: RedisHash<string, ChannelOptions>;
     producers: Map<string, any>;
@@ -57,13 +79,14 @@ export class DredServer {
     verifier: StringNacl;
     serverId: string;
     myServerInfo?: DredHostDetails;
-    constructor(clientArgs: DredClientArgs, serverId: string, ) {
+    constructor(clientArgs: DredClientArgs & { api?: express.Application }, serverId: string) {
+        this.args = clientArgs;
         this.serverId = serverId;
         this.discovery = DredClient.resolveDiscovery(clientArgs);
-
+        // const t= express()
         this.log(`+server '${serverId}'`, JSON.stringify(this.discovery, null, 2));
-        this.api = express();
-        const t= express();
+        this.api = this.createExpressServer();
+        // const t= express();
         this.redis = this.setupRedis();
         this.listener = null;
         this.verifier = new StringNacl(undefined, this);
@@ -81,18 +104,25 @@ export class DredServer {
         this.setupExpressHandlers();
     }
 
+    //! it has a mockable function for starting the express server
+    createExpressServer(): express.Application {
+        return this.args.api || express();
+    }
+
     //
     async listen() {
-        const myInfo = this.myServerInfo = this.myServerInfo || await this.discovery.myServerInfo(this.serverId);
+        const myInfo = (this.myServerInfo =
+            this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));
         if (!myInfo) throw new Error(`can't identify my own info`);
-        const {port, address} = myInfo;
-        (this.listener = this.api.listen(port, address));
+        const { port, address } = myInfo;
+        this.listener = this.api.listen(port, address);
         console.warn(`server '${this.serverId}' listening at ${address}:${port}`);
-        return this.listener
+        return this.listener;
         // express
         //       listen(port: number, hostname: string, backlog: number, callback?: () => void): http.Server;
         //       listen(port: number, hostname: string, callback?: () => void): http.Server;
-}
+    }
+
     async close() {
         this.cancelSubscribers();
         await this.channelConn.cleanup().catch(warning("channelConn.cleanup()"));
@@ -102,7 +132,9 @@ export class DredServer {
         this.listener?.close();
 
         function warning(activityName) {
-            return (e) => { console.warn(`during close: error in ${activityName}:\n\t`, e.message || e) }
+            return (e) => {
+                console.warn(`during close: error in ${activityName}:\n\t`, e.message || e);
+            };
         }
     }
     async listenDetails() {
@@ -110,14 +142,14 @@ export class DredServer {
     }
 
     get address() {
-throw new Error(`is this needed?`        );
         const { listener } = this;
-        if (null === listener) throw new Error(`not yet listening`);
+        if (!listener) throw new Error(`not yet listening`);
 
         const addr = listener.address();
+        throw new Error(`is this needed?`);
+
         if (addr === null) throw new Error(`server is not listening`);
-        if ("string" === typeof addr)
-            throw new Error(`Unix socket not supported currently`);
+        if ("string" === typeof addr) throw new Error(`Unix socket not supported currently`);
 
         return addr;
     }
@@ -171,12 +203,17 @@ throw new Error(`is this needed?`        );
         this.api.get("/channels", (...args) => {
             this.getChannels(...args);           
         })
-        this.api.get("/channel/:channelId/subscribe", (...args) => {
-            this.subscribeToChannel(...args);
-        });
         this.api.get("/channels/subscribe", (...args) => {
             //! it allows clients to subscribe to many channels and receive notification about updates in any of them
             // this.subscribeToChannel(...args);
+        });
+        this.api.options("/channels/listen", (...args) => {
+            //! it approves any allowed cross-origin requests.  These can be limited by domain name
+            //  or other attributes of the cross-origin OPTIONS request.
+        });
+        this.api.post("/channels/listen", (...args) => {
+            //! it allows clients to subscribe to many channels and receive notification about updates in any of them
+            this.listenOnChannels(...args);
         });
         this.api.use(this.resultLogger)
     }
@@ -241,11 +278,7 @@ throw new Error(`is this needed?`        );
                 });
                 return next();
             }
-            const verified = await this.verifier.verifySig(
-                channelId,
-                signature,
-                owner
-            );
+            const verified = await this.verifier.verifySig(channelId, signature, owner);
             if (!verified) {
                 res.status(400).json({
                     error: "bad signature; use the result of sign(channelName)",
@@ -282,6 +315,8 @@ throw new Error(`is this needed?`        );
     };
     async channelCreated(channelId, opts) {
         //! it allows specific subclass of dred server to be notified of channel-creation
+
+        //!!!!!! emit channel-created event
     }
 
     async getChanOptions(channelName: string): Promise<ChannelOptions> {
@@ -309,9 +344,7 @@ throw new Error(`is this needed?`        );
         //! trying to join an expired channel produces an error
         if (opts.expiresAt && now > opts.expiresAt) {
             this.log(
-                `expiration '${opts.expiresAt.getTime() % 100000}, now '${
-                    now.getTime() % 100000
-                }`
+                `expiration '${opts.expiresAt.getTime() % 100000}, now '${now.getTime() % 100000}`
             );
             res.status(422).json({
                 error: "this channel's expiresAt is already past",
@@ -335,8 +368,7 @@ throw new Error(`is this needed?`        );
         opts.requests = opts.requests || [];
 
         //! non-owners cannot exceed the memberLimit (if configured)
-        let overMemberLimit =
-            opts.memberLimit && opts.members.length >= opts.memberLimit;
+        let overMemberLimit = opts.memberLimit && opts.members.length >= opts.memberLimit;
 
         let requestOnly = false;
         let approvedVerifier;
@@ -346,10 +378,7 @@ throw new Error(`is this needed?`        );
             approvedVerifier = myId;
 
             this.log("owner-approved join");
-        } else if (
-            "member" == opts.approveJoins &&
-            (opts.members || []).includes(myId)
-        ) {
+        } else if ("member" == opts.approveJoins && (opts.members || []).includes(myId)) {
             //! a member can join someone by pubKey if approveJoins: member
             this.log("member-approved join");
             approvedVerifier = myId;
@@ -395,11 +424,7 @@ throw new Error(`is this needed?`        );
 
         let verified, error;
         try {
-            verified = await this.verifier.verifySig(
-                member,
-                signature,
-                approvedVerifier
-            );
+            verified = await this.verifier.verifySig(member, signature, approvedVerifier);
             if (!verified) error = "verify failed";
         } catch (e: any) {
             error = e.message;
@@ -439,11 +464,14 @@ throw new Error(`is this needed?`        );
         const { channelId } = req.params;
         const found = await this.channelList.has(channelId);
         if (!found) {
-            res.status(404).json({ error: "channel not found" });
+            res.status(404).json({ 
+                error: "channel not found",
+            });
             return next();
         }
         const message = req.body;
 
+        console.log("postMessage", message);
         this.log("server: postMessage", message);
         const tunnelProducer = await this.mkChannelProducer(channelId);
         await this.channelConn.produce(tunnelProducer, JSON.stringify(message));
@@ -452,6 +480,7 @@ throw new Error(`is this needed?`        );
         next();
     };
 
+
     cancelSubscribers() {
         for (const [chan, subscribers] of this.subscribers) {
             for (const sub of subscribers) {
@@ -459,70 +488,128 @@ throw new Error(`is this needed?`        );
             }
         }
     }
+
     get subscribeTimeout() {
         return 10000;
     }
-    subscribeToChannel: express.RequestHandler = async (req, res, next) => {
+
+    listenOnChannels: express.RequestHandler = async (req, res, next) => {
         let cancelled = false;
+        const subscriptions: ChannelSubs = req.body;
 
-        function sendUpdate(json: Object) {
+        console.warn("listening for", subscriptions);
+        //!!! todo: it validates authorization as appropriate for each requested channel
+
+        const sendUpdate : changeFeedUpdater = (...messages) => {
             // if (json.event !== "keepalive") debugger
-            const update = JSON.stringify(json);
-            // debug("update: ", update)
-            res.write(update + "\n");
-
-            (res as any)._flush(); // writes through compression middleware
+            for (const json of messages) {
+                const update = JSON.stringify(json);
+                res.write(update + "\n");
+                // debug("update: ", update)
+            }
+            (res as any)._flush(); //! flushes writes through compression middleware
         }
-
-        const { channelId } = req.params;
-        const found = await this.channelList.has(channelId);
-        if (!found) {
-            res.status(404).json({ error: "channel not found" });
-            return next();
-        }
-        const tunnel = await this.channelConn.use(channelId);
-        await this.channelConn.subscribe(tunnel);
+        const myStreamListeners : ListenerSubscriptionList = [];
 
         const cleanup = () => {
-            subs?.delete(subscriber);
-            this.channelConn.unsubscribe(tunnel);
+            //!!!! clean up all the internal subscriptions
+            for (const mySub of myStreamListeners) {
+                const {channel, stream} = mySub
+                this.channelConn.unsubscribe(stream);
+            }
             next();
         };
+        res.on("close", cleanup)
+
         const cancel = () => {
             cancelled = true;
             cleanup();
-        };
-        const subscriber: Subscriber = {
-            notify: sendUpdate,
-            cancel,
+            next()
         };
 
-        let subs = this.subscribers.get(channelId);
-        if (!subs) {
-            this.subscribers.set(channelId, (subs = new Set()));
+        const notifyConsumeError : consumerErrorNotifier = (channel, consumeError) => {
+            if (!cancelled) {
+                sendUpdate({
+                    event: "error:consumer",
+                    message: "internal stream consumer failed",
+                    reason: consumeError.message,
+                    channel,
+                });
+                this.log("consume error; TODO: reconnect/retry", consumeError);
+                cleanup()
+                next()
+            }
         }
-        subs.add(subscriber);
-        res.on("close", cleanup);
 
+        let anySuccesses = 0
+        let warnings: any[] = [];
+        for (const sub of subscriptions) {
+            const { channel } = sub.options;
+            const found = await this.channelList.has(channel);
+            if (!found) {
+                //! sends a warning note but do not fail unless there are no valid subscriptions
+                warnings.push({
+                    //!!!!! review & craft the shape of this for consistency
+                    event: "warning",
+                    channel,
+                    message: "invalid or expired channel"
+                });
+            }
+
+            const subscriber = await this.listenOneChannel(channel, 
+                sendUpdate, 
+                notifyConsumeError
+            );
+            if (subscriber) anySuccesses +=1;
+        }
+        if (!anySuccesses) {
+            res.status(404).json({ error: "no valid subscriptions in request" });
+            return cancel();
+        } else if (warnings.length) {
+            sendUpdate.apply(this, warnings)
+        }
+    }
+
+    async listenOneChannel(channel, 
+        sendUpdate : changeFeedUpdater, 
+        notifyConsumerError: consumerErrorNotifier
+    ) {        
+        //! it leverages the redis-streams module's cache of per-channel connections
+        const stream = await this.channelConn.use(channel);
+        await this.channelConn.subscribe(stream);
+
+        //! it spawns asynchronous monitoring in each channel
+        this.monitorChannelChanges(stream, channel, sendUpdate, notifyConsumerError);
+        return stream
+    }
+
+    private async monitorChannelChanges(
+        stream: streamHandle, 
+        channel: ChanId, 
+        sendUpdate: changeFeedUpdater, 
+        notifyConsumerError: consumerErrorNotifier,
+    ) {
         try {
-            //NOTE: during tests, this can fail due to race with flushdb() : (
             for await (const events of this.channelConn.consume(
-                tunnel,
+                stream,
                 "all",
                 10,
                 this.subscribeTimeout
             )) {
                 for (const e of events) {
-                    const { id, data } = e;
-                    this.log(`server: ${channelId} <- event ${id}: `, e.data);
+                    const { id,  data, ...meta} = e;
+                    this.log(`server: ${channel} <- event ${id}: `, e.data);
                     const parsed = JSON.parse(data);
-                    sendUpdate(parsed);
+                    sendUpdate({
+                        id, 
+                        channel, 
+                        data: parsed, 
+                        ...meta
+                    });
                 }
             }
         } catch (consumeError) {
-            if (!cancelled) {
-                this.log("consume error; TODO: reconnect/retry", consumeError);
-            }
+            notifyConsumerError(channel, consumeError as Error);
         }
     };
 }

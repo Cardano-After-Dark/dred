@@ -2,14 +2,14 @@ import { NbhId } from "../types/ChannelSubscriptions.js";
 import { ConnectionThresholds, Discovery, findingDredHosts, GenericDiscoveryOptions, promisedConnectionThresholds } from "../types/Discovery.js";
 
 export class NeighborhoodDiscovery extends Discovery {
-    neighborhood: NbhId;
+    neighborhood?: NbhId;
     static forNeighborhood(n: string) {
         return new this({neighborhood: n});
     }
     constructor(options: GenericDiscoveryOptions) {
         const {neighborhood} = options;
         super(options);
-        this.neighborhood = neighborhood;
+        if (neighborhood) this.neighborhood = neighborhood;
     }
     async getNeighborhoods() {
         return ["cardano-after-dark"]; //!!! todo: use discovery service to find registered neighborhoods

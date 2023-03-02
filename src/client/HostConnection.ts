@@ -298,39 +298,39 @@ export class HostConnection extends StateMachine.withDefinition(
 
     async connect(): Promise<any | never> {
         this.abortController = new AbortController();
-        const {signal} = this.abortController;
+        const { signal } = this.abortController;
         signal.addEventListener("abort", () => {
-            this.transition("abort")            
-        })
-        const myself = this.connecting = new Promise((res, rej) => {
+            this.transition("abort");
+        });
+        const myself = (this.connecting = new Promise((res, rej) => {
             let aborted = false;
-            this.fetch(`/channels/subscribe`, {
+            this.fetch(`/channels/listen`, {
+                body: JSON.stringify(this.channelSubs, null, 2),
+                method: "POST",
                 signal,
-                parse: false,
                 headers: { "content-type": "application/json" },
             })
+                .then((response: Response) => {
+                    if (aborted) return false;
+                    if (this.abortController?.signal.aborted) return false;
+
+                    //!!! todo: check to see if we shoudl reject with an empty / non-existent response here
+                    if (!response) return false;
+
+                    res(true);
+                })
                 .catch((e) => {
+                    debugger;
                     if (this.isAbortError(e)) {
                         // this.log("abort happened before fetch response headers");
                         aborted = true;
                     } else {
                         console.warn(`fetch error; see debugger - `, e);
-                        this.events.emit("failed", this.connectionFailureEvent(e))
+                        this.events.emit("failed", this.connectionFailureEvent(e));
                         debugger;
                     }
-                })
-                .then((response) => {
-                    if (aborted) return false;
-                    if (this.abortController?.signal.aborted) return false;
-
-                    //!!! todo: check to see if we shoudl reject with an empty / non-existent response here
-                    if (!response) return false; 
-    
-                    res(true)
-                });    
-        })
-
-
+                });
+        }));
     }
 
     mkEvent<T extends Pick<DredError, "message" | typeof devMessage> & Record<any, any>>(
@@ -363,19 +363,21 @@ export class HostConnection extends StateMachine.withDefinition(
                 "For more troubleshooting, check the 'reason' error object, and for deeper inspection,",
                 "... there is also a debugging breakpoint available",
             ],
-        }
+        };
     }
 
-
-    async fetch(path: string, { parse = true, debug = false, ...options }) {
+    //! it implements a streaming listener for changes
+    async fetch(path: string, { debug = false, ...options }) {
         if (path[0] !== "/") path = `/${path}`;
 
-        const {host} = this;
+        const { host } = this;
         const proto = host.insecure ? "http" : "https";
         const shortServer = `${host.address}:${host.port}`;
         const url = `${proto}://${shortServer}${path}`;
         // console.warn(`+fetch`, options.method, shortServer, path)
 
+        options.mode = "cors";
+        // options.credentials = "include"; //!!!! add this back
         const result = await fetch(url, options);
         if (debug) debugger;
 
@@ -383,26 +385,23 @@ export class HostConnection extends StateMachine.withDefinition(
         //   ...unless parse:false is provided; this allows the response to be hooked up
         //   to a streaming reader or take other treatment provided by the caller.
         if (result.ok) {
-            if (!parse) return result;
-
-            return result.json();
+            this.monitorSubscriptions(result);            
+            return result
         }
 
         //! failed requests @request or parsing level cause a rejection.
         // let reason : string | Error;
-        const reason = await result
-            .json()
-            .catch((r) => {
-                return  new Error(`${result.status} ${result.statusText} for ${path}`);
-            })
+        const reason = await result.json().catch((r) => {
+            return new Error(`${result.status} ${result.statusText} for ${path}`);
+        });
 
-        this.events.emit("failed", this.connectionFailureEvent(reason))
+        this.events.emit("failed", this.connectionFailureEvent(reason));
 
         return Promise.reject(reason);
     }
 
-    async monitorSubscription(chan: string, callback: Function, response: Response) {
-        if (!response.ok) throw new Error(`failure in subscribe...`);
+    async monitorSubscriptions(response: Response) {
+        if (!response.ok) throw new Error(`failure in listen...`);
 
         const compatResponse = fromPlatformFetchBody(response.body);
         this.stream = ndjsonStream(compatResponse);
@@ -417,18 +416,21 @@ export class HostConnection extends StateMachine.withDefinition(
                 connected = false;
             } else {
                 console.warn(`fetch error during read; see debugger - `, e);
-                this.events.emit("warning", this.mkEvent({
-                    message: "fetch error during read",
-                    [devMessage]: [
-                        "probably this is caused by a network connection error",
-                        " ... or server-side idle timeout, though we'd hope to get a toodleoo first.",
-                        "Connection manager can sometimes safely ignore a couple of these,",
-                        " ... especially if the user has gone idle",
-                        " ... and/or if the app doesn't have special realtime or security requirements.  ",
-                        " ... it SHOULD re-establish a healthy connection set when activity resumes"
-                    ],
-                    reason: e
-                } ) )
+                this.events.emit(
+                    "warning",
+                    this.mkEvent({
+                        message: "fetch error during read",
+                        [devMessage]: [
+                            "probably this is caused by a network connection error",
+                            " ... or server-side idle timeout, though we'd hope to get a toodleoo first.",
+                            "Connection manager can sometimes safely ignore a couple of these,",
+                            " ... especially if the user has gone idle",
+                            " ... and/or if the app doesn't have special realtime or security requirements.  ",
+                            " ... it SHOULD re-establish a healthy connection set when activity resumes",
+                        ],
+                        reason: e,
+                    })
+                );
                 debugger;
             }
             return undefined;
@@ -441,10 +443,32 @@ export class HostConnection extends StateMachine.withDefinition(
 
             const { value, done } = event;
             if (done) {
-                debugger
+                this.events.emit(
+                    "disconnected",
+                    this.mkEvent({
+                        message: "server disconnected", //!!!! check for timeout conditions and deal appropriately with that
+                        [devMessage]:
+                            "The server disconnected cleanly, notifying us that it was done. ",
+                    })
+                );
+                this.transition("disconnected");
+                debugger;
+                return;
             }
-            console.log(`client: ${chan} <- event: `, value);
-            callback(value);
+            debugger;
+            // console.log(`client: ${chan} <- event: `, value);
+            this.events.emit("message", {
+                connection: this,
+                message: "msg received in chan",
+                msg: value,
+                channel: "foo",
+                details: "bar",
+                mid: "baz",
+                neighborhood: "buz",
+                ts: new Date(),
+                [devMessage]:
+                    "normal message notification.  Connection manager should aggregate messages and deduplicate, while notifying clients of the new message.",
+            });
         }
     }
     isAbortError(e: any) {
