@@ -2,7 +2,13 @@ import { autobind, StateMachine } from "@poshplum/utils";
 import { EventEmitter } from "eventemitter3";
 
 import { Discovery } from "../types/Discovery.js";
-import { ChanId, ChannelSubs, ChannelSubscription, DredChannelMessage, NbhId } from "../types/ChannelSubscriptions.js";
+import {
+    ChanId,
+    ChannelSubs,
+    NbhId,
+    ChannelSubscription,
+    DredChannelMessage,
+} from "../types/ChannelSubscriptions.js";
 import { DredHostDetails, connnectionSettings } from "../types/DredHosts.js";
 import { devMessage, DredError, DredEvent } from "../types/DredEvents.js";
 
@@ -29,16 +35,19 @@ import { fetcher } from "./fetcher.js";
 // | "refreshing";
 
 type ManagerEvents = {
-    "hasNeighborhood": [DredEvent]
-    "needsNeighborhood": [DredEvent]
-    "connecting": [DredEvent],
-    "connect:minimal": [DredEvent],
-    "connected": [DredEvent],
-    "disconnecting": [DredEvent],
-    "disconnected": [DredEvent],
+    hasNeighborhood: [DredEvent];
+    needsNeighborhood: [DredEvent];
+    connecting: [DredEvent];
+    "connect:minimal": [DredEvent];
+    connected: [DredEvent];
+    disconnecting: [DredEvent];
+    disconnected: [DredEvent];
+
+    //! todo: move these to an aggregator capability in Client or separate class
     "channel:added": [DredEvent & { nbh: NbhId; channel: ChanId }];
     "channel:removed": [DredEvent & { nbh: NbhId; channel: ChanId }];
-}
+    message: [DredChannelMessage];
+};
 
 type connStatus = "active" | "pending" | "disconnected" | "obsolete";
 type healthStatus = "unhealthy" | "partial" | "healthy";
@@ -57,10 +66,10 @@ const connectionManagerStates = {
                     message: "select a neighborhood",
                     // recommendation: "",
                     [devMessage]: [
-                        "choose a default neighborhood if that fits your application's needs, ", 
+                        "choose a default neighborhood if that fits your application's needs, ",
                         "and/or give the user a default or choice based on neighborhood discovery.",
                         "Set a default neighborhood with the new DredClient{{neighborhood}) option",
-                        "...or, use ‹clientObject›.discovery.setNeighborhood(nbhId)"                        
+                        "...or, use ‹clientObject›.discovery.setNeighborhood(nbhId)",
                     ]
                 });
             }
@@ -68,8 +77,10 @@ const connectionManagerStates = {
         setupPending: "pendingSetup",
     },
     pendingSetup: {
-        async onEntry(this: cm)  {
-            if (this.hosts?.length && this.channelSubs?.length) return this.transition("readyToConnect")
+        async onEntry(this: cm) {
+            if (this.hosts?.length && this.channelSubs?.length)
+                return this.transition("readyToConnect");
+
 
         },
         updatedHostList: { nextState: "pendingSetup", reEntry: true },
@@ -95,7 +106,7 @@ const connectionManagerStates = {
         },
         updatedHostList: {
             nextState: "connecting",
-            reEntry: true
+            reEntry: true,
         },
         partial: "partiallyConnected",
         replaceSubs: "replacingSubs",
@@ -122,7 +133,7 @@ const connectionManagerStates = {
                     //  for security / realtime applications
                     altMessageSecurity: "",
                     altMessageRealtime: "",
-                    [devMessage]: "consider displaying the message briefly, to reassure the user"
+                    [devMessage]: "consider displaying the message briefly, to reassure the user",
                 });
             } else {
                 this.events.emit("connected", {
@@ -130,12 +141,12 @@ const connectionManagerStates = {
                     //!!! todo? include a count of connected hosts, here or in another spot
                     //   ... even if that's only for dApp developer transparency and we guide them
                     //   to avoid creating unnecessary complication by default in their UX
-                    
+
                     //! it helps clients clear any warnings that may have been present
                     //  for security / realtime applications
                     altMessageSecurity: "",
                     altMessageRealtime: "",
-                    [devMessage]: "consider displaying the message briefly, to reassure the user"
+                    [devMessage]: "consider displaying the message briefly, to reassure the user",
                 });
             }
         },
@@ -146,7 +157,7 @@ const connectionManagerStates = {
             reEntry: false,
         },
         partial: "degraded",
-        updatedHostList: "connecting"
+        updatedHostList: "connecting",
     },
     degraded: {
         onEntry(this: cm) {
@@ -165,15 +176,13 @@ const connectionManagerStates = {
             });
         },
         sufficient: "sufficient",
-        updatedHostList: "connecting"
+        updatedHostList: "connecting",
     },
     disconnecting: {
         onEntry(this: cm) {
             this.events.emit("disconnecting", {
                 message: "disconnecting from neighborhood hosts",
-                [devMessage]: [
-                    `disconnecting on request (probably from client object)`
-                ]
+                [devMessage]: [`disconnecting on request (probably from client object)`],
             });
             this.disconnect();
         },
@@ -226,20 +235,20 @@ export class ConnectionManager extends StateMachine.withDefinition(
     private connStatus = new Map<HostConnection, connStatus>();
 
     //! it keeps a graveyard of connections that can drop out of the set anytime they're garbage-collected,
-    //  for connections that are known to be obsolete / replaced by newer versions, but which might still get 
-    //  some events while they wrap up their operations. 
+    //  for connections that are known to be obsolete / replaced by newer versions, but which might still get / emit
+    //  some events while they wrap up their operations.
     private graveyard = new WeakSet<HostConnection>();
 
     private partialConnectNotification?: Promise<any>;
-    private _status!: string; // assigned by state-machine
 
+    private _status!: string; // assigned by state-machine
     //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
-    set currentState(v : string) {
-        this._status = v
+    set currentState(v: string) {
+        this._status = v;
     }
     //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
     get currentState() {
-        return this._status
+        return this._status;
     }
     channels?: ChanId[];
 
@@ -255,15 +264,15 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
         this.connectionSettings = HostConnection.settingsWithDefaults(options.connectionSettings);
         this.discovery = options.discovery;
-        this.discovery.events.on("hosts:updated", this.setHostList)
+        this.discovery.events.on("hosts:updated", this.setHostList);
         this.waitFor = options.waitFor;
         this.transition("default");
     }
 
     @autobind
-    async setHostList({hosts} : {hosts: DredHostDetails[]}) {
+    async setHostList({ hosts }: { hosts: DredHostDetails[] }) {
         if (this.hosts) {
-            this.retireObsoleteConnections(hosts)
+            this.retireObsoleteConnections(hosts);
         }
         this.hosts = hosts;
         this.transition("updatedHostList");
@@ -334,10 +343,9 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
         this.channelSubs = subs;
         if (!this.hosts) {
-            await new Promise(resolve => 
-                this.discovery.events.once("hosts:ready", resolve))
+            await new Promise((resolve) => this.discovery.events.once("hosts:ready", resolve));
         }
-        this.connectToHosts()
+        this.connectToHosts();
     }
 
     async replaceSubscriptions(subs: ChannelSubs) {
@@ -370,9 +378,10 @@ export class ConnectionManager extends StateMachine.withDefinition(
     }
 
     connectTo(host: DredHostDetails) {
-        if (!this.channelSubs) throw new Error(  // makes typescript happy
-            `missing channelSubs; should already have a reasonable default value`
-        );
+        if (!this.channelSubs)
+            throw new Error( // makes typescript happy
+                `missing channelSubs; should already have a reasonable default value`
+            );
 
         const conn = new HostConnection(host, this.channelSubs, this.connectionSettings);
         conn.events.on("connected", this.healthyConnection);
@@ -388,18 +397,16 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
         this.hostToConn.set(host, conn);
         this.moveConnTo(conn, "pending");
-        return conn
+        return conn;
     }
 
     logger!: any;
     @autobind
     healthyConnection(event: ConnectionEvent) {
-        const {connection, message: msg} = event;
+        const { connection, message: msg } = event;
         //! it records the active state of the connection
-        this.moveConnTo(connection, "active")
-        this.logger.info({summary: `connection to ${connection.host.address}`},
-            "healthy"
-        );
+        this.moveConnTo(connection, "active");
+        this.logger.info({ summary: `connection to ${connection.host.address}` }, "healthy");
 
         //! it does NOT need to trigger event 'replacedBy', because replaceHostConnection() takes that responsibility
 
@@ -407,29 +414,29 @@ export class ConnectionManager extends StateMachine.withDefinition(
     }
 
     @autobind
-    cleanupConnection(event :  ConnectionEvent | DredError) {
-        const {connection, message} = event;
-        console.log("cleanup: ", connection.host.address, message)
-        
+    cleanupConnection(event: ConnectionEvent | DredError) {
+        const { connection, message } = event;
+        console.log("cleanup: ", connection.host.address, message);
+
         this.moveConnTo(connection, "disconnected");
         this.graveyard.add(connection);
     }
 
     @autobind
     notifySubscribers(event: ConnectionEvent & DredChannelMessage) {
-        const {mid: msgId, connection, message: message, details, neighborhood, channel} = event;
+        const { mid: msgId, connection, message: message, details, neighborhood, channel } = event;
         if (!this.channelSubs) {
-            console.log("no listeners to hear about:", event)
+            console.log("no listeners to hear about:", event);
             return;
         }
 
         for (const sub of this.channelSubs) {
-           //!!!!! move to ChannelSubscription
+            //!!!!! move to ChannelSubscription
             if (channel === sub.options.channel) {
-                const {recentMsgs:seen} = sub;
+                const { recentMsgs: seen } = sub;
                 if (!seen.has(msgId)) {
-                    seen.add(msgId)
-                    sub.events.emit("channel:message", event)
+                    seen.add(msgId);
+                    sub.events.emit("channel:message", event);
                 }
             }
         }
@@ -438,12 +445,12 @@ export class ConnectionManager extends StateMachine.withDefinition(
     async replaceHostConnection(host: DredHostDetails): Promise<HostConnection> {
         const replacingConn = this.hostToConn.get(host);
 
-        const replacement = this.connectTo(host)
+        const replacement = this.connectTo(host);
         //! it starts a replacement connection and hopes to complete the new connection quickly.
         return new Promise<HostConnection>((resolve, reject) => {
-            let timeout : boolean;
+            let timeout: boolean;
             replacement.events.once("connected", ({ connection }) => {
-                const oldConnection = replacingConn
+                const oldConnection = replacingConn;
                 //! if it completes quickly, the original connection is seamlessly replaced in the active-connections list
                 oldConnection?.replacedBy(replacement);
                 //! if the connection didn't connect promptly and was moved to pending, it's made active when connected
@@ -488,7 +495,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
     }
 
     //! it sets the status of a connection to a target state, only if the current state matches the indicated "from" state.
-    private moveConnFromTo(connection : HostConnection, from: connStatus, target: connStatus) {
+    private moveConnFromTo(connection: HostConnection, from: connStatus, target: connStatus) {
         const current = this.connStatus.get(connection);
         if (from === current) this.connStatus.set(connection, target);
     }
@@ -498,12 +505,12 @@ export class ConnectionManager extends StateMachine.withDefinition(
         this.connStatus.set(connection, state);
     }
 
-    //! it emits a "connect:minimal" event after a brief delay, only if it's still 
-    //  partially-connected after other connections have had their chance 
+    //! it emits a "connect:minimal" event after a brief delay, only if it's still
+    //  partially-connected after other connections have had their chance
     //  and it didn't make it to a well-connected state.
     async emitPartialConnectEventIfNeeded() {
         if (this.partialConnectNotification) return;
-        
+
         const unhappy: ConnectionState[] = ["degraded", "minimally connected"];
 
         const pcn = (this.partialConnectNotification = asyncDelay(
@@ -523,7 +530,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
                     ` ... to indicate restored health.`,
                     `For security-centric applications, the minimal number of connections should`,
                     ` ... already guard security outcomes, so this event does not imply a loss of security`,
-                ]
+                ],
             });
         }
     }
@@ -540,13 +547,13 @@ export class ConnectionManager extends StateMachine.withDefinition(
         }
 
         if (healthyConnectionCount >= thresholds.healthy) {
-            return this.transition("sufficient")
+            return this.transition("sufficient");
         }
 
         if (healthyConnectionCount > thresholds.minimal) {
             return this.transition("partial");
         }
-        return this.transition("unhealthy")
+        return this.transition("unhealthy");
     }
 
     async freshenPeers(): PromisedHostDetails {

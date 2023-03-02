@@ -18,23 +18,26 @@ import { ndjsonStream } from "./betterJsonStream.js";
 
 type conn = HostConnection;
 export interface ConnectionEvent extends DredEvent {
-    connection: HostConnection
+    connection: HostConnection;
 }
-export interface moreInfo { moreInfo?: any }
+export interface moreInfo {
+    moreInfo?: any;
+}
 
 export interface HostConnectionEventTypes {
     warning: [ConnectionEvent & moreInfo];
     failed: [ConnectionEvent & DredError];
     retrying: [ConnectionEvent];
-    connected: (c: ConnectionEvent & { 
-        delayTime: number
-        attempts: number
-     }) => void;
+    connected: (
+        c: ConnectionEvent & {
+            delayTime: number;
+            attempts: number;
+        }
+    ) => void;
     replacedBy: [ConnectionEvent & { replacement: HostConnection }];
     message: [ConnectionEvent & DredChannelMessage];
     disconnected: [ConnectionEvent & DredError];
 }
-
 
 const connectionStates = {
     logLevel: "info",
@@ -42,12 +45,10 @@ const connectionStates = {
         default: true,
 
         onEntry(this: conn) {
-            this.connect().then( this.mkTransition("connected"),
-                (e: any) => {
-                    this.lastError = e;
-                    this.transition("retry");
-                }
-            );
+            this.connect().then(this.mkTransition("connected"), (e: any) => {
+                this.lastError = e;
+                this.transition("retry");
+            });
         },
         abort: "aborted",
         retry: "retrying",
@@ -57,13 +58,15 @@ const connectionStates = {
         failed: "failed",
         reconnect: {
             nextState: "connecting",
-            effect(this:conn) { this.connect() }
+            effect(this: conn) {
+                this.connect();
+            },
         },
         abort: "aborted",
         async onEntry(this: conn) {
             this.attempts += 1;
             if (this.attempts > this.settings.maxRetries) return this.transition("failed");
-            this.retryLater()
+            this.retryLater();
         },
     },
     connected: {
@@ -76,19 +79,19 @@ const connectionStates = {
                 delayTime: this.elapsedTime(),
                 [devMessage]: [
                     "The connection is established and will emit 'message' events when received from the host.",
-//!!!!! move this to a better spot:
+                    //!!!!! move this to a better spot:
                     "ConnectionManager or ConnectionSet is expected to prevent duplicate messages ...",
                     " ... from being delivered to the user or dApp",
-                ]
-            });        
+                ],
+            });
         },
         abort: "aborted",
         disconnected: {
             nextState: "disconnected",
-            predicate(this:conn) {
-                return !this.abortController?.signal.aborted; 
+            predicate(this: conn) {
+                return !this.abortController?.signal.aborted;
             },
-            effect(this: conn) { 
+            effect(this: conn) {
                 //!!! todo: put the event trigger more directly in the spot where disconnection is detected (with any error message), plus the transition()
                 this.events.emit("disconnected", {
                     message: "tbd",
@@ -96,25 +99,26 @@ const connectionStates = {
                     reason: "... from new location TBD",
                     [devMessage]: [
                         //!!!!! todo: check full interp of this state and update here
-                        "no action needed; HostConnection will retry"
-                    ]
-                })
-            }            
-        }
+                        "no action needed; HostConnection will retry",
+                    ],
+                });
+            },
+        },
     },
     failed: {
         onEntry(this: conn) {
             this.events.emit(
                 "failed",
                 this.mkEvent({
-                    message: `giving up after persistent connection failure (${this.settings.maxRetries} attempts). `, 
-                    recommendatIon: "check network connection, use patience, retry.  Do you have another way to connect to the network?",
-                    [devMessage] : [
+                    message: `giving up after persistent connection failure (${this.settings.maxRetries} attempts). `,
+                    recommendatIon:
+                        "check network connection, use patience, retry.  Do you have another way to connect to the network?",
+                    [devMessage]: [
                         `The HostConnection object tried hard to get connected`,
-                        `The connection manager is expected to retry, so it may be` ,
+                        `The connection manager is expected to retry, so it may be`,
                         `... better not to make maxRetries larger or to Infinity to keep retrying.`,
                         `See also: the 'retrying' event offered by the host connection.`,
-                    ]
+                    ],
                 })
             );
         },
@@ -125,24 +129,26 @@ const connectionStates = {
         abort: "disconnected",
 
         onEntry(this: conn) {
-            this.stopRetries()
-        }
+            this.stopRetries();
+        },
     },
     aborted: {
         //! an aborted connection is terminal; should be freed and garbage collected
         disconnected: "aborted",
 
         onEntry(this: conn) {
-            this.stopRetries()
-        }
-    }
+            this.stopRetries();
+        },
+    },
 };
 
 const connectionEvents = {
-    warning: "we timed out or encountered a problem connecting, but we'll keep retrying for a while",
-    failed: "we stopped trying to make this connection work.  Another HostConnection "+
-      "to this host might be created by the connection manager, but this connection "+
-      "never got started and is dead, dead, dead.",
+    warning:
+        "we timed out or encountered a problem connecting, but we'll keep retrying for a while",
+    failed:
+        "we stopped trying to make this connection work.  Another HostConnection " +
+        "to this host might be created by the connection manager, but this connection " +
+        "never got started and is dead, dead, dead.",
     connected: "successful connection; monitoring for new events in subscribed channels.",
 
     message: "message received from a subscribed channel",
@@ -167,6 +173,16 @@ export class HostConnection extends StateMachine.withDefinition(
     private startTime = new Date().getTime();
     private scheduledRetry?: ReturnType<typeof setTimeout>;
 
+    private _status!: string; // assigned by state-machine
+    //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
+    set currentState(v: string) {
+        this._status = v;
+    }
+    //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
+    get currentState() {
+        return this._status;
+    }
+
     elapsedTime(this: HostConnection): number {
         const now = new Date();
         return now.getTime() - this.startTime;
@@ -174,49 +190,55 @@ export class HostConnection extends StateMachine.withDefinition(
 
     retryLater() {
         const retryInterval = this.nextRetryInterval();
-        const {maxRetries} = this.settings;
+        const { maxRetries } = this.settings;
         //!!! todo: it only emits a warning if this.events.listeners indicates nobody is listening for the 'retrying' event.
         this.events.emit(
             "warning",
             this.mkEvent({
-                message: `connection error; will retry in ${Math.floor(retryInterval / 1000)} seconds`,
+                message: `connection error; will retry in ${Math.floor(
+                    retryInterval / 1000
+                )} seconds`,
                 [devMessage]: "subscribe to 'retrying' to remove this warning.",
                 retryCount: this.attempts,
                 maxRetries,
             })
-        )
-        this.scheduledRetry = setTimeout(this.mkTransition("reconnect"), retryInterval)
+        );
+        this.scheduledRetry = setTimeout(this.mkTransition("reconnect"), retryInterval);
 
-        this.events.emit("retrying", this.mkEvent({
-            message: `connection error; will retry in ${Math.floor(retryInterval / 1000)} seconds`, 
-            [devMessage]: [
-                "This host connection got an error or timeout trying to connect, but it will retry on its own.",
-                "Each retry will be delayed a bit longer than the previous one. "
-            ],
-            retryCount: this.attempts,
-            maxRetries,
-        })  )
-    } 
-   
-    eventWithMessage<T>(m: string, e: T ) {
+        this.events.emit(
+            "retrying",
+            this.mkEvent({
+                message: `connection error; will retry in ${Math.floor(
+                    retryInterval / 1000
+                )} seconds`,
+                [devMessage]: [
+                    "This host connection got an error or timeout trying to connect, but it will retry on its own.",
+                    "Each retry will be delayed a bit longer than the previous one. ",
+                ],
+                retryCount: this.attempts,
+                maxRetries,
+            })
+        );
+    }
+
+    eventWithMessage<T>(m: string, e: T) {
         return {
             message: ``,
-            ...e
-        }
-    };
+            ...e,
+        };
+    }
 
-    
     nextRetryInterval(): number {
         return Math.min(
             this.settings.retryBaseIntervalMs * Math.pow(1.27, this.attempts),
             this.settings.retryMaxIntervalMs
-        )
+        );
     }
     disconnect(reason: string) {
         //!!!!! TODO: cancel the pending stream if with ReadableStream.cancel()
 
         if (this.abortController) this.abortController.abort(`disconnect(): ${reason}`);
-        this.stopRetries()
+        this.stopRetries();
     }
     stopRetries() {
         if (this.scheduledRetry) clearTimeout(this.scheduledRetry);
@@ -232,21 +254,27 @@ export class HostConnection extends StateMachine.withDefinition(
                 "This is a normal operational condition when changing channel-subscription settings.",
                 "Connection manager is expected to move this old connection to the graveyard",
                 "... and get rid of any references, listeners, etc on the old connection ...",
-                "... to ensure it is properly garbage collected."
-            ]
-        })
+                "... to ensure it is properly garbage collected.",
+            ],
+        });
     }
     connecting: Promise<any | never>;
-    static settingsWithDefaults(partialSettings: Partial<connnectionSettings>): connnectionSettings {
+    static settingsWithDefaults(
+        partialSettings: Partial<connnectionSettings>
+    ): connnectionSettings {
         return {
             retryBaseIntervalMs: 1000,
             retryMaxIntervalMs: 30000,
             maxRetries: Infinity,
             connectionWaitTimeMs: 7000,
             ...partialSettings,
-        }
+        };
     }
-    constructor(host: DredHostDetails, subscriptions: ChannelSubs, settings: Partial<connnectionSettings>) {
+    constructor(
+        host: DredHostDetails,
+        subscriptions: ChannelSubs,
+        settings: Partial<connnectionSettings>
+    ) {
         super({
             contextLabel: `connection:${host.serverId}`,
             currentState: "default",
@@ -265,7 +293,7 @@ export class HostConnection extends StateMachine.withDefinition(
         this.events.on("replacedBy", ({}) => {});
         this.host = host;
         this.channelSubs = subscriptions;
-        this.connecting = this.connect()
+        this.connecting = this.connect();
     }
 
     async connect(): Promise<any | never> {
@@ -305,16 +333,16 @@ export class HostConnection extends StateMachine.withDefinition(
 
     }
 
-    mkEvent<T extends Pick<DredError, "message" | typeof devMessage> & Record<any,any>>
-        (args: T
-    ): (ConnectionEvent & DredError) {
-        const {[devMessage]: dm, message, ...moreArgs} = args;
+    mkEvent<T extends Pick<DredError, "message" | typeof devMessage> & Record<any, any>>(
+        args: T
+    ): ConnectionEvent & DredError {
+        const { [devMessage]: dm, message, ...moreArgs } = args;
         return {
             connection: this,
             message: `[${this.host.serverId} at ${this.host.address}]: ${message}`,
             reason: this.lastError,
             [devMessage]: dm,
-            ...moreArgs        
+            ...moreArgs,
         };
     }
 
@@ -329,7 +357,7 @@ export class HostConnection extends StateMachine.withDefinition(
                 "developers should check for correctness of the fetch call",
                 "Connection manager is expected to monitor for failed connections ...",
                 "... and ensure that a suitable replacement is created.  ",
-                "Connection manager should be expected to detect persistent connection problems ...",
+                "Connection manager is expected to detect persistent connection problems ...",
                 "... IF the OVERALL health of the neighborhood is affected,",
                 "... and to escalate the message/recommendation info to users",
                 "For more troubleshooting, check the 'reason' error object, and for deeper inspection,",
