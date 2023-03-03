@@ -590,7 +590,7 @@ export class DredServer {
             next()
         };
 
-        const notifyConsumeError : consumerErrorNotifier = (channel, consumeError) => {
+        const notifyConsumeError: consumerErrorNotifier = (channel, consumeError) => {
             if (!cancelled) {
                 sendUpdate({
                     event: "error:consumer",
@@ -599,12 +599,12 @@ export class DredServer {
                     channel,
                 });
                 this.log("consume error; TODO: reconnect/retry", consumeError);
-                cleanup()
-                next()
+                cleanup();
+                next();
             }
-        }
+        };
 
-        let anySuccesses = 0
+        let anySuccesses = 0;
         let warnings: any[] = [];
         for (const sub of subscriptions) {
             const { channel } = sub.options;
@@ -615,42 +615,41 @@ export class DredServer {
                     //!!!!! review & craft the shape of this for consistency
                     event: "warning",
                     channel,
-                    message: "invalid or expired channel"
+                    message: "invalid or expired channel",
                 });
             }
 
-            const subscriber = await this.listenOneChannel(channel, 
-                sendUpdate, 
-                notifyConsumeError
-            );
-            if (subscriber) anySuccesses +=1;
+            const subscriber = await this.listenOneChannel(channel, sendUpdate, notifyConsumeError);
+            if (subscriber) anySuccesses += 1;
         }
         if (!anySuccesses) {
             res.status(404).json({ error: "no valid subscriptions in request" });
             return cancel();
         } else if (warnings.length) {
-            sendUpdate.apply(this, warnings)
+            sendUpdate.apply(this, warnings);
         }
+    };
     }
 
-    async listenOneChannel(channel, 
-        sendUpdate : changeFeedUpdater, 
+    async listenOneChannel(
+        channel,
+        sendUpdate: changeFeedUpdater,
         notifyConsumerError: consumerErrorNotifier
-    ) {        
+    ) {
         //! it leverages the redis-streams module's cache of per-channel connections
         const stream = await this.channelConn.use(channel);
         await this.channelConn.subscribe(stream);
 
         //! it spawns asynchronous monitoring in each channel
         this.monitorChannelChanges(stream, channel, sendUpdate, notifyConsumerError);
-        return stream
+        return stream;
     }
 
     private async monitorChannelChanges(
-        stream: streamHandle, 
-        channel: ChanId, 
-        sendUpdate: changeFeedUpdater, 
-        notifyConsumerError: consumerErrorNotifier,
+        stream: streamHandle,
+        channel: ChanId,
+        sendUpdate: changeFeedUpdater,
+        notifyConsumerError: consumerErrorNotifier
     ) {
         try {
             for await (const events of this.channelConn.consume(
@@ -660,21 +659,23 @@ export class DredServer {
                 this.subscribeTimeout
             )) {
                 for (const e of events) {
-                    const { id,  data, ...meta} = e;
-                    this.log(`server: ${channel} <- event ${id}: `, e.data);
+                    const { id: mid, cid, data, ...meta } = e;
+                    this.log(`server: ${channel} <- event ${mid}: `, e.data);
                     const parsed = JSON.parse(data);
                     sendUpdate({
-                        id, 
-                        channel, 
-                        data: parsed, 
-                        ...meta
+                        mid,
+                        channel,
+                        nbh: this.nbh,
+                        msg: parsed,
+                        cid,
+                        ...meta,
                     });
                 }
             }
         } catch (consumeError) {
             notifyConsumerError(channel, consumeError as Error);
         }
-    };
+    }
 }
 
 export async function createServer(options: DredClientArgs, serverId: string) {
