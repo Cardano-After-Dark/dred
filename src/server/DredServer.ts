@@ -514,13 +514,7 @@ export class DredServer {
     };
 
     async mkChannelProducer(channelId: any) {
-        let producer = this.producers.get(channelId);
-        if (producer) return producer;
-
-        producer = await this.channelConn.use(channelId);
-        this.producers.set(channelId, producer);
-
-        return producer;
+        return this.channelConn.use(channelId);
     }
 
     postMessageInChannel: express.RequestHandler = async (req, res, next) => {
