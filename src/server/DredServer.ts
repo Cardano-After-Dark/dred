@@ -13,7 +13,12 @@ import { RedisChannels } from "../redis/streams";
 import { DredClient, DredClientArgs } from "../client/DredClient.js";
 import { RedisSet } from "../redis/RedisSet.js";
 import { Subscriber } from "../Subscriber.js";
-import { JSONValueAdapter, RedisHash, StringValueAdapter, ValueAdapter } from "../redis/RedisHash.js";
+import {
+    JSONValueAdapter,
+    RedisHash,
+    StringValueAdapter,
+    ValueAdapter,
+} from "../redis/RedisHash.js";
 import { ChannelOptions } from "../types/ChannelOptions.js";
 import { StringNacl } from "../util/StringNacl.js";
 import { Discovery } from "../types/Discovery.js";
@@ -29,23 +34,22 @@ export interface ExpressWithRedis extends express.Application {
 type ListenerSubscriptionList = ChannelSubscriber[];
 
 export type ChannelSubscriber = {
-    channel: ChanId,
-    stream: streamHandle,
-}
+    channel: ChanId;
+    stream: streamHandle;
+};
 type changeFeedUpdater = (...messages: rStreamMsg[]) => void;
 type consumerErrorNotifier = (channel: ChanId, e: Error) => void;
 type rStreamMsg = (rMsgRaw | rMsgParsed) & {
-    id: string,
-    channel: ChanId,
-    data: string,
-    [key: string]: string | undefined,
-}
+    id: string;
+    channel: ChanId;
+    data: string;
+    [key: string]: string | undefined;
+};
 
 type streamHandle = {
-    team: any,              //!!! todo: enhance these types
-    consumer: any,
-}; 
-
+    team: any; //!!! todo: enhance these types
+    consumer: any;
+};
 
 const peers = new Set<DredClient>();
 
@@ -79,6 +83,45 @@ export class DredServer {
     verifier: StringNacl;
     serverId: string;
     myServerInfo?: DredHostDetails;
+
+    setupExpressHandlers() {
+        this.api.use((req, res, next) => {
+            this.log(`-> ${req.method} ${req.originalUrl}`);
+            next();
+        });
+        this.api.use(cors<Request>());
+
+        this.api.use(bodyParser.json());
+
+        //! it allows handlers to be mocked
+        this.api.post("/channel/:channelId", (...args) => {
+            this.createChannel(...args);
+        });
+        this.api.post("/channel/:channelId/join", (...args) => {
+            this.joinInChannel(...args);
+        });
+        this.api.post("/channel/:channelId/message", (...args) => {
+            this.postMessageInChannel(...args);
+        });
+        this.api.get("/channels", (...args) => {
+            this.getChannels(...args);
+        });
+        this.api.get("/channels/subscribe", (...args) => {
+            //! it allows clients to subscribe to many channels and receive notification about updates in any of them
+            // this.subscribeToChannel(...args);
+        });
+        this.api.options("/channels/listen", (...args) => {
+            //! it approves any allowed cross-origin requests.  These can be limited by domain name
+            //  or other attributes of the cross-origin OPTIONS request.
+        });
+        this.api.post("/channels/listen", (...args) => {
+            //! it allows clients to subscribe to many channels and receive notification about updates in any of them
+            this.listenOnChannels(...args);
+        });
+        this.api.use(this.resultLogger);
+    }
+
+
     constructor(clientArgs: DredClientArgs & { api?: express.Application }, serverId: string) {
         this.args = clientArgs;
         this.serverId = serverId;
@@ -87,21 +130,52 @@ export class DredServer {
         this.log(`+server '${serverId}'`, JSON.stringify(this.discovery, null, 2));
         this.api = this.createExpressServer();
         // const t= express();
-        this.redis = this.setupRedis();
+
+        const redisUrl = process.env.REDIS_URL;
+        this.redis = this.setupRedis(redisUrl);
         this.listener = null;
         this.verifier = new StringNacl(undefined, this);
 
-        this.channelList = new RedisHash<string,string>(this.redis, "channels", StringValueAdapter);
+        this.channelList = new RedisHash<string, string>(
+            this.redis,
+            "channels",
+            StringValueAdapter
+        );
         this.channelOptions = new RedisHash(this.redis, "channelOptions", optionsSerializer);
         this.producers = new Map();
         this.subscribers = new Map();
 
         //!!! todo: allows the application name to override 'dred' setting in channel names created in Redis
-        this.channelConn = new RedisChannels({ application: "dred" });
+        this.channelConn = new RedisChannels({
+            application: `${this.nbh}::`,
+            redis: {
+                url: redisUrl,
+            },
+        });
         this.channelConn._log.error = console.error.bind(console);
         this.clientArgs = clientArgs;
 
         this.setupExpressHandlers();
+    }
+
+    setupRedis(url) {
+        if (this.redis) throw new Error(`redis connection is already set up`);
+        // redis.subscribe(...).on("message", (event) => {
+        //     for (const peer of peers) {
+        //         peer.addEvent(event)
+        //     }
+        // })
+
+        //!!! todo: use configured Redis connection details
+        console.log(`REDIS_URL ${url}`);
+        const options: RedisOptions = {
+            // keyPrefix: `${this.nbh}::`  //!!! todo vet this technique.
+        };
+        if (url) {
+            return new Redis(url, options);
+        } else {
+            return new Redis(options);
+        }
     }
 
     //! it has a mockable function for starting the express server
@@ -153,23 +227,6 @@ export class DredServer {
 
         return addr;
     }
-    setupRedis() {
-        if (this.redis) throw new Error(`redis connection is already set up`);
-        // redis.subscribe(...).on("message", (event) => {
-        //     for (const peer of peers) {
-        //         peer.addEvent(event)
-        //     }
-        // })
-
-        //!!! todo: use configured Redis connection details
-        const redisUrl = process.env.REDIS_URL
-        console.log(`REDIS_URL ${redisUrl}`)
-        if (redisUrl) {
-            return new Redis(redisUrl);
-        } else {
-            return new Redis();
-        }
-    }
     mkClient(): DredClient {
         return new DredClient(this.clientArgs);
     }
@@ -181,42 +238,6 @@ export class DredServer {
         logging && console.warn(...args);
     }
 
-    setupExpressHandlers() {
-        this.api.use((req, res, next) => {
-            this.log(`-> ${req.method} ${req.originalUrl}`);
-            next();
-        });
-        this.api.use(cors<Request>());
-
-        this.api.use(bodyParser.json());
-
-        //! it allows handlers to be mocked
-        this.api.post("/channel/:channelId", (...args) => {
-            this.createChannel(...args);
-        });
-        this.api.post("/channel/:channelId/join", (...args) => {
-            this.joinInChannel(...args);
-        });
-        this.api.post("/channel/:channelId/message", (...args) => {
-            this.postMessageInChannel(...args);
-        });
-        this.api.get("/channels", (...args) => {
-            this.getChannels(...args);           
-        })
-        this.api.get("/channels/subscribe", (...args) => {
-            //! it allows clients to subscribe to many channels and receive notification about updates in any of them
-            // this.subscribeToChannel(...args);
-        });
-        this.api.options("/channels/listen", (...args) => {
-            //! it approves any allowed cross-origin requests.  These can be limited by domain name
-            //  or other attributes of the cross-origin OPTIONS request.
-        });
-        this.api.post("/channels/listen", (...args) => {
-            //! it allows clients to subscribe to many channels and receive notification about updates in any of them
-            this.listenOnChannels(...args);
-        });
-        this.api.use(this.resultLogger)
-    }
 
     resultLogger: express.RequestHandler = (req, res, next) => {
          this.log(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url}`);
