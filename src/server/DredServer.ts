@@ -537,7 +537,6 @@ export class DredServer {
         next();
     };
 
-
     cancelSubscribers() {
         for (const [chan, subscribers] of this.subscribers) {
             for (const sub of subscribers) {
@@ -557,7 +556,7 @@ export class DredServer {
         console.warn("listening for", subscriptions);
         //!!! todo: it validates authorization as appropriate for each requested channel
 
-        const sendUpdate : changeFeedUpdater = (...messages) => {
+        const sendUpdate: changeFeedUpdater = (...messages) => {
             // if (json.event !== "keepalive") debugger
             for (const json of messages) {
                 const update = JSON.stringify(json);
@@ -565,23 +564,34 @@ export class DredServer {
                 // debug("update: ", update)
             }
             (res as any)._flush(); //! flushes writes through compression middleware
-        }
-        const myStreamListeners : ListenerSubscriptionList = [];
+        };
+        const myStreamListeners: ListenerSubscriptionList = [];
+        const timerInterval = 20000;
+        //! it sends heartbeat signals every so often to clients
+        //!!! todo: heartbeat interval can be configured
+        const timer = setInterval(() => {
+            sendUpdate({ type: "heartbeat" });
+        }, timerInterval);
+        //! it tells clients how frequently they should expect a heartbeat
+        sendUpdate({ type: "heartbeat-info", timerInterval });
+
+        timer.unref(); //! the heartbeat-timer never blocks a process from exiting when it's otherwise done
 
         const cleanup = () => {
             //!!!! clean up all the internal subscriptions
             for (const mySub of myStreamListeners) {
-                const {channel, stream} = mySub
+                const { channel, stream } = mySub;
                 this.channelConn.unsubscribe(stream);
             }
+            clearInterval(timer);
             next();
         };
-        res.on("close", cleanup)
+        res.on("close", cleanup);
 
         const cancel = () => {
             cancelled = true;
             cleanup();
-            next()
+            next();
         };
 
         const notifyConsumeError: consumerErrorNotifier = (channel, consumeError) => {
