@@ -281,8 +281,8 @@ export class DredServer {
 
 
     resultLogger: express.RequestHandler = (req, res, next) => {
-         this.log(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url}`);
-    }
+        this.log(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url}`);
+    };
     getChannels: express.RequestHandler = async (req, res, next) => {
         const found: string[] = (await this.channelList.keys()) as string[];
         const channels = found.filter((x) => x[0] !== "_");
