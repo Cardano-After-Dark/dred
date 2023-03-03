@@ -1,6 +1,6 @@
 //@ts-check
 
-import { Redis } from "ioredis";
+import { Redis, RedisOptions } from "ioredis";
 import { Server } from "http";
 import express from "express";
 import type { Application } from "express";
@@ -23,7 +23,7 @@ import { ChannelOptions } from "../types/ChannelOptions.js";
 import { StringNacl } from "../util/StringNacl.js";
 import { Discovery } from "../types/Discovery.js";
 import { DredHostDetails } from "../types/DredHosts.js";
-import { ChanId, ChannelSubs } from "../types/ChannelSubscriptions.js";
+import { ChanId, ChannelSubs, NbhId } from "../types/ChannelSubscriptions.js";
 import { autobind } from "@poshplum/utils";
 
 const logging = parseInt(process.env.LOGGING || "0");
@@ -68,6 +68,9 @@ const optionsSerializer: ValueAdapter<ChannelOptions> = {
     },
 };
 
+//!!! todo: augment to support a list of nbh's, with req details for nbh selection
+//    - start by using nbh prefix in redis keys.
+
 export class DredServer {
     api: express.Application;
     discovery: Discovery;
@@ -83,6 +86,9 @@ export class DredServer {
     verifier: StringNacl;
     serverId: string;
     myServerInfo?: DredHostDetails;
+    get nbh() {
+        return this.args.neighborhood;
+    }
 
     setupExpressHandlers() {
         this.api.use((req, res, next) => {
@@ -152,6 +158,7 @@ export class DredServer {
                 url: redisUrl,
             },
         });
+        this.ensureDefaultChannels();
         this.channelConn._log.error = console.error.bind(console);
         this.clientArgs = clientArgs;
 
@@ -183,8 +190,42 @@ export class DredServer {
         return this.args.api || express();
     }
 
+    private setupPending?: Promise<any>;
+    //!!! todo: once for each nbh
+    ensureDefaultChannels() {
+        this.setupPending = new Promise(async (res) => {
+            await this.doChannelSetup("_chans");
+            await this.doChannelSetup("_auth");
+            await this.doChannelSetup("news");
+            await this.doChannelSetup("discussion");
+            this.setupPending = undefined;
+            res(true);
+        });
+    }
+    
+    async doChannelSetup(channel: ChanId) {
+        const chan = await this.channelList.has(channel);
+        if (!chan) {
+            await this.channelList.set(channel, "1");
+        }
+        const streams = this.channelConn;
+        const stream = await streams.use(channel);
+
+        //!!! revisit this with a more specific plan : )
+        await streams.produce(stream, { type: "genesis" });
+
+        const chans = await streams.use("_chans");
+        //!!! revisit this with a more specific plan : )
+        await streams.produce(chans, {
+            type: "chanCreated",
+            channel,
+        });
+    }
+
     //
     async listen() {
+        await this.setupPending;
+
         const myInfo = (this.myServerInfo =
             this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));
         if (!myInfo) throw new Error(`can't identify my own info`);
@@ -242,10 +283,11 @@ export class DredServer {
     resultLogger: express.RequestHandler = (req, res, next) => {
          this.log(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url}`);
     }
-    getChannels: express.RequestHandler = async(req, res, next) => {
-        const channels = await this.channelList.keys();
-        res.status(200).json({channels})        
-    }
+    getChannels: express.RequestHandler = async (req, res, next) => {
+        const found: string[] = (await this.channelList.keys()) as string[];
+        const channels = found.filter((x) => x[0] !== "_");
+        res.status(200).json({ channels });
+    };
     createChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
         const options: ChannelOptions = req.body;
