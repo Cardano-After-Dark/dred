@@ -189,19 +189,33 @@ export class ChatApp extends Component<myProps, MyState> {
         return (
             <div
                 style={{
-                    border: "1px dashed #555",
+                    // border: "1px dashed #eee",
                     width: "70vh",
                     height: "10em",
-                    borderRadius: "0.8em",
-                    padding: "0.8em",
-                    paddingBottom: "0",
+                    border: "2px solid rgb(253 127 207)",
+
+                    borderRadius: "0.66em",
+                    padding: "0 0.8em",
                     marginBottom: "0",
                     position: "relative",
+                    background: "linear-gradient(151deg, rgba(2,0,36,1) 0%, rgba(28,13,73,1) 3%, rgba(97,13,48,1) 100%)",
+                    boxShadow: [
+                        "0 0 .2rem #d0007b",
+                        "0 0 .4rem #d0007b", 
+                        // "0 0 2rem #bc13fe", 
+                        // "0 0 0.8rem #bc13fe",
+                        // "0 0 2.8rem #bc13fe",
+                        "inset 0 0 0.5rem #ff7dca", //255 125 202
+                    ].join(", "),
+                    color: "#aaa"
                 }}
             >
-                <h3 style={{ marginTop: "-1.3em" }}>
-                    <span style={{ background: "#fff", padding: "0.4em" }}>
-                        Sample App: Dred Communicator
+                <h3 style={{ margin: "0.2em -0.5em",
+                    borderRadius: "0.33em 0.33em 0 0 ",
+                    background: "linear-gradient(180deg, rgba(2,0,0,0.6) 0%, rgba(0,0,0,0) 100%)",            
+                }}>
+                    <span style={{  padding: "0.4em" }}>
+                        Dred Communicator
                     </span>
                 </h3>
                 {this.showControlsAndStatus()}
@@ -236,8 +250,12 @@ export class ChatApp extends Component<myProps, MyState> {
                             autoFocus
                             onChange={this.chooseNeighborhood}
                             ref={this.neighborhoodSelector}
+                            style={{
+                                fontFamily: "Goldman, sans",
+                                fontSize: "75%",
+                            }}
                         >
-                            <option>choose neighborhood</option>
+                            <option>neighborhood</option>
                             {neighborhoods.map((n) => (
                                 <>
                                     <option value={n}>{n}</option>
@@ -343,6 +361,11 @@ export class ChatApp extends Component<myProps, MyState> {
         const label = this.hasState("recording") ? "recording" : "record";
         return (
             <button
+                style={{
+                    minWidth: "8em",
+                    fontSize: "75%",
+                    marginBottom: "2rem",
+                }}
                 onMouseDown={this.mkTransition("record")}
                 onMouseUp={this.mkTransition("stop")}
                 onKeyUp={this.mkTransition("cancel")}
@@ -398,7 +421,7 @@ export class ChatApp extends Component<myProps, MyState> {
 
         const recordedChunks: Blob[] = [];
         this.setState({
-            message: "recording...",
+            message: "",
             audioStream,
             audioTrack,
             capabilities,
@@ -594,10 +617,11 @@ export class ChatApp extends Component<myProps, MyState> {
                         justifyContent: "space-between",
                         padding: "0.2em 0.4em",
                         fontSize: "80%",
-                        borderBottomLeftRadius: "0.8em",
-                        borderBottomRightRadius: "0.8em",
-                        borderTopLeftRadius: "0.3em",
-                        borderTopRightRadius: "0.3em",
+                        margin: "0 0.2em 0.2em",
+                        borderBottomLeftRadius: "0.4em",
+                        borderBottomRightRadius: "0.4em",
+                        borderTopLeftRadius: "0.25em",
+                        borderTopRightRadius: "0.25em",
                         background: "#111",
                         color: "#ccc",
                     }}
@@ -628,11 +652,12 @@ export class ChatApp extends Component<myProps, MyState> {
                     <code
                         style={{
                             // float: "right",
+                            fontFamily: "'Goldman', cursive",
                             fontSize: "85%",
                             color: "#555",
                         }}
                     >
-                        {currentState}
+                        {currentState?.replace(/([A-Z])/, (x) => ` ${x.toLowerCase()}`)}
                     </code>
                 </div>
                 {/* <div
@@ -714,11 +739,20 @@ export class ChatApp extends Component<myProps, MyState> {
 
         return (
             !!audioInputDevices.length && (
-                <div style={{ textAlign: "right" }}>
+                <div style={{ 
+                    textAlign: "right", 
+                    fontSize: "75%",
+                    fontFamily: "Goldman, cursive",
+                    marginRight: "0.3em" 
+                }}>
                     Mic:
                     <select
                         value={selectedMic}
-                        style={{ maxWidth: "10em" }}
+                        style={{ 
+                            maxWidth: "10rem",
+                            fontSize: "90%",
+                            fontFamily: "Goldman, cursive",
+                         }}
                         ref={this.micSelector}
                         onChange={this.setMicPref}
                     >

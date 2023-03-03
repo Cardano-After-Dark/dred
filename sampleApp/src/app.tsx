@@ -5,6 +5,7 @@ import { useState } from "preact/hooks";
 import "./app.css";
 import { ChatApp } from "./ChatApp";
 
+const Communicator = ChatApp as React.Component
 
 @Reactor
 export class App extends React.Component {
@@ -13,28 +14,32 @@ export class App extends React.Component {
     return (
         <>
             <NotificationArea name="root"/>
-            <div class="float-left">
+            <div className="float-left">
                 <img
                     src="/cad-logo.webp"
-                    class="logo"
+                    className="logo"
                     alt="Cardano After Dark logo"
                     style={{ borderRadius: "4em", height: "20em" }}
                 />
             </div>
             <p
                 style={{ marginTop: "-4rem", fontSize: "75%" }}
-                class="read-the-docs"
+                className="read-the-docs"
             >
                 presents
             </p>
-            <h1>Dred</h1>
-            <div>
-                <p>
-                    Realtime decentralized event-messaging platform for web3
-                    dapps
-                </p>
-            </div>
-            <ChatApp />
+            <h1 style={{
+                marginTop: "-0.1em"
+            }}>DRED</h1>
+            <p style={{
+                marginTop: "-2em", 
+                fontFamily: "'Encode Sans', sans-serif",
+                    // fontFamily: "'Goldman', cursive;"
+                }}>
+                Realtime decentralized event-messaging platform for web3
+                dapps
+            </p>
+            <Communicator />
         </>
     );
     } }
