@@ -542,7 +542,6 @@ export class DredServer {
 
         console.log("postMessage", message);
         this.log("server: postMessage", message);
-        debugger;
         const tunnelProducer = await this.mkChannelProducer(channelId);
         const {msg, _type, _data, ...moreDetails} = message;
 
@@ -551,12 +550,11 @@ export class DredServer {
         // if (_data) console.warn("ignoring reserved key '_data' in client-provided message");
 
         if (!msg) res.status(422).json({error: "missing required 'msg' attribute for posting message in channel"});
-        // if (!moreDetails.cid) res.status(422).json({error: "missing required 'cid' attribute for posting message in channel"});
+        if (!moreDetails.ocid) res.status(422).json({error: "missing required 'ocid' attribute for posting message in channel"});
         if (!moreDetails.type) res.status(422).json({error: "missing required 'type' attribute for posting message in channel"});
         
-        await this.channelConn.produce(tunnelProducer, msg, moreDetails);
-
-        res.json({ status: "created" });
+        const id = await this.channelConn.produce(tunnelProducer, msg, moreDetails);
+        res.json({ id,  status: "created" });
         next();
     };
 
@@ -588,7 +586,6 @@ export class DredServer {
                 res.write(update + "\n");
                 // debug("update: ", update)
             }
-            debugger
             (res as any).flush(); //! flushes writes through compression middleware
         };
         const myStreamListeners: ListenerSubscriptionList = [];
@@ -694,7 +691,7 @@ export class DredServer {
                 this.subscribeTimeout
             )) {
                 for (const e of events) {
-                    const { id: mid, cid, type, data, ...meta } = e;
+                    const { id: mid, ocid, type, data, ...meta } = e;
                     this.log(`to client on ${sub.channel} <- event ${mid}: `, e.data.length, "bytes");
                     debugger
                     // const parsed = JSON.parse(data);
@@ -705,7 +702,7 @@ export class DredServer {
                         type,
                         nbh: this.nbh,
                         msg: data,
-                        cid,
+                        ocid,
                         ...meta,
                     });
                 }

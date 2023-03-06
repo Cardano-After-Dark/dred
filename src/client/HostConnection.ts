@@ -467,15 +467,16 @@ export class HostConnection extends StateMachine.withDefinition(
                 continue;
             }
             // console.log(`client: ${chan} <- event: `, value);
-            const { mid, channel, nbh, type, msg, ...details } = value;
+            const { mid, ocid, channel, nbh, type, msg, ...details } = value;
             this.events.emit("message", {
                 connection: this,
                 message: "msg received in chan",
+                mid,
+                ocid,
                 type,
                 msg,
                 channel,
                 details,
-                mid,
                 neighborhood: nbh,
                 ts,
                 [devMessage]:

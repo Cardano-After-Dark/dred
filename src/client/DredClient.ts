@@ -1,8 +1,11 @@
 import fetch from "cross-fetch";
+import { customAlphabet } from 'nanoid'
 import nacl from "tweetnacl";
 const { sign } = nacl;
 import util from "tweetnacl-util";
 import type { Response } from "cross-fetch";
+
+const nanoid = customAlphabet('0123456789abcdefghjkmnpqrstvwxyz', 7);
 
 import EventEmitter from "eventemitter3";
 import { asyncDelay, autobind, StateMachine } from "@poshplum/utils";
@@ -36,6 +39,7 @@ export type DredMessage = {
     type: string,
     msg: any,
     "content-type"?: string,
+    ocid?: string,
     // [key: string]: string | undefined,
 }
 
@@ -506,12 +510,24 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     //!!!! it delegates message-creation to connection manager
     //!!!! it has a way of posting the same unique message to multiple servers and for that message to converge across them all.
     async postMessage(channelName: string, message: DredMessage) {
+        const sub = this.subscriptions[channelName];
+
         this.log("posting message ", message);
-        const {type, msg} = message;
+        let {type, ocid, msg} = message;
+        
+        if (!message.ocid) {
+            const _ocid = nanoid();
+            console.log("(generated ocid)");
+            ocid = message.ocid = _ocid;
+        }
+        console.log({ocid});
+        sub.recentMsgs.add(ocid!);
+
+
         //! it guards usage for non-typescript users
         if (!(type && msg)) throw new Error(`missing required 'type' and/or 'message'`)
 
-        return await this.fetch(`/channel/${channelName}/message`, {
+        const result = await this.fetch(`/channel/${channelName}/message`, {
             method: "POST",
             body: JSON.stringify(message),
             headers: {
@@ -519,6 +535,11 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
                 accept: "application/json",
             },
         });
+        sub.recentMsgs.delete(ocid!);
+        sub.recentMsgs.add(result.id)
+
+        result.ocid = ocid;
+        return result
     }
 
     //! disconnects from neighborhood

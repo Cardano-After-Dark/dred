@@ -55,6 +55,7 @@
         "eventemitter3": "^5.0.0",
         "express": "4.17",
         "ioredis": "^5.0.6",
+        "nanoid": "^4.0.1",
         "ts-essentials": "^9.3.0",
         "tslib": "^2.4.1",
         "tweetnacl": "^1.0.3",
