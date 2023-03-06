@@ -29,10 +29,12 @@ export class App extends React.Component {
                 presents
             </p>
             <h1 style={{
-                marginTop: "-0.1em"
+                marginTop: "0.2em",
+                fontFamily: "'Oswald', sans-serif",
             }}>DRED</h1>
             <p style={{
                 marginTop: "-2em", 
+                marginBottom: "1.66em",
                 fontFamily: "'Encode Sans', sans-serif",
                     // fontFamily: "'Goldman', cursive;"
                 }}>

@@ -6,6 +6,7 @@ import express from "express";
 import type { Application } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import compression from 'compression'
 
 //@ts-ignore
 import { RedisChannels } from "../redis/streams";
@@ -23,7 +24,7 @@ import { ChannelOptions } from "../types/ChannelOptions.js";
 import { StringNacl } from "../util/StringNacl.js";
 import { Discovery } from "../types/Discovery.js";
 import { DredHostDetails } from "../types/DredHosts.js";
-import { ChanId, ChannelSubs, NbhId } from "../types/ChannelSubscriptions.js";
+import { ChanId, SubscriptionList, NbhId, ChannelSubOptions } from "../types/ChannelSubscriptions.js";
 import { autobind } from "@poshplum/utils";
 
 const logging = parseInt(process.env.LOGGING || "0");
@@ -39,9 +40,22 @@ export type ChannelSubscriber = {
 };
 type changeFeedUpdater = (...messages: rStreamMsg[]) => void;
 type consumerErrorNotifier = (channel: ChanId, e: Error) => void;
-type rStreamMsg = (rMsgRaw | rMsgParsed) & {
+type rChannelError = {
+    channel: string;
+    type: "error";
+    message: string;
+    reason: string;
+};
+
+type rHeartbeatMessage = {
+    type: "heartbeat" | "heartbeat-info";
+    timerInterval?: number;
+};
+
+type rStreamMsg = rHeartbeatMessage | rChannelError | { //(rMsgRaw | rMsgParsed) & 
     id: string;
     channel: ChanId;
+    type: string;
     data: string;
     [key: string]: string | undefined;
 };
@@ -91,6 +105,7 @@ export class DredServer {
     }
 
     setupExpressHandlers() {
+        this.api.use(compression())
         this.api.use((req, res, next) => {
             this.log(`-> ${req.method} ${req.originalUrl}`);
             next();
@@ -127,7 +142,6 @@ export class DredServer {
         this.api.use(this.resultLogger);
     }
 
-
     constructor(clientArgs: DredClientArgs & { api?: express.Application }, serverId: string) {
         this.args = clientArgs;
         this.serverId = serverId;
@@ -139,6 +153,7 @@ export class DredServer {
 
         const redisUrl = process.env.REDIS_URL;
         this.redis = this.setupRedis(redisUrl);
+
         this.listener = null;
         this.verifier = new StringNacl(undefined, this);
 
@@ -202,7 +217,7 @@ export class DredServer {
             res(true);
         });
     }
-    
+
     async doChannelSetup(channel: ChanId) {
         const chan = await this.channelList.has(channel);
         if (!chan) {
@@ -212,11 +227,11 @@ export class DredServer {
         const stream = await streams.use(channel);
 
         //!!! revisit this with a more specific plan : )
-        await streams.produce(stream, { type: "genesis" });
+        await streams.produce(stream, "first event in this channel", { type: "channel:genesis" });
 
         const chans = await streams.use("_chans");
         //!!! revisit this with a more specific plan : )
-        await streams.produce(chans, {
+        await streams.produce(chans, "a channel was created", {
             type: "chanCreated",
             channel,
         });
@@ -252,9 +267,7 @@ export class DredServer {
             };
         }
     }
-    async listenDetails() {
-
-    }
+    async listenDetails() {}
 
     get address() {
         const { listener } = this;
@@ -278,7 +291,6 @@ export class DredServer {
     warn(...args: any[]) {
         logging && console.warn(...args);
     }
-
 
     resultLogger: express.RequestHandler = (req, res, next) => {
         this.log(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url}`);
@@ -378,7 +390,6 @@ export class DredServer {
     };
     async channelCreated(channelId, opts) {
         //! it allows specific subclass of dred server to be notified of channel-creation
-
         //!!!!!! emit channel-created event
     }
 
@@ -517,11 +528,12 @@ export class DredServer {
         return this.channelConn.use(channelId);
     }
 
+
     postMessageInChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
         const found = await this.channelList.has(channelId);
         if (!found) {
-            res.status(404).json({ 
+            res.status(404).json({
                 error: "channel not found",
             });
             return next();
@@ -530,8 +542,19 @@ export class DredServer {
 
         console.log("postMessage", message);
         this.log("server: postMessage", message);
+        debugger;
         const tunnelProducer = await this.mkChannelProducer(channelId);
-        await this.channelConn.produce(tunnelProducer, JSON.stringify(message));
+        const {msg, _type, _data, ...moreDetails} = message;
+
+        //! it extracts and SILENTLY ignores reserved keys _type, _data in client-provided event details.
+        // if (_type) console.warn("ignoring reserved key '_type' in client-provided message");
+        // if (_data) console.warn("ignoring reserved key '_data' in client-provided message");
+
+        if (!msg) res.status(422).json({error: "missing required 'msg' attribute for posting message in channel"});
+        // if (!moreDetails.cid) res.status(422).json({error: "missing required 'cid' attribute for posting message in channel"});
+        if (!moreDetails.type) res.status(422).json({error: "missing required 'type' attribute for posting message in channel"});
+        
+        await this.channelConn.produce(tunnelProducer, msg, moreDetails);
 
         res.json({ status: "created" });
         next();
@@ -551,8 +574,10 @@ export class DredServer {
 
     listenOnChannels: express.RequestHandler = async (req, res, next) => {
         let cancelled = false;
-        const subscriptions: ChannelSubs = req.body;
-
+        const subscriptions: SubscriptionList = req.body;
+        res.contentType("application/ndjson");
+        res.useChunkedEncodingByDefault = false;
+        // res.setHeader("x-hi", "there");
         console.warn("listening for", subscriptions);
         //!!! todo: it validates authorization as appropriate for each requested channel
 
@@ -563,19 +588,21 @@ export class DredServer {
                 res.write(update + "\n");
                 // debug("update: ", update)
             }
-            (res as any)._flush(); //! flushes writes through compression middleware
+            debugger
+            (res as any).flush(); //! flushes writes through compression middleware
         };
         const myStreamListeners: ListenerSubscriptionList = [];
-        const timerInterval = 20000;
+        const timerInterval = 7000;
         //! it sends heartbeat signals every so often to clients
         //!!! todo: heartbeat interval can be configured
         const timer = setInterval(() => {
+            console.log("server: client <- heartbeat");
             sendUpdate({ type: "heartbeat" });
         }, timerInterval);
+        timer.unref(); //! the heartbeat-timer never blocks the process from exiting when it's otherwise done
+
         //! it tells clients how frequently they should expect a heartbeat
         sendUpdate({ type: "heartbeat-info", timerInterval });
-
-        timer.unref(); //! the heartbeat-timer never blocks a process from exiting when it's otherwise done
 
         const cleanup = () => {
             //!!!! clean up all the internal subscriptions
@@ -584,12 +611,12 @@ export class DredServer {
                 this.channelConn.unsubscribe(stream);
             }
             clearInterval(timer);
-            next();
         };
         res.on("close", cleanup);
 
         const cancel = () => {
             cancelled = true;
+            res.end();
             cleanup();
             next();
         };
@@ -597,10 +624,10 @@ export class DredServer {
         const notifyConsumeError: consumerErrorNotifier = (channel, consumeError) => {
             if (!cancelled) {
                 sendUpdate({
-                    event: "error:consumer",
+                    channel,
+                    type: "error",
                     message: "internal stream consumer failed",
                     reason: consumeError.message,
-                    channel,
                 });
                 this.log("consume error; TODO: reconnect/retry", consumeError);
                 cleanup();
@@ -611,19 +638,20 @@ export class DredServer {
         let anySuccesses = 0;
         let warnings: any[] = [];
         for (const sub of subscriptions) {
-            const { channel } = sub.options;
+            const {channel} = sub;
             const found = await this.channelList.has(channel);
             if (!found) {
                 //! sends a warning note but do not fail unless there are no valid subscriptions
                 warnings.push({
                     //!!!!! review & craft the shape of this for consistency
-                    event: "warning",
                     channel,
+                    type: "warning",
                     message: "invalid or expired channel",
                 });
             }
 
-            const subscriber = await this.listenOneChannel(channel, sendUpdate, notifyConsumeError);
+            const subscriber = await this.listenOneChannel(sub, sendUpdate, notifyConsumeError, res);
+            myStreamListeners.push({channel, stream: subscriber});
             if (subscriber) anySuccesses += 1;
         }
         if (!anySuccesses) {
@@ -633,51 +661,57 @@ export class DredServer {
             sendUpdate.apply(this, warnings);
         }
     };
+
+    async listenToNeighborhood() {
+        //!!!! todo - make a client for each neighborhood host; listen on all of the channels using that client object
     }
 
     async listenOneChannel(
-        channel,
+        sub: ChannelSubOptions,
         sendUpdate: changeFeedUpdater,
-        notifyConsumerError: consumerErrorNotifier
+        notifyConsumerError: consumerErrorNotifier,
     ) {
         //! it leverages the redis-streams module's cache of per-channel connections
-        const stream = await this.channelConn.use(channel);
-        await this.channelConn.subscribe(stream);
+        const channelStream = await this.channelConn.use(sub.channel);
+        await this.channelConn.subscribe(channelStream);
 
         //! it spawns asynchronous monitoring in each channel
-        this.monitorChannelChanges(stream, channel, sendUpdate, notifyConsumerError);
-        return stream;
+        this.monitorChannelChanges(channelStream, sub, sendUpdate, notifyConsumerError);
+        return channelStream;
     }
 
     private async monitorChannelChanges(
-        stream: streamHandle,
-        channel: ChanId,
+        channelStream: streamHandle,
+        sub: ChannelSubOptions,
         sendUpdate: changeFeedUpdater,
-        notifyConsumerError: consumerErrorNotifier
+        notifyConsumerError: consumerErrorNotifier,
     ) {
         try {
             for await (const events of this.channelConn.consume(
-                stream,
+                channelStream,
                 "all",
                 10,
                 this.subscribeTimeout
             )) {
                 for (const e of events) {
-                    const { id: mid, cid, data, ...meta } = e;
-                    this.log(`server: ${channel} <- event ${mid}: `, e.data);
-                    const parsed = JSON.parse(data);
+                    const { id: mid, cid, type, data, ...meta } = e;
+                    this.log(`to client on ${sub.channel} <- event ${mid}: `, e.data.length, "bytes");
+                    debugger
+                    // const parsed = JSON.parse(data);
+                    //!!! todo: apply filters from the subscription
                     sendUpdate({
                         mid,
-                        channel,
+                        channel: sub.channel,
+                        type,
                         nbh: this.nbh,
-                        msg: parsed,
+                        msg: data,
                         cid,
                         ...meta,
                     });
                 }
             }
         } catch (consumeError) {
-            notifyConsumerError(channel, consumeError as Error);
+            notifyConsumerError(sub.channel, consumeError as Error);
         }
     }
 }

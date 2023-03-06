@@ -25,7 +25,6 @@
     "packageManager": "pnpm@7.25.1",
     "scripts": {
         "dev": "scripts/setupEnvironment && pnpm build:watch & pnpm app & pnpm build:client:watch & nodemon -w dist/dredServer.mjs --enable-source-maps --inspect dist/dredServer.mjs",
-
         "doc": "cd docs/ ; pnpm dev",
         "start": "scripts/setupEnvironment && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --respawn index.ts",
         "start:debug": "scripts/setupEnvironment  && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --inspect --respawn index.ts",
@@ -50,6 +49,7 @@
         "@poshplum/utils": "../plum/utils",
         "abstract-logging": "^2.0.1",
         "body-parser": "^1.20.0",
+        "compression": "^1.7.4",
         "cors": "^2.8.5",
         "cross-fetch": "^3.1.5",
         "eventemitter3": "^5.0.0",

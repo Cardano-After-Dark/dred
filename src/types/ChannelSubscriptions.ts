@@ -1,12 +1,12 @@
-import {EventEmitter} from "eventemitter3";
-import { ConnectionEvent } from "../client/HostConnection.js";
-import { HostConnection } from "../client/HostConnection.js";
+import type { DredMessageListener } from "../client/DredClient.js";
+import type { ConnectionEvent } from "../client/HostConnection.js";
 
 export type ChanId = string;
 export type MsgId = string;
 export type NbhId = string;
 
-export type SubscriptionSet = Map<ChanId, ChannelSubscription>
+export type SubscriptionList = ChannelSubOptions[]
+export type SubscriptionListenerMap = Record<string, ChannelSubscriptionListener>
 
 export interface ChannelSubEvents {
     activity: [DredChannelMessage]
@@ -14,8 +14,10 @@ export interface ChannelSubEvents {
 }
 
 //! represents a configuration for monitoring a specific channel
+//! it includes alt-values for optional attributes for developers to easily see 
+//  the default behavior if the attribute is omitted
 export interface ChannelSubOptions {
-    neighborhood: NbhId
+    neighborhood: NbhId,
     channel: ChanId
     unconfirmed?: true 
         | "default:only confirmed messages"
@@ -30,9 +32,6 @@ export interface ChannelSubOptions {
     }
 }
 
-//! it includes alt-values for optional attributes for developers to easily see 
-//  the default behavior if the attribute is omitted
-export type ChannelSubs = Array<ChannelSubscription>
 
 type DredMsgData = any;
 export type DredChannelMessage = ConnectionEvent &  {
@@ -45,14 +44,19 @@ export type DredChannelMessage = ConnectionEvent &  {
     ts: Date,
 }
 
-export class ChannelSubscription {
-    options: ChannelSubOptions
-    recentMsgs: Set<MsgId>;
-    events: EventEmitter<ChannelSubEvents>;
-    constructor(options: ChannelSubOptions) {
-        this.options = options
+export class ChannelSubscriptionListener {
+    options: ChannelSubOptions;
+    recentMsgs!: Set<MsgId>;
+    listener!: DredMessageListener;
+    // XXevents: EventEmitter<ChannelSubEvents>;
+    constructor(options: ChannelSubOptions & { listener: DredMessageListener}) {
+        const {listener, ...rest} = options;
+        this.options = rest;
+        //! it has a recent-messages map, not included in a JSON representation of the subscription
+
         this.recentMsgs = new Set<MsgId>();
-        this.events = new EventEmitter<ChannelSubEvents>();
+        this.listener = listener;
+        // this.events = new EventEmitter<ChannelSubEvents>();
      }
 
 }

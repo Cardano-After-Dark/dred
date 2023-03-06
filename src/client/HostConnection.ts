@@ -1,4 +1,4 @@
-import { StateMachine } from "@poshplum/utils";
+import { autobind, StateMachine } from "@poshplum/utils";
 import { EventEmitter } from "eventemitter3";
 import { fromPlatformFetchBody } from "@platform/ReadableStream";
 
@@ -13,8 +13,9 @@ import {
     devMessage,
 } from "../types/DredEvents.js";
 import { asyncDelay } from "../util/asyncDelay.js";
-import { ChannelSubs, DredChannelMessage } from "../types/ChannelSubscriptions";
+import { SubscriptionListenerMap, DredChannelMessage, SubscriptionList } from "../types/ChannelSubscriptions";
 import { ndjsonStream } from "./betterJsonStream.js";
+import { DredMessage } from "./DredClient.js";
 
 type conn = HostConnection;
 export interface ConnectionEvent extends DredEvent {
@@ -35,7 +36,7 @@ export interface HostConnectionEventTypes {
         }
     ) => void;
     replacedBy: [ConnectionEvent & { replacement: HostConnection }];
-    message: [ConnectionEvent & DredChannelMessage];
+    message: [ConnectionEvent & DredChannelMessage & DredMessage];
     disconnected: [ConnectionEvent & DredError];
 }
 
@@ -167,7 +168,7 @@ export class HostConnection extends StateMachine.withDefinition(
     settings: connnectionSettings;
     attempts = 0;
     lastError?: any;
-    channelSubs: ChannelSubs = [];
+    channelSubs: SubscriptionList;
     private stream?: ReturnType<typeof ndjsonStream>;
 
     private startTime = new Date().getTime();
@@ -272,7 +273,7 @@ export class HostConnection extends StateMachine.withDefinition(
     }
     constructor(
         host: DredHostDetails,
-        subscriptions: ChannelSubs,
+        subscriptions: SubscriptionList,
         settings: Partial<connnectionSettings>
     ) {
         super({
@@ -304,6 +305,7 @@ export class HostConnection extends StateMachine.withDefinition(
         });
         const myself = (this.connecting = new Promise((res, rej) => {
             let aborted = false;
+            const channelSubs = {};
             this.fetch(`/channels/listen`, {
                 body: JSON.stringify(this.channelSubs, null, 2),
                 method: "POST",
@@ -385,8 +387,8 @@ export class HostConnection extends StateMachine.withDefinition(
         //   ...unless parse:false is provided; this allows the response to be hooked up
         //   to a streaming reader or take other treatment provided by the caller.
         if (result.ok) {
-            this.monitorSubscriptions(result);            
-            return result
+            this.monitorSubscriptions(result);
+            return result;
         }
 
         //! failed requests @request or parsing level cause a rejection.
@@ -440,8 +442,8 @@ export class HostConnection extends StateMachine.withDefinition(
             event = await reader.read().catch(detectReadError);
             if (!event) break;
             if (!connected) break;
-
-            const { value, done } = event;
+            const ts = new Date();
+            const { value, done } = event as { value: any; done: boolean };
             if (done) {
                 this.events.emit(
                     "disconnected",
@@ -455,17 +457,27 @@ export class HostConnection extends StateMachine.withDefinition(
                 debugger;
                 return;
             }
-            debugger;
+            if ("heartbeat" == value?.type) {
+                this.heartbeatReceived();
+                continue;
+            }
+            if ("heartbeat-info" == value?.type) {
+                const { heartbeatInterval } = value;
+                this.heartbeatInterval = heartbeatInterval;
+                continue;
+            }
             // console.log(`client: ${chan} <- event: `, value);
+            const { mid, channel, nbh, type, msg, ...details } = value;
             this.events.emit("message", {
                 connection: this,
                 message: "msg received in chan",
-                msg: value,
-                channel: "foo",
-                details: "bar",
-                mid: "baz",
-                neighborhood: "buz",
-                ts: new Date(),
+                type,
+                msg,
+                channel,
+                details,
+                mid,
+                neighborhood: nbh,
+                ts,
                 [devMessage]:
                     "normal message notification.  Connection manager should aggregate messages and deduplicate, while notifying clients of the new message.",
             });
@@ -473,5 +485,29 @@ export class HostConnection extends StateMachine.withDefinition(
     }
     isAbortError(e: any) {
         return "AbortError" === e.name;
+    }
+    heartbeatInterval: number = 10000;
+    lastHeartbeat: number = new Date().getTime();
+    private heartbeatTimer?: ReturnType<typeof setTimeout>;
+    heartbeatReceived() {
+        const now = new Date().getTime();
+        this.lastHeartbeat = now;
+        if (this.heartbeatTimer) clearTimeout(this.heartbeatTimer);
+        this.heartbeatTimer = setTimeout(this.watchdog, 3 * this.heartbeatInterval);
+        this.heartbeatTimer.unref && this.heartbeatTimer.unref();
+    }
+
+    @autobind
+    watchdog() {
+        const now = new Date().getTime();
+
+        if (this.lastHeartbeat + 1.1 * this.heartbeatInterval < now) {
+            console.warn("Missed expected heartbeat from server", this.host.serverId);
+        }
+
+        if (this.lastHeartbeat + 3 * this.heartbeatInterval < now) {
+            console.error("Missed 3 expected heartbeats from server!!!", this.host.serverId);
+            //!!! todo: this.events.emit("dead")
+        }
     }
 }

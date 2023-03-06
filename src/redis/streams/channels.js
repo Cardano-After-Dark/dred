@@ -465,13 +465,13 @@ export class RedisChannels {
     async produce(
         tunnel,
         message,
-        { type = defaultOriginType, ...appFields } = {}
+        { _type = defaultOriginType, ...appFields } = {}
     ) {
 
         try {
             const data = message;
             const redisFields = hashToRedisFields({
-                _type: type,
+                _type: _type,
                 _data: data,
                 ...appFields,
             });

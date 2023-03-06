@@ -4,10 +4,11 @@ import { EventEmitter } from "eventemitter3";
 import { Discovery } from "../types/Discovery.js";
 import {
     ChanId,
-    ChannelSubs,
+    SubscriptionListenerMap,
     NbhId,
-    ChannelSubscription,
+    ChannelSubscriptionListener,
     DredChannelMessage,
+    SubscriptionList,
 } from "../types/ChannelSubscriptions.js";
 import { DredHostDetails, connnectionSettings } from "../types/DredHosts.js";
 import { devMessage, DredError, DredEvent } from "../types/DredEvents.js";
@@ -23,6 +24,7 @@ import {
 } from "../types/PeerDiscovery.js";
 import { asyncDelay } from "../util/asyncDelay.js";
 import { fetcher } from "./fetcher.js";
+import { DredMessage } from "./DredClient.js";
 
 
 // | "pending"
@@ -78,7 +80,7 @@ const connectionManagerStates = {
     },
     pendingSetup: {
         async onEntry(this: cm) {
-            if (this.hosts?.length && this.channelSubs?.length)
+            if (this.hosts?.length && this.channelSubs?.size)
                 return this.transition("readyToConnect");
 
 
@@ -220,10 +222,10 @@ export class ConnectionManager extends StateMachine.withDefinition(
         return this.discovery.getConnectionThresholds();
     }
     //! it keeps a current list of target event-subscriptions
-    channelSubs?: ChannelSubs;
+    channelSubs?: SubscriptionListenerMap;
 
     //! it remembers the last set of subscriptions, while the next set is being established.
-    lastChannelSubs?: ChannelSubs;
+    lastChannelSubs?: SubscriptionListenerMap;
 
     //! it is initialized with connection settings used for tuning behavior of outgoing connections
     connectionSettings: connnectionSettings;
@@ -338,7 +340,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
         this.transition("disconnected");
     }
 
-    async setSubscriptions(subs: ChannelSubs) {
+    async setSubscriptions(subs: SubscriptionListenerMap) {
         if (this.channelSubs) return this.replaceSubscriptions(subs);
 
         this.channelSubs = subs;
@@ -346,9 +348,10 @@ export class ConnectionManager extends StateMachine.withDefinition(
             await new Promise((resolve) => this.discovery.events.once("hosts:ready", resolve));
         }
         this.connectToHosts();
+        return subs
     }
 
-    async replaceSubscriptions(subs: ChannelSubs) {
+    async replaceSubscriptions(subs: SubscriptionListenerMap) {
         this.lastChannelSubs = this.channelSubs;
         this.channelSubs = subs;
 
@@ -359,8 +362,10 @@ export class ConnectionManager extends StateMachine.withDefinition(
         // these promises will resolve within settings.connectionWaitTime,
         // although IF enough of the connections haven't gotten started yet, then
         // the connection manager will change to
-        await Promise.all(promises);
-        this.lastChannelSubs = undefined;
+        Promise.all(promises).then( () => {
+            this.lastChannelSubs = undefined;
+        })
+        return subs;
     }
 
     connectToHosts() {
@@ -382,8 +387,12 @@ export class ConnectionManager extends StateMachine.withDefinition(
             throw new Error( // makes typescript happy
                 `missing channelSubs; should already have a reasonable default value`
             );
-
-        const conn = new HostConnection(host, this.channelSubs, this.connectionSettings);
+            
+        const subscriptions : SubscriptionList = [];
+        for (const sub of Object.values(this.channelSubs)) {
+            subscriptions.push(sub.options)
+        }
+        const conn = new HostConnection(host, subscriptions, this.connectionSettings);
         conn.events.on("connected", this.healthyConnection);
 
         conn.events.on("disconnected", this.cleanupConnection);
@@ -423,20 +432,21 @@ export class ConnectionManager extends StateMachine.withDefinition(
     }
 
     @autobind
-    notifySubscribers(event: ConnectionEvent & DredChannelMessage) {
+    notifySubscribers(event: ConnectionEvent & DredChannelMessage & DredMessage) {
         const { mid: msgId, connection, message: message, details, neighborhood, channel } = event;
         if (!this.channelSubs) {
             console.log("no listeners to hear about:", event);
             return;
         }
 
-        for (const sub of this.channelSubs) {
+        for (const [chan, sub] of Object.entries(this.channelSubs)) {
             //!!!!! move to ChannelSubscription
-            if (channel === sub.options.channel) {
+            if (chan === channel) {
                 const { recentMsgs: seen } = sub;
                 if (!seen.has(msgId)) {
                     seen.add(msgId);
-                    sub.events.emit("channel:message", event);
+                    sub.listener(event);
+                    // sub.events.emit("channel:message", event);
                 }
             }
         }
@@ -482,7 +492,6 @@ export class ConnectionManager extends StateMachine.withDefinition(
     }
 
     connected(connection: HostConnection, event: DredEvent) {
-        debugger;
         const status = this.connStatus.get(connection);
         if (status == "obsolete") return;
         this.moveConnTo(connection, "active");

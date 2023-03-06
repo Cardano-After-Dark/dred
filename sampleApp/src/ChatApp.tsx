@@ -7,7 +7,13 @@ const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 import { withStateMachine, State, ErrorTrigger } from "@poshplum/poshplum";
 import { autobind, asyncDelay } from "@poshplum/utils";
 
-import { DredClient, ClientState, DredError } from "dred-client";
+import {
+    DredClient,
+    ClientState,
+    DredError,
+    DredMessage,
+    DredChannelMessage,
+} from "dred-client";
 import { DevEnvLocalDiscovery } from "dred-client";
 
 const codec = 'audio/webm; codecs="vorbis"';
@@ -54,7 +60,9 @@ export class ChatApp extends Component<myProps, MyState> {
     neighborhoodSelector = React.createRef<HTMLSelectElement>();
     channelSelector = React.createRef<HTMLSelectElement>();
     stopButton = React.createRef<HTMLButtonElement>();
+    startButton = React.createRef<HTMLButtonElement>();
     recorder?: MediaRecorder;
+    audioCtx = new AudioContext();
     player = React.createRef<HTMLAudioElement>();
     constructor(props: myProps) {
         super();
@@ -70,6 +78,7 @@ export class ChatApp extends Component<myProps, MyState> {
             selectedMic: localStorage.getItem("mic") || "",
         };
     }
+
     ensureClient() {
         if (this.client) return this.client;
 
@@ -78,11 +87,12 @@ export class ChatApp extends Component<myProps, MyState> {
             new DredClient({
                 discovery: new DevEnvLocalDiscovery({}),
                 waitFor: "minimal",
-                name: "Dred Communicator dev-0.1.2",
+                name: "Dred Communicator dev-0.2.0",
             });
         c.events.on("hasChannels", this.setChannelList);
         c.events.on("state:changed", this.clientStateChanged);
         c.events.on("error", this.notifyClientError);
+        // c.events.on("needsAuth", this.mkTransition("signIn")
         return (this.client = c);
     }
 
@@ -90,7 +100,8 @@ export class ChatApp extends Component<myProps, MyState> {
     notifyClientError(e: DredError) {
         const { message, reason, recommendation } = e;
         this.bump({
-            message: "error: " + message + "\n  -> Reason:" + JSON.stringify(reason),
+            message:
+                "error: " + message + "\n  -> Reason:" + JSON.stringify(reason),
             lastError: message,
             recommendation,
         });
@@ -98,7 +109,7 @@ export class ChatApp extends Component<myProps, MyState> {
 
     @autobind
     async initialize() {
-        await asyncDelay(800);
+        await asyncDelay(200);
         const neighborhoods = await this.client.getNeighborhoods();
         this.setState({ neighborhoods, message: "neighborhood selection" });
         this.transition("initialized");
@@ -152,14 +163,62 @@ export class ChatApp extends Component<myProps, MyState> {
 
     @autobind
     chooseChannel(e) {
-        const channel = this.channelSelector.current.value;
+        const channel: string = this.channelSelector.current.value;
         this.setState({ channel, message: `${channel}: chat channel ready` });
+        this.client.messageHandler = this.receiveComms;
+        this.client.subscribeToChannels(channel);
         return this.transition("chat");
+    }
+
+    @autobind
+    startAudioSystem() {
+        //!!!!! todo
+    }
+
+    async decodeAudio(data : ArrayBuffer) : Promise<AudioBuffer> {
+        return new Promise((resolve, reject) => {
+            this.audioCtx.decodeAudioData(data, resolve, reject);
+        });
+    }
+
+    @autobind
+    async receiveComms(e: DredChannelMessage & DredMessage) {
+        const { channel, msg, details } = e;
+        const { queue } = this.state;
+
+        const arrayBuf = decodeBase64(msg);
+        const type = details["content-type"];
+
+        const info = await navigator.mediaCapabilities.decodingInfo({
+            type: "media-source", 
+            audio: {
+                contentType: type
+        }   }   )
+        if (!info.supported) {
+            this.bump({message: `error: decoding ${type} isn't supported by this browser`})
+            return;
+        }
+        console.log(
+            `<- message in channel '${channel}': `,
+            arrayBuf.byteLength,
+            "bytes"
+        );
+        const blob = new Blob([arrayBuf], { type });
+
+        queue.push(blob);
+        this.bump({
+            message: "incoming msg",
+            queue,
+        });        
+        debugger
+        if ("chatReady" == this.state.currentState) {
+            return this.transition("playNext");
+        }
     }
 
     didTransition(trans: string, nextState: string) {
         const msg = `⤻${trans} ➜ ${nextState}`;
-        this.state.msgs.push(msg); 
+        this.state.msgs.push(msg);
         console.log("app transition from", this.state.currentState, msg);
         this.bump();
     }
@@ -198,26 +257,32 @@ export class ChatApp extends Component<myProps, MyState> {
                     padding: "0 0.8em",
                     marginBottom: "0",
                     position: "relative",
-                    background: "linear-gradient(151deg, rgba(2,0,36,1) 0%, rgba(28,13,73,1) 3%, rgba(97,13,48,1) 100%)",
+                    background:
+                        "linear-gradient(151deg, rgba(2,0,36,1) 0%, rgba(28,13,73,1) 3%, rgba(97,13,48,1) 100%)",
                     boxShadow: [
                         "0 0 .2rem #d0007b",
-                        "0 0 .4rem #d0007b", 
-                        // "0 0 2rem #bc13fe", 
+                        "0 0 .4rem #d0007b",
+                        // "0 0 2rem #bc13fe",
                         // "0 0 0.8rem #bc13fe",
                         // "0 0 2.8rem #bc13fe",
                         "inset 0 0 0.5rem #ff7dca", //255 125 202
                     ].join(", "),
-                    color: "#aaa"
+                    color: "#aaa",
                 }}
             >
-                <h3 style={{ margin: "0.2em -0.5em",
-                    borderRadius: "0.33em 0.33em 0 0 ",
-                    background: "linear-gradient(180deg, rgba(2,0,0,0.6) 0%, rgba(0,0,0,0) 100%)",            
-                }}>
-                    <span style={{  padding: "0.4em" }}>
-                        Dred Communicator
-                    </span>
+                <h3
+                    style={{
+                        margin: "0.2em -0.5em",
+                        borderRadius: "0.33em 0.33em 0 0 ",
+                        background:
+                            "linear-gradient(180deg, rgba(2,0,0,0.6) 0%, rgba(0,0,0,0) 100%)",
+                    }}
+                >
+                    <span style={{ padding: "0.4em" }}>Dred Communicator</span>
                 </h3>
+                <button style={{float: "right"}} ref={this.startButton} onClick={this.startAudioSystem}>
+                    play {queue.length}
+                </button>
                 {this.showControlsAndStatus()}
                 {this.showConsoleMessages()}
 
@@ -226,10 +291,10 @@ export class ChatApp extends Component<myProps, MyState> {
 
                 <State
                     name="default"
+                    onEntry={this.initialize}
                     transitions={{
                         initialized: "choosingNeighborhood",
                     }}
-                    onEntry={this.initialize}
                 >
                     <small className="card read-the-docs">
                         ...contacting the Dred{" "}
@@ -306,7 +371,7 @@ export class ChatApp extends Component<myProps, MyState> {
                     transitions={{
                         record: "recording",
                         stop: "chatReady",
-                        playNext: "playNext", //!!! todo: it is triggered when a message arrives
+                        playNext: "playNext",
                     }}
                 ></State>
 
@@ -315,6 +380,7 @@ export class ChatApp extends Component<myProps, MyState> {
                     onEntry={this.record}
                     transitions={{
                         stop: "finishRecording",
+                        playNext: "recording", // no-op
                         cancel: [null, "chatReady", this.cancelledRecording],
                     }}
                 >
@@ -325,9 +391,13 @@ export class ChatApp extends Component<myProps, MyState> {
                     name="finishRecording"
                     onEntry={this.finishRecording}
                     transitions={{
-                        play: "playing",
+                        // play: "playing",
+                        playNow: "playing",
+                        playNext: "finishRecording", // no-op
                         stop: "finishRecording", //no-op
-                        record: [() => false, "finishRecording"],
+                        record: [() => false, "finishRecording"], // no-op
+
+                        captured: "playNext",
                     }}
                 />
 
@@ -390,12 +460,14 @@ export class ChatApp extends Component<myProps, MyState> {
     async playNextOrReturnToReady() {
         if (this.state.queue.length) {
             const nowPlaying = this.state.queue.shift();
-            return this.setState({ nowPlaying });
+            await this.setStateThen({ nowPlaying });
+            return this.transition("playNext");
         }
         const { channel } = this.state;
-        this.setStateThen({ message: `${channel}: chat channel ready` });
+        await this.setStateThen({ message: `${channel}: chat channel ready` });
         return this.transition("ready");
     }
+
     async setStateThen(state) {
         return new Promise((resolve: any) => {
             this.setState(state, resolve);
@@ -414,17 +486,17 @@ export class ChatApp extends Component<myProps, MyState> {
             video: false,
         });
         const audioTrack = audioStream.getAudioTracks()[0];
-        const capabilities: string[] = this.getRecordingCapabilities(
-            audioTrack,
-            msgs
-        );
+        // const capabilities: string[] = this.getRecordingCapabilities(
+        //     audioTrack,
+        //     msgs
+        // );
 
         const recordedChunks: Blob[] = [];
         this.setState({
             message: "",
             audioStream,
             audioTrack,
-            capabilities,
+            // capabilities,
         });
         const recorder = (this.recorder = new MediaRecorder(
             audioStream,
@@ -471,8 +543,10 @@ export class ChatApp extends Component<myProps, MyState> {
         );
     }
 
+    pendingRecording?: Blob;
     @autobind
-    captureRecording(e) {
+    async captureRecording(e) {
+        this._liveNow = false;
         const { channel, audioTrack } = this.state;
 
         //! it disconnects from the microphone when not actively recording.
@@ -481,20 +555,37 @@ export class ChatApp extends Component<myProps, MyState> {
         if (!channel) {
             return this.bump({ message: "no channel selected" });
         }
+        // this.transition("captured");
 
         if (e.data.size > 0) {
             const recording = e.data;
-            this.client.postMessage(channel, {
-                msg: encodeBase64(recording),
-            });
+            this.pendingRecording = recording;
+            
+            // if (false && localPlayback) {
+            //      this.bump({
+            //          // recording,
+            //          message: "posted",
+            //          nowPlaying: recording,
+            //      });
+            //      this.transition("playNow")
+            // }
 
-            this._liveNow = false;
-            this.bump({
-                recording,
-                message: "what you said...",
-                nowPlaying: recording,
-            });
-            this.transition("play");
+            // const asTextIsWrong = await recording.text();
+            // const encoded = encodeBase64(asTextIsWrong);
+
+            const arrayBuf = await recording.arrayBuffer();
+            var uint8View = new Uint8Array(arrayBuf);
+            const encoded = encodeBase64(uint8View);
+            // const decoded = decodeBase64(encoded); // <--- verifies round-trip encoding
+
+            this.client
+                .postMessage(channel, {
+                    msg: encoded,
+                    "content-type": recording.type,
+                    type: "audio",
+                }).then(() => {
+                    this.transition("captured")
+                });
         }
     }
 
@@ -528,9 +619,34 @@ export class ChatApp extends Component<myProps, MyState> {
         const { nowPlaying } = this.state;
         if (!nowPlaying) return;
 
+        //!!!! todo: investigate integration of the webaudio api for this
+        // const audio = await this.decodeAudio(nowPlaying.buffer);
+        // const source = new AudioBufferSourceNode(this.audioCtx);
+        // source.buffer = audio;
+        // source.connect(this.audioCtx.destination);
+        // source.start(0);
+        // source.addEventListener("ended", this.mkTransition("playNext"), {
+        //     once: true
+        //     // signal: ...   //!!!! todo trigger this if user clicks Next button
+        // })
+
         const url = URL.createObjectURL(nowPlaying);
-        this.player.current.src = url;
-        this.player.current.play();
+        const player : HTMLAudioElement = this.player.current;
+        // const loading = new Promise((res, rej) => {
+        //     player.addEventListener("load", res, {once: true})
+        //     player.addEventListener("loadeddata", res, {once: true})
+        //     player.addEventListener("error", rej)
+        // })
+        player.src=url
+        // player.load()
+        // await loading.catch(e => {
+        //     debugger
+        //     console.error(e)
+        // })
+        this.player.current.play().catch(e =>{
+            console.error(e)
+            this.bump({lastError: `Error decoding received message`})
+        });
     }
 
     @autobind
@@ -598,14 +714,21 @@ export class ChatApp extends Component<myProps, MyState> {
                         justifyContent: "space-between",
                     }}
                 >
-                    <div style={{
-                        // float: "right",
-                        fontSize: "75%",
-                        color: "#595",
-                        alignSelf: "start",
-                        marginLeft: "0.5em",
-                    }}>{recommendation && <span>Suggested:
-                        {recommendation}</span>}
+                    <div
+                        style={{
+                            // float: "right",
+                            fontSize: "75%",
+                            color: "#595",
+                            alignSelf: "start",
+                            marginLeft: "0.5em",
+                        }}
+                    >
+                        {recommendation && (
+                            <span>
+                                Suggested:
+                                {recommendation}
+                            </span>
+                        )}
                     </div>
                     {this.showMicSelector()}
                 </div>
@@ -657,7 +780,10 @@ export class ChatApp extends Component<myProps, MyState> {
                             color: "#555",
                         }}
                     >
-                        {currentState?.replace(/([A-Z])/, (x) => ` ${x.toLowerCase()}`)}
+                        {currentState?.replace(
+                            /([A-Z])/,
+                            (x) => ` ${x.toLowerCase()}`
+                        )}
                     </code>
                 </div>
                 {/* <div
@@ -694,6 +820,7 @@ export class ChatApp extends Component<myProps, MyState> {
         audioTrack: MediaStreamTrack,
         msgs: string[]
     ) {
+        return
         const foundCapabilities = audioTrack.getCapabilities();
 
         // Set the echoCancellation property if supported
@@ -713,9 +840,9 @@ export class ChatApp extends Component<myProps, MyState> {
         // Set the autoGainControl property if supported
         if (foundCapabilities.autoGainControl) {
             msgs.push("agc is available");
-            audioTrack.applyConstraints({
-                autoGainControl: { exact: false },
-            });
+            // audioTrack.applyConstraints({
+            //     autoGainControl: { exact: false },
+            // });
         } else {
             msgs.push("agc not available; capabilities:");
         }
@@ -739,20 +866,22 @@ export class ChatApp extends Component<myProps, MyState> {
 
         return (
             !!audioInputDevices.length && (
-                <div style={{ 
-                    textAlign: "right", 
-                    fontSize: "75%",
-                    fontFamily: "Goldman, cursive",
-                    marginRight: "0.3em" 
-                }}>
+                <div
+                    style={{
+                        textAlign: "right",
+                        fontSize: "75%",
+                        fontFamily: "Goldman, cursive",
+                        marginRight: "0.3em",
+                    }}
+                >
                     Mic:
                     <select
                         value={selectedMic}
-                        style={{ 
+                        style={{
                             maxWidth: "10rem",
                             fontSize: "90%",
                             fontFamily: "Goldman, cursive",
-                         }}
+                        }}
                         ref={this.micSelector}
                         onChange={this.setMicPref}
                     >
@@ -788,12 +917,12 @@ export class ChatApp extends Component<myProps, MyState> {
 const ALPHABET = ["k", "mb", "gb", "tb"];
 const THRESHOLD = 1e3;
 
-function humanize(n: number): string {
-    let idx = 0;
-    while (n >= THRESHOLD && ++idx <= ALPHABET.length) n /= THRESHOLD;
-    const formatted = Number.parseFloat(n).toFixed(1);
-    return `${formatted}${idx > 0 ? ALPHABET[idx - 1] : ""}`;
-}
+// function humanize(n: number): string {
+//     let idx = 0;
+//     while (n >= THRESHOLD && ++idx <= ALPHABET.length) n /= THRESHOLD;
+//     const formatted = Number.parseFloat(n).toFixed(1);
+//     return `${formatted}${idx > 0 ? ALPHABET[idx - 1] : ""}`;
+// }
 
 //!! ref: 8ycggee
 // msgs.push(JSON.stringify(capabilities, null, 2));
