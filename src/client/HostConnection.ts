@@ -462,7 +462,15 @@ export class HostConnection extends StateMachine.withDefinition(
                 const { heartbeatInterval } = value;
                 this.heartbeatInterval = heartbeatInterval;
                 continue;
+            }        
+            if ("warning" == value?.type) {
+                //!!! todo: consider how & whether integrate this so that the warning becomes actionable
+                //     to ConnectionManager or beyond.  See todo c1hxed4 in ConnectionManager around that too.
+                console.log("warning from host", this.host.serverId, ":", value)
+                debugger
+                continue;
             }
+            
             // console.log(`client: ${chan} <- event: `, value);
             const { mid, ocid, channel, nbh, type, msg, ...details } = value;
             this.events.emit("message", {
