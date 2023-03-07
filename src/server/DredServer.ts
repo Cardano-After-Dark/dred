@@ -138,6 +138,7 @@ export class DredServer {
             //! it allows clients to subscribe to many channels and receive notification about updates in any of them
             // this.subscribeToChannel(...args);
         });
+
         this.api.options("/channels/listen", (...args) => {
             //! it approves any allowed CORS / cross-origin requests.  These can be limited by domain name
             //  or other attributes of the cross-origin OPTIONS request.
@@ -225,7 +226,7 @@ export class DredServer {
         });
     }
 
-    async doChannelSetup(channel: ChanId) {
+    async doChannelSetup(channel: ChanId, options: Partial<ChannelOptions> = {}) {
         const chan = await this.channelList.has(channel);
         if (!chan) {
             await this.channelList.set(channel, "1");
@@ -235,12 +236,8 @@ export class DredServer {
 
         //!!! revisit this with a more specific plan : )
         await streams.produce(stream, "first event in this channel", { type: "channel:genesis" });
-
-        const chans = await streams.use("_chans");
-        await streams.produce(chans, "a channel was created", {
-            type: "chanCreated",
-            channel,
-        });
+        const o = {channelId: channel, ...options};
+        this.channelCreated(channel, o)
     }
 
     //
@@ -397,9 +394,20 @@ export class DredServer {
         });
         next();
     };
-    async channelCreated(channelId, opts) {
+
+    async channelCreated(channel, options: ChannelOptions) {
         //! it allows specific subclass of dred server to be notified of channel-creation
-        //!!!!!! emit channel-created event
+        const streams = this.channelConn;
+        const chans = await streams.use("_chans");
+
+        //! it emits a channel-created event in the _chans meta-channel.
+        //   applications with interest in such things can subscribe to that
+        //   channel to get the news
+        await streams.produce(chans, "a channel was created", {
+            type: "chanCreated",
+            channel,
+            options
+        });
     }
 
     async getChanOptions(channelName: string): Promise<ChannelOptions> {
@@ -652,14 +660,14 @@ export class DredServer {
             if (!found) {
                 //! sends a warning note but does not fail unless there are no valid subscriptions
                 warnings.push({
-                    //!!!!! review & craft the shape of this for consistency
+                    //!!! todo: review & craft the shape of this for consistency with other warnings that may be necessary to send to clients
                     channel,
                     type: "warning",
                     message: "invalid or expired channel",
                 });
             }
 
-            const subscriber = await this.listenOneChannel(sub, sendUpdate, notifyConsumeError, res);
+            const subscriber = await this.listenOneChannel(sub, sendUpdate, notifyConsumeError);
             myStreamListeners.push({channel, stream: subscriber});
             if (subscriber) anySuccesses += 1;
         }
