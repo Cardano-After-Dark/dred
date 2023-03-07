@@ -117,7 +117,7 @@ export class DredServer {
 
         this.api.use(cors<Request>());
 
-        this.api.use(bodyParser.json());
+        this.api.use(bodyParser.json({ limit: '1mb' }));
 
         //! it allows handlers to be mocked
         this.api.post("/channel/:channelId", (...args) => {
