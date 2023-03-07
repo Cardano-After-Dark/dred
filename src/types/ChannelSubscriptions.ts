@@ -1,4 +1,4 @@
-import type { DredMessageListener } from "../client/DredClient.js";
+import type { DredMessage, DredMessageListener } from "../client/DredClient.js";
 import type { ConnectionEvent } from "../client/HostConnection.js";
 
 export type ChanId = string;
@@ -57,6 +57,17 @@ export class ChannelSubscriptionListener {
         this.recentMsgs = new Set<MsgId>();
         this.listener = listener;
         // this.events = new EventEmitter<ChannelSubEvents>();
+     }
+
+     notify(event : ConnectionEvent & DredChannelMessage & DredMessage) {
+        const { mid: msgId, ocid: originalClientId, connection, message: message, details, neighborhood, channel } = event;
+
+        const seen = this.recentMsgs;
+        if (!seen.has(originalClientId!) && !seen.has(msgId)) {
+            seen.add(msgId);
+            this.listener(event);
+                    // sub.events.emit("channel:message", event);
+        }
      }
 
 }

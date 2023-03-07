@@ -425,23 +425,13 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
     @autobind
     notifySubscribers(event: ConnectionEvent & DredChannelMessage & DredMessage) {
-        const { mid: msgId, ocid: originalClientId, connection, message: message, details, neighborhood, channel } = event;
+        const { channel } = event;
         if (!this.channelSubs) {
             console.log("no listeners to hear about:", event);
             return;
         }
-
-        for (const [chan, sub] of Object.entries(this.channelSubs)) {
-            //!!!!! move to ChannelSubscription
-            if (chan === channel) {
-                const { recentMsgs: seen } = sub;
-                if (!seen.has(originalClientId!) && !seen.has(msgId)) {
-                    seen.add(msgId);
-                    sub.listener(event);
-                    // sub.events.emit("channel:message", event);
-                }
-            }
-        }
+        const sub = this.channelSubs[channel];
+        sub?.notify(event)
     }
 
     async replaceHostConnection(host: DredHostDetails): Promise<HostConnection> {
