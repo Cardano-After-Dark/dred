@@ -19,7 +19,13 @@ import { connnectionSettings, DredHostDetails } from "../types/DredHosts";
 import { ConnectionThresholds, Discovery } from "../types/Discovery";
 import { NeighborhoodDiscovery } from "../peers/NeighborhoodDiscovery";
 import { HostConnection } from "./HostConnection";
-import { ChanId, SubscriptionListenerMap, ChannelSubscriptionListener, NbhId, DredChannelMessage } from "../types/ChannelSubscriptions";
+import {
+    ChanId,
+    SubscriptionListenerMap,
+    ChannelSubscriptionListener,
+    NbhId,
+    DredChannelMessage,
+} from "../types/ChannelSubscriptions";
 import { devMessage, DredError, DredEvent } from "../types/DredEvents";
 
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
@@ -36,12 +42,12 @@ export type SubscriberMap = {
 // }
 
 export type DredMessage = {
-    type: string,
-    msg: any,
-    "content-type"?: string,
-    ocid?: string,
+    type: string;
+    msg: any;
+    "content-type"?: string;
+    ocid?: string;
     // [key: string]: string | undefined,
-}
+};
 
 export type ClientState = DredEvent & {
     nbh: NbhId;
@@ -51,30 +57,12 @@ export type ClientState = DredEvent & {
 
 
 interface ClientEvents {
-    needsNeighborhood: [
-        DredEvent & {
-            nbhs: NbhId[];
-        }
-    ];
-    hasChannels: [
-        DredEvent & {
-            nbh: NbhId;
-            channels: ChanId[];
-        }
-    ];
-    needsAuth: [
-        DredEvent & {
-            tbd: any;
-        }
-    ];
-    "channel:created": [
-        DredEvent & {
-            nbh: NbhId;
-            channel: ChanId;
-        }
-    ];
+    needsNeighborhood: [ DredEvent & { nbhs: NbhId[] } ];
+    hasChannels: [ DredEvent & { nbh: NbhId, channels: ChanId[] } ];
+    needsAuth: [ DredEvent & { tbd: any } ];
+    "channel:created": [DredEvent & { nbh: NbhId; channel: ChanId }];
     "state:changed": [DredEvent & ClientState];
-    "channel:message": [DredChannelMessage],
+    "channel:message": [DredChannelMessage];
     error: [DredError];
 }
 
@@ -187,16 +175,18 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         asyncDelay(1).then(this.mkTransition("nbhSelected"));
     }
 
-    messageHandler? : DredMessageListener;
+    messageHandler?: DredMessageListener;
 
-    async subscribeToChannels(channels: ChanId[]) : Promise<void>;
-    async subscribeToChannels(channel: ChanId) : Promise<void>;
-    async subscribeToChannels(smap: SubscriberMap) : Promise<void>;
-    async subscribeToChannels(arg: SubscriberMap | ChanId[] | ChanId ) : Promise<void> {
-        let smap : SubscriberMap
+    async subscribeToChannels(channels: ChanId[]): Promise<void>;
+    async subscribeToChannels(channel: ChanId): Promise<void>;
+    async subscribeToChannels(smap: SubscriberMap): Promise<void>;
+    async subscribeToChannels(arg: SubscriberMap | ChanId[] | ChanId): Promise<void> {
+        let smap: SubscriberMap;
         if (Array.isArray(arg)) {
             if (!this.messageHandler) {
-                throw new Error(`to use subscribeToChannels with an implicit subscriber, set client's messageHandler first`);
+                throw new Error(
+                    `to use subscribeToChannels with an implicit subscriber, set client's messageHandler first`
+                );
             }
             smap = {};
             for (const channel of arg as ChanId[]) {
@@ -204,9 +194,11 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             }
         } else if ("string" === typeof arg) {
             if (!this.messageHandler) {
-                throw new Error(`to use subscribeToChannels with an implicit subscriber, set client's messageHandler first`);
+                throw new Error(
+                    `to use subscribeToChannels with an implicit subscriber, set client's messageHandler first`
+                );
             }
-            smap = {[arg] : this.messageHandler}
+            smap = { [arg]: this.messageHandler };
         } else {
             smap = arg;
         }
@@ -250,15 +242,19 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     }
 
     //! it creates a new subscriptions object
-    //! it recycles existing subscriptions 
-    mkChannelSubs(
-        smap: SubscriberMap
-    ) : SubscriptionListenerMap {
-        const subs : SubscriptionListenerMap = {}
-        subs[nbhChannelList] = this.channelSub = this.getChannelSub(nbhChannelList, this.processChannelsMsg);
-        subs[nbhAuthInfo] = this.authSub = this.getChannelSub(nbhAuthInfo, this.processAuthMsg);
+    //! it recycles existing subscriptions
+    mkChannelSubs(smap: SubscriberMap): SubscriptionListenerMap {
+        const subs: SubscriptionListenerMap = {};
+        subs[nbhChannelList] = this.channelSub = this.getChannelSub(
+            nbhChannelList,
+            this.processChannelsMsg  //! it watches for events relating to channel lifecycle
+        );
+        subs[nbhAuthInfo] = this.authSub = this.getChannelSub(
+            nbhAuthInfo, 
+            this.processAuthMsg //! it watches for events relating to authentication lifecycle
+        );
         for (const [chan, listener] of Object.entries(smap)) {
-            subs[chan] = this.getChannelSub(chan, listener)
+            subs[chan] = this.getChannelSub(chan, listener);
         }
         return subs;
     }
@@ -285,33 +281,35 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     }
     
     //! it unlistens from subscriptions no longer being used
-    set subscriptions(replacement : SubscriptionListenerMap) {
-        for (const [chan, sub] of Object.entries(this._subscriptions ||{}) )  {
+    set subscriptions(replacement: SubscriptionListenerMap) {
+        for (const [chan, sub] of Object.entries(this._subscriptions || {})) {
             //!!! todo: match subscription filter settings
-
             //XXXX if (! replacement.has(chan)) sub.events.removeAllListeners();
         }
         this._subscriptions = replacement;
     }
     get subscriptions() {
         if (!this._subscriptions) return {}; // it creates an empty subscriptions object if not already set
-        return this._subscriptions
+        return this._subscriptions;
     }
-    private getChannelSub(channel: string, listener: DredMessageListener): ChannelSubscriptionListener {
+    private getChannelSub(
+        channel: string,
+        listener: DredMessageListener
+    ): ChannelSubscriptionListener {
         const found = this.subscriptions[channel];
         if (found) return found;
         return this.mkChannelSub(channel, listener);
     }
-    
+
     //! it creates new subscriptions and wires them up for notification to client application
     //! it doesn't require client applications to guard for memory / event-listener leakage
-    mkChannelSub(channel: string, listener: DredMessageListener ): ChannelSubscriptionListener {
+    mkChannelSub(channel: string, listener: DredMessageListener): ChannelSubscriptionListener {
         const sub = new ChannelSubscriptionListener({
             neighborhood: this.neighborhoodId,
             channel,
             listener,
         });
-        return sub
+        return sub;
     }
 
     constructor(args: DredClientArgs) {
@@ -530,19 +528,19 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         const sub = this.subscriptions[channelName];
 
         this.log("posting message ", message);
-        let {type, ocid, msg} = message;
-        
+        let { type, ocid, msg } = message;
+
         if (!message.ocid) {
             const _ocid = nanoid();
             console.log("(generated ocid)");
             ocid = message.ocid = _ocid;
         }
-        console.log({ocid});
+        console.log({ ocid });
         sub.recentMsgs.add(ocid!);
 
 
         //! it guards usage for non-typescript users
-        if (!(type && msg)) throw new Error(`missing required 'type' and/or 'message'`)
+        if (!(type && msg)) throw new Error(`missing required 'type' and/or 'message'`);
 
         const result = await this.fetch(`/channel/${channelName}/message`, {
             method: "POST",
@@ -553,10 +551,10 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             },
         });
         sub.recentMsgs.delete(ocid!);
-        sub.recentMsgs.add(result.id)
+        sub.recentMsgs.add(result.id);
 
         result.ocid = ocid;
-        return result
+        return result;
     }
 
     //! disconnects from neighborhood
