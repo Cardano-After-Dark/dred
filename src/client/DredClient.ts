@@ -263,14 +263,25 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         return subs;
     }
 
-    @autobind 
-    processChannelsMsg(m : DredChannelMessage) {
-        //!!!! TODO
+    @autobind
+    processChannelsMsg(m: DredChannelMessage) {
+        //!!! todo: it notifies client listeners about created or removed channels
+        //!!! todo: it emits the generic state-updated event with updated channel list
     }
 
     @autobind
-    processAuthMsg(m : DredChannelMessage) {
-        //!!!! TODO
+    processAuthMsg(m: DredChannelMessage) {
+        //!!! todo: ??? it notifies listeners when authentication is required by one or more neighborhood hosts 
+        //     more use-case analysis needed for this.
+
+        //!!! todo: it notifies listeners when a requested channel requires authentication not yet established
+        //     (possibly this would be a responsibility served in a way more aligned with individual channels instead)
+
+        //!!! todo: notifies listening application of new identities joining the neighborhood {type: "newId", pubKey, handle, certificates}
+
+        //!!! todo: notifies listening application of any certifications added by an identity's owner or neighborhood trustees
+
+        //!!! todo: notifies listening application of any key revocations or decertifications from owner or trustees
     }
     
     //! it unlistens from subscriptions no longer being used
@@ -339,17 +350,19 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         return this._warn || (this._warn = logging ? console.warn.bind(console) : () => {});
     }
 
-    //!!! ??? extract fetch as a library function so any of client, connectionManager
-    //      and/or hostConnection can use it
+    //!!! todo: extract fetch as a library function so any client and/or connectionManager
+    //      can avoiding reliance on any specific host from the neighborhood.
+    //     ... starts at least two requests from discovered servers; if a confirmation is not received
+    //     ... from neighborhood hosts within a short delay (~200ms),
+    //     ... it issues the same req to additional servers,
+    //     ... to get a decentralized confirmation of important functionalities
+    //    (see also todo zw3w737)
 
     async fetch(path: string, { parse = true, debug = false, ...options }) {
-        //!!!! todo: starts up to two requests from discovered servers
-        //!!!! if one of them does not respond within 100ms, it issues
-        //   the same req to additional servers
 
-        //!!!! it logs the pending request to an observable queue of
+        //!! todo: it logs the pending request to an observable queue of
         //    requests and keeps it updated with progress.
-        //!!!! it exposes the progress info in a way that is easily consumed
+        //!! todo: it exposes the progress info in a way that is easily consumed
         //    by a React component.
 
         if (path[0] !== "/") path = `/${path}`;
@@ -423,7 +436,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             encrypted: false,
         }
     ) {
-        //!!!! it delegates channel-creation to connection manager
+        //!!! todo: it delegates channel-creation to connection manager (see also todo zw3w737)
 
         // this.log({ fetching: true, url });
         const {
@@ -484,7 +497,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             throw new Error(`joinChannel: requires a prior call to generateKey()`);
         }
         try {
-            //!!!! it delegates member-adds to connection manager
+            //!!! todo: it delegates member-adds to connection manager (see todo zw3w737)
             return await this.fetch(`/channel/${channelName}/join`, {
                 method: "POST",
                 // debug: true,
@@ -504,10 +517,15 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         }
     }
 
-    postEncrypted(channelName: string, plainMessage: DredMessage, msgAttributes: Object) {}
+    //!!! todo: it uses the key-agreement protocol to encrypt channel messages
+    postEncrypted(channelName: string, plainMessage: EncryptedDredMessage, msgAttributes: Object) {}
 
-    //!!!! it delegates message-creation to connection manager
-    //!!!! it has a way of posting the same unique message to multiple servers and for that message to converge across them all.
+    //!!! todo: it delegates message-posting to connection manager.
+    //     see also todo zw3w737
+
+    //!!! todo zfnsmq8: it refuses to post plain-text messages into encrypted channels
+    //     see also todo y0w9cvr
+
     async postMessage(channelName: string, message: DredMessage) {
         const sub = this.subscriptions[channelName];
 

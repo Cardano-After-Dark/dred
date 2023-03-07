@@ -232,7 +232,7 @@ export class HostConnection extends StateMachine.withDefinition(
         );
     }
     disconnect(reason: string) {
-        //!!!!! TODO: cancel the pending stream if with ReadableStream.cancel()
+        //!!! todo: cancel any pending stream with ReadableStream.cancel()
 
         if (this.abortController) this.abortController.abort(`disconnect(): ${reason}`);
         this.stopRetries();
@@ -374,6 +374,8 @@ export class HostConnection extends StateMachine.withDefinition(
         // console.warn(`+fetch`, options.method, shortServer, path)
 
         options.mode = "cors";
+        //!!! todo: it includes cryptographic credentials in the connection for the server
+        //    to validate.  See also todo 61pk3h0 in server
         // options.credentials = "include"; 
         const result = await fetch(url, options);
         if (debug) debugger;

@@ -20,6 +20,11 @@ const codec = 'audio/webm; codecs="vorbis"';
 import { Component } from "preact";
 import type { ChanId, NbhId, DredEvent } from "dred-client";
 
+//!!! todo: include channel-creation UI
+//!!! todo: include channel-membership UI
+//!!! todo: use channel's shared-key-agreement protocol for message encryption
+
+
 type myProps = {};
 type MyState = {
     gen: number;
@@ -164,7 +169,7 @@ export class ChatApp extends Component<myProps, MyState> {
 
     @autobind
     startAudioSystem() {
-        //!!!!! todo
+        //!!! todo: trigger audio context init on first user interaction 
     }
 
     async decodeAudio(data : ArrayBuffer) : Promise<AudioBuffer> {
@@ -325,10 +330,6 @@ export class ChatApp extends Component<myProps, MyState> {
                     transitions={{
                         //! it is triggered to move to the next state when the client gives us a channel list.
                         hasChannels: "chooseChannels",
-                        //!!!! todo: ensure that any potential failure of fetching channel-list is handled
-                        //   ... that wouldn't be normal, but still useful to handle.  Ideally that condition
-                        //   ... can be routed through a generic state/warning notification, and otherise,
-                        //   ... provided entirely by the Client object.
                     }}
                 >
                     <small className="card read-the-docs">
@@ -610,7 +611,9 @@ export class ChatApp extends Component<myProps, MyState> {
         const { nowPlaying } = this.state;
         if (!nowPlaying) return;
 
-        //!!!! todo: investigate integration of the webaudio api for this
+        //!!! todo: investigate integration of the webaudio api for this,
+        //     ... instead of having to form a Blob URL.  
+
         // const audio = await this.decodeAudio(nowPlaying.buffer);
         // const source = new AudioBufferSourceNode(this.audioCtx);
         // source.buffer = audio;

@@ -110,6 +110,11 @@ export class DredServer {
             this.log(`-> ${req.method} ${req.originalUrl}`);
             next();
         });
+
+        //!!! todo: 61pk3h0 it applies a more explicit Access-Control-Allow-Origin policy, 
+        //    ... checking credentials and/or domain name as part of its CORS check, 
+        //    ... according to its configuration & setup
+
         this.api.use(cors<Request>());
 
         this.api.use(bodyParser.json());
@@ -230,7 +235,6 @@ export class DredServer {
         await streams.produce(stream, "first event in this channel", { type: "channel:genesis" });
 
         const chans = await streams.use("_chans");
-        //!!! revisit this with a more specific plan : )
         await streams.produce(chans, "a channel was created", {
             type: "chanCreated",
             channel,
@@ -540,6 +544,9 @@ export class DredServer {
         }
         const message = req.body;
 
+        //!!! todo y0w9cvr: it refuses to post plain-text messages into encrypted channels
+        //     see also todo zfnsmq8
+
         console.log("postMessage", message);
         this.log("server: postMessage", message);
         const tunnelProducer = await this.mkChannelProducer(channelId);
@@ -660,7 +667,13 @@ export class DredServer {
     };
 
     async listenToNeighborhood() {
-        //!!!! todo - make a client for each neighborhood host; listen on all of the channels using that client object
+        //!!! todo: it connects with a DredClient for each neighborhood host
+        //!!! todo: it subscribes to all channels in the neighborhood 
+        //   ...and replicates messages seen in those channels, 
+        //   ... along with our own confirmation of the events
+
+        //!!! todo: it keeps a recency list of messages seen from other servers,
+        //     and replicates confirmations instead of full messages in that case.
     }
 
     async listenOneChannel(

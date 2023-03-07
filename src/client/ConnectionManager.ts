@@ -26,6 +26,8 @@ import { asyncDelay } from "../util/asyncDelay.js";
 import { fetcher } from "./fetcher.js";
 import { DredMessage } from "./DredClient.js";
 
+//!!! todo zw3w737: it has a way of posting the same unique message to multiple servers,
+//     ... and for that message to converge across them all.
 
 
 type ManagerEvents = {
@@ -184,7 +186,7 @@ const connectionManagerStates = {
     },
     disconnected: {
         onEntry(this: cm) {
-            //!!!! todo check prior state and tune the message for conditions.
+            //!!! todo: check prior state and tune the message to fit those conditions.
 
             this.events.emit("disconnected", {
                 message: "we're having trouble maintaining neighborhood connectivity",
@@ -272,13 +274,15 @@ export class ConnectionManager extends StateMachine.withDefinition(
         this.transition("updatedHostList");
     }
 
-    retireObsoleteConnections(hosts: DredHostDetails[]) {
-        //!!!!! todo implement retireObsoleteConnections
+    retireObsoleteConnections(updatedHosts: DredHostDetails[]) {
+        //!!! todo: implement retireObsoleteConnections
+
+        //! it removes connections to hosts that aren't in the updated host list.
     }
 
     async getChannelList(): Promise<ChanId[]> {
         if (this.channels) return this.channels;
-        //!!!!! ensure that channels are always fresh (watch host connections for updates in '_chans' stream)
+        //!!! todo: ensure that channels are always fresh (watch host connections for updates in '_chans' stream)
         if (!this.hosts) throw new Error(`no hosts discovered yet`);
 
         const channels = new Set<string>();
@@ -366,10 +370,11 @@ export class ConnectionManager extends StateMachine.withDefinition(
         //! it EXPECTS to have subscription settings before connecting
         if (!this.channelSubs) throw new Error(`no channel subscriptions yet.`);
 
-        for (const h of this.hosts) {
-            //!!!!! todo recycle existing connections matching current channelSubs
-            this.connectTo(h)
+        //!!! todo: it establishes connections to a random or configured subset of neighborhood hosts,
+        //     ... seeking to satisfy the target level of connectivity 
+        //     ... without connecting to every host in the neighborhood
 
+        for (const h of this.hosts) {            
         }
     }
 
@@ -393,7 +398,10 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
         conn.events.on("message", this.notifySubscribers);
 
-        //!!! todo log at warning level
+        //!!! todo c1hxed4: consider use-cases in order to to ensure that any important needs of connection manager's
+        //     responsibility are appropriately served by observing and acting on these warnings.  That might range
+        //     from applying heuristics for particular sub-types of warning, to exposing warnings to the client
+        //     for presentation to users.
         // conn.events.on("warning", this.notifySubscribers);
 
         this.hostToConn.set(host, conn);
