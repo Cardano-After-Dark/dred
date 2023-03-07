@@ -48,6 +48,10 @@ export type DredMessage = {
     ocid?: string;
     // [key: string]: string | undefined,
 };
+export type EncryptedDredMessage = DredMessage & {
+    msg: "encrypted";
+    encryptedMsg: string;
+};
 
 export type ClientState = DredEvent & {
     nbh: NbhId;
