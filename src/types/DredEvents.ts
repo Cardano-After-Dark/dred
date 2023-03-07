@@ -73,7 +73,7 @@ export type DredEventPlus<moreFields> = {
 export type EventHelpAllowedEvents<EH extends EmitterDef> = keyof EH["help"];
 export interface EmitterDef {
     _info: string;
-    help: HelpText //!!!!!! remove 
+    help: HelpText 
     handlers?: DredNotificationStruct;
 }
 type test = [DredEvent] extends any[] ? "yes" : never

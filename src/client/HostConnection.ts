@@ -80,9 +80,6 @@ const connectionStates = {
                 delayTime: this.elapsedTime(),
                 [devMessage]: [
                     "The connection is established and will emit 'message' events when received from the host.",
-                    //!!!!! move this to a better spot:
-                    "ConnectionManager or ConnectionSet is expected to prevent duplicate messages ...",
-                    " ... from being delivered to the user or dApp",
                 ],
             });
         },
@@ -95,12 +92,11 @@ const connectionStates = {
             effect(this: conn) {
                 //!!! todo: put the event trigger more directly in the spot where disconnection is detected (with any error message), plus the transition()
                 this.events.emit("disconnected", {
-                    message: "tbd",
+                    message: "server disconnected",
                     connection: this,
                     reason: "... from new location TBD",
                     [devMessage]: [
-                        //!!!!! todo: check full interp of this state and update here
-                        "no action needed; HostConnection will retry",
+                        "no action needed; ConnectionManager will retry",
                     ],
                 });
             },
@@ -348,7 +344,6 @@ export class HostConnection extends StateMachine.withDefinition(
         };
     }
 
-    //!!!!!! `this` annotation should not be needed here:
     connectionFailureEvent(this: HostConnection, e: Error) {
         return {
             connection: this,
@@ -379,7 +374,7 @@ export class HostConnection extends StateMachine.withDefinition(
         // console.warn(`+fetch`, options.method, shortServer, path)
 
         options.mode = "cors";
-        // options.credentials = "include"; //!!!! add this back
+        // options.credentials = "include"; 
         const result = await fetch(url, options);
         if (debug) debugger;
 
@@ -448,7 +443,7 @@ export class HostConnection extends StateMachine.withDefinition(
                 this.events.emit(
                     "disconnected",
                     this.mkEvent({
-                        message: "server disconnected", //!!!! check for timeout conditions and deal appropriately with that
+                        message: "server disconnected", 
                         [devMessage]:
                             "The server disconnected cleanly, notifying us that it was done. ",
                     })

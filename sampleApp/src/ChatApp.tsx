@@ -124,6 +124,7 @@ export class ChatApp extends Component<myProps, MyState> {
 
     @autobind
     setChannelList(e: DredEvent & { nbh: NbhId; channels: ChanId[] }) {
+        //! it is expected to be called by the client on its `hasChannels` event.
         const { channels } = e;
         this.setState({ channels });
         this.transition("hasChannels");
@@ -151,15 +152,6 @@ export class ChatApp extends Component<myProps, MyState> {
 
         this.channelSelector.current?.focus();
     }
-
-    // @autobind
-    // async findChannelsInNeighborhood() {
-    //     //!!!!!! todo: gets channel list via client
-    //     const channels = ["discussion", "news"];
-    //     this.client.transition("findChannels")
-    //     await asyncDelay(400);
-    //     this.setState({ channels });
-    // }
 
     @autobind
     chooseChannel(e) {
@@ -307,7 +299,6 @@ export class ChatApp extends Component<myProps, MyState> {
                     name="choosingNeighborhood"
                     transitions={{
                         findChannels: "findingChannels",
-                        // hasChannels: "chooseChannels",
                     }}
                 >
                     <p className="card read-the-docs">

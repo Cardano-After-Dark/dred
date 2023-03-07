@@ -27,14 +27,6 @@ import { fetcher } from "./fetcher.js";
 import { DredMessage } from "./DredClient.js";
 
 
-// | "pending"
-// | "discovering"
-// | "connecting"
-// | "disconnected"
-// | "underconnected"
-// | "minimally connected"
-// | "connected"
-// | "refreshing";
 
 type ManagerEvents = {
     hasNeighborhood: [DredEvent];
@@ -303,7 +295,6 @@ export class ConnectionManager extends StateMachine.withDefinition(
                 })
                 for (const chan of foundChans) {
                     if (!channels.has(chan)) {
-                        //!!!!! todo: do this for channels found in the neighborhood's _chans channel later
                         this.events.emit("channel:added", {
                             nbh: this.discovery.nbh,
                             channel: chan,
@@ -332,7 +323,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
     //     return this.discoverPeers();
     // }
     disconnect() {
-        //!!!!! todo: actually disconnect from the hosts.
+        //! it tells each host connection to disconnect
         for (const [host, connection] of this.hostToConn.entries()) {
             connection.disconnect("due to connection manager disconnect()");
             this.moveConnTo(connection, "obsolete");
@@ -388,6 +379,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
                 `missing channelSubs; should already have a reasonable default value`
             );
             
+        //! it gathers a list of channels and subscription settings to use for this conection
         const subscriptions : SubscriptionList = [];
         for (const sub of Object.values(this.channelSubs)) {
             subscriptions.push(sub.options)
@@ -579,8 +571,6 @@ export class ConnectionManager extends StateMachine.withDefinition(
             if (match) {
                 newPeer = newCache[i] = match;
             }
-            //!!!! todo: consider whether forcing the host-connection to reset is of any value,
-            //     given it has its own retry logic
             // if (!newPeer.isConnected || newPeer.isConnecting) {
             //     await newPeer.abortConnection();
             //     await newPeer.connect();

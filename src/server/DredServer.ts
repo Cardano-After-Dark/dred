@@ -132,7 +132,7 @@ export class DredServer {
             // this.subscribeToChannel(...args);
         });
         this.api.options("/channels/listen", (...args) => {
-            //! it approves any allowed cross-origin requests.  These can be limited by domain name
+            //! it approves any allowed CORS / cross-origin requests.  These can be limited by domain name
             //  or other attributes of the cross-origin OPTIONS request.
         });
         this.api.post("/channels/listen", (...args) => {
@@ -602,7 +602,7 @@ export class DredServer {
         sendUpdate({ type: "heartbeat-info", timerInterval });
 
         const cleanup = () => {
-            //!!!! clean up all the internal subscriptions
+            //! it cleans up all the internal subscriptions
             for (const mySub of myStreamListeners) {
                 const { channel, stream } = mySub;
                 this.channelConn.unsubscribe(stream);
@@ -638,7 +638,7 @@ export class DredServer {
             const {channel} = sub;
             const found = await this.channelList.has(channel);
             if (!found) {
-                //! sends a warning note but do not fail unless there are no valid subscriptions
+                //! sends a warning note but does not fail unless there are no valid subscriptions
                 warnings.push({
                     //!!!!! review & craft the shape of this for consistency
                     channel,

@@ -177,7 +177,6 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     signer?: StringNacl;
     pubKeyString?: string;
     insecure?: boolean;
-    connections: connectionMap = new Map(); //!!!!! obsolete
     _subscriptions?: SubscriptionListenerMap;
     subscribers: subscriberMap = new Map();
     channelSub?: ChannelSubscriptionListener;
