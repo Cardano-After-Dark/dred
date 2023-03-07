@@ -107,6 +107,8 @@ export class DredServer {
     setupExpressHandlers() {
         this.api.use(compression())
         this.api.use((req, res, next) => {
+            res.locals.startTime = new Date().getTime();
+
             this.log(`-> ${req.method} ${req.originalUrl}`);
             next();
         });
@@ -297,7 +299,10 @@ export class DredServer {
     }
 
     resultLogger: express.RequestHandler = (req, res, next) => {
-        this.log(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url}`);
+        const now = new Date().getTime();
+        const elapsed = now - res.locals.startTime
+
+        this.log(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url} ${elapsed}ms`);
     };
     getChannels: express.RequestHandler = async (req, res, next) => {
         const found: string[] = (await this.channelList.keys()) as string[];
