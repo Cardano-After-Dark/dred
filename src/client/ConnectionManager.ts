@@ -266,11 +266,11 @@ export class ConnectionManager extends StateMachine.withDefinition(
     }
 
     @autobind
-    async setHostList({ hosts }: { hosts: DredHostDetails[] }) {
+    async setHostList({ hosts: newHosts }: { hosts: DredHostDetails[] }) {
         if (this.hosts) {
-            this.retireObsoleteConnections(hosts);
+            this.retireObsoleteConnections(newHosts);
         }
-        this.hosts = hosts;
+        this.hosts = newHosts;
         this.transition("updatedHostList");
     }
 
@@ -375,6 +375,14 @@ export class ConnectionManager extends StateMachine.withDefinition(
         //     ... without connecting to every host in the neighborhood
 
         for (const h of this.hosts) {            
+            const foundConn = this.hostToConn.get(h);
+
+            if (foundConn) {
+                //!! todo: it recycles host connections, if they have a full match with current channelSubs
+                this.replaceHostConnection(h);
+            } else {
+                this.connectTo(h);
+            }
         }
     }
 
