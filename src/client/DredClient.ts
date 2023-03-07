@@ -1,11 +1,11 @@
 import fetch from "cross-fetch";
-import { customAlphabet } from 'nanoid'
+import { customAlphabet } from "nanoid";
 import nacl from "tweetnacl";
 const { sign } = nacl;
 import util from "tweetnacl-util";
 import type { Response } from "cross-fetch";
 
-const nanoid = customAlphabet('0123456789abcdefghjkmnpqrstvwxyz', 7);
+const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
 
 import EventEmitter from "eventemitter3";
 import { asyncDelay, autobind, StateMachine } from "@poshplum/utils";
