@@ -59,12 +59,12 @@ export type ClientState = DredEvent & {
     status: string;
 };
 
-
 interface ClientEvents {
     needsNeighborhood: [ DredEvent & { nbhs: NbhId[] } ];
     hasChannels: [ DredEvent & { nbh: NbhId, channels: ChanId[] } ];
     needsAuth: [ DredEvent & { tbd: any } ];
     "channel:created": [DredEvent & { nbh: NbhId; channel: ChanId }];
+    "channel:removed": [DredEvent & { nbh: NbhId; channel: ChanId }];
     "state:changed": [DredEvent & ClientState];
     "channel:message": [DredChannelMessage];
     error: [DredError];
@@ -283,7 +283,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
         //!!! todo: notifies listening application of any key revocations or decertifications from owner or trustees
     }
-    
+
     //! it unlistens from subscriptions no longer being used
     set subscriptions(replacement: SubscriptionListenerMap) {
         for (const [chan, sub] of Object.entries(this._subscriptions || {})) {
@@ -541,7 +541,6 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         }
         console.log({ ocid });
         sub.recentMsgs.add(ocid!);
-
 
         //! it guards usage for non-typescript users
         if (!(type && msg)) throw new Error(`missing required 'type' and/or 'message'`);
