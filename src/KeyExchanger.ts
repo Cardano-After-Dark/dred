@@ -1,4 +1,4 @@
-import { asyncDelay } from "./util/asyncDelay";
+import { asyncDelay } from "./util/asyncDelay.js"
 import nacl from "tweetnacl";
 import util from "tweetnacl-util";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
@@ -54,12 +54,20 @@ export class KeyExchanger {
     //     to break out of a deadlock for a client who doesn't complete their step
     //     in the key-exchange sequence
 
-    //!!! todo: consider a simple pre-commitment phase that would preclude
+    //!!! todo: consider a a pre-commitment phase for key-exchange, that would preclude
     //     a client from being able to influence the order of their involvement 
-    //     in the exchange (e.g. first trade pubkeys, then sign the ordered list of 
-    //     keys, then order the signatures and hash them (-> sigsHash), then hash 
-    //     each pubkey with the sigs-hash (-> pubKeySigHashN at each N), and
-    //     sort the pubKeys on their respective pubKeySigHashN
+    //     in the exchange 
+    //     * trade pub-key hashes first; with that commitment, share the pubkeys
+    //       and determine key-exchange order based on sorted pubkeys.
+    //         * This method requires fresh keys from every party when new 
+    //            generations of key-exchange occur, such as when adding or 
+    //            removing a participant.  This would be an undesirable constraint.
+    //     * -OR- trade pubkeys, have everyone sign the ordered list.
+    //       Given that set of signatures, each participant can sort them and make a hash
+    //        ... ("KeySigsHash") from the list; this hash is deterministic but not predictable.
+    //       Process each pubkey by hashing PubKey + KeySigsHash to produce
+    //        ... a set of KeySortValue's.  Sort the set of keys by their KeySortValue,
+    //        ... producing a shared picture of key order for running the key-exchange.
 
     constructor(args: KeyExchangerConstructorArgs) {
         this._name = args.name;
@@ -193,8 +201,8 @@ export class KeyExchanger {
             }
 
             //! it continues iterating the secret, following the deterministic process
-            //!   to find the final composed shared secret.  Any people earlier in the
-            //!   key-exchange sequence already computed this, and now we can too!
+            //  ... to find the final composed shared secret.  Any people earlier in the
+            //  ... key-exchange sequence already computed this, and now we can too!
             intermediateSecret = computedNextSecret;
             intermediatePublic = computedNextKeyPair?.publicKey;
             this.exchangeAtOffset = 1 + i;
