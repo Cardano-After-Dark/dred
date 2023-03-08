@@ -24,12 +24,13 @@
     "license": "MIT",
     "packageManager": "pnpm@7.25.1",
     "scripts": {
+        "prepare": "git submodule init ; git submodule update ; cd vendors/poshplum ; pnpm build ; cd -",
         "dev": "scripts/setupEnvironment && pnpm build:watch & pnpm app & pnpm build:client:watch & nodemon -w dist/dredServer.mjs --enable-source-maps --inspect dist/dredServer.mjs",
         "doc": "cd docs/ ; pnpm dev",
         "start": "scripts/setupEnvironment && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --respawn index.ts",
         "start:debug": "scripts/setupEnvironment  && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --inspect --respawn index.ts",
         "test": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' ENV_FILE=./config/.env.test jest --runInBand --detectOpenHandles",
-        "build": "cd src/redis/streams; yarn ; cd - ; rollup -c",
+        "build": "cd src/redis/streams; yarn ; cd - ; cd vendor/poshplum ; pnpm build ; cd - ; rollup -c",
         "build:docker": " echo TODO: implement build:docker recipe",
         "build:client": "cd src/client ; yarn build",
         "build:client:watch": "cd src/client ; pnpm dev",
@@ -45,8 +46,8 @@
         "run": "NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' node dist/dredServer.mjs"
     },
     "dependencies": {
-        "@poshplum/poshplum": "../plum/poshplum",
-        "@poshplum/utils": "../plum/utils",
+        "@poshplum/poshplum": "./vendor/poshplum/packages/poshplum",
+        "@poshplum/utils": "./vendor/poshplum/packages/utils",
         "abstract-logging": "^2.0.1",
         "body-parser": "^1.20.0",
         "compression": "^1.7.4",

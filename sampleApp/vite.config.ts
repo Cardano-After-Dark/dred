@@ -25,8 +25,6 @@ preactPlugin[0].config = () => ({
         'react-dom': path.resolve(__dirname, './node_modules/preact/compat'),
         react: path.resolve(__dirname, './node_modules/preact/compat'),
         "@poshplum/utils": "@poshplum/utils/browser", // only because conditions didn't work : (
-        "@poshplum/data-pro/models": "@poshplum/data-pro/ui/models", // short-circuit no-op to guard wrong result from enxt line
-        "@poshplum/data-pro": "@poshplum/data-pro/ui", // only because conditions didn't work : (
       }
     }
   });;
