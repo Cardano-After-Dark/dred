@@ -18,7 +18,7 @@ CONTAINER_CONF_LOCATION=/usr/local/etc/redis/redis.conf
   (rm -rf $VOLUME/* || : ) &&
   (docker rm $CONTAINER || :) 
 } 
-[ -l devdb ] || ln -s ${relativeVolume} devdb
+[ -L devdb ] || ln -s ${relativeVolume} devdb
 
 ( docker ps | grep $CONTAINER > /dev/null ) && {
     echo

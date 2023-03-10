@@ -21,6 +21,7 @@ importers:
       abstract-logging: ^2.0.1
       body-parser: ^1.20.0
       compression: ^1.7.4
+      concurrently: ^7.6.0
       cors: ^2.8.5
       cross-fetch: ^3.1.5
       esbuild: ^0.17.10
@@ -77,6 +78,7 @@ importers:
       '@types/node': 18.11.18
       '@types/node-fetch': 2.6.2
       '@types/supertest': 2.0.12
+      concurrently: 7.6.0
       esbuild: 0.17.10
       jest: 29.4.1_zfha7dvnw4nti6zkbsmhmn6xo4
       module-alias: 2.2.2
