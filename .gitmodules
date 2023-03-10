@@ -1,4 +1,0 @@
-[submodule "vendor/poshplum"]
-	path = vendor/poshplum
-	url = https://github.com/poshplum/poshplum
-	branch = next
