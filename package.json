@@ -24,7 +24,7 @@
     "license": "MIT",
     "packageManager": "pnpm@7.25.1",
     "scripts": {
-        "prepare": "git submodule init ; git submodule update ; cd vendors/poshplum ; pnpm install ; pnpm build ; cd -",
+        "prepare": "git submodule init ; git submodule update ; cd vendor/poshplum ; pnpm install ; pnpm build ; cd -",
         "dev": "scripts/setupEnvironment && pnpm build:watch & pnpm app & pnpm build:client:watch & pnpm doc & nodemon -w dist/dredServer.mjs --enable-source-maps --inspect dist/dredServer.mjs",
         "doc": "cd docs/ ; concurrently --names 'docs' -c 'magenta.bgGreen' 'pnpm dev'",
         "start": "scripts/setupEnvironment && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --respawn index.ts",
