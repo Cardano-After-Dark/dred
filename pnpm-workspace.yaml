@@ -2,8 +2,6 @@ packages:
   - 'src/client'  
   - 'docs'
   - 'sampleApp'
-  - 'vendor/poshplum/packages/poshplum'
-  - 'vendor/poshplum/packages/utils'
   - '.'
 
   # works better with yarn used in that subdir:

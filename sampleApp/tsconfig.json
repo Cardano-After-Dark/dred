@@ -27,8 +27,8 @@
             "react": ["@preact/compat"],
             "preact": ["@preact/compat"],
             "react-dom": ["@preact/compat"],
-            "@poshplum/utils": ["../../plum/utils/dist/browser.mjs"],
-            "@poshplum/poshplum": ["../../plum/poshplum/dist/browser.mjs"],
+            // "@poshplum/utils": ["../../plum/utils/dist/browser.mjs"],
+            // "@poshplum/poshplum": ["../../plum/poshplum/dist/browser.mjs"],
         }
     },
     "include": ["src/**/*.tsx?", "../**/*.ts"]
