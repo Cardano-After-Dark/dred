@@ -30,6 +30,7 @@ const navigation = [
     links: [
         { title: 'Operating a Dred node', href: '/docs/node-operations' },
         { title: 'Registering a Neighbor', href: '/docs/register-neighbor' },
+        { title: 'Context', href: '/docs/context' },
     ],
   },
   {
