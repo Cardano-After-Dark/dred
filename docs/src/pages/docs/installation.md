@@ -11,6 +11,8 @@ This section is about installing the prerequisites, clone the code and run the a
 
 ---
 
+
+
 ## Install docker
 
 If you haven’t already, install Docker for [windows](https://docs.docker.com/desktop/install/windows-install/), [macos](https://docs.docker.com/desktop/install/mac-install/) or [linux](https://docs.docker.com/desktop/install/linux-install/).**
@@ -61,14 +63,3 @@ The DRED Demo Application is a simple client application which uses the DRED cli
 ### DRED Documentation
 Once started the dev environment with `pnpm dev`, the documentation is accessible at [localhost:3031/](http://localhost:3031/) . 
 
-## Open Source 
-
-This is an open source project. You can have it for free, you can contribute improvements, and you can try to request infromation to the developers. Keep in mind it's not guaranteed you'll get immediate feedback, as OpenSource developers tendo to be very busy trying to survive by means of creating free software projects. 
-
-### Contributing:
-- Feel free to provide us feedback in case you feel the documentation or the software project can be improved. 
-- You're welcome to contribute documentation improvements by editing the content under /docs/src/ and proposting a PR.
-- You're welcome to propose software improvements via GitHub issues followed by proposing PRs. 
-
-
-TODO: Insert Contact Form

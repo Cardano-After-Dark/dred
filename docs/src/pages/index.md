@@ -1,5 +1,5 @@
 ---
-title: Getting started
+title: Welcome to Dred
 pageTitle: Dred - Decentralized REDIS state channels
 description: Realtime message channels for dApps
 ---
@@ -16,27 +16,24 @@ Learn how to get Dred set up in your project in under thirty minutes or it's fre
 
 {% /quick-links %}
 
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste.
+
 
 ---
+## Quick Start
 
-## Quick start
+In this guide you will learn ...
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur.
+### What is Dred
 
-### Installing dependencies
+Dred is a real-time messaging protocol that's designed specifically for decentralized applications (dApps). The protocol enables multiple users to have a shared stream of updates, with any authorized player being able to add content. With Dred, application developers don't have to operate messaging servers themselves - the protocol is served in a decentralized manner by multiple servers.
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
 
-```shell
-npm install @tailwindlabs/cache-advance
-```
+### Dependencies
 
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste. Provident nam asperiores vel laboriosam omnis ducimus enim nesciunt quaerat. Minus tempora cupiditate est quod.
-
-{% callout type="warning" title="Oh no! Something bad happened!" %}
-This is what a disclaimer message looks like. You might want to include inline `code` in it. Or maybe you’ll want to include a [link](/) in it. I don’t think we should get too carried away with other scenarios like lists or tables — that would be silly.
-{% /callout %}
+- Docker
+- Node.js
+- npm
+- pnpm
 
 ### Configuring the library
 
@@ -93,22 +90,27 @@ Ut quo libero aperiam mollitia est repudiandae quaerat corrupti explicabo. Volup
 
 ---
 
+## Open Source 
+
+This is an open source project. You can have it for free, you can contribute improvements, and you can try to request infromation to the developers. Keep in mind it's not guaranteed you'll get immediate feedback, as OpenSource developers tendo to be very busy trying to survive by means of creating free software projects. 
+
 ## Getting help
 
-Consequuntur et aut quisquam et qui consequatur eligendi. Necessitatibus dolorem sit. Excepturi cumque quibusdam soluta ullam rerum voluptatibus. Porro illo sequi consequatur nisi numquam nisi autem. Ut necessitatibus aut. Veniam ipsa voluptatem sed.
+If you need help setting up Dred or if there are questions regarding Dred please feel free to [contact us](https://forms.gle/B2yaMNDcnHdmDtJH6)
+
+### Contributing:
+- Feel free to provide us feedback in case you feel the documentation or the software project can be improved. 
+- You're welcome to contribute documentation improvements by editing the content under /docs/src/ and proposting a PR.
+- You're welcome to propose software improvements via GitHub issues followed by proposing PRs. 
+- please feel free to write us directly through [this form](https://forms.gle/B2yaMNDcnHdmDtJH6)
+
 
 ### Submit an issue
 
-Inventore et aut minus ut voluptatem nihil commodi doloribus consequatur. Facilis perferendis nihil sit aut aspernatur iure ut dolores et. Aspernatur odit dignissimos. Aut qui est sint sint.
-
-Facere aliquam qui. Dolorem officia ipsam adipisci qui molestiae. Error voluptatem reprehenderit ex.
-
-Consequatur enim quia maiores aperiam et ipsum dicta. Quam ut sit facere sit quae. Eligendi veritatis aut ut veritatis iste ut adipisci illo.
+If you find an Issue with Dred please [contact us](https://forms.gle/B2yaMNDcnHdmDtJH6) and/or [submit an Issue](https://github.com/Cardano-After-Dark/dred/issues) on our github
 
 ### Join the community
 
-Praesentium facilis iste aliquid quo quia a excepturi. Fuga reprehenderit illo sequi voluptatem voluptatem omnis. Id quia consequatur rerum consectetur eligendi et omnis. Voluptates iusto labore possimus provident praesentium id vel harum quisquam. Voluptatem provident corrupti.
+Dred is currently developed by the core team, any contributions to the project are welcome. Also if you want to stay up to date, learn or get to know some of the amazing People behind this Project join us at [twitter](https://twitter.com/cardanafterdark), [discord](https://discord.gg/VwxRdEBwBE) or [telegram](https://t.me/CardanoAfterDark).
 
-Eum et ut. Qui facilis est ipsa. Non facere quia sequi commodi autem. Dicta autem sit sequi omnis impedit. Eligendi amet dolorum magnam repudiandae in a.
 
-Molestiae iusto ut exercitationem dolorem unde iusto tempora atque nihil. Voluptatem velit facere laboriosam nobis ea. Consequatur rerum velit ipsum ipsam. Et qui saepe consequatur minima laborum tempore voluptatum et. Quia eveniet eaque sequi consequatur nihil eos.
