@@ -7,6 +7,13 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
   },
+  basePath: '/dred',
+  assetPrefix: '/dred/',
+  webpack: (config) => {
+    config.output.publicPath = '/dred' + config.output.publicPath
+    return config
+  },
 }
+
 
 module.exports = withMarkdoc()(nextConfig)
