@@ -9,9 +9,16 @@ const nextConfig = {
   },
   basePath: '/dred',
   assetPrefix: '/dred/',
+  distDir: 'docs',
   webpack: (config) => {
     config.output.publicPath = '/dred' + config.output.publicPath
     return config
+  },
+  images: {
+    loader: 'imgix',
+    path: '/',
+    domains: [], // Add your domains here if necessary
+    unoptimized: true, // Disable image optimization
   },
 }
 
