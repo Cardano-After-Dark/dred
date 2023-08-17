@@ -29,7 +29,7 @@
         "start": "scripts/setupEnvironment && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --respawn index.ts",
         "start:debug": "scripts/setupEnvironment  && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --inspect --respawn index.ts",
         "test": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' ENV_FILE=./config/.env.test jest --runInBand --detectOpenHandles",
-        "build": "cd src/redis/streams; yarn ; cd - ; cd vendor/poshplum ; pnpm build ; cd - ; rollup -c",
+        "build": "cd src/redis/streams; yarn ; cd - ; rollup -c",
         "build:docker": " echo TODO: implement build:docker recipe",
         "build:client": "cd src/client ; yarn build",
         "build:client:watch": "cd src/client ; pnpm dev",
