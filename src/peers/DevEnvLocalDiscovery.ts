@@ -46,7 +46,7 @@ export class DevEnvLocalDiscovery extends Discovery {
     static defaultHosts() : DredHostDetails[] {
         return [{
             serverId: "singleton",
-            address: "localhost",
+            address: "127.0.0.1",
             port: 3029,
             insecure: true,            
             // publicKey: this.getPubKeyFromFs(3029),
