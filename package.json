@@ -24,7 +24,7 @@
     "license": "MIT",
     "packageManager": "pnpm@7.25.1",
     "scripts": {
-        "dev": "scripts/setupEnvironment && pnpm build:watch & pnpm app & pnpm build:client:watch & pnpm doc & nodemon -w dist/dredServer.mjs --enable-source-maps --inspect dist/dredServer.mjs",
+        "dev": "scripts/setupEnvironment && pnpm build:watch & pnpm app & pnpm build:client:watch & pnpm doc & LOGGING=default:info nodemon -w dist/dredServer.mjs --enable-source-maps --inspect dist/dredServer.mjs",
         "doc": "cd docs/ ; concurrently --names 'docs' -c 'magenta.bgGreen' 'pnpm dev'",
         "build:docs": "cd docs && pnpm build && pnpm export",
         "start": "scripts/setupEnvironment && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --respawn index.ts",
