@@ -22,7 +22,7 @@
     "main": "./dist/dred-server.js",
     "types": "./dist/dred-server.js",
     "license": "MIT",
-    "packageManager": "pnpm@7.25.1",
+    "packageManager": "pnpm@9.0.6",
     "scripts": {
         "dev": "scripts/setupEnvironment && pnpm build:watch & pnpm app & pnpm build:client:watch & pnpm doc & LOGGING=default:info nodemon -w dist/dredServer.mjs --enable-source-maps --inspect dist/dredServer.mjs",
         "doc": "cd docs/ ; concurrently --names 'docs' -c 'magenta.bgGreen' 'pnpm dev'",
@@ -31,7 +31,7 @@
         "test": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' ENV_FILE=./config/.env.test jest --runInBand --detectOpenHandles",
         "build": "cd src/redis/streams; yarn ; cd - ; rollup -c",
         "build:docker": " echo TODO: implement build:docker recipe",
-        "build:client": "cd src/client ; yarn build",
+        "build:client": "cd src/client ; pnpm build",
         "build:client:watch": "cd src/client ; pnpm dev",
         "app": "cd sampleApp; concurrently --names 'app' -c 'green.bgMagenta' 'pnpm dev'",
         "build:watch": "cd src/redis/streams; yarn ; cd - ; rollup -cw --no-watch.clearScreen",
@@ -89,7 +89,7 @@
         "ts-jest": "^29.0.3",
         "ts-node": "^10.8.1",
         "ts-node-dev": "^2.0.0",
-        "typescript": "^4.9.4"
+        "typescript": "^5.3.3"
     },
     "_moduleAliases": {
         "@platform": "platform/server/"

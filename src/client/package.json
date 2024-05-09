@@ -1,5 +1,5 @@
 {
-    "name": "dred-client",
+    "name": "@cardano-after-dark/dred-client",
     "version": "0.0.1",
     "description": "Distributed event streams for web3 (client)",
     "type": "module",
@@ -29,7 +29,7 @@
     "module": "./dist/dred-client.mjs",
     "types": "./dist/dred-client.js",
     "license": "MIT",
-    "packageManager": "pnpm@7.25.1",
+    "packageManager": "pnpm@9.0.6",
     "scripts": {
         "dev": "pnpm build:watch",
         "clean": "rm dist/*",
@@ -40,7 +40,7 @@
     },
     "dependencies": {
         "@poshplum/poshplum": "^0.8.9",
-        "@poshplum/utils": "^0.8.2",
+        "@poshplum/utils": "../../../plum/utils",
         "@rollup/plugin-alias": "^4.0.3",
         "body-parser": "^1.20.0",
         "cross-fetch": "^3.1.5",
@@ -70,7 +70,7 @@
         "rollup-plugin-dts": "^5.1.0",
         "rollup-plugin-esbuild": "^5.0.0",
         "rollup-plugin-node-externals": "^5.0.3",
-        "typescript": "^4.9.3",
+        "typescript": "^5.3.3",
         "vite": "^4.0.0"
     }
 }
