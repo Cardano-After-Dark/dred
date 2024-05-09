@@ -22,7 +22,7 @@
     "main": "./dist/dred-server.js",
     "types": "./dist/dred-server.js",
     "license": "MIT",
-    "packageManager": "pnpm@7.25.1",
+    "packageManager": "pnpm@9.0.6",
     "scripts": {
         "dev": "scripts/setupEnvironment && pnpm build:watch & pnpm app & pnpm build:client:watch & pnpm doc & LOGGING=default:info nodemon -w dist/dredServer.mjs --enable-source-maps --inspect dist/dredServer.mjs",
         "doc": "cd docs/ ; concurrently --names 'docs' -c 'magenta.bgGreen' 'pnpm dev'",

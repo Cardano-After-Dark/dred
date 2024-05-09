@@ -1,5 +1,4 @@
 import { EventEmitter } from "eventemitter3";
-import { Newable } from "ts-essentials";
 
 // import { MarkRequired } from "ts-essentials";
 

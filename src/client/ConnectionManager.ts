@@ -1,7 +1,10 @@
 import { autobind, StateMachine } from "@poshplum/utils";
 import { EventEmitter } from "eventemitter3";
 
-import { Discovery } from "../types/Discovery.js";
+import { 
+    Discovery,
+    ConnectionThresholds,
+ } from "../types/Discovery.js";
 import {
     ChanId,
     SubscriptionListenerMap,
@@ -17,7 +20,6 @@ import { ConnectionEvent, HostConnection } from "./HostConnection.js";
 
 import {
     ConnectionState,
-    ConnectionThresholds,
     ConnectionManagerOptions,
     PromisedHostDetails,
     ThresholdChoice,
