@@ -478,7 +478,11 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             options.owner = this.pubKeyString;
             options.signature = signature;
         }
-        const body = JSON.stringify(options);
+        const {
+            channelId: omitted, 
+            ... otherBodyAttrs
+        } = options;
+        const body = JSON.stringify(otherBodyAttrs);
         try {
             return await this.fetch(`/channel/${channelName}`, {
                 method: "POST",
