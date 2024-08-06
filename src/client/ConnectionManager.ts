@@ -283,7 +283,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
     }
 
     async getChannelList(): Promise<ChanId[]> {
-        if (this.channels) return this.channels;
+        // if (this.channels) return this.channels;
         //!!! todo: ensure that channels are always fresh (watch host connections for updates in '_chans' stream)
         if (!this.hosts) throw new Error(`no hosts discovered yet`);
 

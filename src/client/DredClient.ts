@@ -482,9 +482,10 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             channelId: omitted, 
             ... otherBodyAttrs
         } = options;
+
         const body = JSON.stringify(otherBodyAttrs);
         try {
-            return await this.fetch(`/channel/${channelName}`, {
+            const result = await this.fetch(`/channel/${channelName}`, {
                 method: "POST",
                 body,
                 headers: {
@@ -492,6 +493,8 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
                     accept: "application/json",
                 },
             });
+            // this.emitState();
+            return result;
         } catch (err: any) {
             let e: Error;
             if (err instanceof Error) {
@@ -554,10 +557,10 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
         if (!message.ocid) {
             const _ocid = nanoid();
-            console.log("(generated ocid)");
+            // console.log("(generated ocid)");
             ocid = message.ocid = _ocid;
         }
-        console.log({ ocid });
+        // console.log({ ocid });
         sub.recentMsgs.add(ocid!);
 
         //! it guards usage for non-typescript users
