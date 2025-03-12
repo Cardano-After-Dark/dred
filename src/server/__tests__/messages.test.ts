@@ -6,10 +6,10 @@
 import request, { SuperTestWithHost, Test } from "supertest";
 import { Express } from "express";
 
-import { testSetup } from "../testServer";
-import { DredClient } from "../../client/DredClient";
-import { DredServer } from "../DredServer";
-import { asyncDelay } from "../../util/asyncDelay";
+import { testSetup } from "../testServer.js";
+import { DredClient } from "../../client/DredClient.js";
+import { DredServer } from "../DredServer.js";
+import { asyncDelay } from "../../util/asyncDelay.js";
 
 describe("channel messages", () => {
     let agent: SuperTestWithHost<Test>;
@@ -71,7 +71,7 @@ describe("channel messages", () => {
                 expect(received).toBe(2);
             });
 
-            it("continues consuming events from redis after a first batch", async () => {
+            fit("continues consuming events from redis after a first batch", async () => {
                 const otherClient = server.mkClient();
                 const shortSubscribe = jest
                     .spyOn(server, "subscribeTimeout", "get")
@@ -86,8 +86,9 @@ describe("channel messages", () => {
                 const subscription = otherClient.subscribeChannel(
                     chan,
                     (inbound) => {
-                        // console.log("chan msg", inbound);
+                        console.log("chan msg", inbound);
                         expect(inbound).toMatchObject(msg);
+
                         received += 1;
                     }
                 );

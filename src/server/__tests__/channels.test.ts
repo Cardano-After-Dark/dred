@@ -149,6 +149,7 @@ describe("channels", () => {
             const options = await server.getChanOptions(channelName);
             expect(options.owner).toBe(pubKeyString);
         });
+
         it("fills encrypted option and doesn't allow extra keys in channel options", async () => {
             const channelName = "enc-chan-creation-no-extra-stuff";
 
@@ -168,6 +169,7 @@ describe("channels", () => {
             expect(options.encrypted).toBeTruthy();
             expect(options.randomValue).toBeUndefined();
         });
+
         it("triggers channelCreated method on server object", async () => {
             const created = jest.spyOn(server, "channelCreated");
             await client.createChannel("createAndCallback", {
@@ -194,6 +196,7 @@ describe("channels", () => {
                 new Date().getTime() - opts.createdAt.getTime()
             ).toBeLessThan(200);
         });
+        
         describe("joining members", () => {
             it("allows owner to join others with their pubKey and an approval signature", async () => {
                 const channelName = "owner-joins-someone";
