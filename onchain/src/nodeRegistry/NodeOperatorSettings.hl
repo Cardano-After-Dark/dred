@@ -1,0 +1,5 @@
+module NodeOperatorSettings
+
+struct NodeOperatorSettings {
+    minHeartbeatInterval: Int "minHB"
+}

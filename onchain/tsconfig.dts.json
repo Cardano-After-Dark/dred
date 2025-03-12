@@ -1,0 +1,71 @@
+{
+    "$schema": "http://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        "strict": true,
+        "noEmit": true,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "allowArbitraryExtensions": true,
+        "skipLibCheck": true,
+
+        "target": "ESNext",
+        "lib": ["esnext", "dom"],
+        "module": "esnext",
+        "esModuleInterop": true,
+        "types": ["node"],
+        "verbatimModuleSyntax": true,
+
+        "moduleResolution": "nodenext",
+        "customConditions": ["dev"],
+        "baseUrl": ".",
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        // "isolatedModules": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        
+        "outDir": "./.api-extractor-temp",        
+        "outFile": ".api-extractor-temp/raw.d.ts",
+        // "importHelpers": true,
+        "rootDir": ".",
+        
+        // "exactOptionalPropertyTypes": true,        
+        "noImplicitAny": false,
+        // "noErrorTruncation": true,
+
+        // "isolatedModules": true,
+        // "importHelpers": true,
+        // "baseUrl": ".",
+
+        // "skipLibCheck": true,
+
+        // "emitDeclarationOnly": true,
+        // "noResolve": true,
+        // "disableReferencedProjectLoad": false,
+        "paths": {
+            "dred-onchain-registry": ["./src/index.ts"],
+            "src/*": ["./src/*"]
+        }
+        // "plugins": [],
+        // "outFile": "dist/index.d.ts",
+    },
+    "files": [ 
+        "src/index.ts",
+        "./heliosModule.d.ts",
+    ],
+    "include": [
+        // "lib/**/*.json", 
+        // "src/**/*.hl",
+        // "lib/**/*.ts", 
+        // "lib/**/*.js", 
+    ],
+    "exclude": [
+        "node_modules/**/*",
+        "src/**/*.ts",
+        "**/node_modules/"
+    ]
+}

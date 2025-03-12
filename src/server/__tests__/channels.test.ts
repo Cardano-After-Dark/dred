@@ -18,7 +18,7 @@ import {
     Key,
     KeyExchanger,
     KeyExchangerDerivationProof,
-} from "src/KeyExchanger.js";
+} from "../../KeyExchanger.js";
 
 // This test uses a blend of direct** requests to the Dred server (to prove
 //   each key function working at a HTTP level), along with some requests

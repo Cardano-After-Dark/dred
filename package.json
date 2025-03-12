@@ -86,7 +86,7 @@
         "rollup-plugin-esbuild": "^5.0.0",
         "rollup-plugin-node-externals": "^5.0.3",
         "supertest": "^6.2.3",
-        "ts-jest": "^29.0.3",
+        "ts-jest": "^29.1.5",
         "ts-node": "^10.8.1",
         "ts-node-dev": "^2.0.0",
         "typescript": "^5.3.3"

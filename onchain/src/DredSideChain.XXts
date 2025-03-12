@@ -1,0 +1,48 @@
+class SideChainController extends DelegatedDataContract<ErgoSideChainData, SideChainDataLike> {
+    dataBridgeClass = SideChainPolicyDataBridge;
+
+    scriptBundle() {
+        return SideChainBundle.create();
+    }
+    idPrefix = "fst";
+
+    get delegateName() {
+        return "SideChainDgt";
+    }
+
+    get recordTypeName() {
+        return "fastChannel";
+    }
+
+    exampleData(): minimalSideChainData {
+        return {
+            // id: textToBytes("dredNode-1234"),
+            // type: "dredNode",
+
+            status: "active",
+            sideChannelMintingPolicies: [
+                {
+                    delegatedValidator: { mph, $dgTokenName },
+                },
+            ],
+            sideChannelCertifiers: [
+                { pubKey: "0x1234", name: "Alice" },
+                { pubKey: "0x5678", name: "Bob" },
+            ],
+            recentCheckpoints: [
+                {
+                    checkpointId: "0x1234",
+                    checkpointHash: "0x5678",
+                    checkpointTime: "0x9abc",
+
+                    // probably move these to a different record-type
+                    // maybe leave a manifest of the checkpoints here
+                    partialDataProofs: {
+                        // merkle tree hiding most of the sidechain state
+                        // ... but showing certain parts of it explicitly
+                    }                    
+                },
+            ]
+        };
+    }
+}

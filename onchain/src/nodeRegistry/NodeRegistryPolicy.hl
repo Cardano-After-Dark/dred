@@ -1,0 +1,422 @@
+module DredNodeRegistryPolicy
+
+// specialized to ...
+//   -   NOT YET SPECIALIZED (replace with your specialization notes here) - 
+// original notes about (un)specialization follow:
+
+
+//  //! provides a basic version, not yet specialized,
+//  // of the "specializedDelegate" interface, which simply
+//  // exports a DelegateDatum enum and DelegateActivities (redeemer enum).  
+
+//  //! Your specialization MUST include the enum variants found in this
+//  //  ... unspecialized version.  It MAY include additional Datum variants.
+//  // Any additional Redeemer/Activity variants should be added underneath 
+//  // the SpendingActivity / MintingActivity top-level enum variants, instead 
+//  // of adding new top-level enum variants to DelegateActivity.
+
+//  // The DelegateActivity (redeemer) enum conforms to the 
+//  // Delegate Redeemer protocol, in which enum 0 is reserved for
+//  // lifecycle activities, enum 1 is used for spend-related activities 
+//  // (if the delegate is used as a spend delegate), and enum 2 is called
+//  // for authorizing minting.  Enum 3 and beyond are reserved for
+//  // extensions to the Delegate Redeemer protocol.
+
+//  // Within the minting and spending activities, the specialization can 
+//  // indicate a nested activity enum to support various dApp-specific
+//  // activities.  
+
+//  // Activities that validate minting of UUTs should contain enum fields 
+//  // to identify the seed-transaction details needed for properly validating 
+//  // UUT mints fitting the use-case.
+
+//  //! Your specialization MAY include any additional functions, imports or 
+//  //  methods defined on any of the types in this file.
+
+import {
+    tx, 
+    get_current_input,
+    get_current_validator_hash,
+    get_cont_outputs
+} from ScriptContext
+
+import {
+    DelegationDetail,
+    mustReturnValueToScript,
+    DelegateLifecycleActivity,
+    CapoLifecycleActivity,
+    unmodifiedDelegation
+} from CapoDelegateHelpers
+
+import {
+    validateUutMinting,
+    mkUutTnFactory
+} from CapoMintHelpers
+
+// import {
+//     ProtocolSettings
+// } from ProtocolSettings
+
+import {
+    NodeRegistrationData,
+    AbstractSettingsWithNOS as ProtocolSettings
+} from NodeRegistrationData
+
+import {
+    CapoCtx,
+    mkCapoCtx,
+    DgDataDetails,
+    mkTv,
+    AnyData 
+} from CapoHelpers
+
+import {
+    TODO,
+    REQT
+} from StellarHeliosHelpers
+
+// import {
+//     TierLookupResult
+// } from TieredScale
+//
+// import {
+//     PriceNeeded,
+//     validateRequiredValue,
+//     ValueValidator
+// } from PriceValidator
+
+
+
+enum DelegateDatum {
+    // we only have to use this if we decide Constr#0 is essential for practical CIP-68 compat
+    Cip68RefToken {  
+        // NOTE: this datum contains reference details for a user-facing token minted according to the cip-68 standard 
+        //  - the asset name (in the Value of this UTXO) MUST be:  #000643b0 + tokenName
+        //     - this asset name can serve user-side tokens using the CIP-68 "222", "333" or other token types.
+        //     - the user-side asset name with its (222/333/etc) CIP-67 prefix and 
+        //       ... its remaining tokenName will be matched to this asset name (#000643b0 +tokenName)
+        //       ... to locate this reference datum; this datum content will be interpreted
+        //       ... according to the semantics implied by the user-side asset-name prefix.
+        //
+        //  - The attached 'meta' field in this Datum variant contains the relevant data, depending on the token type
+        //    - for "222" tokens, the meta field should contain the following fields:
+        //        - "name" : String
+        //        - "description" : String 
+        //        - "files" :   // {mediaType, src (url), name?, ... otherFields)
+        //        - "image": String  // image url: https://, ar://, ipfs:// or data:// (RFC2397 data)
+        //    - for "333" tokens, the meta field should contain the following fields:
+        //        - "name" : String
+        //        - "description" : String 
+        //        - "ticker" : String
+        //        - "url": String  // project URL
+        //        - "logo": String  // image url: https://, ar://, ipfs:// or data:// (RFC2397 data)
+        //                    - it must have a mime type `image/png`, `image/jpeg` or `image/svg+xml`
+        //        - "decimals" : Int
+
+        cip68meta: AnyData
+        cip68version: Int
+        otherDetails: Data
+        // otherDetails: Data // can be Unit () or anything else
+    }
+
+    IsDelegation {
+        dd: DelegationDetail
+    }
+    // same variant-index as Capo's DelegatedData
+    capoStoredData {
+        data: NodeRegistrationData
+        version: Int
+        otherDetails: Data 
+    }
+
+    // func validateSettings(self, settings: ProtocolSettings) -> Bool{
+    // ... get the settings object from the contract manifest via cctx
+    //     assert(false, "not valid (stubbed)");
+    //     settings.serialize() != self.serialize() &&
+    //     true
+    // }
+}
+
+
+enum MintingActivity {
+    CreatingRecord{
+        seed: TxOutputId
+    }
+}
+
+//! The minting delegate can also be used as a general spending 
+// delegate (this is the default arrangement during the Capo 
+// charter mint).  These activities are required by the Capo when
+// spending utxos having DelegatedDatum type.
+enum SpendingActivity {
+    UpdatingRecord {
+        id: ByteArray
+    }
+}
+
+func ensureConstrainedTxValidity() -> () {
+    assert(
+        tx.time_range.end - tx.time_range.start 
+            <= Duration::HOUR,
+        "txn duration err"
+    )
+}
+
+func daysInFuture(nowPlusDays: Int) -> TimeRange {
+    ensureConstrainedTxValidity();
+    expiryDuration : Duration = Duration::DAY * nowPlusDays;
+    leeway : Duration = 1 * Duration::HOUR;
+    latestAcceptable : Time = tx.time_range.end + expiryDuration + leeway;
+    
+    TimeRange::new(
+        tx.time_range.start + expiryDuration,
+        latestAcceptable
+    )
+}
+
+enum BurningActivity {
+    DeletingRecord {
+        id: ByteArray
+    }
+}
+
+enum DelegateActivity {
+    // must ALWAYS be at Enum position 0
+    CapoLifecycleActivities {
+        activity: CapoLifecycleActivity
+    }
+
+    // must ALWAYS be at Enum position 1
+    DelegateLifecycleActivities {
+        // administrative activities for the delegate lifecycle, enforced
+        //  by the basic mint delegate code.  Specializations can add more 
+        //  restrictions, but in many/most cases they will not need to.
+        activity: DelegateLifecycleActivity
+    }
+
+    // application-specific spending activities, ALWAYS at Enum position 2
+    SpendingActivities {
+        activity: SpendingActivity
+    }
+
+    // application-specific minting activities, ALWAYS at Enum position 3
+    MintingActivities {
+        activity: MintingActivity
+    }
+
+    BurningActivities {
+        activity: BurningActivity
+    }
+    
+    CreatingDelegatedData {
+        seed: TxOutputId
+        dataType: String
+        // record id created from seed
+    }
+
+    UpdatingDelegatedData {
+        // no seed
+        dataType: String
+        recId: ByteArray
+    }
+
+    DeletingDelegatedData {
+        // no seed
+        dataType: String
+        recId: ByteArray
+    }
+
+    MultipleDelegateActivities {
+        // todo: change this back when the recursive enum's `__is_valid_data not found` error is resolved
+        activities: []Data // actually a DelegateActivity
+    }
+    // this function gives a general-purpose implementation of checking for 
+    // valid uut minting. 
+    //
+    // A specialization might modify it to use different policies
+    // or enforce additional requirements
+    // 
+    // func genericUutMinting(self, 
+    //     mdd: DelegateDatum
+    // ) -> Bool {
+    //     //!!! replace with an activity using the same seed-txn pattern:
+    //     // MintingActivities::SomethingMintingUuts{sTxId, sIdx, purposes} = self;
+    //     DelegateDatum::IsDelegation{dd} = mdd;
+    //     returnsAuthzToken : Bool = mustReturnValueToScript(dd.tvAuthorityToken());
+
+    //     o : []TxOutput = get_cont_outputs();
+    //     if (o.length != 1) { error("single utxo only") };
+
+    //     print ("in unsp_MD");
+    //     isOk : Bool = returnsAuthzToken && 
+
+    //     unmodifiedDelegation( /* isD, same as mdd */ mdd.serialize()) &&
+
+    //     // This call can serve as a template for enforcing expected mints 
+    //     // of uuts (and additional token values) in validation of application-
+    //     // specific activities, given (mph, sTxId, sIdx, purposes)
+    //     validateUutMinting(
+    //         mph: dd.mph,
+    //         seedTxId: sTxId, 
+    //         seedIdx: sIdx, 
+    //         purposes: purposes,
+    //         // otherMintedValue: ()
+    //         mkTokenName: mkUutTnFactory(sTxId, sIdx)
+    //     );
+
+    //     isOk
+    // }
+
+    //! used only for validating IsDelegation datum, that is,
+    //   ... to approve minting requests or any customize spending modes 
+    //   ... of that datum.  
+    
+    //  Note that the basic delegate already enforces some basic
+    //    administrative expectations for DelegateLifecycleActivities and CapoLifecycleActivities
+    //    so a specialization doesn't need to re-implement those checks.
+    func additionalDelegateValidation( self,
+        priorMddd: DelegateDatum::IsDelegation,
+        cctx: CapoCtx
+    ) -> Bool {
+        print("  -- addl dgt val ");
+        self.switch {
+            // generic DelegateLifecycleActivities is already validated, but 
+            //  ... you can add more constraints here if needed
+            DelegateLifecycleActivities => true,
+            CapoLifecycleActivities => {
+                // only mint/spend delegates answer to CapoLifecycleActivities
+                error("unreachable in a dgDataPolicy")
+            },
+            MintingActivities{VMA} => VMA.switch {
+                CreatingRecord{seed} => {
+                    print("registering a new DRED node...");
+
+                    REQT("the operator must provide a valid minting seed");
+                    REQT("the seed must have a DRED.nodeOperator token in it");                    
+                    mkTn : (String) -> String = mkUutTnFactory(seed);
+
+                    // mints a dredNode UUT
+                    mintingOk : Bool = validateUutMinting(
+                        mph: priorMddd.dd.mph,
+                        seed: seed,
+                        purposes: []String{"dredNode"},
+                        // otherMintedValue: ()
+                        mkTokenName: mkTn,
+                        // WE ARE the mint delegate.
+                        needsMintDelegateApproval: false 
+                    );
+
+                    assert(cctx.withCharterRef().orFail(), "no charter ref");
+                    _settings = ProtocolSettings::from_data(cctx.getManifestedData("currentSettings"));
+
+                    // vaultValue: Value = mkTv(priorMddd.dd.mph, mkTn("lbmVault"));
+                    // print("vaultValue: "+ vaultValue.show());
+                    newRecData : DgDataDetails = cctx.creatingDgData(mkTn("dredNode"));
+                    _newDataOut : TxOutput = newRecData.output();
+                        //cctx.hasDelegatedDataOutput(vaultValue);
+                    TODO("send the fee to Treasury w/ acctg info");
+
+                    reg: NodeRegistrationData = NodeRegistrationData::from_data(
+                        newRecData.outputData()
+                    );
+
+                    assert(
+                        tx.time_range.end - tx.time_range.start 
+                            <= Duration::HOUR,
+                        "txn duration err"
+                    );
+                    // has the right expiration date from settings
+                    // acceptableExpiry : TimeRange = daysInFuture(settings.artistVaultSettings.albumCommissionDiscountDays.trunc());
+
+                    // has the member-token reference
+                    memberToken : String = reg.memberToken;
+                    if (!memberToken.starts_with("member-")) { 
+                        error("invalid member token name"
+                    ) };
+                    expectedMemberToken : Value = mkTv(
+                        priorMddd.dd.mph, memberToken
+                    );
+
+                    // has the member-token in the txn
+                    tx.inputs.find_safe((i: TxInput) -> Bool {
+                        i.value.contains(expectedMemberToken)
+                    }).switch {
+                        None => error("missing member token"),
+                        Some => true
+                    } &&
+                    reg.validate() &&
+                    mintingOk
+                }
+            },
+            SpendingActivities{VSA} => {
+                assert(cctx.withCharterRef().orFail(), "no charter ref");
+
+                VSA.switch {                    
+                    UpdatingRecord{recId} => {
+                        print("updating the registration details for a single DRED node...");
+
+                        hasRecInput : (TxInput) -> Bool = 
+                            cctx.mkDelegatedDataPredicate("dredNode", recId);                        
+                        _settings = ProtocolSettings::from_data(
+                            cctx.getManifestedData("currentSettings")
+                        );                        
+                        hasRecOutput : (TxOutput) -> Bool = 
+                            cctx.mkDelegatedDataOutputPredicate("dredNode", recId);
+    
+                        tx.inputs.filter(hasRecInput).for_each( (utxo : TxInput) -> () {
+                            // they're all album vaults, because of the above.
+                            _inputData : NodeRegistrationData = 
+                                NodeRegistrationData::from_data(utxo.datum.inline);
+                            updatedUtxo : TxOutput = tx.outputs.find(hasRecOutput);
+                            updatedData : NodeRegistrationData = 
+                                NodeRegistrationData::from_data(updatedUtxo.datum.inline);
+
+                            // possibly move this to a separate SpendingActivity
+                            REQT("the lastHeartbeat must be extended by settings.expectedHeartbeatInterval");
+                            // _freshExpiry : TimeRange = daysInFuture(settings.artistVaultSettings.albumCommissionDiscountDays.trunc());
+
+                            assert(updatedData.validate(), "<-- that throws; this can't."); // throws if invalid
+                            ()
+                        });
+                        true
+                    }
+                }
+            },
+            BurningActivities => error("no burn activity here yet"),
+            _ => false
+        } || tx.serialize() == priorMddd.serialize()        
+    }
+
+    func supportedCapoDelegatePurposes(self) -> []String {
+        assert(true || /* prevent unused variable */ self == self, "no way" );
+        []String{ 
+            // "nothingHereYet",
+        }
+    }
+
+    //! Used only for validating non-IsDelegation datum types and activities.
+    // if you have any special admininstrative data structures that inform 
+    // ...  your minting policy, this might be useful.  Otherwise, and typically,
+    // ... you should look to Activity validations above in additionalDelegateValidation,
+    // ...  in which the isDelegation token is being spent with an application-specific
+    // ...  activity/redeemer
+    func otherDatumValidation(self,
+        _priorMdd: DelegateDatum
+    ) -> Bool {
+        neverTriggered = () -> {  error("never called") };
+        self.switch{
+            // Note: this set of DelegateActivities is reserved for the IsDelegation datum.
+            //  Using it on any other Datum type will always fail and execution will never arrive here.
+            DelegateLifecycleActivities => neverTriggered(),
+            CapoLifecycleActivities => neverTriggered(),
+
+            // -- Application-specific activities can be added here 
+            // -- for special & app-specific types of datum in a delegate,
+            // -- for EXCEPTIONAL cases, if you really know what you're doing.  
+            //  -- see above for normal cases
+
+            _ => false  // prevents non-exhaustive match errors, even if you remove the above neverTriggered() calls
+        }
+    }
+}
+

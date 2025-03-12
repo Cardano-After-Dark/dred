@@ -1,0 +1,38 @@
+#!/bin/bash
+startTime=$(date)
+
+. ./node_modules/@donecollectively/stellar-contracts/scripts/support.sh
+
+# set -e # exit on error
+#//! EXPECTS to be run in context of `pnpm exec`
+
+playStartSound
+
+inBackground "type-checking" tsc & 
+{
+    rollup \
+      --config rollup.config.ts \
+      --importAttributesKey "with" \
+      --configPlugin 'esbuild={sourcemap:true,supported:{"import-assertions":false},loaders:{".json": "json"}, target: "esnext", tsconfig:"./tsconfig.rollupconfig.json"}' \
+      $* && playProgressSound
+} || logProblemWith "dAPI build with rollup"
+
+wait
+exitIfError
+playCheckpointSound
+
+echo -n "build finished at "
+date
+inBackground "dAPI docs" api-extractor run --local --verbose &
+wait
+exitIfError
+echo "build started at  $startTime"
+echo "build finished at $(date)"
+
+playSuccessSound
+
+# to debug rollup plugins:
+#   pnpm exec node --inspect-brk \
+#      node_modules/rollup/dist/bin/rollup \
+#         --config rollup.config.ts \
+#         --configPlugin 'esbuild={loaders:{".json": "json"}, target: "esnext", tsconfig:"./tsconfig.rollupconfig.json"}'

@@ -1,0 +1,4 @@
+.hltemp/
+*.hlBundled.mjs
+// for api-extractor's input files:
+.api-extractor-temp/
