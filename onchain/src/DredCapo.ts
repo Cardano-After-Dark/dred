@@ -76,11 +76,8 @@ export type Expand<T> = T extends (...args: infer A) => infer R
  * @public
  */
 export class DredCapo extends Capo<DredCapo> {
-    // ttt : number
-    // constructor(...args) {
-    //     super(...args)
-    //     this.ttt = 1 + instanceCount++
-    // }
+    autoSetup = true;
+
     scriptBundle(): CapoHeliosBundle {
         return DredCapoBundle.create({
             setup: this.setup,
@@ -215,212 +212,24 @@ export class DredCapo extends Capo<DredCapo> {
         };
     }
 
-    // get customCapoSettingsModule() {
-    //     return TokenomicsSettings.heliosModule;
+
+    // async mkAdditionalTxnsForCharter<TCX extends hasAddlTxns<StellarTxnContext<any>>>(
+    //     this: DredCapo,
+    //     tcx: TCX,
+    //     options: {
+    //         charterData: CharterData;
+    //         capoUtxos: TxInput[];
+    //     }
+    // ) {
+    //    // now handled by autoSetup
+    // 
+    //     await this.setupFundedPurpose(tcx, options);
+    //     await this.setupMarketSale(tcx, options);
+    //     await this.setupNodeRegistry(tcx, options);
+    // 
+    //     return tcx;
     // }
 
-    // /**
-    //  * inspects the current charter and submits any txns needed to
-    //  * create any missing delegate validators
-    //  * @remarks
-    //  * TODO: determine if there is a place for an essential reusable utility
-    //  * like this (following declarations of data delegates), or whether the
-    //  * imperative style is really needed as in the mkAdditionalTxnsForCharter impl below
-    //  * @public
-    //  */
-    // async mkTxnsForNeededDelegates() {
-    //     const charterData = await this.findCharterData();
-
-    //     const tcx = this.mkTcx("addlTxns") as Awaited<
-    //         ReturnType<this["mkTxnMintCharterToken"]>
-    //     >;
-
-    //     const withMoreTxns = await this.mkAdditionalTxnsForCharter(tcx, charterData);
-    //     return withMoreTxns.queueAddlTxns();
-    // }
-
-    async mkAdditionalTxnsForCharter<TCX extends hasAddlTxns<StellarTxnContext<any>>>(
-        this: DredCapo,
-        tcx: TCX,
-        options: {
-            charterData: CharterData;
-            capoUtxos: TxInput[];
-        }
-    ) {
-
-        await this.setupFundedPurpose(tcx, options);
-        await this.setupMarketSale(tcx, options);
-        await this.setupNodeRegistry(tcx, options);
-
-        return tcx;
-    }
-
-    async setupFundedPurpose(
-        this: DredCapo,
-        tcx: StellarTxnContext,
-        options: {
-            charterData: CharterData;
-            capoUtxos: TxInput[];
-        }
-    ) {
-        const { charterData, capoUtxos } = options;
-
-        if (setup.fundedPurpose) {
-            const fpDgt = await this.getDgDataController("fundedPurpose", {
-                charterData,
-                optional: true,
-            });
-            if (!fpDgt) {
-                tcx.includeAddlTxn("fpurpDelegate", {
-                    description: "creates funded-purpose policy",
-                    moreInfo: "sets up delegate for funded purposes",
-                    optional: false,
-                    mkTcx: async () => {
-                        console.log("BBBBBBBBBBBBBBBBBB 🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞");
-
-                        const mkFpcTxn = await this.mkTxnInstallingPolicyDelegate({
-                            policyName: "fundedPurpose",
-                            idPrefix: "fPurp",
-                            charterData,
-                        });
-                        console.log("bbbbbbbbbbbbbbbbbb 🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞");
-                        console.log(
-                            "    --- 🐞🐞🐞 creating funded-purpose policy"
-                            // mkFpcTxn.dump()
-                        );
-                        return mkFpcTxn;
-                    },
-                });
-                // pendingDgtChanges++;
-            }
-        }
-    }
-
-    async setupMarketSale(
-        this: DredCapo,
-        tcx: StellarTxnContext,
-        options: {
-            charterData: CharterData;
-            capoUtxos: TxInput[];
-        }
-    ) {
-        const { charterData, capoUtxos } = options;
-        if (setup.mktSale) {
-            const mktSaleDgt = await this.getDgDataController("mktSale", {
-                charterData,
-                optional: true,
-            });
-            if (!mktSaleDgt) {
-                console.log("3333333333333333333 🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞");
-                tcx.includeAddlTxn("make mktSale policy", {
-                    description: "creates mktSale policy",
-                    moreInfo: "sets up on-chain script for market sales",
-                    optional: false,
-                    mkTcx: async () => {
-                        console.log("CCCCCCCCCCCCCCCCCCCCC 🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞");
-                        const charterData = await this.findCharterData();
-                        const mkMscTxn = await this.mkTxnInstallingPolicyDelegate({
-                            policyName: "mktSale",
-                            idPrefix: "mktSale",
-                            charterData,
-                        });
-                        // await this.mkTxnCreateDelegateMarketSalePolicy();
-                        console.log(
-                            "cccccccccccccccccccccccc 🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞🐞"
-                        );
-
-                        console.log(
-                            "    --- 🐞🐞🐞 creating market sale policy"
-                            // mkMscTxn.dump()
-                        );
-                        return mkMscTxn;
-                    },
-                });
-            }
-        }
-    }
-
-    async setupNodeRegistry(
-        this: DredCapo,
-        tcx: StellarTxnContext,
-        options: {
-            charterData: CharterData;
-            capoUtxos: TxInput[];
-        }
-    ) {
-        const { charterData, capoUtxos } = options;
-        if (setup.nodeOpReg) {
-            const nodeOpRegistry = await this.getDgDataController("nodeOpReg", {
-                charterData,
-                optional: true,
-            });
-
-            if (!nodeOpRegistry) {
-                tcx.includeAddlTxn("make nodeRegistry delegate", {
-                    description: "creates nodeRegistry",
-                    moreInfo:
-                        "sets up registry for node operators to file and maintain their node registrations",
-                    optional: false,
-                    mkTcx: () =>
-                        this.mkTxnInstallingPolicyDelegate({
-                            policyName: "nodeRegistry",
-                            idPrefix: "dredNode",
-                            charterData,
-                        }),
-                });
-            }
-        }
-    }
-
-    // @txn
-    // async mkTxnCreateDelegateMarketSalePolicy<
-    //     THIS extends StellarTokenomics<any>,
-    //     TCX extends StellarTxnContext = StellarTxnContext
-    // >(this: THIS, tcx: TCX = this.mkTcx() as TCX) {
-    //     const mintDelegate = await this.getMintDelegate();
-    //     const tcx1 = await this.tcxWithSeedUtxo(tcx);
-    //     const tcx2 = await this.mkTxnInstallingPolicyDelegate( "mktSalePolicy")
-
-    //     // const tcx2 = await this.mkTxnAddingNamedDelegate(
-    //     //     "mktSaleCtrl",
-    //     //     {
-    //     //         config: {},
-    //     //         mintSetup: {
-    //     //             mintDelegateActivity:
-    //     //                 mintDelegate.activityCreatingDataDelegate(
-    //     //                     tcx1,
-    //     //                     "mktSaleCtrl"
-    //     //                 ),
-    //     //         },
-    //     //     },
-    //     //     tcx1
-    //     // );
-    //     return tcx2 as TCX & typeof tcx2;
-    // }
-
-    // @txn
-    // async mkTxnCreateDelegateFundedPurposePolicy<
-    //     THIS extends StellarTokenomics<any>,
-    //     TCX extends StellarTxnContext = StellarTxnContext
-    // >(this: THIS, tcx: TCX = this.mkTcx() as TCX) {
-    //     const mintDelegate = await this.getMintDelegate();
-
-    //     const tcx2 = await this.mkTxnInstallingPolicyDelegate( "fPurpPolicy")
-    //     //     {
-    //     //         // strategyName: "fPurpV1",
-    //     //         config: {},
-    //     //         mintSetup: {
-    //     //             mintDelegateActivity:
-    //     //                 mintDelegate.activityCreatingDataDelegate(
-    //     //                     tcx1,
-    //     //                     "fPurpCtrl"
-    //     //                 ),
-    //     //         },
-    //     //     },
-    //     //     tcx1
-    //     // );
-    //     return tcx2 as TCX & typeof tcx2;
-    // }
 
     requirements() {
         const baseTokenomics = super.requirements();

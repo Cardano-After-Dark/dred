@@ -14,20 +14,18 @@
         
         "target": "ESNext",
         "lib": ["esnext", "dom"],
-        "module": "esnext",
+        "module": "Node16",
         "esModuleInterop": true,
         // types: ‹default›
         "verbatimModuleSyntax": true,
 
-        "moduleResolution": "node",
+        "moduleResolution": "node16",
         // "traceResolution": true,
         // "customConditions": ["dev"],
         "baseUrl": "./",
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
-        // "isolatedModules": false,
         "experimentalDecorators": true,
-        // "emitDecoratorMetadata": false,
 
         "outDir": ".api-extractor-temp",
         // "outFile": none!
@@ -52,7 +50,6 @@
             //     "node_modules/@donecollectively/stellar-contracts"
             //   ]
         },
-        // "isolatedModules": true
     },
     "include": [
         "./heliosModule.d.ts",

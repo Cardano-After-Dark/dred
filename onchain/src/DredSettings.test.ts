@@ -1,65 +1,14 @@
 import { describe, expect, it, beforeEach, vi } from "vitest";
 import {
     ADA,
-    CapoTestHelper,
-    DefaultCapoTestHelper,
-    StellarTestContext,
-    TestHelperState,
     addTestContext,
+    type StellarTestContext,
+    type TestHelperState,
 } from "@donecollectively/stellar-contracts/testing";
-
-// Define the test helper state
-export let helperState: TestHelperState<any> = {
-    snapshots: {},
-} as any;
-
-// Define the test helper class
-export class DREDTestHelper extends DefaultCapoTestHelper {
-    _start: number;
-
-    constructor(config?: any, helperState?: TestHelperState<any>) {
-        super(config, helperState);
-        this._start = new Date().getTime();
-    }
-
-    get relativeTs() {
-        const ms = new Date().getTime() - this._start;
-        const s = ms / 1000;
-        return `@ ${s}s`;
-    }
-
-    async setupActors() {
-        await super.setupActors();
-
-        // Add messaging nodes
-        this.addActor("node1", 10_000n * ADA);
-        this.addActor("node2", 12_000n * ADA);
-        this.addActor("node3", 8_000n * ADA);
-        this.addActor("node4", 9_000n * ADA);
-    }
-
-    async reusableBootstrap() {
-        // Initialize test environment with basic settings
-        const settings = {
-            nodeRegistration: {
-                heartbeatInterval: 30000,
-                minimumStake: 8_000n * ADA,
-                maxMissedHeartbeats: 3,
-                networkAddress: {
-                    minPort: 1024,
-                    maxPort: 65535
-                }
-            },
-        };
-        return settings;
-    }
-}
+import { DredTestHelper, helperState } from "./DredTestHelper.js";
 
 // Define the test context type
-export type DRED_TC = StellarTestContext<DREDTestHelper> & {
-    helperState: typeof helperState;
-    reusableBootstrap(this: DRED_TC): Promise<any>;
-};
+type DRED_TC = StellarTestContext<DredTestHelper>;
 
 describe("DRED Settings", () => {
     beforeEach<DRED_TC>(async (context) => {
@@ -67,7 +16,7 @@ describe("DRED Settings", () => {
         console.log("\n\n\n\n   ==================== ======================");
         await addTestContext(
             context,
-            DREDTestHelper,
+            DredTestHelper,
             undefined,
             helperState
         );
@@ -109,6 +58,7 @@ describe("DRED Settings", () => {
                 h: { network, actors, delay, state },
             } = context;
 
+            h.setActor("admin1");
             const settings = await h.reusableBootstrap();
 
             // Test updating settings
@@ -197,6 +147,7 @@ describe("DRED Settings", () => {
                 h: { network, actors, delay, state },
             } = context;
 
+            h.setActor("admin1");
             const settings = await h.reusableBootstrap();
             expect(settings.nodeRegistration).toBeDefined();
         });
