@@ -7,10 +7,32 @@
 @layer base {
   html {
     @apply antialiased;
+    width: 100%;
+    height: 100%;
   }
   
   body {
-    @apply bg-white text-slate-900 dark:bg-slate-900 dark:text-white min-h-screen m-0;
+    @apply bg-white text-slate-900 dark:bg-slate-900 dark:text-white;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    display: block;
+  }
+
+  #layout-root {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  :root {
+    --quick-links-hover-bg: #ffffff;
+  }
+
+  .dark {
+    --quick-links-hover-bg: #1e293b;
   }
 }
 
@@ -36,14 +58,6 @@ a {
 }
 a:hover {
   color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
 }
 
 h1 {
@@ -80,5 +94,88 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+/* Icon gradients */
+#installation-gradient {
+  --gradient-stops: theme(colors.pink.500), theme(colors.violet.500);
+  --gradient-matrix: 1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0;
+}
+
+#presets-gradient {
+  --gradient-stops: theme(colors.pink.500), theme(colors.yellow.500);
+  --gradient-matrix: 1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0;
+}
+
+#theming-gradient {
+  --gradient-stops: theme(colors.blue.500), theme(colors.teal.500);
+  --gradient-matrix: 1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0;
+}
+
+/* Dark mode icon gradients */
+.dark #installation-gradient {
+  --gradient-matrix: 1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.7 0;
+}
+
+.dark #presets-gradient {
+  --gradient-matrix: 1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.7 0;
+}
+
+.dark #theming-gradient {
+  --gradient-matrix: 1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.7 0;
+}
+
+/* Apply gradients */
+[id$="-gradient"] {
+  position: relative;
+  background-image: linear-gradient(to right, var(--gradient-stops));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+[id$="-gradient"]::before {
+  content: "";
+  position: absolute;
+  inset: -4px -8px;
+  background-image: linear-gradient(to right, var(--gradient-stops));
+  opacity: 0.25;
+  -webkit-filter: blur(24px);
+  filter: blur(24px);
+  z-index: -1;
+}
+
+/* Add blur images */
+.blur-cyan {
+  background-image: url('/blur-cyan.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+}
+
+.blur-indigo {
+  background-image: url('/blur-indigo.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+}
+
+@layer components {
+  .quick-link {
+    @apply relative overflow-hidden rounded-xl border border-slate-200 p-6 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/50;
+    background-color: var(--quick-links-hover-bg);
+  }
+
+  .quick-link-icon {
+    @apply mb-4 inline-block rounded-lg bg-white p-2 shadow-md shadow-slate-800/5 ring-1 ring-slate-900/5 dark:bg-slate-800 dark:ring-0;
+  }
+
+  .quick-link-title {
+    @apply text-base font-semibold text-slate-900 dark:text-white;
+  }
+
+  .quick-link-description {
+    @apply mt-1 text-sm text-slate-700 dark:text-slate-400;
   }
 }
