@@ -14,7 +14,7 @@ import type {
 } from "@donecollectively/stellar-contracts";
 
 import NodeRegistryBundle from "./NodeRegistry.hlb.js";
-import type { DredCapo } from "src/DredCapo";
+import type { DredCapo } from "../DredCapo.js";
 import type { ErgoNodeRegistrationData, NodeRegistrationDataLike } from "src/nodeRegistry/NodeRegistry.typeInfo.js";
 import DredNodeRegistryPolicyDataBridge from "src/nodeRegistry/NodeRegistry.bridge.js";
 

@@ -4,7 +4,7 @@ import NodeRegistryPolicy from "./NodeRegistryPolicy.hl"
 import ProtocolSettings from "../settings/ProtocolSettings.hl"
 import NodeOperatorSettings from "./NodeOperatorSettings.hl"
 
-import DredCapoBundle from "../DredCapo.hlb";
+import DredCapoBundle from "../DredCapo.hlb.js";
 import NodeRegistrationData from "./NodeRegistrationData.hl";
 import type { Source } from "@helios-lang/compiler-utils";
 
