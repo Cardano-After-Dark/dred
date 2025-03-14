@@ -47,6 +47,8 @@
     "dependencies": {
         "@poshplum/poshplum": "^0.8.9",
         "@poshplum/utils": "^0.8.2",
+        "@ark/util": "^0.44.5",
+        "arktype": "^2.1.9",
         "abstract-logging": "^2.0.1",
         "body-parser": "^1.20.0",
         "compression": "^1.7.4",
