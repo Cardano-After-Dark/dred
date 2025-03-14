@@ -57,11 +57,14 @@ export function App() {
   return (
     <Layout>
       <div id="hero-wrapper" className="overflow-hidden bg-slate-900 dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]">
-        <div id="hero-container" className="py-16 sm:px-2 lg:relative lg:py-20 lg:px-0">
-          <div id="hero-grid" className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-y-16 gap-x-8 px-4 lg:max-w-8xl lg:grid-cols-2 lg:px-8 xl:gap-x-16 xl:px-12">
-            <div id="hero-content" className="relative z-10 md:text-center lg:text-left">
-              <img id="hero-blur-effect" alt="" src="/blur-cyan.svg" width="530" height="530" decoding="async" className="absolute bottom-full right-full -mr-72 -mb-56 opacity-50" />
-              <div id="hero-text" className="relative">
+        <div id="hero-container" className="p-16 sm:px-2 lg:relative lg:py-20 lg:px-0">
+          <div id="hero-grid" className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-y-16 gap-x-8 px-4 lg:max-w-8xl lg:px-8 xl:gap-x-16 xl:px-12">
+            <div id="hero-content" className="relative z-10 md:text-center lg:text-left col-span-full">
+              <div className="absolute inset-0 -z-10 overflow-hidden">
+                <img id="hero-blur-effect-1" alt="" src="/blur-cyan.svg" width="240" height="240" decoding="async" 
+                  className="absolute left-0 top-0 blur-2xl" />
+              </div>
+              <div id="hero-text" className="relative max-w-3xl mx-auto">
                 <p id="hero-title" className="inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
                   Decentralized REDIS state channels
                 </p>
