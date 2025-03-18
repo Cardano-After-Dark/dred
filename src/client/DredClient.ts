@@ -223,7 +223,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
     onTransition() {
         //! tbd if we need to use this hook, perhaps for persisting the bookmark state of channels
-        // debugger
+        // debugger 
     }
 
     static resolveDiscovery({ neighborhood, discovery }: DredClientArgs): Discovery {

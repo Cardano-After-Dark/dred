@@ -47,6 +47,7 @@ export class DevEnvLocalDiscovery extends Discovery {
         return [{
             serverId: "singleton",
             address: "127.0.0.1",
+            // address: "50.25.233.241",
             port: 3029,
             insecure: true,            
             // publicKey: this.getPubKeyFromFs(3029),

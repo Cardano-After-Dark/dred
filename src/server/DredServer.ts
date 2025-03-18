@@ -162,6 +162,9 @@ export class DredServer {
         const redisUrl = process.env.REDIS_URL;
         this.redis = this.setupRedis(redisUrl);
 
+        // setup message replication for the redis instance
+        setupReplication(this.redis);
+
         this.listener = null;
         this.verifier = new StringNacl(undefined, this);
 
@@ -285,6 +288,8 @@ export class DredServer {
         return addr;
     }
     mkClient(): DredClient {
+        // here is how to create a client
+        // in case
         return new DredClient(this.clientArgs);
     }
 
@@ -747,5 +752,14 @@ export async function createServer(options: DredClientArgs, serverId: string) {
     api.use(express.json({}));
     const messagesInChannel = new RedisSet(redis);
 
+
+    // todo: set up to have discovery details inclusing both servers N1, N2 (init config)// bewfore     
+    
+    
+    
     return server;
+}
+
+function setupReplication(redis: Redis) {
+    throw new Error("Function not implemented.");
 }

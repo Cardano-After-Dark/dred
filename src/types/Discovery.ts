@@ -11,6 +11,7 @@ export interface discovery {
 export type findingDredHosts = Promise<DredHostDetails[]>;
 export interface DiscoveryEvents {
     "hosts:discovering": [DredEvent & {nbh: NbhId}]
+    // this is for discovery complete
     "hosts:ready": [DredEvent & {nbh: NbhId, hosts: DredHostDetails[]}]
     "hosts:updated": [DredEvent & {nbh: NbhId, hosts: DredHostDetails[]}]
 }
@@ -19,6 +20,7 @@ export interface GenericDiscoveryOptions {
 }
 export abstract class Discovery implements discovery {
     nbh!: string; // neighborhood
+    // check
     hosts?: DredHostDetails[];
     events = new EventEmitter<DiscoveryEvents>();
     //! finds a list of hosts that serve the given neighborhood.
@@ -47,6 +49,8 @@ export abstract class Discovery implements discovery {
 
     //! it allows concrete subclasses to implement custom behavior during initHostDiscovery()
     async initHostDiscovery() {
+        // empty in the base class
+        // we can probably initialize discovery but not expect completion (as the ctor is sync)
     }
 
     protected async restartHostDiscovery() {

@@ -6,6 +6,7 @@ import { asyncDelay } from "../src/util/asyncDelay";
 
 init();
 async function init() {
+    // todo: set up to have discovery details inclusing both servers N1, N2 (init config)
     const discovery = new DevEnvLocalDiscovery({});
     const server = await createServer({ 
         discovery ,
@@ -13,7 +14,10 @@ async function init() {
         // connectionSettings: {
 
         // }
-    }, discovery.hosts[0].serverId);
+    },discovery.hosts[0].serverId);
+    //, 
+    // Hack hardcode Node 1, node2
+    // discovery.hosts[0].serverId);
     const { port, address } = discovery.hosts[0];
     await server.listen();
 
