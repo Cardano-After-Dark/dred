@@ -1,4 +1,6 @@
-import { DredCapo as DredTokenomicsCapo } from '../../onchain/src/DredCapo'
+import { 
+    DredCapo as DredTokenomicsCapo,
+} from "dred-network-registry"
 
 import {
   updateNetwork,
@@ -9,6 +11,7 @@ import {
   addFailedTxn
 } from './signals/capoSignals'
 import { ReactNode } from "preact/compat";
+import { CapoDAppProvider, UserActionMap } from "@donecollectively/stellar-contracts/ui";
 
 export class DredCapo extends CapoDAppProvider<
   DredCapo & any,

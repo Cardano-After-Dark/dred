@@ -12,9 +12,14 @@
     "@donecollectively/stellar-contracts": "../../stellar-contracts",
     "@helios-lang/ledger": "../../helios/ledger",    
     "dred-network-registry": "../onchain/",
+    "@preact/compat": "^18.3.1",
     "@preact/signals": "^2.0.1",
     "preact": "^10.26.2",
     "stellar-tokenomics": "../../stellar-tokenomics"
+  },
+  "resolutions": {
+    "react": "npm:@preact/compat@^18.3.1",
+    "react-dom": "npm:@preact/compat@^18.3.1"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.1",
