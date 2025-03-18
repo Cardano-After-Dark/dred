@@ -15,8 +15,8 @@ import type {
 
 import NodeRegistryBundle from "./NodeRegistry.hlb.js";
 import type { DredCapo } from "../DredCapo.js";
-import type { ErgoNodeRegistrationData, NodeRegistrationDataLike } from "src/nodeRegistry/NodeRegistry.typeInfo.js";
-import DredNodeRegistryPolicyDataBridge from "src/nodeRegistry/NodeRegistry.bridge.js";
+import type { ErgoNodeRegistrationData, NodeRegistrationDataLike } from "./NodeRegistry.typeInfo.js";
+import DredNodeRegistryPolicyDataBridge from "./NodeRegistry.bridge.js";
 
 export type PartialPartialData<T extends AnyDataTemplate<any, any>> = Partial<{
     [K in keyof T]: T[K] extends Array<any>

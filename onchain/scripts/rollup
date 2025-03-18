@@ -1,12 +1,10 @@
 #!/bin/bash
 
+[[ -n $DEBUGGER ]] && {
+    exec scripts/debugRollup $@
+}
 
-if [[ -z $DEBUG ]] ; then
-  node_modules/rollup/dist/bin/rollup --config rollup.config.ts \
-  --importAttributesKey "with" \
-  --configPlugin 'esbuild={sourcemap:true,supported:{"import-assertions":false},loaders:{".json": "json"}, target: "esnext", tsconfig:"./tsconfig.rollupconfig.json"}' \
-  $@
-else
-    scripts/debugRollup $@
-fi
-
+node_modules/rollup/dist/bin/rollup --config rollup.config.ts \
+    --importAttributesKey "with" \
+    --configPlugin 'esbuild={sourcemap:true,supported:{"import-assertions":false},loaders:{".json": "json"}, target: "esnext", tsconfig:"./tsconfig.rollupconfig.json"}' \
+    $@

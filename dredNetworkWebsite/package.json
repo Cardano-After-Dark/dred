@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@donecollectively/stellar-contracts": "../../stellar-contracts",
+    "@helios-lang/ledger": "../../helios/ledger",    
+    "dred-network-registry": "../onchain/",
     "@preact/signals": "^2.0.1",
     "preact": "^10.26.2",
     "stellar-tokenomics": "../../stellar-tokenomics"

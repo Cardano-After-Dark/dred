@@ -214,9 +214,15 @@ importers:
       '@donecollectively/stellar-contracts':
         specifier: ../../stellar-contracts
         version: link:../../stellar-contracts
+      '@helios-lang/ledger':
+        specifier: ../../helios/ledger
+        version: link:../../helios/ledger
       '@preact/signals':
         specifier: ^2.0.1
         version: 2.0.1(preact@10.26.4)
+      dred-network-registry:
+        specifier: ../onchain/
+        version: link:../onchain
       preact:
         specifier: ^10.26.2
         version: 10.26.4
@@ -9356,7 +9362,7 @@ snapshots:
       eslint: 8.26.0
       eslint-import-resolver-node: 0.3.7
       eslint-import-resolver-typescript: 2.7.1(eslint-plugin-import@2.27.5(eslint@8.26.0))(eslint@8.26.0)
-      eslint-plugin-import: 2.27.5(@typescript-eslint/parser@5.50.0(eslint@8.26.0)(typescript@5.8.2))(eslint-import-resolver-typescript@2.7.1)(eslint@8.26.0)
+      eslint-plugin-import: 2.27.5(@typescript-eslint/parser@5.50.0(eslint@8.26.0)(typescript@5.8.2))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.27.5(eslint@8.26.0))(eslint@8.26.0))(eslint@8.26.0)
       eslint-plugin-jsx-a11y: 6.7.1(eslint@8.26.0)
       eslint-plugin-react: 7.32.2(eslint@8.26.0)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.26.0)
@@ -9378,7 +9384,7 @@ snapshots:
     dependencies:
       debug: 4.3.4
       eslint: 8.26.0
-      eslint-plugin-import: 2.27.5(@typescript-eslint/parser@5.50.0(eslint@8.26.0)(typescript@5.8.2))(eslint-import-resolver-typescript@2.7.1)(eslint@8.26.0)
+      eslint-plugin-import: 2.27.5(@typescript-eslint/parser@5.50.0(eslint@8.26.0)(typescript@5.8.2))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.27.5(eslint@8.26.0))(eslint@8.26.0))(eslint@8.26.0)
       glob: 7.2.3
       is-glob: 4.0.3
       resolve: 1.22.1
@@ -9397,7 +9403,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.27.5(@typescript-eslint/parser@5.50.0(eslint@8.26.0)(typescript@5.8.2))(eslint-import-resolver-typescript@2.7.1)(eslint@8.26.0):
+  eslint-plugin-import@2.27.5(@typescript-eslint/parser@5.50.0(eslint@8.26.0)(typescript@5.8.2))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.27.5(eslint@8.26.0))(eslint@8.26.0))(eslint@8.26.0):
     dependencies:
       array-includes: 3.1.6
       array.prototype.flat: 1.3.1

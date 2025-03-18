@@ -4,7 +4,6 @@ import type { NodeRegistrationData } from "../../onchain/src/nodeRegistry/NodeRe
 import { providerSignal } from "./signals/capoSignals";
 import type { FoundDatumUtxo, AnyDataTemplate, CharterData } from "@donecollectively/stellar-contracts";
 import type { TxInput } from "@helios-lang/ledger";
-import type { DredCapo } from "../../onchain/src/DredCapo";
 
 // Signal for storing node registry data
 const nodeRegistrySignal = useSignal<NodeRegistrationData[]>([]);

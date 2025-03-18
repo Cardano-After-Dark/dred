@@ -1,5 +1,5 @@
 {
-    "name": "dred-onchain-registry",
+    "name": "dred-network-registry",
     "version": "0.5.0",
     "description": "Onchain registry for DRED decentralized realtime messaging",
     "keywords": [],

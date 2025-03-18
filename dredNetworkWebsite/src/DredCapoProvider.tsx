@@ -1,11 +1,6 @@
-import { CapoDAppProvider, UserActionMap, CapoDappStatus } from "stellar-tokenomics/ui"
-import { ReactNode } from 'react'
 import { DredCapo as DredTokenomicsCapo } from '../../onchain/src/DredCapo'
-import type { TxDescription } from '@donecollectively/stellar-contracts'
+
 import {
-  networkSignal,
-  walletHandleSignal,
-  providerSignal,
   updateNetwork,
   updateWalletHandle,
   updateProvider,
@@ -13,6 +8,7 @@ import {
   updateUserInfo,
   addFailedTxn
 } from './signals/capoSignals'
+import { ReactNode } from "preact/compat";
 
 export class DredCapo extends CapoDAppProvider<
   DredCapo & any,

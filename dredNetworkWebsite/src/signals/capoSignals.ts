@@ -1,5 +1,5 @@
 import { signal, computed, type Signal } from "@preact/signals";
-import type { CapoDappStatus } from "stellar-tokenomics/ui";
+import type { CapoDappStatus } from "@donecollectively/stellar-contracts/ui";
 import type { DredCapo } from "../DredCapoProvider";
 import type { TxDescription } from '@donecollectively/stellar-contracts';
 
