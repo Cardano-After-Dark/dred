@@ -1,4 +1,5 @@
 import { Layout } from './components/Layout'
+import { Providers } from './Providers'
 import './index.css'
 
 interface QuickLinkProps {
@@ -56,35 +57,37 @@ function QuickLink({ title, description, href, icon }: QuickLinkProps) {
 export function App() {
   return (
     <Layout>
-      <div id="hero-wrapper" className="overflow-hidden bg-slate-900 dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]">
-        <div id="hero-container" className="p-16 sm:px-2 lg:relative lg:py-20 lg:px-0">
-          <div id="hero-grid" className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-y-16 gap-x-8 px-4 lg:max-w-8xl lg:px-8 xl:gap-x-16 xl:px-12">
-            <div id="hero-content" className="relative z-10 md:text-center lg:text-left col-span-full">
-              <div className="absolute inset-0 -z-10 overflow-hidden">
-                <img id="hero-blur-effect-1" alt="" src="/blur-cyan.svg" width="240" height="240" decoding="async" 
-                  className="absolute left-0 top-0 blur-2xl" />
-              </div>
-              <div id="hero-text" className="relative max-w-3xl mx-auto">
-                <p id="hero-title" className="inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
-                  Decentralized REDIS state channels
-                </p>
-                <p id="hero-subtitle" className="mt-3 text-2xl tracking-tight text-slate-400">
-                  Realtime message channels for dApps
-                </p>
-                <div id="hero-cta" className="mt-8 flex gap-4 md:justify-center lg:justify-start">
-                  <a className="rounded-full bg-sky-300 py-2 px-4 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500" href="/docs/installation">
-                    Get started
-                  </a>
-                  <a className="rounded-full bg-slate-800 py-2 px-4 text-sm font-medium text-white hover:bg-slate-700 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50 active:text-slate-400" target="_blank" href="https://github.com/cardano-after-dark/dred">
-                    View on GitHub
-                  </a>
+        <Providers>
+          <div id="hero-wrapper" className="overflow-hidden bg-slate-900 dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]">
+            <div id="hero-container" className="p-16 sm:px-2 lg:relative lg:py-20 lg:px-0">
+              <div id="hero-grid" className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-y-16 gap-x-8 px-4 lg:max-w-8xl lg:px-8 xl:gap-x-16 xl:px-12">
+                <div id="hero-content" className="relative z-10 md:text-center lg:text-left col-span-full">
+                  <div className="absolute inset-0 -z-10 overflow-hidden">
+                    <img id="hero-blur-effect-1" alt="" src="/blur-cyan.svg" width="240" height="240" decoding="async" 
+                      className="absolute left-0 top-0 blur-2xl" />
+                  </div>
+                  <div id="hero-text" className="relative max-w-3xl mx-auto">
+                    <p id="hero-title" className="inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
+                      Decentralized REDIS state channels
+                    </p>
+                    <p id="hero-subtitle" className="mt-3 text-2xl tracking-tight text-slate-400">
+                      Realtime message channels for dApps
+                    </p>
+                    <div id="hero-cta" className="mt-8 flex gap-4 md:justify-center lg:justify-start">
+                      <a className="rounded-full bg-sky-300 py-2 px-4 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500" href="/docs/installation">
+                        Get started
+                      </a>
+                      <a className="rounded-full bg-slate-800 py-2 px-4 text-sm font-medium text-white hover:bg-slate-700 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50 active:text-slate-400" target="_blank" href="https://github.com/cardano-after-dark/dred">
+                        View on GitHub
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
+        </Providers>
+        
       <div className="prose prose-slate max-w-none dark:prose-invert dark:text-slate-400 prose-headings:scroll-mt-28 prose-headings:font-display prose-headings:font-normal lg:prose-headings:scroll-mt-[8.5rem] prose-lead:text-slate-500 dark:prose-lead:text-slate-400 prose-a:font-semibold dark:prose-a:text-sky-400 prose-a:no-underline prose-a:shadow-[inset_0_-2px_0_0_var(--tw-prose-background,#fff),inset_0_calc(-1*(var(--tw-prose-underline-size,4px)+2px))_0_0_var(--tw-prose-underline,theme(colors.sky.300))] hover:prose-a:[--tw-prose-underline-size:6px] dark:[--tw-prose-background:theme(colors.slate.900)] dark:prose-a:shadow-[inset_0_calc(-1*var(--tw-prose-underline-size,2px))_0_0_var(--tw-prose-underline,theme(colors.sky.800))] dark:hover:prose-a:[--tw-prose-underline-size:6px] prose-pre:rounded-xl prose-pre:bg-slate-900 prose-pre:shadow-lg dark:prose-pre:bg-slate-800/60 dark:prose-pre:shadow-none dark:prose-pre:ring-1 dark:prose-pre:ring-slate-300/10 dark:prose-hr:border-slate-800">
         <p className="lead">
           Learn how to get Dred set up in your project in under thirty minutes or it's free.

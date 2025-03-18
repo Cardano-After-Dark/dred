@@ -9,7 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "preact": "^10.26.2"
+    "@donecollectively/stellar-contracts": "../../stellar-contracts",
+    "@preact/signals": "^2.0.1",
+    "preact": "^10.26.2",
+    "stellar-tokenomics": "../../stellar-tokenomics"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.1",
