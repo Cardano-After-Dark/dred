@@ -58,14 +58,11 @@
         "./heliosModule.d.ts",
     ],
     "include": [
-        // "lib/**/*.json", 
-        // "src/**/*.hl",
-        // "lib/**/*.ts", 
-        // "lib/**/*.js", 
+        "src/**/*.ts",
+        "src/**/*.hl"
     ],
     "exclude": [
         "node_modules/**/*",
-        "src/**/*.ts",
         "**/node_modules/"
     ]
 }

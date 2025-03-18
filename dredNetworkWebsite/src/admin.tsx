@@ -1,9 +1,11 @@
 import { useSignal, useComputed } from "@preact/signals";
 import { useEffect } from "react";
-import type { NodeRegistrationData } from "../../onchain/src/nodeRegistry/NodeRegistry.typeInfo";
 import { providerSignal } from "./signals/capoSignals";
-import type { FoundDatumUtxo, AnyDataTemplate, CharterData } from "@donecollectively/stellar-contracts";
+import type { 
+    FoundDatumUtxo, AnyDataTemplate, CharterData 
+} from "@donecollectively/stellar-contracts";
 import type { TxInput } from "@helios-lang/ledger";
+import type { NodeRegistrationData } from "dred-network-registry";
 
 // Signal for storing node registry data
 const nodeRegistrySignal = useSignal<NodeRegistrationData[]>([]);
