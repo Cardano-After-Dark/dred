@@ -3,7 +3,6 @@ packages:
   - 'docs'
   - 'sampleApp'
   - 'onchain'
-  - 'dredNetworkWebsite'
   - '.'
 
   # works better with yarn used in that subdir:
