@@ -15,6 +15,7 @@
     "@donecollectively/stellar-contracts": "../../stellar-contracts",
     "@headlessui/react": "^1.7.2",
     "@helios-lang/ledger": "../../helios/ledger",
+    "@helios-lang/tx-utils": "../../helios/tx-utils",
     "@markdoc/markdoc": "0.1.7",
     "@markdoc/next.js": "0.1.6",
     "@preact/signals-core": "^1.8.0",

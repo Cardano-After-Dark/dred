@@ -98,6 +98,8 @@ function Header({ navigation }) {
           <GitHubIcon className="h-6 w-6 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />
         </Link>
       </div>
+      <div id="capoUserDetails" XclassName="hidden"></div>
+      <div id="capoStatus"></div>
     </header>
   )
 }

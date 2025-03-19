@@ -1,117 +1,153 @@
-import { signal, computed, effect } from '@preact/signals-react'
-import type { CapoDappStatus } from "@donecollectively/stellar-contracts/ui";
-import type { DredCapoProviderRaw } from "./components/DredCapoProvider.jsx";
-import type { TxDescription } from '@donecollectively/stellar-contracts';
+import { signal, computed, effect } from "@preact/signals-react"
+import type { CapoDappStatus, DappUserInfo } from "@donecollectively/stellar-contracts/ui"
+import type { DredCapoProviderRaw } from "./components/DredCapoProvider.jsx"
+import type { TxDescription } from "@donecollectively/stellar-contracts"
+import { CardanoClient, Cip30Wallet } from "@helios-lang/tx-utils"
+import { Address, Value } from "@helios-lang/ledger"
+import { DredCapo } from "dred-network-registry"
+
 
 // Core signals
-export const networkSignal = signal<any>(undefined);
-export const walletHandleSignal = signal<any>(undefined);
-export const providerSignal = signal<DredCapoProviderRaw | undefined>(undefined);
-export const dAppStatusSignal = signal<CapoDappStatus<any> | undefined>(undefined);
-export const userInfoSignal = signal<any>(undefined);
-export const failedTxnsSignal = signal<TxDescription<any, "built">[]>([]);
+export const coreSignals = {
+    network: signal<CardanoClient | undefined>(undefined),
+    wallet: signal<Cip30Wallet | undefined>(undefined),
+    provider: signal<DredCapoProviderRaw | undefined>(undefined),
+    dAppStatus: signal<CapoDappStatus<any> | undefined>(undefined),
+    userInfo: signal<DappUserInfo | undefined>(undefined),
+    failedTxns: signal<TxDescription<any, "built">[]>([]),
 
-export const capoSignal = computed(() => {
-  const provider = providerSignal.value;
-  if (!provider) return undefined;
-  return provider.capo;
-});
+    // userBalance: signal<Value | undefined>(undefined),
+    userAddresses: signal<Address[] | undefined>(undefined),
+}
 
-// Computed signals for user info
-export const isConnectedSignal = computed(() => {
-  return !!walletHandleSignal.value;
-});
+// async reactivesignals
+effect(() => {
+    const userInfo = signals.userInfo.value
+    const wallet = userInfo?.wallet
+    if (userInfo?.connectingWallet) {
+        // signals.userBalance.value=undefined
+        coreSignals.userAddresses.value=undefined
+    } else if (wallet) {
+        wallet.usedAddresses.then(addrs => {
+            coreSignals.userAddresses.value = addrs
+        });
 
-export const userAddressSignal = computed(() => {
-  const info = userInfoSignal.value;
-  return info?.address || null;
-});
+        // const balance = wallet.usedAddresses[0]?.balance
+        // if (balance) {
+        //     coreSignals.userBalance.value = balance
+        // }
+    }
+})
 
-export const userBalanceSignal = computed(() => {
-  const info = userInfoSignal.value;
-  return info?.balance || 0;
-});
+// Computed signals
+export const computedSignals = {
+    userAddress: computed<Address | undefined>(() => {
+        const addresses = coreSignals.userAddresses?.value
+        return addresses?.[0]
+    }),
 
-// Computed signals for dApp status
-export const statusMessageSignal = computed(() => {
-  const status = dAppStatusSignal.value;
-  return status?.message;
-});
+    capo: computed<DredCapo | undefined>(() => {
+        const provider = coreSignals.provider.value
+        if (!provider) return undefined
+        return provider.capo
+    }),
 
-export const shouldKeepMessageSignal = computed(() => {
-  const status = dAppStatusSignal.value;
-  return status?.keepOnscreen || false;
-});
+    isConnected: computed(() => {
+        return !!coreSignals.userInfo.value?.wallet
+    }),
 
-export const messageClearTimeSignal = computed(() => {
-  const status = dAppStatusSignal.value;
-  return status?.clearAfter;
-});
+    // userBalance: computed(() => {
+    //     const info = signals.userInfo.value
+    //     return info?.balance || 0
+    // }),
 
-export const isErrorSignal = computed(() => {
-  const status = dAppStatusSignal.value;
-  return status?.isError || false;
-});
+    statusMessage: computed(() => {
+        const status = coreSignals.dAppStatus.value
+        return status?.message
+    }),
 
-export const moreInstructionsSignal = computed(() => {
-  const status = dAppStatusSignal.value;
-  return status?.moreInstructions;
-});
+    shouldKeepMessage: computed(() => {
+        const status = coreSignals.dAppStatus.value
+        return status?.keepOnscreen || false
+    }),
 
-export const nextActionSignal = computed(() => {
-  const status = dAppStatusSignal.value;
-  if (!status?.nextAction) return null;
-  return {
-    key: status.nextAction.key,
-    label: status.nextAction.label,
-    trigger: status.nextAction.trigger
-  };
-});
+    messageClearTime: computed(() => {
+        const status = coreSignals.dAppStatus.value
+        return status?.clearAfter
+    }),
 
-export const progressSignal = computed(() => {
-  const status = dAppStatusSignal.value;
-  if (!status?.progressBar) return null;
-  
-  return {
-    label: typeof status.progressBar === 'string' ? status.progressBar : undefined,
-    percent: status.progressPercent,
-    isActive: !!status.progressBar
-  };
-});
+    isError: computed(() => {
+        const status = coreSignals.dAppStatus.value
+        return status?.isError || false
+    }),
 
-// Computed signal for failed transactions
-export const hasFailedTxnsSignal = computed(() => {
-  return failedTxnsSignal.value.length > 0;
-});
+    moreInstructions: computed(() => {
+        const status = coreSignals.dAppStatus.value
+        return status?.moreInstructions
+    }),
 
-export const lastFailedTxnSignal = computed(() => {
-  const txns = failedTxnsSignal.value;
-  return txns[txns.length - 1];
-});
+    nextAction: computed(() => {
+        const status = coreSignals.dAppStatus.value
+        if (!status?.nextAction) return undefined
+        return {
+            key: status.nextAction.key,
+            label: status.nextAction.label,
+            trigger: status.nextAction.trigger,
+        }
+    }),
+
+    progress: computed(() => {
+        const status = coreSignals.dAppStatus.value
+        if (!status?.progressBar) return null
+
+        return {
+            label:
+                typeof status.progressBar === "string"
+                    ? status.progressBar
+                    : undefined,
+            percent: status.progressPercent,
+            isActive: !!status.progressBar,
+        }
+    }),
+
+    hasFailedTxns: computed(() => {
+        return coreSignals.failedTxns.value.length > 0
+    }),
+
+    lastFailedTxn: computed(() => {
+        const txns = coreSignals.failedTxns.value
+        return txns[txns.length - 1]
+    }),
+}
+
+export const signals : typeof coreSignals & typeof computedSignals = {
+    ...coreSignals,
+    ...computedSignals,
+}
 
 // Signal updater functions
-export const updateNetwork = (network: any) => {
-  networkSignal.value = network;
-};
+export const updaters = {
+    updateNetwork: (network: any) => {
+        coreSignals.network.value = network
+    },
 
-export const updateWalletHandle = (handle: any) => {
-  walletHandleSignal.value = handle;
-};
+    updateWalletHandle: (handle: any) => {
+        coreSignals.wallet.value = handle
+    },
 
-export const updateProvider = (provider: DredCapoProviderRaw | undefined) => {
-  providerSignal.value = provider;
-};
+    updateProvider: (provider: DredCapoProviderRaw | undefined) => {
+        coreSignals.provider.value = provider
+    },
 
+    updateDAppStatus: (status: CapoDappStatus<any>) => {
+        coreSignals.dAppStatus.value = status
+    },
 
+    updateUserInfo: (info: any) => {
+        coreSignals.userInfo.value = info
+    },
 
-export const updateDAppStatus = (status: CapoDappStatus<any>) => {
-  dAppStatusSignal.value = status;
-};
-
-export const updateUserInfo = (info: any) => {
-  userInfoSignal.value = info;
-};
-
-export const addFailedTxn = (txn: TxDescription<any, "built">) => {
-  failedTxnsSignal.value = [...failedTxnsSignal.value, txn];
-}; 
+    addFailedTxn: (txn: TxDescription<any, "built">) => {
+        coreSignals.failedTxns.value = [...coreSignals.failedTxns.value, txn]
+    },
+}

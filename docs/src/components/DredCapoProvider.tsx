@@ -5,12 +5,7 @@ import {
 } from "@donecollectively/stellar-contracts/ui"
 import { DredCapo } from "dred-network-registry"
 import {
-    updateNetwork,
-    updateWalletHandle,
-    updateProvider,
-    updateDAppStatus,
-    updateUserInfo,
-    addFailedTxn,
+    updaters
 } from "../capoSignals.js"
 
 export class DredCapoProviderRaw extends CapoDAppProvider<
@@ -37,12 +32,12 @@ export function DredCapoProvider({
             blockfrostKey={apiKey}
             capoClass={DredCapo}
             dAppName="Dred Operator Network"
-            onNetwork={updateNetwork}
-            onWalletChange={updateWalletHandle}
-            onSubmitError={addFailedTxn}
-            onStatusChange={updateDAppStatus}
-            onUserInfo={updateUserInfo}
-            onContextChange={updateProvider}
+            onNetwork={updaters.updateNetwork}
+            onWalletChange={updaters.updateWalletHandle}
+            onSubmitError={updaters.addFailedTxn}
+            onStatusChange={updaters.updateDAppStatus}
+            onUserInfo={updaters.updateUserInfo}
+            onContextChange={updaters.updateProvider}
         >
             {children as any}
         </DredCapoProviderRaw>
