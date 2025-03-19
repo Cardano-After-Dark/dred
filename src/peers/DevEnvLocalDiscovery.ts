@@ -44,16 +44,29 @@ export class DevEnvLocalDiscovery extends Discovery {
     //     }
     // }
     static defaultHosts() : DredHostDetails[] {
-        return [{
-            serverId: "singleton",
-            address: "127.0.0.1",
-            port: 3029,
-            insecure: true,            
-            // publicKey: this.getPubKeyFromFs(3029),
-        }]
+        return [
+            {
+                serverId: "node1",
+                address: "127.0.0.1",
+                port: 3029,
+                insecure: true,            
+            },
+            {
+                serverId: "node2",
+                address: "127.0.0.1",
+                port: 3030,
+                insecure: true,            
+            }
+        ]
     }
+
+    
+
     setupDefaultHosts() {
-        return this.reset((this.constructor as typeof DevEnvLocalDiscovery).defaultHosts());
+        const numberOfNodes = 1; // default to 1 node
+        const allHosts = (this.constructor as typeof DevEnvLocalDiscovery).defaultHosts();
+        const selectedHosts = allHosts.slice(0, numberOfNodes);
+        return this.reset(selectedHosts);
     }
     constructor(options : DevDiscoveryOptions) {
     const {

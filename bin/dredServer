@@ -2,20 +2,27 @@ import { DevEnvLocalDiscovery } from "../src/peers/DevEnvLocalDiscovery";
 import { createServer } from "../src/server/DredServer";
 import { asyncDelay } from "../src/util/asyncDelay";
 
+// Get node ID from command line arguments
+const nodeId = process.argv[2] || "node1";
+
 //!!!! todo: read config from a JSON file 
 
 init();
 async function init() {
     const discovery = new DevEnvLocalDiscovery({});
+    const hosts = DevEnvLocalDiscovery.defaultHosts();
+    const host = hosts.find(h => h.serverId === nodeId);
+    
+    if (!host) {
+        console.error(`Node ${nodeId} not found in configuration`);
+        process.exit(1);
+    }
+
     const server = await createServer({ 
-        discovery ,
+        discovery,
         waitFor: "healthy",
-        // connectionSettings: {
-
-        // }
-    }, discovery.hosts[0].serverId);
-    const { port, address } = discovery.hosts[0];
+    }, host.serverId);
+    
     await server.listen();
-
-    // console.log(`Dred server listening on port ${port}`);
+    console.log(`Dred server ${nodeId} listening on port ${host.port}`);
 }
