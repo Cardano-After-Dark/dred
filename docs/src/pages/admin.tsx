@@ -1,6 +1,8 @@
+"use client"
+
 import { useSignal, useComputed, useSignalEffect } from "@preact/signals-react";
 import { useEffect } from "react";
-import { signals, updaters } from "../capoSignals.js";
+import { signals, updaters } from "@/capoSignals.js";
 import type { 
     FoundDatumUtxo, AnyDataTemplate, CharterData 
 } from "@donecollectively/stellar-contracts";
@@ -75,9 +77,8 @@ export function AdminPage() {
   });
 
   return (
-
     <div className="container mx-auto px-4 py-8">
-      <CharterStatus />
+      {/* <CharterStatus /> */}
 
       <h1 className="text-3xl font-bold mb-6">DRED Node Registry Administration</h1>
       

@@ -1,6 +1,6 @@
 import { signal, computed, effect } from "@preact/signals-react"
 import type { CapoDappStatus, DappUserInfo } from "@donecollectively/stellar-contracts/ui"
-import type { DredCapoProviderRaw } from "./components/DredCapoProvider.jsx"
+import type { DredCapoProviderRaw } from "./components/DredCapoProvider.tsx"
 import type { TxDescription } from "@donecollectively/stellar-contracts"
 import { CardanoClient, Cip30Wallet } from "@helios-lang/tx-utils"
 import { Address, Value } from "@helios-lang/ledger"
@@ -22,7 +22,7 @@ export const coreSignals = {
 
 // async reactivesignals
 effect(() => {
-    const userInfo = signals.userInfo.value
+    const userInfo = coreSignals.userInfo.value
     const wallet = userInfo?.wallet
     if (userInfo?.connectingWallet) {
         // signals.userBalance.value=undefined
