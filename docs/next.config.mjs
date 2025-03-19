@@ -9,6 +9,15 @@ const nextConfig = {
   },
   basePath: "/dred",
   assetPrefix: "/dred/",
+  // Add output configuration for static export
+  output: 'export',
+  // Disable server-side features
+  images: {
+    unoptimized: true,
+  },
+  // Ensure client-side rendering
+  reactStrictMode: true,
+  swcMinify: true,
   webpack: (config, { isServer }) => {
     config.output.publicPath = "/dred" + config.output.publicPath
     // Add TypeScript support

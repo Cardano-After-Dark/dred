@@ -45,18 +45,16 @@ function SystemIcon(props) {
 }
 
 export function ThemeSelector(props) {
-  let [selectedTheme, setSelectedTheme] = useState()
+  let [selectedTheme, setSelectedTheme] = useState(themes.find(theme => theme.value === 'system'))
+
+  useEffect(() => {
+    const currentTheme = document.documentElement.getAttribute('data-theme') ?? 'system'
+    setSelectedTheme(themes.find(theme => theme.value === currentTheme))
+  }, [])
 
   useEffect(() => {
     if (selectedTheme) {
       document.documentElement.setAttribute('data-theme', selectedTheme.value)
-    } else {
-      setSelectedTheme(
-        themes.find(
-          (theme) =>
-            theme.value === document.documentElement.getAttribute('data-theme')
-        )
-      )
     }
   }, [selectedTheme])
 
