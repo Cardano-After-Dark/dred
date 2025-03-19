@@ -80,11 +80,14 @@ export function AdminPage() {
     <div className="container mx-auto px-4 py-8">
       {/* <CharterStatus /> */}
 
-      <h1 className="text-3xl font-bold mb-6">DRED Node Registry Administration</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">DRED Node Registry Administration</h1>
+        <p className="text-sm text-gray-500">Updated<br/>{lastUpdate.value.toLocaleString()}</p>
+      </div>
       
       {/* Statistics Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold mb-2">Total Nodes</h3>
           <p className="text-2xl">{nodeRegistryData.value.length}</p>
         </div>
@@ -92,30 +95,26 @@ export function AdminPage() {
           <h3 className="text-lg font-semibold mb-2">Active Nodes</h3>
           <p className="text-2xl">{activeNodes.value}</p>
         </div> */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold mb-2">Last Updated</h3>
-          <p className="text-sm">{lastUpdate.value.toLocaleString()}</p>
-        </div>
       </div>
 
       {/* Node Registry Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+          <thead className="bg-gray-50 dark:bg-slate-800">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-300 uppercase tracking-wider">
                 Member Token
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-200 uppercase tracking-wider">
                 Node Address
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-500 uppercase tracking-wider">
                 Port
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-500 uppercase tracking-wider">
                 Last Heartbeat
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-200 uppercase tracking-wider">
                 Status
               </th>
             </tr>
