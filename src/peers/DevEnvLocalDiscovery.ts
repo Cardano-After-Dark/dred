@@ -2,10 +2,10 @@
 import util from "tweetnacl-util";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
-import { DredHostDetails } from "../types/DredHosts.js";
-import { Discovery, GenericDiscoveryOptions, promisedConnectionThresholds } from "../types/Discovery.js";
-import { StringNacl } from "../util/StringNacl.js";
-import { NbhId } from "../types/ChannelSubscriptions.js";
+import { DredHostDetails } from "../types/DredHosts.ts";
+import { Discovery, GenericDiscoveryOptions, promisedConnectionThresholds } from "../types/Discovery.ts";
+import { StringNacl } from "../util/StringNacl.ts";
+import { NbhId } from "../types/ChannelSubscriptions.ts";
 import { asyncDelay } from "@poshplum/utils";
 
 

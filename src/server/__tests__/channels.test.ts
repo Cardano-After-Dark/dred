@@ -4,21 +4,21 @@ import { expect, jest, test } from "@jest/globals";
 // import request from 'supertest';
 import { Express } from "express";
 import { SuperTestWithHost, Test } from "supertest";
-import { DredClient } from "../../client/DredClient.js";
+import { DredClient } from "../../client/DredClient.ts";
 
 import nacl from "tweetnacl";
 const { sign } = nacl;
 import util from "tweetnacl-util";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
-import { testSetup } from "../testServer.js";
-import { DredServer } from "../DredServer.js";
-import { asyncDelay } from "../../util/asyncDelay.js";
+import { testSetup } from "../testServer.ts";
+import { DredServer } from "../DredServer.ts";
+import { asyncDelay } from "../../util/asyncDelay.ts";
 import {
     Key,
     KeyExchanger,
     KeyExchangerDerivationProof,
-} from "src/KeyExchanger.js";
+} from "src/KeyExchanger.ts";
 
 // This test uses a blend of direct** requests to the Dred server (to prove
 //   each key function working at a HTTP level), along with some requests

@@ -61,6 +61,9 @@ export async function testSetup() {
         const discovery = new DevEnvLocalDiscovery().reset(hosts);
         const s = await createServer({discovery}, server.serverId);
 
+        // 1. BB/WB test
+        // 2. Server expectation test: replClient, admin channel, client channel 
+
         await s.listen();
         servers.push(s)
     }

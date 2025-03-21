@@ -11,20 +11,20 @@ import compression from 'compression'
 //@ts-ignore
 import { RedisChannels } from "../redis/streams";
 
-import { DredClient, DredClientArgs } from "../client/DredClient.js";
-import { RedisSet } from "../redis/RedisSet.js";
-import { Subscriber } from "../Subscriber.js";
+import { DredClient, DredClientArgs } from "../client/DredClient.ts";
+import { RedisSet } from "../redis/RedisSet.ts";
+import { Subscriber } from "../Subscriber.ts";
 import {
     JSONValueAdapter,
     RedisHash,
     StringValueAdapter,
     ValueAdapter,
-} from "../redis/RedisHash.js";
-import { ChannelOptions } from "../types/ChannelOptions.js";
-import { StringNacl } from "../util/StringNacl.js";
-import { Discovery } from "../types/Discovery.js";
-import { DredHostDetails } from "../types/DredHosts.js";
-import { ChanId, SubscriptionList, NbhId, ChannelSubOptions } from "../types/ChannelSubscriptions.js";
+} from "../redis/RedisHash.ts";
+import { ChannelOptions } from "../types/ChannelOptions.ts";
+import { StringNacl } from "../util/StringNacl.ts";
+import { Discovery } from "../types/Discovery.ts";
+import { DredHostDetails } from "../types/DredHosts.ts";
+import { ChanId, SubscriptionList, NbhId, ChannelSubOptions } from "../types/ChannelSubscriptions.ts";
 import { autobind } from "@poshplum/utils";
 
 const logging = parseInt(process.env.LOGGING || "0");

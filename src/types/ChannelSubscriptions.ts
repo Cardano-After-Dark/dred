@@ -1,5 +1,5 @@
-import type { DredMessage, DredMessageListener } from "../client/DredClient.js";
-import type { ConnectionEvent } from "../client/HostConnection.js";
+import type { DredMessage, DredMessageListener } from "../client/DredClient.ts";
+import type { ConnectionEvent } from "../client/HostConnection.ts";
 
 export type ChanId = string;
 export type MsgId = string;

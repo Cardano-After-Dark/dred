@@ -1,5 +1,5 @@
 import { ReadableStream as platformReadableStream } from "node:stream/web";
-import { nodeToWebStream } from "./readable-stream-node-to-web.js";
+import { nodeToWebStream } from "./readable-stream-node-to-web.ts";
 import { Readable } from "node:stream";
 
 //! purpose: allows server-side code to handle fetch() responses with a streaming

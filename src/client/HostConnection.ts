@@ -2,7 +2,7 @@ import { autobind, StateMachine } from "@poshplum/utils";
 import { EventEmitter } from "eventemitter3";
 import { fromPlatformFetchBody } from "@platform/ReadableStream";
 
-import { connnectionSettings, DredHostDetails } from "../types/DredHosts.js";
+import { connnectionSettings, DredHostDetails } from "../types/DredHosts.ts";
 // import { asyncDelay } from "../util/asyncDelay.js";
 import {
     DredEvent,
@@ -11,11 +11,11 @@ import {
     DredEventPlus,
     DredError,
     devMessage,
-} from "../types/DredEvents.js";
-import { asyncDelay } from "../util/asyncDelay.js";
-import { SubscriptionListenerMap, DredChannelMessage, SubscriptionList } from "../types/ChannelSubscriptions";
-import { ndjsonStream } from "./betterJsonStream.js";
-import { DredMessage } from "./DredClient.js";
+} from "../types/DredEvents.ts";
+import { asyncDelay } from "../util/asyncDelay.ts";
+import { SubscriptionListenerMap, DredChannelMessage, SubscriptionList } from "../types/ChannelSubscriptions.ts";
+import { ndjsonStream } from "./betterJsonStream.ts";
+import { DredMessage } from "./DredClient.ts";
 
 type conn = HostConnection;
 export interface ConnectionEvent extends DredEvent {

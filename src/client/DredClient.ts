@@ -243,7 +243,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     get currentState() {
         return this._status;
     }
-
+// decorator syntac useful. it needs to be resolved before use.
     @autobind
     emitState() {
         this.ensureEmitterExists();

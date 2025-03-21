@@ -1,5 +1,5 @@
-import { NbhId } from "../types/ChannelSubscriptions.js";
-import { ConnectionThresholds, Discovery, findingDredHosts, GenericDiscoveryOptions, promisedConnectionThresholds } from "../types/Discovery.js";
+import { NbhId } from "../types/ChannelSubscriptions.ts";
+import { ConnectionThresholds, Discovery, findingDredHosts, GenericDiscoveryOptions, promisedConnectionThresholds } from "../types/Discovery.ts";
 
 export class NeighborhoodDiscovery extends Discovery {
     neighborhood?: NbhId;

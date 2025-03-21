@@ -4,7 +4,7 @@ import { EventEmitter } from "eventemitter3";
 import { 
     Discovery,
     ConnectionThresholds,
- } from "../types/Discovery.js";
+ } from "../types/Discovery.ts";
 import {
     ChanId,
     SubscriptionListenerMap,
@@ -12,21 +12,21 @@ import {
     ChannelSubscriptionListener,
     DredChannelMessage,
     SubscriptionList,
-} from "../types/ChannelSubscriptions.js";
-import { DredHostDetails, connnectionSettings } from "../types/DredHosts.js";
-import { devMessage, DredError, DredEvent } from "../types/DredEvents.js";
+} from "../types/ChannelSubscriptions.ts";
+import { DredHostDetails, connnectionSettings } from "../types/DredHosts.ts";
+import { devMessage, DredError, DredEvent } from "../types/DredEvents.ts";
 
-import { ConnectionEvent, HostConnection } from "./HostConnection.js";
+import { ConnectionEvent, HostConnection } from "./HostConnection.ts";
 
 import {
     ConnectionState,
     ConnectionManagerOptions,
     PromisedHostDetails,
     ThresholdChoice,
-} from "../types/PeerDiscovery.js";
-import { asyncDelay } from "../util/asyncDelay.js";
-import { fetcher } from "./fetcher.js";
-import { DredMessage } from "./DredClient.js";
+} from "../types/PeerDiscovery.ts";
+import { asyncDelay } from "../util/asyncDelay.ts";
+import { fetcher } from "./fetcher.ts";
+import { DredMessage } from "./DredClient.ts";
 
 //!!! todo zw3w737: it has a way of posting the same unique message to multiple servers,
 //     ... and for that message to converge across them all.

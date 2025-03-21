@@ -1,7 +1,7 @@
 import { EventEmitter } from "eventemitter3";
-import { NbhId } from "./ChannelSubscriptions.js";
-import { devMessage, DredEvent } from "./DredEvents.js";
-import { DredHostDetails } from "./DredHosts.js";
+import { NbhId } from "./ChannelSubscriptions.ts";
+import { devMessage, DredEvent } from "./DredEvents.ts";
+import { DredHostDetails } from "./DredHosts.ts";
 
 export interface discovery {
     getHostList(): Promise<DredHostDetails[]>;
@@ -90,7 +90,7 @@ export abstract class Discovery implements discovery {
 
 
 
-import { connnectionSettings } from "./DredHosts.js";
+import { connnectionSettings } from "./DredHosts.ts";
 
 export type ConnectionManagerOptions = {
     discovery: Discovery;

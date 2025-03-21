@@ -1,0 +1,142 @@
+// @ts-expect-error
+import { expect, jest, test, describe, beforeAll, afterAll, afterEach, it } from "@jest/globals";
+
+import type { Express } from "express";
+import type { Server } from "http";
+import type { SuperTestWithHost, Test } from "supertest";
+import type { AddressInfo } from "net";
+
+import { createServer, DredServer } from "../DredServer.js";
+import { DredClient } from "../../client/DredClient.js";
+import { asyncDelay } from "../../util/asyncDelay.js";
+import { DevEnvLocalDiscovery } from "../../peers/DevEnvLocalDiscovery.js";
+import { DredHostDetails } from "../../types/DredHosts.js";
+
+if (process.env.JEST_TIMEOUT) {
+    console.log("using jest timeout override", process.env.JEST_TIMEOUT);
+    jest.setTimeout(parseInt(process.env.JEST_TIMEOUT));
+}
+
+let servers: DredServer[] = [];
+let serverA: DredServer;
+let serverB: DredServer;
+let serverC: DredServer;
+let clientCleanupList: Array<DredClient> = [];
+
+afterAll(async () => {
+    for (const s of servers) {
+        await s.close();
+    }
+});
+
+afterEach(async () => {
+    for (const client of clientCleanupList) {
+        client.disconnect();
+    }
+    clientCleanupList = [];
+
+    const redis = serverA?.redis;
+    if (redis) {
+        await asyncDelay(150); // avoid race with existing channel-subscriptions
+        await redis.flushdb();
+    }
+});
+
+export async function replicationTestSetup() {
+    const hosts: DredHostDetails[] = [
+        { serverId: "serverA", address: "localhost", port: "3032", insecure: true },
+        { serverId: "serverB", address: "localhost", port: "3033", insecure: true },
+        { serverId: "serverC", address: "localhost", port: "3034", insecure: true }
+    ];
+
+    // Create a separate discovery agent for each server using the same full list of hosts
+    for (const server of hosts) {
+        const discovery = new DevEnvLocalDiscovery({}).reset(hosts);
+        const s = await createServer({ 
+            discovery,
+            waitFor: "healthy"
+        }, server.serverId);
+        await s.listen();
+        servers.push(s);
+    }
+
+    // Assign servers to variables for easy access
+    serverA = servers[0];
+    serverB = servers[1];
+    serverC = servers[2];
+
+    // Setup client cleanup for each server
+    for (const server of servers) {
+        const realMkClient = server.mkClient.bind(server);
+        jest.spyOn(server, "mkClient").mockImplementation(function (...args) {
+            const client = realMkClient();
+            clientCleanupList.push(client);
+            return client;
+        });
+    }
+
+    // Verify all servers are listening
+    for (const server of servers) {
+        const info = server.myServerInfo;
+        if (info === null) throw new Error(`server is not listening`);
+        if ("string" === typeof info)
+            throw new Error(`Unix socket not supported currently`);
+    }
+
+    return {
+        serverA,
+        serverB,
+        serverC,
+        servers
+    };
+}
+
+describe("replication", () => {
+    beforeAll(async () => {
+        await replicationTestSetup();
+    });
+
+    it("should replicate messages across all servers", async () => {
+        // Create a channel on serverA
+        const channelName = "test-replication";
+        const clientA = serverA.mkClient();
+        await clientA.createChannel(channelName);
+
+        // Subscribe to messages on serverB and serverC
+        const clientB = serverB.mkClient();
+        const clientC = serverC.mkClient();
+        
+        let receivedB = 0;
+        let receivedC = 0;
+        
+        clientB.subscribeToChannels(channelName);
+        clientC.subscribeToChannels(channelName);
+
+        // Set message handlers
+        clientB.messageHandler = (msg) => {
+            expect(msg.msg).toMatchObject({ test: "message" });
+            receivedB++;
+        };
+
+        clientC.messageHandler = (msg) => {
+            expect(msg.msg).toMatchObject({ test: "message" });
+            receivedC++;
+        };
+
+        // Wait for subscriptions to be established
+        await asyncDelay(100);
+
+        // Post a message from serverA
+        await clientA.postMessage(channelName, {
+            type: "test",
+            msg: { test: "message" }
+        });
+
+        // Wait for message propagation
+        await asyncDelay(100);
+
+        // Verify both servers received the message
+        expect(receivedB).toBe(1);
+        expect(receivedC).toBe(1);
+    });
+});
