@@ -15,6 +15,7 @@
     "moduleResolution": "Node16",
     "module": "esnext",
     "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
