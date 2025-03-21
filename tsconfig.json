@@ -2,11 +2,15 @@
     "extends": "./ts/tsconfig.base",
     "compilerOptions": {
         "experimentalDecorators": true,
-        // "baseUrl": ".",
-        "moduleResolution": "node16",
+        "emitDecoratorMetadata": true,
+        "moduleResolution": "Node16",
+        "module": "Node16",
+        "target": "ES2022",
+        "allowJs": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
         "paths": {
-            "@platform/*": ["./platform/server/*"],
-            // "sXXrc/*": ["src/*"]
+            "@platform/*": ["./platform/server/*"]
         }
     },
     "include": [ "**/*.ts", "**/*.js" ],
