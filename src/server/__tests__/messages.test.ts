@@ -58,7 +58,7 @@ describe("channel messages", () => {
 
                 let received = 0;
 
-                otherClient.subscribeChannel(chan, (inbound) => {
+                otherClient.mkChannelSub(chan, (inbound) => {
                     expect(inbound).toMatchObject(msg);
                     received += 1;
                 });
@@ -71,9 +71,9 @@ describe("channel messages", () => {
                 expect(received).toBe(2);
             });
 
-            fit("continues consuming events from redis after a first batch", async () => {
+            it("continues consuming events from redis after a first batch", async () => {
                 const otherClient = server.mkClient();
-                const shortSubscribe = jest
+                const shortSubscribe = vi
                     .spyOn(server, "subscribeTimeout", "get")
                     .mockReturnValue(150);
 
@@ -83,7 +83,7 @@ describe("channel messages", () => {
 
                 // console.log("created channel");
                 let received = 0;
-                const subscription = otherClient.subscribeChannel(
+                const subscription = otherClient.mkChannelSub(
                     chan,
                     (inbound) => {
                         console.log("chan msg", inbound);

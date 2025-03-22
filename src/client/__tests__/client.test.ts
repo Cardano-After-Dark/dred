@@ -1,5 +1,10 @@
-// @ts-expect-error
-import { expect, jest, test } from "@jest/globals";
+/**
+ * @vitest-environment jsdom
+ */
+
+// import { expect, jest, test } from "@jest/globals";
+// These are now global due to globals: true in vitest.config.ts
+import { vi } from "vitest";
 
 import express from "express";
 import { DredServer } from "../../server/DredServer";
@@ -26,7 +31,7 @@ describe("Dred client", () => {
     describe("unencrypted chan:", () => {
         describe("createChannel", () => {
             it("does createChannel() on server", async () => {
-                const serverMethod = jest.spyOn(server, "createChannel");
+                const serverMethod = vi.spyOn(server, "createChannel");
                 const chanName = "client1";
                 await client.createChannel(chanName);
                 expect(server.channelList.has(chanName)).toBeTruthy();
@@ -34,7 +39,7 @@ describe("Dred client", () => {
             });
 
             it("throws any error json returned in a server error", async () => {
-                const serverMethod = jest
+                const serverMethod = vi
                     .spyOn(server, "createChannel")
                     .mockImplementation(((req, res, next) => {
                         res.status(400).json({ error: "some error" });
@@ -100,7 +105,7 @@ describe("Dred client", () => {
         describe("after keygen:", () => {
             describe("createChannel", () => {
                 it("does createChannel() on server", async () => {
-                    const serverMethod = jest.spyOn(server, "createChannel");
+                    const serverMethod = vi.spyOn(server, "createChannel");
                     const chanName = "client1";
                     await client.createChannel(chanName, {
                         encrypted: true,

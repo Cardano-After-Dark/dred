@@ -7,14 +7,20 @@ import { asyncDelay } from "../src/util/asyncDelay";
 init();
 async function init() {
     const discovery = new DevEnvLocalDiscovery({});
+    const hosts = discovery.hosts;
+    const firstHost = hosts?.[0];
+    if (!firstHost) {
+        throw new Error("No hosts found");
+    }
+    console.log("Dred server starting on host", firstHost);
     const server = await createServer({ 
         discovery ,
-        waitFor: "healthy",
+        waitFor: "healthy",        
         // connectionSettings: {
 
         // }
-    }, discovery.hosts[0].serverId);
-    const { port, address } = discovery.hosts[0];
+    }, firstHost.serverId);
+    const { port, address } = firstHost;
     await server.listen();
 
     // console.log(`Dred server listening on port ${port}`);

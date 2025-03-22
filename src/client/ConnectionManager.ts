@@ -246,7 +246,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
     }
     //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
     get currentState() {
-        return this._status;
+        return this._status || this.defaultState;
     }
     channels?: ChanId[];
 

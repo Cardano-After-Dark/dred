@@ -340,7 +340,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         this.events = this.ensureEmitterExists();
 
         //@ts-expect-error used before assignment (assigned by state-machine)
-        this._status = this._status || "";
+        this._status = this._status || "default";
 
         this.args = args;
         const discovery = (this.constructor as typeof DredClient).resolveDiscovery(args);

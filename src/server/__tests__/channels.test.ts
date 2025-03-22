@@ -1,5 +1,6 @@
-// @ts-expect-error
-import { expect, jest, test } from "@jest/globals";
+// import { expect, jest, test } from "@jest/globals";
+// These are now global due to globals: true in vitest.config.ts
+import { vi } from "vitest";
 
 // import request from 'supertest';
 import { Express } from "express";
@@ -171,7 +172,7 @@ describe("channels", () => {
         });
 
         it("triggers channelCreated method on server object", async () => {
-            const created = jest.spyOn(server, "channelCreated");
+            const created = vi.spyOn(server, "channelCreated");
             await client.createChannel("createAndCallback", {
                 encrypted: true,
                 allowJoining: true,

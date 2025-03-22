@@ -27,7 +27,7 @@
         "doc": "cd docs/ ; concurrently --names 'docs' -c 'magenta.bgGreen' 'pnpm dev'",
         "start": "scripts/setupEnvironment && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --respawn index.ts",
         "start:debug": "scripts/setupEnvironment  && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --inspect --respawn index.ts",
-        "test": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' ENV_FILE=./config/.env.test jest --runInBand --detectOpenHandles",
+        "test": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' ENV_FILE=./config/.env.test vitest run --poolOptions.threads.singleThread",
         "build": "cd src/redis/streams; yarn ; cd - ; rollup -c",
         "build:docker": " echo TODO: implement build:docker recipe",
         "build:client": "cd src/client ; pnpm build",
@@ -35,9 +35,11 @@
         "app": "cd sampleApp; concurrently --names 'app' -c 'green.bgMagenta' 'pnpm dev'",
         "build:watch": "cd src/redis/streams; yarn ; cd - ; rollup -cw --no-watch.clearScreen",
         "test:streams": "cd src/redis/streams/ ; yarn ; yarn test",
-        "testing": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' ENV_FILE=./config/.env.test jest --watch --runInBand",
-        "test:debug": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --runInBand --detectOpenHandles",
-        "testing:debug": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --watch --runInBand",
+        "testing": "scripts/setupEnvironment ;  ENV_FILE=./config/.env.test vitest watch",
+        "test:debug": "scripts/setupEnvironment ; VITEST_TIMEOUT=100000 ENV_FILE=./config/.env.test vitest run --inspect-brk --poolOptions.threads.singleThread --no-file-parallelism ",
+        "testing:debug": "scripts/setupEnvironment ; VITEST_TIMEOUT=100000 ENV_FILE=./config/.env.test vitest watch --inspect-brk --poolOptions.threads.singleThread --no-file-parallelism ",
+        "test:ui": "scripts/setupEnvironment ; ENV_FILE=./config/.env.test vitest --ui",
+        "test:coverage": "scripts/setupEnvironment ; ENV_FILE=./config/.env.test vitest run --coverage",
         "note": "abstract-logging and uuid packages are in service of src/redis/streams.",
         "note2": "also ioredis, although at an earlier version.  If that's a problem, then... ",
         "note3": "yarn:build can be set up to run `yarn` in src/redis/streams and let its deps be installed over there; in that case, revert this commit!",
@@ -91,6 +93,8 @@
         "@types/node": "^18.11.10",
         "@types/node-fetch": "^2.6.2",
         "@types/supertest": "^2.0.12",
+        "@vitest/coverage-v8": "^3.0.9",
+        "@vitest/ui": "^3.0.9",
         "concurrently": "^7.6.0",
         "esbuild": "^0.17.10",
         "jest": "29",
@@ -104,7 +108,8 @@
         "ts-jest": "^29.1.5",
         "ts-node": "^10.8.1",
         "ts-node-dev": "^2.0.0",
-        "typescript": "^5.3.3"
+        "typescript": "^5.3.3",
+        "vitest": "^3.0.7"
     },
     "_moduleAliases": {
         "@platform": "platform/server/"

@@ -1,7 +1,7 @@
 //@ts-check
 
 import { Redis, RedisOptions } from "ioredis";
-import { Server } from "http";
+import { get, Server } from "http";
 import express from "express";
 import type { Application } from "express";
 import bodyParser from "body-parser";
@@ -548,6 +548,7 @@ export class DredServer {
 
     postMessageInChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
+        this.log("postMessageInChannel", channelId);
         const found = await this.channelList.has(channelId);
         if (!found) {
             res.status(404).json({
@@ -569,12 +570,16 @@ export class DredServer {
         // if (_type) console.warn("ignoring reserved key '_type' in client-provided message");
         // if (_data) console.warn("ignoring reserved key '_data' in client-provided message");
 
-        if (!msg) res.status(422).json({error: "missing required 'msg' attribute for posting message in channel"});
-        if (!moreDetails.ocid) res.status(422).json({error: "missing required 'ocid' attribute for posting message in channel"});
-        if (!moreDetails.type) res.status(422).json({error: "missing required 'type' attribute for posting message in channel"});
-        
-        const id = await this.channelConn.produce(tunnelProducer, msg, moreDetails);
-        res.json({ id,  status: "created" });
+        if (!msg) {
+            res.status(422).json({error: "missing required 'msg' attribute for posting message in channel"});
+        } else if (!moreDetails.ocid) {
+            res.status(422).json({error: "missing required 'ocid' attribute for posting message in channel"});
+        } else if (!moreDetails.type) {
+            res.status(422).json({error: "missing required 'type' attribute for posting message in channel"});
+        } else {
+            const id = await this.channelConn.produce(tunnelProducer, msg, moreDetails);
+            res.json({ id,  status: "created" });
+        }
         next();
     };
 
