@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lexend:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+    width: 100%;
+    height: 100%;
+  }
+  
+  body {
+    @apply bg-white text-slate-900 dark:bg-slate-900 dark:text-white;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    display: block;
+  }
+
+  #layout-root {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  :root {
+    --quick-links-hover-bg: #ffffff;
+  }
+
+  .dark {
+    --quick-links-hover-bg: #1e293b;
+  }
+}
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+/* Icon gradients */
+#installation-gradient {
+  --gradient-stops: theme(colors.pink.500), theme(colors.violet.500);
+  --gradient-matrix: 1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0;
+}
+
+#presets-gradient {
+  --gradient-stops: theme(colors.pink.500), theme(colors.yellow.500);
+  --gradient-matrix: 1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0;
+}
+
+#theming-gradient {
+  --gradient-stops: theme(colors.blue.500), theme(colors.teal.500);
+  --gradient-matrix: 1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0;
+}
+
+/* Dark mode icon gradients */
+.dark #installation-gradient {
+  --gradient-matrix: 1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.7 0;
+}
+
+.dark #presets-gradient {
+  --gradient-matrix: 1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.7 0;
+}
+
+.dark #theming-gradient {
+  --gradient-matrix: 1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.7 0;
+}
+
+/* Apply gradients */
+[id$="-gradient"] {
+  position: relative;
+  background-image: linear-gradient(to right, var(--gradient-stops));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+[id$="-gradient"]::before {
+  content: "";
+  position: absolute;
+  inset: -4px -8px;
+  background-image: linear-gradient(to right, var(--gradient-stops));
+  opacity: 0.25;
+  -webkit-filter: blur(24px);
+  filter: blur(24px);
+  z-index: -1;
+}
+
+/* Add blur images */
+.blur-cyan {
+  background-image: url('/blur-cyan.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+}
+
+.blur-indigo {
+  background-image: url('/blur-indigo.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+}
+
+@layer components {
+  .quick-link {
+    @apply relative overflow-hidden rounded-xl border border-slate-200 p-6 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/50;
+    background-color: var(--quick-links-hover-bg);
+  }
+
+  .quick-link-icon {
+    @apply mb-4 inline-block rounded-lg bg-white p-2 shadow-md shadow-slate-800/5 ring-1 ring-slate-900/5 dark:bg-slate-800 dark:ring-0;
+  }
+
+  .quick-link-title {
+    @apply text-base font-semibold text-slate-900 dark:text-white;
+  }
+
+  .quick-link-description {
+    @apply mt-1 text-sm text-slate-700 dark:text-slate-400;
+  }
+}

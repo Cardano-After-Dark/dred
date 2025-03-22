@@ -1,0 +1,47 @@
+{
+  "name": "drednet",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@donecollectively/stellar-contracts": "file:../../../stellar-contracts",
+    "@helios-lang/compiler-utils": "../../../helios/compiler-utils",
+    "@helios-lang/ledger": "../../../helios/ledger",
+    "@helios-lang/tx-utils": "../../../helios/tx-utils",
+    "@helios-lang/codec-utils": "../../../helios/codec-utils",
+    "@helios-lang/compiler": "../../../helios/compiler",
+    "@helios-lang/contract-utils": "../../../helios/contract-utils",
+    "@helios-lang/crypto": "../../../helios/crypto",
+    "@helios-lang/uplc": "../../../helios/uplc",
+    "@helios-lang/type-utils": "../../../helios/type-utils",
+    "@helios-lang/ir": "../../../helios/ir",
+    "@helios-lang/cbor": "../../../helios/cbor",
+    "@helios-lang/era": "../../../helios/era",
+    "@cardano-ogmios/client": "^6.11.2",
+    "dred-network-registry": "../../onchain",
+    "@preact/signals-core": "^1.8.0",
+    "@preact/signals-react": "^3.0.1",
+    "clsx": "^1.2.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react-swc": "^3.8.0",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^15.15.0",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.24.1",
+    "vite": "^6.2.0"
+  }
+}
