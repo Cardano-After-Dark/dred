@@ -43,7 +43,7 @@ export type SubscriberMap = {
 
 export type DredMessage = {
     type: string;
-    msg: any;
+    msg: string;
     "content-type"?: string;
     ocid?: string;
     // [key: string]: string | undefined,
@@ -166,6 +166,17 @@ const clientStates = {
     },
 };
 
+/**
+ * Creates a new client instance for interacting with a Dred neighborhood.
+ * @remarks
+ * the client can be initiated with a single message-handler, 
+ * which is called for all messages received from any channel.
+ * set client.messageHandler = ... to use this approach.
+ * 
+ * Alternatively, the client can provide per-channel message-handlers,
+ * which are called for messages received from specific channels.
+ * Use client.subscribeToChannels({[chanId]: handler}) to set up per-channel handlers.
+ */
 export class DredClient extends StateMachine.withDefinition(clientStates, "client") {
     args: DredClientArgs;
     events: EventEmitter<ClientEvents> = this.ensureEmitterExists();
@@ -185,14 +196,61 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     subscribers: subscriberMap = new Map();
     channelSub?: ChannelSubscriptionListener;
     authSub?: ChannelSubscriptionListener;
+    messageHandler?: DredMessageListener;
+
+    constructor(args: DredClientArgs) {
+        super({
+            contextLabel: args.name || "dred-client",
+            currentState: "default",
+            logFacility: "dred-client:state",
+            contextObject: null,
+        });
+        this.events = this.ensureEmitterExists();
+
+        //@ts-expect-error used before assignment (assigned by state-machine)
+        this._status = this._status || "default";
+
+        this.args = args;
+        const discovery = (this.constructor as typeof DredClient).resolveDiscovery(args);
+        this.discovery = discovery;
+        this.connManager = new ConnectionManager({
+            discovery,
+            waitFor: this.args.waitFor,
+            connectionSettings: this.args.connectionSettings || {},
+        });
+        this.transition("default");
+        //!!! make this test-only
+        // this.insecure = insecure;
+    }
+    private ensureEmitterExists() {
+        return (this.events = this.events || new EventEmitter<ClientEvents>());
+    }
+
+    get log() {
+        return this._log || (this._log = logging ? console.log.bind(console) : () => {});
+    }
+
+    get warn() {
+        return this._warn || (this._warn = logging ? console.warn.bind(console) : () => {});
+    }
+
+
 
     setNeighborhood(n: NbhId) {
         this.neighborhoodId = n;
         asyncDelay(1).then(this.mkTransition("nbhSelected"));
     }
 
-    messageHandler?: DredMessageListener;
-
+    /**
+     * modifies the client's list of channel subscriptions
+     * @remarks
+     * For a client using a single message-handler, call this method with a single channel-id 
+     * or a list of channel-ids to subscribe to messages from specific channels.  Throws
+     * a runtime error if there is no message-handler set.
+     * 
+     * To use per-channel message-handlers, call this method with a map of channel-ids to 
+     * listener functions.  In this case, any assigned messageHandler is not used.
+     */
     async subscribeToChannels(channels: ChanId[]): Promise<void>;
     async subscribeToChannels(channel: ChanId): Promise<void>;
     async subscribeToChannels(smap: SubscriberMap): Promise<void>;
@@ -226,7 +284,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         // debugger
     }
 
-    static resolveDiscovery({ neighborhood, discovery }: DredClientArgs): Discovery {
+    static resolveDiscovery({ neighborhood, discovery }: Pick<DredClientArgs, "neighborhood" | "discovery">): Discovery {
         if (neighborhood) discovery = new NeighborhoodDiscovery({ neighborhood });
         if (!discovery) throw new Error(`required: 'discovery' object or 'neighborhood' name`);
 
@@ -330,42 +388,6 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         return sub;
     }
 
-    constructor(args: DredClientArgs) {
-        super({
-            contextLabel: args.name || "dred-client",
-            currentState: "default",
-            logFacility: "dred-client:state",
-            contextObject: null,
-        });
-        this.events = this.ensureEmitterExists();
-
-        //@ts-expect-error used before assignment (assigned by state-machine)
-        this._status = this._status || "default";
-
-        this.args = args;
-        const discovery = (this.constructor as typeof DredClient).resolveDiscovery(args);
-        this.discovery = discovery;
-        this.connManager = new ConnectionManager({
-            discovery,
-            waitFor: this.args.waitFor,
-            connectionSettings: this.args.connectionSettings || {},
-        });
-        this.transition("default");
-        //!!! make this test-only
-        // this.insecure = insecure;
-    }
-    private ensureEmitterExists() {
-        return (this.events = this.events || new EventEmitter<ClientEvents>());
-    }
-
-    get log() {
-        return this._log || (this._log = logging ? console.log.bind(console) : () => {});
-    }
-
-    get warn() {
-        return this._warn || (this._warn = logging ? console.warn.bind(console) : () => {});
-    }
-
     //!!! todo: extract fetch as a library function so any client and/or connectionManager
     //      can avoiding reliance on any specific host from the neighborhood.
     //     ... starts at least two requests from discovered servers; if a confirmation is not received
@@ -396,6 +418,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
             return result.json();
         }
+        debugger
         const err = await result
             .json()
             .catch(() => new Error(`${result.status} ${result.statusText} for ${path}`));
@@ -411,8 +434,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             [devMessage]:
                 devMsg || "Developers should check whether the request is properly formed",
         });
-
-        return Promise.reject(err);
+        throw new Error(error || message || reason)
     }
 
     async getNeighborhoods() {
@@ -447,8 +469,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
     async createChannel(
         channelName: string,
-        options: ChannelOptions = {
-            channelId: channelName,
+        options: Partial<Omit<ChannelOptions, "channelId">> = {
             encrypted: false,
         }
     ) {
@@ -462,7 +483,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             memberLimit,
             expiresAt,
             messageLifetime,
-        } = options;
+        } = options || {};
         if (encrypted) {
             if (!this.identity || !this.signer) {
                 throw new Error(
@@ -479,7 +500,6 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             options.signature = signature;
         }
         const {
-            channelId: omitted, 
             ... otherBodyAttrs
         } = options;
         const body = JSON.stringify(otherBodyAttrs);
@@ -546,22 +566,31 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     //!!! todo zfnsmq8: it refuses to post plain-text messages into encrypted channels
     //     see also todo y0w9cvr
 
-    async postMessage(channelName: string, message: DredMessage) {
+    async postMessage(channelName: string, oMsg: DredMessage) {
         const sub = this.subscriptions[channelName];
 
+        const message = { ... oMsg };
         this.log("posting message ", message);
         let { type, ocid, msg } = message;
 
+        if ("string" !== typeof msg) {
+            throw new Error(`message 'msg' attr must be a string, not a JSON object`);
+        }
         if (!message.ocid) {
             const _ocid = nanoid();
-            console.log("(generated ocid)");
+            // console.log("(generated ocid)");
             ocid = message.ocid = _ocid;
         }
-        console.log({ ocid });
-        sub.recentMsgs.add(ocid!);
+        // console.log({ ocid });
+        if (sub) {
+            sub.recentMsgs.add(ocid!);            
+        }
 
         //! it guards usage for non-typescript users
-        if (!(type && msg)) throw new Error(`missing required 'type' and/or 'message'`);
+        if (!(type && msg)) {
+            debugger
+            throw new Error(`missing required 'type' and/or 'message'`);
+        }
 
         const result = await this.fetch(`/channel/${channelName}/message`, {
             method: "POST",
@@ -571,8 +600,10 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
                 accept: "application/json",
             },
         });
-        sub.recentMsgs.delete(ocid!);
-        sub.recentMsgs.add(result.id);
+        if (sub) {
+            sub.recentMsgs.delete(ocid!);
+            sub.recentMsgs.add(result.id);
+        }
 
         result.ocid = ocid;
         return result;

@@ -73,17 +73,35 @@ const connectionManagerStates = {
             }
         },
         setupPending: "pendingSetup",
+        updatedHostList: "pendingSetup",
     },
     pendingSetup: {
         async onEntry(this: cm) {
-            if (this.hosts?.length && this.channelSubs?.size)
+            if (!this.channelSubs?.size) {
+                console.log("    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set");
+                return
+            }
+            const hosts = this.discovery.hosts;
+            if (hosts?.length && !this.hosts) {
+                this.hosts = hosts;
+            }
+
+            if (this.hosts?.length)
                 return this.transition("readyToConnect");
-
-
+            
+            console.log("    🐞  pendingSetup: waiting for host discovery");
         },
         updatedHostList: { nextState: "pendingSetup", reEntry: true },
         hasSubscriptions: { nextState: "pendingSetup", reEntry: true },
         readyToConnect: "connecting",
+        disconnected: {
+            // predicate() {
+            //     console.log(new Error("stack"))
+            //     debugger
+            //     return true;
+            // },
+            nextState: "disconnected"
+        }
     },
     replacingSubs: {
         // equivalent to connecting, except:
@@ -187,7 +205,7 @@ const connectionManagerStates = {
         disconnected: "disconnected",
     },
     disconnected: {
-        onEntry(this: cm) {
+        async onEntry(this: cm) {
             //!!! todo: check prior state and tune the message to fit those conditions.
 
             this.events.emit("disconnected", {
@@ -265,6 +283,9 @@ export class ConnectionManager extends StateMachine.withDefinition(
         this.discovery.events.on("hosts:updated", this.setHostList);
         this.waitFor = options.waitFor;
         this.transition("default");
+        // .then(() => {
+        //     console.log("AFTER transition, post ConnectionManager constructor", options);
+        // })
     }
 
     @autobind
@@ -285,7 +306,13 @@ export class ConnectionManager extends StateMachine.withDefinition(
     async getChannelList(): Promise<ChanId[]> {
         if (this.channels) return this.channels;
         //!!! todo: ensure that channels are always fresh (watch host connections for updates in '_chans' stream)
-        if (!this.hosts) throw new Error(`no hosts discovered yet`);
+        if (!this.hosts) {
+            if (this.discovery.hosts?.length) {
+                this.hosts = this.discovery.hosts;
+            } else {
+                throw new Error(`no hosts discovered yet`);
+            }
+        }
 
         const channels = new Set<string>();
         let hostNumber = 1;
@@ -342,7 +369,12 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
         this.channelSubs = subs;
         if (!this.hosts) {
-            await new Promise((resolve) => this.discovery.events.once("hosts:ready", resolve));
+            if (this.discovery.hosts?.length) {
+                this.hosts = this.discovery.hosts;
+            } else {
+                console.log("setSubscriptions: waiting for hosts:ready from discovery");
+                await new Promise((resolve) => this.discovery.events.once("hosts:ready", resolve));
+            }
         }
         this.connectToHosts();
         return subs
@@ -366,15 +398,13 @@ export class ConnectionManager extends StateMachine.withDefinition(
     }
 
     connectToHosts() {
-        //! it EXPECTS to be called after the state machine has already done discovery
-        if (!this.hosts) throw new Error(`no hosts; discovery not complete?`);
-
-        //! it EXPECTS to have subscription settings before connecting
-        if (!this.channelSubs) throw new Error(`no channel subscriptions yet.`);
-
-        //!!! todo: it establishes connections to a random or configured subset of neighborhood hosts,
-        //     ... seeking to satisfy the target level of connectivity 
-        //     ... without connecting to every host in the neighborhood
+        if (!this.hosts) {
+            if (this.discovery.hosts?.length) {
+                this.hosts = this.discovery.hosts;
+            } else {
+                throw new Error(`no hosts; discovery not complete?`);
+            }
+        }
 
         for (const h of this.hosts) {            
             const foundConn = this.hostToConn.get(h);

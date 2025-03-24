@@ -6,7 +6,6 @@ console.log({__dirname});
 
 export default defineConfig({
   test: {
-    globals: true,
     environment: 'node',
     include: ['src/**/*.test.ts'],
     exclude: ['**/node_modules/**', 'dist/**', 'src/redis/streams/**'],
@@ -18,9 +17,18 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
     },
+    
+    // DRED tests use REDIS, and multiple threads can stomp
+    // on each other's state.  Run just one thread, with all tests 
+    // executed serially.
+    fileParallelism: false,
+    sequence: {
+        concurrent: false
+    },
     poolOptions: {
       threads: {
-        singleThread: false, // Will be enabled via command line when needed
+        singleThread: true,
+        maxThreads: 1,
       },
     },
     alias: {

@@ -1,11 +1,11 @@
 // import { expect, jest, test } from "@jest/globals";
 // These are now global due to globals: true in vitest.config.ts
-import { vi } from "vitest";
+import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
 import { Express } from "express";
 import { Server } from "http";
 import supertest from "supertest";
-import Redis from "ioredis";
+import {Redis} from "ioredis";
 import { AddressInfo } from "net";
 
 import { createServer, DredServer } from "./DredServer.js";
@@ -29,25 +29,48 @@ let servers: DredServer[] = [];
 let server: DredServer; // a single server that tests can push stuff through by default
 let clientCleanupList: Array<DredClient> = [];
 
+const monitor = process.env.REDIS_MONITOR ? new Redis(6379, "localhost", {db: 9}) : undefined
+if (!monitor) {
+    console.log("NOTE: to enable granular monitoring of redis activity, set REDIS_MONITOR=1")
+}
+
+beforeAll(async () => {
+    const startTime = Math.round((Date.now() / 1000 ))
+        await monitor?.monitor( (err, monitor) => {
+            monitor!.on("monitor", (time, args, source, database) => {
+                const offset = (time - startTime).toFixed(5);
+                console.log(` ${offset} ${source} -> REDIS ${database}>`, ...args);
+            })
+        })
+});
+
 afterAll(async () => {
-    debugger
+    // debugger
+    monitor?.disconnect();
     for (const s of servers) {
-        debugger
+        console.log("closing server", s.myServerInfo?.port)
         await  s.close();
     }
 });
 
 afterEach(async () => {
+    console.log("afterEach: clean up clients")
     for (const client of clientCleanupList) {
         client.disconnect();
     }
     clientCleanupList = [];
 
-    const redis = server?.redis;
-    if (redis) {
-        await asyncDelay(150); // avoid race with existing channel-subscriptions?
-        await asyncDelay(150); // avoid race with existing channel-subscriptions?
-        await redis.flushdb();
+    for (const server of servers) {
+        const redis = server?.redis;
+        if (redis) {
+            await asyncDelay(150); // avoid race with existing channel-subscriptions?
+            console.log("afterEach: flushing redis")
+
+            await redis.flushdb();
+            console.log("afterEach: restoring default channels")
+            await server.ensureDefaultChannels();
+            console.log("------------------ did reset redis with default channels --------------")
+        }
     }
     // const stream = redis.scanStream();
     // stream.on("data", (resultKeys) => {
@@ -61,13 +84,17 @@ export async function testSetup() {
         {serverId: "second", address: "localhost", port: "53033", insecure: true},
         {serverId: "third", address: "localhost", port: "53034", insecure: true}
     ]
+    let i = 0;
     for (const server of hosts) {
         //! creates a separate discovery agent for each server; each one uses the same full list of hosts.
         const discovery = new DevEnvLocalDiscovery({
             hosts,
-
         }).reset(hosts);
-        const s = await createServer({discovery}, server.serverId);
+        i++;
+        const s = await createServer({
+            discovery, 
+            waitFor: "minimal", 
+        }, server.serverId, i);
 
         await s.listen();
         servers.push(s)
@@ -79,7 +106,7 @@ export async function testSetup() {
 
     const realMkClient = server.mkClient.bind(server);
     vi.spyOn(server, "mkClient").mockImplementation(function (...args) {
-        const client = realMkClient();
+        const client = realMkClient(...args);
         clientCleanupList.push(client);
         return client;
     });
@@ -90,7 +117,7 @@ export async function testSetup() {
         throw new Error(`Unix socket not supported currently`);
 
     const agent = supertest.agent(app);
-    const client = server.mkClient(); //new DredClient({ ...addr, insecure: true });
+    const client = server.mkClient("first"); //new DredClient({ ...addr, insecure: true });
     await client.generateKey();
     return { agent, app, server, client, servers };
 }
