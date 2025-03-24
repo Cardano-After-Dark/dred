@@ -31,9 +31,6 @@ import {
     ChannelSubOptions,
 } from "../types/ChannelSubscriptions.js";
 import { autobind } from "@poshplum/utils";
-import { Logger } from "../util/Logger.js";
-import { LogLevel } from "../util/colors.js";
-import { DevEnvLocalDiscovery } from "../client/index.js";
 
 const logging = parseInt(process.env.LOGGING || "0");
 export interface ExpressWithRedis extends express.Application {
@@ -117,8 +114,6 @@ export class DredServer {
     verifier: StringNacl;
     serverId: string;
     myServerInfo?: DredHostDetails;
-    logger: Logger;
-    
     get nbh() {
         return this.args.neighborhood;
     }
@@ -128,7 +123,7 @@ export class DredServer {
         this.api.use((req, res, next) => {
             res.locals.startTime = new Date().getTime();
 
-            this.logger.debug(`-> ${req.method} ${req.originalUrl}`);
+            this.log(`-> ${req.method} ${req.originalUrl}`);
             next();
         });
 
@@ -177,15 +172,10 @@ export class DredServer {
         this.args = args;
         this.serverId = serverId;
         this.discovery = DredClient.resolveDiscovery(args);
-        
-        // Initialize logger with server ID as name
-        this.logger = new Logger({ 
-            name: `DredServer:${serverId}`,
-            minLevel: logging ? LogLevel.DEBUG : LogLevel.INFO
-        });
-        
-        this.logger.info(`Initializing server '${serverId}'`, JSON.stringify(this.discovery, null, 2));
+        // const t= express()
+        this.log(`+server '${serverId}'`, JSON.stringify(this.discovery, null, 2));
         this.api = this.createExpressServer();
+        // const t= express();
 
         const redisUrl = process.env.REDIS_URL;
         this.redis = this.setupRedis(redisUrl, redisDb);
@@ -211,7 +201,7 @@ export class DredServer {
             },
         });
         this.ensureDefaultChannels();
-        this.channelConn._log.error = this.logger.error.bind(this.logger);
+        this.channelConn._log.error = console.error.bind(console);
         this.clientArgs = args;
 
         this.setupExpressHandlers();
@@ -226,7 +216,8 @@ export class DredServer {
         // })
 
         //!!! todo: use configured Redis connection details
-        this.logger.info(`Setting up Redis connection: ${url || 'default'}, db: ${db}`);
+        this.log(`Setting up Redis connection: ${url || 'default'}, db: ${db}`);
+        console.log(`REDIS_URL ${url}`);
         const options: RedisOptions = {
             db,
 
@@ -281,7 +272,7 @@ export class DredServer {
         if (!myInfo) throw new Error(`can't identify my own info`);
         const { port, address } = myInfo;
         this.listener = this.api.listen(port, address);
-        this.logger.success(`Server '${this.serverId}' listening at ${address}:${port}`);
+        console.warn(`server '${this.serverId}' listening at ${address}:${port}`);
         return this.listener;
         // express
         //       listen(port: number, hostname: string, backlog: number, callback?: () => void): http.Server;
@@ -289,14 +280,12 @@ export class DredServer {
     }
 
     async close() {
-        this.logger.info("Shutting down server...");
         this.cancelSubscribers();
         await this.channelConn.cleanup().catch(warning("channelConn.cleanup()"));
         await this.channelConn.this?.redis?.quit().catch(warning("channelConn.redis.quit()"));
         this.channelConn.this?.redis?.disconnect();
         await this.redis.quit().catch(warning("redis.quit()"));
         this.listener?.close();
-        this.logger.success("Server shutdown complete");
 
         function warning(activityName) {
             return (e) => {
@@ -339,32 +328,29 @@ export class DredServer {
     }
 
     log(...args: any[]) {
-        this.logger.debug(...args);
+        logging && console.log(...args);
     }
-    
     warn(...args: any[]) {
-        this.logger.warn(...args);
+        logging && console.warn(...args);
     }
 
     resultLogger: express.RequestHandler = (req, res, next) => {
         const now = new Date().getTime();
         const elapsed = now - res.locals.startTime;
 
-        this.logger.debug(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url} ${elapsed}ms`);
+        this.log(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url} ${elapsed}ms`);
     };
-    
     getChannels: express.RequestHandler = async (req, res, next) => {
         const found: string[] = (await this.channelList.keys()) as string[];
         const channels = found.filter((x) => x[0] !== "_");
         res.status(200).json({ channels });
     };
-    
     createChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
         const options: ChannelOptions = req.body;
         const found = await this.channelList.has(channelId);
         if (found) {
-            this.logger.warn(`Channel creation failed: ${channelId} already exists`);
+            this.warn(`Channel creation failed: ${channelId} already exists`);
             res.status(400).json({ error: "channel already exists" });
             return next();
         }
@@ -399,6 +385,7 @@ export class DredServer {
             return next();
         }
 
+        // this.log("chan create");
         if (encrypted) {
             if (!owner) {
                 res.status(400).json({
@@ -453,7 +440,7 @@ export class DredServer {
         const streams = this.channelConn;
         const chans = await streams.use("_chans");
 
-        this.logger.info(`Channel created: ${channel}`, options);
+        this.log("channelCreated", channel, options);
         //! it emits a channel-created event in the _chans meta-channel.
         //   applications with interest in such things can subscribe to that
         //   channel to get the news
@@ -480,7 +467,7 @@ export class DredServer {
         const now = new Date();
 
         if (!found) {
-            this.logger.warn(`Join failed: Channel ${channelId} not found`);
+            this.warn(`Join failed: Channel ${channelId} not found`);
             res.status(400).json({ error: "invalid channel" });
             return next();
         }
@@ -489,7 +476,7 @@ export class DredServer {
 
         //! trying to join an expired channel produces an error
         if (opts.expiresAt && now > opts.expiresAt) {
-            this.logger.warn(`Join failed: Channel ${channelId} is expired`);
+            this.warn(`Join failed: Channel ${channelId} is expired`);
             this.log(
                 `expiration '${opts.expiresAt.getTime() % 100000}, now '${now.getTime() % 100000}`
             );
@@ -524,10 +511,10 @@ export class DredServer {
             overMemberLimit = false;
             approvedVerifier = myId;
 
-            this.logger.debug("Owner-approved join");
+            this.log("owner-approved join");
         } else if ("member" == opts.approveJoins && (opts.members || []).includes(myId)) {
             //! a member can join someone by pubKey if approveJoins: member
-            this.logger.debug("Member-approved join");
+            this.log("member-approved join");
             approvedVerifier = myId;
         } else if (opts.allowJoining) {
             //! a non-member can join themself if allowJoining is true and approveJoins is "open"
@@ -546,12 +533,12 @@ export class DredServer {
                 //!!! todo: join requests, when not open, are simple messages in the channel,
                 //!    which clients can read, prompting members or owner to issue an approval.
             } else {
-                this.logger.debug("Self-join");
+                this.log("self-join");
                 approvedVerifier = myId;
             }
         }
         if (!approvedVerifier && !requestOnly) {
-            this.logger.warn(`Unauthorized join attempt to channel ${channelId} by ${myId}`);
+            this.warn("unauthorized");
 
             res.status(403).json({
                 error: "unauthorized",
@@ -561,7 +548,7 @@ export class DredServer {
 
         if (opts.members.includes(member)) overMemberLimit = false;
         if (overMemberLimit) {
-            this.logger.warn(`Join failed: Channel ${channelId} is full`);
+            this.warn(`Join failed: Channel ${channelId} is full`);
 
             res.status(403).json({
                 error: "channel is full",
@@ -577,7 +564,7 @@ export class DredServer {
             error = e.message;
         }
         if (!verified) {
-            this.logger.warn(`Join failed: Signature verification failed - ${error}`);
+            this.warn(`Join failed: Signature verification failed - ${error}`);
             res.status(400).json({
                 error: `bad signature: ${error}`,
             });
@@ -586,10 +573,8 @@ export class DredServer {
 
         if (requestOnly) {
             opts.requests.push(myId);
-            this.logger.info(`Join request added for user ${myId} in channel ${channelId}`);
         } else {
             opts.members.push(member);
-            this.logger.info(`User ${member} joined channel ${channelId}`);
         }
         await this.setChanOptions(channelId, opts);
 
@@ -606,10 +591,9 @@ export class DredServer {
 
     postMessageInChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
-        this.logger.debug(`Message post request for channel: ${channelId}`);
+        this.log("postMessageInChannel", channelId);
         const found = await this.channelList.has(channelId);
         if (!found) {
-            this.logger.warn(`Message post failed: Channel ${channelId} not found`);
             res.status(404).json({
                 error: "channel not found",
             });
@@ -620,7 +604,7 @@ export class DredServer {
         //!!! todo y0w9cvr: it refuses to post plain-text messages into encrypted channels
         //     see also todo zfnsmq8
 
-        this.logger.debug("Processing message post", message);
+        this.log("server: postMessage", message);
         const tunnelProducer = await this.mkChannelProducer(channelId);
         const { msg, _type, _data, ...moreDetails } = message;
 
@@ -653,7 +637,6 @@ export class DredServer {
                 msg, 
                 moreDetails
             );
-            this.logger.debug(`Message posted to channel ${channelId} with id: ${id}`);
             res.json({ id, status: "created" });
         }
         next();
@@ -667,7 +650,7 @@ export class DredServer {
                 count++;
             }
         }
-        this.logger.debug(`Cancelled ${count} channel subscribers`);
+        this.warn(`Cancelled ${count} channel subscribers`);
     }
 
     get subscribeTimeout() {
@@ -679,7 +662,8 @@ export class DredServer {
         const subscriptions: SubscriptionList = req.body;
         res.contentType("application/ndjson");
         res.useChunkedEncodingByDefault = false;
-        this.logger.info(`Client listening for channels:`, subscriptions);
+        // res.setHeader("x-hi", "there");
+        console.warn("listening for", subscriptions);
         //!!! todo: it validates authorization as appropriate for each requested channel
 
         const sendUpdate: changeFeedUpdater = (...messages) => {
@@ -696,7 +680,7 @@ export class DredServer {
         //! it sends heartbeat signals every so often to clients
         //!!! todo: heartbeat interval can be configured
         const timer = setInterval(() => {
-            this.logger.debug("Sending heartbeat to client");
+            console.log("server: client <- heartbeat");
             sendUpdate({ type: "heartbeat" });
         }, timerInterval);
         timer.unref(); //! the heartbeat-timer never blocks the process from exiting when it's otherwise done
@@ -711,7 +695,6 @@ export class DredServer {
                 this.channelConn.unsubscribe(stream);
             }
             clearInterval(timer);
-            this.logger.debug("Cleaned up channel subscriptions after client disconnect");
         };
         res.on("close", cleanup);
 
@@ -724,13 +707,13 @@ export class DredServer {
 
         const notifyConsumeError: consumerErrorNotifier = (channel, consumeError) => {
             if (!cancelled) {
-                this.logger.error(`Consumer error in channel ${channel}:`, consumeError);
                 sendUpdate({
                     channel,
                     type: "error",
                     message: "internal stream consumer failed",
                     reason: consumeError.message,
                 });
+                this.log(`${channel} consume error; TODO: reconnect/retry`, consumeError);
                 cleanup();
                 next();
             }
@@ -743,7 +726,6 @@ export class DredServer {
             const found = await this.channelList.has(channel);
             if (!found) {
                 //! sends a warning note but does not fail unless there are no valid subscriptions
-                this.logger.warn(`Subscription requested for invalid channel: ${channel}`);
                 warnings.push({
                     //!!! todo: review & craft the shape of this for consistency with other warnings that may be necessary to send to clients
                     channel,
@@ -757,14 +739,10 @@ export class DredServer {
             if (subscriber) anySuccesses += 1;
         }
         if (!anySuccesses) {
-            this.logger.warn("Client subscription failed: No valid channels");
             res.status(404).json({ error: "no valid subscriptions in request" });
             return cancel();
         } else if (warnings.length) {
-            // Fix spread argument type error by sending each warning individually
-            for (const warning of warnings) {
-                sendUpdate(warning);
-            }
+            sendUpdate.apply(this, warnings);
         }
     };
 
@@ -806,11 +784,12 @@ export class DredServer {
             )) {
                 for (const e of events) {
                     const { id: mid, ocid, type, data, ...meta } = e;
-                    this.logger.debug(
-                        `Sending event to client on ${sub.channel} <- event ${mid}: `,
-                        `${data.length} bytes`
+                    this.log(
+                        `to client on ${sub.channel} <- event ${mid}: `,
+                        e.data.length,
+                        "bytes"
                     );
-                    
+                    debugger;
                     // const parsed = JSON.parse(data);
                     //!!! todo: apply filters from the subscription
                     sendUpdate({
