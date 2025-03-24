@@ -5,17 +5,17 @@
     "type": "module",
     "exports": {
         ".": {
+            "types": "./dist/dred-client.d.ts",
+            "browser": "./dist/dred-client.mjs",
             "import": "./dist/dred-client.mjs",
             "require": "./dist/dred-client.js",
-            "browser": "./dist/dred-client.mjs",
-            "types": "./dist/dred-client.d.ts",
             "node": "./dist/dred-client-nodejs.mjs",
             "default": "./dist/dred-client.mjs"
         },
         "./node": {
+            "types": "./dist/dred-client-nodejs.d.ts",
             "import": "./dist/dred-client-nodejs.mjs",
             "require": "./dist/dred-client-nodejs.js",
-            "types": "./dist/dred-client-nodejs.d.ts",
             "default": "./dist/dred-client-nodejs.mjs"
         }
     },
