@@ -59,8 +59,8 @@ export default defineConfig({
         alias: {
             react: '@preact/compat',
             'react-dom': '@preact/compat',
-            "@postplum/utils": "@poshplum/utils/browser"
-            // 'dred-client': '../dist/dred-client.mjs'
+            "@postplum/utils": "@poshplum/utils/browser",
+            'dred-client': path.resolve(__dirname, '../src/client/dist/dred-client.mjs')
         },
     },
     define: {
