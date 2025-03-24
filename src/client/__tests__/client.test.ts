@@ -79,11 +79,11 @@ describe("Dred client", () => {
                         if (!inbound.msg) {
                           const {details, message, mid, msg, neighborhood, ocid, ts, type} = inbound
                           console.warn("probably an error: ", {details, message, mid, msg, neighborhood, ocid, ts, type})
-                        }
-                        const { visually } = JSON.parse(inbound.msg);
+                        } else {
+                        const { visually, msg: parsedMsg } = JSON.parse(inbound.msg);
                         if (visually) console.log(visually, "got message")
 
-                        expect(JSON.parse(inbound.msg)).toMatchObject(msg);
+                        expect(JSON.parse(inbound.msg)).toMatchObject(msg)
                     received += 1;
                 }});
                 await asyncDelay(20);
