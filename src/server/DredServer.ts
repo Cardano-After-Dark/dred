@@ -31,6 +31,7 @@ import {
     ChannelSubOptions,
 } from "../types/ChannelSubscriptions.js";
 import { autobind } from "@poshplum/utils";
+import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 
 const logging = parseInt(process.env.LOGGING || "0");
 export interface ExpressWithRedis extends express.Application {
@@ -93,7 +94,7 @@ const optionsSerializer: ValueAdapter<ChannelOptions> = {
 
 type DredServerArgs = DredClientArgs & {
     api?: express.Application;
-    serverDb?: number
+    serverDb?: number;
 };
 
 //!!! todo: augment to support a list of nbh's, with req details for nbh selection
@@ -164,11 +165,7 @@ export class DredServer {
         this.api.use(this.resultLogger);
     }
 
-    constructor(
-        args: DredServerArgs,
-        serverId: string,
-        redisDb: number
-    ) {
+    constructor(args: DredServerArgs, serverId: string, redisDb: number) {
         this.args = args;
         this.serverId = serverId;
         this.discovery = DredClient.resolveDiscovery(args);
@@ -207,7 +204,7 @@ export class DredServer {
         this.setupExpressHandlers();
     }
 
-    setupRedis(url, db: number=0) {
+    setupRedis(url, db: number = 0) {
         if (this.redis) throw new Error(`redis connection is already set up`);
         // redis.subscribe(...).on("message", (event) => {
         //     for (const peer of peers) {
@@ -216,7 +213,7 @@ export class DredServer {
         // })
 
         //!!! todo: use configured Redis connection details
-        this.log(`Setting up Redis connection: ${url || 'default'}, db: ${db}`);
+        this.log(`Setting up Redis connection: ${url || "default"}, db: ${db}`);
         console.log(`REDIS_URL ${url}`);
         const options: RedisOptions = {
             db,
@@ -238,14 +235,14 @@ export class DredServer {
     private setupPending?: Promise<any>;
     //!!! todo: once for each nbh
     ensureDefaultChannels() {
-        return this.setupPending = new Promise(async (res) => {
+        return (this.setupPending = new Promise(async (res) => {
             await this.doChannelSetup("_chans");
             await this.doChannelSetup("_auth");
             await this.doChannelSetup("news");
             await this.doChannelSetup("discussion");
             this.setupPending = undefined;
             res(true);
-        });
+        }));
     }
 
     async doChannelSetup(channel: ChanId, options: Partial<ChannelOptions> = {}) {
@@ -308,22 +305,22 @@ export class DredServer {
         return addr;
     }
 
-    mkClient(
-        serverSelection: string,
-        clientArgs: Partial<DredClientArgs> = {},
-    ): DredClient {
-        const discovery : Discovery = clientArgs.discovery ?? this.clientArgs.discovery;
-        if (!discovery) throw new Error("discovery is required")
-        const singleDiscovery = new DevEnvLocalDiscovery({
-                hosts: [
-                    discovery.hosts!.find(h => h.serverId === serverSelection)
-                ]
-            })
-        
-        return new DredClient({ 
-            ...this.clientArgs, 
+    mkClient(serverSelection: string, clientArgs: Partial<DredClientArgs> = {}): DredClient {
+        const discovery: Discovery = clientArgs.discovery ?? this.clientArgs.discovery;
+        if (!discovery) throw new Error("discovery is required");
+        const oneHost = discovery.hosts!.find((h) => h.serverId === serverSelection);
+        if (!oneHost) {
+            console.error(`server ${serverSelection} not found in discovery`, discovery);
+            throw new Error(`server ${serverSelection} not found in discovery`);
+        }
+        const singleDiscovery = new StaticHostDiscovery({
+            hosts: [oneHost],
+        });
+
+        return new DredClient({
+            ...this.clientArgs,
             ...clientArgs,
-            discovery: singleDiscovery
+            discovery: singleDiscovery,
         });
     }
 
@@ -612,7 +609,6 @@ export class DredServer {
         // if (_type) console.warn("ignoring reserved key '_type' in client-provided message");
         // if (_data) console.warn("ignoring reserved key '_data' in client-provided message");
 
-
         if ("string" !== typeof msg) {
             res.status(422).json({
                 error: "message must be a string, not a JSON object",
@@ -632,11 +628,7 @@ export class DredServer {
                 error: "missing required 'type' attribute for posting message in channel",
             });
         } else {
-            const id = await this.channelConn.produce(
-                tunnelProducer, 
-                msg, 
-                moreDetails
-            );
+            const id = await this.channelConn.produce(tunnelProducer, msg, moreDetails);
             res.json({ id, status: "created" });
         }
         next();

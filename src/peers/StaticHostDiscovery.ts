@@ -14,7 +14,7 @@ interface DevDiscoveryOptions extends GenericDiscoveryOptions {
     hosts?: DredHostDetails[], 
 }
 
-export class DevEnvLocalDiscovery extends Discovery {
+export class StaticHostDiscovery extends Discovery {
     hosts: DredHostDetails[];
     async getNeighborhoods() {
         await asyncDelay(1);
@@ -53,7 +53,7 @@ export class DevEnvLocalDiscovery extends Discovery {
         }]
     }
     setupDefaultHosts() {
-        return this.reset((this.constructor as typeof DevEnvLocalDiscovery).defaultHosts());
+        return this.reset((this.constructor as typeof StaticHostDiscovery).defaultHosts());
     }
     constructor(options : DevDiscoveryOptions) {
     const {
@@ -61,7 +61,7 @@ export class DevEnvLocalDiscovery extends Discovery {
     } = options;
         if (neighborhood) throw new Error(`DevEnvLocalDiscovery always uses `+localNbh)
         super({ neighborhood: localNbh });
-        this.hosts = hosts || (DevEnvLocalDiscovery.defaultHosts())
+        this.hosts = hosts || (StaticHostDiscovery.defaultHosts())
     }
     async initHostDiscovery() {
         this.setupDefaultHosts();

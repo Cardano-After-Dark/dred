@@ -11,7 +11,7 @@ import { AddressInfo } from "net";
 import { createServer, DredServer } from "./DredServer.js";
 import { DredClient } from "../client/DredClient.js";
 import { asyncDelay } from "../util/asyncDelay.js";
-import { DevEnvLocalDiscovery } from "../peers/DevEnvLocalDiscovery.js";
+import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import { DredHostDetails } from "../types/DredHosts.js";
 
 if (process.env.VITEST_TIMEOUT) {
@@ -80,14 +80,14 @@ afterEach(async () => {
 
 export async function testSetup() {
     const hosts: DredHostDetails[] = [
-        {serverId: "primary", address: "localhost", port: "53032", insecure: true },
+        {serverId: "first", address: "localhost", port: "53032", insecure: true },
         {serverId: "second", address: "localhost", port: "53033", insecure: true},
         {serverId: "third", address: "localhost", port: "53034", insecure: true}
     ]
     let i = 0;
     for (const server of hosts) {
         //! creates a separate discovery agent for each server; each one uses the same full list of hosts.
-        const discovery = new DevEnvLocalDiscovery({
+        const discovery = new StaticHostDiscovery({
             hosts,
         }).reset(hosts);
         i++;

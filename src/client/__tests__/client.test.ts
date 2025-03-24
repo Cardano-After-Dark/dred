@@ -8,7 +8,7 @@ import { testSetup } from "../../server/testServer";
 import { asyncDelay } from "../../util/asyncDelay";
 
 import type {JsonMessagePayload} from "../../types/JsonMessagePayload";
-import { DevEnvLocalDiscovery } from "../../peers/DevEnvLocalDiscovery";
+import { StaticHostDiscovery } from "../../peers/StaticHostDiscovery";
 
 const fit = it.only;
 
@@ -21,7 +21,7 @@ describe("Dred client", () => {
     describe("discovery", () => {
         it("can resolveDiscovery", async () => {
             const result = await DredClient.resolveDiscovery({
-                discovery: new DevEnvLocalDiscovery({})
+                discovery: new StaticHostDiscovery({})
             });
         });
     });
