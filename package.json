@@ -48,17 +48,6 @@
     "dependencies": {
         "@ark/util": "^0.44.5",
         "@cardano-ogmios/client": "^6.11.2",
-        "@helios-lang/cbor": "../helios/cbor",
-        "@helios-lang/codec-utils": "../helios/codec-utils",
-        "@helios-lang/compiler": "../helios/compiler",
-        "@helios-lang/contract-utils": "../helios/contract-utils",
-        "@helios-lang/crypto": "../helios/crypto",
-        "@helios-lang/era": "../helios/era",
-        "@helios-lang/ir": "../helios/ir",
-        "@helios-lang/ledger": "../helios/ledger",
-        "@helios-lang/tx-utils": "../helios/tx-utils",
-        "@helios-lang/type-utils": "../helios/type-utils",
-        "@helios-lang/uplc": "../helios/uplc",
         "@poshplum/poshplum": "^0.8.9",
         "@poshplum/utils": "^0.8.2",
         "abstract-logging": "^2.0.1",
@@ -80,6 +69,19 @@
         "tweetnacl-util": "^0.15.1",
         "uuid": "^8.3.2",
         "watsign": "^0.1.8"
+    },
+    "_dependencies": {
+        "@helios-lang/cbor": "../helios/cbor",
+        "@helios-lang/codec-utils": "../helios/codec-utils",
+        "@helios-lang/compiler": "../helios/compiler",
+        "@helios-lang/contract-utils": "../helios/contract-utils",
+        "@helios-lang/crypto": "../helios/crypto",
+        "@helios-lang/era": "../helios/era",
+        "@helios-lang/ir": "../helios/ir",
+        "@helios-lang/ledger": "../helios/ledger",
+        "@helios-lang/tx-utils": "../helios/tx-utils",
+        "@helios-lang/type-utils": "../helios/type-utils",
+        "@helios-lang/uplc": "../helios/uplc"
     },
     "devDependencies": {
         "@jest/types": "^29.4.1",
