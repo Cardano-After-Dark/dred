@@ -51,11 +51,13 @@ function collectHeadings(nodes, slugify = slugifyWithCounter()) {
 }
 
 export default function App({ Component, pageProps }) {
-    let title = pageProps.markdoc?.frontmatter.title
+    let title = pageProps.markdoc?.frontmatter.title || 
+        pageProps.title || pageProps.pageTitle
 
     let pageTitle =
         pageProps.markdoc?.frontmatter.pageTitle ||
-        `${pageProps.markdoc?.frontmatter.title} - Docs`
+        pageProps.pageTitle ||
+        `${pageProps.markdoc?.frontmatter.title || pageProps.title} - Docs`
 
     let description = pageProps.markdoc?.frontmatter.description
 

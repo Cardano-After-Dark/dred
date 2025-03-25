@@ -17,6 +17,12 @@ const isNodeActive = (lastHeartbeat: number, heartbeatInterval: bigint): boolean
   return (now - lastHeartbeat) <= maxAge;
 };
 
+export const getStaticProps = async () => {
+    return { props: {
+        pageTitle: "Admin: Dred Node Registry",
+        title: "DRED Registry"
+    }}
+}
 
 export function AdminPage() {
     const lastUpdate = useSignal<Date>(new Date());
@@ -77,12 +83,11 @@ export function AdminPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4">
       {/* <CharterStatus /> */}
 
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">DRED Node Registry Administration</h1>
-        <p className="text-sm text-gray-500">Updated<br/>{lastUpdate.value.toLocaleString()}</p>
+      <div className="flex justify-end items-center mb-6 -mt-14 w-full">
+        <p className="text-sm text-right text-gray-500">Updated<br/>{lastUpdate.value.toLocaleString()}</p>
       </div>
       
       {/* Statistics Section */}
