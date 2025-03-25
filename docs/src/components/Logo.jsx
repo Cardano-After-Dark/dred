@@ -19,7 +19,7 @@ export function Logo(props) {
   return (
     <svg aria-hidden="true" viewBox="0 0 227 36" fill="none" {...props}>
       <LogomarkPaths />
-      <text x="38.8" y="25.5" fill="#ffffff" font-weight="bold" font-size="x-large">
+      <text x="38.8" y="25.5" fill="#ffffff" fontWeight="bold" fontSize="x-large">
         DRED
       </text>
     </svg>
