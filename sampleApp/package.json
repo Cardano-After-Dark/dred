@@ -13,7 +13,7 @@
     "main": "./dist/dredSampleApp.js",
     "module": "./dist/dredSampleApp.mjs",
     "license": "MIT",
-    "packageManager": "pnpm@7.25.1",
+    "packageManager": "pnpm@9.0.6",
     "scripts": {
         "app": "vite",
         "dev": "vite --clearScreen=false",
@@ -26,7 +26,7 @@
         "@poshplum/poshplum": "^0.8.9",
         "@poshplum/utils": "^0.8.2",
         "babel-plugin-transform-hook-names": "^1.0.2",
-        "dred-client": "workspace:*",
+        "@cardano-after-dark/dred-client": "workspace:*",
         "rollup-plugin-modify": "^3.0.0"
     },
     "devDependencies": {

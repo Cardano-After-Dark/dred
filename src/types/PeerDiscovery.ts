@@ -1,5 +1,5 @@
 import { connnectionSettings, DredHostDetails } from "./DredHosts.js";
-import { Discovery } from "./Discovery.js";
+import { ConnectionThresholds, Discovery } from "./Discovery.js";
 
 // export type unusedPeerSettings = {
 //     hostName: String;
@@ -34,11 +34,6 @@ export type ConnectionManagerOptions = {
 
 export type PromisedHostDetails = Promise<DredHostDetails[]>;
 
-
-export type ConnectionThresholds = {
-    minimal: Number;
-    healthy: Number;
-};
 export type ThresholdChoice = keyof ConnectionThresholds
 
 export type ConnectionState =

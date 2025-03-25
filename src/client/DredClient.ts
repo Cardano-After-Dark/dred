@@ -59,12 +59,24 @@ export type ClientState = DredEvent & {
     status: string;
 };
 
-interface ClientEvents {
+export type eventHasChannels = DredEvent & {
+    nbh: NbhId;
+    channels: ChanId[];
+};
+
+export type eventChannelInfo = DredEvent & {
+    nbh: NbhId;
+    channel: ChanId;
+};
+
+// eventemitter3 has a bit of an odd approach on event types, with a wrapping array type needed 
+// for each event, probably because the array is used as the expected type of the args-list for the handler.
+export interface ClientEvents {
     needsNeighborhood: [ DredEvent & { nbhs: NbhId[] } ];
-    hasChannels: [ DredEvent & { nbh: NbhId, channels: ChanId[] } ];
+    hasChannels: [ eventHasChannels ];
     needsAuth: [ DredEvent & { tbd: any } ];
-    "channel:created": [DredEvent & { nbh: NbhId; channel: ChanId }];
-    "channel:removed": [DredEvent & { nbh: NbhId; channel: ChanId }];
+    "channel:created": [eventChannelInfo];
+    "channel:removed": [eventChannelInfo];
     "state:changed": [DredEvent & ClientState];
     "channel:message": [DredChannelMessage];
     error: [DredError];
@@ -111,7 +123,7 @@ const clientStates = {
         async onEntry(this: dred) {
             this.events.emit("needsNeighborhood", {
                 message: "select a neighborhood",
-                [devMessage]: "Developers: offer these nbhs to a user or pick one by policy",
+                [devMessage]: "Developers: offer these nbhs to a user or pick one by policy.  Call client.setNeighborhood(nbhId) to proceed.",
                 nbhs: this.availableNeighborhoods,
             });
         },
@@ -221,9 +233,9 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         return discovery;
     }
 
-    private _status: string;
+    private _status: keyof typeof clientStates;
     //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
-    set currentState(v: string) {
+    set currentState(v: keyof typeof clientStates) {
         this._status = v;
         this.emitState();
     }
@@ -292,10 +304,12 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         }
         this._subscriptions = replacement;
     }
+
     get subscriptions() {
         if (!this._subscriptions) return {}; // it creates an empty subscriptions object if not already set
         return this._subscriptions;
     }
+
     private getChannelSub(
         channel: string,
         listener: DredMessageListener
