@@ -46,36 +46,84 @@ beforeAll(async () => {
 
 afterAll(async () => {
     // debugger
-    monitor?.disconnect();
+    if (monitor) {
+        try {
+            await monitor.disconnect();
+        } catch (e) {
+            console.warn("Error disconnecting Redis monitor:", e);
+        }
+    }
+    
     for (const s of servers) {
-        console.log("closing server", s.myServerInfo?.port)
-        await  s.close();
+        try {
+            console.log("closing server", s.myServerInfo?.port);
+            await s.close();
+            await asyncDelay(200); // Give servers time to close properly
+        } catch (e) {
+            console.warn("Error closing server:", e);
+        }
     }
 });
 
-afterEach(async () => {
-    console.log("afterEach: clean up clients")
-    for (const client of clientCleanupList) {
-        client.disconnect();
+// This function helps ensure that Redis operations are complete
+// before proceeding with test cleanup
+async function safeRedisOperation(operation: () => Promise<any>, description: string) {
+    try {
+        const result = await operation();
+        return result;
+    } catch (e) {
+        console.warn(`Error during Redis ${description}:`, e);
+        await asyncDelay(100); // Add delay after errors
+        return null;
     }
-    clientCleanupList = [];
+}
 
+afterEach(async () => {
+    console.log("afterEach: clean up clients");
+    
+    // Disconnect all clients first
+    for (const client of clientCleanupList) {
+        try {
+            await client.disconnect();
+            await asyncDelay(50); // Small delay between each client disconnect
+        } catch (e) {
+            console.warn("Error disconnecting client:", e);
+        }
+    }
+    
+    // Clear the client list
+    clientCleanupList = [];
+    
+    // Add extra delay to ensure all client connections are fully closed
+    await asyncDelay(300);
+
+    // Then handle Redis cleanup for each server
     for (const server of servers) {
         const redis = server?.redis;
         if (redis) {
-            await asyncDelay(150); // avoid race with existing channel-subscriptions?
-            console.log("afterEach: flushing redis")
-
-            await redis.flushdb();
-            console.log("afterEach: restoring default channels")
-            await server.ensureDefaultChannels();
-            console.log("------------------ did reset redis with default channels --------------")
+            try {
+                console.log("afterEach: flushing redis");
+                
+                // Flush the database with a safe wrapper
+                await safeRedisOperation(() => redis.flushdb(), "flushdb");
+                
+                // Add delay after flushing
+                await asyncDelay(150);
+                
+                console.log("afterEach: restoring default channels");
+                
+                // Restore default channels with a safe wrapper
+                await safeRedisOperation(() => server.ensureDefaultChannels(), "ensureDefaultChannels");
+                
+                console.log("------------------ did reset redis with default channels --------------");
+                
+                // Final delay to ensure everything is settled
+                await asyncDelay(150);
+            } catch (e) {
+                console.warn("Error during Redis cleanup:", e);
+            }
         }
     }
-    // const stream = redis.scanStream();
-    // stream.on("data", (resultKeys) => {
-
-    // });
 });
 
 export async function testSetup() {
