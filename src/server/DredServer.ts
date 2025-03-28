@@ -15,7 +15,7 @@ const {
     bgBlack,
     bgBlueBright,
     bold,
-    black
+    black,
 } = colors;
 
 import { Redis, RedisOptions } from "ioredis";
@@ -125,6 +125,7 @@ export class DredServer {
     api: express.Application;
     discovery: Discovery;
     redisUrl: string;
+    redisDb: number;
     redis?: Redis;
     channelConn: RedisChannels;
     listener: null | Server; // http.Server from node types
@@ -138,6 +139,8 @@ export class DredServer {
     serverId: string;
     myServerInfo?: DredHostDetails;
     logger: ReturnType<typeof zonedLogger>;
+
+    resetting = false;
     get nbh() {
         return this.args.neighborhood;
     }
@@ -190,35 +193,38 @@ export class DredServer {
 
     constructor(args: DredServerArgs, serverId: string, redisDb: number) {
         this.args = args;
-        debugger
-        this.logger = zonedLogger("dred", {
+        debugger;
+        const loggerName = `dred‹${serverId}›`;
+        this.logger = zonedLogger(loggerName, {
             serverId,
-            levels: { dred: logging ? "info" : "warn", _message: `(env LOGGING=${logging})`},
+            levels: {
+                [loggerName]: logging ? "info" : "warn",
+                _message: `(env LOGGING=${logging})`,
+            },
         });
 
         this.serverId = serverId;
         this.discovery = DredClient.resolveDiscovery(args);
         // const t= express()
-        this.log(`+server '${serverId}'`, JSON.stringify(this.discovery, null, 2));
+        this.log(`+server '${serverId}'`, this.discovery, null, 2);
         this.api = this.createExpressServer();
         // const t= express();
 
         const redisUrl = (this.redisUrl = process.env.REDIS_URL || "redis://localhost:6379");
-        
+
         this.listener = null;
         this.verifier = new StringNacl(undefined, this);
         this.producers = new Map();
         this.subscribers = new Map();
-
-        this.setupRedis(redisUrl, redisDb);
-        this.channelConn._log.error = console.error.bind(console);
+        this.redisDb = redisDb || 0;
+        this.setupRedis(redisUrl);
+        // this.channelConn._log.error = console.error.bind(console);
         this.clientArgs = args;
 
         this.setupExpressHandlers();
     }
 
-
-    setupRedis(url : string | undefined, redisDb: number = 0) {
+    setupRedis(url: string | undefined) {
         if (this.redis) throw new Error(`redis connection is already set up`);
         // redis.subscribe(...).on("message", (event) => {
         //     for (const peer of peers) {
@@ -227,10 +233,10 @@ export class DredServer {
         // })
 
         //!!! todo: use configured Redis connection details
-        this.log(`Setting up Redis connection: ${url || "default"}, db: ${redisDb}`);
-        console.log(`REDIS_URL ${url}`);
+        this.log(`Setting up Redis connection: ${url || "default"}, db: ${this.redisDb}`);
+        // console.log(`REDIS_URL ${url}`);
         const options: RedisOptions = {
-            db: redisDb,
+            db: this.redisDb,
 
             // keyPrefix: `${this.nbh}::`  //!!! todo vet this technique.
         };
@@ -252,9 +258,10 @@ export class DredServer {
             application: `${this.nbh}::`,
             redis: {
                 url: url,
-                db: redisDb,
+                db: this.redisDb,
             },
         });
+        this.channelConn._log = this.logger;
         this.ensureDefaultChannels();
     }
 
@@ -264,12 +271,12 @@ export class DredServer {
     }
 
     async pendingSetup() {
-        return this.setupPending
+        return this.setupPending;
     }
     private setupPending?: Promise<any>;
     //!!! todo: once for each nbh
     ensureDefaultChannels() {
-        if (this.setupPending) return this.setupPending
+        if (this.setupPending) return this.setupPending;
 
         return (this.setupPending = new Promise(async (res) => {
             await this.doChannelSetup("_chans");
@@ -288,6 +295,18 @@ export class DredServer {
             await this.channelList.set(channel, "1");
         }
         const streams = this.channelConn;
+        if (!streams) {
+            if (this.resetting) {
+                this.logger.warn("ignoring continuing channel setup for %s while racing with a subsequent reset!")
+                return 
+            } else {
+                this.logger.error(
+                    "??? how can this happen?? streams undefined, can't use(%s) for producing",
+                    channel
+                );
+                throw new Error(`streams undefined, can't use(${channel}) for producing`);
+            }
+        }
         const stream = await streams.use(channel);
 
         //!!! revisit this with a more specific plan : )
@@ -305,29 +324,33 @@ export class DredServer {
         if (!myInfo) throw new Error(`can't identify my own info`);
         const { port, address } = myInfo;
         this.listener = this.api.listen(port, address);
-        console.warn(`server '${this.serverId}' listening at ${address}:${port}`);
+        this.log(`server '${this.serverId}' listening at ${address}:${port}`);
         return this.listener;
         // express
         //       listen(port: number, hostname: string, backlog: number, callback?: () => void): http.Server;
         //       listen(port: number, hostname: string, callback?: () => void): http.Server;
     }
 
-    async reset(reconnect?: false) {
-        await this.channelConn.cleanup().catch(warning("channelConn.cleanup()"));
-        await this.channelConn.this?.redis?.quit().catch(warning("channelConn.redis.quit()"));
-        this.channelConn.this?.redis?.disconnect();
-        await this.redis?.quit().catch(warning("redis.quit()"));
+    async reset(reconnect?: boolean, finalCleanup?: (r?: Redis) => any) {
+        await this.channelConn.cleanup().catch(warning.bind(this, "channelConn.cleanup()"));
+        // await this.channelConn.this?.redis?.quit().catch(warning.bind(this,"channelConn.redis.quit()"));
+        // this.channelConn?.redis?.disconnect();
+        finalCleanup?.(this.redis);
+        this.resetting = true;
+        await this.redis?.quit().catch(warning.bind(this, "redis.quit()"));
+        this.redis?.removeAllListeners();
         this.channelConn = undefined;
         this.redis = undefined;
 
         const doReconnect = reconnect ?? true;
         if (doReconnect) {
-            this.setupRedis(this.redisUrl, this.args.serverDb);
-            return this.setupPending;
+            this.setupRedis(this.redisUrl);
+            this.resetting = false;                
+            return this.setupPending
         }
-        function warning(activityName) {
+        function warning(this: DredServer, activityName) {
             return (e) => {
-                console.warn(`during close: error in ${activityName}:\n\t`, e.message || e);
+                this.warn(`during close: error in ${activityName}:\n\t`, e.message || e);
             };
         }
     }
@@ -357,7 +380,7 @@ export class DredServer {
         if (!discovery) throw new Error("discovery is required");
         const oneHost = discovery.hosts!.find((h) => h.serverId === serverSelection);
         if (!oneHost) {
-            console.error(`server ${serverSelection} not found in discovery`, discovery);
+            this.logger.error(`server ${serverSelection} not found in discovery`, discovery);
             throw new Error(`server ${serverSelection} not found in discovery`);
         }
         const singleDiscovery = new StaticHostDiscovery({
@@ -705,7 +728,7 @@ export class DredServer {
         res.contentType("application/ndjson");
         res.useChunkedEncodingByDefault = false;
         // res.setHeader("x-hi", "there");
-        console.warn("listening for", subscriptions);
+        this.log("listening for", subscriptions);
         //!!! todo: it validates authorization as appropriate for each requested channel
 
         const sendUpdate: changeFeedUpdater = (...messages) => {
@@ -722,7 +745,7 @@ export class DredServer {
         //! it sends heartbeat signals every so often to clients
         //!!! todo: heartbeat interval can be configured
         const timer = setInterval(() => {
-            console.log("server: client <- heartbeat");
+            this.log("server: client <- heartbeat");
             sendUpdate({ type: "heartbeat" });
         }, timerInterval);
         timer.unref(); //! the heartbeat-timer never blocks the process from exiting when it's otherwise done

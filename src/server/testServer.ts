@@ -53,7 +53,7 @@ if (!monitor) {
 zonedLogger("root");
 
 let logger = zonedLogger("redis", {color: blue.start+bgBlack.start});
-let testLogger = zonedLogger("test", {color: yellow.start})
+let testLogger = zonedLogger("test", {color: yellow.start, levels: {default: "info"}});
 beforeAll(async () => {
     const startTime = Math.round(Date.now() / 1000);
     console.log("isColorSupported", isColorSupported);
@@ -87,7 +87,6 @@ beforeEach(async () => {
     }
 });
 
-
 afterEach(async () => {
     testLogger.info("afterEach: clean up clients");
     for (const client of clientCleanupList) {
@@ -99,13 +98,14 @@ afterEach(async () => {
         const redis = server?.redis;
         if (redis) {
             await asyncDelay(150); // avoid race with existing channel-subscriptions?
-            testLogger.info("afterEach: flushing redis");
-            await server.reset();
-            await server.redis?.flushdb();
+            await server.reset(true, (redis) => {
+                testLogger.info("afterEach: flushing redis");
+                return redis?.flushdb()
+            });
             // await  server.close();
 
             testLogger.info("afterEach: restoring default channels");
-            await server.ensureDefaultChannels();
+            server.ensureDefaultChannels();
             testLogger.info("------------------ did reset redis with default channels --------------");
         }
     }
@@ -148,7 +148,6 @@ export async function testSetup() {
         );
 
         await s.listen();
-        s.redis.flushdb();
         servers.push(s);
     }
     server = server || servers[0];

@@ -68,7 +68,7 @@ describe("channel messages", () => {
                 let received = 0;
 
                 debugger;
-                otherClient.subscribeToChannels({
+                client.subscribeToChannels({
                     [chan]: (inbound) => {
                         // party emoji: 🎉
                         // console.log("  🎉🎉🎉🎉🎉🎉  inbound", inbound);
@@ -79,12 +79,27 @@ describe("channel messages", () => {
                 await asyncDelay(200);
 
                 // high-level message creation:
-                await client.postMessage(chan, msg);
-                await asyncDelay(20);
+                await agent
+                    .post(`/channel/${chan}/message`)
+                    .send({ 
+                        ...msg, 
+                        ocid: "21-aaaa" 
+                    })
+                    .expect("Content-Type", /json/)
+                    .expect(200);
+                await agent
+                    .post(`/channel/${chan}/message`)
+                    .send({ 
+                        ...msg, 
+                        ocid: "21-bbbb" 
+                    })
+                    .expect("Content-Type", /json/)
+                    .expect(200);
+            // await asyncDelay(20);
 
                 // high-level message creation:
-                await client.postMessage(chan, msg);
-                await asyncDelay(200);
+                // await client.postMessage(chan, msg);
+                await asyncDelay(20);
                 expect(received).toBe(2);
             });
 

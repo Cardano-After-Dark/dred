@@ -65,7 +65,7 @@ describe("Dred client", () => {
                 ]);
             });
 
-            fit("triggers the subscriber's callback when messages are posted", async () => {
+            it("triggers the subscriber's callback when messages are posted", async () => {
                 const otherClient = server.mkClient("first");
                 const chan = "client4subscribeCallback";
                 const msg = { roses: "red", violets: "blue", visually: "🦜🍑" };
@@ -84,7 +84,8 @@ describe("Dred client", () => {
                         if (visually) console.log(visually, "got message")
 
                         expect(JSON.parse(inbound.msg)).toMatchObject(msg)
-                    received += 1;
+                        received += 1;
+                    }
                 }});
                 await asyncDelay(20);
                 await client.postMessage(chan, {
