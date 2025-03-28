@@ -7,26 +7,26 @@
 @layer base {
   :root {
     /* Color system */
-    --primary: 221 83% 53%;     /* Blue */
+    --primary: 217 83% 60%;     
     --primary-foreground: 210 40% 98%;
-    --secondary: 217 19% 27%;   /* Slate */
+    --secondary: 217 83% 40%;   
     --secondary-foreground: 210 40% 98%;
     --accent: 262 83% 58%;      /* Purple */
-    --accent-foreground: 210 40% 98%;
+    --accent-foreground: 210 100% 86%;
     --destructive: 0 84% 60%;   /* Red */
     --destructive-foreground: 210 40% 98%;
     --muted: 217 10% 95%;
     --muted-foreground: 217 10% 40%;
-    --card: 0 0% 100%;
-    --card-foreground: 217 33% 17%;
+    --card: 217 50% 80%;
+    --card-foreground: 217 90% 17%;
     --popover: 0 0% 100%;
     --popover-foreground: 217 33% 17%;
-    --border: 214 32% 91%;
+    --border: 217 80% 40%;
     --input: 214 32% 91%;
     --ring: 221 83% 53%;
     
     /* Background & Foreground */
-    --background: 0 0% 100%;
+    --background: 217 50% 100%;
     --foreground: 217 33% 17%;
 
     /* Typography */
@@ -60,17 +60,17 @@
     --secondary: 217 10% 64%;
     --secondary-foreground: 217 33% 17%;
     --accent: 262 83% 62%;
-    --accent-foreground: 210 40% 98%;
+    --accent-foreground: 210 70% 70%;
     --destructive: 0 74% 59%;
     --destructive-foreground: 210 40% 98%;
     
     --muted: 217 33% 24%;
     --muted-foreground: 217 10% 75%;
-    --card: 217 33% 20%;
+    --card: 217 40% 22%;
     --card-foreground: 210 40% 98%;
     --popover: 217 33% 20%;
     --popover-foreground: 210 40% 98%;
-    --border: 217 33% 26%;
+    --border: 217 60% 66%;
     --input: 217 33% 26%;
     --ring: 224 76% 65%;
     
