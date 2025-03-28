@@ -41,9 +41,9 @@ describe("channel messages", () => {
             const result = agent
                 .post(`/channel/${channelId}/message`)
                 .send({
-                    msg: "hiya", 
+                    msg: "hiya",
                     ocid: "42-1234",
-                    type: "greeting"
+                    type: "greeting",
                 })
                 .expect("Content-Type", /json/);
 
@@ -59,21 +59,22 @@ describe("channel messages", () => {
             it("notifies subscribers when messages are sent in a channel", async () => {
                 const otherClient = server.mkClient("first");
                 const chan = "foo";
-                const msg = { 
+                const msg = {
                     msg: JSON.stringify({ hello: "world" }),
-                    type: "greeting"
+                    type: "greeting",
                 };
                 await client.createChannel(chan);
 
                 let received = 0;
 
-                debugger
+                debugger;
                 otherClient.subscribeToChannels({
-                    [chan]: (inbound) => { // party emoji: 🎉
+                    [chan]: (inbound) => {
+                        // party emoji: 🎉
                         // console.log("  🎉🎉🎉🎉🎉🎉  inbound", inbound);
                         expect(inbound).toMatchObject(msg);
                         received += 1;
-                    }
+                    },
                 });
                 await asyncDelay(200);
 
@@ -87,41 +88,62 @@ describe("channel messages", () => {
                 expect(received).toBe(2);
             });
 
-            fit("continues consuming events from redis after a first batch", async () => {
+            it("continues consuming events from redis after a first batch", async () => {
                 const otherClient = server.mkClient("first");
                 const shortSubscribe = vi
                     .spyOn(server, "subscribeTimeout", "get")
                     .mockReturnValue(150);
 
                 const chan = "keepgoing";
-                const msg = { 
+                const msg = {
                     msg: JSON.stringify({
                         hello: "world",
-                        keepConsuming: "please" 
+                        keepConsuming: "please",
                     }),
-                    type: "greeting"
+                    type: "greeting",
                 };
                 await client.createChannel(chan);
 
                 // console.log("created channel");
                 let received = 0;
                 const subscription = otherClient.subscribeToChannels({
-                    [chan]: (inbound) => {
-                        console.log("chan msg", inbound);
+                    [chan]: ({connection, ...inbound}) => {
+                        client.logger.info("chan msg", inbound);
+                        // console.log("chan msg", inbound);
                         expect(inbound).toMatchObject(msg);
                         received += 1;
-                    }
+                    },
                 });
-                await asyncDelay(200);
+                await asyncDelay(20);
                 // console.log("posting");
 
-                await client.postMessage(chan, msg)
-                await asyncDelay(200);
+                // high-level
+                await client.postMessage(chan, msg);
+                // low-level
+                // const response = await agent
+                //     .post(`/channel/${chan}/message`)
+                //     .send({
+                //         ...msg,
+                //         ocid: "42-1234",
+                //     })
+                //     .expect("Content-Type", /json/)
+                    // .expect(200);
+
+                await asyncDelay(20);
 
                 // console.log("posting again");
 
-                await client.postMessage(chan, msg)
-                await asyncDelay(200);
+                // await client.postMessage(chan, msg)
+                await agent
+                    .post(`/channel/${chan}/message`)
+                    .send({ 
+                        ...msg, 
+                        ocid: "42-4321" 
+                    })
+                    .expect("Content-Type", /json/)
+                    .expect(200);
+
+                await asyncDelay(20);
 
                 expect(received).toBe(2);
             });

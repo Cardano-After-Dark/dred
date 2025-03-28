@@ -1,5 +1,23 @@
 //@ts-check
 
+import { colors } from "../picocolors/picocolors.js";
+const {
+    bgBlackBright,
+    blue,
+    blueBright,
+    green,
+    greenBright,
+    red,
+    redBright,
+    yellow,
+    yellowBright,
+    isColorSupported,
+    bgBlack,
+    bgBlueBright,
+    bold,
+    black
+} = colors;
+
 import { Redis, RedisOptions } from "ioredis";
 import { get, Server } from "http";
 import express from "express";
@@ -32,6 +50,7 @@ import {
 } from "../types/ChannelSubscriptions.js";
 import { autobind } from "@poshplum/utils";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
+import { zonedLogger } from "@poshplum/utils";
 
 const logging = parseInt(process.env.LOGGING || "0");
 export interface ExpressWithRedis extends express.Application {
@@ -100,21 +119,25 @@ type DredServerArgs = DredClientArgs & {
 //!!! todo: augment to support a list of nbh's, with req details for nbh selection
 //    - start by using nbh prefix in redis keys.
 
+let clientIndex = 1;
+
 export class DredServer {
     api: express.Application;
     discovery: Discovery;
-    redis: Redis;
+    redisUrl: string;
+    redis?: Redis;
     channelConn: RedisChannels;
     listener: null | Server; // http.Server from node types
     args: DredServerArgs;
-    channelList: RedisHash<string, string>;
-    channelOptions: RedisHash<string, ChannelOptions>;
+    channelList!: RedisHash<string, string>;
+    channelOptions!: RedisHash<string, ChannelOptions>;
     producers: Map<string, any>;
     subscribers: Map<string, Set<Subscriber>>;
     clientArgs: DredServerArgs;
     verifier: StringNacl;
     serverId: string;
     myServerInfo?: DredHostDetails;
+    logger: ReturnType<typeof zonedLogger>;
     get nbh() {
         return this.args.neighborhood;
     }
@@ -167,6 +190,12 @@ export class DredServer {
 
     constructor(args: DredServerArgs, serverId: string, redisDb: number) {
         this.args = args;
+        debugger
+        this.logger = zonedLogger("dred", {
+            serverId,
+            levels: { dred: logging ? "info" : "warn", _message: `(env LOGGING=${logging})`},
+        });
+
         this.serverId = serverId;
         this.discovery = DredClient.resolveDiscovery(args);
         // const t= express()
@@ -174,37 +203,22 @@ export class DredServer {
         this.api = this.createExpressServer();
         // const t= express();
 
-        const redisUrl = process.env.REDIS_URL;
-        this.redis = this.setupRedis(redisUrl, redisDb);
-
+        const redisUrl = (this.redisUrl = process.env.REDIS_URL || "redis://localhost:6379");
+        
         this.listener = null;
         this.verifier = new StringNacl(undefined, this);
-
-        this.channelList = new RedisHash<string, string>(
-            this.redis,
-            "channels",
-            StringValueAdapter
-        );
-        this.channelOptions = new RedisHash(this.redis, "channelOptions", optionsSerializer);
         this.producers = new Map();
         this.subscribers = new Map();
 
-        //!!! todo: allows the application name to override 'dred' setting in channel names created in Redis
-        this.channelConn = new RedisChannels({
-            application: `${this.nbh}::`,
-            redis: {
-                url: redisUrl,
-                db: redisDb,
-            },
-        });
-        this.ensureDefaultChannels();
+        this.setupRedis(redisUrl, redisDb);
         this.channelConn._log.error = console.error.bind(console);
         this.clientArgs = args;
 
         this.setupExpressHandlers();
     }
 
-    setupRedis(url, db: number = 0) {
+
+    setupRedis(url : string | undefined, redisDb: number = 0) {
         if (this.redis) throw new Error(`redis connection is already set up`);
         // redis.subscribe(...).on("message", (event) => {
         //     for (const peer of peers) {
@@ -213,18 +227,35 @@ export class DredServer {
         // })
 
         //!!! todo: use configured Redis connection details
-        this.log(`Setting up Redis connection: ${url || "default"}, db: ${db}`);
+        this.log(`Setting up Redis connection: ${url || "default"}, db: ${redisDb}`);
         console.log(`REDIS_URL ${url}`);
         const options: RedisOptions = {
-            db,
+            db: redisDb,
 
             // keyPrefix: `${this.nbh}::`  //!!! todo vet this technique.
         };
         if (url) {
-            return new Redis(url, options);
+            this.redis = new Redis(url, options);
         } else {
-            return new Redis(options);
+            this.redis = new Redis(options);
         }
+
+        this.channelList = new RedisHash<string, string>(
+            this.redis,
+            "channels",
+            StringValueAdapter
+        );
+        this.channelOptions = new RedisHash(this.redis, "channelOptions", optionsSerializer);
+
+        //!!! todo: allows the application name to override 'dred' setting in channel names created in Redis
+        this.channelConn = new RedisChannels({
+            application: `${this.nbh}::`,
+            redis: {
+                url: url,
+                db: redisDb,
+            },
+        });
+        this.ensureDefaultChannels();
     }
 
     //! it has a mockable function for starting the express server
@@ -232,9 +263,14 @@ export class DredServer {
         return this.args.api || express();
     }
 
+    async pendingSetup() {
+        return this.setupPending
+    }
     private setupPending?: Promise<any>;
     //!!! todo: once for each nbh
     ensureDefaultChannels() {
+        if (this.setupPending) return this.setupPending
+
         return (this.setupPending = new Promise(async (res) => {
             await this.doChannelSetup("_chans");
             await this.doChannelSetup("_auth");
@@ -276,19 +312,30 @@ export class DredServer {
         //       listen(port: number, hostname: string, callback?: () => void): http.Server;
     }
 
-    async close() {
-        this.cancelSubscribers();
+    async reset(reconnect?: false) {
         await this.channelConn.cleanup().catch(warning("channelConn.cleanup()"));
         await this.channelConn.this?.redis?.quit().catch(warning("channelConn.redis.quit()"));
         this.channelConn.this?.redis?.disconnect();
-        await this.redis.quit().catch(warning("redis.quit()"));
-        this.listener?.close();
+        await this.redis?.quit().catch(warning("redis.quit()"));
+        this.channelConn = undefined;
+        this.redis = undefined;
 
+        const doReconnect = reconnect ?? true;
+        if (doReconnect) {
+            this.setupRedis(this.redisUrl, this.args.serverDb);
+            return this.setupPending;
+        }
         function warning(activityName) {
             return (e) => {
                 console.warn(`during close: error in ${activityName}:\n\t`, e.message || e);
             };
         }
+    }
+
+    async close() {
+        this.cancelSubscribers();
+        this.reset(false);
+        this.listener?.close();
     }
     async listenDetails() {}
 
@@ -318,17 +365,20 @@ export class DredServer {
         });
 
         return new DredClient({
+            name: `${serverSelection || ""}-${clientIndex++}`,
             ...this.clientArgs,
             ...clientArgs,
             discovery: singleDiscovery,
         });
     }
 
-    log(...args: any[]) {
-        logging && console.log(...args);
+    log(a1: string, ...args: any[]) {
+        this.logger.info(a1, ...args);
+        // logging && console.log(...args);
     }
-    warn(...args: any[]) {
-        logging && console.warn(...args);
+    warn(a1: string, ...args: any[]) {
+        this.logger.warn(a1, ...args);
+        // logging && console.warn(...args);
     }
 
     resultLogger: express.RequestHandler = (req, res, next) => {
@@ -705,7 +755,7 @@ export class DredServer {
                     message: "internal stream consumer failed",
                     reason: consumeError.message,
                 });
-                this.log(`${channel} consume error; TODO: reconnect/retry`, consumeError);
+                this.logger.error(`${channel} consume error; TODO: reconnect/retry`, consumeError);
                 cleanup();
                 next();
             }
@@ -777,7 +827,7 @@ export class DredServer {
                 for (const e of events) {
                     const { id: mid, ocid, type, data, ...meta } = e;
                     this.log(
-                        `to client on ${sub.channel} <- event ${mid}: `,
+                        bgBlueBright(black(bold(`    <- ocid ${ocid} in ${sub.channel}: `))),
                         e.data.length,
                         "bytes"
                     );

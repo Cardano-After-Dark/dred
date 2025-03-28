@@ -1,11 +1,28 @@
 // import { expect, jest, test } from "@jest/globals";
 // These are now global due to globals: true in vitest.config.ts
-import { afterAll, afterEach, beforeAll, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, vi } from "vitest";
+import {zonedLogger} from "@poshplum/utils"
+
+import {colors} from "../picocolors/picocolors.js";
+const {
+    bgBlackBright,
+    blue,
+    blueBright,
+    green,
+    greenBright,
+    red,
+    redBright,
+    yellow,
+    yellowBright,
+    isColorSupported,
+    bgBlack,
+    magenta,
+} = colors;
 
 import { Express } from "express";
 import { Server } from "http";
 import supertest from "supertest";
-import {Redis} from "ioredis";
+import { Redis } from "ioredis";
 import { AddressInfo } from "net";
 
 import { createServer, DredServer } from "./DredServer.js";
@@ -29,32 +46,50 @@ let servers: DredServer[] = [];
 let server: DredServer; // a single server that tests can push stuff through by default
 let clientCleanupList: Array<DredClient> = [];
 
-const monitor = process.env.REDIS_MONITOR ? new Redis(6379, "localhost", {db: 9}) : undefined
+const monitor = process.env.REDIS_MONITOR ? new Redis(6379, "localhost", { db: 9 }) : undefined;
 if (!monitor) {
-    console.log("NOTE: to enable granular monitoring of redis activity, set REDIS_MONITOR=1")
+    console.log("NOTE: to enable granular monitoring of redis activity, set REDIS_MONITOR=1");
 }
+zonedLogger("root");
 
+let logger = zonedLogger("redis", {color: blue.start+bgBlack.start});
+let testLogger = zonedLogger("test", {color: yellow.start})
 beforeAll(async () => {
-    const startTime = Math.round((Date.now() / 1000 ))
-        await monitor?.monitor( (err, monitor) => {
-            monitor!.on("monitor", (time, args, source, database) => {
-                const offset = (time - startTime).toFixed(5);
-                console.log(` ${offset} ${source} -> REDIS ${database}>`, ...args);
-            })
-        })
+    const startTime = Math.round(Date.now() / 1000);
+    console.log("isColorSupported", isColorSupported);
+    await monitor?.monitor((err, monitor) => {
+        monitor!.on("monitor", (time, args, source, database) => {
+            const offset = (time - startTime).toFixed(5);
+            const [ip, port] = source.split(":");
+            let argsDisplay = "";
+            // process args two at a time, adding blue(keys) and green(values) with strings quoted
+            for (let i = 0; i < args.length; i += 2) {
+                const value =
+                    "undefined" == typeof args[i + 1]
+                        ? ""
+                        : "string" == typeof args[i + 1]
+                        ? `"${greenBright(args[i + 1])}"`
+                        : greenBright(args[i + 1]);
+                argsDisplay += ` ${`${args[i]}`} ${value}`;
+            }
+            logger.warn(
+                `      ` +
+                    ` @t=${offset} :${port} -> REDIS #${database}> ${argsDisplay}`
+            );
+        });
+    });
 });
-
-afterAll(async () => {
-    // debugger
-    monitor?.disconnect();
+beforeEach(async () => {
     for (const s of servers) {
-        console.log("closing server", s.myServerInfo?.port)
-        await  s.close();
+        testLogger.info("beforeEach: flushing redis");
+        await s.redis?.flushdb();
+        await s.reset();
     }
 });
 
+
 afterEach(async () => {
-    console.log("afterEach: clean up clients")
+    testLogger.info("afterEach: clean up clients");
     for (const client of clientCleanupList) {
         client.disconnect();
     }
@@ -64,12 +99,14 @@ afterEach(async () => {
         const redis = server?.redis;
         if (redis) {
             await asyncDelay(150); // avoid race with existing channel-subscriptions?
-            console.log("afterEach: flushing redis")
+            testLogger.info("afterEach: flushing redis");
+            await server.reset();
+            await server.redis?.flushdb();
+            // await  server.close();
 
-            await redis.flushdb();
-            console.log("afterEach: restoring default channels")
+            testLogger.info("afterEach: restoring default channels");
             await server.ensureDefaultChannels();
-            console.log("------------------ did reset redis with default channels --------------")
+            testLogger.info("------------------ did reset redis with default channels --------------");
         }
     }
     // const stream = redis.scanStream();
@@ -77,13 +114,23 @@ afterEach(async () => {
 
     // });
 });
+afterAll(async () => {
+    // debugger
+    monitor?.disconnect();
+    for (const s of servers) {
+        // console.log("closing server", s.myServerInfo?.port)
+        // s.channelConn.close();
+        // await  s.close();
+        s.reset(false);
+    }
+});
 
 export async function testSetup() {
     const hosts: DredHostDetails[] = [
-        {serverId: "first", address: "localhost", port: "53032", insecure: true },
-        {serverId: "second", address: "localhost", port: "53033", insecure: true},
-        {serverId: "third", address: "localhost", port: "53034", insecure: true}
-    ]
+        { serverId: "first", address: "localhost", port: "53032", insecure: true },
+        { serverId: "second", address: "localhost", port: "53033", insecure: true },
+        { serverId: "third", address: "localhost", port: "53034", insecure: true },
+    ];
     let i = 0;
     for (const server of hosts) {
         //! creates a separate discovery agent for each server; each one uses the same full list of hosts.
@@ -91,16 +138,21 @@ export async function testSetup() {
             hosts,
         }).reset(hosts);
         i++;
-        const s = await createServer({
-            discovery, 
-            waitFor: "minimal", 
-        }, server.serverId, i);
+        const s = await createServer(
+            {
+                discovery,
+                waitFor: "minimal",
+            },
+            server.serverId,
+            i
+        );
 
         await s.listen();
-        servers.push(s)
+        s.redis.flushdb();
+        servers.push(s);
     }
-    server = server || servers[0]
-    app = app || server.api
+    server = server || servers[0];
+    app = app || server.api;
     // server = server || (await createServer({ insecure: true }));
     // app = app || server.api;
 
@@ -113,8 +165,7 @@ export async function testSetup() {
 
     const info = server.myServerInfo;
     if (info === null) throw new Error(`server is not listening`);
-    if ("string" === typeof info)
-        throw new Error(`Unix socket not supported currently`);
+    if ("string" === typeof info) throw new Error(`Unix socket not supported currently`);
 
     const agent = supertest.agent(app);
     const client = server.mkClient("first"); //new DredClient({ ...addr, insecure: true });

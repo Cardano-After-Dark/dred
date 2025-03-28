@@ -6,9 +6,24 @@ import util from "tweetnacl-util";
 import type { Response } from "cross-fetch";
 
 const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
+import {colors} from "../picocolors/picocolors.js";
+const {
+    bgBlackBright,
+    blue,
+    blueBright,
+    green,
+    greenBright,
+    red,
+    redBright,
+    yellow,
+    yellowBright,
+    isColorSupported,
+    bgBlack,
+    magenta
+} = colors;
 
 import EventEmitter from "eventemitter3";
-import { asyncDelay, autobind, StateMachine } from "@poshplum/utils";
+import { asyncDelay, autobind, StateMachine, zonedLogger } from "@poshplum/utils";
 
 import { ConnectionManager } from "./ConnectionManager";
 
@@ -182,8 +197,6 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     events: EventEmitter<ClientEvents> = this.ensureEmitterExists();
     connManager: ConnectionManager;
     channels: ChanId[] = [];
-    _log: undefined | Function;
-    _warn: undefined | Function;
     neighborhoodId: string = "cardano-after-dark";
     availableNeighborhoods: string[] = [];
     // neighborhoodContractAddress = "9bef...";
@@ -191,6 +204,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     identity?: nacl.SignKeyPair;
     signer?: StringNacl;
     pubKeyString?: string;
+    logger: ReturnType<typeof zonedLogger>
     insecure?: boolean;
     _subscriptions?: SubscriptionListenerMap;
     subscribers: subscriberMap = new Map();
@@ -206,6 +220,12 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             contextObject: null,
         });
         this.events = this.ensureEmitterExists();
+        let {name: clientName} = args;
+        clientName = clientName ? `client-‹${clientName}›` : "dred-client";
+        this.logger = zonedLogger(clientName, {
+            color: magenta.start,
+            levels: { [clientName]: logging ? "info" : "warn", _message: `(env LOGGING=${logging})`},
+        });
 
         //@ts-expect-error used before assignment (assigned by state-machine)
         this._status = this._status || "default";
@@ -226,16 +246,12 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         return (this.events = this.events || new EventEmitter<ClientEvents>());
     }
 
-    get log() {
-        return this._log || (this._log = logging ? console.log.bind(console) : () => {});
+    log(a1: string, ...args: any[]) {
+        this.logger.info(a1, ...args);
     }
-
-    get warn() {
-        return this._warn || (this._warn = logging ? console.warn.bind(console) : () => {});
+    warn(a1: string, ...args: any[]) {
+        this.logger.warn(a1, ...args);
     }
-
-
-
     setNeighborhood(n: NbhId) {
         this.neighborhoodId = n;
         asyncDelay(1).then(this.mkTransition("nbhSelected"));
@@ -520,7 +536,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
                 console.warn(err.stack || err.message || JSON.stringify(err, null, 2));
                 e = new Error(err.error || err.message || err);
             }
-            this.log("createChannel at server failed:", e.stack);
+            this.logger.error("createChannel at server failed:", e.stack);
             throw e;
         }
     }
@@ -552,7 +568,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
                 }),
             });
         } catch (err: any) {
-            this.log("join-channel at server failed:", err.message || err);
+            this.logger.error("join-channel at server failed:", err.message || err);
             throw new Error(err.error || err);
         }
     }
@@ -570,7 +586,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         const sub = this.subscriptions[channelName];
 
         const message = { ... oMsg };
-        this.log("posting message ", message);
+        this.logger.info("posting message ", message);
         let { type, ocid, msg } = message;
 
         if ("string" !== typeof msg) {
