@@ -112,16 +112,16 @@ describe("channel messages", () => {
                         received += 1;
                     }
                 });
-                await asyncDelay(200);
+                await asyncDelay(500);
                 // console.log("posting");
 
                 await client.postMessage(chan, msg)
-                await asyncDelay(200);
+                await asyncDelay(500);
 
                 // console.log("posting again");
 
                 await client.postMessage(chan, msg)
-                await asyncDelay(200);
+                await asyncDelay(500);
 
                 expect(received).toBe(2);
             });

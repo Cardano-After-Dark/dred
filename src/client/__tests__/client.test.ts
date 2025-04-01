@@ -75,17 +75,18 @@ describe("Dred client", () => {
 
                 otherClient.subscribeToChannels({
                     [chan]: (inbound) => {
-                        debugger
                         if (!inbound.msg) {
                           const {details, message, mid, msg, neighborhood, ocid, ts, type} = inbound
                           console.warn("probably an error: ", {details, message, mid, msg, neighborhood, ocid, ts, type})
                         } else {
-                        const { visually, msg: parsedMsg } = JSON.parse(inbound.msg);
-                        if (visually) console.log(visually, "got message")
+                            const { visually, msg: parsedMsg } = JSON.parse(inbound.msg);
+                            if (visually) console.log(visually, "got message")
 
-                        expect(JSON.parse(inbound.msg)).toMatchObject(msg)
-                    received += 1;
-                }});
+                            expect(JSON.parse(inbound.msg)).toMatchObject(msg)
+                            received += 1;
+                        }
+                    }
+                });
                 await asyncDelay(20);
                 await client.postMessage(chan, {
                     type: "poetry",
@@ -96,7 +97,7 @@ describe("Dred client", () => {
                 await client.postMessage(chan, {
                     type: "poetry",
                     msg: JSON.stringify(msg)
-            });
+                });
                 await asyncDelay(20);
 
                 expect(received).toBe(2);
