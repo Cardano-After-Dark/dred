@@ -1,6 +1,6 @@
 packages:
   - 'src/client'  
-  - 'docs'
+  # - 'docs' #temp disable docs
   - 'sampleApp'
   - 'onchain'
   - '.'

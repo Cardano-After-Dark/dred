@@ -1,4 +1,4 @@
-import { DevEnvLocalDiscovery } from "../src/peers/DevEnvLocalDiscovery";
+import { StaticHostDiscovery } from "../src/peers/StaticHostDiscovery";
 import { createServer } from "../src/server/DredServer";
 import { asyncDelay } from "../src/util/asyncDelay";
 
@@ -6,7 +6,7 @@ import { asyncDelay } from "../src/util/asyncDelay";
 
 init();
 async function init() {
-    const discovery = new DevEnvLocalDiscovery({});
+    const discovery = new StaticHostDiscovery({});
     const hosts = discovery.hosts;
     const firstHost = hosts?.[0];
     if (!firstHost) {

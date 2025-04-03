@@ -6,8 +6,7 @@ import util from "tweetnacl-util";
 import type { Response } from "cross-fetch";
 
 const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
-import {colors} from "../picocolors/picocolors.js";
-const {
+import {
     bgBlackBright,
     blue,
     blueBright,
@@ -19,8 +18,10 @@ const {
     yellowBright,
     isColorSupported,
     bgBlack,
-    magenta
-} = colors;
+    bgBlueBright,
+    bold,
+    black,
+} from "picocolors";
 
 import EventEmitter from "eventemitter3";
 import { asyncDelay, autobind, StateMachine, zonedLogger } from "@poshplum/utils";

@@ -1,7 +1,6 @@
 //@ts-check
 
-import { colors } from "../picocolors/picocolors.js";
-const {
+import {
     bgBlackBright,
     blue,
     blueBright,
@@ -16,7 +15,7 @@ const {
     bgBlueBright,
     bold,
     black,
-} = colors;
+} from "picocolors";
 
 import { Redis, RedisOptions } from "ioredis";
 import { get, Server } from "http";
