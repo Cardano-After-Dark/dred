@@ -2,4 +2,9 @@ module NodeOperatorSettings
 
 struct NodeOperatorSettings {
     minHeartbeatInterval: Int "minHB"
+    minStake: Int "minStake"
+}
+
+struct AbstractSettingsForNodeOperator {
+    nodeOpSettings: NodeOperatorSettings "nOp"
 }

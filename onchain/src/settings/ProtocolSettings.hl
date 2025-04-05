@@ -3,13 +3,14 @@ module ProtocolSettings
 
 //sample
 import {NodeOperatorSettings} from NodeOperatorSettings
+/* Add imports for other modules here */
 
 struct ProtocolSettings {
     id: ByteArray "@id"
     type: String "tpe" // "set"
 
     nodeOpSettings: NodeOperatorSettings "nOp"
-
+    /* Add other settings here */
     // from Stellar Tokenomics Engine
     // fundedPurposeSettings: FPSettings "fPurp"
 

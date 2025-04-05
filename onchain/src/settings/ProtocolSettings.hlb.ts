@@ -14,7 +14,8 @@ export default class ProtocolSettingsBundle extends DelegatedDataBundle.usingCap
     get modules() {
         return [
             ProtocolSettings,
-            NodeOperatorSettings
+            NodeOperatorSettings,
+            /* Add other modules here */
             // FundedPurposeSettings
         ];
     }

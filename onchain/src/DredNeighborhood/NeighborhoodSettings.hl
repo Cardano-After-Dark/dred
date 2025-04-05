@@ -1,0 +1,13 @@
+module NeighborhoodSettings
+
+// struct AbstractSettingsForNeighborhood {
+//     NeighborhoodSettings: NeighborhoodSettings "nbhd"
+// }
+
+// struct NeighborhoodSettings {
+//     expectedHeartbeatInterval: Duration "hbi"
+//     minNodeCount: Int "minnodes"
+//     maxNodeCount: Int "maxnodes"
+//     requiredNodeUptime: Int "requptime" // percentage
+//     registrationFee: Int "regfee"
+// }

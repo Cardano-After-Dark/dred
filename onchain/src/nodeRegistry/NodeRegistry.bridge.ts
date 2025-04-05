@@ -285,6 +285,7 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
        */
         NodeOperatorSettings: (fields: NodeOperatorSettingsLike | {
     minHeartbeatInterval: /*minStructField*/ IntLike
+    minStake: /*minStructField*/ IntLike
 }
 ) => {
         return this.ᱺᱺNodeOperatorSettingsCast.toUplcData(fields);
@@ -9576,6 +9577,14 @@ export const NodeOperatorSettingsSchema : StructTypeSchema = {
                 "name": "Int"
             },
             "key": "minHB"
+        },
+        {
+            "name": "minStake",
+            "type": {
+                "kind": "internal",
+                "name": "Int"
+            },
+            "key": "minStake"
         }
     ]
 };
@@ -9617,6 +9626,14 @@ export const ProtocolSettingsSchema : StructTypeSchema = {
                             "name": "Int"
                         },
                         "key": "minHB"
+                    },
+                    {
+                        "name": "minStake",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Int"
+                        },
+                        "key": "minStake"
                     }
                 ]
             },

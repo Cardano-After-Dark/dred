@@ -359,8 +359,8 @@ importers:
   onchain:
     dependencies:
       '@donecollectively/stellar-contracts':
-        specifier: link:../../stellar-contracts
-        version: link:../../stellar-contracts
+        specifier: file://../../stellar-contracts
+        version: file:../stellar-contracts(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup-plugin-esbuild@6.2.1(esbuild@0.25.0)(rollup@4.34.9))
       '@donecollectively/stellar-tokenomics':
         specifier: link:../../stellar-tokenomics
         version: link:../../stellar-tokenomics
@@ -3002,6 +3002,10 @@ packages:
 
   algoliasearch@4.14.3:
     resolution: {integrity: sha512-GZTEuxzfWbP/vr7ZJfGzIl8fOsoxN916Z6FY2Egc9q2TmZ6hvq5KfAxY89pPW01oW/2HDEKA8d30f9iAH9eXYg==}
+
+  ansi-colors@4.1.3:
+    resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
+    engines: {node: '>=6'}
 
   ansi-escapes@4.3.2:
     resolution: {integrity: sha512-gKXj5ALrKWQLsYG9jlTRmR/xKluxHV+Z9QEwNIgCfM1/uwPMCuzVVnh5mwTd+OuBZcwSIMbqssNWRm1lE51QaQ==}
@@ -7403,7 +7407,7 @@ snapshots:
       debug: 4.4.0
       lodash.debounce: 4.0.8
       resolve: 1.22.10
-      semver: 6.3.0
+      semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
 
@@ -8194,6 +8198,31 @@ snapshots:
     transitivePeerDependencies:
       - '@algolia/client-search'
 
+  '@donecollectively/stellar-contracts@file:../stellar-contracts(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup-plugin-esbuild@6.2.1(esbuild@0.25.0)(rollup@4.34.9))':
+    dependencies:
+      '@cardano-ogmios/client': 6.11.2
+      '@helios-lang/codec-utils': link:../helios/codec-utils
+      '@helios-lang/compiler': link:../helios/compiler
+      '@helios-lang/compiler-utils': link:../helios/compiler-utils
+      '@helios-lang/contract-utils': link:../helios/contract-utils
+      '@helios-lang/crypto': link:../helios/crypto
+      '@helios-lang/ledger': link:../helios/ledger
+      '@helios-lang/tx-utils': link:../helios/tx-utils
+      '@helios-lang/type-utils': link:../helios/type-utils
+      '@helios-lang/uplc': link:../helios/uplc
+      ansi-colors: 4.1.3
+      clsx: 2.1.1
+      eventemitter3: 5.0.1
+      nanoid: 5.1.5
+      proper-lockfile: 4.1.2
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      rollup-plugin-esbuild: 6.2.1(esbuild@0.25.0)(rollup@4.34.9)
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+
   '@donecollectively/stellar-contracts@file:../stellar-contracts(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup-plugin-esbuild@6.2.1(esbuild@0.25.0)(rollup@4.34.9))':
     dependencies:
       '@cardano-ogmios/client': 6.11.2
@@ -8206,6 +8235,7 @@ snapshots:
       '@helios-lang/tx-utils': link:../helios/tx-utils
       '@helios-lang/type-utils': link:../helios/type-utils
       '@helios-lang/uplc': link:../helios/uplc
+      ansi-colors: 4.1.3
       clsx: 2.1.1
       eventemitter3: 5.0.1
       nanoid: 5.1.5
@@ -8584,7 +8614,7 @@ snapshots:
       jest-util: 29.4.1
       jest-validate: 29.4.1
       jest-watcher: 29.4.1
-      micromatch: 4.0.5
+      micromatch: 4.0.8
       pretty-format: 29.4.1
       slash: 3.0.0
       strip-ansi: 6.0.1
@@ -8645,7 +8675,7 @@ snapshots:
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
       glob: 7.2.3
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       istanbul-lib-coverage: 3.2.0
       istanbul-lib-instrument: 5.2.1
       istanbul-lib-report: 3.0.0
@@ -8694,7 +8724,7 @@ snapshots:
       chalk: 4.1.2
       convert-source-map: 2.0.0
       fast-json-stable-stringify: 2.1.0
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-haste-map: 29.4.1
       jest-regex-util: 29.2.0
       jest-util: 29.4.1
@@ -9802,6 +9832,8 @@ snapshots:
       '@algolia/requester-common': 4.14.3
       '@algolia/requester-node-http': 4.14.3
       '@algolia/transporter': 4.14.3
+
+  ansi-colors@4.1.3: {}
 
   ansi-escapes@4.3.2:
     dependencies:
@@ -11362,7 +11394,7 @@ snapshots:
 
   execa@5.1.1:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       get-stream: 6.0.1
       human-signals: 2.1.0
       is-stream: 2.0.1
@@ -12322,7 +12354,7 @@ snapshots:
       ci-info: 3.7.1
       deepmerge: 4.3.0
       glob: 7.2.3
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-circus: 29.4.1
       jest-environment-node: 29.4.1
       jest-get-type: 29.2.0
@@ -12379,7 +12411,7 @@ snapshots:
       '@types/node': 18.11.18
       anymatch: 3.1.3
       fb-watchman: 2.0.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-regex-util: 29.2.0
       jest-util: 29.4.1
       jest-worker: 29.4.1
@@ -12407,7 +12439,7 @@ snapshots:
       '@types/stack-utils': 2.0.1
       chalk: 4.1.2
       graceful-fs: 4.2.10
-      micromatch: 4.0.5
+      micromatch: 4.0.8
       pretty-format: 29.4.1
       slash: 3.0.0
       stack-utils: 2.0.6
@@ -12434,7 +12466,7 @@ snapshots:
   jest-resolve@29.4.1:
     dependencies:
       chalk: 4.1.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-haste-map: 29.4.1
       jest-pnp-resolver: 1.2.3(jest-resolve@29.4.1)
       jest-util: 29.4.1
@@ -12453,7 +12485,7 @@ snapshots:
       '@types/node': 18.11.18
       chalk: 4.1.2
       emittery: 0.13.1
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-docblock: 29.2.0
       jest-environment-node: 29.4.1
       jest-haste-map: 29.4.1
@@ -12483,7 +12515,7 @@ snapshots:
       cjs-module-lexer: 1.2.2
       collect-v8-coverage: 1.0.1
       glob: 7.2.3
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-haste-map: 29.4.1
       jest-message-util: 29.4.1
       jest-mock: 29.4.1
@@ -12491,7 +12523,7 @@ snapshots:
       jest-resolve: 29.4.1
       jest-snapshot: 29.4.1
       jest-util: 29.4.1
-      semver: 7.6.2
+      semver: 7.7.1
       slash: 3.0.0
       strip-bom: 4.0.0
     transitivePeerDependencies:
@@ -12513,7 +12545,7 @@ snapshots:
       babel-preset-current-node-syntax: 1.0.1(@babel/core@7.20.12)
       chalk: 4.1.2
       expect: 29.4.1
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-diff: 29.4.1
       jest-get-type: 29.2.0
       jest-haste-map: 29.4.1
@@ -12522,7 +12554,7 @@ snapshots:
       jest-util: 29.4.1
       natural-compare: 1.4.0
       pretty-format: 29.4.1
-      semver: 7.6.2
+      semver: 7.7.1
     transitivePeerDependencies:
       - supports-color
 

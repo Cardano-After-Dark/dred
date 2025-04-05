@@ -56,8 +56,7 @@ import type {
     AnyData, ErgoAnyData, AnyDataLike,
     DelegateDatum$Cip68RefToken, DelegateDatum$Ergo$Cip68RefToken, DelegateDatum$Cip68RefTokenLike,
     DelegationDetail, ErgoDelegationDetail, DelegationDetailLike,
-    NodeOperatorSettings, ErgoNodeOperatorSettings, NodeOperatorSettingsLike,
-    ProtocolSettings, ErgoProtocolSettings, ProtocolSettingsLike,
+    NeighborhoodData, ErgoNeighborhoodData, NeighborhoodDataLike,
     DelegateDatum$capoStoredData, DelegateDatum$Ergo$capoStoredData, DelegateDatum$capoStoredDataLike,
     DelegateDatum, ErgoDelegateDatum, DelegateDatumLike,
     CapoLifecycleActivity$CreatingDelegate, CapoLifecycleActivity$Ergo$CreatingDelegate, CapoLifecycleActivity$CreatingDelegateLike,
@@ -94,21 +93,24 @@ import type {
     cctx_CharterInputType$RefInput, cctx_CharterInputType$Ergo$RefInput, cctx_CharterInputType$RefInputLike,
     cctx_CharterInputType$Input, cctx_CharterInputType$Ergo$Input, cctx_CharterInputType$InputLike,
     cctx_CharterInputType, Ergocctx_CharterInputType, cctx_CharterInputTypeLike,
-    CapoCtx, ErgoCapoCtx, CapoCtxLike
-} from "./ProtocolSettings.typeInfo.js";
+    CapoCtx, ErgoCapoCtx, CapoCtxLike,
+    dgd_DataSrc$Both, dgd_DataSrc$Ergo$Both, dgd_DataSrc$BothLike,
+    dgd_DataSrc, Ergodgd_DataSrc, dgd_DataSrcLike,
+    DgDataDetails, ErgoDgDataDetails, DgDataDetailsLike
+} from "./Neighborhood.typeInfo.js";
 
-export type * as types from "./ProtocolSettings.typeInfo.js";
-import type * as types from "./ProtocolSettings.typeInfo.js";
+export type * as types from "./Neighborhood.typeInfo.js";
+import type * as types from "./Neighborhood.typeInfo.js";
 
 
 
 /**
- * GENERATED data bridge for **BasicDelegate** script (defined in class ***ProtocolSettingsBundle***)
+ * GENERATED data bridge for **BasicDelegate** script (defined in class ***NeighborhoodBundle***)
  * main: **src/delegation/BasicDelegate.hl**, project: **stellar-contracts**
  * @remarks - note that you may override `get dataBridgeName() { return "..." }` to customize the name of this bridge class
 * @public
  */
-export class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
+export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     static isAbstract = false as const;
     isAbstract = false as const;
     /**
@@ -134,7 +136,7 @@ export class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
     activity : DelegateActivityHelper= new DelegateActivityHelper({isMainnet: this.isMainnet, isActivity: true}); // activityAccessor/enum
         DelegateActivity: DelegateActivityHelper = this.activity;
 
-    reader = new ProtocolSettingsPolicyDataBridgeReader(this, this.isMainnet);
+    reader = new NeighborhoodPolicyDataBridgeReader(this, this.isMainnet);
 
     /**
      * accessors for all the types defined in the `BasicDelegate` script
@@ -193,6 +195,10 @@ export class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
        * generates UplcData for the enum type ***cctx_CharterInputType*** for the `BasicDelegate` script
        */
         cctx_CharterInputType: new cctx_CharterInputTypeHelper({isMainnet: this.isMainnet}),
+      /**
+       * generates UplcData for the enum type ***dgd_DataSrc*** for the `BasicDelegate` script
+       */
+        dgd_DataSrc: new dgd_DataSrcHelper({isMainnet: this.isMainnet}),
 
       /**
        * generates UplcData for the enum type ***AnyData*** for the `BasicDelegate` script
@@ -216,25 +222,19 @@ export class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
         return this.ᱺᱺDelegationDetailCast.toUplcData(fields);
     },
       /**
-       * generates UplcData for the enum type ***NodeOperatorSettings*** for the `BasicDelegate` script
+       * generates UplcData for the enum type ***NeighborhoodData*** for the `BasicDelegate` script
        */
-        NodeOperatorSettings: (fields: NodeOperatorSettingsLike | {
-    minHeartbeatInterval: /*minStructField*/ IntLike
-    minStake: /*minStructField*/ IntLike
-}
-) => {
-        return this.ᱺᱺNodeOperatorSettingsCast.toUplcData(fields);
-    },
-      /**
-       * generates UplcData for the enum type ***ProtocolSettings*** for the `BasicDelegate` script
-       */
-        ProtocolSettings: (fields: ProtocolSettingsLike | {
+        NeighborhoodData: (fields: NeighborhoodDataLike | {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
-    nodeOpSettings: /*minStructField*/ NodeOperatorSettingsLike
+    memberToken: /*minStructField*/ string
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
+    appUrl: /*minStructField*/ string
+    minNodeUptime: /*minStructField*/ IntLike
 }
 ) => {
-        return this.ᱺᱺProtocolSettingsCast.toUplcData(fields);
+        return this.ᱺᱺNeighborhoodDataCast.toUplcData(fields);
     },
       /**
        * generates UplcData for the enum type ***RelativeDelegateLink*** for the `BasicDelegate` script
@@ -278,6 +278,18 @@ export class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
 }
 ) => {
         return this.ᱺᱺCapoCtxCast.toUplcData(fields);
+    },
+      /**
+       * generates UplcData for the enum type ***DgDataDetails*** for the `BasicDelegate` script
+       */
+        DgDataDetails: (fields: DgDataDetailsLike | {
+    dataSrc: /*minStructField*/ dgd_DataSrcLike
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    mph: /*minStructField*/ MintingPolicyHash | string | number[]
+}
+) => {
+        return this.ᱺᱺDgDataDetailsCast.toUplcData(fields);
     },    }    
 
     /**
@@ -294,14 +306,8 @@ export class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
     );
     /**
                 * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNodeOperatorSettingsCast = makeCast<NodeOperatorSettings, NodeOperatorSettingsLike>(
-        NodeOperatorSettingsSchema,
-        { isMainnet: true, unwrapSingleFieldEnumVariants: true }
-    );
-    /**
-                * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺProtocolSettingsCast = makeCast<ProtocolSettings, ProtocolSettingsLike>(
-        ProtocolSettingsSchema,
+    ᱺᱺNeighborhoodDataCast = makeCast<NeighborhoodData, NeighborhoodDataLike>(
+        NeighborhoodDataSchema,
         { isMainnet: true, unwrapSingleFieldEnumVariants: true }
     );
     /**
@@ -328,16 +334,22 @@ export class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
         CapoCtxSchema,
         { isMainnet: true, unwrapSingleFieldEnumVariants: true }
     );
+    /**
+                * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺDgDataDetailsCast = makeCast<DgDataDetails, DgDataDetailsLike>(
+        DgDataDetailsSchema,
+        { isMainnet: true, unwrapSingleFieldEnumVariants: true }
+    );
 
 
 }
-export default ProtocolSettingsPolicyDataBridge;
+export default NeighborhoodPolicyDataBridge;
 
 /*
  * @public
  */
-export class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderClass {
-    constructor(public bridge: ProtocolSettingsPolicyDataBridge, isMainnet: boolean) {
+export class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
+    constructor(public bridge: NeighborhoodPolicyDataBridge, isMainnet: boolean) {
         super();
     }
 datum = (d: UplcData) => { return this.DelegateDatum(d) }
@@ -615,6 +627,27 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
     } /* enumReader helper */
 
     /**
+        * reads UplcData *known to fit the **dgd_DataSrc*** enum type,
+        * for the BasicDelegate script.
+        * ### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the enum type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    dgd_DataSrc(d : UplcData) { 
+        const typeHelper = this.bridge.types.dgd_DataSrc;
+        const cast = typeHelper.ᱺᱺcast;  
+
+        return cast.fromUplcData(d) as Ergodgd_DataSrc;        
+    } /* enumReader helper */
+
+    /**
         * reads UplcData *known to fit the **AnyData*** struct type,
         * for the BasicDelegate script.
         * ### Standard WARNING
@@ -653,7 +686,7 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
     } /* structReader helper */
 
     /**
-        * reads UplcData *known to fit the **NodeOperatorSettings*** struct type,
+        * reads UplcData *known to fit the **NeighborhoodData*** struct type,
         * for the BasicDelegate script.
         * ### Standard WARNING
         * 
@@ -666,28 +699,9 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
         * It may throw an error, or it may throw no error, but return a value that
         * causes some error later on in your code, when you try to use it.
         */
-    NodeOperatorSettings(d: UplcData) {
-        const cast = this.bridge.ᱺᱺNodeOperatorSettingsCast;
-        return cast.fromUplcData(d) //??? as ErgoNodeOperatorSettings;
-    } /* structReader helper */
-
-    /**
-        * reads UplcData *known to fit the **ProtocolSettings*** struct type,
-        * for the BasicDelegate script.
-        * ### Standard WARNING
-        * 
-        * This is a low-level data-reader for use in ***advanced development scenarios***.
-        * 
-        * Used correctly with data that matches the type, this reader
-        * returns strongly-typed data - your code using these types will be safe.
-        * 
-        * On the other hand, reading non-matching data will not give you a valid result.  
-        * It may throw an error, or it may throw no error, but return a value that
-        * causes some error later on in your code, when you try to use it.
-        */
-    ProtocolSettings(d: UplcData) {
-        const cast = this.bridge.ᱺᱺProtocolSettingsCast;
-        return cast.fromUplcData(d) //??? as ErgoProtocolSettings;
+    NeighborhoodData(d: UplcData) {
+        const cast = this.bridge.ᱺᱺNeighborhoodDataCast;
+        return cast.fromUplcData(d) //??? as ErgoNeighborhoodData;
     } /* structReader helper */
 
     /**
@@ -766,6 +780,25 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
         return cast.fromUplcData(d) //??? as ErgoCapoCtx;
     } /* structReader helper */
 
+    /**
+        * reads UplcData *known to fit the **DgDataDetails*** struct type,
+        * for the BasicDelegate script.
+        * ### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    DgDataDetails(d: UplcData) {
+        const cast = this.bridge.ᱺᱺDgDataDetailsCast;
+        return cast.fromUplcData(d) //??? as ErgoDgDataDetails;
+    } /* structReader helper */
+
 }
 
 /**
@@ -819,15 +852,15 @@ export class DelegationDetailHelper extends DataBridge {
 
 
 /**
- * Helper class for generating UplcData for the struct ***NodeOperatorSettings*** type.
+ * Helper class for generating UplcData for the struct ***NeighborhoodData*** type.
  * @public
  */
-export class NodeOperatorSettingsHelper extends DataBridge {
+export class NeighborhoodDataHelper extends DataBridge {
     isCallable = true
    /**
             * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast = makeCast<NodeOperatorSettings, NodeOperatorSettingsLike>(
-        NodeOperatorSettingsSchema,
+    ᱺᱺcast = makeCast<NeighborhoodData, NeighborhoodDataLike>(
+        NeighborhoodDataSchema,
         { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
     );
 
@@ -837,32 +870,7 @@ export class NodeOperatorSettingsHelper extends DataBridge {
     //
     //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
     //
-    // NodeOperatorSettings(fields: NodeOperatorSettingsLike) {
-    //    return this.ᱺᱺcast.toUplcData(fields);
-    //}
-} //mkStructHelperClass 
-
-
-/**
- * Helper class for generating UplcData for the struct ***ProtocolSettings*** type.
- * @public
- */
-export class ProtocolSettingsHelper extends DataBridge {
-    isCallable = true
-   /**
-            * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast = makeCast<ProtocolSettings, ProtocolSettingsLike>(
-        ProtocolSettingsSchema,
-        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-    );
-
-    // You might expect a function as follows.  We provide this interface and result, 
-    // using a proxy in the inheritance chain.
-    // see the callableDataBridge type on the 'datum' property in the contract bridge.
-    //
-    //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
-    //
-    // ProtocolSettings(fields: ProtocolSettingsLike) {
+    // NeighborhoodData(fields: NeighborhoodDataLike) {
     //    return this.ᱺᱺcast.toUplcData(fields);
     //}
 } //mkStructHelperClass 
@@ -882,7 +890,7 @@ export class DelegateDatumHelper extends EnumBridge<JustAnEnum> {
     );
 
     /**
-     * generates  InlineTxOutputDatum for ***"ProtocolSettingsPolicy::DelegateDatum.Cip68RefToken"***
+     * generates  InlineTxOutputDatum for ***"NeighborhoodPolicy::DelegateDatum.Cip68RefToken"***
      * @remarks - ***DelegateDatum$Cip68RefTokenLike*** is the same as the expanded field-types.
      */
     Cip68RefToken(fields: DelegateDatum$Cip68RefTokenLike | { 
@@ -892,12 +900,12 @@ export class DelegateDatumHelper extends EnumBridge<JustAnEnum> {
     }) : InlineTxOutputDatum {
         const uplc = this.mkUplcData({
             Cip68RefToken: fields 
-        }, "ProtocolSettingsPolicy::DelegateDatum.Cip68RefToken");
+        }, "NeighborhoodPolicy::DelegateDatum.Cip68RefToken");
         return makeInlineTxOutputDatum(uplc);
     } /*multiFieldVariant enum accessor*/
 
     /**
-     * generates  InlineTxOutputDatum for ***"ProtocolSettingsPolicy::DelegateDatum.IsDelegation"***
+     * generates  InlineTxOutputDatum for ***"NeighborhoodPolicy::DelegateDatum.IsDelegation"***
      * @remarks - ***DelegationDetailLike*** is the same as the expanded field-type.
      */
     IsDelegation(
@@ -909,22 +917,22 @@ export class DelegateDatumHelper extends EnumBridge<JustAnEnum> {
     ) : InlineTxOutputDatum {
         const uplc = this.mkUplcData({ 
            IsDelegation: dd
-        }, "ProtocolSettingsPolicy::DelegateDatum.IsDelegation"); /*singleField enum variant*/
+        }, "NeighborhoodPolicy::DelegateDatum.IsDelegation"); /*singleField enum variant*/
         return makeInlineTxOutputDatum(uplc);
     }
 
     /**
-     * generates  InlineTxOutputDatum for ***"ProtocolSettingsPolicy::DelegateDatum.capoStoredData"***
+     * generates  InlineTxOutputDatum for ***"NeighborhoodPolicy::DelegateDatum.capoStoredData"***
      * @remarks - ***DelegateDatum$capoStoredDataLike*** is the same as the expanded field-types.
      */
     capoStoredData(fields: DelegateDatum$capoStoredDataLike | { 
-        data: ProtocolSettingsLike,
+        data: NeighborhoodDataLike,
         version: IntLike,
         otherDetails: UplcData
     }) : InlineTxOutputDatum {
         const uplc = this.mkUplcData({
             capoStoredData: fields 
-        }, "ProtocolSettingsPolicy::DelegateDatum.capoStoredData");
+        }, "NeighborhoodPolicy::DelegateDatum.capoStoredData");
         return makeInlineTxOutputDatum(uplc);
     } /*multiFieldVariant enum accessor*/
 }/*mkEnumHelperClass*/
@@ -1694,14 +1702,14 @@ export class SpendingActivityHelper extends EnumBridge<JustAnEnum> {
     );
 
     /**
-     * generates  UplcData for ***"ProtocolSettingsPolicy::SpendingActivity.UpdatingRecord"***
+     * generates  UplcData for ***"NeighborhoodPolicy::SpendingActivity.UpdatingRecord"***
      */
     UpdatingRecord(
         id: number[]
     ) : UplcData {
         const uplc = this.mkUplcData({ 
            UpdatingRecord: id
-        }, "ProtocolSettingsPolicy::SpendingActivity.UpdatingRecord"); /*singleField enum variant*/
+        }, "NeighborhoodPolicy::SpendingActivity.UpdatingRecord"); /*singleField enum variant*/
        return uplc;
     }
 }/*mkEnumHelperClass*/
@@ -1721,7 +1729,7 @@ export class MintingActivityHelper extends EnumBridge<JustAnEnum> {
     );
 
     /**
-    * generates  UplcData for ***"ProtocolSettingsPolicy::MintingActivity.CreatingRecord"***, 
+    * generates  UplcData for ***"NeighborhoodPolicy::MintingActivity.CreatingRecord"***, 
     * given a transaction-context (or direct arg) with a ***seed utxo*** 
     * @remarks
     * ### Seeded activity
@@ -1738,12 +1746,12 @@ export class MintingActivityHelper extends EnumBridge<JustAnEnum> {
         const seedTxOutputId = this.getSeed(thingWithSeed);
         const uplc = this.mkUplcData({ 
            CreatingRecord: seedTxOutputId
-        },"ProtocolSettingsPolicy::MintingActivity.CreatingRecord");  
+        },"NeighborhoodPolicy::MintingActivity.CreatingRecord");  
         return uplc;
     }  /*singleField/seeded enum variant*/
 
     /**
-     * generates  UplcData for ***"ProtocolSettingsPolicy::MintingActivity.CreatingRecord"***
+     * generates  UplcData for ***"NeighborhoodPolicy::MintingActivity.CreatingRecord"***
      * @remarks
     * ### Seeded activity
     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
@@ -1777,14 +1785,14 @@ export class BurningActivityHelper extends EnumBridge<JustAnEnum> {
     );
 
     /**
-     * generates  UplcData for ***"ProtocolSettingsPolicy::BurningActivity.DeletingRecord"***
+     * generates  UplcData for ***"NeighborhoodPolicy::BurningActivity.DeletingRecord"***
      */
     DeletingRecord(
         id: number[]
     ) : UplcData {
         const uplc = this.mkUplcData({ 
            DeletingRecord: id
-        }, "ProtocolSettingsPolicy::BurningActivity.DeletingRecord"); /*singleField enum variant*/
+        }, "NeighborhoodPolicy::BurningActivity.DeletingRecord"); /*singleField enum variant*/
        return uplc;
     }
 }/*mkEnumHelperClass*/
@@ -2301,7 +2309,7 @@ export class SpendingActivityHelperNested extends EnumBridge<isActivity> {
     );
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"ProtocolSettingsPolicy::SpendingActivity.UpdatingRecord"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::SpendingActivity.UpdatingRecord"***
     * ## Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
@@ -2312,7 +2320,7 @@ export class SpendingActivityHelperNested extends EnumBridge<isActivity> {
     ) : isActivity {
         const uplc = this.mkUplcData({ 
            UpdatingRecord: id
-        }, "ProtocolSettingsPolicy::SpendingActivity.UpdatingRecord"); /*singleField enum variant*/
+        }, "NeighborhoodPolicy::SpendingActivity.UpdatingRecord"); /*singleField enum variant*/
        return uplc;
     }
 }/*mkEnumHelperClass*/
@@ -2332,7 +2340,7 @@ export class MintingActivityHelperNested extends EnumBridge<isActivity> {
     );
 
     /**
-    * generates isActivity/redeemer wrapper with UplcData for ***"ProtocolSettingsPolicy::MintingActivity.CreatingRecord"***, 
+    * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::MintingActivity.CreatingRecord"***, 
     * given a transaction-context (or direct arg) with a ***seed utxo*** 
     * @remarks
     * ### Seeded activity
@@ -2355,12 +2363,12 @@ export class MintingActivityHelperNested extends EnumBridge<isActivity> {
         // piped through parent's uplc-encoder
         const uplc = this.mkUplcData({ 
            CreatingRecord: seedTxOutputId
-        },"ProtocolSettingsPolicy::MintingActivity.CreatingRecord");  
+        },"NeighborhoodPolicy::MintingActivity.CreatingRecord");  
         return uplc;
     }  /*singleField/seeded enum variant*/
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"ProtocolSettingsPolicy::MintingActivity.CreatingRecord"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::MintingActivity.CreatingRecord"***
      * @remarks
     * ### Seeded activity
     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
@@ -2398,7 +2406,7 @@ export class BurningActivityHelperNested extends EnumBridge<isActivity> {
     );
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"ProtocolSettingsPolicy::BurningActivity.DeletingRecord"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::BurningActivity.DeletingRecord"***
     * ## Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
@@ -2409,7 +2417,7 @@ export class BurningActivityHelperNested extends EnumBridge<isActivity> {
     ) : isActivity {
         const uplc = this.mkUplcData({ 
            DeletingRecord: id
-        }, "ProtocolSettingsPolicy::BurningActivity.DeletingRecord"); /*singleField enum variant*/
+        }, "NeighborhoodPolicy::BurningActivity.DeletingRecord"); /*singleField enum variant*/
        return uplc;
     }
 }/*mkEnumHelperClass*/
@@ -2439,7 +2447,7 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
         nestedAccessor.mkDataVia(
             (activity: CapoLifecycleActivityLike) => {
                 return  this.mkUplcData({ CapoLifecycleActivities: activity }, 
-            "ProtocolSettingsPolicy::DelegateActivity.CapoLifecycleActivities");
+            "NeighborhoodPolicy::DelegateActivity.CapoLifecycleActivities");
         });
         return nestedAccessor;
     } /* nested enum accessor */
@@ -2455,7 +2463,7 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
         nestedAccessor.mkDataVia(
             (activity: DelegateLifecycleActivityLike) => {
                 return  this.mkUplcData({ DelegateLifecycleActivities: activity }, 
-            "ProtocolSettingsPolicy::DelegateActivity.DelegateLifecycleActivities");
+            "NeighborhoodPolicy::DelegateActivity.DelegateLifecycleActivities");
         });
         return nestedAccessor;
     } /* nested enum accessor */
@@ -2471,7 +2479,7 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
         nestedAccessor.mkDataVia(
             (activity: SpendingActivityLike) => {
                 return  this.mkUplcData({ SpendingActivities: activity }, 
-            "ProtocolSettingsPolicy::DelegateActivity.SpendingActivities");
+            "NeighborhoodPolicy::DelegateActivity.SpendingActivities");
         });
         return nestedAccessor;
     } /* nested enum accessor */
@@ -2487,7 +2495,7 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
         nestedAccessor.mkDataVia(
             (activity: MintingActivityLike) => {
                 return  this.mkUplcData({ MintingActivities: activity }, 
-            "ProtocolSettingsPolicy::DelegateActivity.MintingActivities");
+            "NeighborhoodPolicy::DelegateActivity.MintingActivities");
         });
         return nestedAccessor;
     } /* nested enum accessor */
@@ -2503,13 +2511,13 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
         nestedAccessor.mkDataVia(
             (activity: BurningActivityLike) => {
                 return  this.mkUplcData({ BurningActivities: activity }, 
-            "ProtocolSettingsPolicy::DelegateActivity.BurningActivities");
+            "NeighborhoodPolicy::DelegateActivity.BurningActivities");
         });
         return nestedAccessor;
     } /* nested enum accessor */
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"ProtocolSettingsPolicy::DelegateActivity.CreatingDelegatedData"***, 
+     * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::DelegateActivity.CreatingDelegatedData"***, 
      * given a transaction-context ***with a seed utxo*** and other field details
      * @remarks
      * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass 
@@ -2521,7 +2529,7 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
         dataType: string 
     } ) : isActivity
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"ProtocolSettingsPolicy::DelegateActivity.CreatingDelegatedData"*** 
+     * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::DelegateActivity.CreatingDelegatedData"*** 
      * with raw seed details included in fields.
      */
     CreatingDelegatedData(fields: DelegateActivity$CreatingDelegatedDataLike | {
@@ -2537,19 +2545,19 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
             const seedTxOutputId = this.getSeed(seedOrUf as hasSeed);
             const uplc = this.mkUplcData({
                 CreatingDelegatedData: { seed: seedTxOutputId, ...filteredFields } 
-            }, "ProtocolSettingsPolicy::DelegateActivity.CreatingDelegatedData");
+            }, "NeighborhoodPolicy::DelegateActivity.CreatingDelegatedData");
            return uplc;
         } else {
             const fields = seedOrUf as DelegateActivity$CreatingDelegatedDataLike; 
            const uplc = this.mkUplcData({
                 CreatingDelegatedData: fields 
-            }, "ProtocolSettingsPolicy::DelegateActivity.CreatingDelegatedData");
+            }, "NeighborhoodPolicy::DelegateActivity.CreatingDelegatedData");
            return uplc;
         }
     } /*multiFieldVariant/seeded enum accessor*/ 
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"ProtocolSettingsPolicy::DelegateActivity.CreatingDelegatedData"***, 
+     * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::DelegateActivity.CreatingDelegatedData"***, 
      * @param fields - \{ dataType: string \}
      * @remarks
     * ### Seeded activity
@@ -2573,7 +2581,7 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
 
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"ProtocolSettingsPolicy::DelegateActivity.UpdatingDelegatedData"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::DelegateActivity.UpdatingDelegatedData"***
      * @remarks - ***DelegateActivity$UpdatingDelegatedDataLike*** is the same as the expanded field-types.
      */
     UpdatingDelegatedData(fields: DelegateActivity$UpdatingDelegatedDataLike | { 
@@ -2582,12 +2590,12 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
     }) : isActivity {
         const uplc = this.mkUplcData({
             UpdatingDelegatedData: fields 
-        }, "ProtocolSettingsPolicy::DelegateActivity.UpdatingDelegatedData");
+        }, "NeighborhoodPolicy::DelegateActivity.UpdatingDelegatedData");
        return uplc;
     } /*multiFieldVariant enum accessor*/
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"ProtocolSettingsPolicy::DelegateActivity.DeletingDelegatedData"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::DelegateActivity.DeletingDelegatedData"***
      * @remarks - ***DelegateActivity$DeletingDelegatedDataLike*** is the same as the expanded field-types.
      */
     DeletingDelegatedData(fields: DelegateActivity$DeletingDelegatedDataLike | { 
@@ -2596,19 +2604,19 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
     }) : isActivity {
         const uplc = this.mkUplcData({
             DeletingDelegatedData: fields 
-        }, "ProtocolSettingsPolicy::DelegateActivity.DeletingDelegatedData");
+        }, "NeighborhoodPolicy::DelegateActivity.DeletingDelegatedData");
        return uplc;
     } /*multiFieldVariant enum accessor*/
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"ProtocolSettingsPolicy::DelegateActivity.MultipleDelegateActivities"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::DelegateActivity.MultipleDelegateActivities"***
      */
     MultipleDelegateActivities(
         activities: Array<UplcData>
     ) : isActivity {
         const uplc = this.mkUplcData({ 
            MultipleDelegateActivities: activities
-        }, "ProtocolSettingsPolicy::DelegateActivity.MultipleDelegateActivities"); /*singleField enum variant*/
+        }, "NeighborhoodPolicy::DelegateActivity.MultipleDelegateActivities"); /*singleField enum variant*/
        return uplc;
     }
 }/*mkEnumHelperClass*/
@@ -3052,6 +3060,94 @@ export class CapoCtxHelper extends DataBridge {
 } //mkStructHelperClass 
 
 
+/**
+ * Helper class for generating UplcData for variants of the ***dgd_DataSrc*** enum type.
+ * @public
+ */
+export class dgd_DataSrcHelper extends EnumBridge<JustAnEnum> {
+    /*mkEnumHelperClass*/
+    /**
+            *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<dgd_DataSrc, dgd_DataSrcLike>(
+        dgd_DataSrcSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+/**
+ * (property getter): UplcData for ***"CapoHelpers::dgd_DataSrc.Unk"***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+ */
+    get Unk() {
+        const uplc = this.mkUplcData({ Unk: {} }, 
+            "CapoHelpers::dgd_DataSrc.Unk");
+        return uplc;
+    } /* tagOnly variant accessor */
+
+    /**
+     * generates  UplcData for ***"CapoHelpers::dgd_DataSrc.Input"***
+     */
+    Input(
+        utxo: TxInput
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           Input: utxo
+        }, "CapoHelpers::dgd_DataSrc.Input"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"CapoHelpers::dgd_DataSrc.Output"***
+     */
+    Output(
+        txo: TxOutput
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           Output: txo
+        }, "CapoHelpers::dgd_DataSrc.Output"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"CapoHelpers::dgd_DataSrc.Both"***
+     * @remarks - ***dgd_DataSrc$BothLike*** is the same as the expanded field-types.
+     */
+    Both(fields: dgd_DataSrc$BothLike | { 
+        utxo: TxInput,
+        txo: TxOutput
+    }) : UplcData {
+        const uplc = this.mkUplcData({
+            Both: fields 
+        }, "CapoHelpers::dgd_DataSrc.Both");
+       return uplc;
+    } /*multiFieldVariant enum accessor*/
+}/*mkEnumHelperClass*/
+
+
+/**
+ * Helper class for generating UplcData for the struct ***DgDataDetails*** type.
+ * @public
+ */
+export class DgDataDetailsHelper extends DataBridge {
+    isCallable = true
+   /**
+            * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<DgDataDetails, DgDataDetailsLike>(
+        DgDataDetailsSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    // You might expect a function as follows.  We provide this interface and result, 
+    // using a proxy in the inheritance chain.
+    // see the callableDataBridge type on the 'datum' property in the contract bridge.
+    //
+    //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
+    //
+    // DgDataDetails(fields: DgDataDetailsLike) {
+    //    return this.ᱺᱺcast.toUplcData(fields);
+    //}
+} //mkStructHelperClass 
+
+
 export const AnyDataSchema : StructTypeSchema = {
     "kind": "struct",
     "format": "map",
@@ -3107,36 +3203,11 @@ export const DelegationDetailSchema : StructTypeSchema = {
     ]
 };
 
-export const NodeOperatorSettingsSchema : StructTypeSchema = {
+export const NeighborhoodDataSchema : StructTypeSchema = {
     "kind": "struct",
     "format": "map",
-    "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
-    "name": "NodeOperatorSettings",
-    "fieldTypes": [
-        {
-            "name": "minHeartbeatInterval",
-            "type": {
-                "kind": "internal",
-                "name": "Int"
-            },
-            "key": "minHB"
-        },
-        {
-            "name": "minStake",
-            "type": {
-                "kind": "internal",
-                "name": "Int"
-            },
-            "key": "minStake"
-        }
-    ]
-};
-
-export const ProtocolSettingsSchema : StructTypeSchema = {
-    "kind": "struct",
-    "format": "map",
-    "id": "__module__ProtocolSettings__ProtocolSettings[]",
-    "name": "ProtocolSettings",
+    "id": "__module__NeighborhoodData__NeighborhoodData[]",
+    "name": "NeighborhoodData",
     "fieldTypes": [
         {
             "name": "id",
@@ -3155,32 +3226,44 @@ export const ProtocolSettingsSchema : StructTypeSchema = {
             "key": "tpe"
         },
         {
-            "name": "nodeOpSettings",
+            "name": "memberToken",
             "type": {
-                "kind": "struct",
-                "format": "map",
-                "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
-                "name": "NodeOperatorSettings",
-                "fieldTypes": [
-                    {
-                        "name": "minHeartbeatInterval",
-                        "type": {
-                            "kind": "internal",
-                            "name": "Int"
-                        },
-                        "key": "minHB"
-                    },
-                    {
-                        "name": "minStake",
-                        "type": {
-                            "kind": "internal",
-                            "name": "Int"
-                        },
-                        "key": "minStake"
-                    }
-                ]
+                "kind": "internal",
+                "name": "String"
             },
-            "key": "nOp"
+            "key": "mt"
+        },
+        {
+            "name": "name",
+            "type": {
+                "kind": "internal",
+                "name": "String"
+            },
+            "key": "nm"
+        },
+        {
+            "name": "description",
+            "type": {
+                "kind": "internal",
+                "name": "String"
+            },
+            "key": "dsc"
+        },
+        {
+            "name": "appUrl",
+            "type": {
+                "kind": "internal",
+                "name": "String"
+            },
+            "key": "appUrl"
+        },
+        {
+            "name": "minNodeUptime",
+            "type": {
+                "kind": "internal",
+                "name": "Int"
+            },
+            "key": "minup"
         }
     ]
 };
@@ -3188,12 +3271,12 @@ export const ProtocolSettingsSchema : StructTypeSchema = {
 export const DelegateDatumSchema : EnumTypeSchema = {
     "kind": "enum",
     "name": "DelegateDatum",
-    "id": "__module__ProtocolSettingsPolicy__DelegateDatum[]",
+    "id": "__module__NeighborhoodPolicy__DelegateDatum[]",
     "variantTypes": [
         {
             "kind": "variant",
             "tag": 0,
-            "id": "__module__ProtocolSettingsPolicy__DelegateDatum[]__Cip68RefToken",
+            "id": "__module__NeighborhoodPolicy__DelegateDatum[]__Cip68RefToken",
             "name": "Cip68RefToken",
             "fieldTypes": [
                 {
@@ -3242,7 +3325,7 @@ export const DelegateDatumSchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 1,
-            "id": "__module__ProtocolSettingsPolicy__DelegateDatum[]__IsDelegation",
+            "id": "__module__NeighborhoodPolicy__DelegateDatum[]__IsDelegation",
             "name": "IsDelegation",
             "fieldTypes": [
                 {
@@ -3282,7 +3365,7 @@ export const DelegateDatumSchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 2,
-            "id": "__module__ProtocolSettingsPolicy__DelegateDatum[]__capoStoredData",
+            "id": "__module__NeighborhoodPolicy__DelegateDatum[]__capoStoredData",
             "name": "capoStoredData",
             "fieldTypes": [
                 {
@@ -3290,8 +3373,8 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                     "type": {
                         "kind": "struct",
                         "format": "map",
-                        "id": "__module__ProtocolSettings__ProtocolSettings[]",
-                        "name": "ProtocolSettings",
+                        "id": "__module__NeighborhoodData__NeighborhoodData[]",
+                        "name": "NeighborhoodData",
                         "fieldTypes": [
                             {
                                 "name": "id",
@@ -3310,32 +3393,44 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                 "key": "tpe"
                             },
                             {
-                                "name": "nodeOpSettings",
+                                "name": "memberToken",
                                 "type": {
-                                    "kind": "struct",
-                                    "format": "map",
-                                    "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
-                                    "name": "NodeOperatorSettings",
-                                    "fieldTypes": [
-                                        {
-                                            "name": "minHeartbeatInterval",
-                                            "type": {
-                                                "kind": "internal",
-                                                "name": "Int"
-                                            },
-                                            "key": "minHB"
-                                        },
-                                        {
-                                            "name": "minStake",
-                                            "type": {
-                                                "kind": "internal",
-                                                "name": "Int"
-                                            },
-                                            "key": "minStake"
-                                        }
-                                    ]
+                                    "kind": "internal",
+                                    "name": "String"
                                 },
-                                "key": "nOp"
+                                "key": "mt"
+                            },
+                            {
+                                "name": "name",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "String"
+                                },
+                                "key": "nm"
+                            },
+                            {
+                                "name": "description",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "String"
+                                },
+                                "key": "dsc"
+                            },
+                            {
+                                "name": "appUrl",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "String"
+                                },
+                                "key": "appUrl"
+                            },
+                            {
+                                "name": "minNodeUptime",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "Int"
+                                },
+                                "key": "minup"
                             }
                         ]
                     }
@@ -3896,12 +3991,12 @@ export const DelegateLifecycleActivitySchema : EnumTypeSchema = {
 export const SpendingActivitySchema : EnumTypeSchema = {
     "kind": "enum",
     "name": "SpendingActivity",
-    "id": "__module__ProtocolSettingsPolicy__SpendingActivity[]",
+    "id": "__module__NeighborhoodPolicy__SpendingActivity[]",
     "variantTypes": [
         {
             "kind": "variant",
             "tag": 0,
-            "id": "__module__ProtocolSettingsPolicy__SpendingActivity[]__UpdatingRecord",
+            "id": "__module__NeighborhoodPolicy__SpendingActivity[]__UpdatingRecord",
             "name": "UpdatingRecord",
             "fieldTypes": [
                 {
@@ -3919,12 +4014,12 @@ export const SpendingActivitySchema : EnumTypeSchema = {
 export const MintingActivitySchema : EnumTypeSchema = {
     "kind": "enum",
     "name": "MintingActivity",
-    "id": "__module__ProtocolSettingsPolicy__MintingActivity[]",
+    "id": "__module__NeighborhoodPolicy__MintingActivity[]",
     "variantTypes": [
         {
             "kind": "variant",
             "tag": 0,
-            "id": "__module__ProtocolSettingsPolicy__MintingActivity[]__CreatingRecord",
+            "id": "__module__NeighborhoodPolicy__MintingActivity[]__CreatingRecord",
             "name": "CreatingRecord",
             "fieldTypes": [
                 {
@@ -3942,12 +4037,12 @@ export const MintingActivitySchema : EnumTypeSchema = {
 export const BurningActivitySchema : EnumTypeSchema = {
     "kind": "enum",
     "name": "BurningActivity",
-    "id": "__module__ProtocolSettingsPolicy__BurningActivity[]",
+    "id": "__module__NeighborhoodPolicy__BurningActivity[]",
     "variantTypes": [
         {
             "kind": "variant",
             "tag": 0,
-            "id": "__module__ProtocolSettingsPolicy__BurningActivity[]__DeletingRecord",
+            "id": "__module__NeighborhoodPolicy__BurningActivity[]__DeletingRecord",
             "name": "DeletingRecord",
             "fieldTypes": [
                 {
@@ -3965,12 +4060,12 @@ export const BurningActivitySchema : EnumTypeSchema = {
 export const DelegateActivitySchema : EnumTypeSchema = {
     "kind": "enum",
     "name": "DelegateActivity",
-    "id": "__module__ProtocolSettingsPolicy__DelegateActivity[]",
+    "id": "__module__NeighborhoodPolicy__DelegateActivity[]",
     "variantTypes": [
         {
             "kind": "variant",
             "tag": 0,
-            "id": "__module__ProtocolSettingsPolicy__DelegateActivity[]__CapoLifecycleActivities",
+            "id": "__module__NeighborhoodPolicy__DelegateActivity[]__CapoLifecycleActivities",
             "name": "CapoLifecycleActivities",
             "fieldTypes": [
                 {
@@ -4279,7 +4374,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 1,
-            "id": "__module__ProtocolSettingsPolicy__DelegateActivity[]__DelegateLifecycleActivities",
+            "id": "__module__NeighborhoodPolicy__DelegateActivity[]__DelegateLifecycleActivities",
             "name": "DelegateLifecycleActivities",
             "fieldTypes": [
                 {
@@ -4333,7 +4428,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 2,
-            "id": "__module__ProtocolSettingsPolicy__DelegateActivity[]__SpendingActivities",
+            "id": "__module__NeighborhoodPolicy__DelegateActivity[]__SpendingActivities",
             "name": "SpendingActivities",
             "fieldTypes": [
                 {
@@ -4341,12 +4436,12 @@ export const DelegateActivitySchema : EnumTypeSchema = {
                     "type": {
                         "kind": "enum",
                         "name": "SpendingActivity",
-                        "id": "__module__ProtocolSettingsPolicy__SpendingActivity[]",
+                        "id": "__module__NeighborhoodPolicy__SpendingActivity[]",
                         "variantTypes": [
                             {
                                 "kind": "variant",
                                 "tag": 0,
-                                "id": "__module__ProtocolSettingsPolicy__SpendingActivity[]__UpdatingRecord",
+                                "id": "__module__NeighborhoodPolicy__SpendingActivity[]__UpdatingRecord",
                                 "name": "UpdatingRecord",
                                 "fieldTypes": [
                                     {
@@ -4366,7 +4461,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 3,
-            "id": "__module__ProtocolSettingsPolicy__DelegateActivity[]__MintingActivities",
+            "id": "__module__NeighborhoodPolicy__DelegateActivity[]__MintingActivities",
             "name": "MintingActivities",
             "fieldTypes": [
                 {
@@ -4374,12 +4469,12 @@ export const DelegateActivitySchema : EnumTypeSchema = {
                     "type": {
                         "kind": "enum",
                         "name": "MintingActivity",
-                        "id": "__module__ProtocolSettingsPolicy__MintingActivity[]",
+                        "id": "__module__NeighborhoodPolicy__MintingActivity[]",
                         "variantTypes": [
                             {
                                 "kind": "variant",
                                 "tag": 0,
-                                "id": "__module__ProtocolSettingsPolicy__MintingActivity[]__CreatingRecord",
+                                "id": "__module__NeighborhoodPolicy__MintingActivity[]__CreatingRecord",
                                 "name": "CreatingRecord",
                                 "fieldTypes": [
                                     {
@@ -4399,7 +4494,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 4,
-            "id": "__module__ProtocolSettingsPolicy__DelegateActivity[]__BurningActivities",
+            "id": "__module__NeighborhoodPolicy__DelegateActivity[]__BurningActivities",
             "name": "BurningActivities",
             "fieldTypes": [
                 {
@@ -4407,12 +4502,12 @@ export const DelegateActivitySchema : EnumTypeSchema = {
                     "type": {
                         "kind": "enum",
                         "name": "BurningActivity",
-                        "id": "__module__ProtocolSettingsPolicy__BurningActivity[]",
+                        "id": "__module__NeighborhoodPolicy__BurningActivity[]",
                         "variantTypes": [
                             {
                                 "kind": "variant",
                                 "tag": 0,
-                                "id": "__module__ProtocolSettingsPolicy__BurningActivity[]__DeletingRecord",
+                                "id": "__module__NeighborhoodPolicy__BurningActivity[]__DeletingRecord",
                                 "name": "DeletingRecord",
                                 "fieldTypes": [
                                     {
@@ -4432,7 +4527,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 5,
-            "id": "__module__ProtocolSettingsPolicy__DelegateActivity[]__CreatingDelegatedData",
+            "id": "__module__NeighborhoodPolicy__DelegateActivity[]__CreatingDelegatedData",
             "name": "CreatingDelegatedData",
             "fieldTypes": [
                 {
@@ -4454,7 +4549,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 6,
-            "id": "__module__ProtocolSettingsPolicy__DelegateActivity[]__UpdatingDelegatedData",
+            "id": "__module__NeighborhoodPolicy__DelegateActivity[]__UpdatingDelegatedData",
             "name": "UpdatingDelegatedData",
             "fieldTypes": [
                 {
@@ -4476,7 +4571,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 7,
-            "id": "__module__ProtocolSettingsPolicy__DelegateActivity[]__DeletingDelegatedData",
+            "id": "__module__NeighborhoodPolicy__DelegateActivity[]__DeletingDelegatedData",
             "name": "DeletingDelegatedData",
             "fieldTypes": [
                 {
@@ -4498,7 +4593,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 8,
-            "id": "__module__ProtocolSettingsPolicy__DelegateActivity[]__MultipleDelegateActivities",
+            "id": "__module__NeighborhoodPolicy__DelegateActivity[]__MultipleDelegateActivities",
             "name": "MultipleDelegateActivities",
             "fieldTypes": [
                 {
@@ -9358,6 +9453,172 @@ export const CapoCtxSchema : StructTypeSchema = {
                         ]
                     }
                 ]
+            }
+        }
+    ]
+};
+
+export const dgd_DataSrcSchema : EnumTypeSchema = {
+    "kind": "enum",
+    "name": "dgd_DataSrc",
+    "id": "__module__CapoHelpers__dgd_DataSrc[]",
+    "variantTypes": [
+        {
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__CapoHelpers__dgd_DataSrc[]__Unk",
+            "name": "Unk",
+            "fieldTypes": []
+        },
+        {
+            "kind": "variant",
+            "tag": 1,
+            "id": "__module__CapoHelpers__dgd_DataSrc[]__Input",
+            "name": "Input",
+            "fieldTypes": [
+                {
+                    "name": "utxo",
+                    "type": {
+                        "kind": "internal",
+                        "name": "TxInput"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 2,
+            "id": "__module__CapoHelpers__dgd_DataSrc[]__Output",
+            "name": "Output",
+            "fieldTypes": [
+                {
+                    "name": "txo",
+                    "type": {
+                        "kind": "internal",
+                        "name": "TxOutput"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 3,
+            "id": "__module__CapoHelpers__dgd_DataSrc[]__Both",
+            "name": "Both",
+            "fieldTypes": [
+                {
+                    "name": "utxo",
+                    "type": {
+                        "kind": "internal",
+                        "name": "TxInput"
+                    }
+                },
+                {
+                    "name": "txo",
+                    "type": {
+                        "kind": "internal",
+                        "name": "TxOutput"
+                    }
+                }
+            ]
+        }
+    ]
+};
+
+export const DgDataDetailsSchema : StructTypeSchema = {
+    "kind": "struct",
+    "format": "list",
+    "id": "__module__CapoHelpers__DgDataDetails[]",
+    "name": "DgDataDetails",
+    "fieldTypes": [
+        {
+            "name": "dataSrc",
+            "type": {
+                "kind": "enum",
+                "name": "dgd_DataSrc",
+                "id": "__module__CapoHelpers__dgd_DataSrc[]",
+                "variantTypes": [
+                    {
+                        "kind": "variant",
+                        "tag": 0,
+                        "id": "__module__CapoHelpers__dgd_DataSrc[]__Unk",
+                        "name": "Unk",
+                        "fieldTypes": []
+                    },
+                    {
+                        "kind": "variant",
+                        "tag": 1,
+                        "id": "__module__CapoHelpers__dgd_DataSrc[]__Input",
+                        "name": "Input",
+                        "fieldTypes": [
+                            {
+                                "name": "utxo",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "TxInput"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "kind": "variant",
+                        "tag": 2,
+                        "id": "__module__CapoHelpers__dgd_DataSrc[]__Output",
+                        "name": "Output",
+                        "fieldTypes": [
+                            {
+                                "name": "txo",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "TxOutput"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "kind": "variant",
+                        "tag": 3,
+                        "id": "__module__CapoHelpers__dgd_DataSrc[]__Both",
+                        "name": "Both",
+                        "fieldTypes": [
+                            {
+                                "name": "utxo",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "TxInput"
+                                }
+                            },
+                            {
+                                "name": "txo",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "TxOutput"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "name": "id",
+            "type": {
+                "kind": "internal",
+                "name": "ByteArray"
+            }
+        },
+        {
+            "name": "type",
+            "type": {
+                "kind": "internal",
+                "name": "String"
+            }
+        },
+        {
+            "name": "mph",
+            "type": {
+                "kind": "internal",
+                "name": "MintingPolicyHash"
             }
         }
     ]

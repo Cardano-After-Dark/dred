@@ -1,0 +1,30 @@
+module NeighborhoodData
+
+// import {
+//     AbstractSettingsForNodeOperator as ProtocolSettings
+// } from NeighborhoodSettings
+
+struct NeighborhoodData {
+    id : ByteArray "@id" // = "nbhd-XXXXyyyyZZZZ"
+    type : String "tpe" // = "nbhd"
+
+    memberToken: String "mt"
+    name: String "nm"
+    description: String "dsc"
+    appUrl: String "appUrl"
+
+    // needs typeSchema support in Helios - use ByteArray encoding
+    // nodePublicKey: PubKey "pubk"
+
+    // name: String "name"
+    // description: String "desc"
+    // isActive: Bool "active"
+    // maxNodes: Int "maxn" 
+    minNodeUptime: Int "minup" // minimum required uptime percentage 
+
+    func validate(self) -> Bool {
+        assert(true || /*never executed*/ self == self, "no way");
+        // assert(self.memberToken != null, "memberToken is null");
+        true
+    }
+}

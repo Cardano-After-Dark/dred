@@ -44,9 +44,11 @@ import type {
 // import { MarketSaleController } from "../MarketSale/MarketSaleController.js";
 import type { CapoDatum$Ergo$CharterData } from "./DredCapo.typeInfo.js";
 import { NodeRegistryController } from "./nodeRegistry/NodeRegistryController.js";
+import { NeighborhoodController } from "src/DredNeighborhood/NeighborhoodController.js";
 
 const currentVersions = {
     nodeReg: "nodeRegPolV1" as const,
+    nbhReg: "nbhRegPolV1" as const,
     mktSalePol: "mktSalePolV1" as const,
     fPurpPol: "fPurpPolV1" as const,
     settingPol: "settingPolV1" as const,
@@ -73,6 +75,7 @@ export type Expand<T> = T extends (...args: infer A) => infer R
 type DredCapoFeatures = {
     settings?: boolean;
     nodeOpRegistry?: boolean;
+    nbhRegistry?: boolean;
 };
 
 // export type DredSettings = ErgoProtocolSettings;
@@ -86,6 +89,7 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
         return {
             settings: true,
             nodeOpRegistry: true,
+            nbhRegistry: true,
         };
     }
 
@@ -111,15 +115,23 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
         return super.getSpendDelegate(charterData) as any;
     }
 
-    // for DRED:
-    // /**
-    //  * @public
-    //  */
-    // async getNodeRegistryController(
-    //     charterData: CharterData
-    // ): Promise<NodeRegistryController> {
-    //     return this.getDgDataController("nodeReg") as any;
-    // }
+    async getNodeRegistryController(charterData?: CapoDatum$Ergo$CharterData): Promise<NodeRegistryController> {
+        if (!charterData) {
+            charterData = await this.findCharterData();
+        }
+        return this.getDgDataController("nodeReg", {
+            charterData: charterData as CapoDatum$Ergo$CharterData,
+        }) as Promise<NodeRegistryController>;
+    }
+
+    async getNbhRegistryController(charterData?: CapoDatum$Ergo$CharterData): Promise<NeighborhoodController> {
+        if (!charterData) {
+            charterData = await this.findCharterData();
+        }
+        return this.getDgDataController("nbhRegistry", {
+            charterData: charterData as CapoDatum$Ergo$CharterData,
+        }) as Promise<NeighborhoodController>;
+    }
 
     async getSettingsController(options: {
         charterData: CharterData;
@@ -153,6 +165,7 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
             mintDelegate: defineRole("mintDgt", MyMintSpendDelegate, {}),
             settings: defineRole("dgDataPolicy", ProtocolSettingsController, {}),
             nodeOpRegistry: defineRole("dgDataPolicy", NodeRegistryController, {}),
+            nbhRegistry: defineRole("dgDataPolicy", NeighborhoodController, {}),
 
             // optional tokenomics features:
             // mktSale: defineRole(

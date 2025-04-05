@@ -93,11 +93,13 @@ export type DelegationDetailLike = {
 
 export type NodeOperatorSettings = {
     minHeartbeatInterval: /*minStructField*/ bigint
+    minStake: /*minStructField*/ bigint
 }
 
 export type ErgoNodeOperatorSettings = NodeOperatorSettings/*like canon-other*/
 export type NodeOperatorSettingsLike = {
     minHeartbeatInterval: /*minStructField*/ IntLike
+    minStake: /*minStructField*/ IntLike
 }
 
 
