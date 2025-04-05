@@ -9,7 +9,8 @@ export default class ProtocolSettingsBundle extends DelegatedDataBundle.usingCap
     DredCapoBundle
 ) {
     specializedDelegateModule = ProtocolSettingsPolicy;
-
+    requiresGovAuthority = true;
+    
     get modules() {
         return [
             ProtocolSettings,

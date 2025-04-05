@@ -84,7 +84,7 @@ export function AdminPage() {
 
   return (
     <div className="container mx-auto px-4">
-      {/* <CharterStatus /> */}
+      <CharterStatus />
 
       <div className="flex justify-end items-center mb-6 -mt-14 w-full">
         <p className="text-sm text-right text-gray-500">Updated<br/>{lastUpdate.value.toLocaleString()}</p>

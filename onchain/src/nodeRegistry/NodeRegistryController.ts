@@ -63,8 +63,8 @@ export class NodeRegistryController extends DelegatedDataContract<
         };
     }
 
-    get capo(): DredCapo {
-        return this.configIn?.capo as unknown as DredCapo;
+    get capo() : DredCapo {
+        return super.capo as unknown as DredCapo;
     }
 
     async mkTxnRegisteringNode(

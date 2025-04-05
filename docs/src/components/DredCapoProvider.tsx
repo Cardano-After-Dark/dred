@@ -11,7 +11,12 @@ import {
 export class DredCapoProviderRaw extends CapoDAppProvider<
     DredCapo & any,
     UserActionMap<"ourActivity1">
-> {}
+> {
+
+    getStartedMessage() {
+        return "Welcome to the Dred Operator Network. Register a staking vault to get started as a node operator or token-holder"
+    }
+}
 
 interface DredCapoProviderProps {
     children: React.ReactNode

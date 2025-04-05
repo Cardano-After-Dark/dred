@@ -26,8 +26,9 @@ export class ProtocolSettingsController extends DelegatedDataContract<
     scriptBundle() {
         return ProtocolSettingsBundle.create();
     }
+    
     get capo() : DredCapo {
-        return this.configIn?.capo as unknown as DredCapo;
+        return super.capo as unknown as DredCapo;
     }
 
     get delegateName() {

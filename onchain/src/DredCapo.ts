@@ -70,13 +70,24 @@ export type Expand<T> = T extends (...args: infer A) => infer R
     ? { [K in keyof O]: O[K] }
     : never;
 
+type DredCapoFeatures = {
+    settings?: boolean;
+    nodeOpRegistry?: boolean;
+};
+
 // export type DredSettings = ErgoProtocolSettings;
 
 /**
  * @public
  */
-export class DredCapo extends Capo<DredCapo> {
+export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
     autoSetup = true;
+    get defaultFeatureFlags(): DredCapoFeatures {
+        return {
+            settings: true,
+            nodeOpRegistry: true,
+        };
+    }
 
     scriptBundle(): CapoHeliosBundle {
         return DredCapoBundle.create({
@@ -141,10 +152,7 @@ export class DredCapo extends Capo<DredCapo> {
             spendDelegate: defineRole("spendDgt", MyMintSpendDelegate, {}),
             mintDelegate: defineRole("mintDgt", MyMintSpendDelegate, {}),
             settings: defineRole("dgDataPolicy", ProtocolSettingsController, {}),
-            nodeOpRegistry: defineRole(
-                "dgDataPolicy",
-                NodeRegistryController, {}
-            ),
+            nodeOpRegistry: defineRole("dgDataPolicy", NodeRegistryController, {}),
 
             // optional tokenomics features:
             // mktSale: defineRole(
@@ -157,11 +165,9 @@ export class DredCapo extends Capo<DredCapo> {
             //     FundedPurposeController,
             //     {}
             // ),
-
         });
         return myDelegates;
     }
-
 
     async txnMintingFungibleTokens<TCX extends StellarTxnContext>(
         tcx: TCX,
@@ -212,7 +218,6 @@ export class DredCapo extends Capo<DredCapo> {
         };
     }
 
-
     // async mkAdditionalTxnsForCharter<TCX extends hasAddlTxns<StellarTxnContext<any>>>(
     //     this: DredCapo,
     //     tcx: TCX,
@@ -222,14 +227,13 @@ export class DredCapo extends Capo<DredCapo> {
     //     }
     // ) {
     //    // now handled by autoSetup
-    // 
+    //
     //     await this.setupFundedPurpose(tcx, options);
     //     await this.setupMarketSale(tcx, options);
     //     await this.setupNodeRegistry(tcx, options);
-    // 
+    //
     //     return tcx;
     // }
-
 
     requirements() {
         const baseTokenomics = super.requirements();

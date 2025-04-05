@@ -292,7 +292,7 @@ enum DelegateActivity {
                     print("registering a new DRED node...");
 
                     REQT("the operator must provide a valid minting seed");
-                    REQT("the seed must have a DRED.nodeOperator token in it");                    
+                    REQT("the seed must have a DRED.nodeOperator token in it");
                     mkTn : (String) -> String = mkUutTnFactory(seed);
 
                     // mints a dredNode UUT
@@ -333,13 +333,13 @@ enum DelegateActivity {
                     if (!memberToken.starts_with("member-")) { 
                         error("invalid member token name"
                     ) };
-                    expectedMemberToken : Value = mkTv(
-                        priorMddd.dd.mph, memberToken
+                    memberTokenAc : AssetClass = AssetClass::new(
+                        priorMddd.dd.mph, memberToken.encode_utf8()
                     );
 
                     // has the member-token in the txn
                     tx.inputs.find_safe((i: TxInput) -> Bool {
-                        i.value.contains(expectedMemberToken)
+                        i.value.get_safe(memberTokenAc) == 1
                     }).switch {
                         None => error("missing member token"),
                         Some => true
