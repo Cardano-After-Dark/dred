@@ -149,7 +149,7 @@ function useTableOfContents(tableOfContents) {
   return currentSection
 }
 
-export function Layout({ children, title, tableOfContents }) {
+export function Layout({ children, title, tableOfContents, prose }) {
   let router = useRouter()
   let isHomePage = router.pathname === '/'
   let allLinks = navigation.flatMap((section) => section.links)
@@ -170,6 +170,8 @@ export function Layout({ children, title, tableOfContents }) {
     }
     return section.children.findIndex(isActive) > -1
   }
+
+  const childrenWithOptionalProse = prose ? <Prose>{children}</Prose> : children
 
   return (
     <>
@@ -203,7 +205,7 @@ export function Layout({ children, title, tableOfContents }) {
                 )}
               </header>
             )}
-            <Prose>{children}</Prose>
+            {childrenWithOptionalProse}
           </article>
           <dl className="mt-12 flex border-t border-slate-200 pt-6 dark:border-slate-800">
             {previousPage && (

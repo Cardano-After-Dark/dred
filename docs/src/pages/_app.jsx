@@ -54,6 +54,8 @@ export default function App({ Component, pageProps }) {
     let title = pageProps.markdoc?.frontmatter.title || 
         pageProps.title || pageProps.pageTitle
 
+    let prose = ( !!pageProps.markdoc ) ? true : !! pageProps.prose
+
     let pageTitle =
         pageProps.markdoc?.frontmatter.pageTitle ||
         pageProps.pageTitle ||
@@ -74,7 +76,7 @@ export default function App({ Component, pageProps }) {
                 )}
             </Head>
             <Providers>
-                <Layout title={title} tableOfContents={tableOfContents}>
+                <Layout title={title} tableOfContents={tableOfContents} prose={prose}>
                     <Component {...pageProps} />
                 </Layout>
             </Providers>
