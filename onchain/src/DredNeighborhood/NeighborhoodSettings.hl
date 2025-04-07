@@ -1,13 +1,51 @@
 module NeighborhoodSettings
 
-// struct AbstractSettingsForNeighborhood {
-//     NeighborhoodSettings: NeighborhoodSettings "nbhd"
-// }
+enum FeeFrequency {
+    Monthly {
+        fee: Value
+    }
+    Yearly {
+        fee: Value
+    }
+    OneTime {
+        fee: Value
+    }
+}
 
-// struct NeighborhoodSettings {
-//     expectedHeartbeatInterval: Duration "hbi"
-//     minNodeCount: Int "minnodes"
-//     maxNodeCount: Int "maxnodes"
-//     requiredNodeUptime: Int "requptime" // percentage
-//     registrationFee: Int "regfee"
-// }
+enum TxnFeeSource {
+    Customer
+    SponsorContract {
+        sponsorContract: ScriptHash // or Address?
+    }
+    CapoRole {
+        role: String
+    }
+}
+
+enum RevenueModel {
+    Subscription {
+        subscriptionFee: FeeFrequency[],        
+    }
+    OneTime {
+        oneTimeFee: Value
+    }
+    TransactionBased {
+        minTxFee: Value
+        maxTxFee: Option[Value]
+        chargeTo: TxnFeeSource
+    }
+}
+
+struct NeighborhoodSettings {
+    expectedHeartbeatInterval: Duration "hbi"
+    minNodeCount: Int "minnodes"
+    maxNodeCount: Int "maxnodes"
+    requiredNodeUptime: Int "requptime" // percentage
+    registrationFee: Int "regfee"
+    minStake: Value "minStake"
+    revenueModel: RevenueModel[] "revMdl"
+}
+
+struct AbstractSettingsForNeighborhood {
+    NeighborhoodSettings: NeighborhoodSettings "nbhd"
+}

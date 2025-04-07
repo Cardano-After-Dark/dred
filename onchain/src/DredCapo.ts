@@ -44,7 +44,8 @@ import type {
 // import { MarketSaleController } from "../MarketSale/MarketSaleController.js";
 import type { CapoDatum$Ergo$CharterData } from "./DredCapo.typeInfo.js";
 import { NodeRegistryController } from "./nodeRegistry/NodeRegistryController.js";
-import { NeighborhoodController } from "src/DredNeighborhood/NeighborhoodController.js";
+import { NeighborhoodController } from "./DredNeighborhood/NeighborhoodController.js";
+/* Add imports for each model-specific controller class here */
 
 const currentVersions = {
     nodeReg: "nodeRegPolV1" as const,
@@ -76,6 +77,8 @@ type DredCapoFeatures = {
     settings?: boolean;
     nodeOpRegistry?: boolean;
     nbhRegistry?: boolean;
+    s3domain?: boolean;
+    /* Add other feature-flag definitions here */
 };
 
 // export type DredSettings = ErgoProtocolSettings;
@@ -90,6 +93,7 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
             settings: true,
             nodeOpRegistry: true,
             nbhRegistry: true,
+            /* Add other feature-flag defaults here */
         };
     }
 
@@ -140,10 +144,13 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
         return this.getDgDataController("settings", options) as any;
     }
 
+    /* add other controller-fetching methods here */
+
     async mkInitialSettings(): Promise<minimalProtocolSettings> {
         return {
             nodeOpSettings: {
                 minHeartbeatInterval: BigInt(72 * 60 * 60 * 1000),
+                minStake: 20000n
             },
         };
     }
@@ -153,6 +160,14 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
             type: "dredNode",
         });
     }
+
+    async findNbhRegistryEntries() {
+        return this.findDelegatedDataUtxos({
+            type: "dredNbh",
+        });
+    }
+
+    /* add other model-specific finders here */
 
     initDelegateRoles() {
         const inh = super.basicDelegateRoles();
@@ -166,6 +181,7 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
             settings: defineRole("dgDataPolicy", ProtocolSettingsController, {}),
             nodeOpRegistry: defineRole("dgDataPolicy", NodeRegistryController, {}),
             nbhRegistry: defineRole("dgDataPolicy", NeighborhoodController, {}),
+            /* Add other delegate roles here */
 
             // optional tokenomics features:
             // mktSale: defineRole(
