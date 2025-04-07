@@ -1,0 +1,14 @@
+{
+    "capo": {
+        "config": {
+            "mph": { "bytes": "bc2dfd66b00de40da2ec29f6d32c7b93d07bd15ceff7b295bf1e183f" },
+            "seedTxn": {
+                "bytes": "c83409a23d481943cf64e348d3508c352a9b918d466b12a1f33963cf8ca65ae6"
+            },
+            "seedIndex": "1",
+            "rootCapoScriptHash": {
+                "bytes": "5295ebc629b63715eb7e654e865ac57968a863942d6ed7df4b7f4726"
+            }
+        }
+    }
+}
