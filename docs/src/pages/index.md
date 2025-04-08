@@ -4,7 +4,7 @@ pageTitle: Dred - Decentralized Redis State Channels for Web3
 description: A decentralized real-time messaging protocol built on Redis, designed specifically for dApps and Web3 applications
 ---
 
-Learn how to get Dred set up in your project in under thirty minutes or it's free. {% .lead %}
+Welcome to Dred! A powerful decentralized messaging protocol that enables real-time communication for Web3 applications. Built on Redis state channels, Dred provides a robust infrastructure for dApps to implement real-time features without centralized dependencies. {% .lead %}
 
 {% quick-links %}
 
