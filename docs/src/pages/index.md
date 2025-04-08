@@ -21,7 +21,7 @@ Welcome to Dred! A powerful decentralized messaging protocol that enables real-t
 ---
 ## Quick Start
 
-In this guide you will learn ...
+Dred is designed to be easy to set up and integrate into your dApp. This guide will walk you through the installation process, basic configuration, and how to start using Dred in your application. {% .lead %}
 
 ### What is Dred
 

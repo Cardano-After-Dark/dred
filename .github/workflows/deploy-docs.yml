@@ -20,22 +20,40 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: 18
+          cache: 'pnpm'
           
       - uses: pnpm/action-setup@v2
         with:
           version: 7.25.1
+          run_install: false
+          
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
           
       - name: Install dependencies
         run: cd docs && pnpm install --frozen-lockfile
         
       - name: Update browserslist database
-        run: cd docs && npx browserslist@latest --update-db
+        working-directory: docs
+        run: |
+          pnpm add -D update-browserslist-db
+          pnpm exec update-browserslist-db@latest
         
       - name: Build documentation
         run: cd docs && pnpm build && pnpm export
@@ -44,7 +62,7 @@ jobs:
         uses: actions/configure-pages@v3
         
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v2
         with:
           path: docs/out
 
@@ -57,4 +75,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 
+        uses: actions/deploy-pages@v2 
