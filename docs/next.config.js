@@ -9,11 +9,13 @@ const nextConfig = {
   },
   basePath: '/dred',
   assetPrefix: '/dred/',
+  images: {
+    unoptimized: true,
+  },
   webpack: (config) => {
     config.output.publicPath = '/dred' + config.output.publicPath
     return config
   },
 }
-
 
 module.exports = withMarkdoc()(nextConfig)
