@@ -17,6 +17,7 @@ import ProtocolSettingsDataBridge from "./ProtocolSettings.bridge.js";
 import { makeByteArrayData, makeMapData } from "@helios-lang/uplc";
 import { encodeUtf8 } from "@helios-lang/codec-utils";
 import { DredCapo } from "../DredCapo.js";
+import { makeValue } from "@helios-lang/ledger";
 
 export class ProtocolSettingsController extends DelegatedDataContract<
     ProtocolSettings,
@@ -59,12 +60,14 @@ export class ProtocolSettingsController extends DelegatedDataContract<
     exampleData(): minimalProtocolSettings {
         const settings: minimalProtocolSettings = {
             nodeOpSettings: {
-                minHeartbeatInterval: 7 * 24 * 60 * 60 * 1000,
-                minStake: 20000n,
+                expectedHeartbeatInterval: 7 * 24 * 60 * 60 * 1000,
+                minNodeOperatorStake: makeValue(20_000n),
+                minNodeRegistrationFee: 2_000n,
+                requiredNodeUptime: 90n,
             },            
             nbhSettings: {
-                minRegistrationFee: 1000000000000000000n,
-                minStake: 20000n,
+                minNbhStake: makeValue(20_000n),
+                minRegistrationFee: 4_000n               
             },
             /* Add other settings here */
         };
