@@ -209,7 +209,7 @@
        * SUPPORTED TOKENS: <projectFolder>, <packageName>, <unscopedPackageName>
        * DEFAULT VALUE: "<projectFolder>/temp/<unscopedPackageName>.api.json"
        */
-       "apiJsonFilePath": "<projectFolder>/dApp.api.json"
+       "apiJsonFilePath": "<projectFolder>/dApp.api.json",
   
       /**
        * Whether "forgotten exports" should be included in the doc model file. Forgotten exports are declarations
@@ -218,7 +218,7 @@
        *
        * DEFAULT VALUE: "false"
        */
-      // "includeForgottenExports": false,
+      "includeForgottenExports": true
   
       /**
        * The base URL where the project's source code can be viewed on a website such as GitHub or

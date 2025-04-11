@@ -103,7 +103,9 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
         });
     }
 
-    // todo: remove this when the base method gives better type
+    /**
+     * locates the current settings for the capo
+     */
     async findSettingsInfo(options: {
         charterData: CharterData;
         capoUtxos?: TxInput[];
@@ -111,14 +113,23 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
         return super.findSettingsInfo(options) as any;
     }
 
+    /**
+     * Finds and instantiates the mint delegate for the capo
+     */
     async getMintDelegate(charterData?: CapoDatum$Ergo$CharterData): Promise<MyMintSpendDelegate> {
         return super.getMintDelegate(charterData) as any;
     }
 
+    /**
+     * Finds and instantiates the spend delegate for the capo
+     */
     async getSpendDelegate(charterData?: CapoDatum$Ergo$CharterData): Promise<MyMintSpendDelegate> {
         return super.getSpendDelegate(charterData) as any;
     }
 
+    /**
+     * Finds and instantiates the node registry controller for the capo
+     */
     async getNodeRegistryController(charterData?: CapoDatum$Ergo$CharterData): Promise<NodeRegistryController> {
         if (!charterData) {
             charterData = await this.findCharterData();
@@ -128,6 +139,9 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
         }) as Promise<NodeRegistryController>;
     }
 
+    /**
+     * Finds and instantiates the neighborhood registry controller for the capo
+     */
     async getNbhRegistryController(charterData?: CapoDatum$Ergo$CharterData): Promise<NeighborhoodController> {
         if (!charterData) {
             charterData = await this.findCharterData();
@@ -137,6 +151,9 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
         }) as Promise<NeighborhoodController>;
     }
 
+    /**
+     * Finds and instantiates the settings controller for the capo
+     */
     async getSettingsController(options: {
         charterData: CharterData;
         optional?: true;
@@ -146,21 +163,36 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
 
     /* add other controller-fetching methods here */
 
+    /**
+     * Creates the initial settings for the capo
+     */
     async mkInitialSettings(): Promise<minimalProtocolSettings> {
         return {
             nodeOpSettings: {
-                minHeartbeatInterval: BigInt(72 * 60 * 60 * 1000),
-                minStake: 20000n
+                expectedHeartbeatInterval: BigInt(72 * 60 * 60 * 1000),
+                minNodeOperatorStake: makeValue(20000n),
+                minNodeRegistrationFee: 10000n,
+                requiredNodeUptime: 0.95,
+            },
+            nbhSettings: {
+                minNbhStake: makeValue(20000n),
+                minRegistrationFee: 10000n,
             },
         };
     }
 
+    /**
+     * Finds all the node-registration records
+     */
     async findNodeOpVaultEntries() {
         return this.findDelegatedDataUtxos({
             type: "dredNode",
         });
     }
 
+    /**
+     * Finds all the neighborhood-registration records
+     */
     async findNbhRegistryEntries() {
         return this.findDelegatedDataUtxos({
             type: "dredNbh",
@@ -198,6 +230,9 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
         return myDelegates;
     }
 
+    /**
+     * Mints fungible tokens under the Capo's minting policy
+     */
     async txnMintingFungibleTokens<TCX extends StellarTxnContext>(
         tcx: TCX,
         tokenName: string | number[],
