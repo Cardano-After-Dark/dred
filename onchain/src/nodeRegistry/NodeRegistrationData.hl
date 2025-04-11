@@ -1,8 +1,5 @@
 module NodeRegistrationData
 
-import {
-    ProtocolSettings as AbstractSettingsWithNOS
-} from ProtocolSettings
 
 struct NodeRegistrationData {
     id : ByteArray "@id" // = "dredNode-XXXXyyyyZZZZ"

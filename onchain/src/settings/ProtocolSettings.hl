@@ -3,6 +3,7 @@ module ProtocolSettings
 
 //sample
 import {NodeOperatorSettings} from NodeOperatorSettings
+import {NeighborhoodSettings} from NeighborhoodSettings
 /* Add imports for other modules here */
 
 struct ProtocolSettings {
@@ -10,6 +11,7 @@ struct ProtocolSettings {
     type: String "tpe" // "set"
 
     nodeOpSettings: NodeOperatorSettings "nOp"
+    nbhSettings: NeighborhoodSettings "nbh"
     /* Add other settings here */
     // from Stellar Tokenomics Engine
     // fundedPurposeSettings: FPSettings "fPurp"

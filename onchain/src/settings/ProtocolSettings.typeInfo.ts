@@ -92,14 +92,30 @@ export type DelegationDetailLike = {
 
 
 export type NodeOperatorSettings = {
-    minHeartbeatInterval: /*minStructField*/ bigint
-    minStake: /*minStructField*/ bigint
+    expectedHeartbeatInterval: /*minStructField*/ bigint
+    requiredNodeUptime: /*minStructField*/ bigint
+    minNodeRegistrationFee: /*minStructField*/ bigint
+    minNodeOperatorStake: /*minStructField*/ Value
 }
 
 export type ErgoNodeOperatorSettings = NodeOperatorSettings/*like canon-other*/
 export type NodeOperatorSettingsLike = {
-    minHeartbeatInterval: /*minStructField*/ IntLike
-    minStake: /*minStructField*/ IntLike
+    expectedHeartbeatInterval: /*minStructField*/ IntLike
+    requiredNodeUptime: /*minStructField*/ IntLike
+    minNodeRegistrationFee: /*minStructField*/ IntLike
+    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+}
+
+
+export type NeighborhoodSettings = {
+    minRegistrationFee: /*minStructField*/ bigint
+    minNbhStake: /*minStructField*/ Value
+}
+
+export type ErgoNeighborhoodSettings = NeighborhoodSettings/*like canon-other*/
+export type NeighborhoodSettingsLike = {
+    minRegistrationFee: /*minStructField*/ IntLike
+    minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 
 
@@ -107,18 +123,21 @@ export type ProtocolSettings = {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     nodeOpSettings: /*minStructField*/ NodeOperatorSettings
+    nbhSettings: /*minStructField*/ NeighborhoodSettings
 }
 
 export type ErgoProtocolSettings = {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     nodeOpSettings: /*minStructField*/ ErgoNodeOperatorSettings
+    nbhSettings: /*minStructField*/ ErgoNeighborhoodSettings
 }
 
 export type ProtocolSettingsLike = {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     nodeOpSettings: /*minStructField*/ NodeOperatorSettingsLike
+    nbhSettings: /*minStructField*/ NeighborhoodSettingsLike
 }
 
 export type minimalProtocolSettings = minimalData<ProtocolSettingsLike>

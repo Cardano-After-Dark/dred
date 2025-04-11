@@ -57,6 +57,7 @@ import type {
     DelegateDatum$Cip68RefToken, DelegateDatum$Ergo$Cip68RefToken, DelegateDatum$Cip68RefTokenLike,
     DelegationDetail, ErgoDelegationDetail, DelegationDetailLike,
     NodeOperatorSettings, ErgoNodeOperatorSettings, NodeOperatorSettingsLike,
+    NeighborhoodSettings, ErgoNeighborhoodSettings, NeighborhoodSettingsLike,
     ProtocolSettings, ErgoProtocolSettings, ProtocolSettingsLike,
     DelegateDatum$capoStoredData, DelegateDatum$Ergo$capoStoredData, DelegateDatum$capoStoredDataLike,
     DelegateDatum, ErgoDelegateDatum, DelegateDatumLike,
@@ -219,11 +220,23 @@ export class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
        * generates UplcData for the enum type ***NodeOperatorSettings*** for the `BasicDelegate` script
        */
         NodeOperatorSettings: (fields: NodeOperatorSettingsLike | {
-    minHeartbeatInterval: /*minStructField*/ IntLike
-    minStake: /*minStructField*/ IntLike
+    expectedHeartbeatInterval: /*minStructField*/ IntLike
+    requiredNodeUptime: /*minStructField*/ IntLike
+    minNodeRegistrationFee: /*minStructField*/ IntLike
+    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 ) => {
         return this.ᱺᱺNodeOperatorSettingsCast.toUplcData(fields);
+    },
+      /**
+       * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
+       */
+        NeighborhoodSettings: (fields: NeighborhoodSettingsLike | {
+    minRegistrationFee: /*minStructField*/ IntLike
+    minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+}
+) => {
+        return this.ᱺᱺNeighborhoodSettingsCast.toUplcData(fields);
     },
       /**
        * generates UplcData for the enum type ***ProtocolSettings*** for the `BasicDelegate` script
@@ -232,6 +245,7 @@ export class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     nodeOpSettings: /*minStructField*/ NodeOperatorSettingsLike
+    nbhSettings: /*minStructField*/ NeighborhoodSettingsLike
 }
 ) => {
         return this.ᱺᱺProtocolSettingsCast.toUplcData(fields);
@@ -296,6 +310,12 @@ export class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
                 * uses unicode U+1c7a - sorts to the end */
     ᱺᱺNodeOperatorSettingsCast = makeCast<NodeOperatorSettings, NodeOperatorSettingsLike>(
         NodeOperatorSettingsSchema,
+        { isMainnet: true, unwrapSingleFieldEnumVariants: true }
+    );
+    /**
+                * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺNeighborhoodSettingsCast = makeCast<NeighborhoodSettings, NeighborhoodSettingsLike>(
+        NeighborhoodSettingsSchema,
         { isMainnet: true, unwrapSingleFieldEnumVariants: true }
     );
     /**
@@ -672,6 +692,25 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
     } /* structReader helper */
 
     /**
+        * reads UplcData *known to fit the **NeighborhoodSettings*** struct type,
+        * for the BasicDelegate script.
+        * ### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    NeighborhoodSettings(d: UplcData) {
+        const cast = this.bridge.ᱺᱺNeighborhoodSettingsCast;
+        return cast.fromUplcData(d) //??? as ErgoNeighborhoodSettings;
+    } /* structReader helper */
+
+    /**
         * reads UplcData *known to fit the **ProtocolSettings*** struct type,
         * for the BasicDelegate script.
         * ### Standard WARNING
@@ -838,6 +877,31 @@ export class NodeOperatorSettingsHelper extends DataBridge {
     //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
     //
     // NodeOperatorSettings(fields: NodeOperatorSettingsLike) {
+    //    return this.ᱺᱺcast.toUplcData(fields);
+    //}
+} //mkStructHelperClass 
+
+
+/**
+ * Helper class for generating UplcData for the struct ***NeighborhoodSettings*** type.
+ * @public
+ */
+export class NeighborhoodSettingsHelper extends DataBridge {
+    isCallable = true
+   /**
+            * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<NeighborhoodSettings, NeighborhoodSettingsLike>(
+        NeighborhoodSettingsSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    // You might expect a function as follows.  We provide this interface and result, 
+    // using a proxy in the inheritance chain.
+    // see the callableDataBridge type on the 'datum' property in the contract bridge.
+    //
+    //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
+    //
+    // NeighborhoodSettings(fields: NeighborhoodSettingsLike) {
     //    return this.ᱺᱺcast.toUplcData(fields);
     //}
 } //mkStructHelperClass 
@@ -3114,20 +3178,61 @@ export const NodeOperatorSettingsSchema : StructTypeSchema = {
     "name": "NodeOperatorSettings",
     "fieldTypes": [
         {
-            "name": "minHeartbeatInterval",
+            "name": "expectedHeartbeatInterval",
             "type": {
                 "kind": "internal",
-                "name": "Int"
+                "name": "Duration"
             },
-            "key": "minHB"
+            "key": "ndHbi"
         },
         {
-            "name": "minStake",
+            "name": "requiredNodeUptime",
             "type": {
                 "kind": "internal",
                 "name": "Int"
             },
-            "key": "minStake"
+            "key": "ndUpt"
+        },
+        {
+            "name": "minNodeRegistrationFee",
+            "type": {
+                "kind": "internal",
+                "name": "Int"
+            },
+            "key": "minFee"
+        },
+        {
+            "name": "minNodeOperatorStake",
+            "type": {
+                "kind": "internal",
+                "name": "Value"
+            },
+            "key": "minStk"
+        }
+    ]
+};
+
+export const NeighborhoodSettingsSchema : StructTypeSchema = {
+    "kind": "struct",
+    "format": "map",
+    "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+    "name": "NeighborhoodSettings",
+    "fieldTypes": [
+        {
+            "name": "minRegistrationFee",
+            "type": {
+                "kind": "internal",
+                "name": "Int"
+            },
+            "key": "minRegFee"
+        },
+        {
+            "name": "minNbhStake",
+            "type": {
+                "kind": "internal",
+                "name": "Value"
+            },
+            "key": "minStk"
         }
     ]
 };
@@ -3163,24 +3268,68 @@ export const ProtocolSettingsSchema : StructTypeSchema = {
                 "name": "NodeOperatorSettings",
                 "fieldTypes": [
                     {
-                        "name": "minHeartbeatInterval",
+                        "name": "expectedHeartbeatInterval",
                         "type": {
                             "kind": "internal",
-                            "name": "Int"
+                            "name": "Duration"
                         },
-                        "key": "minHB"
+                        "key": "ndHbi"
                     },
                     {
-                        "name": "minStake",
+                        "name": "requiredNodeUptime",
                         "type": {
                             "kind": "internal",
                             "name": "Int"
                         },
-                        "key": "minStake"
+                        "key": "ndUpt"
+                    },
+                    {
+                        "name": "minNodeRegistrationFee",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Int"
+                        },
+                        "key": "minFee"
+                    },
+                    {
+                        "name": "minNodeOperatorStake",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Value"
+                        },
+                        "key": "minStk"
                     }
                 ]
             },
             "key": "nOp"
+        },
+        {
+            "name": "nbhSettings",
+            "type": {
+                "kind": "struct",
+                "format": "map",
+                "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+                "name": "NeighborhoodSettings",
+                "fieldTypes": [
+                    {
+                        "name": "minRegistrationFee",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Int"
+                        },
+                        "key": "minRegFee"
+                    },
+                    {
+                        "name": "minNbhStake",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Value"
+                        },
+                        "key": "minStk"
+                    }
+                ]
+            },
+            "key": "nbh"
         }
     ]
 };
@@ -3318,24 +3467,68 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                     "name": "NodeOperatorSettings",
                                     "fieldTypes": [
                                         {
-                                            "name": "minHeartbeatInterval",
+                                            "name": "expectedHeartbeatInterval",
                                             "type": {
                                                 "kind": "internal",
-                                                "name": "Int"
+                                                "name": "Duration"
                                             },
-                                            "key": "minHB"
+                                            "key": "ndHbi"
                                         },
                                         {
-                                            "name": "minStake",
+                                            "name": "requiredNodeUptime",
                                             "type": {
                                                 "kind": "internal",
                                                 "name": "Int"
                                             },
-                                            "key": "minStake"
+                                            "key": "ndUpt"
+                                        },
+                                        {
+                                            "name": "minNodeRegistrationFee",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Int"
+                                            },
+                                            "key": "minFee"
+                                        },
+                                        {
+                                            "name": "minNodeOperatorStake",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                            },
+                                            "key": "minStk"
                                         }
                                     ]
                                 },
                                 "key": "nOp"
+                            },
+                            {
+                                "name": "nbhSettings",
+                                "type": {
+                                    "kind": "struct",
+                                    "format": "map",
+                                    "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+                                    "name": "NeighborhoodSettings",
+                                    "fieldTypes": [
+                                        {
+                                            "name": "minRegistrationFee",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Int"
+                                            },
+                                            "key": "minRegFee"
+                                        },
+                                        {
+                                            "name": "minNbhStake",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                            },
+                                            "key": "minStk"
+                                        }
+                                    ]
+                                },
+                                "key": "nbh"
                             }
                         ]
                     }

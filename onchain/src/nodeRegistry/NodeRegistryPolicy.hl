@@ -58,9 +58,12 @@ import {
 // } from ProtocolSettings
 
 import {
-    NodeRegistrationData,
-    AbstractSettingsWithNOS as ProtocolSettings
+    NodeRegistrationData
 } from NodeRegistrationData
+
+import {
+    AbstractSettingsForNodeOperator as ProtocolSettings
+} from NodeOperatorSettings
 
 import {
     CapoCtx,

@@ -1316,36 +1316,34 @@ export type CapoCtxLike = {
 
 
 export type NodeOperatorSettings = {
-    minHeartbeatInterval: /*minStructField*/ bigint
-    minStake: /*minStructField*/ bigint
+    expectedHeartbeatInterval: /*minStructField*/ bigint
+    requiredNodeUptime: /*minStructField*/ bigint
+    minNodeRegistrationFee: /*minStructField*/ bigint
+    minNodeOperatorStake: /*minStructField*/ Value
 }
 
 export type ErgoNodeOperatorSettings = NodeOperatorSettings/*like canon-other*/
 export type NodeOperatorSettingsLike = {
-    minHeartbeatInterval: /*minStructField*/ IntLike
-    minStake: /*minStructField*/ IntLike
+    expectedHeartbeatInterval: /*minStructField*/ IntLike
+    requiredNodeUptime: /*minStructField*/ IntLike
+    minNodeRegistrationFee: /*minStructField*/ IntLike
+    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 
 
-export type ProtocolSettings = {
-    id: /*minStructField*/ number[]
-    type: /*minStructField*/ string
+export type AbstractSettingsForNodeOperator = {
     nodeOpSettings: /*minStructField*/ NodeOperatorSettings
 }
 
-export type ErgoProtocolSettings = {
-    id: /*minStructField*/ number[]
-    type: /*minStructField*/ string
+export type ErgoAbstractSettingsForNodeOperator = {
     nodeOpSettings: /*minStructField*/ ErgoNodeOperatorSettings
 }
 
-export type ProtocolSettingsLike = {
-    id: /*minStructField*/ number[]
-    type: /*minStructField*/ string
+export type AbstractSettingsForNodeOperatorLike = {
     nodeOpSettings: /*minStructField*/ NodeOperatorSettingsLike
 }
 
-export type minimalProtocolSettings = minimalData<ProtocolSettingsLike>
+
 export type dgd_DataSrc$Both = {
     utxo: TxInput  /*minVariantField*/ ,
     txo: TxOutput  /*minVariantField*/ 

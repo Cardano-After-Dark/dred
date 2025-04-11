@@ -35,8 +35,11 @@ extends DelegatedDataBundle.usingCapoBundleClass(DredCapoBundle) {
         return [
             ...super.modules,
             NodeRegistrationData,
-            NodeOperatorSettings,
-            ProtocolSettings
+            NodeOperatorSettings
+            
+            // xxx Don't include ProtocolSettings here.  Instead, use any abstract settings
+            // definition instead.
+            // ProtocolSettings
         ];
     }
 }

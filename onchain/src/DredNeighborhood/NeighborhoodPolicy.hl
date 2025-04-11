@@ -52,14 +52,19 @@ import {
     mkUutTnFactory
 } from CapoMintHelpers
 
+// XXX don't include ProtocolSettings here.  Instead, import an abstract settings
+// definition instead, having only the settings area you need.
 // import {
 //     ProtocolSettings
 // } from ProtocolSettings
 
 import {
     NeighborhoodData
-    // AbstractSettingsWithNOS as ProtocolSettings
 } from NeighborhoodData
+
+import {
+    AbstractSettingsForNeighborhood as ProtocolSettings
+} from NeighborhoodSettings
 
 import {
     CapoCtx,
@@ -71,7 +76,8 @@ import {
 
 import {
     TODO,
-    REQT
+    REQT,
+    isNowish
 } from StellarHeliosHelpers
 
 // import {
@@ -371,7 +377,10 @@ enum DelegateActivity {
                                 NeighborhoodData::from_data(updatedUtxo.datum.inline);
 
                             // possibly move this to a separate SpendingActivity
-                            REQT("the lastHeartbeat must be extended by settings.expectedHeartbeatInterval");
+
+                            // REQT("the lastHeartbeat must be set to the current time");
+                            // assert(isNowish(updatedData.lastHeartbeat), "lastHeartbeat must be set to the current time");
+
                             // _freshExpiry : TimeRange = daysInFuture(settings.artistVaultSettings.albumCommissionDiscountDays.trunc());
 
                             assert(updatedData.validate(), "<-- that throws; this can't."); // throws if invalid

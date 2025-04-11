@@ -35,7 +35,10 @@ extends DelegatedDataBundle.usingCapoBundleClass(DredCapo) {
         return [
             ...super.modules,
             NeighborhoodData,
-            // NeighborhoodSettings,
+            NeighborhoodSettings
+
+            // xxx Don't include ProtocolSettings here.  Instead, use any abstract settings
+            // definition instead.
             // ProtocolSettings
         ];
     }

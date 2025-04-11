@@ -56,6 +56,12 @@ import type {
     AnyData, ErgoAnyData, AnyDataLike,
     DelegateDatum$Cip68RefToken, DelegateDatum$Ergo$Cip68RefToken, DelegateDatum$Cip68RefTokenLike,
     DelegationDetail, ErgoDelegationDetail, DelegationDetailLike,
+    FeeSource, ErgoFeeSource, FeeSourceLike,
+    RevenueModel$TransactionBased, RevenueModel$Ergo$TransactionBased, RevenueModel$TransactionBasedLike,
+    SubscriptionFeeFrequency, ErgoSubscriptionFeeFrequency, SubscriptionFeeFrequencyLike,
+    RevenueModel, ErgoRevenueModel, RevenueModelLike,
+    AppInfo, ErgoAppInfo, AppInfoLike,
+    NodeOpsInfo, ErgoNodeOpsInfo, NodeOpsInfoLike,
     NeighborhoodData, ErgoNeighborhoodData, NeighborhoodDataLike,
     DelegateDatum$capoStoredData, DelegateDatum$Ergo$capoStoredData, DelegateDatum$capoStoredDataLike,
     DelegateDatum, ErgoDelegateDatum, DelegateDatumLike,
@@ -94,6 +100,8 @@ import type {
     cctx_CharterInputType$Input, cctx_CharterInputType$Ergo$Input, cctx_CharterInputType$InputLike,
     cctx_CharterInputType, Ergocctx_CharterInputType, cctx_CharterInputTypeLike,
     CapoCtx, ErgoCapoCtx, CapoCtxLike,
+    NeighborhoodSettings, ErgoNeighborhoodSettings, NeighborhoodSettingsLike,
+    AbstractSettingsForNeighborhood, ErgoAbstractSettingsForNeighborhood, AbstractSettingsForNeighborhoodLike,
     dgd_DataSrc$Both, dgd_DataSrc$Ergo$Both, dgd_DataSrc$BothLike,
     dgd_DataSrc, Ergodgd_DataSrc, dgd_DataSrcLike,
     DgDataDetails, ErgoDgDataDetails, DgDataDetailsLike
@@ -143,6 +151,18 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
      * @remarks - these accessors are used to generate UplcData for each type
      */
     types = {
+      /**
+       * generates UplcData for the enum type ***FeeSource*** for the `BasicDelegate` script
+       */
+        FeeSource: new FeeSourceHelper({isMainnet: this.isMainnet}),
+      /**
+       * generates UplcData for the enum type ***SubscriptionFeeFrequency*** for the `BasicDelegate` script
+       */
+        SubscriptionFeeFrequency: new SubscriptionFeeFrequencyHelper({isMainnet: this.isMainnet}),
+      /**
+       * generates UplcData for the enum type ***RevenueModel*** for the `BasicDelegate` script
+       */
+        RevenueModel: new RevenueModelHelper({isMainnet: this.isMainnet}),
       /**
        * generates UplcData for the enum type ***DelegateDatum*** for the `BasicDelegate` script
        */
@@ -222,6 +242,28 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
         return this.ᱺᱺDelegationDetailCast.toUplcData(fields);
     },
       /**
+       * generates UplcData for the enum type ***AppInfo*** for the `BasicDelegate` script
+       */
+        AppInfo: (fields: AppInfoLike | {
+    url: /*minStructField*/ string
+    revenueModel: /*minStructField*/ Array<RevenueModelLike>
+}
+) => {
+        return this.ᱺᱺAppInfoCast.toUplcData(fields);
+    },
+      /**
+       * generates UplcData for the enum type ***NodeOpsInfo*** for the `BasicDelegate` script
+       */
+        NodeOpsInfo: (fields: NodeOpsInfoLike | {
+    minNodes: /*minStructField*/ IntLike
+    maxNodes: /*minStructField*/ IntLike
+    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+    minUptime: /*minStructField*/ IntLike
+}
+) => {
+        return this.ᱺᱺNodeOpsInfoCast.toUplcData(fields);
+    },
+      /**
        * generates UplcData for the enum type ***NeighborhoodData*** for the `BasicDelegate` script
        */
         NeighborhoodData: (fields: NeighborhoodDataLike | {
@@ -230,8 +272,8 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     memberToken: /*minStructField*/ string
     name: /*minStructField*/ string
     description: /*minStructField*/ string
-    appUrl: /*minStructField*/ string
-    minNodeUptime: /*minStructField*/ IntLike
+    appInfo: /*minStructField*/ AppInfoLike
+    opsInfo: /*minStructField*/ NodeOpsInfoLike
 }
 ) => {
         return this.ᱺᱺNeighborhoodDataCast.toUplcData(fields);
@@ -280,6 +322,25 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
         return this.ᱺᱺCapoCtxCast.toUplcData(fields);
     },
       /**
+       * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
+       */
+        NeighborhoodSettings: (fields: NeighborhoodSettingsLike | {
+    minRegistrationFee: /*minStructField*/ IntLike
+    minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+}
+) => {
+        return this.ᱺᱺNeighborhoodSettingsCast.toUplcData(fields);
+    },
+      /**
+       * generates UplcData for the enum type ***AbstractSettingsForNeighborhood*** for the `BasicDelegate` script
+       */
+        AbstractSettingsForNeighborhood: (fields: AbstractSettingsForNeighborhoodLike | {
+    NeighborhoodSettings: /*minStructField*/ NeighborhoodSettingsLike
+}
+) => {
+        return this.ᱺᱺAbstractSettingsForNeighborhoodCast.toUplcData(fields);
+    },
+      /**
        * generates UplcData for the enum type ***DgDataDetails*** for the `BasicDelegate` script
        */
         DgDataDetails: (fields: DgDataDetailsLike | {
@@ -302,6 +363,18 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
                 * uses unicode U+1c7a - sorts to the end */
     ᱺᱺDelegationDetailCast = makeCast<DelegationDetail, DelegationDetailLike>(
         DelegationDetailSchema,
+        { isMainnet: true, unwrapSingleFieldEnumVariants: true }
+    );
+    /**
+                * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺAppInfoCast = makeCast<AppInfo, AppInfoLike>(
+        AppInfoSchema,
+        { isMainnet: true, unwrapSingleFieldEnumVariants: true }
+    );
+    /**
+                * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺNodeOpsInfoCast = makeCast<NodeOpsInfo, NodeOpsInfoLike>(
+        NodeOpsInfoSchema,
         { isMainnet: true, unwrapSingleFieldEnumVariants: true }
     );
     /**
@@ -336,6 +409,18 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     );
     /**
                 * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺNeighborhoodSettingsCast = makeCast<NeighborhoodSettings, NeighborhoodSettingsLike>(
+        NeighborhoodSettingsSchema,
+        { isMainnet: true, unwrapSingleFieldEnumVariants: true }
+    );
+    /**
+                * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺAbstractSettingsForNeighborhoodCast = makeCast<AbstractSettingsForNeighborhood, AbstractSettingsForNeighborhoodLike>(
+        AbstractSettingsForNeighborhoodSchema,
+        { isMainnet: true, unwrapSingleFieldEnumVariants: true }
+    );
+    /**
+                * uses unicode U+1c7a - sorts to the end */
     ᱺᱺDgDataDetailsCast = makeCast<DgDataDetails, DgDataDetailsLike>(
         DgDataDetailsSchema,
         { isMainnet: true, unwrapSingleFieldEnumVariants: true }
@@ -352,6 +437,69 @@ export class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
     constructor(public bridge: NeighborhoodPolicyDataBridge, isMainnet: boolean) {
         super();
     }
+    /**
+        * reads UplcData *known to fit the **FeeSource*** enum type,
+        * for the BasicDelegate script.
+        * ### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the enum type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    FeeSource(d : UplcData) { 
+        const typeHelper = this.bridge.types.FeeSource;
+        const cast = typeHelper.ᱺᱺcast;  
+
+        return cast.fromUplcData(d) as ErgoFeeSource;        
+    } /* enumReader helper */
+
+    /**
+        * reads UplcData *known to fit the **SubscriptionFeeFrequency*** enum type,
+        * for the BasicDelegate script.
+        * ### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the enum type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    SubscriptionFeeFrequency(d : UplcData) { 
+        const typeHelper = this.bridge.types.SubscriptionFeeFrequency;
+        const cast = typeHelper.ᱺᱺcast;  
+
+        return cast.fromUplcData(d) as ErgoSubscriptionFeeFrequency;        
+    } /* enumReader helper */
+
+    /**
+        * reads UplcData *known to fit the **RevenueModel*** enum type,
+        * for the BasicDelegate script.
+        * ### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the enum type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    RevenueModel(d : UplcData) { 
+        const typeHelper = this.bridge.types.RevenueModel;
+        const cast = typeHelper.ᱺᱺcast;  
+
+        return cast.fromUplcData(d) as ErgoRevenueModel;        
+    } /* enumReader helper */
+
 datum = (d: UplcData) => { return this.DelegateDatum(d) }
     /**
         * reads UplcData *known to fit the **DelegateDatum*** enum type,
@@ -686,6 +834,44 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
     } /* structReader helper */
 
     /**
+        * reads UplcData *known to fit the **AppInfo*** struct type,
+        * for the BasicDelegate script.
+        * ### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    AppInfo(d: UplcData) {
+        const cast = this.bridge.ᱺᱺAppInfoCast;
+        return cast.fromUplcData(d) //??? as ErgoAppInfo;
+    } /* structReader helper */
+
+    /**
+        * reads UplcData *known to fit the **NodeOpsInfo*** struct type,
+        * for the BasicDelegate script.
+        * ### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    NodeOpsInfo(d: UplcData) {
+        const cast = this.bridge.ᱺᱺNodeOpsInfoCast;
+        return cast.fromUplcData(d) //??? as ErgoNodeOpsInfo;
+    } /* structReader helper */
+
+    /**
         * reads UplcData *known to fit the **NeighborhoodData*** struct type,
         * for the BasicDelegate script.
         * ### Standard WARNING
@@ -781,6 +967,44 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
     } /* structReader helper */
 
     /**
+        * reads UplcData *known to fit the **NeighborhoodSettings*** struct type,
+        * for the BasicDelegate script.
+        * ### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    NeighborhoodSettings(d: UplcData) {
+        const cast = this.bridge.ᱺᱺNeighborhoodSettingsCast;
+        return cast.fromUplcData(d) //??? as ErgoNeighborhoodSettings;
+    } /* structReader helper */
+
+    /**
+        * reads UplcData *known to fit the **AbstractSettingsForNeighborhood*** struct type,
+        * for the BasicDelegate script.
+        * ### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    AbstractSettingsForNeighborhood(d: UplcData) {
+        const cast = this.bridge.ᱺᱺAbstractSettingsForNeighborhoodCast;
+        return cast.fromUplcData(d) //??? as ErgoAbstractSettingsForNeighborhood;
+    } /* structReader helper */
+
+    /**
         * reads UplcData *known to fit the **DgDataDetails*** struct type,
         * for the BasicDelegate script.
         * ### Standard WARNING
@@ -846,6 +1070,186 @@ export class DelegationDetailHelper extends DataBridge {
     //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
     //
     // DelegationDetail(fields: DelegationDetailLike) {
+    //    return this.ᱺᱺcast.toUplcData(fields);
+    //}
+} //mkStructHelperClass 
+
+
+/**
+ * Helper class for generating UplcData for variants of the ***FeeSource*** enum type.
+ * @public
+ */
+export class FeeSourceHelper extends EnumBridge<JustAnEnum> {
+    /*mkEnumHelperClass*/
+    /**
+            *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<FeeSource, FeeSourceLike>(
+        FeeSourceSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+/**
+ * (property getter): UplcData for ***"NeighborhoodData::FeeSource.EndUser"***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+ */
+    get EndUser() {
+        const uplc = this.mkUplcData({ EndUser: {} }, 
+            "NeighborhoodData::FeeSource.EndUser");
+        return uplc;
+    } /* tagOnly variant accessor */
+
+    /**
+     * generates  UplcData for ***"NeighborhoodData::FeeSource.SponsorContract"***
+     */
+    SponsorContract(
+        sponsorContract: ScriptHash | string | number[]
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           SponsorContract: sponsorContract
+        }, "NeighborhoodData::FeeSource.SponsorContract"); /*singleField enum variant*/
+       return uplc;
+    }
+}/*mkEnumHelperClass*/
+
+
+/**
+ * Helper class for generating UplcData for variants of the ***SubscriptionFeeFrequency*** enum type.
+ * @public
+ */
+export class SubscriptionFeeFrequencyHelper extends EnumBridge<JustAnEnum> {
+    /*mkEnumHelperClass*/
+    /**
+            *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<SubscriptionFeeFrequency, SubscriptionFeeFrequencyLike>(
+        SubscriptionFeeFrequencySchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    /**
+     * generates  UplcData for ***"NeighborhoodData::SubscriptionFeeFrequency.Epoch"***
+     */
+    Epoch(
+        fee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           Epoch: fee
+        }, "NeighborhoodData::SubscriptionFeeFrequency.Epoch"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"NeighborhoodData::SubscriptionFeeFrequency.Monthly"***
+     */
+    Monthly(
+        fee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           Monthly: fee
+        }, "NeighborhoodData::SubscriptionFeeFrequency.Monthly"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"NeighborhoodData::SubscriptionFeeFrequency.Yearly"***
+     */
+    Yearly(
+        fee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           Yearly: fee
+        }, "NeighborhoodData::SubscriptionFeeFrequency.Yearly"); /*singleField enum variant*/
+       return uplc;
+    }
+}/*mkEnumHelperClass*/
+
+
+/**
+ * Helper class for generating UplcData for variants of the ***RevenueModel*** enum type.
+ * @public
+ */
+export class RevenueModelHelper extends EnumBridge<JustAnEnum> {
+    /*mkEnumHelperClass*/
+    /**
+            *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<RevenueModel, RevenueModelLike>(
+        RevenueModelSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    /**
+     * generates  UplcData for ***"NeighborhoodData::RevenueModel.TransactionBased"***
+     * @remarks - ***RevenueModel$TransactionBasedLike*** is the same as the expanded field-types.
+     */
+    TransactionBased(fields: RevenueModel$TransactionBasedLike | { 
+        minTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[],
+        maxTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[] | undefined,
+        chargeTo: FeeSourceLike
+    }) : UplcData {
+        const uplc = this.mkUplcData({
+            TransactionBased: fields 
+        }, "NeighborhoodData::RevenueModel.TransactionBased");
+       return uplc;
+    } /*multiFieldVariant enum accessor*/
+
+    /**
+     * generates  UplcData for ***"NeighborhoodData::RevenueModel.Subscription"***
+     */
+    Subscription(
+        subscriptionFee: Array<SubscriptionFeeFrequencyLike>
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           Subscription: subscriptionFee
+        }, "NeighborhoodData::RevenueModel.Subscription"); /*singleField enum variant*/
+       return uplc;
+    }
+}/*mkEnumHelperClass*/
+
+
+/**
+ * Helper class for generating UplcData for the struct ***AppInfo*** type.
+ * @public
+ */
+export class AppInfoHelper extends DataBridge {
+    isCallable = true
+   /**
+            * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<AppInfo, AppInfoLike>(
+        AppInfoSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    // You might expect a function as follows.  We provide this interface and result, 
+    // using a proxy in the inheritance chain.
+    // see the callableDataBridge type on the 'datum' property in the contract bridge.
+    //
+    //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
+    //
+    // AppInfo(fields: AppInfoLike) {
+    //    return this.ᱺᱺcast.toUplcData(fields);
+    //}
+} //mkStructHelperClass 
+
+
+/**
+ * Helper class for generating UplcData for the struct ***NodeOpsInfo*** type.
+ * @public
+ */
+export class NodeOpsInfoHelper extends DataBridge {
+    isCallable = true
+   /**
+            * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<NodeOpsInfo, NodeOpsInfoLike>(
+        NodeOpsInfoSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    // You might expect a function as follows.  We provide this interface and result, 
+    // using a proxy in the inheritance chain.
+    // see the callableDataBridge type on the 'datum' property in the contract bridge.
+    //
+    //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
+    //
+    // NodeOpsInfo(fields: NodeOpsInfoLike) {
     //    return this.ᱺᱺcast.toUplcData(fields);
     //}
 } //mkStructHelperClass 
@@ -3061,6 +3465,56 @@ export class CapoCtxHelper extends DataBridge {
 
 
 /**
+ * Helper class for generating UplcData for the struct ***NeighborhoodSettings*** type.
+ * @public
+ */
+export class NeighborhoodSettingsHelper extends DataBridge {
+    isCallable = true
+   /**
+            * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<NeighborhoodSettings, NeighborhoodSettingsLike>(
+        NeighborhoodSettingsSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    // You might expect a function as follows.  We provide this interface and result, 
+    // using a proxy in the inheritance chain.
+    // see the callableDataBridge type on the 'datum' property in the contract bridge.
+    //
+    //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
+    //
+    // NeighborhoodSettings(fields: NeighborhoodSettingsLike) {
+    //    return this.ᱺᱺcast.toUplcData(fields);
+    //}
+} //mkStructHelperClass 
+
+
+/**
+ * Helper class for generating UplcData for the struct ***AbstractSettingsForNeighborhood*** type.
+ * @public
+ */
+export class AbstractSettingsForNeighborhoodHelper extends DataBridge {
+    isCallable = true
+   /**
+            * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<AbstractSettingsForNeighborhood, AbstractSettingsForNeighborhoodLike>(
+        AbstractSettingsForNeighborhoodSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    // You might expect a function as follows.  We provide this interface and result, 
+    // using a proxy in the inheritance chain.
+    // see the callableDataBridge type on the 'datum' property in the contract bridge.
+    //
+    //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
+    //
+    // AbstractSettingsForNeighborhood(fields: AbstractSettingsForNeighborhoodLike) {
+    //    return this.ᱺᱺcast.toUplcData(fields);
+    //}
+} //mkStructHelperClass 
+
+
+/**
  * Helper class for generating UplcData for variants of the ***dgd_DataSrc*** enum type.
  * @public
  */
@@ -3203,6 +3657,415 @@ export const DelegationDetailSchema : StructTypeSchema = {
     ]
 };
 
+export const FeeSourceSchema : EnumTypeSchema = {
+    "kind": "enum",
+    "name": "FeeSource",
+    "id": "__module__NeighborhoodData__FeeSource[]",
+    "variantTypes": [
+        {
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
+            "name": "EndUser",
+            "fieldTypes": []
+        },
+        {
+            "kind": "variant",
+            "tag": 1,
+            "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
+            "name": "SponsorContract",
+            "fieldTypes": [
+                {
+                    "name": "sponsorContract",
+                    "type": {
+                        "kind": "internal",
+                        "name": "ScriptHash"
+                    }
+                }
+            ]
+        }
+    ]
+};
+
+export const SubscriptionFeeFrequencySchema : EnumTypeSchema = {
+    "kind": "enum",
+    "name": "SubscriptionFeeFrequency",
+    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
+    "variantTypes": [
+        {
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
+            "name": "Epoch",
+            "fieldTypes": [
+                {
+                    "name": "fee",
+                    "type": {
+                        "kind": "internal",
+                        "name": "Value"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 1,
+            "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
+            "name": "Monthly",
+            "fieldTypes": [
+                {
+                    "name": "fee",
+                    "type": {
+                        "kind": "internal",
+                        "name": "Value"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 2,
+            "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
+            "name": "Yearly",
+            "fieldTypes": [
+                {
+                    "name": "fee",
+                    "type": {
+                        "kind": "internal",
+                        "name": "Value"
+                    }
+                }
+            ]
+        }
+    ]
+};
+
+export const RevenueModelSchema : EnumTypeSchema = {
+    "kind": "enum",
+    "name": "RevenueModel",
+    "id": "__module__NeighborhoodData__RevenueModel[]",
+    "variantTypes": [
+        {
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBased",
+            "name": "TransactionBased",
+            "fieldTypes": [
+                {
+                    "name": "minTxFee",
+                    "type": {
+                        "kind": "internal",
+                        "name": "Value"
+                    }
+                },
+                {
+                    "name": "maxTxFee",
+                    "type": {
+                        "kind": "option",
+                        "someType": {
+                            "kind": "internal",
+                            "name": "Value"
+                        }
+                    }
+                },
+                {
+                    "name": "chargeTo",
+                    "type": {
+                        "kind": "enum",
+                        "name": "FeeSource",
+                        "id": "__module__NeighborhoodData__FeeSource[]",
+                        "variantTypes": [
+                            {
+                                "kind": "variant",
+                                "tag": 0,
+                                "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
+                                "name": "EndUser",
+                                "fieldTypes": []
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 1,
+                                "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
+                                "name": "SponsorContract",
+                                "fieldTypes": [
+                                    {
+                                        "name": "sponsorContract",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "ScriptHash"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 1,
+            "id": "__module__NeighborhoodData__RevenueModel[]__Subscription",
+            "name": "Subscription",
+            "fieldTypes": [
+                {
+                    "name": "subscriptionFee",
+                    "type": {
+                        "kind": "list",
+                        "itemType": {
+                            "kind": "enum",
+                            "name": "SubscriptionFeeFrequency",
+                            "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
+                            "variantTypes": [
+                                {
+                                    "kind": "variant",
+                                    "tag": 0,
+                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
+                                    "name": "Epoch",
+                                    "fieldTypes": [
+                                        {
+                                            "name": "fee",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "kind": "variant",
+                                    "tag": 1,
+                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
+                                    "name": "Monthly",
+                                    "fieldTypes": [
+                                        {
+                                            "name": "fee",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "kind": "variant",
+                                    "tag": 2,
+                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
+                                    "name": "Yearly",
+                                    "fieldTypes": [
+                                        {
+                                            "name": "fee",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+};
+
+export const AppInfoSchema : StructTypeSchema = {
+    "kind": "struct",
+    "format": "map",
+    "id": "__module__NeighborhoodData__AppInfo[]",
+    "name": "AppInfo",
+    "fieldTypes": [
+        {
+            "name": "url",
+            "type": {
+                "kind": "internal",
+                "name": "String"
+            },
+            "key": "url"
+        },
+        {
+            "name": "revenueModel",
+            "type": {
+                "kind": "list",
+                "itemType": {
+                    "kind": "enum",
+                    "name": "RevenueModel",
+                    "id": "__module__NeighborhoodData__RevenueModel[]",
+                    "variantTypes": [
+                        {
+                            "kind": "variant",
+                            "tag": 0,
+                            "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBased",
+                            "name": "TransactionBased",
+                            "fieldTypes": [
+                                {
+                                    "name": "minTxFee",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "Value"
+                                    }
+                                },
+                                {
+                                    "name": "maxTxFee",
+                                    "type": {
+                                        "kind": "option",
+                                        "someType": {
+                                            "kind": "internal",
+                                            "name": "Value"
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "chargeTo",
+                                    "type": {
+                                        "kind": "enum",
+                                        "name": "FeeSource",
+                                        "id": "__module__NeighborhoodData__FeeSource[]",
+                                        "variantTypes": [
+                                            {
+                                                "kind": "variant",
+                                                "tag": 0,
+                                                "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
+                                                "name": "EndUser",
+                                                "fieldTypes": []
+                                            },
+                                            {
+                                                "kind": "variant",
+                                                "tag": 1,
+                                                "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
+                                                "name": "SponsorContract",
+                                                "fieldTypes": [
+                                                    {
+                                                        "name": "sponsorContract",
+                                                        "type": {
+                                                            "kind": "internal",
+                                                            "name": "ScriptHash"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "kind": "variant",
+                            "tag": 1,
+                            "id": "__module__NeighborhoodData__RevenueModel[]__Subscription",
+                            "name": "Subscription",
+                            "fieldTypes": [
+                                {
+                                    "name": "subscriptionFee",
+                                    "type": {
+                                        "kind": "list",
+                                        "itemType": {
+                                            "kind": "enum",
+                                            "name": "SubscriptionFeeFrequency",
+                                            "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
+                                            "variantTypes": [
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 0,
+                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
+                                                    "name": "Epoch",
+                                                    "fieldTypes": [
+                                                        {
+                                                            "name": "fee",
+                                                            "type": {
+                                                                "kind": "internal",
+                                                                "name": "Value"
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 1,
+                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
+                                                    "name": "Monthly",
+                                                    "fieldTypes": [
+                                                        {
+                                                            "name": "fee",
+                                                            "type": {
+                                                                "kind": "internal",
+                                                                "name": "Value"
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 2,
+                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
+                                                    "name": "Yearly",
+                                                    "fieldTypes": [
+                                                        {
+                                                            "name": "fee",
+                                                            "type": {
+                                                                "kind": "internal",
+                                                                "name": "Value"
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "key": "revMdl"
+        }
+    ]
+};
+
+export const NodeOpsInfoSchema : StructTypeSchema = {
+    "kind": "struct",
+    "format": "map",
+    "id": "__module__NeighborhoodData__NodeOpsInfo[]",
+    "name": "NodeOpsInfo",
+    "fieldTypes": [
+        {
+            "name": "minNodes",
+            "type": {
+                "kind": "internal",
+                "name": "Int"
+            },
+            "key": "cMin"
+        },
+        {
+            "name": "maxNodes",
+            "type": {
+                "kind": "internal",
+                "name": "Int"
+            },
+            "key": "cMax"
+        },
+        {
+            "name": "minNodeOperatorStake",
+            "type": {
+                "kind": "internal",
+                "name": "Value"
+            },
+            "key": "minStk"
+        },
+        {
+            "name": "minUptime",
+            "type": {
+                "kind": "internal",
+                "name": "Int"
+            },
+            "key": "minUpt"
+        }
+    ]
+};
+
 export const NeighborhoodDataSchema : StructTypeSchema = {
     "kind": "struct",
     "format": "map",
@@ -3250,20 +4113,205 @@ export const NeighborhoodDataSchema : StructTypeSchema = {
             "key": "dsc"
         },
         {
-            "name": "appUrl",
+            "name": "appInfo",
             "type": {
-                "kind": "internal",
-                "name": "String"
+                "kind": "struct",
+                "format": "map",
+                "id": "__module__NeighborhoodData__AppInfo[]",
+                "name": "AppInfo",
+                "fieldTypes": [
+                    {
+                        "name": "url",
+                        "type": {
+                            "kind": "internal",
+                            "name": "String"
+                        },
+                        "key": "url"
+                    },
+                    {
+                        "name": "revenueModel",
+                        "type": {
+                            "kind": "list",
+                            "itemType": {
+                                "kind": "enum",
+                                "name": "RevenueModel",
+                                "id": "__module__NeighborhoodData__RevenueModel[]",
+                                "variantTypes": [
+                                    {
+                                        "kind": "variant",
+                                        "tag": 0,
+                                        "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBased",
+                                        "name": "TransactionBased",
+                                        "fieldTypes": [
+                                            {
+                                                "name": "minTxFee",
+                                                "type": {
+                                                    "kind": "internal",
+                                                    "name": "Value"
+                                                }
+                                            },
+                                            {
+                                                "name": "maxTxFee",
+                                                "type": {
+                                                    "kind": "option",
+                                                    "someType": {
+                                                        "kind": "internal",
+                                                        "name": "Value"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "name": "chargeTo",
+                                                "type": {
+                                                    "kind": "enum",
+                                                    "name": "FeeSource",
+                                                    "id": "__module__NeighborhoodData__FeeSource[]",
+                                                    "variantTypes": [
+                                                        {
+                                                            "kind": "variant",
+                                                            "tag": 0,
+                                                            "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
+                                                            "name": "EndUser",
+                                                            "fieldTypes": []
+                                                        },
+                                                        {
+                                                            "kind": "variant",
+                                                            "tag": 1,
+                                                            "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
+                                                            "name": "SponsorContract",
+                                                            "fieldTypes": [
+                                                                {
+                                                                    "name": "sponsorContract",
+                                                                    "type": {
+                                                                        "kind": "internal",
+                                                                        "name": "ScriptHash"
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "kind": "variant",
+                                        "tag": 1,
+                                        "id": "__module__NeighborhoodData__RevenueModel[]__Subscription",
+                                        "name": "Subscription",
+                                        "fieldTypes": [
+                                            {
+                                                "name": "subscriptionFee",
+                                                "type": {
+                                                    "kind": "list",
+                                                    "itemType": {
+                                                        "kind": "enum",
+                                                        "name": "SubscriptionFeeFrequency",
+                                                        "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
+                                                        "variantTypes": [
+                                                            {
+                                                                "kind": "variant",
+                                                                "tag": 0,
+                                                                "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
+                                                                "name": "Epoch",
+                                                                "fieldTypes": [
+                                                                    {
+                                                                        "name": "fee",
+                                                                        "type": {
+                                                                            "kind": "internal",
+                                                                            "name": "Value"
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "kind": "variant",
+                                                                "tag": 1,
+                                                                "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
+                                                                "name": "Monthly",
+                                                                "fieldTypes": [
+                                                                    {
+                                                                        "name": "fee",
+                                                                        "type": {
+                                                                            "kind": "internal",
+                                                                            "name": "Value"
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "kind": "variant",
+                                                                "tag": 2,
+                                                                "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
+                                                                "name": "Yearly",
+                                                                "fieldTypes": [
+                                                                    {
+                                                                        "name": "fee",
+                                                                        "type": {
+                                                                            "kind": "internal",
+                                                                            "name": "Value"
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        "key": "revMdl"
+                    }
+                ]
             },
-            "key": "appUrl"
+            "key": "app"
         },
         {
-            "name": "minNodeUptime",
+            "name": "opsInfo",
             "type": {
-                "kind": "internal",
-                "name": "Int"
+                "kind": "struct",
+                "format": "map",
+                "id": "__module__NeighborhoodData__NodeOpsInfo[]",
+                "name": "NodeOpsInfo",
+                "fieldTypes": [
+                    {
+                        "name": "minNodes",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Int"
+                        },
+                        "key": "cMin"
+                    },
+                    {
+                        "name": "maxNodes",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Int"
+                        },
+                        "key": "cMax"
+                    },
+                    {
+                        "name": "minNodeOperatorStake",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Value"
+                        },
+                        "key": "minStk"
+                    },
+                    {
+                        "name": "minUptime",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Int"
+                        },
+                        "key": "minUpt"
+                    }
+                ]
             },
-            "key": "minup"
+            "key": "ops"
         }
     ]
 };
@@ -3417,20 +4465,205 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                 "key": "dsc"
                             },
                             {
-                                "name": "appUrl",
+                                "name": "appInfo",
                                 "type": {
-                                    "kind": "internal",
-                                    "name": "String"
+                                    "kind": "struct",
+                                    "format": "map",
+                                    "id": "__module__NeighborhoodData__AppInfo[]",
+                                    "name": "AppInfo",
+                                    "fieldTypes": [
+                                        {
+                                            "name": "url",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "String"
+                                            },
+                                            "key": "url"
+                                        },
+                                        {
+                                            "name": "revenueModel",
+                                            "type": {
+                                                "kind": "list",
+                                                "itemType": {
+                                                    "kind": "enum",
+                                                    "name": "RevenueModel",
+                                                    "id": "__module__NeighborhoodData__RevenueModel[]",
+                                                    "variantTypes": [
+                                                        {
+                                                            "kind": "variant",
+                                                            "tag": 0,
+                                                            "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBased",
+                                                            "name": "TransactionBased",
+                                                            "fieldTypes": [
+                                                                {
+                                                                    "name": "minTxFee",
+                                                                    "type": {
+                                                                        "kind": "internal",
+                                                                        "name": "Value"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "name": "maxTxFee",
+                                                                    "type": {
+                                                                        "kind": "option",
+                                                                        "someType": {
+                                                                            "kind": "internal",
+                                                                            "name": "Value"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "name": "chargeTo",
+                                                                    "type": {
+                                                                        "kind": "enum",
+                                                                        "name": "FeeSource",
+                                                                        "id": "__module__NeighborhoodData__FeeSource[]",
+                                                                        "variantTypes": [
+                                                                            {
+                                                                                "kind": "variant",
+                                                                                "tag": 0,
+                                                                                "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
+                                                                                "name": "EndUser",
+                                                                                "fieldTypes": []
+                                                                            },
+                                                                            {
+                                                                                "kind": "variant",
+                                                                                "tag": 1,
+                                                                                "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
+                                                                                "name": "SponsorContract",
+                                                                                "fieldTypes": [
+                                                                                    {
+                                                                                        "name": "sponsorContract",
+                                                                                        "type": {
+                                                                                            "kind": "internal",
+                                                                                            "name": "ScriptHash"
+                                                                                        }
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "kind": "variant",
+                                                            "tag": 1,
+                                                            "id": "__module__NeighborhoodData__RevenueModel[]__Subscription",
+                                                            "name": "Subscription",
+                                                            "fieldTypes": [
+                                                                {
+                                                                    "name": "subscriptionFee",
+                                                                    "type": {
+                                                                        "kind": "list",
+                                                                        "itemType": {
+                                                                            "kind": "enum",
+                                                                            "name": "SubscriptionFeeFrequency",
+                                                                            "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
+                                                                            "variantTypes": [
+                                                                                {
+                                                                                    "kind": "variant",
+                                                                                    "tag": 0,
+                                                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
+                                                                                    "name": "Epoch",
+                                                                                    "fieldTypes": [
+                                                                                        {
+                                                                                            "name": "fee",
+                                                                                            "type": {
+                                                                                                "kind": "internal",
+                                                                                                "name": "Value"
+                                                                                            }
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "kind": "variant",
+                                                                                    "tag": 1,
+                                                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
+                                                                                    "name": "Monthly",
+                                                                                    "fieldTypes": [
+                                                                                        {
+                                                                                            "name": "fee",
+                                                                                            "type": {
+                                                                                                "kind": "internal",
+                                                                                                "name": "Value"
+                                                                                            }
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "kind": "variant",
+                                                                                    "tag": 2,
+                                                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
+                                                                                    "name": "Yearly",
+                                                                                    "fieldTypes": [
+                                                                                        {
+                                                                                            "name": "fee",
+                                                                                            "type": {
+                                                                                                "kind": "internal",
+                                                                                                "name": "Value"
+                                                                                            }
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "key": "revMdl"
+                                        }
+                                    ]
                                 },
-                                "key": "appUrl"
+                                "key": "app"
                             },
                             {
-                                "name": "minNodeUptime",
+                                "name": "opsInfo",
                                 "type": {
-                                    "kind": "internal",
-                                    "name": "Int"
+                                    "kind": "struct",
+                                    "format": "map",
+                                    "id": "__module__NeighborhoodData__NodeOpsInfo[]",
+                                    "name": "NodeOpsInfo",
+                                    "fieldTypes": [
+                                        {
+                                            "name": "minNodes",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Int"
+                                            },
+                                            "key": "cMin"
+                                        },
+                                        {
+                                            "name": "maxNodes",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Int"
+                                            },
+                                            "key": "cMax"
+                                        },
+                                        {
+                                            "name": "minNodeOperatorStake",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                            },
+                                            "key": "minStk"
+                                        },
+                                        {
+                                            "name": "minUptime",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Int"
+                                            },
+                                            "key": "minUpt"
+                                        }
+                                    ]
                                 },
-                                "key": "minup"
+                                "key": "ops"
                             }
                         ]
                     }
@@ -9454,6 +10687,68 @@ export const CapoCtxSchema : StructTypeSchema = {
                     }
                 ]
             }
+        }
+    ]
+};
+
+export const NeighborhoodSettingsSchema : StructTypeSchema = {
+    "kind": "struct",
+    "format": "map",
+    "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+    "name": "NeighborhoodSettings",
+    "fieldTypes": [
+        {
+            "name": "minRegistrationFee",
+            "type": {
+                "kind": "internal",
+                "name": "Int"
+            },
+            "key": "minRegFee"
+        },
+        {
+            "name": "minNbhStake",
+            "type": {
+                "kind": "internal",
+                "name": "Value"
+            },
+            "key": "minStk"
+        }
+    ]
+};
+
+export const AbstractSettingsForNeighborhoodSchema : StructTypeSchema = {
+    "kind": "struct",
+    "format": "map",
+    "id": "__module__NeighborhoodSettings__AbstractSettingsForNeighborhood[]",
+    "name": "AbstractSettingsForNeighborhood",
+    "fieldTypes": [
+        {
+            "name": "NeighborhoodSettings",
+            "type": {
+                "kind": "struct",
+                "format": "map",
+                "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+                "name": "NeighborhoodSettings",
+                "fieldTypes": [
+                    {
+                        "name": "minRegistrationFee",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Int"
+                        },
+                        "key": "minRegFee"
+                    },
+                    {
+                        "name": "minNbhStake",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Value"
+                        },
+                        "key": "minStk"
+                    }
+                ]
+            },
+            "key": "nbhd"
         }
     ]
 };

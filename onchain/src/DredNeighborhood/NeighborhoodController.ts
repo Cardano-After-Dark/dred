@@ -58,8 +58,27 @@ export class NeighborhoodController extends DelegatedDataContract<
             memberToken: "member-owner",
             name: "Default Neighborhood",
             description: "A default neighborhood for Dred services",
-            appUrl: "https://dred.com",
-            minNodeUptime: 90n,            
+
+            appInfo: {
+                url: "https://dred.com",
+                revenueModel: [
+                    {
+                        TransactionBased: {
+                            chargeTo: {
+                                EndUser: {}
+                            },
+                            minTxFee: makeValue(42_000_000n),
+                            maxTxFee: undefined
+                        }
+                    }
+                ]
+            },
+            opsInfo: {
+                minNodes: 3n,
+                maxNodes: 13n,
+                minNodeOperatorStake: makeValue(42_000_000n),
+                minUptime: 90n,
+            }
         };
     }
 

@@ -95,7 +95,7 @@ import type {
     cctx_CharterInputType, Ergocctx_CharterInputType, cctx_CharterInputTypeLike,
     CapoCtx, ErgoCapoCtx, CapoCtxLike,
     NodeOperatorSettings, ErgoNodeOperatorSettings, NodeOperatorSettingsLike,
-    ProtocolSettings, ErgoProtocolSettings, ProtocolSettingsLike,
+    AbstractSettingsForNodeOperator, ErgoAbstractSettingsForNodeOperator, AbstractSettingsForNodeOperatorLike,
     dgd_DataSrc$Both, dgd_DataSrc$Ergo$Both, dgd_DataSrc$BothLike,
     dgd_DataSrc, Ergodgd_DataSrc, dgd_DataSrcLike,
     DgDataDetails, ErgoDgDataDetails, DgDataDetailsLike
@@ -284,22 +284,22 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
        * generates UplcData for the enum type ***NodeOperatorSettings*** for the `BasicDelegate` script
        */
         NodeOperatorSettings: (fields: NodeOperatorSettingsLike | {
-    minHeartbeatInterval: /*minStructField*/ IntLike
-    minStake: /*minStructField*/ IntLike
+    expectedHeartbeatInterval: /*minStructField*/ IntLike
+    requiredNodeUptime: /*minStructField*/ IntLike
+    minNodeRegistrationFee: /*minStructField*/ IntLike
+    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 ) => {
         return this.ᱺᱺNodeOperatorSettingsCast.toUplcData(fields);
     },
       /**
-       * generates UplcData for the enum type ***ProtocolSettings*** for the `BasicDelegate` script
+       * generates UplcData for the enum type ***AbstractSettingsForNodeOperator*** for the `BasicDelegate` script
        */
-        ProtocolSettings: (fields: ProtocolSettingsLike | {
-    id: /*minStructField*/ number[]
-    type: /*minStructField*/ string
+        AbstractSettingsForNodeOperator: (fields: AbstractSettingsForNodeOperatorLike | {
     nodeOpSettings: /*minStructField*/ NodeOperatorSettingsLike
 }
 ) => {
-        return this.ᱺᱺProtocolSettingsCast.toUplcData(fields);
+        return this.ᱺᱺAbstractSettingsForNodeOperatorCast.toUplcData(fields);
     },
       /**
        * generates UplcData for the enum type ***DgDataDetails*** for the `BasicDelegate` script
@@ -364,8 +364,8 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
     );
     /**
                 * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺProtocolSettingsCast = makeCast<ProtocolSettings, ProtocolSettingsLike>(
-        ProtocolSettingsSchema,
+    ᱺᱺAbstractSettingsForNodeOperatorCast = makeCast<AbstractSettingsForNodeOperator, AbstractSettingsForNodeOperatorLike>(
+        AbstractSettingsForNodeOperatorSchema,
         { isMainnet: true, unwrapSingleFieldEnumVariants: true }
     );
     /**
@@ -834,7 +834,7 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
     } /* structReader helper */
 
     /**
-        * reads UplcData *known to fit the **ProtocolSettings*** struct type,
+        * reads UplcData *known to fit the **AbstractSettingsForNodeOperator*** struct type,
         * for the BasicDelegate script.
         * ### Standard WARNING
         * 
@@ -847,9 +847,9 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
         * It may throw an error, or it may throw no error, but return a value that
         * causes some error later on in your code, when you try to use it.
         */
-    ProtocolSettings(d: UplcData) {
-        const cast = this.bridge.ᱺᱺProtocolSettingsCast;
-        return cast.fromUplcData(d) //??? as ErgoProtocolSettings;
+    AbstractSettingsForNodeOperator(d: UplcData) {
+        const cast = this.bridge.ᱺᱺAbstractSettingsForNodeOperatorCast;
+        return cast.fromUplcData(d) //??? as ErgoAbstractSettingsForNodeOperator;
     } /* structReader helper */
 
     /**
@@ -3158,15 +3158,15 @@ export class NodeOperatorSettingsHelper extends DataBridge {
 
 
 /**
- * Helper class for generating UplcData for the struct ***ProtocolSettings*** type.
+ * Helper class for generating UplcData for the struct ***AbstractSettingsForNodeOperator*** type.
  * @public
  */
-export class ProtocolSettingsHelper extends DataBridge {
+export class AbstractSettingsForNodeOperatorHelper extends DataBridge {
     isCallable = true
    /**
             * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast = makeCast<ProtocolSettings, ProtocolSettingsLike>(
-        ProtocolSettingsSchema,
+    ᱺᱺcast = makeCast<AbstractSettingsForNodeOperator, AbstractSettingsForNodeOperatorLike>(
+        AbstractSettingsForNodeOperatorSchema,
         { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
     );
 
@@ -3176,7 +3176,7 @@ export class ProtocolSettingsHelper extends DataBridge {
     //
     //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
     //
-    // ProtocolSettings(fields: ProtocolSettingsLike) {
+    // AbstractSettingsForNodeOperator(fields: AbstractSettingsForNodeOperatorLike) {
     //    return this.ᱺᱺcast.toUplcData(fields);
     //}
 } //mkStructHelperClass 
@@ -9571,46 +9571,46 @@ export const NodeOperatorSettingsSchema : StructTypeSchema = {
     "name": "NodeOperatorSettings",
     "fieldTypes": [
         {
-            "name": "minHeartbeatInterval",
+            "name": "expectedHeartbeatInterval",
             "type": {
                 "kind": "internal",
-                "name": "Int"
+                "name": "Duration"
             },
-            "key": "minHB"
+            "key": "ndHbi"
         },
         {
-            "name": "minStake",
+            "name": "requiredNodeUptime",
             "type": {
                 "kind": "internal",
                 "name": "Int"
             },
-            "key": "minStake"
+            "key": "ndUpt"
+        },
+        {
+            "name": "minNodeRegistrationFee",
+            "type": {
+                "kind": "internal",
+                "name": "Int"
+            },
+            "key": "minFee"
+        },
+        {
+            "name": "minNodeOperatorStake",
+            "type": {
+                "kind": "internal",
+                "name": "Value"
+            },
+            "key": "minStk"
         }
     ]
 };
 
-export const ProtocolSettingsSchema : StructTypeSchema = {
+export const AbstractSettingsForNodeOperatorSchema : StructTypeSchema = {
     "kind": "struct",
     "format": "map",
-    "id": "__module__ProtocolSettings__ProtocolSettings[]",
-    "name": "ProtocolSettings",
+    "id": "__module__NodeOperatorSettings__AbstractSettingsForNodeOperator[]",
+    "name": "AbstractSettingsForNodeOperator",
     "fieldTypes": [
-        {
-            "name": "id",
-            "type": {
-                "kind": "internal",
-                "name": "ByteArray"
-            },
-            "key": "@id"
-        },
-        {
-            "name": "type",
-            "type": {
-                "kind": "internal",
-                "name": "String"
-            },
-            "key": "tpe"
-        },
         {
             "name": "nodeOpSettings",
             "type": {
@@ -9620,20 +9620,36 @@ export const ProtocolSettingsSchema : StructTypeSchema = {
                 "name": "NodeOperatorSettings",
                 "fieldTypes": [
                     {
-                        "name": "minHeartbeatInterval",
+                        "name": "expectedHeartbeatInterval",
                         "type": {
                             "kind": "internal",
-                            "name": "Int"
+                            "name": "Duration"
                         },
-                        "key": "minHB"
+                        "key": "ndHbi"
                     },
                     {
-                        "name": "minStake",
+                        "name": "requiredNodeUptime",
                         "type": {
                             "kind": "internal",
                             "name": "Int"
                         },
-                        "key": "minStake"
+                        "key": "ndUpt"
+                    },
+                    {
+                        "name": "minNodeRegistrationFee",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Int"
+                        },
+                        "key": "minFee"
+                    },
+                    {
+                        "name": "minNodeOperatorStake",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Value"
+                        },
+                        "key": "minStk"
                     }
                 ]
             },

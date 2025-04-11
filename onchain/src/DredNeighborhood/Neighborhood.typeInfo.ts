@@ -91,25 +91,245 @@ export type DelegationDetailLike = {
 }
 
 
+export type FeeSourceMeta = EnumTypeMeta<
+    {module: "NeighborhoodData", enumName: "FeeSource"}, {
+        EndUser: singleEnumVariantMeta<FeeSourceMeta, "EndUser",
+            "Constr#0", "tagOnly", tagOnly, "noSpecialFlags"
+        >,
+        SponsorContract: singleEnumVariantMeta<FeeSourceMeta, "SponsorContract",
+            "Constr#1", "singletonField", /* implied wrapper { sponsorContract: ... } for singleVariantField */ 
+			ScriptHash   , "noSpecialFlags"
+        >
+    }
+>;
+
+
+/**
+ * FeeSource enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **2 variant(s)** of the FeeSource enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `FeeSourceHelper` class
+ *     for generating UPLC data for this enum type
+ */
+export type FeeSource = 
+        | { EndUser: tagOnly /*minEnumVariant*/ }
+        | { SponsorContract: /* implied wrapper { sponsorContract: ... } for singleVariantField */ 
+			ScriptHash    /*minEnumVariant*/ }
+
+export type ErgoFeeSource = IntersectedEnum<FeeSource/*like canon enum*/>
+
+/**
+ * FeeSource enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **2 variant(s)** of the FeeSource enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `FeeSourceHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * ### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ */
+export type FeeSourceLike = IntersectedEnum<
+        | { EndUser: tagOnly /*minEnumVariant*/ }
+        | { SponsorContract: /* implied wrapper { sponsorContract: ... } for singleVariantField */ 
+			ScriptHash | string | number[]    /*minEnumVariant*/ }
+>
+
+export type RevenueModel$TransactionBased = {
+    minTxFee: Value  /*minVariantField*/ ,
+    maxTxFee: Value | undefined  /*minVariantField*/ ,
+    chargeTo: FeeSource  /*minVariantField*/ 
+}
+
+export type RevenueModel$Ergo$TransactionBased = {
+    minTxFee: Value  /*minVariantField*/ ,
+    maxTxFee: Value | undefined  /*minVariantField*/ ,
+    chargeTo: ErgoFeeSource  /*minVariantField*/ 
+}
+
+export type RevenueModel$TransactionBasedLike = {
+    minTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]  /*minVariantField*/ ,
+    maxTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[] | undefined  /*minVariantField*/ ,
+    chargeTo: FeeSourceLike  /*minVariantField*/ 
+}
+
+
+export type SubscriptionFeeFrequencyMeta = EnumTypeMeta<
+    {module: "NeighborhoodData", enumName: "SubscriptionFeeFrequency"}, {
+        Epoch: singleEnumVariantMeta<SubscriptionFeeFrequencyMeta, "Epoch",
+            "Constr#0", "singletonField", /* implied wrapper { fee: ... } for singleVariantField */ 
+			Value   , "noSpecialFlags"
+        >,
+        Monthly: singleEnumVariantMeta<SubscriptionFeeFrequencyMeta, "Monthly",
+            "Constr#1", "singletonField", /* implied wrapper { fee: ... } for singleVariantField */ 
+			Value   , "noSpecialFlags"
+        >,
+        Yearly: singleEnumVariantMeta<SubscriptionFeeFrequencyMeta, "Yearly",
+            "Constr#2", "singletonField", /* implied wrapper { fee: ... } for singleVariantField */ 
+			Value   , "noSpecialFlags"
+        >
+    }
+>;
+
+
+/**
+ * SubscriptionFeeFrequency enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **3 variant(s)** of the SubscriptionFeeFrequency enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `SubscriptionFeeFrequencyHelper` class
+ *     for generating UPLC data for this enum type
+ */
+export type SubscriptionFeeFrequency = 
+        | { Epoch: /* implied wrapper { fee: ... } for singleVariantField */ 
+			Value    /*minEnumVariant*/ }
+        | { Monthly: /* implied wrapper { fee: ... } for singleVariantField */ 
+			Value    /*minEnumVariant*/ }
+        | { Yearly: /* implied wrapper { fee: ... } for singleVariantField */ 
+			Value    /*minEnumVariant*/ }
+
+export type ErgoSubscriptionFeeFrequency = IntersectedEnum<SubscriptionFeeFrequency/*like canon enum*/>
+
+/**
+ * SubscriptionFeeFrequency enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **3 variant(s)** of the SubscriptionFeeFrequency enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `SubscriptionFeeFrequencyHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * ### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ */
+export type SubscriptionFeeFrequencyLike = IntersectedEnum<
+        | { Epoch: /* implied wrapper { fee: ... } for singleVariantField */ 
+			Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]    /*minEnumVariant*/ }
+        | { Monthly: /* implied wrapper { fee: ... } for singleVariantField */ 
+			Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]    /*minEnumVariant*/ }
+        | { Yearly: /* implied wrapper { fee: ... } for singleVariantField */ 
+			Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]    /*minEnumVariant*/ }
+>
+
+export type RevenueModelMeta = EnumTypeMeta<
+    {module: "NeighborhoodData", enumName: "RevenueModel"}, {
+        TransactionBased: singleEnumVariantMeta<RevenueModelMeta, "TransactionBased",
+            "Constr#0", 
+            "fields", RevenueModel$TransactionBased, "noSpecialFlags"
+        >,
+        Subscription: singleEnumVariantMeta<RevenueModelMeta, "Subscription",
+            "Constr#1", "singletonField", /* implied wrapper { subscriptionFee: ... } for singleVariantField */ 
+			Array<SubscriptionFeeFrequency>   , "noSpecialFlags"
+        >
+    }
+>;
+
+
+/**
+ * RevenueModel enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **2 variant(s)** of the RevenueModel enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `RevenueModelHelper` class
+ *     for generating UPLC data for this enum type
+ */
+export type RevenueModel = 
+        | { TransactionBased: RevenueModel$TransactionBased /*minEnumVariant*/ }
+        | { Subscription: /* implied wrapper { subscriptionFee: ... } for singleVariantField */ 
+			Array<SubscriptionFeeFrequency>    /*minEnumVariant*/ }
+
+export type ErgoRevenueModel = IntersectedEnum<
+        | { TransactionBased: RevenueModel$Ergo$TransactionBased /*minEnumVariant*/ }
+        | { Subscription: /* implied wrapper { subscriptionFee: ... } for singleVariantField */ 
+			Array<ErgoSubscriptionFeeFrequency>    /*minEnumVariant*/ }
+>
+
+/**
+ * RevenueModel enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **2 variant(s)** of the RevenueModel enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `RevenueModelHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * ### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ */
+export type RevenueModelLike = IntersectedEnum<
+        | { TransactionBased: RevenueModel$TransactionBasedLike /*minEnumVariant*/ }
+        | { Subscription: /* implied wrapper { subscriptionFee: ... } for singleVariantField */ 
+			Array<SubscriptionFeeFrequencyLike>    /*minEnumVariant*/ }
+>
+
+export type AppInfo = {
+    url: /*minStructField*/ string
+    revenueModel: /*minStructField*/ Array<RevenueModel>
+}
+
+export type ErgoAppInfo = {
+    url: /*minStructField*/ string
+    revenueModel: /*minStructField*/ Array<ErgoRevenueModel>
+}
+
+export type AppInfoLike = {
+    url: /*minStructField*/ string
+    revenueModel: /*minStructField*/ Array<RevenueModelLike>
+}
+
+
+export type NodeOpsInfo = {
+    minNodes: /*minStructField*/ bigint
+    maxNodes: /*minStructField*/ bigint
+    minNodeOperatorStake: /*minStructField*/ Value
+    minUptime: /*minStructField*/ bigint
+}
+
+export type ErgoNodeOpsInfo = NodeOpsInfo/*like canon-other*/
+export type NodeOpsInfoLike = {
+    minNodes: /*minStructField*/ IntLike
+    maxNodes: /*minStructField*/ IntLike
+    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+    minUptime: /*minStructField*/ IntLike
+}
+
+
 export type NeighborhoodData = {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
     name: /*minStructField*/ string
     description: /*minStructField*/ string
-    appUrl: /*minStructField*/ string
-    minNodeUptime: /*minStructField*/ bigint
+    appInfo: /*minStructField*/ AppInfo
+    opsInfo: /*minStructField*/ NodeOpsInfo
 }
 
-export type ErgoNeighborhoodData = NeighborhoodData/*like canon-other*/
+export type ErgoNeighborhoodData = {
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    memberToken: /*minStructField*/ string
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
+    appInfo: /*minStructField*/ ErgoAppInfo
+    opsInfo: /*minStructField*/ ErgoNodeOpsInfo
+}
+
 export type NeighborhoodDataLike = {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
     name: /*minStructField*/ string
     description: /*minStructField*/ string
-    appUrl: /*minStructField*/ string
-    minNodeUptime: /*minStructField*/ IntLike
+    appInfo: /*minStructField*/ AppInfoLike
+    opsInfo: /*minStructField*/ NodeOpsInfoLike
 }
 
 export type minimalNeighborhoodData = minimalData<NeighborhoodDataLike>
@@ -1314,6 +1534,31 @@ export type ErgoCapoCtx = {
 export type CapoCtxLike = {
     mph: /*minStructField*/ MintingPolicyHash | string | number[]
     charter: /*minStructField*/ cctx_CharterInputTypeLike
+}
+
+
+export type NeighborhoodSettings = {
+    minRegistrationFee: /*minStructField*/ bigint
+    minNbhStake: /*minStructField*/ Value
+}
+
+export type ErgoNeighborhoodSettings = NeighborhoodSettings/*like canon-other*/
+export type NeighborhoodSettingsLike = {
+    minRegistrationFee: /*minStructField*/ IntLike
+    minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+}
+
+
+export type AbstractSettingsForNeighborhood = {
+    NeighborhoodSettings: /*minStructField*/ NeighborhoodSettings
+}
+
+export type ErgoAbstractSettingsForNeighborhood = {
+    NeighborhoodSettings: /*minStructField*/ ErgoNeighborhoodSettings
+}
+
+export type AbstractSettingsForNeighborhoodLike = {
+    NeighborhoodSettings: /*minStructField*/ NeighborhoodSettingsLike
 }
 
 

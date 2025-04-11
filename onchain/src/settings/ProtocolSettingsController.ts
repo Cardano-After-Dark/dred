@@ -61,6 +61,10 @@ export class ProtocolSettingsController extends DelegatedDataContract<
             nodeOpSettings: {
                 minHeartbeatInterval: 7 * 24 * 60 * 60 * 1000,
                 minStake: 20000n,
+            },            
+            nbhSettings: {
+                minRegistrationFee: 1000000000000000000n,
+                minStake: 20000n,
             },
             /* Add other settings here */
         };
