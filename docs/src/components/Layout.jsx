@@ -37,6 +37,9 @@ const navigation = [
     title: 'API reference',
     links: [
         { title: 'Dred Client', href: '/docs/api-DredClient' },
+        { title: 'Dred dAPI', href: '/reference/DredCapo' },
+        { title: 'dAPI: Node Registry', href: '/reference/NodeRegistryController' },
+        { title: 'dAPI: Neighborhoods', href: '/reference/NeighborhoodController' },
     ],
   },
   {

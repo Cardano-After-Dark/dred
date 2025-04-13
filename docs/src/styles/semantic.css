@@ -1,3 +1,92 @@
 body {
     color: var(--color-foreground);
 }
+
+code, kbd, samp, pre {
+    font-size: 0.8rem;
+}
+
+h1 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    line-height: 1.2;
+    padding-top: 1em;
+    color: var(--color-primary-foreground);
+}
+
+h2 {
+    font-size: 1.44rem;
+    font-weight: 600;
+    line-height: 1.2;
+    padding-top: 1em;
+    color: var(--color-primary-foreground);
+    /* sticky header */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--color-slate-900);
+
+}
+
+h3 {
+    font-size: 1.3rem;
+    /* opacity: 0.8; */
+    font-weight: 600;
+    line-height: 1.2;
+    padding-top: 0.5em;
+    margin-top: 0.5em;
+    color: var(--color-secondary);
+    /* sticky header */
+    position: sticky;
+    top: 3rem;
+    z-index: 100;
+    background-color: var(--color-slate-900);
+}
+
+h4 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.2;
+    padding-top: 0.5em;
+    margin-top: 0.5em;
+    color: var(--color-muted-foreground);
+    background-color: var(--color-slate-900);
+}
+
+h5 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    padding-top: 1em;
+    color: var(--color-muted-foreground);
+}
+
+h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.2;
+    padding-top: 1em;
+    color: var(--color-muted-foreground);
+}
+
+
+#toc-area h1 {
+    font-size: 1.4rem !important
+}
+#toc-area h2 {
+    font-size: 1.2rem !important
+}
+#toc-area h3 {
+    font-size: 1rem !important
+}
+#toc-area h4 {
+    font-size: 0.8rem !important
+}
+
+nav h5 {
+    font-size: 1.1rem !important
+}
+
+nav h6 {
+    font-size: 1rem !important
+}

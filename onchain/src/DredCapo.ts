@@ -45,6 +45,11 @@ import type {
 import type { CapoDatum$Ergo$CharterData } from "./DredCapo.typeInfo.js";
 import { NodeRegistryController } from "./nodeRegistry/NodeRegistryController.js";
 import { NeighborhoodController } from "./DredNeighborhood/NeighborhoodController.js";
+import type {
+    ErgoNodeRegistrationData,
+    NodeRegistrationData,
+} from "src/nodeRegistry/NodeRegistry.typeInfo.js";
+import type { ErgoNeighborhoodData } from "src/DredNeighborhood/Neighborhood.typeInfo.js";
 /* Add imports for each model-specific controller class here */
 
 const currentVersions = {
@@ -130,7 +135,9 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
     /**
      * Finds and instantiates the node registry controller for the capo
      */
-    async getNodeRegistryController(charterData?: CapoDatum$Ergo$CharterData): Promise<NodeRegistryController> {
+    async getNodeRegistryController(
+        charterData?: CapoDatum$Ergo$CharterData
+    ): Promise<NodeRegistryController> {
         if (!charterData) {
             charterData = await this.findCharterData();
         }
@@ -142,7 +149,9 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
     /**
      * Finds and instantiates the neighborhood registry controller for the capo
      */
-    async getNbhRegistryController(charterData?: CapoDatum$Ergo$CharterData): Promise<NeighborhoodController> {
+    async getNbhRegistryController(
+        charterData?: CapoDatum$Ergo$CharterData
+    ): Promise<NeighborhoodController> {
         if (!charterData) {
             charterData = await this.findCharterData();
         }
@@ -183,9 +192,12 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
 
     /**
      * Finds all the node-registration records
+     * @remarks
+     * This is a convenience method for finding all the node-registration records.
+     * It is equivalent to calling `findDelegatedDataUtxos` with the type `"dredNode"`.
      */
-    async findNodeOpVaultEntries() {
-        return this.findDelegatedDataUtxos({
+    async findNodeOpEntries() {
+        return this.findDelegatedDataUtxos<"dredNode", ErgoNodeRegistrationData, unknown>({
             type: "dredNode",
         });
     }
@@ -194,13 +206,17 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
      * Finds all the neighborhood-registration records
      */
     async findNbhRegistryEntries() {
-        return this.findDelegatedDataUtxos({
+        return this.findDelegatedDataUtxos<"dredNbh", ErgoNeighborhoodData, unknown>({
             type: "dredNbh",
         });
     }
 
     /* add other model-specific finders here */
 
+    /**
+     * Initializes the delegate roles for the capo
+     * @internal
+     */
     initDelegateRoles() {
         const inh = super.basicDelegateRoles();
 

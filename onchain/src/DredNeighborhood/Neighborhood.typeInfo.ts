@@ -46,19 +46,19 @@ import type {
 } from "@donecollectively/stellar-contracts"
 
 
-export type AnyData = {
+export interface AnyData {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
 }
 
 export type ErgoAnyData = AnyData/*like canon-other*/
-export type AnyDataLike = {
+export interface AnyDataLike {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
 }
 
 export type minimalAnyData = minimalData<AnyDataLike>
-export type DelegateDatum$Cip68RefToken = {
+export interface DelegateDatum$Cip68RefToken {
     cip68meta: AnyData  /*minVariantField*/ ,
     cip68version: bigint  /*minVariantField*/ ,
     otherDetails: UplcData  /*minVariantField*/ 
@@ -70,21 +70,21 @@ export type DelegateDatum$Ergo$Cip68RefToken = {
     otherDetails: UplcData  /*minVariantField*/ 
 }
 
-export type DelegateDatum$Cip68RefTokenLike = {
+export interface DelegateDatum$Cip68RefTokenLike {
     cip68meta: AnyDataLike  /*minVariantField*/ ,
     cip68version: IntLike  /*minVariantField*/ ,
     otherDetails: UplcData  /*minVariantField*/ 
 }
 
 
-export type DelegationDetail = {
+export interface DelegationDetail {
     capoAddr: /*minStructField*/ Address
     mph: /*minStructField*/ MintingPolicyHash
     tn: /*minStructField*/ number[]
 }
 
 export type ErgoDelegationDetail = DelegationDetail/*like canon-other*/
-export type DelegationDetailLike = {
+export interface DelegationDetailLike {
     capoAddr: /*minStructField*/ Address | string
     mph: /*minStructField*/ MintingPolicyHash | string | number[]
     tn: /*minStructField*/ number[]
@@ -139,7 +139,7 @@ export type FeeSourceLike = IntersectedEnum<
 			ScriptHash | string | number[]    /*minEnumVariant*/ }
 >
 
-export type RevenueModel$TransactionBased = {
+export interface RevenueModel$TransactionBased {
     minTxFee: Value  /*minVariantField*/ ,
     maxTxFee: Value | undefined  /*minVariantField*/ ,
     chargeTo: FeeSource  /*minVariantField*/ 
@@ -151,7 +151,7 @@ export type RevenueModel$Ergo$TransactionBased = {
     chargeTo: ErgoFeeSource  /*minVariantField*/ 
 }
 
-export type RevenueModel$TransactionBasedLike = {
+export interface RevenueModel$TransactionBasedLike {
     minTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]  /*minVariantField*/ ,
     maxTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[] | undefined  /*minVariantField*/ ,
     chargeTo: FeeSourceLike  /*minVariantField*/ 
@@ -270,7 +270,7 @@ export type RevenueModelLike = IntersectedEnum<
 			Array<SubscriptionFeeFrequencyLike>    /*minEnumVariant*/ }
 >
 
-export type AppInfo = {
+export interface AppInfo {
     url: /*minStructField*/ string
     revenueModel: /*minStructField*/ Array<RevenueModel>
 }
@@ -280,13 +280,13 @@ export type ErgoAppInfo = {
     revenueModel: /*minStructField*/ Array<ErgoRevenueModel>
 }
 
-export type AppInfoLike = {
+export interface AppInfoLike {
     url: /*minStructField*/ string
     revenueModel: /*minStructField*/ Array<RevenueModelLike>
 }
 
 
-export type NodeOpsInfo = {
+export interface NodeOpsInfo {
     minNodes: /*minStructField*/ bigint
     maxNodes: /*minStructField*/ bigint
     minNodeOperatorStake: /*minStructField*/ Value
@@ -294,7 +294,7 @@ export type NodeOpsInfo = {
 }
 
 export type ErgoNodeOpsInfo = NodeOpsInfo/*like canon-other*/
-export type NodeOpsInfoLike = {
+export interface NodeOpsInfoLike {
     minNodes: /*minStructField*/ IntLike
     maxNodes: /*minStructField*/ IntLike
     minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
@@ -302,7 +302,7 @@ export type NodeOpsInfoLike = {
 }
 
 
-export type NeighborhoodData = {
+export interface NeighborhoodData {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
@@ -322,7 +322,7 @@ export type ErgoNeighborhoodData = {
     opsInfo: /*minStructField*/ ErgoNodeOpsInfo
 }
 
-export type NeighborhoodDataLike = {
+export interface NeighborhoodDataLike {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
@@ -333,7 +333,7 @@ export type NeighborhoodDataLike = {
 }
 
 export type minimalNeighborhoodData = minimalData<NeighborhoodDataLike>
-export type DelegateDatum$capoStoredData = {
+export interface DelegateDatum$capoStoredData {
     data: NeighborhoodData  /*minVariantField*/ ,
     version: bigint  /*minVariantField*/ ,
     otherDetails: UplcData  /*minVariantField*/ 
@@ -345,7 +345,7 @@ export type DelegateDatum$Ergo$capoStoredData = {
     otherDetails: UplcData  /*minVariantField*/ 
 }
 
-export type DelegateDatum$capoStoredDataLike = {
+export interface DelegateDatum$capoStoredDataLike {
     data: NeighborhoodDataLike  /*minVariantField*/ ,
     version: IntLike  /*minVariantField*/ ,
     otherDetails: UplcData  /*minVariantField*/ 
@@ -412,13 +412,13 @@ export type DelegateDatumLike = IntersectedEnum<
         | { capoStoredData: DelegateDatum$capoStoredDataLike /*minEnumVariant*/ }
 >
 
-export type CapoLifecycleActivity$CreatingDelegate = {
+export interface CapoLifecycleActivity$CreatingDelegate {
     seed: TxOutputId  /*minVariantField*/ ,
     purpose: string  /*minVariantField*/ 
 }
 
 export type CapoLifecycleActivity$Ergo$CreatingDelegate = CapoLifecycleActivity$CreatingDelegate/*ergo like-canonical-this-variant*/
-export type CapoLifecycleActivity$CreatingDelegateLike = {
+export interface CapoLifecycleActivity$CreatingDelegateLike {
     seed: TxOutputId | string  /*minVariantField*/ ,
     purpose: string  /*minVariantField*/ 
 }
@@ -505,73 +505,73 @@ export type DelegateRoleLike = IntersectedEnum<
         | { HandledByCapoOnly: tagOnly /*minEnumVariant*/ }
 >
 
-export type CapoLifecycleActivity$forcingNewSpendDelegate = {
+export interface CapoLifecycleActivity$forcingNewSpendDelegate {
     seed: TxOutputId  /*minVariantField*/ ,
     purpose: string  /*minVariantField*/ 
 }
 
 export type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate = CapoLifecycleActivity$forcingNewSpendDelegate/*ergo like-canonical-this-variant*/
-export type CapoLifecycleActivity$forcingNewSpendDelegateLike = {
+export interface CapoLifecycleActivity$forcingNewSpendDelegateLike {
     seed: TxOutputId | string  /*minVariantField*/ ,
     purpose: string  /*minVariantField*/ 
 }
 
 
-export type CapoLifecycleActivity$forcingNewMintDelegate = {
+export interface CapoLifecycleActivity$forcingNewMintDelegate {
     seed: TxOutputId  /*minVariantField*/ ,
     purpose: string  /*minVariantField*/ 
 }
 
 export type CapoLifecycleActivity$Ergo$forcingNewMintDelegate = CapoLifecycleActivity$forcingNewMintDelegate/*ergo like-canonical-this-variant*/
-export type CapoLifecycleActivity$forcingNewMintDelegateLike = {
+export interface CapoLifecycleActivity$forcingNewMintDelegateLike {
     seed: TxOutputId | string  /*minVariantField*/ ,
     purpose: string  /*minVariantField*/ 
 }
 
 
-export type ManifestActivity$updatingEntry = {
+export interface ManifestActivity$updatingEntry {
     key: string  /*minVariantField*/ ,
     tokenName: number[]  /*minVariantField*/ 
 }
 
 export type ManifestActivity$Ergo$updatingEntry = ManifestActivity$updatingEntry/*ergo like-canonical-this-variant*/
-export type ManifestActivity$updatingEntryLike = {
+export interface ManifestActivity$updatingEntryLike {
     key: string  /*minVariantField*/ ,
     tokenName: number[]  /*minVariantField*/ 
 }
 
 
-export type ManifestActivity$addingEntry = {
+export interface ManifestActivity$addingEntry {
     key: string  /*minVariantField*/ ,
     tokenName: number[]  /*minVariantField*/ 
 }
 
 export type ManifestActivity$Ergo$addingEntry = ManifestActivity$addingEntry/*ergo like-canonical-this-variant*/
-export type ManifestActivity$addingEntryLike = {
+export interface ManifestActivity$addingEntryLike {
     key: string  /*minVariantField*/ ,
     tokenName: number[]  /*minVariantField*/ 
 }
 
 
-export type ManifestActivity$forkingThreadToken = {
+export interface ManifestActivity$forkingThreadToken {
     key: string  /*minVariantField*/ ,
     newThreadCount: bigint  /*minVariantField*/ 
 }
 
 export type ManifestActivity$Ergo$forkingThreadToken = ManifestActivity$forkingThreadToken/*ergo like-canonical-this-variant*/
-export type ManifestActivity$forkingThreadTokenLike = {
+export interface ManifestActivity$forkingThreadTokenLike {
     key: string  /*minVariantField*/ ,
     newThreadCount: IntLike  /*minVariantField*/ 
 }
 
 
-export type ManifestActivity$burningThreadToken = {
+export interface ManifestActivity$burningThreadToken {
     key: string  /*minVariantField*/ ,
     burnedThreadCount: bigint  /*minVariantField*/ 
 }
 
 export type ManifestActivity$Ergo$burningThreadToken = ManifestActivity$burningThreadToken/*ergo like-canonical-this-variant*/
-export type ManifestActivity$burningThreadTokenLike = {
+export interface ManifestActivity$burningThreadTokenLike {
     key: string  /*minVariantField*/ ,
     burnedThreadCount: IntLike  /*minVariantField*/ 
 }
@@ -740,13 +740,13 @@ export type CapoLifecycleActivityLike = IntersectedEnum<
 			ManifestActivityLike    /*minEnumVariant*/ }
 >
 
-export type DelegateLifecycleActivity$ReplacingMe = {
+export interface DelegateLifecycleActivity$ReplacingMe {
     seed: TxOutputId  /*minVariantField*/ ,
     purpose: string  /*minVariantField*/ 
 }
 
 export type DelegateLifecycleActivity$Ergo$ReplacingMe = DelegateLifecycleActivity$ReplacingMe/*ergo like-canonical-this-variant*/
-export type DelegateLifecycleActivity$ReplacingMeLike = {
+export interface DelegateLifecycleActivity$ReplacingMeLike {
     seed: TxOutputId | string  /*minVariantField*/ ,
     purpose: string  /*minVariantField*/ 
 }
@@ -936,37 +936,37 @@ export type BurningActivityLike = IntersectedEnum<
 			number[]    /*minEnumVariant*/ }
 >
 
-export type DelegateActivity$CreatingDelegatedData = {
+export interface DelegateActivity$CreatingDelegatedData {
     seed: TxOutputId  /*minVariantField*/ ,
     dataType: string  /*minVariantField*/ 
 }
 
 export type DelegateActivity$Ergo$CreatingDelegatedData = DelegateActivity$CreatingDelegatedData/*ergo like-canonical-this-variant*/
-export type DelegateActivity$CreatingDelegatedDataLike = {
+export interface DelegateActivity$CreatingDelegatedDataLike {
     seed: TxOutputId | string  /*minVariantField*/ ,
     dataType: string  /*minVariantField*/ 
 }
 
 
-export type DelegateActivity$UpdatingDelegatedData = {
+export interface DelegateActivity$UpdatingDelegatedData {
     dataType: string  /*minVariantField*/ ,
     recId: number[]  /*minVariantField*/ 
 }
 
 export type DelegateActivity$Ergo$UpdatingDelegatedData = DelegateActivity$UpdatingDelegatedData/*ergo like-canonical-this-variant*/
-export type DelegateActivity$UpdatingDelegatedDataLike = {
+export interface DelegateActivity$UpdatingDelegatedDataLike {
     dataType: string  /*minVariantField*/ ,
     recId: number[]  /*minVariantField*/ 
 }
 
 
-export type DelegateActivity$DeletingDelegatedData = {
+export interface DelegateActivity$DeletingDelegatedData {
     dataType: string  /*minVariantField*/ ,
     recId: number[]  /*minVariantField*/ 
 }
 
 export type DelegateActivity$Ergo$DeletingDelegatedData = DelegateActivity$DeletingDelegatedData/*ergo like-canonical-this-variant*/
-export type DelegateActivity$DeletingDelegatedDataLike = {
+export interface DelegateActivity$DeletingDelegatedDataLike {
     dataType: string  /*minVariantField*/ ,
     recId: number[]  /*minVariantField*/ 
 }
@@ -1089,21 +1089,21 @@ export type DelegateActivityLike = IntersectedEnum<
 			Array<UplcData>    /*minEnumVariant*/ }
 >
 
-export type PendingDelegateAction$Add = {
+export interface PendingDelegateAction$Add {
     seed: TxOutputId  /*minVariantField*/ ,
     purpose: string  /*minVariantField*/ ,
     idPrefix: string  /*minVariantField*/ 
 }
 
 export type PendingDelegateAction$Ergo$Add = PendingDelegateAction$Add/*ergo like-canonical-this-variant*/
-export type PendingDelegateAction$AddLike = {
+export interface PendingDelegateAction$AddLike {
     seed: TxOutputId | string  /*minVariantField*/ ,
     purpose: string  /*minVariantField*/ ,
     idPrefix: string  /*minVariantField*/ 
 }
 
 
-export type PendingDelegateAction$Replace = {
+export interface PendingDelegateAction$Replace {
     seed: TxOutputId  /*minVariantField*/ ,
     purpose: string  /*minVariantField*/ ,
     idPrefix: string  /*minVariantField*/ ,
@@ -1111,7 +1111,7 @@ export type PendingDelegateAction$Replace = {
 }
 
 export type PendingDelegateAction$Ergo$Replace = PendingDelegateAction$Replace/*ergo like-canonical-this-variant*/
-export type PendingDelegateAction$ReplaceLike = {
+export interface PendingDelegateAction$ReplaceLike {
     seed: TxOutputId | string  /*minVariantField*/ ,
     purpose: string  /*minVariantField*/ ,
     idPrefix: string  /*minVariantField*/ ,
@@ -1175,21 +1175,21 @@ export type PendingDelegateActionLike = IntersectedEnum<
         | { Replace: PendingDelegateAction$ReplaceLike /*minEnumVariant*/ }
 >
 
-export type RelativeDelegateLink = {
+export interface RelativeDelegateLink {
     uutName: /*minStructField*/ string
     delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined
     config: /*minStructField*/ number[]
 }
 
 export type ErgoRelativeDelegateLink = RelativeDelegateLink/*like canon-other*/
-export type RelativeDelegateLinkLike = {
+export interface RelativeDelegateLinkLike {
     uutName: /*minStructField*/ string
     delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined
     config: /*minStructField*/ number[]
 }
 
 
-export type PendingDelegateChange = {
+export interface PendingDelegateChange {
     action: /*minStructField*/ PendingDelegateAction
     role: /*minStructField*/ DelegateRole
     dgtLink: /*minStructField*/ RelativeDelegateLink | undefined
@@ -1201,14 +1201,14 @@ export type ErgoPendingDelegateChange = {
     dgtLink: /*minStructField*/ ErgoRelativeDelegateLink | undefined
 }
 
-export type PendingDelegateChangeLike = {
+export interface PendingDelegateChangeLike {
     action: /*minStructField*/ PendingDelegateActionLike
     role: /*minStructField*/ DelegateRoleLike
     dgtLink: /*minStructField*/ RelativeDelegateLinkLike | undefined
 }
 
 
-export type ManifestEntryType$DgDataPolicy = {
+export interface ManifestEntryType$DgDataPolicy {
     policyLink: RelativeDelegateLink  /*minVariantField*/ ,
     idPrefix: string  /*minVariantField*/ ,
     refCount: bigint  /*minVariantField*/ 
@@ -1220,14 +1220,14 @@ export type ManifestEntryType$Ergo$DgDataPolicy = {
     refCount: bigint  /*minVariantField*/ 
 }
 
-export type ManifestEntryType$DgDataPolicyLike = {
+export interface ManifestEntryType$DgDataPolicyLike {
     policyLink: RelativeDelegateLinkLike  /*minVariantField*/ ,
     idPrefix: string  /*minVariantField*/ ,
     refCount: IntLike  /*minVariantField*/ 
 }
 
 
-export type ManifestEntryType$DelegateThreads = {
+export interface ManifestEntryType$DelegateThreads {
     role: DelegateRole  /*minVariantField*/ ,
     refCount: bigint  /*minVariantField*/ 
 }
@@ -1237,7 +1237,7 @@ export type ManifestEntryType$Ergo$DelegateThreads = {
     refCount: bigint  /*minVariantField*/ 
 }
 
-export type ManifestEntryType$DelegateThreadsLike = {
+export interface ManifestEntryType$DelegateThreadsLike {
     role: DelegateRoleLike  /*minVariantField*/ ,
     refCount: IntLike  /*minVariantField*/ 
 }
@@ -1311,7 +1311,7 @@ export type ManifestEntryTypeLike = IntersectedEnum<
         | { MerkleStateRoot: tagOnly /*minEnumVariant*/ }
 >
 
-export type CapoManifestEntry = {
+export interface CapoManifestEntry {
     entryType: /*minStructField*/ ManifestEntryType
     tokenName: /*minStructField*/ number[]
     mph: /*minStructField*/ MintingPolicyHash | undefined
@@ -1323,14 +1323,14 @@ export type ErgoCapoManifestEntry = {
     mph: /*minStructField*/ MintingPolicyHash | undefined
 }
 
-export type CapoManifestEntryLike = {
+export interface CapoManifestEntryLike {
     entryType: /*minStructField*/ ManifestEntryTypeLike
     tokenName: /*minStructField*/ number[]
     mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined
 }
 
 
-export type PendingCharterChange$otherManifestChange = {
+export interface PendingCharterChange$otherManifestChange {
     activity: ManifestActivity  /*minVariantField*/ ,
     remainingDelegateValidations: Array<DelegateRole>  /*minVariantField*/ 
 }
@@ -1340,7 +1340,7 @@ export type PendingCharterChange$Ergo$otherManifestChange = {
     remainingDelegateValidations: Array<ErgoDelegateRole>  /*minVariantField*/ 
 }
 
-export type PendingCharterChange$otherManifestChangeLike = {
+export interface PendingCharterChange$otherManifestChangeLike {
     activity: ManifestActivityLike  /*minVariantField*/ ,
     remainingDelegateValidations: Array<DelegateRoleLike>  /*minVariantField*/ 
 }
@@ -1399,7 +1399,7 @@ export type PendingCharterChangeLike = IntersectedEnum<
         | { otherManifestChange: PendingCharterChange$otherManifestChangeLike /*minEnumVariant*/ }
 >
 
-export type CapoDatum$CharterData = {
+export interface CapoDatum$CharterData {
     spendDelegateLink: RelativeDelegateLink  /*minVariantField*/ ,
     spendInvariants: Array<RelativeDelegateLink>  /*minVariantField*/ ,
     otherNamedDelegates: Map<string, RelativeDelegateLink>  /*minVariantField*/ ,
@@ -1421,7 +1421,7 @@ export type CapoDatum$Ergo$CharterData = {
     pendingChanges: Array<ErgoPendingCharterChange>  /*minVariantField*/ 
 }
 
-export type CapoDatum$CharterDataLike = {
+export interface CapoDatum$CharterDataLike {
     spendDelegateLink: RelativeDelegateLinkLike  /*minVariantField*/ ,
     spendInvariants: Array<RelativeDelegateLinkLike>  /*minVariantField*/ ,
     otherNamedDelegates: Map<string, RelativeDelegateLinkLike>  /*minVariantField*/ ,
@@ -1433,7 +1433,7 @@ export type CapoDatum$CharterDataLike = {
 }
 
 
-export type cctx_CharterInputType$RefInput = {
+export interface cctx_CharterInputType$RefInput {
     datum: CapoDatum$CharterData  /*minVariantField*/ ,
     utxo: TxInput  /*minVariantField*/ 
 }
@@ -1443,13 +1443,13 @@ export type cctx_CharterInputType$Ergo$RefInput = {
     utxo: TxInput  /*minVariantField*/ 
 }
 
-export type cctx_CharterInputType$RefInputLike = {
+export interface cctx_CharterInputType$RefInputLike {
     datum: CapoDatum$CharterDataLike  /*minVariantField*/ ,
     utxo: TxInput  /*minVariantField*/ 
 }
 
 
-export type cctx_CharterInputType$Input = {
+export interface cctx_CharterInputType$Input {
     datum: CapoDatum$CharterData  /*minVariantField*/ ,
     utxo: TxInput  /*minVariantField*/ 
 }
@@ -1459,7 +1459,7 @@ export type cctx_CharterInputType$Ergo$Input = {
     utxo: TxInput  /*minVariantField*/ 
 }
 
-export type cctx_CharterInputType$InputLike = {
+export interface cctx_CharterInputType$InputLike {
     datum: CapoDatum$CharterDataLike  /*minVariantField*/ ,
     utxo: TxInput  /*minVariantField*/ 
 }
@@ -1521,7 +1521,7 @@ export type cctx_CharterInputTypeLike = IntersectedEnum<
         | { Input: cctx_CharterInputType$InputLike /*minEnumVariant*/ }
 >
 
-export type CapoCtx = {
+export interface CapoCtx {
     mph: /*minStructField*/ MintingPolicyHash
     charter: /*minStructField*/ cctx_CharterInputType
 }
@@ -1531,25 +1531,25 @@ export type ErgoCapoCtx = {
     charter: /*minStructField*/ Ergocctx_CharterInputType
 }
 
-export type CapoCtxLike = {
+export interface CapoCtxLike {
     mph: /*minStructField*/ MintingPolicyHash | string | number[]
     charter: /*minStructField*/ cctx_CharterInputTypeLike
 }
 
 
-export type NeighborhoodSettings = {
+export interface NeighborhoodSettings {
     minRegistrationFee: /*minStructField*/ bigint
     minNbhStake: /*minStructField*/ Value
 }
 
 export type ErgoNeighborhoodSettings = NeighborhoodSettings/*like canon-other*/
-export type NeighborhoodSettingsLike = {
+export interface NeighborhoodSettingsLike {
     minRegistrationFee: /*minStructField*/ IntLike
     minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 
 
-export type AbstractSettingsForNeighborhood = {
+export interface AbstractSettingsForNeighborhood {
     NeighborhoodSettings: /*minStructField*/ NeighborhoodSettings
 }
 
@@ -1557,18 +1557,18 @@ export type ErgoAbstractSettingsForNeighborhood = {
     NeighborhoodSettings: /*minStructField*/ ErgoNeighborhoodSettings
 }
 
-export type AbstractSettingsForNeighborhoodLike = {
+export interface AbstractSettingsForNeighborhoodLike {
     NeighborhoodSettings: /*minStructField*/ NeighborhoodSettingsLike
 }
 
 
-export type dgd_DataSrc$Both = {
+export interface dgd_DataSrc$Both {
     utxo: TxInput  /*minVariantField*/ ,
     txo: TxOutput  /*minVariantField*/ 
 }
 
 export type dgd_DataSrc$Ergo$Both = dgd_DataSrc$Both/*ergo like-canonical-this-variant*/
-export type dgd_DataSrc$BothLike = {
+export interface dgd_DataSrc$BothLike {
     utxo: TxInput  /*minVariantField*/ ,
     txo: TxOutput  /*minVariantField*/ 
 }
@@ -1643,7 +1643,7 @@ export type dgd_DataSrcLike = IntersectedEnum<
         | { Both: dgd_DataSrc$BothLike /*minEnumVariant*/ }
 >
 
-export type DgDataDetails = {
+export interface DgDataDetails {
     dataSrc: /*minStructField*/ dgd_DataSrc
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
@@ -1657,7 +1657,7 @@ export type ErgoDgDataDetails = {
     mph: /*minStructField*/ MintingPolicyHash
 }
 
-export type DgDataDetailsLike = {
+export interface DgDataDetailsLike {
     dataSrc: /*minStructField*/ dgd_DataSrcLike
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string

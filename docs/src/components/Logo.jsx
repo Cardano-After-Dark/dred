@@ -19,8 +19,11 @@ export function Logo(props) {
   return (
     <svg aria-hidden="true" viewBox="0 0 227 36" fill="none" {...props}>
       <LogomarkPaths />
-      <text x="38.8" y="25.5" fill="#ffffff" fontWeight="bold" fontSize="x-large">
-        DRED
+      <text x="38.8" y="20" fill="#ffffff" fontWeight="bold" fontSize="x-large">
+        Dred
+      </text>
+      <text x="45" y="33" fill="#ffffff" fontWeight="bold" fontSize="x-small">
+        powered by Cardano
       </text>
     </svg>
   )

@@ -61,6 +61,7 @@
     "vitest": "^3.0.9"
   },
   "devDependencies": {
+    "@microsoft/tsdoc": "^0.15.1",
     "eslint-config-next": "^14.2.25",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.6.11"

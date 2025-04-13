@@ -1,10 +1,41 @@
 import fs from "fs";
+import { TSDocParser, ParserContext, DocNode, DocComment, DocExcerpt } from "@microsoft/tsdoc";
+
 /**
  * processes the package details  including all its members and nested members,
  * and generates a set of React components for displaying each member on on a separate page.
  */
 
-const pkgDocInfoExample = {
+class Formatter {
+    // from https://github.com/microsoft/tsdoc/blob/main/api-demo/src/Formatter.ts
+
+    public static renderDocNode(docNode: DocNode): string {
+        let result: string = "";
+        if (docNode) {
+            if (docNode instanceof DocExcerpt) {
+                result += docNode.content.toString();
+            }
+            for (const childNode of docNode.getChildNodes()) {
+                const t = Formatter.renderDocNode(childNode);
+                if (t.match(/customize the name/)) {
+                    debugger;
+                }
+                result += t;
+            }
+        }
+        return result;
+    }
+
+    public static renderDocNodes(docNodes: ReadonlyArray<DocNode>): string {
+        let result: string = "";
+        for (const docNode of docNodes) {
+            result += Formatter.renderDocNode(docNode);
+        }
+        return result;
+    }
+}
+
+const pkgDocInfoExample: TypeInfo = {
     kind: "Package",
     canonicalReference: "dred-network-registry!",
     docComment: "",
@@ -386,14 +417,78 @@ const pkgDocInfoExample = {
         },
     ],
 };
-
+type ExcerptToken = {
+    kind: "Content" | "Reference";
+    text: string;
+    canonicalReference?: string;
+};
+type TypeInfo = {
+    kind:
+        | "Class"
+        | "TypeAlias"
+        | "Interface"
+        | "EntryPoint"
+        | "Package"
+        | "Property"
+        | "Method"
+        | "PropertySignature"
+        | "MethodSignature";
+    name: string;
+    canonicalReference: string;
+    docComment?: string;
+    members?: TypeInfo[];
+    isReadonly?: boolean;
+    isOptional?: boolean;
+    isStatic?: boolean;
+    isProtected?: boolean;
+    isAbstract?: boolean;
+    isOverride?: boolean;
+    releaseTag?: "Public" | "Internal" | "Private";
+    excerptTokens?: ExcerptToken[];
+    fileUrlPath?: string;
+    typeTokenRange?: {
+        startIndex: number;
+        endIndex: number;
+    };
+    propertyTypeTokenRange?: {
+        startIndex: number;
+        endIndex: number;
+    };
+    returnTypeTokenRange?: {
+        startIndex: number;
+        endIndex: number;
+    };
+    overloadIndex?: number;
+    parameters?: {
+        parameterName: string;
+        parameterTypeTokenRange: {
+            startIndex: number;
+            endIndex: number;
+        };
+        isOptional: boolean;
+    }[];
+    preserveMemberOrder?: boolean;
+    overloads?: TypeInfo[];
+};
 const pkgDocInfo = JSON.parse(fs.readFileSync("dApp.api.json", "utf8"));
 
 // ingests the package details and indexes all of the members using their canonicalReference
 const indexAll = {};
+const knownDocs = {};
+
 // indexes each member by its 'kind', except skipping 'Property' and 'Method'
-const indexByType = {};
-const typeIndex = {};
+const entryPoints: Record<string, Record<string, TypeInfo>> = {};
+const typeIndex: Record<string, TypeInfo> = {};
+
+function parseDocComment(canonicalReference, docComment): ParserContext {
+    if (knownDocs[canonicalReference]) {
+        return knownDocs[canonicalReference];
+    }
+    const tsdocParser = new TSDocParser();
+    const result = tsdocParser.parseString(docComment);
+    knownDocs[canonicalReference] = result;
+    return result;
+}
 
 // recursively
 const indexMembers = (thing) => {
@@ -404,16 +499,16 @@ const indexMembers = (thing) => {
             console.log(item.kind, item.name);
             indexAll[item.canonicalReference] = item;
             if (item.kind == "Class" || item.kind == "Package") {
-                indexByType[item.kind] = indexByType[item.kind] || {};
-                indexByType[item.kind][item.name] = item;
+                entryPoints[item.kind] = entryPoints[item.kind] || {};
+                entryPoints[item.kind][item.canonicalReference] = item;
             } else if (item.kind == "TypeAlias" || item.kind == "Interface") {
-                typeIndex[item.name] = item;
+                typeIndex[item.canonicalReference] = item;
             }
             const { overloadIndex } = item;
             if (overloadIndex) {
-                const alreadyPresent = typeIndex[item.name];
+                const alreadyPresent = typeIndex[item.canonicalReference];
                 if (!alreadyPresent) {
-                    typeIndex[item.name] = {
+                    typeIndex[item.canonicalReference] = {
                         ...item,
                         overloads: [],
                     };
@@ -438,9 +533,11 @@ const toc = `
 export default function TableOfContents() {
     return (
         <ul>
-            ${Object.keys(indexByType).map((kind) => {
-                const { name } = indexByType[kind];
-                return `<li key=${kind}><a href="doc/${name}">${name}</a></li>`;
+            ${Object.keys(entryPoints).map((kind) => {
+                Object.values(entryPoints[kind]).map((item) => {
+                    const { name } = item;
+                    return `<li key=${item.canonicalReference}><a href="doc/${name}">${name}</a></li>`;
+                });
             })}
             <li key="types"><a href="doc/types">Types</a></li>
         </ul>
@@ -453,10 +550,28 @@ const firstClassMemberTypes = ["Class", "EntryPoint"];
 // creates a file in doc/ for each first-class member type, containing a React component
 // that documents all members of that type
 const typeFiles = {};
+
 firstClassMemberTypes.forEach((kind) => {
-    const itemsThisKind = indexByType[kind];
+    const itemsThisKind: Record<string, TypeInfo> = entryPoints[kind];
     if (!itemsThisKind) {
         return;
+    }
+
+    const typesOnPage: string[] = [];
+    let docsForReferencedTypes: string[] = [];
+    function registerUsedType(typeName: string, canonicalReference: string) {
+        if (canonicalReference.startsWith("dred-network-registry!")) {
+            if (!typesOnPage.includes(canonicalReference)) {
+                if (!typeIndex[canonicalReference]) {
+                    typesOnPage.push(canonicalReference);
+                    docsForReferencedTypes.push(mkDocForType(canonicalReference, registerUsedType));
+                } else {
+                    docsForReferencedTypes.push(
+                        `            ?? unknown type: <a href="doc/${typeName}">${typeName}</a> = ${canonicalReference}<br/>\n`
+                    );
+                }
+            }
+        }
     }
     for (const [key, metadata] of Object.entries(itemsThisKind)) {
         const { name } = metadata;
@@ -478,77 +593,122 @@ firstClassMemberTypes.forEach((kind) => {
         const instanceMethods = metadata.members.filter(
             (member) => !member.isStatic && member.kind == "Method"
         );
-        const type = `import React from "react";
+        const docComponent = `import React from "react";
+import ReactMarkdown from 'react-markdown';
 
 export default function DocumentItem() {
     return (
         <div>
             <h2>${name}</h2>
-      ${staticProps.length > 0 ? `
+      ${
+          staticProps.length > 0
+              ? `
             <p>
                 <b>Static / class properties: </b>
         ${staticProps
             .map((member) => {
-                return `                    <a href="#${member.name}">${member.name}</a>`;
+                return `                    <a href="#${member.name}"><var>${member.name}</var></a>`;
             })
-            .join(", \n")}
-          </p>` : ""
-        }${staticMethods.length > 0 ? `
+            .join(", &nbsp;\n")}
+          </p>`
+              : ""
+      }${
+            staticMethods.length > 0
+                ? `
             <p>
                 <b>Static / class methods: </b>
             ${staticMethods
                 .map((member) => {
-                    return `                    <a href="#${member.name}">${member.name}</a>`;
+                    return `                    <a href="#${member.name}"><var>${member.name}()</var></a>`;
                 })
-                .join(", \n")}
-            </p>` : ""
-    }${instanceProps.length > 0 ? `
+                .join(", &nbsp;\n")}
+            </p>`
+                : ""
+        }${
+            instanceProps.length > 0
+                ? `
             <p>
                 <b>Instance properties: </b>
             ${instanceProps
                 .map((member) => {
-                    return `                    <a href="#${member.name}">${member.name}</a>`;
+                    return `                    <a href="#${member.name}"><var>${member.name}</var></a>`;
                 })
-                .join(", \n")}
-            </p>` : ""
-}${instanceMethods.length > 0 ? `
+                .join(", &nbsp;\n")}
+            </p>`
+                : ""
+        }${
+            instanceMethods.length > 0
+                ? `
          <p>
             <b>Instance methods: </b>\n${instanceMethods
                 .map((member) => {
-                    return `                    <a href="#${member.name}">${member.name}</a>`;
+                    return `                    <a href="#${member.name}"><var>${member.name}()</var></a>`;
                 })
-                .join(", \n")}
-        </p>` : ""}
-${staticProps.length > 0 ? `
+                .join(", &nbsp;\n")}
+        </p>`
+                : ""
+        }
+${
+    staticProps.length > 0
+        ? `
     <h3>Static / class properties</h3>
-    ${staticProps.map(mkMemberDoc()).join("\n\n")}
-` : ""}
-${staticMethods.length > 0 ? `
+    ${staticProps.map(mkMemberDoc(registerUsedType)).join("\n\n")}
+`
+        : ""
+}
+${
+    staticMethods.length > 0
+        ? `
     <h3>Static / class methods</h3>
-    ${staticMethods.map(mkMemberDoc()).join("\n\n")}
-` : ""}
-${instanceProps.length > 0 ? `
+    ${staticMethods.map(mkMemberDoc(registerUsedType)).join("\n\n")}
+`
+        : ""
+}
+${
+    instanceProps.length > 0
+        ? `
     <h3>Instance properties</h3>
-    ${instanceProps.map(mkMemberDoc()).join("\n\n")}
-` : ""}
-${instanceMethods.length > 0 ? `
+    ${instanceProps.map(mkMemberDoc(registerUsedType)).join("\n\n")}
+`
+        : ""
+}
+${
+    instanceMethods.length > 0
+        ? `
     <h3>Instance methods</h3>
-        ${instanceMethods.map(mkMemberDoc()).join("\n\n")}
-` : ""}
+        ${instanceMethods.map(mkMemberDoc(registerUsedType)).join("\n\n")}
+`
+        : ""
+}
+${
+    typesOnPage.length > 0
+        ? `
+<h3>Types referenced</h3>
+${docsForReferencedTypes.join("\n\n")}
+`
+        : ""
+}
         </div>
 
     );
 }
     `;
-        fs.writeFileSync(typeFile, type);
+        fs.writeFileSync(typeFile, docComponent);
     }
 });
-function mkMemberDoc(withHeader = true) {
-    return (member) => {
+
+function mkMemberDoc(
+    registerUsedType: (name: string, canonicalReference: string) => void,
+    withHeader = true
+) {
+    return (member: TypeInfo) => {
         const {
             name,
+            canonicalReference,
             docComment,
             excerptTokens,
+            kind,
+
             isReadonly,
             isOptional,
             releaseTag,
@@ -563,30 +723,100 @@ function mkMemberDoc(withHeader = true) {
         } = member;
 
         const header = withHeader
-            ? `        <h4>${isStatic ? "static" : ""} ${isProtected ? "protected" : ""} ${
+            ? `        <h5>${isStatic ? "static" : ""} ${isProtected ? "protected" : ""} ${
                   isAbstract ? "abstract" : ""
-              } ${isReadonly ? "readonly" : ""} <b>{${JSON.stringify(name)}}</b></h4>`
+              } ${isReadonly ? "readonly" : ""} <b>{${JSON.stringify(name)}}</b></h5>`
             : "";
-        return `${header}
+        return `
+                <a id="${name}"></a>
+
+        ${header}
             <pre>
-{${JSON.stringify(docComment)}}
+${showUnparsedDocComment(canonicalReference, docComment)}
 ${excerptTokens
-        .map((token) => {
-            if (token.kind == "Content") {
-                return `{${JSON.stringify(token.text)}}`;
-            } else if (token.kind == "Reference") {
-                return `<a href="#${token.text}">{${JSON.stringify(token.text)}}</a>`;
-            }
-        })
-        .join("")}
+    ?.map((token) => {
+        if (token.kind == "Content") {
+            return `{${JSON.stringify(token.text)}}`;
+        } else if (token.kind == "Reference") {
+            registerUsedType(token.text, token.canonicalReference!);
+            return `<a href="#${token.text}">{${JSON.stringify(token.text)}}</a>`;
+        }
+    })
+    .join("")}
             </pre>
     ${
         overloads
             ? `        <h5>Overloads</h5>
-    ${overloads.map(mkMemberDoc(false)).join("\n\n")}
+    ${overloads.map(mkMemberDoc(registerUsedType, false)).join("\n\n")}
     `
             : ""
     }
     `;
     };
+}
+
+function showUnparsedDocComment(canonicalReference: string, docComment?: string) {
+    if (!docComment) {
+        return "";
+    }
+    const parsed = parseDocComment(canonicalReference, docComment);
+    return showDocComment(parsed.docComment);
+}
+
+function showDocComment(docComment?: DocComment) {
+    if (!docComment) {
+        return "";
+    }
+    const remarks = docComment.remarksBlock;
+    debugger
+    const summary = docComment.summarySection;
+    return `
+    <h4>Summary</h4>
+    <ReactMarkdown>
+            {
+                ${JSON.stringify(Formatter.renderDocNode(summary))}
+            }
+    </ReactMarkdown>
+
+        ` + ( remarks
+        ? `<ReactMarkdown> {
+            ${JSON.stringify(
+                Formatter.renderDocNode(remarks!).
+                replace(/@remarks/, "")
+            )}
+        }</ReactMarkdown>`
+        : "");
+}
+
+function mkDocForType(
+    canonicalReference: string,
+    registerUsedType: (name: string, canonicalReference: string) => void
+) {
+    const type = typeIndex[canonicalReference] || entryPoints["Class"][canonicalReference];
+
+    if (!type) {
+        // debugger
+        return `            <p>see also: ${canonicalReference}</p>\n`;
+    }
+
+    type.excerptTokens?.forEach((token) => {
+        if (token.kind == "Reference") {
+            registerUsedType(token.text, token.canonicalReference!);
+        }
+    });
+
+    const { docComment, name: typeName, excerptTokens } = type;
+    const tsdoc = parseDocComment(canonicalReference, docComment);
+    const parsedDoc = tsdoc.docComment;
+
+    if (!type) {
+        // debugger
+        return `?? unknown type: ${typeName}`;
+    }
+    return `
+        <div>
+            <h2>${typeName}</h2>
+            ${showDocComment(parsedDoc)}
+        </div>
+    `;
 }

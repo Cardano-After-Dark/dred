@@ -4,6 +4,7 @@ import {
     DelegatedDataContract,
     hasReqts,
     StellarTxnContext,
+    textToBytes,
 } from "@donecollectively/stellar-contracts";
 import type {
     FoundDatumUtxo,
@@ -11,11 +12,13 @@ import type {
     hasSeed,
     hasSettingsRef,
     minimalData,
+    anyState,
+    DgDataUpdateOptions,
 } from "@donecollectively/stellar-contracts";
 
 import NodeRegistryBundle from "./NodeRegistry.hlb.js";
 import type { DredCapo } from "../DredCapo.js";
-import type { ErgoNodeRegistrationData, NodeRegistrationDataLike } from "./NodeRegistry.typeInfo.js";
+import type { ErgoNodeRegistrationData, NodeRegistrationData, NodeRegistrationDataLike } from "./NodeRegistry.typeInfo.js";
 import DredNodeRegistryPolicyDataBridge from "./NodeRegistry.bridge.js";
 
 export type PartialPartialData<T extends AnyDataTemplate<any, any>> = Partial<{
@@ -59,7 +62,11 @@ export class NodeRegistryController extends DelegatedDataContract<
             lastHeartbeat: 0,
             memberToken: "member-1234",
             nodeAddress: "1.2.4.3.example.com",
-            nodePort: 13337n
+            nodePort: 13337n,
+
+            // bad data, but good enough for being a lame example.  
+            // It should be a valid Ed25519 public key, expressed as a numeric array
+            nodePublicKey: textToBytes("0x1234567890abcdef"),
         };
     }
 
@@ -87,6 +94,17 @@ export class NodeRegistryController extends DelegatedDataContract<
             },
             // tcx
         );
+    }
+
+    async mkTxnUpdatingNodeRegistration( 
+        txnName: string, 
+        item: FoundDatumUtxo<NodeRegistrationData, any>, 
+        options: DgDataUpdateOptions<
+            NodeRegistrationDataLike
+        >, 
+        tcx?: StellarTxnContext<anyState> | undefined
+    ): Promise<StellarTxnContext<anyState>> {
+        return super.mkTxnUpdateRecord(txnName, item, options, tcx)
     }
 
     requirements() {
