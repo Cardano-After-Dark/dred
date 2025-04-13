@@ -560,7 +560,11 @@ firstClassMemberTypes.forEach((kind) => {
     const typesOnPage: string[] = [];
     let docsForReferencedTypes: string[] = [];
     function registerUsedType(typeName: string, canonicalReference: string) {
-        if (canonicalReference.startsWith("dred-network-registry!")) {
+        if (
+            canonicalReference.startsWith("dred-network-registry!") ||
+            canonicalReference.startsWith("stellar-tokenomics!") ||
+            canonicalReference.startsWith("@donecollectively/stellar-contracts!")
+        ) {
             if (!typesOnPage.includes(canonicalReference)) {
                 if (!typeIndex[canonicalReference]) {
                     typesOnPage.push(canonicalReference);
@@ -574,7 +578,7 @@ firstClassMemberTypes.forEach((kind) => {
         }
     }
     for (const [key, metadata] of Object.entries(itemsThisKind)) {
-        const { name } = metadata;
+        const { name, docComment, canonicalReference } = metadata;
 
         const typeFile = `doc/${name}.tsx`;
         if (!metadata.members) {
@@ -593,13 +597,24 @@ firstClassMemberTypes.forEach((kind) => {
         const instanceMethods = metadata.members.filter(
             (member) => !member.isStatic && member.kind == "Method"
         );
+        const parsedDoc = parseDocComment(canonicalReference, docComment);
+        const docSummary = parsedDoc.docComment.summarySection;
         const docComponent = `import React from "react";
-import ReactMarkdown from 'react-markdown';
+// import ReactMarkdown from 'react-markdown';
+// temp:
+const ReactMarkdown = React.Fragment;
 
 export default function DocumentItem() {
     return (
         <div>
-            <h2>${name}</h2>
+                <h2>${name}</h2>
+                    <ReactMarkdown>
+                        {
+                            ${JSON.stringify(Formatter.renderDocNode(docSummary))}
+                        }
+                    </ReactMarkdown>
+
+            ${showUnparsedDocComment(canonicalReference, docComment)}
       ${
           staticProps.length > 0
               ? `
@@ -721,18 +736,32 @@ function mkMemberDoc(
             parameters,
             overloads,
         } = member;
-
-        const header = withHeader
-            ? `        <h5>${isStatic ? "static" : ""} ${isProtected ? "protected" : ""} ${
+        const parsedDoc = parseDocComment(canonicalReference, docComment);
+        const docSummary = parsedDoc.docComment.summarySection;
+        const header = `    <div>\n` + (withHeader
+            ? `        <h5 style={{display: "inline-block"}}>${isStatic ? "static" : ""} ${isProtected ? "protected" : ""} ${
                   isAbstract ? "abstract" : ""
-              } ${isReadonly ? "readonly" : ""} <b>{${JSON.stringify(name)}}</b></h5>`
-            : "";
-        return `
-                <a id="${name}"></a>
+              } ${isReadonly ? "readonly" : ""} {
+              ${
+                JSON.stringify(name)
+                }}${kind == "Method" ? "()" : ""}&nbsp;&nbsp;</h5>`
+            : "") + `
+        <ReactMarkdown>
+            {
+                ${JSON.stringify(Formatter.renderDocNode(docSummary))}
+            }
+        </ReactMarkdown>
+    </div>\n`;
+
+    if ("txnMintingFungibleTokens" == name) {
+        debugger;
+    }
+    return `<div className="prose">
+        <a id="${name}"></a>
 
         ${header}
-            <pre>
 ${showUnparsedDocComment(canonicalReference, docComment)}
+            <pre><code lang="typescript">
 ${excerptTokens
     ?.map((token) => {
         if (token.kind == "Content") {
@@ -743,7 +772,7 @@ ${excerptTokens
         }
     })
     .join("")}
-            </pre>
+            </code></pre>
     ${
         overloads
             ? `        <h5>Overloads</h5>
@@ -751,6 +780,7 @@ ${excerptTokens
     `
             : ""
     }
+    </div>
     `;
     };
 }
@@ -768,15 +798,8 @@ function showDocComment(docComment?: DocComment) {
         return "";
     }
     const remarks = docComment.remarksBlock;
-    debugger
     const summary = docComment.summarySection;
     return `
-    <h4>Summary</h4>
-    <ReactMarkdown>
-            {
-                ${JSON.stringify(Formatter.renderDocNode(summary))}
-            }
-    </ReactMarkdown>
 
         ` + ( remarks
         ? `<ReactMarkdown> {
@@ -815,7 +838,15 @@ function mkDocForType(
     }
     return `
         <div>
-            <h2>${typeName}</h2>
+            <div>
+            <h4>${typeName}</h4>
+                <ReactMarkdown>
+                {
+                    ${JSON.stringify(Formatter.renderDocNode(parsedDoc.summarySection))}
+                }
+                </ReactMarkdown>
+            </div>
+
             ${showDocComment(parsedDoc)}
         </div>
     `;
