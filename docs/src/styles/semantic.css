@@ -39,7 +39,7 @@ h3 {
     /* sticky header */
     position: sticky;
     top: 3rem;
-    z-index: 100;
+    z-index: 95;
     background-color: var(--color-slate-900);
 }
 
@@ -51,6 +51,9 @@ h4 {
     margin-top: 0.5em;
     color: var(--color-muted-foreground);
     background-color: var(--color-slate-900);
+    position: sticky;
+    top: 4.5rem;
+    z-index: 90;
 }
 
 h5 {
@@ -89,4 +92,12 @@ nav h5 {
 
 nav h6 {
     font-size: 1rem !important
+}
+
+.prose code, .prose pre {
+    background-color: var(--color-code);
+    color: var(--color-code-foreground);
+    :where(a):not(:where([class~=not-prose],[class~=not-prose] *)) {
+        color: var(--color-primary);
+    }
 }

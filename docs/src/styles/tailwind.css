@@ -10,7 +10,9 @@
   :root {
     /* Color system */
     --primary: 217 83% 60%;
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 217 100% 86%;
+    --tw-prose-body: 217 100% 5%;
+
     --secondary: 217 83% 40%;
     --secondary-foreground: 210 40% 98%;
     --accent: 262 83% 58%; /* Purple */
@@ -30,6 +32,10 @@
     /* Background & Foreground */
     --background: 217 50% 100%;
     --foreground: 217 33% 17%;
+
+    /* Code */
+    --code: 218 31% 10%;
+    --code-foreground: 210 37% 64%;
 
     /* Typography */
     --font-sans: ui-sans-serif, system-ui, sans-serif;
@@ -56,12 +62,17 @@
       0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
 
+  .dark .prose {
+    --tw-prose-body: 217 100% 86% !important;
+  }
   .dark {
     --background: 217 33% 17%;
     --foreground: 210 40% 80%;
 
     --primary: 217 91% 60%;
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 217 100% 86%;
+
+
     --secondary: 217 10% 64%;
     --secondary-foreground: 217 33% 17%;
     --accent: 262 83% 62%;
@@ -78,6 +89,9 @@
     --border: 217 60% 66%;
     --input: 217 33% 26%;
     --ring: 224 76% 65%;
+
+    --code: 218 31% 2%;
+    --code-foreground: 210 37% 80%;
 
     /* Add darker shadow variants if needed */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
@@ -118,6 +132,9 @@
     --color-background: hsl(var(--background));
     --color-foreground: hsl(var(--foreground));
 
+    --color-code: hsl(var(--code));
+    --color-code-foreground: hsl(var(--code-foreground));
+
     --border-radius-sm: var(--radius-sm);
     --border-radius: var(--radius);
     --border-radius-md: var(--radius-md);
@@ -141,5 +158,9 @@
 
   .text-pretty {
     text-wrap: pretty;
+  }
+
+  .prose {
+    max-width: none;
   }
 }
