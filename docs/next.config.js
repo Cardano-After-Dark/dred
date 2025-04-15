@@ -7,6 +7,7 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
   },
+  output: 'export',
   basePath: '/dred',
   assetPrefix: '/dred/',
   images: {
