@@ -6,8 +6,8 @@ description: A decentralized real-time messaging protocol built on Redis, design
 
 Welcome to Dred! A powerful decentralized messaging protocol that enables real-time communication for Web3 applications. Built on Redis state channels, Dred provides a robust infrastructure for dApps to implement real-time features without centralized dependencies. {% .lead %}
 
-{% callout title="Documentation Location" type="warning" %}
-This documentation is hosted at [https://cardano-after-dark.github.io/dred/](https://cardano-after-dark.github.io/dred/). If you're seeing this message, the documentation is still being deployed.
+{% callout title="Documentation Status" type="warning" %}
+This documentation is hosted at [https://cardano-after-dark.github.io/dred/](https://cardano-after-dark.github.io/dred/). A new deployment is in progress. If you encounter any issues accessing the documentation, please check our [GitHub repository](https://github.com/Cardano-After-Dark/dred) for updates.
 {% /callout %}
 
 {% quick-links %}
