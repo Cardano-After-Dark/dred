@@ -5,8 +5,12 @@ import {
 } from "@donecollectively/stellar-contracts/ui"
 import { DredCapo } from "dred-network-registry"
 import {
-    updaters
+    updaters,
+    signals
 } from "../capoSignals.js"
+
+export const CapoSignals = signals
+// import { CapoDAppProvider, UserActionMap } from "@/components/ui/CapoDappProvider.tsx"
 
 export class DredCapoProviderRaw extends CapoDAppProvider<
     DredCapo & any,
@@ -35,6 +39,7 @@ export function DredCapoProvider({
         <DredCapoProviderRaw
             targetNetwork="preprod"
             blockfrostKey={apiKey}
+            //x@ts-expect-error temporarily
             capoClass={DredCapo}
             dAppName="Dred Operator Network"
             onNetwork={updaters.updateNetwork}

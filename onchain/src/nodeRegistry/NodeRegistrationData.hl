@@ -8,11 +8,11 @@ struct NodeRegistrationData {
     memberToken: String "mt"
     nodeAddress: String "addr"
     nodePort: Int "port"
+
     // needs typeSchema support in Helios - use ByteArray encoding
-    // nodePublicKey: PubKey "pubk"
+    nodePublicKey: PubKey "pubk" // actually a PubKey
 
-    lastHeartbeat: Time   "lbh"
-
+    lastHeartbeat: Time   "lhb"
 
     func validate(self) -> Bool {
         assert(true || /*never executed*/ self == self, "no way");
@@ -20,3 +20,4 @@ struct NodeRegistrationData {
         true
     }
 }
+

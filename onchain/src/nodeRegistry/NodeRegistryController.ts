@@ -1,4 +1,4 @@
-import { makeTxOutput, makeValue, type Value } from "@helios-lang/ledger";
+import { makePubKey, makeTxOutput, makeValue, type Value } from "@helios-lang/ledger";
 import {
     Activity,
     DelegatedDataContract,
@@ -66,7 +66,7 @@ export class NodeRegistryController extends DelegatedDataContract<
 
             // bad data, but good enough for being a lame example.  
             // It should be a valid Ed25519 public key, expressed as a numeric array
-            nodePublicKey: textToBytes("0x1234567890abcdef"),
+            nodePublicKey: makePubKey(textToBytes("0x1234567890abcdef1234567890abcdef")),
         };
     }
 

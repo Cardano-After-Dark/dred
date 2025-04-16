@@ -8,7 +8,8 @@ startTime=$(date)
 
 playStartSound
 
-inBackground "type-checking" tsc & 
+inBackground "typecheck all, prep for doc-gen and main .d.ts" \
+    tsc -p ./tsconfig.dts.json  &
 {
     rollup \
       --config rollup.config.ts \
