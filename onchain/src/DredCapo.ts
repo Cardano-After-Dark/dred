@@ -228,7 +228,7 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
             mintDelegate: defineRole("mintDgt", MyMintSpendDelegate, {}),
             settings: defineRole("dgDataPolicy", ProtocolSettingsController, {}),
             nodeOpRegistry: defineRole("dgDataPolicy", NodeRegistryController, {}),
-            nbhRegistry: defineRole("dgDataPolicy", NeighborhoodController, {}),
+            // nbhRegistry: defineRole("dgDataPolicy", NeighborhoodController, {}),
             /* Add other delegate roles here */
 
             // optional tokenomics features:

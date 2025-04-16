@@ -2,7 +2,7 @@
     "$schema": "http://json.schemastore.org/tsconfig",
     "compilerOptions": {
         "strict": true,
-        "noEmit": true,
+        // "noEmit": true,
         "declaration": true,
         "emitDeclarationOnly": true,
         "declarationMap": true,
@@ -29,7 +29,7 @@
         "emitDecoratorMetadata": true,
         
         "outDir": "./.api-extractor-temp",        
-        "outFile": ".api-extractor-temp/raw.d.ts",
+        // "outFile": ".api-extractor-temp/raw.d.ts",
         // "importHelpers": true,
         "rootDir": ".",
         

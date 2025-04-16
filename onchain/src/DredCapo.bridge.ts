@@ -89,7 +89,18 @@ import type * as types from "./DredCapo.typeInfo.js";
 /**
  * GENERATED data bridge for **Capo** script (defined in class ***DredCapoBundle***)
  * main: **src/DefaultCapo.hl**, project: **stellar-contracts**
- * @remarks - note that you may override `get dataBridgeName() { return "..." }` to customize the name of this bridge class
+ * @remarks
+* This class doesn't need to be used directly.  Its methods are available through the ***contract's methods***:
+*  - `get mkDatum` - returns the datum-building bridge for the contract's datum type
+*  - `get activity` - returns an activity-building bridge for the contract's activity type
+*  - `get reader` - (advanced) returns a data-reader bridge for parsing CBOR/UPLC-encoded data of specific types
+*  - `get onchain` - (advanced) returns a data-encoding bridge for types defined in the contract's script
+* The advanced methods are not typically needed - mkDatum and activity should normally provide all the
+* type-safe data-encoding needed for the contract.  For reading on-chain data, the Capo's `findDelegatedDataUtxos()` 
+* method is the normal way to locate and decode on-chain data without needing to explicitly use the data-bridge helper classes.
+* 
+* ##### customizing the bridge class name
+* Note that you may override `get dataBridgeName() { return "..." }` to customize the name of this bridge class
 * @public
  */
 export class DredCapoBridge extends ContractDataBridge {
@@ -241,7 +252,7 @@ export class DredCapoBridgeReader extends DataBridgeReaderClass {
     /**
         * reads UplcData *known to fit the **DelegateRole*** enum type,
         * for the Capo script.
-        * ### Standard WARNING
+        * #### Standard WARNING
         * 
         * This is a low-level data-reader for use in ***advanced development scenarios***.
         * 
@@ -262,7 +273,7 @@ export class DredCapoBridgeReader extends DataBridgeReaderClass {
     /**
         * reads UplcData *known to fit the **ManifestEntryType*** enum type,
         * for the Capo script.
-        * ### Standard WARNING
+        * #### Standard WARNING
         * 
         * This is a low-level data-reader for use in ***advanced development scenarios***.
         * 
@@ -283,7 +294,7 @@ export class DredCapoBridgeReader extends DataBridgeReaderClass {
     /**
         * reads UplcData *known to fit the **PendingDelegateAction*** enum type,
         * for the Capo script.
-        * ### Standard WARNING
+        * #### Standard WARNING
         * 
         * This is a low-level data-reader for use in ***advanced development scenarios***.
         * 
@@ -304,7 +315,7 @@ export class DredCapoBridgeReader extends DataBridgeReaderClass {
     /**
         * reads UplcData *known to fit the **ManifestActivity*** enum type,
         * for the Capo script.
-        * ### Standard WARNING
+        * #### Standard WARNING
         * 
         * This is a low-level data-reader for use in ***advanced development scenarios***.
         * 
@@ -325,7 +336,7 @@ export class DredCapoBridgeReader extends DataBridgeReaderClass {
     /**
         * reads UplcData *known to fit the **PendingCharterChange*** enum type,
         * for the Capo script.
-        * ### Standard WARNING
+        * #### Standard WARNING
         * 
         * This is a low-level data-reader for use in ***advanced development scenarios***.
         * 
@@ -347,7 +358,7 @@ datum = (d: UplcData) => { return this.CapoDatum(d) }
     /**
         * reads UplcData *known to fit the **CapoDatum*** enum type,
         * for the Capo script.
-        * ### Standard WARNING
+        * #### Standard WARNING
         * 
         * This is a low-level data-reader for use in ***advanced development scenarios***.
         * 
@@ -368,7 +379,7 @@ datum = (d: UplcData) => { return this.CapoDatum(d) }
     /**
         * reads UplcData *known to fit the **CapoLifecycleActivity*** enum type,
         * for the Capo script.
-        * ### Standard WARNING
+        * #### Standard WARNING
         * 
         * This is a low-level data-reader for use in ***advanced development scenarios***.
         * 
@@ -389,7 +400,7 @@ datum = (d: UplcData) => { return this.CapoDatum(d) }
     /**
         * reads UplcData *known to fit the **CapoActivity*** enum type,
         * for the Capo script.
-        * ### Standard WARNING
+        * #### Standard WARNING
         * 
         * This is a low-level data-reader for use in ***advanced development scenarios***.
         * 
@@ -410,7 +421,7 @@ datum = (d: UplcData) => { return this.CapoDatum(d) }
     /**
         * reads UplcData *known to fit the **RelativeDelegateLink*** struct type,
         * for the Capo script.
-        * ### Standard WARNING
+        * #### Standard WARNING
         * 
         * This is a low-level data-reader for use in ***advanced development scenarios***.
         * 
@@ -429,7 +440,7 @@ datum = (d: UplcData) => { return this.CapoDatum(d) }
     /**
         * reads UplcData *known to fit the **CapoManifestEntry*** struct type,
         * for the Capo script.
-        * ### Standard WARNING
+        * #### Standard WARNING
         * 
         * This is a low-level data-reader for use in ***advanced development scenarios***.
         * 
@@ -448,7 +459,7 @@ datum = (d: UplcData) => { return this.CapoDatum(d) }
     /**
         * reads UplcData *known to fit the **PendingDelegateChange*** struct type,
         * for the Capo script.
-        * ### Standard WARNING
+        * #### Standard WARNING
         * 
         * This is a low-level data-reader for use in ***advanced development scenarios***.
         * 
@@ -467,7 +478,7 @@ datum = (d: UplcData) => { return this.CapoDatum(d) }
     /**
         * reads UplcData *known to fit the **AnyData*** struct type,
         * for the Capo script.
-        * ### Standard WARNING
+        * #### Standard WARNING
         * 
         * This is a low-level data-reader for use in ***advanced development scenarios***.
         * 
@@ -492,6 +503,7 @@ datum = (d: UplcData) => { return this.CapoDatum(d) }
 export class RelativeDelegateLinkHelper extends DataBridge {
     isCallable = true
    /**
+            * @internal
             * uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<RelativeDelegateLink, RelativeDelegateLinkLike>(
         RelativeDelegateLinkSchema,
@@ -513,10 +525,12 @@ export class RelativeDelegateLinkHelper extends DataBridge {
 /**
  * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
  * @public
- */
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 export class DelegateRoleHelper extends EnumBridge<JustAnEnum> {
     /*mkEnumHelperClass*/
     /**
+            * @internal
             *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<DelegateRole, DelegateRoleLike>(
         DelegateRoleSchema,
@@ -612,10 +626,12 @@ export class DelegateRoleHelper extends EnumBridge<JustAnEnum> {
 /**
  * Helper class for generating UplcData for variants of the ***ManifestEntryType*** enum type.
  * @public
- */
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 export class ManifestEntryTypeHelper extends EnumBridge<JustAnEnum> {
     /*mkEnumHelperClass*/
     /**
+            * @internal
             *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<ManifestEntryType, ManifestEntryTypeLike>(
         ManifestEntryTypeSchema,
@@ -690,6 +706,7 @@ export class ManifestEntryTypeHelper extends EnumBridge<JustAnEnum> {
 export class CapoManifestEntryHelper extends DataBridge {
     isCallable = true
    /**
+            * @internal
             * uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<CapoManifestEntry, CapoManifestEntryLike>(
         CapoManifestEntrySchema,
@@ -711,10 +728,12 @@ export class CapoManifestEntryHelper extends DataBridge {
 /**
  * Helper class for generating UplcData for variants of the ***PendingDelegateAction*** enum type.
  * @public
- */
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 export class PendingDelegateActionHelper extends EnumBridge<JustAnEnum> {
     /*mkEnumHelperClass*/
     /**
+            * @internal
             *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<PendingDelegateAction, PendingDelegateActionLike>(
         PendingDelegateActionSchema,
@@ -768,13 +787,13 @@ export class PendingDelegateActionHelper extends EnumBridge<JustAnEnum> {
      * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Add"***, 
      * @param fields - \{ purpose: string, idPrefix: string \}
      * @remarks
-    * ### Seeded activity
+    * ##### Seeded activity
     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ### Activity contains implied seed
+     * ##### Activity contains implied seed
      * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
      * provided implicitly by a SeedActivity-supporting library function. 
      *
-     * ## Usage
+     * #### Usage
      *   1. Call the `$seeded$Add({ purpose, idPrefix })`
       *       method with the indicated (non-seed) details.
      *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
@@ -849,13 +868,13 @@ export class PendingDelegateActionHelper extends EnumBridge<JustAnEnum> {
      * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Replace"***, 
      * @param fields - \{ purpose: string, idPrefix: string, replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | \{mph: MintingPolicyHash | string | number[], tokenName: string | number[]\} \}
      * @remarks
-    * ### Seeded activity
+    * ##### Seeded activity
     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ### Activity contains implied seed
+     * ##### Activity contains implied seed
      * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
      * provided implicitly by a SeedActivity-supporting library function. 
      *
-     * ## Usage
+     * #### Usage
      *   1. Call the `$seeded$Replace({ purpose, idPrefix, replacesDgt })`
       *       method with the indicated (non-seed) details.
      *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
@@ -880,6 +899,7 @@ export class PendingDelegateActionHelper extends EnumBridge<JustAnEnum> {
 export class PendingDelegateChangeHelper extends DataBridge {
     isCallable = true
    /**
+            * @internal
             * uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<PendingDelegateChange, PendingDelegateChangeLike>(
         PendingDelegateChangeSchema,
@@ -901,10 +921,12 @@ export class PendingDelegateChangeHelper extends DataBridge {
 /**
  * Helper class for generating UplcData for variants of the ***ManifestActivity*** enum type.
  * @public
- */
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 export class ManifestActivityHelper extends EnumBridge<JustAnEnum> {
     /*mkEnumHelperClass*/
     /**
+            * @internal
             *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<ManifestActivity, ManifestActivityLike>(
         ManifestActivitySchema,
@@ -984,10 +1006,12 @@ export class ManifestActivityHelper extends EnumBridge<JustAnEnum> {
 /**
  * Helper class for generating UplcData for variants of the ***PendingCharterChange*** enum type.
  * @public
- */
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 export class PendingCharterChangeHelper extends EnumBridge<JustAnEnum> {
     /*mkEnumHelperClass*/
     /**
+            * @internal
             *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<PendingCharterChange, PendingCharterChangeLike>(
         PendingCharterChangeSchema,
@@ -1030,10 +1054,12 @@ export class PendingCharterChangeHelper extends EnumBridge<JustAnEnum> {
 /**
  * Helper class for generating InlineTxOutputDatum for variants of the ***CapoDatum*** enum type.
  * @public
- */
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 export class CapoDatumHelper extends EnumBridge<JustAnEnum> {
     /*mkEnumHelperClass*/
     /**
+            * @internal
             *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<CapoDatum, CapoDatumLike>(
         CapoDatumSchema,
@@ -1090,10 +1116,12 @@ export class CapoDatumHelper extends EnumBridge<JustAnEnum> {
 /**
  * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
  * @public
- */
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 export class DelegateRoleHelperNested extends EnumBridge<JustAnEnum> {
     /*mkEnumHelperClass*/
     /**
+            * @internal
             *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<DelegateRole, DelegateRoleLike>(
         DelegateRoleSchema,
@@ -1142,7 +1170,8 @@ export class DelegateRoleHelperNested extends EnumBridge<JustAnEnum> {
 
     /**
      * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-    * ## Nested activity: 
+    * @remarks
+    * #### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1158,7 +1187,8 @@ export class DelegateRoleHelperNested extends EnumBridge<JustAnEnum> {
 
     /**
      * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-    * ## Nested activity: 
+    * @remarks
+    * #### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1197,10 +1227,12 @@ export class DelegateRoleHelperNested extends EnumBridge<JustAnEnum> {
 /**
  * Helper class for generating UplcData for variants of the ***ManifestActivity*** enum type.
  * @public
- */
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 export class ManifestActivityHelperNested extends EnumBridge<isActivity> {
     /*mkEnumHelperClass*/
     /**
+            * @internal
             *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<ManifestActivity, ManifestActivityLike>(
         ManifestActivitySchema,
@@ -1209,7 +1241,8 @@ export class ManifestActivityHelperNested extends EnumBridge<isActivity> {
 
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
-    * ## Nested activity: 
+    * @remarks
+    * #### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1226,7 +1259,7 @@ export class ManifestActivityHelperNested extends EnumBridge<isActivity> {
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
      * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
-    * ### Nested activity: 
+    * ##### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1244,7 +1277,7 @@ export class ManifestActivityHelperNested extends EnumBridge<isActivity> {
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
      * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
-    * ### Nested activity: 
+    * ##### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1262,7 +1295,7 @@ export class ManifestActivityHelperNested extends EnumBridge<isActivity> {
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
      * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
-    * ### Nested activity: 
+    * ##### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1280,7 +1313,7 @@ export class ManifestActivityHelperNested extends EnumBridge<isActivity> {
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
      * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
-    * ### Nested activity: 
+    * ##### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1300,10 +1333,12 @@ export class ManifestActivityHelperNested extends EnumBridge<isActivity> {
 /**
  * Helper class for generating UplcData for variants of the ***CapoLifecycleActivity*** enum type.
  * @public
- */
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 export class CapoLifecycleActivityHelper extends EnumBridge<JustAnEnum> {
     /*mkEnumHelperClass*/
     /**
+            * @internal
             *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<CapoLifecycleActivity, CapoLifecycleActivityLike>(
         CapoLifecycleActivitySchema,
@@ -1354,13 +1389,13 @@ export class CapoLifecycleActivityHelper extends EnumBridge<JustAnEnum> {
      * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***, 
      * @param fields - \{ purpose: string \}
      * @remarks
-    * ### Seeded activity
+    * ##### Seeded activity
     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ### Activity contains implied seed
+     * ##### Activity contains implied seed
      * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
      * provided implicitly by a SeedActivity-supporting library function. 
      *
-     * ## Usage
+     * #### Usage
      *   1. Call the `$seeded$CreatingDelegate({ purpose })`
       *       method with the indicated (non-seed) details.
      *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
@@ -1454,13 +1489,13 @@ export class CapoLifecycleActivityHelper extends EnumBridge<JustAnEnum> {
      * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***, 
      * @param fields - \{ purpose: string \}
      * @remarks
-    * ### Seeded activity
+    * ##### Seeded activity
     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ### Activity contains implied seed
+     * ##### Activity contains implied seed
      * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
      * provided implicitly by a SeedActivity-supporting library function. 
      *
-     * ## Usage
+     * #### Usage
      *   1. Call the `$seeded$forcingNewSpendDelegate({ purpose })`
       *       method with the indicated (non-seed) details.
      *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
@@ -1518,13 +1553,13 @@ export class CapoLifecycleActivityHelper extends EnumBridge<JustAnEnum> {
      * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***, 
      * @param fields - \{ purpose: string \}
      * @remarks
-    * ### Seeded activity
+    * ##### Seeded activity
     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ### Activity contains implied seed
+     * ##### Activity contains implied seed
      * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
      * provided implicitly by a SeedActivity-supporting library function. 
      *
-     * ## Usage
+     * #### Usage
      *   1. Call the `$seeded$forcingNewMintDelegate({ purpose })`
       *       method with the indicated (non-seed) details.
      *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
@@ -1559,10 +1594,12 @@ export class CapoLifecycleActivityHelper extends EnumBridge<JustAnEnum> {
 /**
  * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
  * @public
- */
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 export class ActivityDelegateRoleHelperNested extends EnumBridge<isActivity> {
     /*mkEnumHelperClass*/
     /**
+            * @internal
             *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<DelegateRole, DelegateRoleLike>(
         DelegateRoleSchema,
@@ -1611,7 +1648,8 @@ export class ActivityDelegateRoleHelperNested extends EnumBridge<isActivity> {
 
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-    * ## Nested activity: 
+    * @remarks
+    * #### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1627,7 +1665,8 @@ export class ActivityDelegateRoleHelperNested extends EnumBridge<isActivity> {
 
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-    * ## Nested activity: 
+    * @remarks
+    * #### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1666,10 +1705,12 @@ export class ActivityDelegateRoleHelperNested extends EnumBridge<isActivity> {
 /**
  * Helper class for generating UplcData for variants of the ***CapoLifecycleActivity*** enum type.
  * @public
- */
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 export class CapoLifecycleActivityHelperNested extends EnumBridge<isActivity> {
     /*mkEnumHelperClass*/
     /**
+            * @internal
             *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<CapoLifecycleActivity, CapoLifecycleActivityLike>(
         CapoLifecycleActivitySchema,
@@ -1684,7 +1725,7 @@ export class CapoLifecycleActivityHelperNested extends EnumBridge<isActivity> {
      * to create a context satisfying `hasSeed`.
      * See `$seeded$CreatingDelegate}` for use in a context
      * providing an implicit seed utxo. 
-    * ### Nested activity: 
+    * ##### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1724,18 +1765,18 @@ export class CapoLifecycleActivityHelperNested extends EnumBridge<isActivity> {
      * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***, 
      * @param fields - \{ purpose: string \}
      * @remarks
-    * ### Seeded activity
+    * ##### Seeded activity
     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ### Activity contains implied seed
+     * ##### Activity contains implied seed
      * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
      * provided implicitly by a SeedActivity-supporting library function. 
      *
-     * ## Usage
+     * #### Usage
      *   1. Call the `$seeded$CreatingDelegate({ purpose })`
       *       method with the indicated (non-seed) details.
      *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
      *       `mkTxnCreateRecord({activity})` method.
-    * ## Nested activity: 
+    * ##### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1792,7 +1833,7 @@ export class CapoLifecycleActivityHelperNested extends EnumBridge<isActivity> {
      * to create a context satisfying `hasSeed`.
      * See `$seeded$forcingNewSpendDelegate}` for use in a context
      * providing an implicit seed utxo. 
-    * ### Nested activity: 
+    * ##### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1832,18 +1873,18 @@ export class CapoLifecycleActivityHelperNested extends EnumBridge<isActivity> {
      * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***, 
      * @param fields - \{ purpose: string \}
      * @remarks
-    * ### Seeded activity
+    * ##### Seeded activity
     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ### Activity contains implied seed
+     * ##### Activity contains implied seed
      * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
      * provided implicitly by a SeedActivity-supporting library function. 
      *
-     * ## Usage
+     * #### Usage
      *   1. Call the `$seeded$forcingNewSpendDelegate({ purpose })`
       *       method with the indicated (non-seed) details.
      *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
      *       `mkTxnCreateRecord({activity})` method.
-    * ## Nested activity: 
+    * ##### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1864,7 +1905,7 @@ export class CapoLifecycleActivityHelperNested extends EnumBridge<isActivity> {
      * to create a context satisfying `hasSeed`.
      * See `$seeded$forcingNewMintDelegate}` for use in a context
      * providing an implicit seed utxo. 
-    * ### Nested activity: 
+    * ##### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1904,18 +1945,18 @@ export class CapoLifecycleActivityHelperNested extends EnumBridge<isActivity> {
      * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***, 
      * @param fields - \{ purpose: string \}
      * @remarks
-    * ### Seeded activity
+    * ##### Seeded activity
     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ### Activity contains implied seed
+     * ##### Activity contains implied seed
      * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
      * provided implicitly by a SeedActivity-supporting library function. 
      *
-     * ## Usage
+     * #### Usage
      *   1. Call the `$seeded$forcingNewMintDelegate({ purpose })`
       *       method with the indicated (non-seed) details.
      *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
      *       `mkTxnCreateRecord({activity})` method.
-    * ## Nested activity: 
+    * ##### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
@@ -1949,10 +1990,12 @@ export class CapoLifecycleActivityHelperNested extends EnumBridge<isActivity> {
 /**
  * Helper class for generating UplcData for variants of the ***CapoActivity*** enum type.
  * @public
- */
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 export class CapoActivityHelper extends EnumBridge<isActivity> {
     /*mkEnumHelperClass*/
     /**
+            * @internal
             *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<CapoActivity, CapoActivityLike>(
         CapoActivitySchema,
@@ -2034,6 +2077,7 @@ export class CapoActivityHelper extends EnumBridge<isActivity> {
 export class AnyDataHelper extends DataBridge {
     isCallable = true
    /**
+            * @internal
             * uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast = makeCast<AnyData, AnyDataLike>(
         AnyDataSchema,

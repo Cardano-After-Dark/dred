@@ -17,9 +17,6 @@ class Formatter {
             }
             for (const childNode of docNode.getChildNodes()) {
                 const t = Formatter.renderDocNode(childNode);
-                if (t.match(/customize the name/)) {
-                    debugger;
-                }
                 result += t;
             }
         }
@@ -739,12 +736,12 @@ function mkMemberDoc(
         const parsedDoc = parseDocComment(canonicalReference, docComment);
         const docSummary = parsedDoc.docComment.summarySection;
         const header = `    <div>\n` + (withHeader
-            ? `        <h5 style={{display: "inline-block"}}>${isStatic ? "static" : ""} ${isProtected ? "protected" : ""} ${
+            ? `        <h4 style={{display: "inline-block"}}>${isStatic ? "static" : ""} ${isProtected ? "protected" : ""} ${
                   isAbstract ? "abstract" : ""
               } ${isReadonly ? "readonly" : ""} {
               ${
                 JSON.stringify(name)
-                }}${kind == "Method" ? "()" : ""}&nbsp;&nbsp;</h5>`
+                }}${kind == "Method" ? "()" : ""}&nbsp;&nbsp;</h4>`
             : "") + `
         <ReactMarkdown>
             {
@@ -799,7 +796,7 @@ function showDocComment(docComment?: DocComment) {
     }
     const remarks = docComment.remarksBlock;
     const summary = docComment.summarySection;
-    return `
+    return `<p></p>
 
         ` + ( remarks
         ? `<ReactMarkdown> {
