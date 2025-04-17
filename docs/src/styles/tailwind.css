@@ -10,13 +10,13 @@
   :root {
     /* Color system */
     --primary: 217 83% 60%;
-    --primary-foreground: 217 100% 86%;
+    --primary-foreground: 217 100% 83%;
     --tw-prose-body: 217 100% 5%;
 
     --secondary: 217 83% 40%;
     --secondary-foreground: 210 40% 98%;
     --accent: 262 83% 58%; /* Purple */
-    --accent-foreground: 210 100% 86%;
+    --accent-foreground: 210 100% 83%;
     --destructive: 0 84% 60%; /* Red */
     --destructive-foreground: 210 40% 98%;
     --muted: 217 10% 95%;
@@ -63,14 +63,15 @@
   }
 
   .dark .prose {
-    --tw-prose-body: 217 100% 86% !important;
+    --tw-prose-body: 217 100% 83% !important;
+    --tw-prose-headings: 217 100% 100% !important;
   }
   .dark {
     --background: 217 33% 17%;
     --foreground: 210 40% 80%;
 
     --primary: 217 91% 60%;
-    --primary-foreground: 217 100% 86%;
+    --primary-foreground: 217 100% 83%;
 
 
     --secondary: 217 10% 64%;
