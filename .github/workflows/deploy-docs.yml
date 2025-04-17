@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'docs/**'
+      - '.github/workflows/deploy-docs.yml'
   workflow_dispatch:
 
 permissions:
@@ -35,7 +36,7 @@ jobs:
         run: cd docs && pnpm install --frozen-lockfile
         
       - name: Build documentation
-        run: cd docs && pnpm build && pnpm export
+        run: cd docs && pnpm build
         
       - name: Debug output directory
         run: |
