@@ -23,16 +23,18 @@ const icons = {
 }
 
 export function Callout({ type = 'note', title, children }) {
-  let IconComponent = icons[type]
+  // Ensure type is valid, default to 'note' if not
+  const validType = styles[type] ? type : 'note'
+  let IconComponent = icons[validType] || icons.note
 
   return (
-    <div className={clsx('my-8 flex rounded-3xl p-6', styles[type].container)}>
+    <div className={clsx('my-8 flex rounded-3xl p-6', styles[validType].container)}>
       <IconComponent className="h-8 w-8 flex-none" />
       <div className="ml-4 flex-auto">
-        <p className={clsx('m-0 font-display text-xl', styles[type].title)}>
+        <p className={clsx('m-0 font-display text-xl', styles[validType].title)}>
           {title}
         </p>
-        <div className={clsx('prose mt-2.5', styles[type].body)}>
+        <div className={clsx('prose mt-2.5', styles[validType].body)}>
           {children}
         </div>
       </div>
