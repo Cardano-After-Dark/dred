@@ -296,31 +296,40 @@ enum DelegateActivity {
 
                     REQT("the operator must provide a valid minting seed");
                     REQT("the seed must have a DRED.nodeOperator token in it");
+                    REQT("the operator must stake the amount of DRED tokens mentioned in settings.minNodeOperatorStake");
+                    REQT("the operator must pay the registration fee mentioned in settings.minNodeRegistrationFee");
+
                     mkTn : (String) -> String = mkUutTnFactory(seed);
 
                     // mints a dredNode UUT
                     mintingOk : Bool = validateUutMinting(
                         mph: priorMddd.dd.mph,
                         seed: seed,
-                        purposes: []String{"dredNode"},
+                        purposes: []String{"dredNode"}, // dredNode-XXXXYYYYZZZZ
                         // otherMintedValue: ()
                         mkTokenName: mkTn,
                         // WE ARE the mint delegate.
                         needsMintDelegateApproval: false 
                     );
-
                     assert(cctx.withCharterRef().orFail(), "no charter ref");
+                    newRecDetails : DgDataDetails = cctx.creatingDgData(mkTn("dredNode"));
+
                     _settings = ProtocolSettings::from_data(cctx.getManifestedData("currentSettings"));
 
                     // vaultValue: Value = mkTv(priorMddd.dd.mph, mkTn("lbmVault"));
                     // print("vaultValue: "+ vaultValue.show());
-                    newRecData : DgDataDetails = cctx.creatingDgData(mkTn("dredNode"));
-                    _newDataOut : TxOutput = newRecData.output();
+                    newDataOut : TxOutput = newRecDetails.output();
+
                         //cctx.hasDelegatedDataOutput(vaultValue);
                     TODO("send the fee to Treasury w/ acctg info");
 
-                    reg: NodeRegistrationData = NodeRegistrationData::from_data(
-                        newRecData.outputData()
+                    newRec: NodeRegistrationData = NodeRegistrationData::from_data(
+                        newDataOut.datum.inline
+                    );
+                    REQT("the lastHeartbeat must be 0 during creation");
+                    assert(
+                        newRec.lastHeartbeat == Time::new(0), 
+                        "must not have a lastHeartbeat during creation"
                     );
 
                     assert(
@@ -332,7 +341,7 @@ enum DelegateActivity {
                     // acceptableExpiry : TimeRange = daysInFuture(settings.artistVaultSettings.albumCommissionDiscountDays.trunc());
 
                     // has the member-token reference
-                    memberToken : String = reg.memberToken;
+                    memberToken : String = newRec.memberToken;
                     if (!memberToken.starts_with("member-")) { 
                         error("invalid member token name"
                     ) };
@@ -347,7 +356,7 @@ enum DelegateActivity {
                         None => error("missing member token"),
                         Some => true
                     } &&
-                    reg.validate() &&
+                    newRec.validate() &&
                     mintingOk
                 }
             },
