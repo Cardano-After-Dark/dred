@@ -4,11 +4,7 @@ pageTitle: Dred - Decentralized Redis State Channels for Web3
 description: A decentralized real-time messaging protocol built on Redis, designed specifically for dApps and Web3 applications
 ---
 
-Welcome to Dred! A powerful decentralized messaging protocol that enables real-time communication for Web3 applications. Built on Redis state channels, Dred provides a robust infrastructure for dApps to implement real-time features without centralized dependencies. {% .lead %}
-
-{% callout title="Documentation Status" type="info" %}
-This documentation is hosted at [https://cardano-after-dark.github.io/dred/](https://cardano-after-dark.github.io/dred/). GitHub Pages has been enabled and the documentation should be available at this URL shortly. If you encounter any issues, please check our [GitHub repository](https://github.com/Cardano-After-Dark/dred) for updates.
-{% /callout %}
+Learn how to get Dred set up in your project in under thirty minutes or it's free. {% .lead %}
 
 {% quick-links %}
 
@@ -25,18 +21,11 @@ This documentation is hosted at [https://cardano-after-dark.github.io/dred/](htt
 ---
 ## Quick Start
 
-Dred is designed to be easy to set up and integrate into your dApp. This guide will walk you through the installation process, basic configuration, and how to start using Dred in your application. {% .lead %}
+In this guide you will learn ...
 
 ### What is Dred
 
-Dred (Decentralized Redis) is a real-time messaging protocol designed specifically for decentralized applications (dApps). The protocol enables multiple users to have a shared stream of updates, with any authorized participant being able to add content. Built on Redis state channels, Dred provides:
-
-- **Decentralized Architecture**: No single point of failure - the protocol is served by multiple nodes
-- **Real-time Updates**: Instant message delivery across the network
-- **Web3 Integration**: Designed with blockchain applications in mind
-- **Scalable Performance**: Leveraging Redis for high-throughput message handling
-
-With Dred, application developers don't have to operate messaging servers themselves - the protocol is served in a decentralized manner by multiple servers across the network.
+Dred is a real-time messaging protocol that's designed specifically for decentralized applications (dApps). The protocol enables multiple users to have a shared stream of updates, with any authorized player being able to add content. With Dred, application developers don't have to operate messaging servers themselves - the protocol is served in a decentralized manner by multiple servers.
 
 
 ### Dependencies
