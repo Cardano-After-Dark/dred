@@ -20,18 +20,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: 'pnpm'
           
       - uses: pnpm/action-setup@v2
         with:
           version: 7.25.1
-          run_install: false
           
       - name: Get pnpm store directory
         shell: bash
