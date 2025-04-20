@@ -4,15 +4,12 @@ const withMarkdoc = require('@markdoc/next.js')
 const nextConfig = {
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'md'],
-  experimental: {
-    scrollRestoration: true,
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH ? `${process.env.NEXT_PUBLIC_BASE_PATH}/` : '',
+  images: {
+    unoptimized: true,
   },
-  basePath: '/dred',
-  assetPrefix: '/dred/',
-  webpack: (config) => {
-    config.output.publicPath = '/dred' + config.output.publicPath
-    return config
-  },
+  trailingSlash: true,
 }
 
 

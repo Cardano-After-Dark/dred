@@ -7,6 +7,33 @@ Objective: support a network of nodes sharing many event channels where clients 
 
 In development.  This code has not been audited for security.
 
+## Documentation
+
+The documentation is built with Next.js and can be accessed in three ways:
+
+### 1. Development Mode
+
+Run `pnpm dev` from the project root. This will start all services, including the documentation server on port 3034.
+Access the documentation at `http://localhost:3034`.
+
+### 2. Local Static Build
+
+To test the static build locally:
+```bash
+cd docs
+rm -rf .next out  # Clean previous builds
+pnpm build        # Build the site
+pnpm export       # Export as static files
+cd out
+python3 -m http.server 8000  # Or any other static file server
+```
+Then access the documentation at `http://localhost:8000`.
+
+### 3. GitHub Pages
+
+The documentation is automatically deployed to GitHub Pages when changes are pushed to the docs directory.
+Access the live documentation at `https://cardano-after-dark.github.io/dred`.
+
 ## Setup for Development
 
 The following details should only need to be set up once.  If you've already done these, skip right to Development
