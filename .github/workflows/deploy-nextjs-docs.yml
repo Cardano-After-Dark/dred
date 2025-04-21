@@ -28,7 +28,7 @@ jobs:
           node-version: 18
           cache: 'pnpm'
           
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3 #v2 is deprecated
         with:
           version: 7.25.1
           run_install: false
