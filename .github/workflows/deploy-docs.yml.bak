@@ -1,3 +1,4 @@
+# BACKUP: This workflow is kept as a reference but is not actively used.
 name: Deploy Documentation
 
 on:
