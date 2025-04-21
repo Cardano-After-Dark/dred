@@ -20,38 +20,47 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 7.25.1
-          run_install: false
-
+      - uses: actions/checkout@v3
+      
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
           cache: 'pnpm'
-          cache-dependency-path: 'docs/pnpm-lock.yaml'
+          
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.25.1
+          run_install: false
+          
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+          
       - name: Install dependencies
         run: cd docs && pnpm install --frozen-lockfile
-
-      - name: Build with Next.js
-        run: cd docs && pnpm run build
-
-      - name: Static HTML export with Next.js
-        run: cd docs && pnpm run export
-
+        
+      - name: Build documentation
+        env:
+          NEXT_PUBLIC_BASE_PATH: /dred
+        run: cd docs && pnpm build && pnpm export
+        
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./docs/out
+          path: docs/out
 
   deploy:
     environment:
