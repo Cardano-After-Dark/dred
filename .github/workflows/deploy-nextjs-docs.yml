@@ -20,15 +20,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
       
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'pnpm'
+        #   cache: 'pnpm'
           
-      - uses: pnpm/action-setup@v3 #v2 is deprecated
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3 #v2 is deprecated
         with:
           version: 7.25.1
           run_install: false
