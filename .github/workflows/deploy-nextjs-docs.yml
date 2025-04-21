@@ -3,8 +3,9 @@ name: Deploy Next.js Documentation
 on:
   push:
     branches: [ dev/patrik ]
-    paths:
-      - 'docs/**'
+    # Temporarily removed path filtering to test the workflow
+    # paths:
+    #   - 'docs/**'
   workflow_dispatch:
 
 permissions:
