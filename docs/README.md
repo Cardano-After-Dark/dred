@@ -7,7 +7,6 @@ The remainder of this file came as part of a site template.
 # Original README
 
 
-
 ## Getting Started
 
 To get started with this template, first install the npm dependencies:
