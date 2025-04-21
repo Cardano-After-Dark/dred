@@ -44,3 +44,5 @@ To learn more about the technologies used in this site template, see the followi
 - [DocSearch](https://docsearch.algolia.com) - the official DocSearch documentation
 
 <!-- Trigger GitHub Actions workflow -->
+
+<!-- Updating this comment to trigger workflow -->
