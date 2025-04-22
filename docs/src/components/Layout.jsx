@@ -23,6 +23,7 @@ const navigation = [
     title: 'Core concepts',
     links: [
         { title: 'Understanding Dred', href: '/docs/understanding-dred' },
+        { title: 'Dred Node Registry', href: '/docs/dred-node-registry' },
     ],
   },
   {
