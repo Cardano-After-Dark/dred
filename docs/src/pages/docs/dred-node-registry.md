@@ -48,7 +48,7 @@ Fetch current protocol settings to ensure your registration meets requirements:
 
 ```javascript
 // Retrieve node operator settings
-const settings = await capo.findSettingsInformation();
+const settings = await capo.findSettingsInfo();
 const nodeOperatorSettings = settings.nodeOperatorSettings;
 
 // Check minimum stake and registration fee requirements
@@ -60,7 +60,7 @@ const regFee = nodeOperatorSettings.minRegistrationFee;
 
 ```javascript
 // Get a controller instance for node registration
-const controller = capo.getNodeRegistryController();
+const controller = await capo.getNodeRegistryController();
 ```
 
 ### 4. Create and Submit Registration Transaction
@@ -74,7 +74,7 @@ const nodeData = {
 };
 
 // Create transaction
-const tx = await controller.makeTransactionRegisteringNode(nodeData, {
+const tx = await controller.mkTxnRegisteringNode(nodeData, {
   // Include required assets (registration fee and stake)
 });
 
@@ -101,9 +101,11 @@ const updatedData = {
 };
 
 // Create update transaction
-const updateTx = await controller.updateNodeRegistration(
-  updatedData,
+const updateTx = await controller.mkTxnUpdatingNodeRegistration(
+  "updateNodeInfo",
+  existingNodeData,
   {
+    data: updatedData,
     // Options and member token required
     memberToken: yourMemberToken
   }
