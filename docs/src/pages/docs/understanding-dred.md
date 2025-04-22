@@ -1,4 +1,9 @@
 # About Dred
+
+**Dred is a decentralized infrastructure specifically designed for Cardano blockchain applications.** Built on principles of reliability and open participation, Dred provides critical real-time communication services that dApps can leverage without having to build their own messaging infrastructure. The network's decentralized nature ensures high availability and resilience, while its open architecture enables both application developers to easily integrate with the platform and new node operators to join and strengthen the ecosystem. By providing this foundational layer, Dred helps accelerate the development of sophisticated, interactive Cardano applications while maintaining the blockchain's core values of decentralization and community ownership.
+
+## The need for Dred
+
 The Dred project was inspired by the need for the Poker dApp to have a shared communication channel, transmitting messages between multiple participants in a shared channel to support the poker game.  In the poker game, as with many other cases of multi-user behaviors, a shared message channel enables a set of participants to have a shared stream of updates, to which any [authorized] player can add their content.
 
 Dred provides a realtime shared-message channel capability for dApps, served in a decentralized manner by a number of servers.  Applications using the provided Dred client library can easily connect to the contributing server cluster, and subsets of users in those applications can start sharing private realtime messaging.  Application developers need not operate any messaging servers, and the protocol ensure that operating servers are solely responsible for relaying opaque messages to the participants in the protocol.
