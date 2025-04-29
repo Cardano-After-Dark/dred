@@ -1,3 +1,4 @@
+import Link from "next/link"
 
 import React, { type MouseEventHandler } from "react";
 // const styles = {
@@ -90,7 +91,7 @@ export const Button = function (props: SpecialButtonProps) {
             style,
             ...moreProps,
         } as React.ComponentPropsWithoutRef<"a">;
-        return <a {...aprops} />;
+        return <Link {...aprops} />;
     }
     
     const bprops = {
