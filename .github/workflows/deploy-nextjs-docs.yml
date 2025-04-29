@@ -26,13 +26,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
         #   cache: 'pnpm'
           
       - name: Install pnpm
         uses: pnpm/action-setup@v3 #v2 is deprecated
         with:
-          version: 7.25.1
+          version: 9.15.4
           run_install: false
           
       - name: Get pnpm store directory
