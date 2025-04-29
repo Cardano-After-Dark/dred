@@ -54,7 +54,7 @@ jobs:
       - name: Build documentation
         env:
           NEXT_PUBLIC_BASE_PATH: /dred
-        run: cd docs && pnpm build && pnpm export
+        run: cd docs && pnpm run build 
         
       - name: Setup Pages
         uses: actions/configure-pages@v4
