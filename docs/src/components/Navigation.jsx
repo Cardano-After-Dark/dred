@@ -7,18 +7,18 @@ export function Navigation({ navigation, className }) {
 
   return (
     <nav className={clsx('text-base lg:text-sm', className)}>
-      <ul role="list" className="space-y-9">
+      <ul role="list" className="space-y-2">
         {navigation.map((section) => (
           <li key={section.title}>
-            <h2 className="font-display font-medium text-slate-900 dark:text-white">
+            <h5 className="font-display font-medium text-slate-900 dark:text-white -mt-1">
               {section.title}
-            </h2>
+            </h5>
             <ul
               role="list"
-              className="mt-2 space-y-2 border-l-2 border-slate-100 dark:border-slate-800 lg:mt-4 lg:space-y-4 lg:border-slate-200"
+              className="mt-1 space-y-2 border-l-2 border-slate-100 dark:border-slate-800 lg:mt-4 lg:space-y-4 lg:border-slate-200"
             >
               {section.links.map((link) => (
-                <li key={link.href} className="relative">
+                <li key={link.href} className="relative -mt-3">
                   <Link
                     href={link.href}
                     className={clsx(
