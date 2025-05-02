@@ -14,12 +14,12 @@ DRED is a messaging system for Cardano apps with four main parts:
 - **Node Network**: Servers that pass messages between users
 - **On-chain Registry**: Blockchain records that help find servers
 - **Client Library**: Code that apps use to connect to DRED
-- **Redis Backend**: Storage system for messages
+- **Redis Backend**: Storage system for messages and pub/sub functionality
 
 ## How Messages Move Through DRED
 
 1. A user sends a message from their app
-2. The DRED client encrypts the message
+2. The DRED client encrypts the message (optional)
 3. The message goes to DRED servers
 4. Servers share the message with other servers
 5. Connected users receive the message
@@ -34,7 +34,10 @@ The client helps apps use the network:
 ```javascript
 // Create a client
 const dred = new DredClient({
-  neighborhoodId: "your-app-name"
+  neighborhood: "your-app-name",
+  waitFor: "minimum", // Connection threshold setting
+  name: "my-client", // Optional client name
+  connectionSettings: {} // Optional connection configuration
 });
 
 // Connect to servers
@@ -46,7 +49,8 @@ await dred.joinChannel("room-123");
 // Send a message
 await dred.postMessage("room-123", {
   type: "chat",
-  msg: "Hello"
+  msg: "Hello",
+  "content-type": "text/plain" // Optional content type
 });
 
 // Get messages
@@ -60,7 +64,7 @@ dred.subscribe("room-123", (message) => {
 The server handles messages:
 
 ```javascript
-// Server parts
+// Server implementation
 class DredServer {
   // Web API
   api: express.Application;
@@ -70,6 +74,14 @@ class DredServer {
   
   // Channel handler
   channelConn: RedisChannels;
+  
+  // Server configuration
+  discovery: Discovery;
+  serverId: string;
+  
+  constructor(clientArgs, serverId) {
+    // Initialize server components
+  }
 }
 ```
 
@@ -78,10 +90,11 @@ Each server:
 - Stores messages temporarily
 - Sends messages to other servers
 - Delivers messages to users
+- Manages channel subscriptions
 
 ### Node Registry
 
-The registry tracks servers on the blockchain:
+The registry tracks servers using a discovery mechanism:
 
 ```javascript
 // Server information
@@ -124,8 +137,8 @@ This allows:
 
 DRED keeps messages secure through:
 
-- **Key Authentication**: Servers prove who they are
-- **Message Encryption**: Content can be encrypted
+- **Key Authentication**: Servers prove who they are using nacl signatures
+- **Message Encryption**: Content can be encrypted end-to-end
 - **Blockchain Checks**: On-chain records verify servers
 - **Token Staking**: Servers must stake tokens to join
 
@@ -144,7 +157,7 @@ The project uses:
 
 - **TypeScript**: For safer code
 - **Node.js**: For running servers
-- **Redis**: For message storage
+- **Redis**: For message storage and pub/sub
 - **Express**: For web APIs
 - **Docker**: For deployment
 - **Cardano**: For blockchain features
@@ -153,10 +166,12 @@ The project uses:
 
 The code is organized like this:
 
-- `/packages/dred-server`: Server code
-- `/packages/dred-client`: App library
-- `/packages/dred-types`: Shared types
-- `/packages/capo`: Blockchain tools
+- `/src`: Main source code
+  - `/client`: Client implementation
+  - `/server`: Server implementation
+  - `/redis`: Redis integration
+  - `/types`: Shared type definitions
+  - `/util`: Utility functions
 - `/examples`: Example apps
 
 ## Contributing

@@ -1,5 +1,18 @@
 pre[class*='language-'] {
   color: var(--color-slate-50);
+  background-color: hsl(218, 31%, 12%); /* Slightly lighter than pure black */
+  border-radius: 0.375rem;
+  padding: 1rem 1rem 1rem 0; /* Reduce left padding since we have line numbers */
+  margin: 1rem 0;
+  overflow-x: auto;
+  border: 1px solid hsl(218, 31%, 20%); /* Subtle border */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+code[class*='language-'] {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 .token.tag,
@@ -8,7 +21,7 @@ pre[class*='language-'] {
 .token.selector .class,
 .token.selector.class,
 .token.function {
-  color: var(--color-pink-400);
+  color: hsl(330, 70%, 70%); /* Improved pink */
 }
 
 .token.attr-name,
@@ -16,32 +29,95 @@ pre[class*='language-'] {
 .token.rule,
 .token.pseudo-class,
 .token.important {
-  color: var(--color-slate-300);
+  color: hsl(220, 70%, 75%); /* Brighter blue */
 }
 
 .token.module {
-  color: var(--color-pink-400);
+  color: hsl(330, 70%, 70%); /* Match the function color */
 }
 
 .token.attr-value,
 .token.class,
 .token.string,
 .token.property {
-  color: var(--color-sky-300);
+  color: hsl(150, 70%, 70%); /* More vibrant green */
 }
 
 .token.punctuation,
 .token.attr-equals {
-  color: var(--color-slate-500);
+  color: hsl(220, 20%, 65%); /* Lighter gray */
 }
 
 .token.unit,
 .language-css .token.function {
-  color: var(--color-teal-200);
+  color: hsl(180, 70%, 70%); /* Brighter teal */
 }
 
 .token.comment,
 .token.operator,
 .token.combinator {
-  color: var(--color-slate-400);
+  color: hsl(220, 10%, 60%); /* More visible gray */
+}
+
+/* Add styles for JSON specifically */
+.language-json .token.property {
+  color: hsl(220, 70%, 75%); /* Keys in JSON */
+}
+
+.language-json .token.string {
+  color: hsl(150, 70%, 70%); /* Strings in JSON */
+}
+
+.language-json .token.number {
+  color: hsl(40, 70%, 70%); /* Numbers in JSON */
+}
+
+/* Line highlighting for the example in the image */
+.line-highlight {
+  background-color: hsla(220, 20%, 25%, 0.3);
+}
+
+/* Add styles for line numbers if needed */
+.line-number {
+  display: inline-block;
+  width: 2rem;
+  text-align: right;
+  color: hsl(220, 10%, 40%);
+  opacity: 0.7;
+  user-select: none;
+  margin-right: 1rem;
+  padding-right: 0.5rem;
+  border-right: 1px solid hsl(218, 31%, 20%);
+}
+
+/* Styles for the enhanced Fence component */
+.code-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5rem 1rem;
+  background-color: hsl(218, 31%, 15%);
+  border-bottom: 1px solid hsl(218, 31%, 20%);
+  border-top-left-radius: 0.375rem;
+  border-top-right-radius: 0.375rem;
+  margin: -1rem -1rem 0.5rem -1rem;
+}
+
+.code-language {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: hsl(220, 10%, 60%);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.code-line {
+  display: flex;
+  font-family: var(--font-mono);
+  line-height: 1.5;
+  min-height: 1.5em;
+}
+
+.line-content {
+  flex: 1;
+  padding-left: 0.5rem;
 }

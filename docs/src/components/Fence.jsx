@@ -11,16 +11,21 @@ export function Fence({ children, language }) {
     >
       {({ className, style, tokens, getTokenProps }) => (
         <pre className={className} style={style}>
+          <div className="code-header">
+            {language && <span className="code-language">{language}</span>}
+          </div>
           <code>
             {tokens.map((line, lineIndex) => (
-              <Fragment key={lineIndex}>
-                {line
-                  .filter((token) => !token.empty)
-                  .map((token, tokenIndex) => (
-                    <span key={tokenIndex} {...getTokenProps({ token })} />
-                  ))}
-                {'\n'}
-              </Fragment>
+              <div key={lineIndex} className="code-line">
+                <span className="line-number">{lineIndex + 1}</span>
+                <span className="line-content">
+                  {line
+                    .filter((token) => !token.empty)
+                    .map((token, tokenIndex) => (
+                      <span key={tokenIndex} {...getTokenProps({ token })} />
+                    ))}
+                </span>
+              </div>
             ))}
           </code>
         </pre>

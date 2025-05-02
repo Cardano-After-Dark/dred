@@ -2,7 +2,7 @@ name: Deploy Next.js Documentation
 
 on:
   push:
-    branches: [ dev/patrik ]
+    branches: [ main, dev/patrik ]
     paths:
       - 'docs/**'
   workflow_dispatch:
