@@ -1,5 +1,6 @@
 name: Build Code
 
+# This workflow runs builds on main, feature* and dev* branches
 on:
   push:
     branches: 
