@@ -4,9 +4,11 @@ name: Build Code
 on:
   push:
     branches: 
-      - main
+      - 'main'
       - 'feature*'
       - 'dev*'
+      - 'feature/**'
+      - 'dev/**'
   workflow_dispatch:
 
 jobs:
