@@ -7,7 +7,8 @@
         "paths": {
             "@platform/*": ["./platform/server/*"],
             // "sXXrc/*": ["src/*"]
-        }
+        },
+        "INVALID_OPTION": true
     },
     "include": [ "**/*.ts", "**/*.js" ],
     "exclude": [ "src/sampleApp", "**/node_modules/" ]
