@@ -7,6 +7,7 @@ on:
       - main
       - 'feature*'
       - 'dev*'
+  workflow_dispatch:
 
 jobs:
   build:
