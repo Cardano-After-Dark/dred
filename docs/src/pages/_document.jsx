@@ -1,4 +1,4 @@
-import { Head, Html, Main, NextScript } from 'next/document'
+import { Head, Html, Main, NextScript } from "next/document"
 
 const themeScript = `
   let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)')
@@ -39,15 +39,25 @@ const themeScript = `
 `
 
 export default function Document() {
-  return (
-    <Html className="antialiased [font-feature-settings:'ss01']" lang="en">
-      <Head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </Head>
-      <body className="bg-white dark:bg-slate-900">
-        <Main />
-        <NextScript />
-      </body>
-    </Html>
-  )
+    return (
+        <Html className="antialiased [font-feature-settings:'ss01']" lang="en">
+            <Head>
+                <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link
+                    rel="preconnect"
+                    href="https://fonts.gstatic.com"
+                    crossOrigin="anonymous"
+                />
+                <link
+                    href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;600&display=swap"
+                    rel="stylesheet"
+                />
+            </Head>
+            <body className="bg-white dark:bg-slate-900">
+                <Main />
+                <NextScript />
+            </body>
+        </Html>
+    )
 }
