@@ -1,12 +1,12 @@
-import { DevEnvLocalDiscovery } from "../src/peers/DevEnvLocalDiscovery";
-import { createServer } from "../src/server/DredServer";
-import { asyncDelay } from "../src/util/asyncDelay";
+import { StaticHostDiscovery } from "../src/peers/StaticHostDiscovery.js"
+import { createServer } from "../src/server/DredServer.js";
+import { asyncDelay } from "../src/util/asyncDelay.js";
 
 //!!!! todo: read config from a JSON file 
 
 init();
 async function init() {
-    const discovery = new DevEnvLocalDiscovery({});
+    const discovery = new StaticHostDiscovery({});
     const hosts = discovery.hosts;
     const firstHost = hosts?.[0];
     if (!firstHost) {
@@ -19,7 +19,7 @@ async function init() {
         // connectionSettings: {
 
         // }
-    }, firstHost.serverId);
+    }, firstHost.serverId, 0);
     const { port, address } = firstHost;
     await server.listen();
 
