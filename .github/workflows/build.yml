@@ -4,7 +4,7 @@ name: Build and Deploy
 # It runs on all specified branches and PRs to ensure build integrity
 # For branches in the deploy_branches list, it also deploys the documentation to GitHub Pages
 on:
-  # Run on every push to these branches
+  # Run on push events, but not when a PR is also open to avoid duplicate runs
   push:
     branches: 
       - 'main'
@@ -12,17 +12,11 @@ on:
       - 'dev*'
       - 'feature/**'
       - 'dev/**'
-  # Also run on pull requests targeting main
+  # Run on pull requests targeting main
   pull_request:
     branches: [ main ]
   # Allow manual triggering of the workflow
   workflow_dispatch:
-
-# Define list of branches for which we should deploy documentation
-# To add or remove branches from deployment, simply update this JSON array
-# For example: '["main", "dev/patrik", "release"]' would also deploy docs for the release branch
-env:
-  DEPLOY_BRANCHES: '["main", "dev/patrik"]'
 
 # Define permissions needed for GitHub Pages deployment
 permissions:
@@ -121,6 +115,8 @@ jobs:
   build-docs:
     name: Build Documentation
     runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.check_branch.outputs.should_deploy }}
     steps:
       # Check out the repository code
       - name: Checkout repository
@@ -167,6 +163,8 @@ jobs:
       - name: Check if branch should deploy docs
         id: check_branch
         run: |
+          # Define the deploy branches directly in the step
+          DEPLOY_BRANCHES='["main", "dev/patrik"]'
           # Use jq to check if the current branch is in the DEPLOY_BRANCHES list
           CURRENT_BRANCH="${GITHUB_REF#refs/heads/}"
           SHOULD_DEPLOY=$(echo $DEPLOY_BRANCHES | jq -r --arg branch "$CURRENT_BRANCH" 'contains([$branch])')
@@ -189,8 +187,8 @@ jobs:
   deploy-docs:
     name: Deploy Documentation
     # Only run this job if we're on a branch that should have docs deployed
-    # This uses a custom shell command to check if the current branch is in the DEPLOY_BRANCHES list
-    if: ${{ contains(fromJson(env.DEPLOY_BRANCHES), github.ref_name) }}
+    # This now uses the output from the build-docs job
+    if: needs.build-docs.outputs.should_deploy == 'true'
     # This job depends on the build-docs job
     needs: build-docs
     # Define the environment for GitHub Pages deployment
@@ -203,6 +201,17 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # Prevent duplicate runs
+  check-duplicate:
+    name: Check for Duplicate Runs
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
+        with:
+          access_token: ${{ github.token }}
 
   # Send notifications if any build job fails
   notify:
