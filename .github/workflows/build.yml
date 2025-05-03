@@ -1,8 +1,8 @@
-name: Build and Deploy
+name: Build and Verify
 
-# This workflow handles both build verification and documentation deployment
+# This workflow handles build verification for both the main project and documentation
 # It runs on all specified branches and PRs to ensure build integrity
-# For branches in the deploy_branches list, it also deploys the documentation to GitHub Pages
+# It does NOT deploy documentation - that's handled by deploy-nextjs-docs.yml
 on:
   # Run on push events, but not when a PR is also open to avoid duplicate runs
   push:
@@ -18,16 +18,14 @@ on:
   # Allow manual triggering of the workflow
   workflow_dispatch:
 
-# Define permissions needed for GitHub Pages deployment
+# We only need read permissions for this workflow since it doesn't deploy
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
-# Set up concurrency to avoid conflicts with GitHub Pages deployments
+# Set up concurrency to avoid conflicting builds
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: "build-${{ github.ref }}"
+  cancel-in-progress: true
 
 jobs:
   # Build and verify the main project
@@ -111,12 +109,10 @@ jobs:
             echo "::warning::Tests failed. Check the output for details."
           fi
 
-  # Build the documentation
+  # Build the documentation (for verification only, no deployment)
   build-docs:
-    name: Build Documentation
+    name: Verify Documentation Build
     runs-on: ubuntu-latest
-    outputs:
-      should_deploy: ${{ steps.check_branch.outputs.should_deploy }}
     steps:
       # Check out the repository code
       - name: Checkout repository
@@ -153,54 +149,11 @@ jobs:
       - name: Install docs dependencies
         run: cd docs && pnpm install --frozen-lockfile
         
-      # Build the documentation
+      # Build the documentation (verification only, no deployment)
       - name: Build documentation
         env:
           NEXT_PUBLIC_BASE_PATH: /dred
         run: cd docs && pnpm run build
-      
-      # Check if current branch is in the deploy branches list
-      - name: Check if branch should deploy docs
-        id: check_branch
-        run: |
-          # Define the deploy branches directly in the step
-          DEPLOY_BRANCHES='["main", "dev/patrik"]'
-          # Use jq to check if the current branch is in the DEPLOY_BRANCHES list
-          CURRENT_BRANCH="${GITHUB_REF#refs/heads/}"
-          SHOULD_DEPLOY=$(echo $DEPLOY_BRANCHES | jq -r --arg branch "$CURRENT_BRANCH" 'contains([$branch])')
-          echo "should_deploy=$SHOULD_DEPLOY" >> $GITHUB_OUTPUT
-          echo "Current branch: $CURRENT_BRANCH, Should deploy: $SHOULD_DEPLOY"
-      
-      # Set up GitHub Pages (only for branches in the deploy list)
-      - name: Setup Pages
-        if: steps.check_branch.outputs.should_deploy == 'true'
-        uses: actions/configure-pages@v4
-        
-      # Upload documentation for GitHub Pages deployment (only for branches in the deploy list)
-      - name: Upload artifact for deployment
-        if: steps.check_branch.outputs.should_deploy == 'true'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/out
-
-  # Deploy documentation to GitHub Pages (only for branches in the deploy list)
-  deploy-docs:
-    name: Deploy Documentation
-    # Only run this job if we're on a branch that should have docs deployed
-    # This now uses the output from the build-docs job
-    if: needs.build-docs.outputs.should_deploy == 'true'
-    # This job depends on the build-docs job
-    needs: build-docs
-    # Define the environment for GitHub Pages deployment
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      # Deploy the documentation to GitHub Pages
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
 
   # Prevent duplicate runs
   check-duplicate:

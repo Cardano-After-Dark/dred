@@ -21,7 +21,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  build-and-deploy:
+    name: Build and Deploy Documentation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -31,10 +32,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
-        #   cache: 'pnpm'
           
       - name: Install pnpm
-        uses: pnpm/action-setup@v3 #v2 is deprecated
+        uses: pnpm/action-setup@v3
         with:
           version: 9.15.4
           run_install: false
@@ -68,13 +68,9 @@ jobs:
         with:
           path: docs/out
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 
+        uses: actions/deploy-pages@v4
+        
+      - name: Output deployment URL
+        run: echo "Documentation deployed to ${{ steps.deployment.outputs.page_url }}" 
