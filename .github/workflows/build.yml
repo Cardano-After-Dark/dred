@@ -76,10 +76,12 @@ jobs:
         continue-on-error: true  # This allows the workflow to continue even if this step fails
         id: lint
         run: |
-          pnpm run lint
-          # If the lint command fails, output a warning but don't fail the build
-          if [ $? -ne 0 ]; then
-            echo "::warning::Linting issues found. Check the output for details."
+          # Check if there's an ESLint config in the project
+          if [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ] || [ -f ".eslintrc.yml" ] || [ -f ".eslintrc.yaml" ] || [ -f ".eslintrc" ]; then
+            echo "Running ESLint"
+            npx eslint . --ext .js,.jsx,.ts,.tsx || echo "::warning::Linting issues found. Check the output for details."
+          else
+            echo "No ESLint configuration found. Skipping linting."
           fi
         
       # Run TypeScript type checking - continues even if there are issues

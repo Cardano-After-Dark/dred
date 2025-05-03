@@ -40,6 +40,8 @@
         "testing": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' ENV_FILE=./config/.env.test jest --watch --runInBand",
         "test:debug": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --runInBand --detectOpenHandles",
         "testing:debug": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' JEST_TIMEOUT=100000 ENV_FILE=./config/.env.test node --inspect=9230 node_modules/jest/bin/jest.js --watch --runInBand",
+        "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx || true",
+        "typecheck": "npx tsc --noEmit",
         "note": "abstract-logging and uuid packages are in service of src/redis/streams.",
         "note2": "also ioredis, although at an earlier version.  If that's a problem, then... ",
         "note3": "yarn:build can be set up to run `yarn` in src/redis/streams and let its deps be installed over there; in that case, revert this commit!",
