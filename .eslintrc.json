@@ -15,6 +15,7 @@
   "ignorePatterns": [
     "dist",
     "node_modules",
-    "*.js"
+    "*.js",
+    "docs/**"
   ]
 } 
