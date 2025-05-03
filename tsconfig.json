@@ -4,6 +4,7 @@
         "experimentalDecorators": true,
         // "baseUrl": ".",
         "moduleResolution": "node16",
+        "module": "Node16",
         "paths": {
             "@platform/*": ["./platform/server/*"],
             // "sXXrc/*": ["src/*"]
