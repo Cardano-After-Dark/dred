@@ -56,13 +56,12 @@ export default defineConfig({
         ],
     resolve: {
         conditions: ["browser" ],
-        alias: [
-            { find: /^react$/, replacement: resolve(__dirname, 'node_modules/preact/compat') },
-            { find: /^react-dom$/, replacement: resolve(__dirname, 'node_modules/preact/compat') },
-            { find: /^react-dom\/test-utils$/, replacement: resolve(__dirname, 'node_modules/preact/test-utils') },
-            { find: /^react\/jsx-runtime$/, replacement: resolve(__dirname, 'node_modules/preact/jsx-runtime') },
-            { find: /^react\/jsx-dev-runtime$/, replacement: resolve(__dirname, 'node_modules/preact/jsx-runtime') }      
-        ]
+        alias: {
+            react: '@preact/compat',
+            'react-dom': '@preact/compat',
+            "@postplum/utils": "@poshplum/utils/browser",
+            'dred-client': path.resolve(__dirname, '../src/client/dist/dred-client.mjs')
+        },
     },
     define: {
         "process.env.LOGGING": JSON.stringify(process.env.LOGGING),

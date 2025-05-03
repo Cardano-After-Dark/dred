@@ -12,8 +12,8 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "moduleResolution": "Node16",
-    "module": "esnext",
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
@@ -30,7 +30,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+],
   "exclude": [
     "node_modules"
   ]

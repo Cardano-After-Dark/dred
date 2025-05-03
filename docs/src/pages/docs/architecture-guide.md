@@ -1,71 +1,204 @@
 ---
 title: Architecture guide
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: How DRED works and how you can contribute to the project.
 ---
 
-Quasi sapiente voluptates aut minima non doloribus similique quisquam. In quo expedita ipsum nostrum corrupti incidunt. Et aut eligendi ea perferendis.
+This guide explains how DRED works and how you can contribute to the project.
 
 ---
 
-## Quis vel iste dicta
+## System Overview
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur.
+DRED is a messaging system for Cardano apps with four main parts:
 
-### Et pariatur ab quas
+- **Node Network**: Servers that pass messages between users
+- **On-chain Registry**: Blockchain records that help find servers
+- **Client Library**: Code that apps use to connect to DRED
+- **Redis Backend**: Storage system for messages and pub/sub functionality
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+## How Messages Move Through DRED
 
-```js
-/** @type {import('@tailwindlabs/lorem').ipsum} */
-export default {
-  lorem: 'ipsum',
-  dolor: ['sit', 'amet', 'consectetur'],
-  adipiscing: {
-    elit: true,
-  },
+1. A user sends a message from their app
+2. The DRED client encrypts the message (optional)
+3. The message goes to DRED servers
+4. Servers share the message with other servers
+5. Connected users receive the message
+6. Each user's app shows the decrypted message
+
+## Main Components
+
+### DRED Client
+
+The client helps apps use the network:
+
+```javascript
+// Create a client
+const dred = new DredClient({
+  neighborhood: "your-app-name",
+  waitFor: "minimum", // Connection threshold setting
+  name: "my-client", // Optional client name
+  connectionSettings: {} // Optional connection configuration
+});
+
+// Connect to servers
+await dred.connect();
+
+// Join a message room
+await dred.joinChannel("room-123");
+
+// Send a message
+await dred.postMessage("room-123", {
+  type: "chat",
+  msg: "Hello",
+  "content-type": "text/plain" // Optional content type
+});
+
+// Get messages
+dred.subscribe("room-123", (message) => {
+  console.log(message);
+});
+```
+
+### DRED Server
+
+The server handles messages:
+
+```javascript
+// Server implementation
+class DredServer {
+  // Web API
+  api: express.Application;
+  
+  // Storage
+  redis: Redis;
+  
+  // Channel handler
+  channelConn: RedisChannels;
+  
+  // Server configuration
+  discovery: Discovery;
+  serverId: string;
+  
+  constructor(clientArgs, serverId) {
+    // Initialize server components
+  }
 }
 ```
 
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste. Provident nam asperiores vel laboriosam omnis ducimus enim nesciunt quaerat. Minus tempora cupiditate est quod.
+Each server:
+- Receives new messages
+- Stores messages temporarily
+- Sends messages to other servers
+- Delivers messages to users
+- Manages channel subscriptions
 
-### Natus aspernatur iste
+### Node Registry
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+The registry tracks servers using a discovery mechanism:
 
-Voluptas beatae omnis omnis voluptas. Cum architecto ab sit ad eaque quas quia distinctio. Molestiae aperiam qui quis deleniti soluta quia qui. Dolores nostrum blanditiis libero optio id. Mollitia ad et asperiores quas saepe alias.
+```javascript
+// Server information
+interface NodeRegistrationData {
+  nodeAddress: String    // Server address
+  nodePort: Number       // Server port
+  nodePublicKey: Bytes   // Identity key
+  lastHeartbeat: Number  // Last active time
+}
+```
 
----
+This helps:
+- Find available servers
+- Check server identities
+- See which servers are online
+- Group servers by app
 
-## Quos porro ut molestiae
+### Neighborhoods
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur.
+Neighborhoods group servers by the apps they support:
 
-### Voluptatem quas possimus
+```javascript
+// Server settings
+{
+  "serverId": "server-id",
+  "neighborhoods": [
+    "cardano-after-dark",
+    "poker-app"
+  ]
+}
+```
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+This allows:
+- Apps to find the right servers
+- Messages to stay with their app
+- Servers to focus on specific apps
+- Better performance
 
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste. Provident nam asperiores vel laboriosam omnis ducimus enim nesciunt quaerat. Minus tempora cupiditate est quod.
+## Security
 
-### Id vitae minima
+DRED keeps messages secure through:
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+- **Key Authentication**: Servers prove who they are using nacl signatures
+- **Message Encryption**: Content can be encrypted end-to-end
+- **Blockchain Checks**: On-chain records verify servers
+- **Token Staking**: Servers must stake tokens to join
 
-Voluptas beatae omnis omnis voluptas. Cum architecto ab sit ad eaque quas quia distinctio. Molestiae aperiam qui quis deleniti soluta quia qui. Dolores nostrum blanditiis libero optio id. Mollitia ad et asperiores quas saepe alias.
+## Reliability
 
----
+DRED makes sure messages arrive even if problems occur:
 
-## Vitae laborum maiores
+- Messages can take different paths
+- Apps connect to multiple servers
+- The network works even if some servers stop
+- Messages are tracked to prevent duplicates
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur.
+## Development Tools
 
-### Corporis exercitationem
+The project uses:
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+- **TypeScript**: For safer code
+- **Node.js**: For running servers
+- **Redis**: For message storage and pub/sub
+- **Express**: For web APIs
+- **Docker**: For deployment
+- **Cardano**: For blockchain features
 
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste. Provident nam asperiores vel laboriosam omnis ducimus enim nesciunt quaerat. Minus tempora cupiditate est quod.
+## Code Structure
 
-### Reprehenderit magni
+The code is organized like this:
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+- `/src`: Main source code
+  - `/client`: Client implementation
+  - `/server`: Server implementation
+  - `/redis`: Redis integration
+  - `/types`: Shared type definitions
+  - `/util`: Utility functions
+- `/examples`: Example apps
 
-Voluptas beatae omnis omnis voluptas. Cum architecto ab sit ad eaque quas quia distinctio. Molestiae aperiam qui quis deleniti soluta quia qui. Dolores nostrum blanditiis libero optio id. Mollitia ad et asperiores quas saepe alias.
+## Contributing
+
+To help improve DRED:
+
+1. **Learn the System**: Read this guide and the code
+2. **Set Up Your Tools**: Install needed software
+3. **Test**: Make sure everything works
+4. **Make Changes**: Add your improvements
+5. **Share**: Submit your changes
+
+## Performance Tips
+
+When working with DRED:
+
+- Keep messages small
+- Handle multiple server connections
+- Set up Redis correctly
+- Plan for network problems
+
+## Future Plans
+
+DRED may grow to include:
+
+- Server performance tracking
+- Rewards for server operators
+- Support for more blockchains
+- Long-term message storage
+- Better security features

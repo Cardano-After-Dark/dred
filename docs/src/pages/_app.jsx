@@ -74,9 +74,6 @@ export default function App({ Component, pageProps }) {
                 {description && (
                     <meta name="description" content={description} />
                 )}
-                <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;600&display=swap" rel="stylesheet" />
             </Head>
             <Providers>
                 <Layout title={title} tableOfContents={tableOfContents} prose={prose}>

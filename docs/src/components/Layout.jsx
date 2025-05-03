@@ -23,6 +23,8 @@ const navigation = [
     title: 'Core concepts',
     links: [
         { title: 'Understanding Dred', href: '/docs/understanding-dred' },
+        { title: 'Core Architecture', href: '/docs/core-architecture' },
+        { title: 'Dred Node Registry', href: '/docs/dred-node-registry' },
     ],
   },
   {
@@ -36,7 +38,7 @@ const navigation = [
   {
     title: 'API reference',
     links: [
-        { title: 'Dred Client', href: '/docs/api-DredClient' },
+//        { title: 'Dred Client', href: '/docs/api-DredClient' },
         { title: 'Dred dAPI', href: '/reference/DredCapo' },
         { title: 'dAPI: Node Registry', href: '/reference/NodeRegistryController' },
         { title: 'dAPI: Neighborhoods', href: '/reference/NeighborhoodController' },

@@ -12,8 +12,8 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
   },
-  basePath: "/dred",
-  assetPrefix: "/dred/",
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH ? `${process.env.NEXT_PUBLIC_BASE_PATH}/` : '',
   // Add output configuration for static export
   output: "export",
   // Disable server-side features
