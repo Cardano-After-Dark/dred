@@ -1,6 +1,6 @@
 name: Build and Verify
 
-# This workflow handles build verification for both the main project and documentation
+# This workflow handles build verification for main project, client and documentation
 # It runs on all specified branches and PRs to ensure build integrity
 # It does NOT deploy documentation - that's handled by deploy-nextjs-docs.yml
 on:
