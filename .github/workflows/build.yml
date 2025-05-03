@@ -1,7 +1,8 @@
-name: Verify Build
+name: Build and Deploy
 
-# This workflow runs builds on all specified branches and PRs to ensure build integrity
-# To prevent merging to main when builds fail, you'll need to set up branch protection rules in GitHub
+# This workflow handles both build verification and documentation deployment
+# It runs on all specified branches and PRs to ensure build integrity
+# For branches in the deploy_branches list, it also deploys the documentation to GitHub Pages
 on:
   # Run on every push to these branches
   push:
@@ -14,27 +15,50 @@ on:
   # Also run on pull requests targeting main
   pull_request:
     branches: [ main ]
+  # Allow manual triggering of the workflow
   workflow_dispatch:
 
+# Define list of branches for which we should deploy documentation
+# To add or remove branches from deployment, simply update this JSON array
+# For example: '["main", "dev/patrik", "release"]' would also deploy docs for the release branch
+env:
+  DEPLOY_BRANCHES: '["main", "dev/patrik"]'
+
+# Define permissions needed for GitHub Pages deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Set up concurrency to avoid conflicts with GitHub Pages deployments
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
+  # Build and verify the main project
   build-main-project:
     name: Build Main Project
     runs-on: ubuntu-latest
     steps:
+      # Check out the repository code
       - name: Checkout repository
         uses: actions/checkout@v3
       
+      # Set up Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
           
+      # Install pnpm package manager
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
           version: 9.15.4
           run_install: false
           
+      # Set up caching for pnpm to speed up subsequent builds
       - name: Get pnpm store directory
         shell: bash
         run: |
@@ -48,48 +72,74 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
           
+      # Install project dependencies
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         
-      # The following steps will run but won't fail the build if they have issues
-      # This allows for a more lenient CI process while still showing problems
-      
-      - name: Lint (warnings only)
-        run: pnpm run lint || echo "Linting issues found (treated as warnings)"
-        
-      - name: Type check (warnings only)
+      # Run linting checks - continues even if there are issues
+      # Shows warnings in the GitHub Actions UI but doesn't fail the build
+      - name: Lint
+        continue-on-error: true  # This allows the workflow to continue even if this step fails
+        id: lint
         run: |
-          # Run TypeScript check but don't fail the build if there are errors
-          # This allows the build to continue while still showing TypeScript warnings
-          npx tsc --noEmit || echo "TypeScript errors found (treated as warnings)"
+          pnpm run lint
+          # If the lint command fails, output a warning but don't fail the build
+          if [ $? -ne 0 ]; then
+            echo "::warning::Linting issues found. Check the output for details."
+          fi
+        
+      # Run TypeScript type checking - continues even if there are issues
+      # Shows warnings in the GitHub Actions UI but doesn't fail the build
+      - name: Type check
+        continue-on-error: true  # This allows the workflow to continue even if this step fails 
+        id: typecheck
+        run: |
+          npx tsc --noEmit
+          # If the type check fails, output a warning but don't fail the build
+          if [ $? -ne 0 ]; then
+            echo "::warning::TypeScript errors found. Check the output for details."
+          fi
           # Output the TypeScript version for debugging
           echo "TypeScript version:"
           npx tsc --version
         
+      # Build the main project
       - name: Build project
         run: pnpm run build
         
-      - name: Run tests (warnings only)
-        run: pnpm test || echo "Tests failed (treated as warnings)"
+      # Run tests - continues even if tests fail
+      - name: Run tests
+        continue-on-error: true  # Tests won't fail the build
+        run: |
+          pnpm test
+          # If tests fail, output a warning but don't fail the build
+          if [ $? -ne 0 ]; then
+            echo "::warning::Tests failed. Check the output for details."
+          fi
 
+  # Build the documentation
   build-docs:
     name: Build Documentation
     runs-on: ubuntu-latest
     steps:
+      # Check out the repository code
       - name: Checkout repository
         uses: actions/checkout@v3
       
+      # Set up Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
           
+      # Install pnpm package manager
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
           version: 9.15.4
           run_install: false
           
+      # Set up caching for pnpm to speed up subsequent builds
       - name: Get pnpm store directory
         shell: bash
         run: |
@@ -103,14 +153,58 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
           
+      # Install documentation dependencies
       - name: Install docs dependencies
         run: cd docs && pnpm install --frozen-lockfile
         
+      # Build the documentation
       - name: Build documentation
         env:
           NEXT_PUBLIC_BASE_PATH: /dred
         run: cd docs && pnpm run build
       
+      # Check if current branch is in the deploy branches list
+      - name: Check if branch should deploy docs
+        id: check_branch
+        run: |
+          # Use jq to check if the current branch is in the DEPLOY_BRANCHES list
+          CURRENT_BRANCH="${GITHUB_REF#refs/heads/}"
+          SHOULD_DEPLOY=$(echo $DEPLOY_BRANCHES | jq -r --arg branch "$CURRENT_BRANCH" 'contains([$branch])')
+          echo "should_deploy=$SHOULD_DEPLOY" >> $GITHUB_OUTPUT
+          echo "Current branch: $CURRENT_BRANCH, Should deploy: $SHOULD_DEPLOY"
+      
+      # Set up GitHub Pages (only for branches in the deploy list)
+      - name: Setup Pages
+        if: steps.check_branch.outputs.should_deploy == 'true'
+        uses: actions/configure-pages@v4
+        
+      # Upload documentation for GitHub Pages deployment (only for branches in the deploy list)
+      - name: Upload artifact for deployment
+        if: steps.check_branch.outputs.should_deploy == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/out
+
+  # Deploy documentation to GitHub Pages (only for branches in the deploy list)
+  deploy-docs:
+    name: Deploy Documentation
+    # Only run this job if we're on a branch that should have docs deployed
+    # This uses a custom shell command to check if the current branch is in the DEPLOY_BRANCHES list
+    if: ${{ contains(fromJson(env.DEPLOY_BRANCHES), github.ref_name) }}
+    # This job depends on the build-docs job
+    needs: build-docs
+    # Define the environment for GitHub Pages deployment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      # Deploy the documentation to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # Send notifications if any build job fails
   notify:
     name: Notify on Failure
     needs: [build-main-project, build-docs]
@@ -120,6 +214,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       
+      # Prepare notification message
       - name: Send notification
         run: |
           echo "Build failed for ${{ github.repository }} on branch ${{ github.ref_name }}"
@@ -131,6 +226,7 @@ jobs:
       # - name: Send email notification on failure
       #   uses: dawidd6/action-send-mail@v3
       #   with:
+      #     # these secrets are already set in the repository settings        
       #     server_address: ${{ secrets.MAIL_SERVER }}
       #     server_port: ${{ secrets.MAIL_PORT }}
       #     username: ${{ secrets.MAIL_USERNAME }}
