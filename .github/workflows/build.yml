@@ -4,7 +4,7 @@ name: Build and Verify
 # It runs on all specified branches and PRs to ensure build integrity
 # It does NOT deploy documentation - that's handled by deploy-nextjs-docs.yml
 on:
-  # Run on push events, but not when a PR is also open to avoid duplicate runs
+  # Run on push events for specific branches, but only when not from a PR
   push:
     branches: 
       - 'main'
@@ -32,6 +32,8 @@ jobs:
   build-main-project:
     name: Build Main Project
     runs-on: ubuntu-latest
+    # Skip this job if both events occur - run only for PR event in this case
+    if: github.event_name != 'push' || !github.event.pull_request
     steps:
       # Check out the repository code
       - name: Checkout repository
@@ -113,6 +115,8 @@ jobs:
   build-client:
     name: Build Client
     runs-on: ubuntu-latest
+    # Skip this job if both events occur - run only for PR event in this case
+    if: github.event_name != 'push' || !github.event.pull_request
     steps:
       # Check out the repository code
       - name: Checkout repository
@@ -167,6 +171,8 @@ jobs:
   build-docs:
     name: Verify Documentation Build
     runs-on: ubuntu-latest
+    # Skip this job if both events occur - run only for PR event in this case
+    if: github.event_name != 'push' || !github.event.pull_request
     steps:
       # Check out the repository code
       - name: Checkout repository
