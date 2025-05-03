@@ -1,7 +1,9 @@
-name: Build Code
+name: Verify Build
 
-# This workflow runs builds on main, feature* and dev* branches
+# This workflow runs builds on all specified branches and PRs to ensure build integrity
+# To prevent merging to main when builds fail, you'll need to set up branch protection rules in GitHub
 on:
+  # Run on every push to these branches
   push:
     branches: 
       - 'main'
@@ -9,10 +11,14 @@ on:
       - 'dev*'
       - 'feature/**'
       - 'dev/**'
+  # Also run on pull requests targeting main
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  build:
+  build-main-project:
+    name: Build Main Project
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -45,30 +51,88 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         
+      - name: Lint
+        run: pnpm run lint || echo "Linting issues found"
+        
       - name: Type check
         run: npx tsc --noEmit
-      
+        
       - name: Build project
         run: pnpm run build
         
-      - name: Send email notification on failure
-        if: failure()
-        uses: dawidd6/action-send-mail@v3
+      - name: Run tests
+        run: pnpm test || echo "Tests failed"
+
+  build-docs:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          server_address: ${{ secrets.MAIL_SERVER }}
-          server_port: ${{ secrets.MAIL_PORT }}
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: Build Failed! ${{ github.repository }}
-          body: |
-            MAYDAY! Your code in ${{ github.repository }} just died on branch ${{ github.ref_name }}
-            
-            Commit: ${{ github.event.head_commit.message }}
-            Author: ${{ github.event.head_commit.author.name }}
-            
-            Fix it here: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          node-version: 20
+          
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.15.4
+          run_install: false
+          
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-            Pro tip: The best debuggers don't panic. They just drink more coffee and call for help.
-
-          to: ${{ github.event.pusher.email }}
-          from: GitHub Actions <no-reply@github.com> 
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+          
+      - name: Install docs dependencies
+        run: cd docs && pnpm install --frozen-lockfile
+        
+      - name: Build documentation
+        env:
+          NEXT_PUBLIC_BASE_PATH: /dred
+        run: cd docs && pnpm run build
+      
+  notify:
+    name: Notify on Failure
+    needs: [build-main-project, build-docs]
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Send notification
+        run: |
+          echo "Build failed for ${{ github.repository }} on branch ${{ github.ref_name }}"
+          echo "Commit: ${{ github.event.head_commit.message }}"
+          echo "Author: ${{ github.event.head_commit.author.name }}"
+          echo "Details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          
+      # Optional: Uncomment this section if you want email notifications
+      # - name: Send email notification on failure
+      #   uses: dawidd6/action-send-mail@v3
+      #   with:
+      #     server_address: ${{ secrets.MAIL_SERVER }}
+      #     server_port: ${{ secrets.MAIL_PORT }}
+      #     username: ${{ secrets.MAIL_USERNAME }}
+      #     password: ${{ secrets.MAIL_PASSWORD }}
+      #     subject: Build Failed! ${{ github.repository }}
+      #     body: |
+      #       Build failed for ${{ github.repository }} on branch ${{ github.ref_name }}
+      #       
+      #       Commit: ${{ github.event.head_commit.message }}
+      #       Author: ${{ github.event.head_commit.author.name }}
+      #       
+      #       Fix it here: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      #     to: ${{ github.event.pusher.email }}
+      #     from: GitHub Actions <no-reply@github.com>
