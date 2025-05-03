@@ -109,6 +109,60 @@ jobs:
             echo "::warning::Tests failed. Check the output for details."
           fi
 
+  # Build the client
+  build-client:
+    name: Build Client
+    runs-on: ubuntu-latest
+    steps:
+      # Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      # Set up Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          
+      # Install pnpm package manager
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.15.4
+          run_install: false
+          
+      # Set up caching for pnpm to speed up subsequent builds
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+          
+      # Install client dependencies
+      - name: Install client dependencies
+        run: cd src/client && pnpm install --frozen-lockfile
+        
+      # Build the client
+      - name: Build client
+        run: cd src/client && pnpm build
+        
+      # Verify build output exists
+      - name: Verify client build output
+        run: |
+          if [ ! -d "src/client/dist" ]; then
+            echo "::error::Client build failed to generate dist directory"
+            exit 1
+          else
+            echo "Client build successful"
+          fi
+
   # Build the documentation (for verification only, no deployment)
   build-docs:
     name: Verify Documentation Build
@@ -169,7 +223,7 @@ jobs:
   # Send notifications if any build job fails
   notify:
     name: Notify on Failure
-    needs: [build-main-project, build-docs]
+    needs: [build-main-project, build-client, build-docs]
     runs-on: ubuntu-latest
     if: failure()
     steps:
