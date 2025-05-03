@@ -30,7 +30,6 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/capoSignals.ts.disabled"    // , "src/components/DredCapoProvider.tsx.disabled"  
 ],
   "exclude": [
     "node_modules"

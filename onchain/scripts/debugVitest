@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# with debugging
+node --inspect-brk node_modules/vitest/vitest.mjs --poolOptions.forks.singleFork  $@

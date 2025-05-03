@@ -1,0 +1,70 @@
+{
+    "$schema": "http://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        "strict": true,
+        "noEmit": false,
+        "allowJs": true,
+        "declaration": true,
+        // "emitDeclarationOnly": false,
+        "declarationMap": true,
+        // "sourceMap": true, // provided by esbuild?
+        "allowSyntheticDefaultImports": true,
+        "allowArbitraryExtensions": true,
+        "skipLibCheck": true,
+        
+        "target": "ESNext",
+        "lib": ["esnext", "dom"],
+        "module": "Node16",
+        "esModuleInterop": true,
+        // types: ‹default›
+        "verbatimModuleSyntax": true,
+
+        "moduleResolution": "node16",
+        // "traceResolution": true,
+        // "customConditions": ["dev"],
+        "baseUrl": "./",
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "experimentalDecorators": true,
+
+        "outDir": ".api-extractor-temp",
+        // "outFile": none!
+        "importHelpers": true,
+        "rootDir": ".",
+
+        // "exactOptionalPropertyTypes": true,        
+        "noImplicitAny": false,
+        "noErrorTruncation": true,
+        "typeRoots": ["./node_modules/@types", "./heliosModule.d.ts"],
+        "incremental": true,
+        // "moduleResolution": "NodeNext",
+        "preserveSymlinks": false,
+        // "resolvePackageJsonExports": true,
+        "jsx": "preserve",
+        // "outFile": ".api-extractor-temp/stellar-tokenomics-raw.d.ts",
+        "paths": {
+            // "@/*": ["./src/*"],
+            // "@donecollectively/stellar-contracts": [
+            //     "../stellar-contracts/src/index.ts"
+            // ]
+            //     "node_modules/@donecollectively/stellar-contracts"
+            //   ]
+        },
+    },
+    "include": [
+        "./heliosModule.d.ts",
+        "./src/**/*.ts",
+        "./src/**/*.tsx",
+        "./src/**/*.js",
+        "./src/**/*.jsx", "src/DredSideChain.XXts",
+        // "tests/**/*.ts"
+    ],
+    "exclude": [
+        "../stellar-contracts/**/*",
+        "@donecollectively/stellar-contracts/HeliosProgramWithCacheAPI",
+        "node_modules/**/*", 
+        "src/**/*.test.ts",
+        "src/**/*/*Adapter.ts",
+        "disabled-for-now/**/*"
+    ]
+}

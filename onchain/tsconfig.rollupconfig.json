@@ -1,0 +1,23 @@
+{
+    "compilerOptions":{
+        "module":"esnext",
+        "target": "ESNext",
+        "sourceMap": true,
+        "customConditions": ["dev"],
+        "moduleResolution": "nodenext",
+        "importHelpers": true,
+        "baseUrl": ".",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "experimentalDecorators": true,
+        "resolveJsonModule": true,
+        "paths": {
+        }
+    },
+    "include":[ 
+        "./rollup.config.ts", 
+    ]
+}

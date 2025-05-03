@@ -1,0 +1,13 @@
+module NodeOperatorSettings
+
+struct NodeOperatorSettings {
+    expectedHeartbeatInterval: Duration "ndHbi"
+    requiredNodeUptime: Int "ndUpt" // percentage
+
+    minNodeRegistrationFee: Int "minFee"
+    minNodeOperatorStake: Value "minStk"
+}
+
+struct AbstractSettingsForNodeOperator {
+    nodeOpSettings: NodeOperatorSettings "nOp"
+}

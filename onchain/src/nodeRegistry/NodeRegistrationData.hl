@@ -1,0 +1,23 @@
+module NodeRegistrationData
+
+
+struct NodeRegistrationData {
+    id : ByteArray "@id" // = "dredNode-XXXXyyyyZZZZ"
+    type : String "tpe" // = "dredNode"
+
+    memberToken: String "mt"
+    nodeAddress: String "addr"
+    nodePort: Int "port"
+
+    // needs typeSchema support in Helios - use ByteArray encoding
+    nodePublicKey: PubKey "pubk" // actually a PubKey
+
+    lastHeartbeat: Time   "lhb"
+
+    func validate(self) -> Bool {
+        assert(true || /*never executed*/ self == self, "no way");
+        // assert(self.memberToken != null, "memberToken is null");
+        true
+    }
+}
+

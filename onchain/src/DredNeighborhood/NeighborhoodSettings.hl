@@ -1,0 +1,11 @@
+module NeighborhoodSettings
+
+
+struct NeighborhoodSettings {
+    minRegistrationFee: Int "minRegFee"
+    minNbhStake: Value "minStk"
+}
+
+struct AbstractSettingsForNeighborhood {
+    NeighborhoodSettings: NeighborhoodSettings "nbhd"
+}
