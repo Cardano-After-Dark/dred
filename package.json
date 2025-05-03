@@ -32,7 +32,7 @@
         "test": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' ENV_FILE=./config/.env.test jest --runInBand --detectOpenHandles",
         "build": "cd src/redis/streams; yarn ; cd - ; rollup -c",
         "build:docker": " echo TODO: implement build:docker recipe",
-        "build:client": "cd src/client ; yarn build",
+        "build:client": "cd src/client ; pnpm build",
         "build:client:watch": "cd src/client ; pnpm dev",
         "app": "cd sampleApp; concurrently --names 'app' -c 'green.bgMagenta' 'pnpm dev'",
         "build:watch": "cd src/redis/streams; yarn ; cd - ; rollup -cw --no-watch.clearScreen",

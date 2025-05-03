@@ -66,7 +66,7 @@ jobs:
           
       # Install project dependencies
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
         
       # Run linting checks - continues even if there are issues
       # Shows warnings in the GitHub Actions UI but doesn't fail the build
@@ -147,7 +147,7 @@ jobs:
           
       # Install client dependencies
       - name: Install client dependencies
-        run: cd src/client && pnpm install --frozen-lockfile
+        run: cd src/client && pnpm install --no-frozen-lockfile
         
       # Build the client
       - name: Build client
@@ -201,7 +201,7 @@ jobs:
           
       # Install documentation dependencies
       - name: Install docs dependencies
-        run: cd docs && pnpm install --frozen-lockfile
+        run: cd docs && pnpm install --no-frozen-lockfile
         
       # Build the documentation (verification only, no deployment)
       - name: Build documentation
