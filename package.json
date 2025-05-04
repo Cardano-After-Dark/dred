@@ -6,6 +6,7 @@
     "bin": {
         "dredServer": "dist/dredServer.mjs"
     },
+    "packageManager": "pnpm@9.15.4",
     "exports": {
         ".": {
             "module": "./dist/dred-server.mjs",
