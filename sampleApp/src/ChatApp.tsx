@@ -13,7 +13,7 @@ import {
     DredError,
     DredMessage,
     DredChannelMessage,
-    DevEnvLocalDiscovery,
+    StaticHostDiscovery,
     type ChanId, 
     type NbhId,
     type DredEvent,
@@ -93,7 +93,7 @@ export class ChatApp extends Component<myProps, MyState> {
         const c: DredClient =
             this.client ||
             new DredClient({
-                discovery: new DevEnvLocalDiscovery({}),
+                discovery: new StaticHostDiscovery({}),
                 waitFor: "minimal",
                 name: "Dred Communicator dev-0.2.0",
             });
