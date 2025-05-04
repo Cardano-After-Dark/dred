@@ -24,7 +24,7 @@
     "types": "./dist/dred-server.js",
     "license": "MIT",
     "scripts": {
-        "dev": "scripts/setupEnvironment && pnpm build:watch & pnpm app & pnpm build:client:watch & pnpm doc & LOGGING=default:info nodemon -w dist/dredServer.mjs --enable-source-maps --inspect=9230 dist/dredServer.mjs",
+        "dev": "scripts/setupEnvironment && echo \"NOTE ------------------------------------------\" && echo \"use separate commands for docs dev, exampleApp dev, build:client:watch, build:watch, etc\" && LOGGING=default:info nodemon -w dist/dredServer.mjs --enable-source-maps --inspect=9230 dist/dredServer.mjs",
         "doc": "cd docs/ ; concurrently --names 'docs' -c 'magenta.bgGreen' 'pnpm dev'",
         "build:docs": "cd docs && pnpm build && pnpm export",
         "start": "scripts/setupEnvironment && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --respawn index.ts",
