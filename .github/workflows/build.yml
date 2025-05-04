@@ -107,7 +107,7 @@ jobs:
       - name: Run tests
         continue-on-error: true  # Tests won't fail the build
         run: |
-          pnpm test
+          pnpm test | pnpm pino-pretty
           # If tests fail, output a warning but don't fail the build
           if [ $? -ne 0 ]; then
             echo "::warning::Tests failed. Check the output for details."
