@@ -1,0 +1,414 @@
+module MyMintSpendDelegate
+
+import {
+    tx, 
+    get_current_input,
+    get_current_validator_hash,
+    get_cont_outputs
+} from ScriptContext
+
+// specialized to ...
+//   -   NOT YET SPECIALIZED (replace with your specialization notes here) - 
+// original notes about (un)specialization follow:
+
+
+//  //! provides a basic version, not yet specialized,
+//  // of the "specializedDelegate" interface, which simply
+//  // exports a DelegateDatum enum and DelegateActivities (redeemer enum).  
+
+//  //! Your specialization MUST include the enum variants found in this
+//  //  ... unspecialized version.  It MAY include additional Datum variants.
+//  // Any additional Redeemer/Activity variants should be added underneath 
+//  // the SpendingActivity / MintingActivity top-level enum variants, instead 
+//  // of adding new top-level enum variants to DelegateActivity.
+
+//  // The DelegateActivity (redeemer) enum conforms to the 
+//  // Delegate Redeemer protocol, in which enum 0 is reserved for
+//  // lifecycle activities, enum 1 is used for spend-related activities 
+//  // (if the delegate is used as a spend delegate), and enum 2 is called
+//  // for authorizing minting.  Enum 3 and beyond are reserved for
+//  // extensions to the Delegate Redeemer protocol.
+
+//  // Within the minting and spending activities, the specialization can 
+//  // indicate a nested activity enum to support various dApp-specific
+//  // activities.  
+
+//  // Activities that validate minting of UUTs should contain enum fields 
+//  // to identify the seed-transaction details needed for properly validating 
+//  // UUT mints fitting the use-case.
+
+//  //! Your specialization MAY include any additional functions, imports or 
+//  //  methods defined on any of the types in this file.
+
+import {
+    AnyData,
+    REQT,
+    bREQT,
+    TODO
+} from StellarHeliosHelpers
+
+import {
+    DelegationDetail,
+    mustReturnValueToScript,
+    DelegateLifecycleActivity,
+    CapoLifecycleActivity,
+    unmodifiedDelegation
+} from CapoDelegateHelpers
+
+import {
+    validateUutMinting,
+    mkUutTnFactory
+} from CapoMintHelpers
+
+import {
+    mkCapoCtx,
+    CapoCtx
+} from CapoHelpers
+
+// import {
+//     ProtocolSettings
+// } from ProtocolSettings
+
+enum DelegateDatum {
+    // we only have to use this if we decide Constr#0 is essential for practical CIP-68 compat
+    Cip68RefToken {  
+        // NOTE: this datum contains reference details for a user-facing token minted according to the cip-68 standard 
+        //  - the asset name (in the Value of this UTXO) MUST be:  #000643b0 + tokenName
+        //     - this asset name can serve user-side tokens using the CIP-68 "222", "333" or other token types.
+        //     - the user-side asset name with its (222/333/etc) CIP-67 prefix and 
+        //       ... its remaining tokenName will be matched to this asset name (#000643b0 +tokenName)
+        //       ... to locate this reference datum; this datum content will be interpreted
+        //       ... according to the semantics implied by the user-side asset-name prefix.
+        //
+        //  - The attached 'meta' field in this Datum variant contains the relevant data, depending on the token type
+        //    - for "222" tokens, the meta field should contain the following fields:
+        //        - "name" : String
+        //        - "description" : String 
+        //        - "files" :   // {mediaType, src (url), name?, ... otherFields)
+        //        - "image": String  // image url: https://, ar://, ipfs:// or data:// (RFC2397 data)
+        //    - for "333" tokens, the meta field should contain the following fields:
+        //        - "name" : String
+        //        - "description" : String 
+        //        - "ticker" : String
+        //        - "url": String  // project URL
+        //        - "logo": String  // image url: https://, ar://, ipfs:// or data:// (RFC2397 data)
+        //                    - it must have a mime type `image/png`, `image/jpeg` or `image/svg+xml`
+        //        - "decimals" : Int
+
+        cip68meta: AnyData
+        cip68version: Int
+        otherDetails: Data
+        // otherDetails: Data // can be Unit () or anything else
+    }
+
+    IsDelegation {
+        dd: DelegationDetail
+    }
+    // same variant-index as Capo's DelegatedData
+    capoStoredData {
+        data: AnyData
+        version: Int
+        otherDetails: Data 
+    }
+
+    // func validateSettings(self, settings: ProtocolSettings) -> Bool{
+    // ... get the settings object from the contract manifest via cctx
+    //     assert(false, "not valid (stubbed)");
+    //     settings.serialize() != self.serialize() &&
+    //     true
+    // }
+}
+
+enum MintingActivity {
+    // application can replace the sample, which is only here to 
+    // avoid a syntax error in the unspecialized version
+
+    SampleMintingActivity
+    MintingFungibleTokens {
+        tokenName: ByteArray
+    }
+
+    // OtherActivityWithUniqueness{
+    //     seed: TxOutputId
+    // }
+}
+
+//! The minting delegate can also be used as a general spending 
+// delegate (this is the default arrangement during the Capo 
+// charter mint).  These activities are required by the Capo when
+// spending utxos having DelegatedDatum type.
+enum SpendingActivity {
+    // application can replace the placeholder, which is only here to 
+    // avoid a syntax error in the unspecialized version
+    SampleSpendingActivity  {
+        recId: ByteArray
+    }
+}
+
+enum BurningActivity {
+    // application can replace the placeholder, which is only here to 
+    // avoid a syntax error in the unspecialized version
+    _placeholder1BA {
+        recId: ByteArray
+    }
+}
+enum DelegateActivity {
+    // must ALWAYS be at Enum position 0
+    CapoLifecycleActivities {
+        activity: CapoLifecycleActivity
+    }
+
+    // must ALWAYS be at Enum position 1
+    DelegateLifecycleActivities {
+        // administrative activities for the delegate lifecycle, enforced
+        //  by the basic mint delegate code.  Specializations can add more 
+        //  restrictions, but in many/most cases they will not need to.
+        activity: DelegateLifecycleActivity
+    }
+
+    // application-specific spending activities, ALWAYS at Enum position 2
+    SpendingActivities {
+        activity: SpendingActivity
+    }
+
+    // application-specific minting activities, ALWAYS at Enum position 3
+    // remember:M and 3 have a similar shape.
+    MintingActivities {
+        activity: MintingActivity
+    }
+
+    BurningActivities {
+        // application-specific burning activities, ALWAYS at Enum position 4
+        activity: BurningActivity
+    }
+
+    CreatingDelegatedData {
+        seed: TxOutputId
+        dataType: String
+        // id from seed
+    }
+
+    UpdatingDelegatedData {
+        // seed not used
+        dataType: String
+        recId: ByteArray
+    }
+
+    DeletingDelegatedData {
+        // seed not used
+        dataType: String
+        recId: ByteArray
+    }
+
+    MultipleDelegateActivities {
+        activities: []Data // actually a []DelegateActivity
+        // todo: change this back when the recursive enum's `__is_valid_data not found` error is resolved
+    }
+
+    // this function gives a general-purpose implementation of checking for 
+    // valid uut minting. 
+    //
+    // A specialization might modify it to use different policies
+    // or enforce additional requirements
+    // 
+    // func genericUutMinting(self, 
+    //     mdd: DelegateDatum,
+    // ) -> Bool {
+    //     //!!! replace with an activity using the same seed-txn pattern:
+    //     // MintingActivities::SomethingMintingUuts{seed, purposes} = self;
+    //     DelegateDatum::IsDelegation{dd} = mdd;
+    //     returnsAuthzToken : Bool = mustReturnValueToScript(dd.tvAuthorityToken());
+
+    //     o : []TxOutput = get_cont_outputs();
+    //     if (o.length != 1) { error("single utxo only") };
+
+    //     print ("in unsp_MD");
+    //     isOk : Bool = returnsAuthzToken && 
+
+    //     unmodifiedDelegation( /* isD, same as mdd */ mdd.serialize()) &&
+
+    //     // This call can serve as a template for enforcing expected mints 
+    //     // of uuts (and additional token values) in validation of application-
+    //     // specific activities, given (mph, seed, purposes)
+    //     validateUutMinting(
+    //         mph: dd.mph,
+    //         seed: seed,
+    //         purposes: purposes,
+    //         // otherMintedValue: ()
+    //         mkTokenName: mkUutTnFactory(seed)
+    //     );
+
+    //     isOk
+    // }
+
+    //! used only for validating IsDelegation datum, that is,
+    //   ... to approve minting requests or any customize spending modes 
+    //   ... of that datum.  
+    
+    //  Note that the basic delegate already enforces some basic
+    //    administrative expectations for DelegateLifecycleActivities and CapoLifecycleActivities
+    //    so a specialization doesn't need to re-implement those checks.
+    func additionalDelegateValidation( self,
+        priorMddd: DelegateDatum::IsDelegation,
+        cctx: CapoCtx
+    ) -> Bool {        
+        // print("  ----- checking additional delegate validation");
+        mph : MintingPolicyHash = priorMddd.dd.mph;
+
+        self.switch {
+            // generic DelegateLifecycleActivities is already validated, but 
+            //  ... you can add more constraints here if needed
+            DelegateLifecycleActivities => true,
+            CapoLifecycleActivities{CLA} => {
+                // CapoLifecycleActivites.queuePendingDgtChange is only relevant for the MINT delegate.
+                // CapoLifecycleActivites.{removing, committing}PendingDgtChange(s) are served by the SPEND delegate
+                // Capo
+                // CapoLifecycleActivites.{forcing}* are ONLY ever served by the Capo itself as an escape-hatch
+                //  assert(isMintingDelegate, "unreachable"); // TODO access this const defined in the main script
+
+                CLA.switch {
+                    CreatingDelegate{seed, purpose} => {
+                        self.supportedCapoDelegatePurposes().find_safe(
+                            (p : String) -> Bool { p == purpose } 
+                        ).switch {
+                            None => error("can't mint delegate with unsupported purpose"),
+                            Some => {
+                                validateUutMinting(
+                                    mph: priorMddd.dd.mph,
+                                    seed: seed,
+                                    purposes: []String{purpose},
+                                    // otherMintedValue: ()
+                                    mkTokenName: mkUutTnFactory(seed),
+                                    // WE ARE the mint delegate.
+                                    needsMintDelegateApproval: false 
+                                )
+                            }
+                        }
+                    },
+                    _ => {
+                        REQT("   -- to customize: mint/spend delegates have an option to validate additional lifecycle constraints here");
+                        true
+                    }
+                 }
+            },
+            SpendingActivities{a} => {
+                assert(cctx.withCharterRef().orFail(), "no charter ref");
+
+                a.switch {
+                    SampleSpendingActivity{recId} => {
+                        print("SampleSpendingActivity");
+                        assert(
+                            cctx.requiresGovAuthority().orFail(), 
+                            "^^^ that can fail, this won't"
+                        );
+                        print("attempting to do sample spend: "+ recId.decode_utf8());
+                        assert(false, "policy not implemented");
+                        true
+                    }
+                }
+            },
+            MintingActivities{a} => {
+                assert(cctx.withCharterRef().orFail(), "no charter ref");
+
+                a.switch {
+                    SampleMintingActivity => {
+                        assert(false, "policy not implemented");
+                        assert(
+                            cctx.requiresGovAuthority().orFail(), 
+                            "^^^ that can fail, this won't"
+                        );
+                        true
+                    },
+                //     MintingParticipantToken{seed} => {
+                //         purpose : String = "member"; // todo: get from config
+                //         // mkTokenName = mkUutTnFactory(seed);
+
+                //         validateUutMinting(
+                //             mph: priorMddd.dd.mph,
+                //             seed: seed,
+                //             purposes: []String{purpose}, 
+                //             // mkTokenName: mkTokenName,
+                //             // we ARE the mint-delegate:
+                //             needsMintDelegateApproval: false
+                //         )
+
+                //     },
+                    MintingFungibleTokens{tokenName} => {
+                        print("MintingFungibleToken");
+                        assert(
+                            cctx.requiresGovAuthority().orFail(), 
+                            "^^^ that can fail, this won't"
+                        );
+                        // check that the tokens minted in the policy are exactly according to expectations.
+                        // we don't interfere with other policies that may have a good reason to mint in this txn
+                        // const ourMint : Map[ByteArray]Int = tx.minted.get_policy(mph);
+                        // we don't allow other tokens (of ours) to be minted in this txn
+                        assert(
+                            // ourMint.length == 1, 
+                            tx.minted.get_policy(mph).length == 1,
+                            "unexpected other tokens minted"
+                        );
+                        print("ok, minting fungibles: "+ tokenName.decode_utf8());
+                        true
+                    }        
+                }
+            },
+            CreatingDelegatedData => {
+                print(" ℹ️  mint delegate allowing CreatingDelegatedData on the say-so of its policy delegate");
+                true
+            },
+            UpdatingDelegatedData => {
+                print(" ℹ️  spend delegate allowing UpdatingDelegatedData on the say-so of its policy delegate");
+                true
+            },
+            DeletingDelegatedData => {
+                print(" ℹ️  mint delegate allowing DeletingDelegatedData on the say-so of its policy delegate");
+                true
+            },
+            _ => {
+                assert(false, "mint/spend delegate rejecting other activity");
+                false
+            }
+        } || tx.serialize() == priorMddd.serialize()        
+    }
+    func supportedCapoDelegatePurposes(self) -> []String {
+        assert(true || /* prevent unused variable */ self == self, "no way" );
+         []String{ 
+            // "nothingHereYet",
+
+            // something like this ...
+            // "fPurpCtrl" == purpose ||
+            // "mktSaleCtrl" == purpose ||
+            // "artistVault" == purpose ||
+            // "listenerVault" == purpose ||
+            // "nodeOpVault" == purpose ||
+
+        }
+    }
+
+    //! Used only for validating non-IsDelegation datum types and activities.
+    // if you have any special admininstrative data structures that inform 
+    // ...  your minting policy, this might be useful.  Otherwise, and typically,
+    // ... you should look to Activity validations above in additionalDelegateValidation,
+    // ...  in which the isDelegation token is being spent with an application-specific
+    // ...  activity/redeemer
+    func otherDatumValidation( self,
+        _priorMdd: DelegateDatum
+    ) -> Bool {
+        neverTriggered = () -> {  error("never called") };
+        self.switch{
+            // Note: this set of DelegateActivities is reserved for the IsDelegation datum.
+            //  Using it on any other Datum type will always fail and execution will never arrive here.
+            DelegateLifecycleActivities => neverTriggered(),
+            CapoLifecycleActivities => neverTriggered(),
+
+            // -- Application-specific activities can be added here 
+            // -- for special & app-specific types of datum in a delegate,
+            // -- for EXCEPTIONAL cases, if you really know what you're doing.  
+            //  -- see above for normal cases
+
+            _ => false  // prevents non-exhaustive match errors, even if you remove the above neverTriggered() calls
+        }
+    }
+}
+

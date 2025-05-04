@@ -1,0 +1,69 @@
+## DRED Neighborhood Node Registration
+
+### Intro
+
+The DRED RTC protocol provides a low-complexity, high-redundancy, highly decentralized
+operational environment for applications whose users benefit from being connected together
+in real time.  DRED helps app developers create interactive experiences of all kinds 
+without having to operate any servers of their own.  DRED's decentralized operations protocol 
+ensures prompt, reliable message delivery, helping people stay in sync even when servers or 
+parts of network itself may be having problems.
+
+DRED's Node Registration protocol provides on-chain data infrastructure for node operators 
+to register the presence of their nodes in the on-chain mesh.  This on-chain node registry is then 
+served for use by DRED-aware dApps.
+
+The Node Registration protocol is organized as a set of Typescript classes that expose certain
+APIs for finding, filtering, creating and updating node-registration records.  For those APIs 
+creating and updating on-chain records, a transaction is built, signed, and submitted to the network,
+updating the data found at an identifiable location in the Node Registration smart contract.  This 
+pattern is executed by node-operators themselves and/or autonomously by their node software.
+
+DRED-enabled apps connect using the on-chain dApp Neighborhood registry's decentralized point 
+of coordination, to discover available realtime services and get connected to the mesh.
+
+### Background
+
+The DRED protocol is a simple message-based protocol requiring only an HTTP connection. 
+Clients connect to multiple network nodes to ensure resiliant user collaborations.  These communications
+capabilities can support drawing, whiteboard, chat, music sharing, games, point-to-point video and more.
+
+DRED nodes run REDIS, a high-performance, realtime, in-memory data-store, as well as using a NodeJS 
+runtime to give every user realtime access to the specific channels they need, using the simple HTTP 
+protocol.  This architecture also supports operational scaling for advanced node operators who want 
+to serve many DRED Neighborhoods.
+
+#### DRED: realtime, decentralized messaging for Cardano
+
+DRED Global Node Operators are people who run our Docker-based serving infrastructure,
+providing capacity and reliability for realtime messaging between people who are collaborating
+via DRED-equipped apps.
+
+DRED-aware apps leverage the Global DRED Neighborhood to add its realtime messaging 
+capabilities to their applications, with any kind of app-to-app, app-to-person, or person-to-person
+signalling semantics appropriate for their application.  DRED nodes are free to join or leave the 
+network at any time, and when they do, the application's DRED client software ensures the app 
+keeps running smoothly.  
+
+dApps using DRED can also use DRED's node-operator rewards protocol to provide incentives to 
+their node operators through their on-chain tokenomics and/or through transactions initiated 
+by application users.  This single set of capabiliites will support product commercialization for 
+a variety of different operational and application revenue models, such as transaction fees, 
+monthly subscriptions, token-based micro-credits, or custom billing models.  
+
+#### A DRED Neighborhood: a shard of Cardano messaging for one App
+
+When a dApp developer creates a DRED Neighborhood, it opens a new shard of communications.  
+Every DRED Neighborhood can be configured as a set of one or more static & public channels, along 
+with one or more static & private channels, and any number of user-centric channels that can be created 
+and removed fluidly according to natural rhythms of user behavior.  
+
+### Registration Protocol Design
+
+The DRED Registration protocol supports all key details for a node operator's server to be registered,
+for the registration information to be updated, and for applications to get connected to the communications 
+network.
+
+
+
+

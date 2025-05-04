@@ -1,0 +1,23 @@
+module ProtocolSettings
+// import {FPSettings} from FundedPurposeSettings
+
+//sample
+import {NodeOperatorSettings} from NodeOperatorSettings
+import {NeighborhoodSettings} from NeighborhoodSettings
+/* Add imports for other modules here */
+
+struct ProtocolSettings {
+    id: ByteArray "@id"
+    type: String "tpe" // "set"
+
+    nodeOpSettings: NodeOperatorSettings "nOp"
+    nbhSettings: NeighborhoodSettings "nbh"
+    /* Add other settings here */
+    // from Stellar Tokenomics Engine
+    // fundedPurposeSettings: FPSettings "fPurp"
+
+    func validate(self) -> Bool { 
+        self == self &&
+        true
+    }
+}

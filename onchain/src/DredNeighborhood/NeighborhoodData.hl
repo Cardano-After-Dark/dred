@@ -1,0 +1,68 @@
+module NeighborhoodData
+
+// import {
+//     AbstractSettingsForNodeOperator as ProtocolSettings
+// } from NeighborhoodSettings
+
+enum SubscriptionFeeFrequency {
+    Epoch {
+        fee: Value
+    }
+    Monthly {
+        fee: Value
+    }
+    Yearly {
+        fee: Value
+    }
+}
+
+enum FeeSource {
+    EndUser
+    SponsorContract {
+        sponsorContract: ScriptHash // or Address?
+    }
+    // CapoRole {
+    //     role: String
+    // }
+}
+
+enum RevenueModel {
+    TransactionBased {
+        minTxFee: Value
+        maxTxFee: Option[Value]
+        chargeTo: FeeSource
+    }
+    Subscription {
+        subscriptionFee: []SubscriptionFeeFrequency
+    }
+}
+
+struct AppInfo {
+    url: String "url"
+    revenueModel: []RevenueModel "revMdl"
+}
+
+struct NodeOpsInfo {
+    minNodes: Int "cMin"
+    maxNodes: Int "cMax"
+    minNodeOperatorStake: Value "minStk"
+    minUptime: Int "minUpt"
+}
+
+struct NeighborhoodData {
+    id : ByteArray "@id" // = "nbhd-XXXXyyyyZZZZ"
+    type : String "tpe" // = "nbhd"
+
+    memberToken: String "mt"
+    name: String "nm"
+    description: String "dsc"
+    appInfo: AppInfo "app"
+    opsInfo: NodeOpsInfo "ops"
+
+
+    func validate(self) -> Bool {
+        assert(true || /*never executed*/ self == self, "no way");
+        // assert(self.memberToken != null, "memberToken is null");
+        true
+    }
+}
