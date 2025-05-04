@@ -33,5 +33,11 @@ export async function fetcher(path: string, options: fetchOptions) {
         return new Error(`${result.status} ${result.statusText} for ${path}`);
     });
 
-    return Promise.reject(reason);
+    if (!(reason instanceof Error)) {
+        const t = new Error(`${result.status} ${result.statusText} for ${path}`);
+        t.cause = result;
+        throw t
+    }
+
+    throw reason
 }
