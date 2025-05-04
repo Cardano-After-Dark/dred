@@ -6,7 +6,6 @@
     "bin": {
         "dredServer": "dist/dredServer.mjs"
     },
-    "packageManager": "pnpm@9.15.4",
     "exports": {
         ".": {
             "module": "./dist/dred-server.mjs",
@@ -14,6 +13,7 @@
             "default": "./dist/dred-server.js"
         }
     },
+    "packageManager": "pnpm@9.15.4",
     "__notes": [
         "a) Entries 'main' and 'types' are for legacy purposes.  ",
         "   The 'exports' entry is the primary resolution path for modern versions of node.",
@@ -50,23 +50,9 @@
         "run": "NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' node dist/dredServer.mjs"
     },
     "dependencies": {
-        "@ark/util": "^0.44.5",
-        "@cardano-ogmios/client": "^6.11.2",
-        "@helios-lang/cbor": "../helios/cbor",
-        "@helios-lang/codec-utils": "../helios/codec-utils",
-        "@helios-lang/compiler": "../helios/compiler",
-        "@helios-lang/contract-utils": "../helios/contract-utils",
-        "@helios-lang/crypto": "../helios/crypto",
-        "@helios-lang/era": "../helios/era",
-        "@helios-lang/ir": "../helios/ir",
-        "@helios-lang/ledger": "../helios/ledger",
-        "@helios-lang/tx-utils": "../helios/tx-utils",
-        "@helios-lang/type-utils": "../helios/type-utils",
-        "@helios-lang/uplc": "../helios/uplc",
         "@poshplum/poshplum": "^0.8.9",
         "@poshplum/utils": "^0.8.2",
         "abstract-logging": "^2.0.1",
-        "arktype": "^2.1.9",
         "body-parser": "^1.20.0",
         "caniuse-lite": "^1.0.30001706",
         "compression": "^1.7.4",
@@ -84,6 +70,20 @@
         "tweetnacl-util": "^0.15.1",
         "uuid": "^8.3.2",
         "watsign": "^0.1.8"
+    },
+    "laterDeps": {
+        "@ark/util": "^0.44.5",
+        "@cardano-ogmios/client": "^6.11.2",
+        "@helios-lang/codec-utils": "~0.3.4",
+        "@helios-lang/compiler": "~0.17.19",
+        "@helios-lang/compiler-utils": "~0.5.15",
+        "@helios-lang/contract-utils": "~0.3.21",
+        "@helios-lang/crypto": "~0.2.3",
+        "@helios-lang/ledger": "~0.7.7",
+        "@helios-lang/tx-utils": "~0.6.7",
+        "@helios-lang/type-utils": "~0.3.0",
+        "@helios-lang/uplc": "~0.7.15",
+        "arktype": "^2.1.9"
     },
     "devDependencies": {
         "@jest/types": "^29.4.1",
@@ -109,7 +109,7 @@
         "rollup-plugin-dts": "^5.1.0",
         "rollup-plugin-esbuild": "^5.0.0",
         "rollup-plugin-node-externals": "^5.0.3",
-        "supertest": "^6.2.3",
+        "supertest": "^7.1.0",
         "ts-jest": "^29.1.5",
         "js-yaml": "^4.1.0",
         "ts-node": "^10.8.1",
