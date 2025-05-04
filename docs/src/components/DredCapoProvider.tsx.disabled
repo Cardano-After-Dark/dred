@@ -7,7 +7,7 @@ import { DredCapo } from "dred-network-registry"
 import {
     updaters,
     signals
-} from "../capoSignals.js"
+} from "../capoSignals.ts.disabled"
 
 export const CapoSignals = signals
 // import { CapoDAppProvider, UserActionMap } from "@/components/ui/CapoDappProvider.tsx"

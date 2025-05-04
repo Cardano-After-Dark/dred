@@ -8,6 +8,7 @@ import type {
 } from "@donecollectively/stellar-contracts";
 import type { TxInput } from "@helios-lang/ledger";
 import type { NodeRegistrationData, ErgoProtocolSettings } from "dred-network-registry";
+// import { CharterStatus } from "@/components/ui/CharterStatus.tsx";
 import { CharterStatus } from "@donecollectively/stellar-contracts/ui";
 
 // Helper function to check if a node is active based on its last heartbeat
