@@ -10,7 +10,7 @@ export type {
     eventHasChannels,
     eventChannelInfo,
 } from "./DredClient";
-export { DevEnvLocalDiscovery } from "../peers/DevEnvLocalDiscovery";
+export { StaticHostDiscovery } from "../peers/StaticHostDiscovery";
 export { NeighborhoodDiscovery } from "../peers/NeighborhoodDiscovery";
 export type { DredEvent, DredError } from "../types/DredEvents";
 export type { ChanId, NbhId, MsgId, DredChannelMessage } from "../types/ChannelSubscriptions";

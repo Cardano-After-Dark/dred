@@ -9,7 +9,7 @@
         "pnpm": ">=9"
     },
     "packageManager": "pnpm@9.15.4",
-    "homepage": "https://none.example.com",
+    "homepage": "https://cardano-after-dark.github.io/dred/",
     "license": "SEE LICENSE IN LICENSE.TXT",
     "main": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
@@ -59,6 +59,7 @@
             "autoprefixer": {}
         }
     },
+
     "prettier": {
         "printWidth": 100,
         "tabWidth": 4,
@@ -104,3 +105,9 @@
         "typescript": "^5.7.0"
     }
 }
+
+
+
+
+
+

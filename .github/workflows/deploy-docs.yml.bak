@@ -1,8 +1,9 @@
-name: Deploy Next.js Documentation
+# BACKUP: This workflow is kept as a reference but is not actively used.
+name: Deploy Documentation
 
 on:
   push:
-    branches: [ main, dev/patrik ]
+    branches: [ dev/patrik ]
     paths:
       - 'docs/**'
   workflow_dispatch:
@@ -20,19 +21,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 20
-        #   cache: 'pnpm'
+          node-version: 18
+          cache: 'pnpm'
           
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v2
         with:
-          version: 9.15.4
+          version: 7.25.1
           run_install: false
           
       - name: Get pnpm store directory
@@ -54,13 +53,13 @@ jobs:
       - name: Build documentation
         env:
           NEXT_PUBLIC_BASE_PATH: /dred
-        run: cd docs && pnpm run build 
+        run: cd docs && pnpm build && pnpm export
         
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v3
         
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           path: docs/out
 
@@ -73,4 +72,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 
+        uses: actions/deploy-pages@v2 

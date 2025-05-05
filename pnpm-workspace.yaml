@@ -2,6 +2,7 @@ packages:
   - 'src/client'  
   - 'docs'
   - 'sampleApp'
+  - 'onchain'
   - '.'
 
   # works better with yarn used in that subdir:
