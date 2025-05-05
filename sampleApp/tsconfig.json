@@ -24,9 +24,10 @@
         "jsx": "react-jsx",
         "jsxImportSource": "preact",
         "paths": {
-            "react": ["@preact/compat"],
-            "preact": ["@preact/compat"],
-            "react-dom": ["@preact/compat"],
+            "react": ["./node_modules/preact/compat/"],
+            "react/jsx-runtime": ["./node_modules/preact/jsx-runtime"],
+            "react-dom": ["./node_modules/preact/compat/"],
+            "react-dom/*": ["./node_modules/preact/compat/*"]
             // "@poshplum/utils": ["../../plum/utils/dist/browser.mjs"],
             // "@poshplum/poshplum": ["../../plum/poshplum/dist/browser.mjs"],
         }

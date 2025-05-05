@@ -1,12 +1,30 @@
 //@ts-check
 
+import { colors } from "../picocolors/picocolors.js";
+const {
+    bgBlackBright,
+    blue,
+    blueBright,
+    green,
+    greenBright,
+    red,
+    redBright,
+    yellow,
+    yellowBright,
+    isColorSupported,
+    bgBlack,
+    bgBlueBright,
+    bold,
+    black,
+} = colors;
+
 import { Redis, RedisOptions } from "ioredis";
-import { Server } from "http";
+import { get, Server } from "http";
 import express from "express";
 import type { Application } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import compression from 'compression'
+import compression from "compression";
 
 //@ts-ignore
 import { RedisChannels } from "../redis/streams";
@@ -24,8 +42,15 @@ import { ChannelOptions } from "../types/ChannelOptions.js";
 import { StringNacl } from "../util/StringNacl.js";
 import { Discovery } from "../types/Discovery.js";
 import { DredHostDetails } from "../types/DredHosts.js";
-import { ChanId, SubscriptionList, NbhId, ChannelSubOptions } from "../types/ChannelSubscriptions.js";
+import {
+    ChanId,
+    SubscriptionList,
+    NbhId,
+    ChannelSubOptions,
+} from "../types/ChannelSubscriptions.js";
 import { autobind } from "@poshplum/utils";
+import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
+import { zonedLogger } from "@poshplum/utils";
 
 const logging = parseInt(process.env.LOGGING || "0");
 export interface ExpressWithRedis extends express.Application {
@@ -52,13 +77,17 @@ type rHeartbeatMessage = {
     timerInterval?: number;
 };
 
-type rStreamMsg = rHeartbeatMessage | rChannelError | { //(rMsgRaw | rMsgParsed) & 
-    id: string;
-    channel: ChanId;
-    type: string;
-    data: string;
-    [key: string]: string | undefined;
-};
+type rStreamMsg =
+    | rHeartbeatMessage
+    | rChannelError
+    | {
+          //(rMsgRaw | rMsgParsed) &
+          id: string;
+          channel: ChanId;
+          type: string;
+          data: string;
+          [key: string]: string | undefined;
+      };
 
 type streamHandle = {
     team: any; //!!! todo: enhance these types
@@ -82,30 +111,42 @@ const optionsSerializer: ValueAdapter<ChannelOptions> = {
     },
 };
 
+type DredServerArgs = DredClientArgs & {
+    api?: express.Application;
+    serverDb?: number;
+};
+
 //!!! todo: augment to support a list of nbh's, with req details for nbh selection
 //    - start by using nbh prefix in redis keys.
+
+let clientIndex = 1;
 
 export class DredServer {
     api: express.Application;
     discovery: Discovery;
-    redis: Redis;
+    redisUrl: string;
+    redisDb: number;
+    redis?: Redis;
     channelConn: RedisChannels;
     listener: null | Server; // http.Server from node types
-    args: DredClientArgs & { api?: express.Application };
-    channelList: RedisHash<string, string>;
-    channelOptions: RedisHash<string, ChannelOptions>;
+    args: DredServerArgs;
+    channelList!: RedisHash<string, string>;
+    channelOptions!: RedisHash<string, ChannelOptions>;
     producers: Map<string, any>;
     subscribers: Map<string, Set<Subscriber>>;
-    clientArgs: DredClientArgs;
+    clientArgs: DredServerArgs;
     verifier: StringNacl;
     serverId: string;
     myServerInfo?: DredHostDetails;
+    logger: ReturnType<typeof zonedLogger>;
+
+    resetting = false;
     get nbh() {
         return this.args.neighborhood;
     }
 
     setupExpressHandlers() {
-        this.api.use(compression())
+        this.api.use(compression());
         this.api.use((req, res, next) => {
             res.locals.startTime = new Date().getTime();
 
@@ -113,13 +154,13 @@ export class DredServer {
             next();
         });
 
-        //!!! todo: 61pk3h0 it applies a more explicit Access-Control-Allow-Origin policy, 
-        //    ... checking credentials and/or domain name as part of its CORS check, 
+        //!!! todo: 61pk3h0 it applies a more explicit Access-Control-Allow-Origin policy,
+        //    ... checking credentials and/or domain name as part of its CORS check,
         //    ... according to its configuration & setup
 
         this.api.use(cors<Request>());
 
-        this.api.use(bodyParser.json({ limit: '1mb' }));
+        this.api.use(bodyParser.json({ limit: "1mb" }));
 
         //! it allows handlers to be mocked
         this.api.post("/channel/:channelId", (...args) => {
@@ -150,45 +191,40 @@ export class DredServer {
         this.api.use(this.resultLogger);
     }
 
-    constructor(clientArgs: DredClientArgs & { api?: express.Application }, serverId: string) {
-        this.args = clientArgs;
+    constructor(args: DredServerArgs, serverId: string, redisDb: number) {
+        this.args = args;
+        debugger;
+        const loggerName = `dred‹${serverId}›`;
+        this.logger = zonedLogger(loggerName, {
+            serverId,
+            levels: {
+                [loggerName]: logging ? "info" : "warn",
+                _message: `(env LOGGING=${logging})`,
+            },
+        });
+
         this.serverId = serverId;
-        this.discovery = DredClient.resolveDiscovery(clientArgs);
+        this.discovery = DredClient.resolveDiscovery(args);
         // const t= express()
-        this.log(`+server '${serverId}'`, JSON.stringify(this.discovery, null, 2));
+        this.log(`+server '${serverId}'`, this.discovery, null, 2);
         this.api = this.createExpressServer();
         // const t= express();
 
-        const redisUrl = process.env.REDIS_URL;
-        this.redis = this.setupRedis(redisUrl);
+        const redisUrl = (this.redisUrl = process.env.REDIS_URL || "redis://localhost:6379");
 
         this.listener = null;
         this.verifier = new StringNacl(undefined, this);
-
-        this.channelList = new RedisHash<string, string>(
-            this.redis,
-            "channels",
-            StringValueAdapter
-        );
-        this.channelOptions = new RedisHash(this.redis, "channelOptions", optionsSerializer);
         this.producers = new Map();
         this.subscribers = new Map();
-
-        //!!! todo: allows the application name to override 'dred' setting in channel names created in Redis
-        this.channelConn = new RedisChannels({
-            application: `${this.nbh}::`,
-            redis: {
-                url: redisUrl,
-            },
-        });
-        this.ensureDefaultChannels();
-        this.channelConn._log.error = console.error.bind(console);
-        this.clientArgs = clientArgs;
+        this.redisDb = redisDb || 0;
+        this.setupRedis(redisUrl);
+        // this.channelConn._log.error = console.error.bind(console);
+        this.clientArgs = args;
 
         this.setupExpressHandlers();
     }
 
-    setupRedis(url) {
+    setupRedis(url: string | undefined) {
         if (this.redis) throw new Error(`redis connection is already set up`);
         // redis.subscribe(...).on("message", (event) => {
         //     for (const peer of peers) {
@@ -197,15 +233,36 @@ export class DredServer {
         // })
 
         //!!! todo: use configured Redis connection details
-        console.log(`REDIS_URL ${url}`);
+        this.log(`Setting up Redis connection: ${url || "default"}, db: ${this.redisDb}`);
+        // console.log(`REDIS_URL ${url}`);
         const options: RedisOptions = {
+            db: this.redisDb,
+
             // keyPrefix: `${this.nbh}::`  //!!! todo vet this technique.
         };
         if (url) {
-            return new Redis(url, options);
+            this.redis = new Redis(url, options);
         } else {
-            return new Redis(options);
+            this.redis = new Redis(options);
         }
+
+        this.channelList = new RedisHash<string, string>(
+            this.redis,
+            "channels",
+            StringValueAdapter
+        );
+        this.channelOptions = new RedisHash(this.redis, "channelOptions", optionsSerializer);
+
+        //!!! todo: allows the application name to override 'dred' setting in channel names created in Redis
+        this.channelConn = new RedisChannels({
+            application: `${this.nbh}::`,
+            redis: {
+                url: url,
+                db: this.redisDb,
+            },
+        });
+        this.channelConn._log = this.logger;
+        this.ensureDefaultChannels();
     }
 
     //! it has a mockable function for starting the express server
@@ -213,31 +270,49 @@ export class DredServer {
         return this.args.api || express();
     }
 
+    async pendingSetup() {
+        return this.setupPending;
+    }
     private setupPending?: Promise<any>;
     //!!! todo: once for each nbh
     ensureDefaultChannels() {
-        this.setupPending = new Promise(async (res) => {
+        if (this.setupPending) return this.setupPending;
+
+        return (this.setupPending = new Promise(async (res) => {
             await this.doChannelSetup("_chans");
             await this.doChannelSetup("_auth");
             await this.doChannelSetup("news");
             await this.doChannelSetup("discussion");
             this.setupPending = undefined;
             res(true);
-        });
+        }));
     }
 
     async doChannelSetup(channel: ChanId, options: Partial<ChannelOptions> = {}) {
+        // debugger
         const chan = await this.channelList.has(channel);
         if (!chan) {
             await this.channelList.set(channel, "1");
         }
         const streams = this.channelConn;
+        if (!streams) {
+            if (this.resetting) {
+                this.logger.warn("ignoring continuing channel setup for %s while racing with a subsequent reset!")
+                return 
+            } else {
+                this.logger.error(
+                    "??? how can this happen?? streams undefined, can't use(%s) for producing",
+                    channel
+                );
+                throw new Error(`streams undefined, can't use(${channel}) for producing`);
+            }
+        }
         const stream = await streams.use(channel);
 
         //!!! revisit this with a more specific plan : )
         await streams.produce(stream, "first event in this channel", { type: "channel:genesis" });
-        const o = {channelId: channel, ...options};
-        this.channelCreated(channel, o)
+        const o = { channelId: channel, ...options };
+        this.channelCreated(channel, o);
     }
 
     //
@@ -249,26 +324,41 @@ export class DredServer {
         if (!myInfo) throw new Error(`can't identify my own info`);
         const { port, address } = myInfo;
         this.listener = this.api.listen(port, address);
-        console.warn(`server '${this.serverId}' listening at ${address}:${port}`);
+        this.log(`server '${this.serverId}' listening at ${address}:${port}`);
         return this.listener;
         // express
         //       listen(port: number, hostname: string, backlog: number, callback?: () => void): http.Server;
         //       listen(port: number, hostname: string, callback?: () => void): http.Server;
     }
 
-    async close() {
-        this.cancelSubscribers();
-        await this.channelConn.cleanup().catch(warning("channelConn.cleanup()"));
-        await this.channelConn.this?.redis?.quit().catch(warning("channelConn.redis.quit()"));
-        this.channelConn.this?.redis?.disconnect();
-        await this.redis.quit().catch(warning("redis.quit()"));
-        this.listener?.close();
+    async reset(reconnect?: boolean, finalCleanup?: (r?: Redis) => any) {
+        await this.channelConn.cleanup().catch(warning.bind(this, "channelConn.cleanup()"));
+        // await this.channelConn.this?.redis?.quit().catch(warning.bind(this,"channelConn.redis.quit()"));
+        // this.channelConn?.redis?.disconnect();
+        finalCleanup?.(this.redis);
+        this.resetting = true;
+        await this.redis?.quit().catch(warning.bind(this, "redis.quit()"));
+        this.redis?.removeAllListeners();
+        this.channelConn = undefined;
+        this.redis = undefined;
 
-        function warning(activityName) {
+        const doReconnect = reconnect ?? true;
+        if (doReconnect) {
+            this.setupRedis(this.redisUrl);
+            this.resetting = false;                
+            return this.setupPending
+        }
+        function warning(this: DredServer, activityName) {
             return (e) => {
-                console.warn(`during close: error in ${activityName}:\n\t`, e.message || e);
+                this.warn(`during close: error in ${activityName}:\n\t`, e.message || e);
             };
         }
+    }
+
+    async close() {
+        this.cancelSubscribers();
+        this.reset(false);
+        this.listener?.close();
     }
     async listenDetails() {}
 
@@ -284,20 +374,39 @@ export class DredServer {
 
         return addr;
     }
-    mkClient(): DredClient {
-        return new DredClient(this.clientArgs);
+
+    mkClient(serverSelection: string, clientArgs: Partial<DredClientArgs> = {}): DredClient {
+        const discovery: Discovery = clientArgs.discovery ?? this.clientArgs.discovery;
+        if (!discovery) throw new Error("discovery is required");
+        const oneHost = discovery.hosts!.find((h) => h.serverId === serverSelection);
+        if (!oneHost) {
+            this.logger.error(`server ${serverSelection} not found in discovery`, discovery);
+            throw new Error(`server ${serverSelection} not found in discovery`);
+        }
+        const singleDiscovery = new StaticHostDiscovery({
+            hosts: [oneHost],
+        });
+
+        return new DredClient({
+            name: `${serverSelection || ""}-${clientIndex++}`,
+            ...this.clientArgs,
+            ...clientArgs,
+            discovery: singleDiscovery,
+        });
     }
 
-    log(...args: any[]) {
-        logging && console.log(...args);
+    log(a1: string, ...args: any[]) {
+        this.logger.info(a1, ...args);
+        // logging && console.log(...args);
     }
-    warn(...args: any[]) {
-        logging && console.warn(...args);
+    warn(a1: string, ...args: any[]) {
+        this.logger.warn(a1, ...args);
+        // logging && console.warn(...args);
     }
 
     resultLogger: express.RequestHandler = (req, res, next) => {
         const now = new Date().getTime();
-        const elapsed = now - res.locals.startTime
+        const elapsed = now - res.locals.startTime;
 
         this.log(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url} ${elapsed}ms`);
     };
@@ -311,6 +420,7 @@ export class DredServer {
         const options: ChannelOptions = req.body;
         const found = await this.channelList.has(channelId);
         if (found) {
+            this.warn(`Channel creation failed: ${channelId} already exists`);
             res.status(400).json({ error: "channel already exists" });
             return next();
         }
@@ -400,13 +510,14 @@ export class DredServer {
         const streams = this.channelConn;
         const chans = await streams.use("_chans");
 
+        this.log("channelCreated", channel, options);
         //! it emits a channel-created event in the _chans meta-channel.
         //   applications with interest in such things can subscribe to that
         //   channel to get the news
         await streams.produce(chans, "a channel was created", {
             type: "chanCreated",
             channel,
-            options
+            options: JSON.stringify(options),
         });
     }
 
@@ -426,6 +537,7 @@ export class DredServer {
         const now = new Date();
 
         if (!found) {
+            this.warn(`Join failed: Channel ${channelId} not found`);
             res.status(400).json({ error: "invalid channel" });
             return next();
         }
@@ -434,6 +546,7 @@ export class DredServer {
 
         //! trying to join an expired channel produces an error
         if (opts.expiresAt && now > opts.expiresAt) {
+            this.warn(`Join failed: Channel ${channelId} is expired`);
             this.log(
                 `expiration '${opts.expiresAt.getTime() % 100000}, now '${now.getTime() % 100000}`
             );
@@ -505,7 +618,7 @@ export class DredServer {
 
         if (opts.members.includes(member)) overMemberLimit = false;
         if (overMemberLimit) {
-            this.warn("over channel memberLimit");
+            this.warn(`Join failed: Channel ${channelId} is full`);
 
             res.status(403).json({
                 error: "channel is full",
@@ -521,6 +634,7 @@ export class DredServer {
             error = e.message;
         }
         if (!verified) {
+            this.warn(`Join failed: Signature verification failed - ${error}`);
             res.status(400).json({
                 error: `bad signature: ${error}`,
             });
@@ -545,9 +659,9 @@ export class DredServer {
         return this.channelConn.use(channelId);
     }
 
-
     postMessageInChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
+        this.log("postMessageInChannel", channelId);
         const found = await this.channelList.has(channelId);
         if (!found) {
             res.status(404).json({
@@ -560,30 +674,48 @@ export class DredServer {
         //!!! todo y0w9cvr: it refuses to post plain-text messages into encrypted channels
         //     see also todo zfnsmq8
 
-        console.log("postMessage", message);
         this.log("server: postMessage", message);
         const tunnelProducer = await this.mkChannelProducer(channelId);
-        const {msg, _type, _data, ...moreDetails} = message;
+        const { msg, _type, _data, ...moreDetails } = message;
 
         //! it extracts and SILENTLY ignores reserved keys _type, _data in client-provided event details.
         // if (_type) console.warn("ignoring reserved key '_type' in client-provided message");
         // if (_data) console.warn("ignoring reserved key '_data' in client-provided message");
 
-        if (!msg) res.status(422).json({error: "missing required 'msg' attribute for posting message in channel"});
-        if (!moreDetails.ocid) res.status(422).json({error: "missing required 'ocid' attribute for posting message in channel"});
-        if (!moreDetails.type) res.status(422).json({error: "missing required 'type' attribute for posting message in channel"});
-        
-        const id = await this.channelConn.produce(tunnelProducer, msg, moreDetails);
-        res.json({ id,  status: "created" });
+        if ("string" !== typeof msg) {
+            res.status(422).json({
+                error: "message must be a string, not a JSON object",
+            });
+            return next();
+        }
+        if (!msg) {
+            res.status(422).json({
+                error: "missing required 'msg' attribute for posting message in channel",
+            });
+        } else if (!moreDetails.ocid) {
+            res.status(422).json({
+                error: "missing required 'ocid' attribute for posting message in channel",
+            });
+        } else if (!moreDetails.type) {
+            res.status(422).json({
+                error: "missing required 'type' attribute for posting message in channel",
+            });
+        } else {
+            const id = await this.channelConn.produce(tunnelProducer, msg, moreDetails);
+            res.json({ id, status: "created" });
+        }
         next();
     };
 
     cancelSubscribers() {
+        let count = 0;
         for (const [chan, subscribers] of this.subscribers) {
             for (const sub of subscribers) {
                 sub.cancel();
+                count++;
             }
         }
+        this.warn(`Cancelled ${count} channel subscribers`);
     }
 
     get subscribeTimeout() {
@@ -596,7 +728,7 @@ export class DredServer {
         res.contentType("application/ndjson");
         res.useChunkedEncodingByDefault = false;
         // res.setHeader("x-hi", "there");
-        console.warn("listening for", subscriptions);
+        this.log("listening for", subscriptions);
         //!!! todo: it validates authorization as appropriate for each requested channel
 
         const sendUpdate: changeFeedUpdater = (...messages) => {
@@ -613,7 +745,7 @@ export class DredServer {
         //! it sends heartbeat signals every so often to clients
         //!!! todo: heartbeat interval can be configured
         const timer = setInterval(() => {
-            console.log("server: client <- heartbeat");
+            this.log("server: client <- heartbeat");
             sendUpdate({ type: "heartbeat" });
         }, timerInterval);
         timer.unref(); //! the heartbeat-timer never blocks the process from exiting when it's otherwise done
@@ -646,7 +778,7 @@ export class DredServer {
                     message: "internal stream consumer failed",
                     reason: consumeError.message,
                 });
-                this.log("consume error; TODO: reconnect/retry", consumeError);
+                this.logger.error(`${channel} consume error; TODO: reconnect/retry`, consumeError);
                 cleanup();
                 next();
             }
@@ -655,7 +787,7 @@ export class DredServer {
         let anySuccesses = 0;
         let warnings: any[] = [];
         for (const sub of subscriptions) {
-            const {channel} = sub;
+            const { channel } = sub;
             const found = await this.channelList.has(channel);
             if (!found) {
                 //! sends a warning note but does not fail unless there are no valid subscriptions
@@ -668,7 +800,7 @@ export class DredServer {
             }
 
             const subscriber = await this.listenOneChannel(sub, sendUpdate, notifyConsumeError);
-            myStreamListeners.push({channel, stream: subscriber});
+            myStreamListeners.push({ channel, stream: subscriber });
             if (subscriber) anySuccesses += 1;
         }
         if (!anySuccesses) {
@@ -681,10 +813,9 @@ export class DredServer {
 
     async listenToNeighborhood() {
         //!!! todo: it connects with a DredClient for each neighborhood host
-        //!!! todo: it subscribes to all channels in the neighborhood 
-        //   ...and replicates messages seen in those channels, 
+        //!!! todo: it subscribes to all channels in the neighborhood
+        //   ...and replicates messages seen in those channels,
         //   ... along with our own confirmation of the events
-
         //!!! todo: it keeps a recency list of messages seen from other servers,
         //     and replicates confirmations instead of full messages in that case.
     }
@@ -692,7 +823,7 @@ export class DredServer {
     async listenOneChannel(
         sub: ChannelSubOptions,
         sendUpdate: changeFeedUpdater,
-        notifyConsumerError: consumerErrorNotifier,
+        notifyConsumerError: consumerErrorNotifier
     ) {
         //! it leverages the redis-streams module's cache of per-channel connections
         const channelStream = await this.channelConn.use(sub.channel);
@@ -707,7 +838,7 @@ export class DredServer {
         channelStream: streamHandle,
         sub: ChannelSubOptions,
         sendUpdate: changeFeedUpdater,
-        notifyConsumerError: consumerErrorNotifier,
+        notifyConsumerError: consumerErrorNotifier
     ) {
         try {
             for await (const events of this.channelConn.consume(
@@ -718,8 +849,12 @@ export class DredServer {
             )) {
                 for (const e of events) {
                     const { id: mid, ocid, type, data, ...meta } = e;
-                    this.log(`to client on ${sub.channel} <- event ${mid}: `, e.data.length, "bytes");
-                    debugger
+                    this.log(
+                        bgBlueBright(black(bold(`    <- ocid ${ocid} in ${sub.channel}: `))),
+                        e.data.length,
+                        "bytes"
+                    );
+                    debugger;
                     // const parsed = JSON.parse(data);
                     //!!! todo: apply filters from the subscription
                     sendUpdate({
@@ -739,8 +874,8 @@ export class DredServer {
     }
 }
 
-export async function createServer(options: DredClientArgs, serverId: string) {
-    const server = new DredServer(options, serverId);
+export async function createServer(options: DredServerArgs, serverId: string, serverDb: number) {
+    const server = new DredServer(options, serverId, serverDb);
     const { api, redis } = server;
     api.set("redis", redis);
 
