@@ -218,6 +218,8 @@ export class DredServer {
         this.subscribers = new Map();
         this.redisDb = redisDb || 0;
         this.setupRedis(redisUrl);
+        // setup message replication for the redis instance
+        this.setupReplication();
         // this.channelConn._log.error = console.error.bind(console);
         this.clientArgs = args;
 
@@ -674,6 +676,9 @@ export class DredServer {
         //!!! todo y0w9cvr: it refuses to post plain-text messages into encrypted channels
         //     see also todo zfnsmq8
 
+        // Add source server identification to avoid circular replication
+        message.sourceServer = this.serverId;
+        
         this.log("server: postMessage", message);
         const tunnelProducer = await this.mkChannelProducer(channelId);
         const { msg, _type, _data, ...moreDetails } = message;
@@ -871,6 +876,75 @@ export class DredServer {
         } catch (consumeError) {
             notifyConsumerError(sub.channel, consumeError as Error);
         }
+    }
+
+    setupReplication() {
+        if (!this.redis) {
+            this.warn("Cannot setup replication: Redis not initialized");
+            return;
+        }
+
+        this.log(`Setting up message replication for server ${this.serverId}`);
+        
+        // Get all other servers from discovery to create client connections
+        this.discovery.getHostList().then(hosts => {
+            // Filter out myself
+            const otherHosts = hosts.filter(host => host.serverId !== this.serverId);
+            
+            if (otherHosts.length === 0) {
+                this.log(`No other hosts found for replication`);
+                return;
+            }
+
+            this.log(`Found ${otherHosts.length} other hosts for replication`);
+            
+            // Create a client connection to each other server
+            otherHosts.forEach(host => {
+                const peerClient = this.mkClient(host.serverId);
+                
+                // Listen for all channel creations by subscribing to all channels
+                peerClient.subscribeToChannels({
+                    '*': async (message) => {
+                        // Check if this is a channel creation message
+                        if (message.type === "channel-genesis") {
+                            const channel = message.channel;
+                            this.log(`Replication: channel ${channel} created on peer ${host.serverId}`);
+                            // Ensure channel exists locally
+                            try {
+                                await this.channelList.set(channel, "1");
+                                this.log(`Replication: created local channel ${channel} from peer ${host.serverId}`);
+                            } catch (err) {
+                                this.warn(`Replication: Failed to create local channel ${channel}: ${err}`);
+                            }
+                        } else {
+                            // For regular messages
+                            this.log(`Replication: received message on channel ${message.channel} from peer ${host.serverId}`);
+                            
+                            // Skip if this was originally our message
+                            if (message.sourceServer === this.serverId) {
+                                this.log(`Replication: skipping our own message`);
+                                return;
+                            }
+                            
+                            // Add source information to avoid circular replication
+                            message.sourceServer = message.sourceServer || host.serverId;
+                            
+                            try {
+                                const producer = await this.mkChannelProducer(message.channel);
+                                await producer.add(message);
+                                this.log(`Replication: replicated message to channel ${message.channel}`);
+                            } catch (err) {
+                                this.warn(`Replication: Failed to replicate message to channel ${message.channel}: ${err}`);
+                            }
+                        }
+                    }
+                });
+                
+                this.log(`Replication: setup for peer server ${host.serverId} complete`);
+            });
+        }).catch(err => {
+            this.warn(`Failed to get host list for replication: ${err}`);
+        });
     }
 }
 
