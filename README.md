@@ -102,6 +102,10 @@ When running tests, sample servers are created on port 3032 and 3033.  If you se
 
 Configure chrome://inspect to listen on port 9230 and on the same screen, use Dedicated DevTools for Node.
 
+## Architecture
+
+For learning about DRED you can dive into the Core concepts beginning with the [About Dred](https://cardano-after-dark.github.io/dred/docs/understanding-dred) section, then move on to read the [DRED Core Architecture](https://cardano-after-dark.github.io/dred/docs/core-architecture) for a full understanding of how DRED actually works.
+
 ## License
 
 TODO: dual-licensing, with non-commercial use under terms of a suitable source-available license, with commercial use constrained to paying customers.  
