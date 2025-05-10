@@ -33,7 +33,7 @@ export interface ChannelSubOptions {
 }
 
 
-type DredMsgData = any;
+type DredMsgData = string;
 export type DredChannelMessage = ConnectionEvent &  {
     message: "msg received in chan"
     neighborhood: NbhId,

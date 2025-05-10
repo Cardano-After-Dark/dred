@@ -473,6 +473,9 @@ export class HostConnection extends StateMachine.withDefinition(
             
             // console.log(`client: ${chan} <- event: `, value);
             const { mid, ocid, channel, nbh, type, msg, ...details } = value;
+            const normalMessage = "normal message notification.  Connection manager should aggregate messages and deduplicate, while notifying clients of the new message."
+            const errorMessage = "this indicates an internal problem being reflected out to you for any appropriate client-side treatment of the condition"
+            const devInfo = "error" === type ? errorMessage : normalMessage
             this.events.emit("message", {
                 connection: this,
                 message: "msg received in chan",
@@ -484,8 +487,8 @@ export class HostConnection extends StateMachine.withDefinition(
                 details,
                 neighborhood: nbh,
                 ts,
-                [devMessage]:
-                    "normal message notification.  Connection manager should aggregate messages and deduplicate, while notifying clients of the new message.",
+                [devMessage]: devInfo
+                    ,
             });
         }
     }

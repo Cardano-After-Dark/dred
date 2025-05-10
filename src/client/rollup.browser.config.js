@@ -6,8 +6,7 @@ import externals from "rollup-plugin-node-externals";
 // used for finding modules to bundle, using Node's resolution algo
 import resolve from "@rollup/plugin-node-resolve";
 import { twoModulesOut } from "../../rollup.lib.js";
-import { platformModulePaths } from "./rollup.lib.js";
-
+import alias from "@rollup/plugin-alias";
 
 import packageJson from "./package.json" assert { type: 'json' };
 const name = packageJson.main.replace(/\.js$/, "");
@@ -41,8 +40,12 @@ export default [
             externals(),
             resolve({
                 browser: true,
-                ...platformModulePaths("browser"),
                 extensions: [".mjs", ".js", ".json", ".ts"],
+            }),
+            alias({
+                entries: [
+                    { find: '@platform/ReadableStream', replacement: '../../platform/browser/ReadableStream.ts' },
+                ],
             }),
             // for rollup-plugin-ts
             // typescript({

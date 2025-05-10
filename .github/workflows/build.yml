@@ -68,7 +68,7 @@ jobs:
           
       # Install project dependencies
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install 
         
       # Run linting checks - continues even if there are issues
       # Shows warnings in the GitHub Actions UI but doesn't fail the build
@@ -107,7 +107,7 @@ jobs:
       - name: Run tests
         continue-on-error: true  # Tests won't fail the build
         run: |
-          pnpm test
+          pnpm test | pnpm pino-pretty
           # If tests fail, output a warning but don't fail the build
           if [ $? -ne 0 ]; then
             echo "::warning::Tests failed. Check the output for details."
@@ -120,11 +120,9 @@ jobs:
     # Skip this job if both events occur - run only for PR event in this case
     if: github.event_name != 'push' || !github.event.pull_request
     steps:
-      # Check out the repository code
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
       
-      # Set up Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -150,16 +148,14 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-          
-      # Install client dependencies
-      - name: Install client dependencies
-        run: cd src/client && pnpm install --no-frozen-lockfile
-        
-      # Build the client
+
+      # is separate from other jobs:
+      - name: Install dependencies
+        run: pnpm install 
+
       - name: Build client
         run: cd src/client && pnpm build
         
-      # Verify build output exists
       - name: Verify client build output
         run: |
           if [ ! -d "src/client/dist" ]; then
@@ -176,17 +172,15 @@ jobs:
     # Skip this job if both events occur - run only for PR event in this case
     if: github.event_name != 'push' || !github.event.pull_request
     steps:
-      # Check out the repository code
       - name: Checkout repository
         uses: actions/checkout@v3
       
-      # Set up Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
           
-      # Install pnpm package manager
+      # Install package manager
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
@@ -207,7 +201,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
           
-      # Install documentation dependencies
       - name: Install docs dependencies
         run: cd docs && pnpm install --no-frozen-lockfile
         

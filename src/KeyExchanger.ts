@@ -110,7 +110,7 @@ export class KeyExchanger {
         }
     }
     async receiveKeyProgress(p: PartialDerivations) {
-        debugger;
+        
         const alreadyComputed = !!this.sharedSecret;
         if (alreadyComputed) {
             if (!this.partialDerivation) throw new Error(`this can't happen`);
@@ -145,7 +145,7 @@ export class KeyExchanger {
             .partialDerivation as any;
 
         let intermediateSecret: Key | null = null, intermediatePublic: Key;
-        if ("kex3" === this._name) debugger;
+        // if ("kex3" === this._name) debugger;
         if (this.seedKey) {
             ({ secretKey: intermediateSecret, publicKey: intermediatePublic } =
                 this.seedKey);

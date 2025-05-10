@@ -82,7 +82,7 @@ The two UI servers should display links in your terminal.
 
 ## Running Tests
 
-When running tests, sample servers are created on port 3032 and 3033.  If you see any errors relating to these port numbers, please ensure that there are no conflicting processes running on your machine (including port 3030, due to port-finding fallback behavor by the sample app).
+When running tests, sample servers are created on port 53032 and 53033 and 53034.  If you see any errors relating to these port numbers, please ensure that there are no conflicting processes running on your machine.
 
 ### Run tests once
 

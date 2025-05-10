@@ -2,8 +2,7 @@ import dts from "rollup-plugin-dts";
 import esbuild from "rollup-plugin-esbuild";
 import externals from "rollup-plugin-node-externals";
 import resolve from "@rollup/plugin-node-resolve";
-import { platformModulePaths } from "./rollup.lib.js";
-
+import alias from "@rollup/plugin-alias";
 import packageJson from "./package.json" assert { type: "json" };
 const name = packageJson.main.replace(/\.js$/, "");
 
@@ -60,8 +59,12 @@ export default [
         plugins: [
             externals(),
             resolve({
-                ...platformModulePaths("server"),
                 extensions: [".mjs", ".js", ".json", ".ts"],
+            }),
+            alias({
+                entries: [
+                    { find: '@platform/ReadableStream', replacement: './platform/server/ReadableStream.ts' },
+                ],
             }),
             esbuildConfig,
         ],
@@ -72,8 +75,12 @@ export default [
         plugins: [
             externals(),
             resolve({
-                ...platformModulePaths("server"),
                 extensions: [".mjs", ".js", ".json", ".ts"],
+            }),
+            alias({
+                entries: [
+                    { find: '@platform/ReadableStream', replacement: './platform/server/ReadableStream.ts' },
+                ],
             }),
             esbuildConfig,
         ],

@@ -8,39 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@ark/util':
-        specifier: ^0.44.5
-        version: 0.44.5
-      '@cardano-ogmios/client':
-        specifier: ^6.11.2
-        version: 6.11.2
-      '@helios-lang/codec-utils':
-        specifier: ~0.3.4
-        version: 0.3.4
-      '@helios-lang/compiler':
-        specifier: ~0.17.19
-        version: 0.17.19
-      '@helios-lang/compiler-utils':
-        specifier: ~0.5.15
-        version: 0.5.15
-      '@helios-lang/contract-utils':
-        specifier: ~0.3.21
-        version: 0.3.21(@helios-lang/compiler@0.17.19)
-      '@helios-lang/crypto':
-        specifier: ~0.2.3
-        version: 0.2.3
-      '@helios-lang/ledger':
-        specifier: ~0.7.7
-        version: 0.7.8
-      '@helios-lang/tx-utils':
-        specifier: ~0.6.7
-        version: 0.6.7
-      '@helios-lang/type-utils':
-        specifier: ~0.3.0
-        version: 0.3.0
-      '@helios-lang/uplc':
-        specifier: ~0.7.15
-        version: 0.7.15
       '@poshplum/poshplum':
         specifier: ^0.8.9
         version: 0.8.9(@types/react@18.3.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -50,9 +17,6 @@ importers:
       abstract-logging:
         specifier: ^2.0.1
         version: 2.0.1
-      arktype:
-        specifier: ^2.1.9
-        version: 2.1.20
       body-parser:
         specifier: ^1.20.0
         version: 1.20.3
@@ -108,6 +72,9 @@ importers:
       '@jest/types':
         specifier: ^29.4.1
         version: 29.6.3
+      '@rollup/plugin-alias':
+        specifier: ^4.0.3
+        version: 4.0.4(rollup@3.29.5)
       '@rollup/plugin-node-resolve':
         specifier: ^15.0.1
         version: 15.3.1(rollup@3.29.5)
@@ -171,12 +138,12 @@ importers:
       rollup-plugin-dts:
         specifier: ^5.1.0
         version: 5.3.1(rollup@3.29.5)(typescript@5.8.3)
-      rollup-plugin-esbuild:
-        specifier: ^5.0.0
-        version: 5.0.0(esbuild@0.17.19)(rollup@3.29.5)
       rollup-plugin-node-externals:
         specifier: ^5.0.3
         version: 5.1.3(rollup@3.29.5)
+      rollup-plugin-typescript-paths:
+        specifier: ^1.5.0
+        version: 1.5.0(typescript@5.8.3)
       supertest:
         specifier: ^7.1.0
         version: 7.1.0
@@ -252,9 +219,6 @@ importers:
       cross-fetch:
         specifier: ^3.1.5
         version: 3.2.0
-      dred-network-registry:
-        specifier: ../onchain
-        version: link:../onchain
       escape-string-regexp:
         specifier: ^5.0.0
         version: 5.0.0
@@ -319,39 +283,6 @@ importers:
 
   onchain:
     dependencies:
-      '@donecollectively/stellar-contracts':
-        specifier: file://../../stellar-contracts
-        version: file:../stellar-contracts(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup-plugin-esbuild@6.2.1(esbuild@0.25.3)(rollup@4.40.1))
-      '@donecollectively/stellar-tokenomics':
-        specifier: link:../../stellar-tokenomics
-        version: link:../../stellar-tokenomics
-      '@helios-lang/codec-utils':
-        specifier: link:../../helios/codec-utils
-        version: link:../../helios/codec-utils
-      '@helios-lang/compiler':
-        specifier: link:../../helios/compiler
-        version: link:../../helios/compiler
-      '@helios-lang/compiler-utils':
-        specifier: link:../../helios/compiler-utils
-        version: link:../../helios/compiler-utils
-      '@helios-lang/contract-utils':
-        specifier: link:../../helios/contract-utils
-        version: link:../../helios/contract-utils
-      '@helios-lang/crypto':
-        specifier: link:../../helios/crypto
-        version: link:../../helios/crypto
-      '@helios-lang/ledger':
-        specifier: link:../../helios/ledger
-        version: link:../../helios/ledger
-      '@helios-lang/tx-utils':
-        specifier: link:../../helios/tx-utils
-        version: link:../../helios/tx-utils
-      '@helios-lang/type-utils':
-        specifier: link:../../helios/type-utils
-        version: link:../../helios/type-utils
-      '@helios-lang/uplc':
-        specifier: link:../../helios/uplc
-        version: link:../../helios/uplc
       '@microsoft/api-documenter':
         specifier: ^7.26.20
         version: 7.26.26(@types/node@22.15.3)
@@ -453,6 +384,9 @@ importers:
       '@babel/preset-env':
         specifier: ^7.4.3
         version: 7.26.9(@babel/core@7.26.10)
+      '@preact/compat':
+        specifier: ^18.3.1
+        version: 18.3.1(preact@10.26.5)
       '@preact/preset-vite':
         specifier: ^2.4.0
         version: 2.10.1(@babel/core@7.26.10)(preact@10.26.5)(vite@4.5.13(@types/node@18.19.87)(lightningcss@1.29.2))
@@ -478,7 +412,7 @@ importers:
         specifier: ^2.2.2
         version: 2.2.3
       preact:
-        specifier: ^10.26.4
+        specifier: ^10.26.5
         version: 10.26.5
       prop-types:
         specifier: ^15.8.1
@@ -496,11 +430,8 @@ importers:
         specifier: ^0.8.9
         version: 0.8.9(@types/react@18.3.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@poshplum/utils':
-        specifier: ../../../plum/utils
-        version: link:../../../plum/utils
-      '@rollup/plugin-alias':
-        specifier: ^4.0.3
-        version: 4.0.4(rollup@3.29.5)
+        specifier: ^0.8.2
+        version: 0.8.2
       body-parser:
         specifier: ^1.20.0
         version: 1.20.3
@@ -538,6 +469,9 @@ importers:
       '@preact/preset-vite':
         specifier: ^2.4.0
         version: 2.10.1(@babel/core@7.26.10)(preact@10.26.5)(vite@4.5.13(@types/node@18.19.87)(lightningcss@1.29.2))
+      '@rollup/plugin-alias':
+        specifier: ^4.0.4
+        version: 4.0.4(rollup@3.29.5)
       '@rollup/plugin-node-resolve':
         specifier: ^15.0.1
         version: 15.3.1(rollup@3.29.5)
@@ -572,8 +506,8 @@ importers:
         specifier: ^5.1.0
         version: 5.3.1(rollup@3.29.5)(typescript@5.8.3)
       rollup-plugin-esbuild:
-        specifier: ^5.0.0
-        version: 5.0.0(esbuild@0.17.19)(rollup@3.29.5)
+        specifier: ^6.1.1
+        version: 6.2.1(esbuild@0.17.19)(rollup@3.29.5)
       rollup-plugin-node-externals:
         specifier: ^5.0.3
         version: 5.1.3(rollup@3.29.5)
@@ -665,15 +599,6 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
-
-  '@ark/schema@0.46.0':
-    resolution: {integrity: sha512-c2UQdKgP2eqqDArfBqQIJppxJHvNNXuQPeuSPlDML4rjw+f1cu0qAlzOG4b8ujgm9ctIDWwhpyw6gjG5ledIVQ==}
-
-  '@ark/util@0.44.5':
-    resolution: {integrity: sha512-qomwswzzv1aBIEWEWLlts1iM1/nGWDDhSNTYKI4qlpYfFT4+sn3ufcFInjHyD54gHJxpQAhbymUzW3QEylyOSA==}
-
-  '@ark/util@0.46.0':
-    resolution: {integrity: sha512-JPy/NGWn/lvf1WmGCPw2VGpBg5utZraE84I7wli18EDF3p3zc/e9WolT35tINeZO3l7C77SjqRJeAUoT0CvMRg==}
 
   '@babel/code-frame@7.26.2':
     resolution: {integrity: sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==}
@@ -1318,15 +1243,6 @@ packages:
       search-insights:
         optional: true
 
-  '@donecollectively/stellar-contracts@file:../stellar-contracts':
-    resolution: {directory: ../stellar-contracts, type: directory}
-    engines: {node: '>=20'}
-    hasBin: true
-    peerDependencies:
-      react: ^18.3.1
-      react-dom: ^18.3.1
-      rollup-plugin-esbuild: ^6.1.0
-
   '@emnapi/core@1.4.3':
     resolution: {integrity: sha512-4m62DuCE07lw01soJwPiBGC0nAww0Q+RY70VZ+n49yDIO13yyinhbWCeNnaob0lakDtWQzSdtNWzJeOJt2ma+g==}
 
@@ -1911,57 +1827,6 @@ packages:
       react: ^16 || ^17 || ^18
       react-dom: ^16 || ^17 || ^18
 
-  '@helios-lang/cbor@0.3.1':
-    resolution: {integrity: sha512-BFUA4TKYJ/pOT/L0nXRcuwpKwTUjTvFBXvvpdgQevfyVM7hHOXXJfkO5s5FYjnjs4TFkO2XxuF3YZl9d8k/UVQ==}
-
-  '@helios-lang/cli-utils@0.1.10':
-    resolution: {integrity: sha512-aefnkQwn0ybaDfoM6/+999uErac4/c7xKs4McYomjQY5cOnJ1L1BitPQQv3KQIcgHVTdBv/pTj8WDyU8XZ0DeQ==}
-
-  '@helios-lang/codec-utils@0.2.1':
-    resolution: {integrity: sha512-KM+OsiLp2j7po5y2pFv/ybncOlqek0M6IiWpxDVZdN2gc7d6DwPWQaLjZEbelMHWxObO2M7c16CgsZXutdxtXg==}
-
-  '@helios-lang/codec-utils@0.3.4':
-    resolution: {integrity: sha512-YiYwBwkbRmu9/4tqHNGIk/haVb0+MLrwXZc+6/KMwGT5WKzypZSkDgH+aZEdHtdTmYhVyIj9ojBljAhMxi8ezg==}
-
-  '@helios-lang/compiler-utils@0.5.15':
-    resolution: {integrity: sha512-tPI92av0d4eOR4a2U1ORNeT2Sanc9AvvoNQn9aZHSSn10rW1AvDnqd7L4Zj0cjc9uT6BD4wFv0jVdr3gECODVQ==}
-
-  '@helios-lang/compiler@0.17.19':
-    resolution: {integrity: sha512-n206gc+GEuicWoHPu0cYtc2DstrHCuLhes85ch4nJf+OuO8g363x5Q3ESLUQuAJ7OH10hkEKAJkaAYiKstDogA==}
-
-  '@helios-lang/contract-utils@0.3.21':
-    resolution: {integrity: sha512-zCfQD2jCPWfLGZJe0ZWBQrvKGk61iUbKXvHzx/yF5zeMHL0KiFSpERo8oddGTm77EqNOfnKjOjAd4EBvvS/AJw==}
-    hasBin: true
-    peerDependencies:
-      '@helios-lang/compiler': '*'
-
-  '@helios-lang/crypto@0.2.3':
-    resolution: {integrity: sha512-Vyauv8fSrev2BFVn5RrHvMtgHzClogWFnX9CPm8024NEzlEL6jrXYiF8VAoegWX46GGZQE2ZEZxZciiKClaR3A==}
-
-  '@helios-lang/era@0.1.5':
-    resolution: {integrity: sha512-r6ZyLSVNMPqgMXhdtXumx3JGQ24QmCST77CmXypF0UaLzgZBj19bUt2UGX7P8MNth4VRlKsT42EqEfMh7KirsA==}
-
-  '@helios-lang/ir@0.3.8':
-    resolution: {integrity: sha512-8xDSlIyrev4aIUUEbdcPfDJFSf3HCwgK9CXFCrog9vE60n2d2SRY++s5hTDlkYOx2OIa00fkr3sW3ryZ/pJ0Tg==}
-
-  '@helios-lang/ledger@0.7.8':
-    resolution: {integrity: sha512-+WsFB/0wdpEguDo6/eMh45amh78VM9xk3+eBOZ7MZBj8LosTwVx+LYzEC+jShldDg5A5mTAr+N+C75WcbzVmkg==}
-
-  '@helios-lang/tx-utils@0.6.7':
-    resolution: {integrity: sha512-EkqgfwbxkVLR4yjPi4fTs8V9kG7gah7UkLssbYyHw0FaOK83j1DxYxr4dO2/j3P2cQLecmla1z6cXjDdh+jhow==}
-
-  '@helios-lang/type-utils@0.1.25':
-    resolution: {integrity: sha512-tOqyBWtaI6n/xhfaZr8cnL+Syv0X5whbxpzPLayfDwllI9el54fQ4P4e8CUUm2ls8WNSAgC9razCd2Q3qnMwlA==}
-
-  '@helios-lang/type-utils@0.2.9':
-    resolution: {integrity: sha512-79/aGqD9ZXNXUypDHf+tSSg4PBacovX5Q4U2GXKVcaH5a194PVZJ+Dsz2J5vLREUeSwSM7HLTEysqasyadbtEQ==}
-
-  '@helios-lang/type-utils@0.3.0':
-    resolution: {integrity: sha512-7iEzd/6Qw7srA5ye2gveUcNlRA5jpZZ2YGeCOZc93irpFwpZaJl8P35yQfRXTRfX77W5t57Hc+Zmg/I2eGbq2Q==}
-
-  '@helios-lang/uplc@0.7.15':
-    resolution: {integrity: sha512-GAzsIJXtlA6B9wz5avA+cFIe1wLmzztIfUHfWPanp1q9FjYBPbA/Bv25CdGJC6pAGG/tq9uVAixGHQKBIToFDw==}
-
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
     engines: {node: '>=10.10.0'}
@@ -2336,6 +2201,11 @@ packages:
   '@poshplum/zoned-cls@https://codeload.github.com/poshplum/zoned-cls/tar.gz/4d42abe3d5e14c0f34f5704a7bb133630cb665b6':
     resolution: {tarball: https://codeload.github.com/poshplum/zoned-cls/tar.gz/4d42abe3d5e14c0f34f5704a7bb133630cb665b6}
     version: 1.0.0
+
+  '@preact/compat@18.3.1':
+    resolution: {integrity: sha512-Kog4PSRxtT4COtOXjsuQPV1vMXpUzREQfv+6Dmcy9/rMk0HOPK0HTE9fspFjAmY8R80T/T8gtgmZ68u5bOSngw==}
+    peerDependencies:
+      preact: '*'
 
   '@preact/preset-vite@2.10.1':
     resolution: {integrity: sha512-59lyGBXNfZIr5OOuBUB4/IB8AqF/ULbvYnyItgK/2BJnsGJqaeaJobRVtMp1129obHQuj8oZ/dVxB9inmH8Xig==}
@@ -3231,10 +3101,6 @@ packages:
     resolution: {integrity: sha512-QzAKFHl3fm53s44VHrTdEo0TkpL3XVUYQpnZy1r6/EHvMAyIg+O4hwprzlsNmcCHTNyVcF2S13DAUn7XhkC6qg==}
     engines: {node: '>= 14.0.0'}
 
-  ansi-colors@4.1.3:
-    resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
-    engines: {node: '>=6'}
-
   ansi-escapes@4.3.2:
     resolution: {integrity: sha512-gKXj5ALrKWQLsYG9jlTRmR/xKluxHV+Z9QEwNIgCfM1/uwPMCuzVVnh5mwTd+OuBZcwSIMbqssNWRm1lE51QaQ==}
     engines: {node: '>=8'}
@@ -3278,9 +3144,6 @@ packages:
   aria-query@5.3.2:
     resolution: {integrity: sha512-COROpnaoap1E2F000S62r6A60uHZnmlvomhfyT2DlTcrY1OrBKn2UhH7qn5wTC9zMvD0AY7csdPSNwKP+7WiQw==}
     engines: {node: '>= 0.4'}
-
-  arktype@2.1.20:
-    resolution: {integrity: sha512-IZCEEXaJ8g+Ijd59WtSYwtjnqXiwM8sWQ5EjGamcto7+HVN9eK0C4p0zDlCuAwWhpqr6fIBkxPuYDl4/Mcj/+Q==}
 
   array-buffer-byte-length@1.0.2:
     resolution: {integrity: sha512-LHE+8BuR7RYGDKvnrmcuSq3tDcKv9OFEXQt/HpbZhY7V6h0zlUXutnAD82GiFx9rdieCMjkvtcsPqBwgUl1Iiw==}
@@ -3583,10 +3446,6 @@ packages:
 
   clsx@1.2.1:
     resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
-    engines: {node: '>=6'}
-
-  clsx@2.1.1:
-    resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
     engines: {node: '>=6'}
 
   cluster-key-slot@1.1.2:
@@ -4926,10 +4785,6 @@ packages:
   jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
 
-  joycon@3.1.1:
-    resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
-    engines: {node: '>=10'}
-
   js-sdsl@4.4.2:
     resolution: {integrity: sha512-dwXFwByc/ajSV6m5bcKAPwe4yDDF6D614pxmIi5odytzxRlwqF6nwoiCek80Ixc7Cvma5awClxrzFtxCQvcM8w==}
 
@@ -5358,11 +5213,6 @@ packages:
     engines: {node: ^14 || ^16 || >=18}
     hasBin: true
 
-  nanoid@5.1.5:
-    resolution: {integrity: sha512-Ir/+ZpE9fDsNH0hQ3C68uyThDXzYcim2EqcZ8zn8Chtt1iylPT9xXJB0kPCnqzgcEGikO9RxSrh63MsmVCU7Fw==}
-    engines: {node: ^18 || >=20}
-    hasBin: true
-
   napi-postinstall@0.2.3:
     resolution: {integrity: sha512-Mi7JISo/4Ij2tDZ2xBE2WH+/KvVlkhA6juEjpEeRAVPNCpN3nxJo/5FhDNKgBcdmcmhaH6JjgST4xY/23ZYK0w==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
@@ -5751,9 +5601,6 @@ packages:
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
 
-  proper-lockfile@4.1.2:
-    resolution: {integrity: sha512-TjNPblN4BwAWMXU8s9AEz4JmQxnD1NNL7bNOY/AKUzyamc379FWASUhc/K1pL2noVb+XmZKLL68cjzLsiOAMaA==}
-
   property-information@7.0.0:
     resolution: {integrity: sha512-7D/qOz/+Y4X/rzSB6jKxKUsQnphO046ei8qxG59mtM3RG3DHgTK81HrxrmoDVINJb8NKT5ZsRbwHvQ6B68Iyhg==}
 
@@ -5968,10 +5815,6 @@ packages:
   responselike@2.0.1:
     resolution: {integrity: sha512-4gl03wn3hj1HP3yzgdI7d3lCkF95F21Pz4BPGvKHinyQzALR5CapwC8yIi0Rh58DEMQ/SguC03wFj2k0M/mHhw==}
 
-  retry@0.12.0:
-    resolution: {integrity: sha512-9LkiTwjUh6rT555DtE9rTX+BKByPfrMzEAtnlEtdEwr3Nkffwiihqe2bWADg+OQRjt9gl6ICdmB/ZFDCGAtSow==}
-    engines: {node: '>= 4'}
-
   reusify@1.1.0:
     resolution: {integrity: sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
@@ -5992,13 +5835,6 @@ packages:
     peerDependencies:
       rollup: ^3.0
       typescript: ^4.1 || ^5.0
-
-  rollup-plugin-esbuild@5.0.0:
-    resolution: {integrity: sha512-1cRIOHAPh8WQgdQQyyvFdeOdxuiyk+zB5zJ5+YOwrZP4cJ0MT3Fs48pQxrZeyZHcn+klFherytILVfE4aYrneg==}
-    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
-    peerDependencies:
-      esbuild: '>=0.10.1'
-      rollup: ^1.20.0 || ^2.0.0 || ^3.0.0
 
   rollup-plugin-esbuild@6.2.1:
     resolution: {integrity: sha512-jTNOMGoMRhs0JuueJrJqbW8tOwxumaWYq+V5i+PD+8ecSCVkuX27tGW7BXqDgoULQ55rO7IdNxPcnsWtshz3AA==}
@@ -6027,6 +5863,11 @@ packages:
 
   rollup-plugin-string@3.0.0:
     resolution: {integrity: sha512-vqyzgn9QefAgeKi+Y4A7jETeIAU1zQmS6VotH6bzm/zmUQEnYkpIGRaOBPY41oiWYV4JyBoGAaBjYMYuv+6wVw==}
+
+  rollup-plugin-typescript-paths@1.5.0:
+    resolution: {integrity: sha512-zly2aiGNjYJNq5YUi6eyGrQnCYUQ8b5czOtHZIGriwG9U3Ba2F9hlSklafXCdsNulK/IlNmE0Kzj0h+fVV32pA==}
+    peerDependencies:
+      typescript: '>=3.4'
 
   rollup-pluginutils@2.8.2:
     resolution: {integrity: sha512-EEp9NhnUkwY8aif6bxgovPHMoMoNr2FulJziTndpt5H9RdwC47GSGuII9XxpSdzVGM0GWrNPHV6ie1LTNJPaLQ==}
@@ -7092,14 +6933,6 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@ark/schema@0.46.0':
-    dependencies:
-      '@ark/util': 0.46.0
-
-  '@ark/util@0.44.5': {}
-
-  '@ark/util@0.46.0': {}
-
   '@babel/code-frame@7.26.2':
     dependencies:
       '@babel/helper-validator-identifier': 7.25.9
@@ -7906,31 +7739,6 @@ snapshots:
     transitivePeerDependencies:
       - '@algolia/client-search'
 
-  '@donecollectively/stellar-contracts@file:../stellar-contracts(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup-plugin-esbuild@6.2.1(esbuild@0.25.3)(rollup@4.40.1))':
-    dependencies:
-      '@cardano-ogmios/client': 6.11.2
-      '@helios-lang/codec-utils': 0.3.4
-      '@helios-lang/compiler': 0.17.19
-      '@helios-lang/compiler-utils': 0.5.15
-      '@helios-lang/contract-utils': 0.3.21(@helios-lang/compiler@0.17.19)
-      '@helios-lang/crypto': 0.2.3
-      '@helios-lang/ledger': 0.7.8
-      '@helios-lang/tx-utils': 0.6.7
-      '@helios-lang/type-utils': 0.3.0
-      '@helios-lang/uplc': 0.7.15
-      ansi-colors: 4.1.3
-      clsx: 2.1.1
-      eventemitter3: 5.0.1
-      nanoid: 5.1.5
-      proper-lockfile: 4.1.2
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      rollup-plugin-esbuild: 6.2.1(esbuild@0.25.3)(rollup@4.40.1)
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - utf-8-validate
-
   '@emnapi/core@1.4.3':
     dependencies:
       '@emnapi/wasi-threads': 1.0.2
@@ -8263,89 +8071,6 @@ snapshots:
       client-only: 0.0.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-
-  '@helios-lang/cbor@0.3.1':
-    dependencies:
-      '@helios-lang/codec-utils': 0.3.4
-
-  '@helios-lang/cli-utils@0.1.10':
-    dependencies:
-      '@helios-lang/codec-utils': 0.2.1
-      '@helios-lang/type-utils': 0.1.25
-
-  '@helios-lang/codec-utils@0.2.1': {}
-
-  '@helios-lang/codec-utils@0.3.4': {}
-
-  '@helios-lang/compiler-utils@0.5.15':
-    dependencies:
-      '@helios-lang/codec-utils': 0.3.4
-      '@helios-lang/type-utils': 0.2.9
-
-  '@helios-lang/compiler@0.17.19':
-    dependencies:
-      '@helios-lang/codec-utils': 0.3.4
-      '@helios-lang/compiler-utils': 0.5.15
-      '@helios-lang/ir': 0.3.8
-      '@helios-lang/type-utils': 0.2.9
-      '@helios-lang/uplc': 0.7.15
-
-  '@helios-lang/contract-utils@0.3.21(@helios-lang/compiler@0.17.19)':
-    dependencies:
-      '@helios-lang/cli-utils': 0.1.10
-      '@helios-lang/codec-utils': 0.3.4
-      '@helios-lang/compiler': 0.17.19
-      '@helios-lang/compiler-utils': 0.5.15
-      '@helios-lang/crypto': 0.2.3
-      '@helios-lang/ledger': 0.7.8
-      '@helios-lang/type-utils': 0.3.0
-      '@helios-lang/uplc': 0.7.15
-
-  '@helios-lang/crypto@0.2.3':
-    dependencies:
-      '@helios-lang/codec-utils': 0.3.4
-      '@helios-lang/type-utils': 0.2.9
-
-  '@helios-lang/era@0.1.5': {}
-
-  '@helios-lang/ir@0.3.8':
-    dependencies:
-      '@helios-lang/codec-utils': 0.3.4
-      '@helios-lang/compiler-utils': 0.5.15
-      '@helios-lang/type-utils': 0.2.9
-      '@helios-lang/uplc': 0.7.15
-
-  '@helios-lang/ledger@0.7.8':
-    dependencies:
-      '@helios-lang/cbor': 0.3.1
-      '@helios-lang/codec-utils': 0.3.4
-      '@helios-lang/crypto': 0.2.3
-      '@helios-lang/type-utils': 0.2.9
-      '@helios-lang/uplc': 0.7.15
-
-  '@helios-lang/tx-utils@0.6.7':
-    dependencies:
-      '@helios-lang/cbor': 0.3.1
-      '@helios-lang/codec-utils': 0.3.4
-      '@helios-lang/crypto': 0.2.3
-      '@helios-lang/ledger': 0.7.8
-      '@helios-lang/type-utils': 0.3.0
-      '@helios-lang/uplc': 0.7.15
-
-  '@helios-lang/type-utils@0.1.25': {}
-
-  '@helios-lang/type-utils@0.2.9': {}
-
-  '@helios-lang/type-utils@0.3.0': {}
-
-  '@helios-lang/uplc@0.7.15':
-    dependencies:
-      '@helios-lang/cbor': 0.3.1
-      '@helios-lang/codec-utils': 0.3.4
-      '@helios-lang/compiler-utils': 0.5.15
-      '@helios-lang/crypto': 0.2.3
-      '@helios-lang/era': 0.1.5
-      '@helios-lang/type-utils': 0.2.9
 
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
@@ -8816,6 +8541,10 @@ snapshots:
       zoned-cls: '@poshplum/zoned-cls@https://codeload.github.com/poshplum/zoned-cls/tar.gz/4d42abe3d5e14c0f34f5704a7bb133630cb665b6'
 
   '@poshplum/zoned-cls@https://codeload.github.com/poshplum/zoned-cls/tar.gz/4d42abe3d5e14c0f34f5704a7bb133630cb665b6': {}
+
+  '@preact/compat@18.3.1(preact@10.26.5)':
+    dependencies:
+      preact: 10.26.5
 
   '@preact/preset-vite@2.10.1(@babel/core@7.26.10)(preact@10.26.5)(vite@4.5.13(@types/node@18.19.87)(lightningcss@1.29.2))':
     dependencies:
@@ -9755,8 +9484,6 @@ snapshots:
       '@algolia/requester-fetch': 5.23.4
       '@algolia/requester-node-http': 5.23.4
 
-  ansi-colors@4.1.3: {}
-
   ansi-escapes@4.3.2:
     dependencies:
       type-fest: 0.21.3
@@ -9789,11 +9516,6 @@ snapshots:
   argparse@2.0.1: {}
 
   aria-query@5.3.2: {}
-
-  arktype@2.1.20:
-    dependencies:
-      '@ark/schema': 0.46.0
-      '@ark/util': 0.46.0
 
   array-buffer-byte-length@1.0.2:
     dependencies:
@@ -10179,8 +9901,6 @@ snapshots:
       mimic-response: 1.0.1
 
   clsx@1.2.1: {}
-
-  clsx@2.1.1: {}
 
   cluster-key-slot@1.1.2: {}
 
@@ -12150,8 +11870,6 @@ snapshots:
 
   jju@1.4.0: {}
 
-  joycon@3.1.1: {}
-
   js-sdsl@4.4.2: {}
 
   js-tokens@4.0.0: {}
@@ -12637,8 +12355,6 @@ snapshots:
 
   nanoid@4.0.2: {}
 
-  nanoid@5.1.5: {}
-
   napi-postinstall@0.2.3: {}
 
   natural-compare@1.4.0: {}
@@ -12970,12 +12686,6 @@ snapshots:
       object-assign: 4.1.1
       react-is: 16.13.1
 
-  proper-lockfile@4.1.2:
-    dependencies:
-      graceful-fs: 4.2.11
-      retry: 0.12.0
-      signal-exit: 3.0.7
-
   property-information@7.0.0: {}
 
   proxy-addr@2.0.7:
@@ -13239,8 +12949,6 @@ snapshots:
     dependencies:
       lowercase-keys: 2.0.0
 
-  retry@0.12.0: {}
-
   reusify@1.1.0: {}
 
   rimraf@2.7.1:
@@ -13259,15 +12967,14 @@ snapshots:
     optionalDependencies:
       '@babel/code-frame': 7.26.2
 
-  rollup-plugin-esbuild@5.0.0(esbuild@0.17.19)(rollup@3.29.5):
+  rollup-plugin-esbuild@6.2.1(esbuild@0.17.19)(rollup@3.29.5):
     dependencies:
-      '@rollup/pluginutils': 5.1.4(rollup@3.29.5)
       debug: 4.4.0
       es-module-lexer: 1.7.0
       esbuild: 0.17.19
-      joycon: 3.1.1
-      jsonc-parser: 3.3.1
+      get-tsconfig: 4.10.0
       rollup: 3.29.5
+      unplugin-utils: 0.2.4
     transitivePeerDependencies:
       - supports-color
 
@@ -13300,6 +13007,10 @@ snapshots:
   rollup-plugin-string@3.0.0:
     dependencies:
       rollup-pluginutils: 2.8.2
+
+  rollup-plugin-typescript-paths@1.5.0(typescript@5.8.3):
+    dependencies:
+      typescript: 5.8.3
 
   rollup-pluginutils@2.8.2:
     dependencies:

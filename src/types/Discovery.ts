@@ -99,8 +99,8 @@ export type ConnectionManagerOptions = {
 };
 
 export type ConnectionThresholds = {
-    minimal: Number;
-    healthy: Number;
+    minimal: number;
+    healthy: number;
 };
 export type ThresholdChoice = keyof ConnectionThresholds
 export type promisedConnectionThresholds = Promise<ConnectionThresholds>;

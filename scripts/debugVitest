@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+echo "debugging vitest config & rollup/vitest plugins"
+echo ""
+echo "     ----  use package.json 'test' or 'testing' script for regular test run"
+echo "     ----  use 'test:debug' script for regular test debugging"
+echo ""
+set -x
+node --inspect-brk node_modules/vitest/vitest.mjs --run --poolOptions.forks.singleFork  $@

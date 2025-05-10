@@ -1,5 +1,7 @@
 // import { expect, jest, test } from "@jest/globals";
 
+import { describe, it } from "vitest";
+
 describe("peer connections", () => {
     it.todo("uses on-chain registration to discover peers");
     // it("creates client connections to its configured peers");

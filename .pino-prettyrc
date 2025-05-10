@@ -1,0 +1,11 @@
+{
+  "colorize": true,
+  "include": "time,level,name,serverId",
+  "Xinclude": "time,msg,transition,level,summary",
+  "messageFormat": "{if indent}{indent} {end}{if color}{color}{end}{msg} {if transitionName}🐲 {transitionName} {end}{if summary}: {summary}{end}\u001b[39m\u001b[49m\u001b[27m\u001b[0m\n",
+  "customColors": "err:red,error:red,info:blue,warn:yellow",
+  "singleLine": false,
+  "translateTime": true,
+  "levelFirst": true,
+  "hideObject": true
+}

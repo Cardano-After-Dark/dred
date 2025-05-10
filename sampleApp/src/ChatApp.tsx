@@ -13,12 +13,15 @@ import {
     DredError,
     DredMessage,
     DredChannelMessage,
-} from "dred-client";
-import { DevEnvLocalDiscovery } from "dred-client";
+    StaticHostDiscovery,
+    type ChanId, 
+    type NbhId,
+    type DredEvent,
+    eventHasChannels,
+} from "@cardano-after-dark/dred-client";
 
 const codec = 'audio/webm; codecs="vorbis"';
 import { Component } from "preact";
-import type { ChanId, NbhId, DredEvent } from "dred-client";
 
 //!!! todo: include channel-creation UI
 //!!! todo: include channel-membership UI
@@ -90,7 +93,7 @@ export class ChatApp extends Component<myProps, MyState> {
         const c: DredClient =
             this.client ||
             new DredClient({
-                discovery: new DevEnvLocalDiscovery({}),
+                discovery: new StaticHostDiscovery({}),
                 waitFor: "minimal",
                 name: "Dred Communicator dev-0.2.0",
             });
@@ -128,7 +131,7 @@ export class ChatApp extends Component<myProps, MyState> {
     }
 
     @autobind
-    setChannelList(e: DredEvent & { nbh: NbhId; channels: ChanId[] }) {
+    setChannelList(e:  eventHasChannels) {
         //! it is expected to be called by the client on its `hasChannels` event.
         const { channels } = e;
         this.setState({ channels });

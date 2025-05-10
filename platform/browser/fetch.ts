@@ -1,5 +1,4 @@
-const fetch = (self || window).fetch;
+const {fetch, Headers:h} = globalThis
 
 export default fetch;
-
-export const Headers = (self || window).Headers;
+export const Headers = h
