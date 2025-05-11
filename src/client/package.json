@@ -1,8 +1,9 @@
 {
-    "name": "dred-client",
+    "name": "@cardano-after-dark/dred-client",
     "version": "0.0.1",
     "description": "Distributed event streams for web3 (client)",
     "type": "module",
+    "packageManager": "pnpm@9.15.4",
     "exports": {
         ".": {
             "types": "./dist/dred-client.d.ts",
@@ -10,7 +11,7 @@
             "import": "./dist/dred-client.mjs",
             "require": "./dist/dred-client.js",
             "node": "./dist/dred-client-nodejs.mjs",
-            "default": "./dist/dred-client.mjs"
+            "default": "./dist/dred-client.js"
         },
         "./node": {
             "types": "./dist/dred-client-nodejs.d.ts",
@@ -31,7 +32,6 @@
     "module": "./dist/dred-client.mjs",
     "types": "./dist/dred-client.js",
     "license": "MIT",
-    "packageManager": "pnpm@7.25.1",
     "scripts": {
         "dev": "pnpm build:watch",
         "clean": "rm dist/*",
@@ -43,7 +43,6 @@
     "dependencies": {
         "@poshplum/poshplum": "^0.8.9",
         "@poshplum/utils": "^0.8.2",
-        "@rollup/plugin-alias": "^4.0.3",
         "body-parser": "^1.20.0",
         "cross-fetch": "^3.1.5",
         "eventemitter3": "^5.0.0",
@@ -57,8 +56,8 @@
         "@babel/core": "^7.4.3",
         "@babel/plugin-proposal-class-properties": "^7.4.0",
         "@babel/preset-env": "^7.4.3",
-        "@preact/compat": "^17.1.2",
         "@preact/preset-vite": "^2.4.0",
+        "@rollup/plugin-alias": "^4.0.4",
         "@rollup/plugin-node-resolve": "^15.0.1",
         "@swc/cli": "^0.1.57",
         "@swc/core": "^1.2.204",
@@ -70,9 +69,9 @@
         "preact": "^10.11.3",
         "rollup": "3",
         "rollup-plugin-dts": "^5.1.0",
-        "rollup-plugin-esbuild": "^5.0.0",
+        "rollup-plugin-esbuild": "^6.1.1",
         "rollup-plugin-node-externals": "^5.0.3",
-        "typescript": "^4.9.3",
+        "typescript": "^5.3.3",
         "vite": "^4.0.0"
     }
 }

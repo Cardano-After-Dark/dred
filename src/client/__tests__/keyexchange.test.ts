@@ -1,5 +1,4 @@
-//@ts-nocheck
-
+import { describe, it, expect } from "vitest";
 import { KeyExchanger, KeyExchangerDerivationProof } from "../../KeyExchanger";
 import nacl from "tweetnacl";
 const { sign } = nacl;
@@ -10,7 +9,7 @@ describe("key exchange", () => {
     it("works", async () => {
         // setup on this is awkward; in regular use, a caller would only have
         //    a list of pubKeyBase64 + identity,..
-        function toPubKey64(x) {
+        function toPubKey64(x : nacl.BoxKeyPair) {
             return encodeBase64(x.publicKey);
         }
         const keyPairs = [1, 2, 3, 4].map(nacl.box.keyPair);
@@ -26,10 +25,13 @@ describe("key exchange", () => {
         const [kp1, kp2, kp3, kp4] = keyPairs;
         const keys = keyPairs.map(toPubKey64);
 
-        let ss1, ss2, ss3, ss4;
-        let done, kex4done;
+        let ss1: Uint8Array | undefined,
+            ss2: Uint8Array | undefined,
+            ss3: Uint8Array | undefined,
+            ss4: Uint8Array | undefined;
+        let done: (x: any) => void, kex4promise: Promise<any>;
         let startTime = new Date().getTime();
-        kex4done = new Promise((res) => (done = res));
+        kex4promise = new Promise((res) => (done = res));
         // the last key will have its onReady triggered last
         const kex4 = KeyExchanger.fromStringKeys({
             name: "kex4",
@@ -47,9 +49,9 @@ describe("key exchange", () => {
                 expect(ss3).toBeTruthy();
                 ss4 = kex4.sharedSecret;
                 expect(ss4).toBeTruthy();
-                expect(nacl.verify(ss1, ss4)).toBeTruthy();
-                expect(nacl.verify(ss2, ss4)).toBeTruthy();
-                expect(nacl.verify(ss3, ss4)).toBeTruthy();
+                expect(nacl.verify(ss1!, ss4!)).toBeTruthy();
+                expect(nacl.verify(ss2!, ss4!)).toBeTruthy();
+                expect(nacl.verify(ss3!, ss4!)).toBeTruthy();
                 done(ss4);
             },
         });
@@ -69,9 +71,8 @@ describe("key exchange", () => {
                 ss3 = kex3.sharedSecret;
                 expect(ss3).toBeTruthy();
                 await kex4.receiveKeyProgress(p.derivation);
-                if (!kex4.sharedSecret)
-                    throw new Error(`expected kex3 to have a computed secret`);
-                expect(nacl.verify(kex4.sharedSecret, ss3)).toBeTruthy();
+                if (!kex4.sharedSecret) throw new Error(`expected kex3 to have a computed secret`);
+                expect(nacl.verify(kex4.sharedSecret, ss3!)).toBeTruthy();
             },
         });
         // await asyncDelay(1);
@@ -90,9 +91,8 @@ describe("key exchange", () => {
                 ss2 = kex2.sharedSecret;
                 expect(ss2).toBeTruthy();
                 await kex3.receiveKeyProgress(p.derivation);
-                if (!kex3.sharedSecret)
-                    throw new Error(`expected kex3 to have a computed secret`);
-                expect(nacl.verify(kex3.sharedSecret, ss2)).toBeTruthy();
+                if (!kex3.sharedSecret) throw new Error(`expected kex3 to have a computed secret`);
+                expect(nacl.verify(kex3.sharedSecret, ss2!)).toBeTruthy();
             },
         });
         // await asyncDelay(1);
@@ -109,13 +109,12 @@ describe("key exchange", () => {
                 // );
                 expect(ss1).toBeTruthy();
                 await kex2.receiveKeyProgress(p.derivation);
-                if (!kex2.sharedSecret)
-                    throw new Error(`expected kex3 to have a computed secret`);
-                expect(nacl.verify(kex2.sharedSecret, ss1)).toBeTruthy();
+                if (!kex2.sharedSecret) throw new Error(`expected kex3 to have a computed secret`);
+                expect(nacl.verify(kex2.sharedSecret, ss1!)).toBeTruthy();
             },
         });
         // console.log("waiting for kex4");
-        await expect(kex4done).resolves.toBeTruthy();
+        await expect(kex4promise).resolves.toBeTruthy();
         console.log(
             "4x key exchange completed in",
             new Date().getTime() - startTime,

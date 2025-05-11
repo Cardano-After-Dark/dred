@@ -1,5 +1,6 @@
-// @ts-expect-error
-import { expect, jest, test } from "@jest/globals";
+// import { expect, jest, test } from "@jest/globals";
+// These are now global due to globals: true in vitest.config.ts
+import { beforeAll, vi, expect, describe, it } from "vitest";
 
 // import request from 'supertest';
 import { Express } from "express";
@@ -18,7 +19,7 @@ import {
     Key,
     KeyExchanger,
     KeyExchangerDerivationProof,
-} from "src/KeyExchanger.js";
+} from "../../KeyExchanger.js";
 
 // This test uses a blend of direct** requests to the Dred server (to prove
 //   each key function working at a HTTP level), along with some requests
@@ -33,6 +34,8 @@ import {
 //   level, dependency-free** code-path, in order to exercise variations
 //   more efficiently.
 
+const fit = it.only
+
 describe("channels", () => {
     let agent: SuperTestWithHost<Test>;
     let client: DredClient;
@@ -46,11 +49,15 @@ describe("channels", () => {
     describe("non-encrypted:", () => {
         it("creates a channel on request, with createdAt set", async () => {
             const channelName = "fooChannel";
+
+            await asyncDelay(1000);
             const response = await agent
                 .post(`/channel/${channelName}`)
                 .send({ createdAt: new Date().getTime() - 100000 })
                 .expect("Content-Type", /json/)
                 .expect(200);
+
+
 
             expect(response.body).toMatchObject({
                 id: channelName,
@@ -149,6 +156,7 @@ describe("channels", () => {
             const options = await server.getChanOptions(channelName);
             expect(options.owner).toBe(pubKeyString);
         });
+
         it("fills encrypted option and doesn't allow extra keys in channel options", async () => {
             const channelName = "enc-chan-creation-no-extra-stuff";
 
@@ -168,8 +176,9 @@ describe("channels", () => {
             expect(options.encrypted).toBeTruthy();
             expect(options.randomValue).toBeUndefined();
         });
+
         it("triggers channelCreated method on server object", async () => {
-            const created = jest.spyOn(server, "channelCreated");
+            const created = vi.spyOn(server, "channelCreated");
             await client.createChannel("createAndCallback", {
                 encrypted: true,
                 allowJoining: true,
@@ -194,6 +203,7 @@ describe("channels", () => {
                 new Date().getTime() - opts.createdAt.getTime()
             ).toBeLessThan(200);
         });
+        
         describe("joining members", () => {
             it("allows owner to join others with their pubKey and an approval signature", async () => {
                 const channelName = "owner-joins-someone";
@@ -202,7 +212,7 @@ describe("channels", () => {
                     members: [client.pubKeyString as string],
                 });
 
-                const c2 = server.mkClient();
+                const c2 = server.mkClient("first");
                 await c2.generateKey();
 
                 // console.log("missing-sig");
@@ -270,7 +280,7 @@ describe("channels", () => {
                         members: [client.pubKeyString as string],
                     });
 
-                    const nonMember = server.mkClient();
+                    const nonMember = server.mkClient("first");
                     await nonMember.generateKey();
 
                     let signature = await nonMember.signString(
@@ -297,10 +307,10 @@ describe("channels", () => {
                         approveJoins: "open",
                     });
 
-                    const nonMember = server.mkClient();
+                    const nonMember = server.mkClient("first");
                     await nonMember.generateKey();
 
-                    const nonMember2 = server.mkClient();
+                    const nonMember2 = server.mkClient("first");
                     await nonMember2.generateKey();
 
                     await expect(
@@ -320,7 +330,7 @@ describe("channels", () => {
                         approveJoins: "member",
                     });
 
-                    const nonMember = server.mkClient();
+                    const nonMember = server.mkClient("first");
                     await nonMember.generateKey();
 
                     let signature = await nonMember.signString(
@@ -358,7 +368,7 @@ describe("channels", () => {
                         approveJoins: "open",
                     });
 
-                    const newMember = server.mkClient();
+                    const newMember = server.mkClient("first");
                     await newMember.generateKey();
 
                     let signature = await newMember.signString(
@@ -399,10 +409,10 @@ describe("channels", () => {
                 });
 
                 it("doesn't allow joining an expired channel", async () => {
-                    const nonMember = server.mkClient();
+                    const nonMember = server.mkClient("first");
                     await nonMember.generateKey();
 
-                    const nonMember2 = server.mkClient();
+                    const nonMember2 = server.mkClient("first");
                     await nonMember2.generateKey();
 
                     const offset = 200;
@@ -438,13 +448,13 @@ describe("channels", () => {
             });
             it("allows members to join others with approveJoins: 'member' ", async () => {
                 const channelName = "member-joins-others";
-                const member = server.mkClient();
+                const member = server.mkClient("first");
                 await member.generateKey();
 
-                const nonMember1 = server.mkClient();
+                const nonMember1 = server.mkClient("first");
                 await nonMember1.generateKey();
 
-                const nonMember2 = server.mkClient();
+                const nonMember2 = server.mkClient("first");
                 await nonMember2.generateKey();
 
                 await client.createChannel(channelName, {
@@ -469,7 +479,7 @@ describe("channels", () => {
                 // use allowJoining, approvJoins: member
                 it("can be added by owner", async () => {
                     const channelName = "owner-joins-over-memberLimit";
-                    const member1 = server.mkClient();
+                    const member1 = server.mkClient("first");
                     await member1.generateKey();
 
                     await client.createChannel(channelName, {
@@ -481,7 +491,7 @@ describe("channels", () => {
                         ],
                     });
 
-                    const member2 = server.mkClient();
+                    const member2 = server.mkClient("first");
                     await member2.generateKey();
 
                     await expect(
@@ -494,10 +504,10 @@ describe("channels", () => {
                 it("joins fail for members", async () => {
                     const channelName = "no-over-memberLimit";
 
-                    const member1 = server.mkClient();
+                    const member1 = server.mkClient("first");
                     await member1.generateKey();
 
-                    const member2 = server.mkClient();
+                    const member2 = server.mkClient("first");
                     await member2.generateKey();
 
                     await client.createChannel(channelName, {
@@ -521,7 +531,7 @@ describe("channels", () => {
                         )
                     ).resolves.toMatchObject({ status: "joined" });
 
-                    const member3 = server.mkClient();
+                    const member3 = server.mkClient("first");
                     await member3.generateKey();
 
                     // console.log("try to add new member");

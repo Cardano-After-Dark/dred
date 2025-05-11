@@ -413,6 +413,9 @@ export class RedisChannels {
                     "Can not unsubscribe, no valid tunnel object"
                 );
             }
+            // !!! probably we do not need to issue a message into the
+            // channel saying that a team/consumer is unsubscribing...
+
             const { [tun.TEAM]: team, [tun.CONSUMER]: consumer } = tunnel;
 
             const fields = {
