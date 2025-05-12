@@ -6,7 +6,7 @@ name: Deploy Next.js Documentation
 
 on:
   push:
-    branches: [ main, dev/patrik, feat/docs-with-registry ]
+    branches: [ main, dev/patrik, feature/docs-with-registry ]
     paths:
       - 'docs/**'
   workflow_dispatch:
