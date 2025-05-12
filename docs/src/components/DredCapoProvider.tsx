@@ -27,7 +27,8 @@ interface DredCapoProviderProps {
     bfPreprodKey?: string
 }
 
-const bfPreprodKey = process.env.NEXT_PUBLIC_BF_API_KEY ?? ""
+// this isn't worth protecting as a secret becuase it's used in the front-end.
+const bfPreprodKey = "preprodwj3I80hV2evfb5pVuPqhcM14pX4kLYJD"
 
 export function DredCapoProvider({
     children,
