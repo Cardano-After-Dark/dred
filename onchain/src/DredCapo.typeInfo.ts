@@ -131,7 +131,11 @@ export interface ManifestEntryType$DgDataPolicyLike {
 
 
 
-export type DelegateRoleMeta = EnumTypeMeta<
+
+            /**
+            * @internal
+            */
+            export type DelegateRoleMeta = EnumTypeMeta<
     {module: "CapoDelegateHelpers", enumName: "DelegateRole"}, {
         MintDgt: singleEnumVariantMeta<DelegateRoleMeta, "MintDgt",
             "Constr#0", "tagOnly", tagOnly, "noSpecialFlags"
@@ -263,7 +267,11 @@ export interface ManifestEntryType$DelegateThreadsLike {
 
 
 
-export type ManifestEntryTypeMeta = EnumTypeMeta<
+
+            /**
+            * @internal
+            */
+            export type ManifestEntryTypeMeta = EnumTypeMeta<
     {module: "CapoHelpers", enumName: "ManifestEntryType"}, {
         NamedTokenRef: singleEnumVariantMeta<ManifestEntryTypeMeta, "NamedTokenRef",
             "Constr#0", "tagOnly", tagOnly, "noSpecialFlags"
@@ -467,7 +475,11 @@ export interface PendingDelegateAction$ReplaceLike {
 
 
 
-export type PendingDelegateActionMeta = EnumTypeMeta<
+
+            /**
+            * @internal
+            */
+            export type PendingDelegateActionMeta = EnumTypeMeta<
     {module: "CapoDelegateHelpers", enumName: "PendingDelegateAction"}, {
         Add: singleEnumVariantMeta<PendingDelegateActionMeta, "Add",
             "Constr#0", 
@@ -729,7 +741,11 @@ export interface ManifestActivity$burningThreadTokenLike {
 
 
 
-export type ManifestActivityMeta = EnumTypeMeta<
+
+            /**
+            * @internal
+            */
+            export type ManifestActivityMeta = EnumTypeMeta<
     {module: "CapoDelegateHelpers", enumName: "ManifestActivity"}, {
         retiringEntry: singleEnumVariantMeta<ManifestActivityMeta, "retiringEntry",
             "Constr#0", "singletonField", /* implied wrapper { key: ... } for singleVariantField */ 
@@ -854,7 +870,11 @@ export interface PendingCharterChange$otherManifestChangeLike {
 
 
 
-export type PendingCharterChangeMeta = EnumTypeMeta<
+
+            /**
+            * @internal
+            */
+            export type PendingCharterChangeMeta = EnumTypeMeta<
     {module: "CapoDelegateHelpers", enumName: "PendingCharterChange"}, {
         delegateChange: singleEnumVariantMeta<PendingCharterChangeMeta, "delegateChange",
             "Constr#0", "singletonField", /* implied wrapper { change: ... } for singleVariantField */ 
@@ -1016,7 +1036,11 @@ export interface CapoDatum$DelegatedDataLike {
 
 
 
-export type CapoDatumMeta = EnumTypeMeta<
+
+            /**
+            * @internal
+            */
+            export type CapoDatumMeta = EnumTypeMeta<
     {module: "CapoHelpers", enumName: "CapoDatum"}, {
         CharterData: singleEnumVariantMeta<CapoDatumMeta, "CharterData",
             "Constr#0", 
@@ -1195,7 +1219,11 @@ export interface CapoLifecycleActivity$forcingNewMintDelegateLike {
 
 
 
-export type CapoLifecycleActivityMeta = EnumTypeMeta<
+
+            /**
+            * @internal
+            */
+            export type CapoLifecycleActivityMeta = EnumTypeMeta<
     {module: "CapoDelegateHelpers", enumName: "CapoLifecycleActivity"}, {
         CreatingDelegate: singleEnumVariantMeta<CapoLifecycleActivityMeta, "CreatingDelegate",
             "Constr#0", 
@@ -1293,7 +1321,11 @@ export type CapoLifecycleActivityLike = IntersectedEnum<
 			ManifestActivityLike    /*minEnumVariant*/ }
 >
 
-export type CapoActivityMeta = EnumTypeMeta<
+
+            /**
+            * @internal
+            */
+            export type CapoActivityMeta = EnumTypeMeta<
     {module: "CapoHelpers", enumName: "CapoActivity"}, {
         capoLifecycleActivity: singleEnumVariantMeta<CapoActivityMeta, "capoLifecycleActivity",
             "Constr#0", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 

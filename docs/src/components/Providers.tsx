@@ -1,10 +1,10 @@
-// import { DredCapoProvider } from "./DredCapoProvider.tsx.disabled"
+import { DredCapoProvider } from "./DredCapoProvider.tsx"
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (<>
-    {/* <DredCapoProvider> */}
+    <DredCapoProvider>
     {children}
-    {/* </DredCapoProvider> */}
+    </DredCapoProvider>
   </>
   )
 }

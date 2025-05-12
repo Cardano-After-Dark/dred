@@ -28,7 +28,7 @@ const nextConfig = {
 
     config.resolve.modules = [
         path.resolve(__dirname, "node_modules"),
-        path.resolve(__dirname, "../../stellar-contracts/node_modules")
+        path.resolve(__dirname, "../node_modules")
     ]
 
     // config.resolve.alias["@donecollectively/stellar-contracts"] =

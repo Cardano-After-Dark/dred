@@ -10,7 +10,7 @@ struct NodeRegistrationData {
     nodePort: Int "port"
 
     // needs typeSchema support in Helios - use ByteArray encoding
-    nodePublicKey: PubKey "pubk" // actually a PubKey
+    nodePublicKey: ByteArray "pubk" // actually a PubKey
 
     lastHeartbeat: Time   "lhb"
 

@@ -1,13 +1,15 @@
 {
     "capo": {
         "config": {
-            "mph": { "bytes": "6dd411e93ff2890dba608951647b3c7ddb9d66204e273cc3af90e04a" },
-            "seedTxn": {
-                "bytes": "f4e5bfdae91a2637b2e0dc62bd0bf321ab7d182280077f6a9179bf7a534fd5c6"
+            "mph": {
+                "bytes": "39190c709e61109a6128b62904ebbe9c9a9899d874407b1531158aed"
             },
-            "seedIndex": "4",
+            "seedTxn": {
+                "bytes": "2169027ffbb72ad46b19bb0196ad0934097c67d34412ef6147ab9790755c765d"
+            },
+            "seedIndex": "1",
             "rootCapoScriptHash": {
-                "bytes": "03196fe9fb8965d3292736068fcad1bc4291fa5058617fdf0eb17134"
+                "bytes": "41c50256a28a7adc89b31974aa532c358f91675581277daa6fbf2819"
             }
         }
     }

@@ -14,7 +14,7 @@
 
         "target": "ESNext",
         "lib": ["esnext", "dom"],
-        "module": "esnext",
+        "module": "nodenext",
         "esModuleInterop": true,
         "types": ["node"],
         "verbatimModuleSyntax": true,
