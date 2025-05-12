@@ -58,6 +58,7 @@ jobs:
       - name: Build documentation
         env:
           NEXT_PUBLIC_BASE_PATH: /dred
+          NEXT_PUBLIC_BF_API_KEY: ${{ vars.NEXT_PUBLIC_BF_API_KEY }}
         run: cd docs && pnpm run build 
         
       - name: Setup Pages
