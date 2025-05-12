@@ -39,7 +39,7 @@ export function DredCapoProvider({
         <DredCapoProviderRaw
             targetNetwork="preprod"
             blockfrostKey={apiKey}
-            //x@ts-expect-error temporarily
+            //@ts-expect-error temporarily
             capoClass={DredCapo}
             dAppName="Dred Operator Network"
             onNetwork={updaters.updateNetwork}
