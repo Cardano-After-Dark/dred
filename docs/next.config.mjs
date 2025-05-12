@@ -27,7 +27,7 @@ const nextConfig = {
     config.output.publicPath = "/dred" + config.output.publicPath
 
     config.resolve.modules = [
-        path.resolve(__dirname, "node_modules"),
+        // path.resolve(__dirname, "node_modules"),
         path.resolve(__dirname, "../node_modules")
     ]
 
