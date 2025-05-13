@@ -1,6 +1,11 @@
 #fail00
 
 
+```bash
+pnpm install && pnpm build
+LOGGING=1 npm test src/client/__tests__/client.test.ts
+```
+
 Here is the test failing at the current stage
 
 ```bash
@@ -614,11 +619,12 @@ The error is present also before my change, tested as follows
 ```bash 
 git rev-parse cd5e193^
 106f793387f63c7c8103f0106b7c3c43171b7897
-# revert to that
+# revert to
 git checkout 106f793387f63c7c8103f0106b7c3c43171b7897
 pnpm install && pnpm build
 LOGGING=1 npm test src/client/__tests__/client.test.ts
 ```
+
 
 And this is the error message coming from the 
 
