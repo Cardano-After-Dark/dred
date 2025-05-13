@@ -1,6 +1,15 @@
 # ongoing work on repl
 
-before starting, identify the redis tests and try to run them
+before starting, identify the other stable redis tests and try to run them
+
+```bash
+cd ~/cad/dred
+git co feature/message-duplication
+pnpm install
+pnpm build
+LOGGING=1 pnpm test src/redis/__tests__/RedisSet.test.ts
+LOGGING=1 pnpm test src/client/__tests__/client.test.ts # Failing
+```
 
 ## Scope
 
