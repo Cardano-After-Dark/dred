@@ -4,3 +4,5 @@
 ./dist/
 config/keys/
 devdb
+docs/out/
+docs/.next/
