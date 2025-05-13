@@ -1,0 +1,1215 @@
+0:00:00.120,0:00:08.160
+a couple of times and unfortunately my side was 
+empty and uh I was talking a little bit more than
+
+0:00:08.160,0:00:16.520
+usual in a way that I I was able to to to get 
+it back but now now I know it works okay so we
+
+0:00:16.520,0:00:22.400
+said that the make client now is able to tell 
+I'm a client make a client for this server and
+
+0:00:22.400,0:00:32.200
+what we pass is a label saying uh the name of 
+the server uh we are building for uh yeah and
+
+0:00:32.200,0:00:38.120
+the primary use case for that is in tests so in 
+a test the normal thing is just make a client for
+
+0:00:38.120,0:00:49.840
+the first server um and in the test environment 
+that's uh server running on the the first Port of
+
+0:00:49.840,0:00:59.920
+the um of the uh test setup and then to access 
+the other um servers running in the test setup
+
+0:01:01.360,0:01:08.360
+you can make client for the second server or 
+the third server and this is this is all very
+
+0:01:08.360,0:01:20.680
+simple it just um focuses on the server ID 
+that you've given it yes and when when you
+
+0:01:20.680,0:01:30.880
+match on that server ID it returns a client that's 
+specifically for that single host and this I can
+
+0:01:30.880,0:01:37.440
+show you one other thing at the top of the test 
+here which is how the test setup Works which is
+
+0:01:37.440,0:01:48.360
+that the default test setup has these three 
+servers those servers are now on these port
+
+0:01:48.360,0:01:57.960
+numbers yes this is a relatively new change 
+um it's a very new change okay and um these
+
+0:01:57.960,0:02:06.080
+these should not interfere with anything 
+else else um so when you're running tests
+
+0:02:06.080,0:02:12.040
+it it can listen on these ports I with good 
+reliability I want these changes I'm going to
+
+0:02:12.040,0:02:20.080
+pull your branch I'm going to to to basically 
+rebase or or on your branch because uh if the
+
+0:02:20.080,0:02:24.840
+change you should already have this if you 
+had my Branch from this weekend from last
+
+0:02:24.840,0:02:32.160
+weekend yeah I do have it uh let me 
+just you have it uh just need to find
+
+0:02:32.160,0:02:56.240
+it trck yes I have I do yeah so then uh anywhere 
+that you want to um do a test scenario you can
+
+0:02:56.240,0:03:04.360
+make a client for each different server and 
+then do things like we see here um tell one
+
+0:03:04.360,0:03:18.400
+client to um create a channel and then look 
+with another client and maybe you say second
+
+0:03:18.400,0:03:26.320
+in that case okay and with that other client 
+you'd look for the presence of that channel
+
+0:03:26.320,0:03:32.160
+if that doesn't happen right then the 
+replication of Channel creation is not
+
+0:03:32.160,0:03:39.560
+working okay so you can use these targeted client
+
+0:03:39.560,0:03:53.120
+objects for um functional testing of the expected 
+behavior of replicating between the different
+
+0:03:53.120,0:04:04.400
+servers and uh let me show you just 
+one other thing connected to that story
+
+0:04:04.400,0:04:14.480
+which is that um when we do set up these 
+different hosts yes uh it may be useful to
+
+0:04:14.480,0:04:26.640
+see a detail of how it does it so during 
+test setup it iterates through the hosts
+
+0:04:26.640,0:04:32.880
+and calls create server yes and this 
+third arent to create server is a
+
+0:04:32.880,0:04:42.160
+number okay go backward here I actually had 
+exactly a problem with this the server DB
+
+0:04:42.160,0:04:51.200
+that it was telling me I I don't have a 
+server DB please go ahead so um we have
+
+0:04:51.200,0:04:59.800
+this integer starts the first time we 
+hit here it starts at one and then when
+
+0:04:59.800,0:05:06.600
+we create that server on server DB 
+number one it should call through to
+
+0:05:06.600,0:05:09.920
+here
+
+0:05:09.920,0:05:17.920
+and that red sdb number is used
+
+0:05:17.920,0:05:30.920
+here and the way that works is by passing 
+that um database number into the redest
+
+0:05:30.920,0:05:42.000
+options I I did not understand why the 
+database is a number and what are the
+
+0:05:42.000,0:05:53.240
+implications if I need to know uh otherwise 
+um it's it's pretty simple um the you're
+
+0:05:53.240,0:05:59.640
+familiar with like a traditional database 
+you install postgress or you install my SQ
+
+0:06:00.840,0:06:09.120
+and you say create database project one yeah and 
+then create table one 2 three you got three tables
+
+0:06:09.120,0:06:19.720
+in your database switch databases project two 
+show tables no tables create table 3 four five
+
+0:06:19.720,0:06:31.800
+hey now you have um tables in each database the 
+database number in Rus is just the same idea it's
+
+0:06:31.800,0:06:41.000
+just that there are different database numbers and 
+not database names okay so database zero is the
+
+0:06:41.000,0:06:50.400
+default but as you can see in the code that we've 
+been reviewing um in the test environment it sets
+
+0:06:50.400,0:07:00.880
+database 1 two and three for Server first second 
+and third and there is no d B zero in the test
+
+0:07:00.880,0:07:12.400
+environment okay so basically new this number 
+go straight to reddish which uses number instead
+
+0:07:12.400,0:07:21.520
+of names for creating a database under the dbms 
+which is you know the redish stuff I get it yeah
+
+0:07:21.520,0:07:32.280
+yeah and to demonstrate that uh let me switch uh 
+uh sorry you get a blank screen there let me fix
+
+0:07:32.280,0:07:45.840
+that has it been sharing my screen yes I can see 
+your screen I see now your terminal couple of
+
+0:07:45.840,0:07:56.560
+terminals sorry um like have you been seeing the 
+code yes so far yes okay you have been seeing the
+
+0:07:56.560,0:08:06.600
+code good all right so what I need to do is make 
+sure this is always on the visible workspace and
+
+0:08:06.600,0:08:16.920
+then take my code and put it the other screen 
+okay so this terminal is what I wanted to um
+
+0:08:16.920,0:08:29.440
+have on screen for you all right so I what I was 
+trying to do is show you oh yes um if we run tests
+
+0:08:32.240,0:08:40.480
+normally it just runs the tests and you can see 
+hey it did a reset of redus and you know all
+
+0:08:40.480,0:08:45.800
+the log messages and we covered this the other 
+day but I figured it's good for the recording
+
+0:08:45.800,0:08:55.080
+you can say redus monitor equals one with the 
+running the tests yeah mpnt is your shortcut to
+
+0:08:55.080,0:09:05.160
+run the test correct and now you can see the 
+logging that says the client on this port is
+
+0:09:05.160,0:09:11.560
+talking to our reddest number three and it's 
+running this command get from a hash called
+
+0:09:11.560,0:09:22.920
+channels uh the key off hey it didn't see it 
+now it's setting a hash name channels key off
+
+0:09:22.920,0:09:33.320
+value one okay hey now it's adding something 
+to the Stream called app channels one and it
+
+0:09:33.320,0:09:41.680
+looks like the data is a string called first 
+event in this Channel with a type of Channel
+
+0:09:41.680,0:09:49.080
+Genesis so what we're seeing is the low-level 
+rdus commands that are involved in each of these
+
+0:09:49.080,0:10:00.080
+test scenarios okay and then I'll show you 
+one other thing um let's go to the messages
+
+0:10:00.080,0:10:17.280
+test and we can use the FIP or fit Alias or we can 
+type it. only but I like just adding an F the f
+
+0:10:17.280,0:10:29.320
+is a shortcut for focus focus on one test and now 
+when we run the tests uh for what was it messages
+
+0:10:32.640,0:10:41.600
+it'll still dump all the redus information but now 
+it's just focusing on one test and no matter how
+
+0:10:41.600,0:10:50.960
+far we scroll back we know that it's just one 
+test worth of um stuff oops let me just rerun
+
+0:10:50.960,0:11:01.440
+that there's one test and we can see 
+the entire transcript of the whole
+
+0:11:01.440,0:11:11.440
+test okay if we want to rerun it we press R to 
+rerun it with VI test and now we have another
+
+0:11:11.440,0:11:29.240
+transcript of that whole test so you see exactly 
+and only what this test is doing right exactly
+
+0:11:37.440,0:11:43.120
+are you getting uh music yes a little bit of
+
+0:11:43.120,0:11:59.240
+rock but it's quiet yes it's it's good uh for uh 
+concentrating on your words with a little bit of
+
+0:11:59.880,0:12:06.120
+yeah it's it's quite good yeah okay 
+so now basically when I create yeah
+
+0:12:06.120,0:12:12.920
+this this habit of focusing on one 
+test at a time is super powerful and
+
+0:12:12.920,0:12:19.200
+then when we're done with one test 
+we can switch the focus to another
+
+0:12:19.200,0:12:29.160
+test or we can tell it run the 
+whole thing by removing all the fs
+
+0:12:31.400,0:12:39.480
+um three skipped I'm just going 
+to I'm just going to press R to
+
+0:12:39.480,0:12:46.560
+tell it to rerun that's only running one 
+test I'm searching for fit ah we already
+
+0:12:46.560,0:12:59.120
+had one fit removing that one fit now 
+it's running all the tests in this file
+
+0:13:02.200,0:13:11.240
+so you basically enclose uh any test 
+portion in a fit uh block and this
+
+0:13:11.240,0:13:20.320
+block only the first that contains 
+fit is executed no um so tell me
+
+0:13:20.320,0:13:29.160
+how it works please you're close 
+you're close um the main the main
+
+0:13:29.160,0:13:38.400
+main uh accuracy problem in your 
+statement is the idea of a block um
+
+0:13:38.400,0:13:53.760
+it specifies a unit test this unit test asserts 
+that the client will not post messages or or the
+
+0:13:53.760,0:14:02.040
+the server will not allow messages to be posted 
+to a non-existent channel this logic is that whole
+
+0:14:02.040,0:14:11.600
+test so that's the main problem with what 
+you said when we focus on this test it runs
+
+0:14:11.600,0:14:22.480
+that test the smaller problem with what you 
+said is watch this if I focus on two tests it
+
+0:14:22.480,0:14:30.120
+runs two tests so it does not run the first 
+test that you focus on it runs all the focus
+
+0:14:30.120,0:14:44.280
+tests sense so let me try to summarize it is um 
+provided by v test and allows you to run a single
+
+0:14:44.280,0:14:56.640
+unit test but by um changing it uh adding the 
+fit that means you focus only on um uh one it
+
+0:14:56.640,0:15:10.400
+and it's the first uh unit test that you encounter 
+along the execution no it defines a unit test does
+
+0:15:10.400,0:15:24.720
+not run a unit test it defines a unit test fit 
+says run this test and Running Fit twice runs two
+
+0:15:24.720,0:15:31.120
+tests if we say fit four times it runs four
+
+0:15:31.120,0:15:39.480
+tests okay then I don't understand 
+the difference I don't understand the
+
+0:15:39.480,0:15:48.080
+differ does it makes sense now h no 
+what is the difference between fit and
+
+0:15:48.080,0:15:59.160
+it it is it. only it
+
+0:15:59.160,0:16:07.400
+only says only run this test but what it 
+actually does is it filters out any other
+
+0:16:07.400,0:16:24.400
+tests fit enables this test and disables 
+any other tests that don't have it okay
+
+0:16:24.400,0:16:29.200
+or they don't have fit so let's 
+look at the code that we have
+
+0:16:29.200,0:16:38.480
+if I if at line uh okay let's just stop here 
+at line 21 I have e dot only and also at line
+
+0:16:38.480,0:16:48.960
+35 I have it dot only or fit now if the test 
+at line 21 is executed then the other test
+
+0:16:48.960,0:16:58.840
+at line 35 is skied is that correct no okay 
+do you see the screen you see the terminal
+
+0:16:59.400,0:17:11.960
+yeah I do yes two tests did run two tests were 
+skipped two tests pass two tests skipped two tests
+
+0:17:11.960,0:17:23.280
+focused two tests executed yes two 
+tests skipped okay every test you
+
+0:17:23.280,0:17:28.840
+mark with a fit is executed any 
+test you do not Mark with a fit
+
+0:17:30.160,0:17:39.920
+is skipped now it's clear unless you remove all 
+the fits and then it executes all the uh and then
+
+0:17:39.920,0:17:50.560
+it runs all the tests that's clear now thank you 
+yeah I phrasing is confusing yeah I don't I I did
+
+0:17:50.560,0:17:59.720
+not understand is only uh the the meaning on 
+of only apply to it but now I understand how
+
+0:17:59.720,0:18:08.720
+it works it's it's genuinely confusing the word 
+doesn't the word doesn't mean what you think it
+
+0:18:08.720,0:18:17.560
+means okay if you understand
+
+0:18:17.560,0:18:29.840
+English like this Behavior says only do this 
+what does it mean to say this like yeah exactly
+
+0:18:29.840,0:18:46.320
+no but yeah runs runs them both you can um you 
+can do like describe dot only but I don't find it
+
+0:18:46.320,0:18:50.840
+useful This would run two
+
+0:18:50.840,0:18:59.200
+tests Maybe I'm
+
+0:18:59.200,0:19:08.480
+Wrong yeah I I know how it works in this 
+specific case that's enough yeah fair
+
+0:19:08.480,0:19:14.040
+enough yeah let's not worry about describe 
+that only um yeah fit fit is my friend I I
+
+0:19:14.040,0:19:19.120
+really I really get a lot of value out 
+of it um so that's why I wanted to show
+
+0:19:19.120,0:19:28.920
+you I was uh I was fighting this weekend with some
+
+0:19:28.920,0:19:40.240
+these tests and um we saw a case of this 
+failure um here I believe it was in this
+
+0:19:40.240,0:19:49.440
+test yeah
+
+0:19:49.440,0:19:58.640
+and I was getting ready to 
+um change this test to um
+
+0:20:00.400,0:20:04.760
+not use client. poost message because this is high
+
+0:20:04.760,0:20:11.200
+level but instead to use a low
+
+0:20:11.200,0:20:17.520
+level um thing like
+
+0:20:17.520,0:20:30.960
+this something like that you 
+post and and send and expect
+
+0:20:30.960,0:20:39.720
+these okay and I wanted wanted 
+you to um sorry I wanted you to
+
+0:20:39.720,0:20:46.520
+see this change because it might be 
+important for your replication tests
+
+0:20:46.520,0:20:51.760
+to know the difference between the 
+highlevel client and the low-level
+
+0:20:51.760,0:21:01.720
+client um I need to step away for 
+just a minute um just don't worry
+
+0:21:01.720,0:21:09.800
+okay meanwhile you can go look very quickly 
+at something called Super Test um or super
+
+0:21:09.800,0:21:21.320
+agent okay so you're saying that there is in the
+
+0:21:21.320,0:21:28.520
+test setup something called super 
+test. agent something like this
+
+0:21:29.720,0:21:43.840
+but you mentioned super agent so it's a bit tricky 
+I see is super test in the test server and then uh
+
+0:21:43.840,0:21:58.840
+it's used uh in test server line 167 on my hand 
+to super test. agent of app and then the agent
+
+0:21:58.840,0:22:09.280
+it's then used there in uh in the message tests 
+to like I see looks like you are composing a
+
+0:22:09.280,0:22:18.920
+a a chain of calls uh on this I knew that 
+you would totally understand this mode of
+
+0:22:18.920,0:22:28.520
+interacting with it because it's very Java likee 
+right yeah to have this chain um chaining pattern
+
+0:22:29.160,0:22:41.360
+yeah the um the the super agent is it has a um 
+it has a fluent API but all it does is make HTTP
+
+0:22:41.360,0:22:52.800
+requests it's very simple in that regard um okay 
+so if I look there uh 133 it basically it posts
+
+0:22:52.800,0:23:01.400
+uh in that channel it's that channel executes 
+a post the the payload is MSG is what it sends
+
+0:23:01.400,0:23:10.160
+the 135 expect is the content type that expects 
+and the second expect I'm not sure but maybe in
+
+0:23:10.160,0:23:19.120
+case something goes wrong it expects a 404 cuz 
+44 typically is denied this this is a this is
+
+0:23:19.120,0:23:27.440
+a this is a wrong expectation for this test okay 
+you're right it it it's expecting a 404 because
+
+0:23:27.440,0:23:35.040
+the place I pasted from was wanting a 404 okay 
+so now the question uh one more question is can
+
+0:23:35.040,0:23:45.480
+you add an expect to say 4 0 so beyond expecting 
+a given text can you also expect uh like a return
+
+0:23:45.480,0:23:54.480
+code like okay for instance 200 that everything 
+was okay this this is valid sure okay cool yeah
+
+0:23:54.480,0:24:07.000
+that's this this is it's it's a um I said it just 
+makes HTTP calls but you can see that it also is
+
+0:24:07.000,0:24:18.680
+helping you write your test by expecting the um 
+you can add these assertions to that that call
+
+0:24:18.680,0:24:28.600
+so it's really nice um and it's lowlevel so the 
+the other the other thing about it being lowlevel
+
+0:24:28.600,0:24:36.920
+is that it doesn't do things that the dread client
+
+0:24:36.920,0:24:47.120
+does and I wanted to point you to one particular 
+thing that it doesn't do which is adding this
+
+0:24:47.120,0:25:02.800
+oci the sorry the ocid is a um generated we 
+have something that automatically generates
+
+0:25:02.800,0:25:10.360
+message identifiers on the client side OC is 
+original client so ocid is the original client
+
+0:25:10.360,0:25:19.120
+side ID for the message and it's generated 
+with this thing automatically by The Dread
+
+0:25:19.120,0:25:33.800
+client and um that's not going 
+to happen in in the um lowlevel
+
+0:25:33.800,0:25:42.120
+post that this agent is doing so probably 
+what we need in this test is to say send a
+
+0:25:42.120,0:25:58.240
+message uh with ocid is this and
+
+0:26:02.280,0:26:03.040
+then
+
+0:26:03.040,0:26:11.280
+here include a different
+
+0:26:11.280,0:26:29.320
+ocid this might work this is the only addition I 
+should um perform to to have to to do a correct
+
+0:26:29.320,0:26:45.000
+call uh that's my hope we may we may need 
+to verify um exactly what the server is
+
+0:26:45.000,0:26:55.280
+receiving and so I might say loging equals 
+one rdus monitor equals one run the one test
+
+0:26:55.280,0:27:04.320
+and let's see if we get some useful output from 
+the server this is the dread server responding
+
+0:27:04.320,0:27:15.640
+to an HTTP request looks like it created 
+a channel but I'm looking for an HTTP um
+
+0:27:15.640,0:27:28.160
+log can can you search in in here with contrl f
+
+0:27:29.200,0:27:31.240
+uh here's what I was looking for
+
+0:27:31.240,0:27:58.120
+okay it might be more practical to 
+turn off the redus monitor use logging
+
+0:28:01.040,0:28:10.560
+and then be able to see without all the 
+reddis events um what HTTP calls the server is
+
+0:28:10.560,0:28:24.600
+getting here we're seeing some 
+um Json logs M we can format
+
+0:28:24.600,0:28:34.560
+those oops we can format those 
+by piping through um npm you know
+
+0:28:34.560,0:28:45.360
+pretty and now those same things that were Json
+
+0:28:45.360,0:28:51.280
+are now looking like this 
+yep it's a little bit more
+
+0:28:51.280,0:29:05.680
+useful I did not know P pretty um can I can I ask 
+you to search for the um original Channel ID that
+
+0:29:05.680,0:29:15.720
+you uh set in your code when you performed the P 
+this is right here that's this okay and you you
+
+0:29:15.720,0:29:28.040
+don't see can you scroll up a little bit okay stop 
+I I don't see the the channel ID logged anywhere
+
+0:29:29.800,0:29:35.000
+sorry the original Channel this 
+line this line here is the first
+
+0:29:35.000,0:29:41.160
+um you aren't seeing the channel creation but I'm
+
+0:29:41.160,0:29:49.760
+I'm betting it's here uh Channel created 
+News Channel created off Channel created
+
+0:29:49.760,0:29:58.040
+discussion uh
+
+0:29:59.560,0:30:17.480
+okay Channel created keep
+
+0:30:17.480,0:30:27.560
+going I wonder this this may be actually not the 
+posting of a message this may be the creation of
+
+0:30:27.560,0:30:40.080
+the channel chel so this this looks like it is the 
+creation of a channel and it succeeds okay yes and
+
+0:30:40.080,0:30:49.600
+then um this is the first place where I see the 
+oad just toward the the bottom you see I see a ooc
+
+0:30:49.600,0:30:57.920
+a post message hello word keep consuming please 
+greeting and oid MF that that's the first one
+
+0:30:58.440,0:31:04.920
+I I I I wanted to know um if when I 
+I do that type of um chained message
+
+0:31:04.920,0:31:14.400
+send and receive I can see the oid in 
+uh this um um output yeah if you have
+
+0:31:14.400,0:31:27.920
+logging enabled it should um show that to you 
+that's fine I I I think I will have no problem
+
+0:31:29.160,0:31:34.800
+it's I'd like to finish showing you the 
+transcript of of what's Happening Here
+
+0:31:34.800,0:31:46.120
+with with my commentary because the log doesn't 
+say what the semantics are um it tells you what
+
+0:31:46.120,0:31:54.160
+happens but it doesn't tell you how to understand 
+it so this line says we finished the post for
+
+0:31:54.160,0:32:08.440
+creating the channel this says we are um either 
+posting to a channel called oh this says we are
+
+0:32:08.440,0:32:20.880
+posting a request to listen this is a subscription 
+and the request is listen on these three channels
+
+0:32:20.880,0:32:27.240
+and what you'll what you'll notice is that there's 
+no response this is a response log that says we
+
+0:32:27.240,0:32:33.320
+finished that request this is a request log 
+saying we started this request and there's no
+
+0:32:33.320,0:32:43.480
+response I I see the the right arrow and the 
+left Arrow the the the left Arrow says this is
+
+0:32:43.480,0:32:52.280
+a response the right AR means this is a request 
+yeah yeah what what the implication here is that
+
+0:32:52.280,0:33:01.520
+the listen request starts and continues it'll 
+finish later yeah I totally see that it's a
+
+0:33:01.520,0:33:09.120
+synchronous so that's yeah this is our this is 
+our message real time message Channel then it
+
+0:33:09.120,0:33:16.040
+goes on to post um a message to this channel 
+keep going and like you pointed out there it
+
+0:33:16.040,0:33:27.760
+is it's got an oid it's got a Json string having 
+the content of the message the request succeeds
+
+0:33:31.600,0:33:40.080
+hey here's another one here is uh so the 
+first one had oci ID that was generated the
+
+0:33:40.080,0:33:48.640
+second one has an oci ID that we made 
+perfect there's the O ID that we made
+
+0:33:48.640,0:33:55.640
+now we have a confirmation that the thing 
+the client does and the thing that we did
+
+0:33:55.640,0:34:03.560
+manually with super test super agent they're 
+the same format of request that's a good
+
+0:34:03.560,0:34:12.760
+sign and there's the completion 
+of the event hey look at
+
+0:34:12.760,0:34:29.200
+this this log is telling us that the listen 
+request that we started and did not finish up
+
+0:34:29.200,0:34:41.280
+here has recognized the presence 
+of an event either this one or that
+
+0:34:41.280,0:34:57.640
+one and it has notified the client 
+that's listening that there is that event
+
+0:34:58.440,0:35:07.040
+and I believe this is our client side log saying
+
+0:35:07.040,0:35:13.160
+hey the server told us about this 
+new event there's the ooc ID so
+
+0:35:13.160,0:35:27.640
+we can see exactly which source event 
+triggered this client side notification
+
+0:35:29.840,0:35:34.080
+here's yet another event the server received
+
+0:35:34.080,0:35:42.480
+it this is the second lowlevel 
+event that we posted uh here 42
+
+0:35:42.480,0:35:51.320
+4321 42 4321 received by the server server post
+
+0:35:51.320,0:35:57.720
+message it finished that request successfully
+
+0:35:57.720,0:36:07.520
+y hey here's the client saying 
+hey there's 42 4321 I received
+
+0:36:07.520,0:36:14.000
+it this is a very good sign I'm 
+I'm really liking what I'm seeing
+
+0:36:14.000,0:36:26.840
+here um and skipping past some of these info 
+messages about State machines in The Connection
+
+0:36:26.840,0:36:38.080
+Manager um we come to another error or we come 
+to an error and um I'm trying to set it up so
+
+0:36:38.080,0:36:46.280
+that this does not happen yeah I don't I 
+don't want to spend your recording time
+
+0:36:46.280,0:36:57.720
+getting into all the details about this um 
+so I just want to to draw a line here in our
+
+0:36:57.720,0:37:07.360
+in our recording to say you can now 
+see a sequence of messages being
+
+0:37:07.360,0:37:18.440
+posted on the server side a sequence that 
+includes the notifications to a listening
+
+0:37:18.440,0:37:27.600
+client and not just one notification 
+but multiple notifications and if we
+
+0:37:27.600,0:37:41.360
+skip past um these errors that we're not being 
+distracted by yeah look post SL channel list
+
+0:37:41.360,0:37:52.720
+it's now complete the request has finished 
+I see I think this request finished because
+
+0:37:52.720,0:38:04.600
+the client um disconnected at the end of the 
+test the um o sorry at the end of the test
+
+0:38:04.600,0:38:13.640
+there's a tear down uh that's not obvious 
+but there is a tear down that says after
+
+0:38:13.640,0:38:27.440
+after everything runs clean things up and I 
+think this is what triggers that disconnect
+
+0:38:29.160,0:38:42.160
+thus the server side logs the result of that 
+request that was long running uh long 787
+
+0:38:42.160,0:38:47.720
+milliseconds not a 20 millisecond
+
+0:38:47.720,0:38:52.480
+request does that make
+
+0:38:52.480,0:38:59.440
+sense it it it does I think I have a
+
+0:38:59.440,0:39:09.840
+feeling why that happened uh but yeah we don't 
+care for the moment it's just a tear down problem
+
+0:39:09.840,0:39:18.560
+I guess and uh I think you're talking about the 
+errors yeah yeah I think I do understand how
+
+0:39:18.560,0:39:27.560
+um the the sequence of sending receiving can be 
+observed in logs so basically I will be able to
+
+0:39:27.560,0:39:35.360
+uh perform tests formulate hypothesis on how 
+a message should be sent and received and of
+
+0:39:35.360,0:39:41.080
+course if I find some um tear down error 
+either I'll ignore it or I'll I'll find
+
+0:39:41.080,0:39:48.600
+a graceful way to uh you know handle the 
+the closeup um uh maybe waiting sometime
+
+0:39:48.600,0:39:57.320
+until it's closed so I I think uh I 
+I understand how to use the log to uh
+
+0:39:59.200,0:40:07.520
+confirm like the the theory behind the tests 
+good excellent that that's the that's the
+
+0:40:07.520,0:40:15.920
+main point um and you're right you're right 
+that these um that these errors are just tear
+
+0:40:15.920,0:40:26.320
+down problems um I want to fix them but um 
+fundamentally they're just they're just um
+
+0:40:26.320,0:40:37.080
+clean up sequence quencing problems let me ask 
+you one last thing um in um in the duplication
+
+0:40:37.080,0:40:51.920
+test we will have two servers uh each one with uh 
+um a a proper uh client that does the replication
+
+0:40:51.920,0:41:02.960
+now when I see all the messages logged here uh 
+are these messages uh just all the messages sent
+
+0:41:02.960,0:41:12.560
+on radish or that's yeah because if I look at 
+radish output I probably see all the messages
+
+0:41:12.560,0:41:20.960
+that are passing through Ries and I'm not sure 
+if these logs are specific for one server or
+
+0:41:20.960,0:41:28.040
+are for everything iess I guess it's for one 
+server just well you your guess is sensible
+
+0:41:28.040,0:41:37.640
+it's the same guess I made and it's wrong um what 
+we see here is that redis has received a command
+
+0:41:37.640,0:41:49.720
+select one and then another command info Etc and 
+these are these are all on server one server the
+
+0:41:49.720,0:41:59.440
+the redus database number one okay and then and 
+then what happens is is when there's a second
+
+0:41:59.440,0:42:11.000
+client reddis database number two 
+now I see receives these things so
+
+0:42:11.000,0:42:20.800
+the the redis monitor output shows all 
+commands received by the reddis server
+
+0:42:20.800,0:42:27.120
+okay it Flags each one with the 
+database number that's involved
+
+0:42:28.280,0:42:36.520
+and now uh one more thing about the logging so 
+now we are running the test we just logging but
+
+0:42:36.520,0:42:43.160
+when you say logging basically this information is 
+transferred to redis which is the one printing out
+
+0:42:43.160,0:42:55.800
+all these logs is that correct uh no it's um 
+again a good guess but um it's it's not quite
+
+0:42:55.800,0:43:09.400
+accurate let me tell you two things number one 
+loging equals 1 is um it's a signal to the dread
+
+0:43:09.400,0:43:19.040
+server code okay redus monitor is a signal to the 
+testing code and I'll show you how that works Rus
+
+0:43:19.040,0:43:30.400
+monitor says if that environment variable is 
+set it makes a new redus connection you can
+
+0:43:30.400,0:43:37.680
+see it's connecting to database 9 which is um 
+just to make it separate from everything else
+
+0:43:37.680,0:43:44.560
+yeah and then um it tells you if there's 
+no monitor it tells you hey if you want to
+
+0:43:44.560,0:43:53.600
+monitor do this and then the other thing it 
+does is when um when it starts up the tests
+
+0:43:53.600,0:44:04.680
+before all the tests run one time it says 
+monitor when there's an event from redis
+
+0:44:04.680,0:44:18.880
+um do the logging this this incantation right 
+here is triggering the reddis command called
+
+0:44:18.880,0:44:27.040
+monitor so if you search for reddis 
+monitor you see exactly how that works
+
+0:44:29.640,0:44:36.880
+yep I'm searching uh and there it 
+is it's a debugging command that
+
+0:44:36.880,0:44:39.440
+streams back every command processed by the redus
+
+0:44:39.440,0:44:49.600
+server perfect so you say Monitor and 
+it starts telling you all the commands
+
+0:44:49.600,0:45:00.080
+that it got um I'll show you one other thing 
+which is that monitor is not cheap it degrades
+
+0:45:00.080,0:45:07.720
+performance by 40% whoa yeah of course it's so 
+fast in sending just message that if you start
+
+0:45:07.720,0:45:15.680
+writing out all of the [ __ ] yeah I get it 
+yeah yeah and um I should tell you one other
+
+0:45:15.680,0:45:22.280
+thing I'm just trying to remember what it is
+
+0:45:22.280,0:45:26.960
+um so you have the reddest monitor
+
+0:45:28.000,0:45:39.600
+it it shows what's going on um in terms 
+of commands that are sent to the reddest
+
+0:45:39.600,0:45:50.560
+server the thing that's that you 
+will not see um even though you
+
+0:45:50.560,0:46:01.640
+would expect it or you would hope for 
+it is um um when a message is added to
+
+0:46:01.640,0:46:10.960
+a channel this is a redis streams data 
+structure using the Reds X add command
+
+0:46:10.960,0:46:18.640
+it's adding a message to this channel 
+name to this reddis stream name it's
+
+0:46:18.640,0:46:31.360
+adding that message that has these details 
+and what's surprising about the monitor is
+
+0:46:31.360,0:46:39.880
+it shows the message being added but it does 
+not show anyone being notified even though
+
+0:46:39.880,0:46:47.840
+it notifies people so we saw in the log 
+that there is a notification that arrives
+
+0:46:47.840,0:46:57.000
+on the server H sorry on the client the guy 
+who's listening receives the event there it
+
+0:46:57.000,0:47:07.560
+is it's being logged by um logged by the 
+client object and you don't see anything
+
+0:47:07.560,0:47:15.920
+in the redus monitor that says we're 
+notifying somebody the redus monitor
+
+0:47:15.920,0:47:27.120
+only shows input commands to Reds I get it 
+that's why we need the logging to show what
+
+0:47:27.120,0:47:36.080
+the participants are actually getting yeah 
+exactly and um if we if we go back here to that
+
+0:47:36.080,0:47:50.440
+listen command I'll do a search for listen uh post 
+listen um probably we'll see a rdus command that
+
+0:47:50.440,0:48:03.640
+says um that shows how listening is done 
+and what it's saying is it makes X group
+
+0:48:03.640,0:48:15.720
+create which is um um consumer group okay if 
+you've ever used Kafka this consumer group
+
+0:48:15.720,0:48:24.480
+ID it's this very same idea it makes the 
+consumer group and then it looks like it
+
+0:48:24.480,0:48:29.480
+is deleting that consumer group right 
+away which I don't think is right but
+
+0:48:29.480,0:48:41.280
+um uh interesting we we don't see the 
+notification but we see the commands that are used
+
+0:48:41.280,0:48:48.240
+um oh it this is the destroy this is just deleting
+
+0:48:48.240,0:48:57.200
+a consumer so these are the 
+commands relating to a listen
+
+0:48:57.200,0:49:07.320
+on that um this is for the channel channels 
+stream okay we keep going down stop stop stop
+
+0:49:07.320,0:49:15.160
+for a second please here I want to ask you a 
+quick question so if we look at your um sorry at
+
+0:49:15.160,0:49:25.360
+your console we see a first message sent and then 
+in in response red is uh uh basically creates a
+
+0:49:25.360,0:49:34.240
+group then deletes a consumer and then send some 
+information to the groups without that consumer
+
+0:49:34.240,0:49:41.400
+and then it destroys that X group that I guess was 
+created just for uh the specific purpose does this
+
+0:49:41.400,0:49:48.640
+make sense I don't know all the details um these 
+are handled by a library sometimes I look at that
+
+0:49:48.640,0:49:57.400
+library and I learn all the details again but um 
+the the short version of all this is in order to
+
+0:49:57.400,0:50:11.520
+listen freshly to the Channel's stream 
+it does this stuff and um then this is
+
+0:50:11.520,0:50:26.920
+the really interesting one it says read up to 10 
+messages from that stream okay this is the real
+
+0:50:26.920,0:50:34.200
+thing all this other stuff is just set up okay 
+I I think this says read the events from the
+
+0:50:34.200,0:50:46.440
+stream I think complete I I think I have really 
+enough information to to handle the understanding
+
+0:50:46.440,0:50:52.680
+writing and understanding both what happens 
+on redish and especially what happens from
+
+0:50:52.680,0:51:01.200
+the the participants server and client got it 
+yeah yeah yeah um doesn't do any any better
+
+0:51:01.200,0:51:10.240
+if I understand better red is now it's more 
+about using it but so just to just to come
+
+0:51:10.240,0:51:18.280
+back to the point that I was making here we see 
+what the commands are their Center redus and we
+
+0:51:18.280,0:51:28.000
+don't see the events that come back from that xre 
+command until we find that they've been notified
+
+0:51:28.000,0:51:41.040
+somewhere okay yes so I would stop the recording 
+now I assume there is no more information

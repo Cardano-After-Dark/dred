@@ -929,13 +929,26 @@ export class DredServer {
                             // Add source information to avoid circular replication
                             message.sourceServer = message.sourceServer || host.serverId;
                             
-                            try {
-                                const producer = await this.mkChannelProducer(message.channel);
-                                await producer.add(message);
-                                this.log(`Replication: replicated message to channel ${message.channel}`);
-                            } catch (err) {
-                                this.warn(`Replication: Failed to replicate message to channel ${message.channel}: ${err}`);
-                            }
+                            // EXAMPLES: See src/redis/streams/test/heavy-load/channels.js and other test files for correct usage of produce()
+                            // Instead of producer.add(message), use channelConn.produce(tunnel, JSON.stringify(message), { type: message.type, ... })
+                            const tunnel = await this.mkChannelProducer(message.channel);
+                            
+                            // Create a simplified copy of the message to avoid circular references
+                            const messageCopy = {
+                                msg: message.msg,
+                                type: message.type,
+                                ocid: message.ocid,
+                                channel: message.channel,
+                                sourceServer: message.sourceServer
+                                // Add any other necessary properties, but avoid objects that might contain circular references
+                            };
+                            
+                            await this.channelConn.produce(
+                                tunnel,
+                                JSON.stringify(messageCopy),
+                                { type: message.type, sourceServer: message.sourceServer }
+                            );
+                            this.log(`Replication: replicated message to channel ${message.channel}`);
                         }
                     }
                 });
