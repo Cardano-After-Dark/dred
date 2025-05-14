@@ -1,0 +1,582 @@
+Found '/Users/psuzzi/projects/cad/dred/.nvmrc' with version <20>
+Now using node v20.19.1 (npm v10.8.2)
+
+  ✓ Docker container dred_redis is running
+
+{ __dirname: '/Users/psuzzi/projects/cad/dred' }
+
+ RUN  v3.1.2 /Users/psuzzi/projects/cad/dred
+
+zonedLogger: default log levels: {"1":"info","defaultLevel":"warn"}
+{"level":40,"time":1747179664909,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"default=info at     at zonedLogger (file:///Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+utils@0.8.2/node_modules/@poshplum/utils/src/zonedLogger.js:744:20)\n    at /Users/psuzzi/projects/cad/dred/src/server/testServer.ts:56:18\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at VitestExecutor.runModule (file:///Users/psuzzi/projects/cad/dred/node_modules/.pnpm/vite-node@3.1.2_@types+node@18.19.87_jiti@2.4.2_lightningcss@1.29.2/node_modules/vite-node/dist/client.mjs:354:3)\n    at VitestExecutor.directRequest (file:///Users/psuzzi/projects/cad/dred/node_modules/.pnpm/vite-node@3.1.2_@types+node@18.19.87_jiti@2.4.2_lightningcss@1.29.2/node_modules/vite-node/dist/client.mjs:333:3)\n    at VitestExecutor.cachedRequest (file:///Users/psuzzi/projects/cad/dred/node_modules/.pnpm/vite-node@3.1.2_@types+node@18.19.87_jiti@2.4.2_lightningcss@1.29.2/node_modules/vite-node/dist/client.mjs:168:11)\n    at VitestExecutor.dependencyRequest (file:///Users/psuzzi/projects/cad/dred/node_modules/.pnpm/vite-node@3.1.2_@types+node@18.19.87_jiti@2.4.2_lightningcss@1.29.2/node_modules/vite-node/dist/client.mjs:216:10)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/server/__tests__/messages.test.ts
+NOTE: to enable granular monitoring of redis activity, set REDIS_MONITOR=1
+
+stdout | src/server/__tests__/messages.test.ts
+isColorSupported true
+
+{"level":40,"time":1747179664913,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"dred‹first›=info by (env LOGGING=1)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":30,"time":1747179664913,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"+server 'first' {\"localDevHosts\":[{\"serverId\":\"first\",\"address\":\"localhost\",\"port\":\"53032\",\"insecure\":true},{\"serverId\":\"second\",\"address\":\"localhost\",\"port\":\"53033\",\"insecure\":true},{\"serverId\":\"third\",\"address\":\"localhost\",\"port\":\"53034\",\"insecure\":true}]} null 2","v":1}
+{"level":30,"time":1747179664914,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Setting up Redis connection: redis://localhost:6379, db: 1","v":1}
+{"level":30,"time":1747179664917,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Setting up message replication for server first","v":1}
+{"level":30,"time":1747179664929,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Found 2 other hosts for replication","v":1}
+{"level":40,"time":1747179664929,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹second-1›=info by (env LOGGING=1)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179664941,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179664941,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":30,"time":1747179664959,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Replication: setup for peer server second complete","v":1}
+{"level":40,"time":1747179664959,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹third-2›=info by (env LOGGING=1)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179664960,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179664960,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":30,"time":1747179664961,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Replication: setup for peer server third complete","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179664962,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747179664962,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747179664965,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179664965,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747179664966,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179664966,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+stderr | src/server/__tests__/messages.test.ts > channel messages
+fetch error; see debugger -  TypeError: fetch failed
+    at node:internal/deps/undici/undici:12625:11
+    at ZoneDelegate.invoke (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:359:26)
+    at Zone.run (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:147:43)
+    at /Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:863:34
+    at ZoneDelegate.invokeTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:389:31)
+    at Zone.runTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:174:43)
+    at drainMicroTaskQueue (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:569:35)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  cause: Error: connect ECONNREFUSED ::1:53033
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16) {
+    errno: -61,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '::1',
+    port: 53033
+  }
+}
+
+stdout | src/server/__tests__/messages.test.ts > channel messages
+cleanup:  localhost [second at localhost] connection failure
+
+stdout | src/server/__tests__/messages.test.ts > channel messages
+cleanup:  localhost [third at localhost] connection failure
+
+stderr | src/server/__tests__/messages.test.ts > channel messages
+fetch error; see debugger -  TypeError: fetch failed
+    at node:internal/deps/undici/undici:12625:11
+    at ZoneDelegate.invoke (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:359:26)
+    at Zone.run (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:147:43)
+    at /Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:863:34
+    at ZoneDelegate.invokeTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:389:31)
+    at Zone.runTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:174:43)
+    at drainMicroTaskQueue (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:569:35)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  cause: Error: connect ECONNREFUSED ::1:53034
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16) {
+    errno: -61,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '::1',
+    port: 53034
+  }
+}
+
+{"level":30,"time":1747179664976,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179664978,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179664980,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179664981,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179664983,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"server 'first' listening at localhost:53032","v":1}
+{"level":40,"time":1747179664983,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"dred‹second›=info by (env LOGGING=1)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":30,"time":1747179664983,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"+server 'second' {\"localDevHosts\":[{\"serverId\":\"first\",\"address\":\"localhost\",\"port\":\"53032\",\"insecure\":true},{\"serverId\":\"second\",\"address\":\"localhost\",\"port\":\"53033\",\"insecure\":true},{\"serverId\":\"third\",\"address\":\"localhost\",\"port\":\"53034\",\"insecure\":true}]} null 2","v":1}
+{"level":30,"time":1747179664983,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Setting up Redis connection: redis://localhost:6379, db: 2","v":1}
+{"level":30,"time":1747179664984,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Setting up message replication for server second","v":1}
+{"level":30,"time":1747179664985,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Found 2 other hosts for replication","v":1}
+{"level":40,"time":1747179664985,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹first-3›=info by (env LOGGING=1)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179664985,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179664986,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":30,"time":1747179664987,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Replication: setup for peer server first complete","v":1}
+{"level":40,"time":1747179664987,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹third-4›=info by (env LOGGING=1)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179664987,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179664988,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":30,"time":1747179664988,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Replication: setup for peer server third complete","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179664989,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747179664989,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747179664994,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179664994,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747179664994,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179664994,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages
+cleanup:  localhost [third at localhost] connection failure
+
+{"level":30,"time":1747179665003,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"-> POST /channels/listen","v":1}
+{"level":30,"time":1747179665010,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"listening for [{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"_chans\"},{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"_auth\"},{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"*\"}]","v":1}
+stderr | src/server/__tests__/messages.test.ts > channel messages
+fetch error; see debugger -  TypeError: fetch failed
+    at node:internal/deps/undici/undici:12625:11
+    at ZoneDelegate.invoke (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:359:26)
+    at Zone.run (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:147:43)
+    at /Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:863:34
+    at ZoneDelegate.invokeTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:389:31)
+    at Zone.runTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:174:43)
+    at drainMicroTaskQueue (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:569:35)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  cause: Error: connect ECONNREFUSED ::1:53034
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16) {
+    errno: -61,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '::1',
+    port: 53034
+  }
+}
+
+{"level":30,"time":1747179665018,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179665020,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179665022,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179665031,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179665033,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"server 'second' listening at localhost:53033","v":1}
+{"level":40,"time":1747179665033,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"dred‹third›=info by (env LOGGING=1)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":30,"time":1747179665034,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"+server 'third' {\"localDevHosts\":[{\"serverId\":\"first\",\"address\":\"localhost\",\"port\":\"53032\",\"insecure\":true},{\"serverId\":\"second\",\"address\":\"localhost\",\"port\":\"53033\",\"insecure\":true},{\"serverId\":\"third\",\"address\":\"localhost\",\"port\":\"53034\",\"insecure\":true}]} null 2","v":1}
+{"level":30,"time":1747179665034,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Setting up Redis connection: redis://localhost:6379, db: 3","v":1}
+{"level":30,"time":1747179665034,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Setting up message replication for server third","v":1}
+{"level":30,"time":1747179665035,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Found 2 other hosts for replication","v":1}
+{"level":40,"time":1747179665035,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹first-5›=info by (env LOGGING=1)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179665035,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179665036,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":30,"time":1747179665037,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Replication: setup for peer server first complete","v":1}
+{"level":40,"time":1747179665037,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹second-6›=info by (env LOGGING=1)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179665037,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179665037,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":30,"time":1747179665038,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Replication: setup for peer server second complete","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179665038,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747179665038,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747179665039,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179665039,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747179665040,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179665040,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747179665042,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"-> POST /channels/listen","v":1}
+{"level":30,"time":1747179665043,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"listening for [{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"_chans\"},{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"_auth\"},{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"*\"}]","v":1}
+{"level":30,"time":1747179665043,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"-> POST /channels/listen","v":1}
+{"level":30,"time":1747179665044,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"listening for [{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"_chans\"},{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"_auth\"},{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"*\"}]","v":1}
+{"level":30,"time":1747179665051,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179665052,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages
+warning from host first : {
+  channel: '*',
+  type: 'warning',
+  message: 'invalid or expired channel'
+}
+
+{"level":30,"time":1747179665054,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179665055,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179665057,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"server 'third' listening at localhost:53034","v":1}
+{"level":40,"time":1747179665058,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹first-7›=info by (env LOGGING=1)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179665058,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179665058,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179665059,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747179665061,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":40,"time":1747179665062,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages > does not post messages to a non-existing channel
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179665062,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages > does not post messages to a non-existing channel
+warning from host second : {
+  channel: '*',
+  type: 'warning',
+  message: 'invalid or expired channel'
+}
+
+stdout | src/server/__tests__/messages.test.ts > channel messages > does not post messages to a non-existing channel
+warning from host first : {
+  channel: '*',
+  type: 'warning',
+  message: 'invalid or expired channel'
+}
+
+{"level":30,"time":1747179672014,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"server: client <- heartbeat","v":1}
+{"level":30,"time":1747179672044,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"server: client <- heartbeat","v":1}
+{"level":30,"time":1747179672044,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"server: client <- heartbeat","v":1}
+{"level":50,"time":1747179675115,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Consume error: {}","v":1}
+{"level":50,"time":1747179675115,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"_chans consume error; TODO: reconnect/retry {\"error\":{}}","v":1}
+{"level":30,"time":1747179675116,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"<- 200 POST /channels/listen 10113ms","v":1}
+{"level":50,"time":1747179675116,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Consume error: {\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|_auth\"]}}","v":1}
+{"level":50,"time":1747179675116,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"_auth consume error; TODO: reconnect/retry {\"error\":{\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|_auth\"]}}}","v":1}
+{"level":30,"time":1747179675117,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"<- 200 POST /channels/listen 10074ms","v":1}
+{"level":50,"time":1747179675117,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Consume error: {\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|_chans\"]}}","v":1}
+{"level":50,"time":1747179675117,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"_chans consume error; TODO: reconnect/retry {\"error\":{\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|_chans\"]}}}","v":1}
+{"level":50,"time":1747179675118,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Consume error: {\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|_auth\"]}}","v":1}
+{"level":50,"time":1747179675118,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"_auth consume error; TODO: reconnect/retry {\"error\":{\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|_auth\"]}}}","v":1}
+{"level":30,"time":1747179675125,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Setting up Redis connection: redis://localhost:6379, db: 1","v":1}
+{"level":30,"time":1747179675139,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179675141,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179675143,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179675145,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179675145,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747179679045,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"server: client <- heartbeat","v":1}
+{"level":50,"time":1747179685169,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Consume error: {}","v":1}
+{"level":50,"time":1747179685169,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"_chans consume error; TODO: reconnect/retry {\"error\":{}}","v":1}
+{"level":30,"time":1747179685170,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"<- 200 POST /channels/listen 20128ms","v":1}
+{"level":50,"time":1747179685170,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Consume error: {\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|_auth\"]}}","v":1}
+{"level":50,"time":1747179685170,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"_auth consume error; TODO: reconnect/retry {\"error\":{\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|_auth\"]}}}","v":1}
+{"level":50,"time":1747179685171,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Consume error: {\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|*\"]}}","v":1}
+{"level":50,"time":1747179685171,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"* consume error; TODO: reconnect/retry {\"error\":{\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|*\"]}}}","v":1}
+{"level":30,"time":1747179685172,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Replication: received message on channel * from peer second","v":1}
+{"level":40,"time":1747179685173,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Replication: Failed to replicate message to channel *: TypeError: producer.add is not a function","v":1}
+{"level":30,"time":1747179685175,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Setting up Redis connection: redis://localhost:6379, db: 2","v":1}
+{"level":30,"time":1747179685183,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179685184,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179685186,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179685189,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179685189,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747179685191,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Setting up Redis connection: redis://localhost:6379, db: 3","v":1}
+{"level":30,"time":1747179685198,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179685199,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179685200,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179685202,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179685213,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"-> POST /channel/bogus/message","v":1}
+{"level":30,"time":1747179685213,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"postMessageInChannel bogus","v":1}
+{"level":30,"time":1747179685216,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"<- 404 POST /channel/bogus/message 3ms","v":1}
+{"level":30,"time":1747179685220,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: clean up clients","v":1}
+{"level":40,"time":1747179685220,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":30,"time":1747179685220,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"disconnected","context":["🗜️connection-manager @pendingSetup transition disconnected⦡ disconnected"],"summary":"connection-manager @pendingSetup  ➜ disconnected","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747179685376,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747179685376,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Setting up Redis connection: redis://localhost:6379, db: 1","v":1}
+{"level":30,"time":1747179685382,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179685384,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179685386,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179685387,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179685387,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747179685387,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747179685387,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179685388,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179685390,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179685390,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179685540,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747179685541,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Setting up Redis connection: redis://localhost:6379, db: 2","v":1}
+{"level":30,"time":1747179685547,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179685548,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179685550,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179685552,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179685552,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747179685552,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747179685553,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179685554,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179685555,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179685556,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179685704,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747179685707,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Setting up Redis connection: redis://localhost:6379, db: 3","v":1}
+{"level":30,"time":1747179685713,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179685715,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179685716,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179685717,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179685717,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747179685717,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747179685717,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747179685718,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179685718,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Setting up Redis connection: redis://localhost:6379, db: 1","v":1}
+{"level":30,"time":1747179685719,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179685720,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179685721,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179685724,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179685726,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179685727,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179685728,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179685728,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747179685729,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Setting up Redis connection: redis://localhost:6379, db: 2","v":1}
+{"level":30,"time":1747179685732,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179685734,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179685735,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179685736,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179685736,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747179685737,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Setting up Redis connection: redis://localhost:6379, db: 3","v":1}
+{"level":30,"time":1747179685741,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179685742,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179685744,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179685745,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179685746,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"-> POST /channel/fooChannel","v":1}
+{"level":30,"time":1747179685748,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated fooChannel {\"channelId\":\"fooChannel\",\"members\":[],\"requests\":[],\"approveJoins\":\"owner\",\"createdAt\":\"2025-05-13T23:41:25.747Z\"}","v":1}
+{"level":30,"time":1747179685749,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"<- 200 POST /channel/fooChannel 3ms","v":1}
+{"level":30,"time":1747179685751,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"-> POST /channel/fooChannel/message","v":1}
+{"level":30,"time":1747179685751,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"postMessageInChannel fooChannel","v":1}
+{"level":30,"time":1747179685752,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"server: postMessage {\"msg\":\"hiya\",\"ocid\":\"42-1234\",\"type\":\"greeting\",\"sourceServer\":\"first\"}","v":1}
+{"level":30,"time":1747179685752,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"<- 200 POST /channel/fooChannel/message 1ms","v":1}
+{"level":30,"time":1747179685754,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: clean up clients","v":1}
+{"level":30,"time":1747179685908,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747179685910,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Setting up Redis connection: redis://localhost:6379, db: 1","v":1}
+{"level":30,"time":1747179685915,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179685917,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179685918,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179685919,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179685919,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747179685919,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747179685920,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179685921,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179685921,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179685923,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179686074,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747179686075,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Setting up Redis connection: redis://localhost:6379, db: 2","v":1}
+{"level":30,"time":1747179686082,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179686083,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179686084,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179686085,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179686085,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747179686085,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747179686086,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179686087,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179686089,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179686090,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179686239,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747179686241,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Setting up Redis connection: redis://localhost:6379, db: 3","v":1}
+{"level":30,"time":1747179686251,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179686253,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179686254,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179686256,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179686256,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747179686256,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747179686257,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747179686257,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179686258,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Setting up Redis connection: redis://localhost:6379, db: 1","v":1}
+{"level":30,"time":1747179686259,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179686260,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179686262,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179686262,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179686264,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179686266,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179686267,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179686267,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747179686268,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Setting up Redis connection: redis://localhost:6379, db: 2","v":1}
+{"level":30,"time":1747179686272,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179686273,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179686274,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179686275,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179686275,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747179686277,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Setting up Redis connection: redis://localhost:6379, db: 3","v":1}
+{"level":30,"time":1747179686280,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179686281,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179686282,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179686283,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":40,"time":1747179686284,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹first-8›=info by (env LOGGING=1)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179686285,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179686285,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages > non-encrypted > subscriptions:  > notifies subscribers when messages are sent in a channel
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179686287,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747179686290,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages > non-encrypted > subscriptions:  > notifies subscribers when messages are sent in a channel
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179686291,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747179686292,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"-> POST /channel/foo","v":1}
+{"level":30,"time":1747179686293,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated foo {\"channelId\":\"foo\",\"encrypted\":false,\"members\":[],\"requests\":[],\"approveJoins\":\"owner\",\"createdAt\":\"2025-05-13T23:41:26.292Z\"}","v":1}
+{"level":30,"time":1747179686294,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"<- 200 POST /channel/foo 2ms","v":1}
+{"level":30,"time":1747179686299,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"-> POST /channels/listen","v":1}
+{"level":30,"time":1747179686299,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"listening for [{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"_chans\"},{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"_auth\"},{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"foo\"}]","v":1}
+{"level":30,"time":1747179686501,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"-> POST /channel/foo/message","v":1}
+{"level":30,"time":1747179686501,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"postMessageInChannel foo","v":1}
+{"level":30,"time":1747179686503,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"server: postMessage {\"msg\":\"{\\\"hello\\\":\\\"world\\\"}\",\"type\":\"greeting\",\"ocid\":\"21-aaaa\",\"sourceServer\":\"first\"}","v":1}
+{"level":30,"time":1747179686504,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"<- 200 POST /channel/foo/message 3ms","v":1}
+{"level":30,"time":1747179686505,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"\u001b[104m\u001b[30m\u001b[1m    <- ocid 21-aaaa in foo: \u001b[22m\u001b[39m\u001b[49m 17 bytes","v":1}
+{"level":30,"time":1747179686506,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"-> POST /channel/foo/message","v":1}
+{"level":30,"time":1747179686506,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"postMessageInChannel foo","v":1}
+{"level":30,"time":1747179686507,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"server: postMessage {\"msg\":\"{\\\"hello\\\":\\\"world\\\"}\",\"type\":\"greeting\",\"ocid\":\"21-bbbb\",\"sourceServer\":\"first\"}","v":1}
+{"level":30,"time":1747179686508,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"<- 200 POST /channel/foo/message 2ms","v":1}
+{"level":30,"time":1747179686508,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"\u001b[104m\u001b[30m\u001b[1m    <- ocid 21-bbbb in foo: \u001b[22m\u001b[39m\u001b[49m 17 bytes","v":1}
+{"level":30,"time":1747179686529,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: clean up clients","v":1}
+{"level":30,"time":1747179693301,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"server: client <- heartbeat","v":1}
+{"level":50,"time":1747179696329,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Consume error: {}","v":1}
+{"level":50,"time":1747179696329,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"_chans consume error; TODO: reconnect/retry {\"error\":{}}","v":1}
+{"level":30,"time":1747179696329,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"<- 200 POST /channels/listen 10030ms","v":1}
+{"level":50,"time":1747179696332,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Consume error: {}","v":1}
+{"level":50,"time":1747179696332,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"_auth consume error; TODO: reconnect/retry {\"error\":{}}","v":1}
+{"level":30,"time":1747179696333,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747179696333,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Setting up Redis connection: redis://localhost:6379, db: 1","v":1}
+{"level":30,"time":1747179696336,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179696337,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179696338,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179696338,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179696339,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747179696339,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747179696339,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179696340,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179696340,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179696341,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179696496,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747179696499,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Setting up Redis connection: redis://localhost:6379, db: 2","v":1}
+{"level":30,"time":1747179696507,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179696508,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179696508,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179696509,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179696509,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747179696509,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747179696510,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179696510,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179696511,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179696511,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179696667,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747179696668,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Setting up Redis connection: redis://localhost:6379, db: 3","v":1}
+{"level":30,"time":1747179696671,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179696672,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179696672,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179696673,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179696673,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747179696673,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747179696673,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747179696674,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179696674,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Setting up Redis connection: redis://localhost:6379, db: 1","v":1}
+{"level":30,"time":1747179696675,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179696676,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179696676,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179696677,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179696677,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179696678,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179696679,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179696679,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747179696680,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Setting up Redis connection: redis://localhost:6379, db: 2","v":1}
+{"level":30,"time":1747179696683,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179696684,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179696684,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179696685,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179696685,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747179696686,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Setting up Redis connection: redis://localhost:6379, db: 3","v":1}
+{"level":30,"time":1747179696689,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179696690,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179696691,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179696691,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":40,"time":1747179696692,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹first-9›=info by (env LOGGING=1)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179696692,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747179696692,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages > non-encrypted > subscriptions:  > continues consuming events from redis after a first batch
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179696694,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747179696696,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/server/__tests__/messages.test.ts > channel messages > non-encrypted > subscriptions:  > continues consuming events from redis after a first batch
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747179696697,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747179696698,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"-> POST /channel/keepgoing","v":1}
+{"level":30,"time":1747179696699,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated keepgoing {\"channelId\":\"keepgoing\",\"encrypted\":false,\"members\":[],\"requests\":[],\"approveJoins\":\"owner\",\"createdAt\":\"2025-05-13T23:41:36.699Z\"}","v":1}
+{"level":30,"time":1747179696700,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"<- 200 POST /channel/keepgoing 2ms","v":1}
+{"level":30,"time":1747179696703,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"-> POST /channels/listen","v":1}
+{"level":30,"time":1747179696703,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"listening for [{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"_chans\"},{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"_auth\"},{\"neighborhood\":\"cardano-after-dark\",\"channel\":\"keepgoing\"}]","v":1}
+{"level":30,"time":1747179696723,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"client-‹first-7›","context":[],"color":"\u001b[35m","msg":"posting message  {\"msg\":\"{\\\"hello\\\":\\\"world\\\",\\\"keepConsuming\\\":\\\"please\\\"}\",\"type\":\"greeting\"}","v":1}
+{"level":30,"time":1747179696725,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"-> POST /channel/keepgoing/message","v":1}
+{"level":30,"time":1747179696726,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"postMessageInChannel keepgoing","v":1}
+{"level":30,"time":1747179696726,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"server: postMessage {\"msg\":\"{\\\"hello\\\":\\\"world\\\",\\\"keepConsuming\\\":\\\"please\\\"}\",\"type\":\"greeting\",\"ocid\":\"0ekj7ye1byqb\",\"sourceServer\":\"first\"}","v":1}
+{"level":30,"time":1747179696727,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"<- 200 POST /channel/keepgoing/message 2ms","v":1}
+{"level":30,"time":1747179696728,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"\u001b[104m\u001b[30m\u001b[1m    <- ocid 0ekj7ye1byqb in keepgoing: \u001b[22m\u001b[39m\u001b[49m 42 bytes","v":1}
+{"level":30,"time":1747179696728,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"client-‹first-7›","context":[],"color":"\u001b[35m","msg":"chan msg {\"message\":\"msg received in chan\",\"mid\":\"1747179696726-0\",\"ocid\":\"0ekj7ye1byqb\",\"type\":\"greeting\",\"msg\":\"{\\\"hello\\\":\\\"world\\\",\\\"keepConsuming\\\":\\\"please\\\"}\",\"channel\":\"keepgoing\",\"details\":{\"sourceServer\":\"first\"},\"ts\":\"2025-05-13T23:41:36.728Z\"}","v":1}
+{"level":30,"time":1747179696750,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"-> POST /channel/keepgoing/message","v":1}
+{"level":30,"time":1747179696750,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"postMessageInChannel keepgoing","v":1}
+{"level":30,"time":1747179696751,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"server: postMessage {\"msg\":\"{\\\"hello\\\":\\\"world\\\",\\\"keepConsuming\\\":\\\"please\\\"}\",\"type\":\"greeting\",\"ocid\":\"42-4321\",\"sourceServer\":\"first\"}","v":1}
+{"level":30,"time":1747179696752,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"<- 200 POST /channel/keepgoing/message 2ms","v":1}
+{"level":30,"time":1747179696753,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"\u001b[104m\u001b[30m\u001b[1m    <- ocid 42-4321 in keepgoing: \u001b[22m\u001b[39m\u001b[49m 42 bytes","v":1}
+{"level":30,"time":1747179696753,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"client-‹first-7›","context":[],"color":"\u001b[35m","msg":"chan msg {\"message\":\"msg received in chan\",\"mid\":\"1747179696751-0\",\"ocid\":\"42-4321\",\"type\":\"greeting\",\"msg\":\"{\\\"hello\\\":\\\"world\\\",\\\"keepConsuming\\\":\\\"please\\\"}\",\"channel\":\"keepgoing\",\"details\":{\"sourceServer\":\"first\"},\"ts\":\"2025-05-13T23:41:36.753Z\"}","v":1}
+{"level":30,"time":1747179696774,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: clean up clients","v":1}
+{"level":50,"time":1747179696933,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Consume error: {}","v":1}
+{"level":50,"time":1747179696934,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"_chans consume error; TODO: reconnect/retry {\"error\":{}}","v":1}
+{"level":30,"time":1747179696934,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"<- 200 POST /channels/listen 231ms","v":1}
+{"level":30,"time":1747179696938,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747179696938,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Setting up Redis connection: redis://localhost:6379, db: 1","v":1}
+{"level":30,"time":1747179696942,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179696943,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179696945,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179696946,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179696946,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747179696946,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747179696947,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179696949,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179696950,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179696951,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179697100,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747179697103,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Setting up Redis connection: redis://localhost:6379, db: 2","v":1}
+{"level":30,"time":1747179697113,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179697116,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179697118,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179697120,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179697120,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747179697120,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747179697121,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179697122,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179697123,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179697125,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179697275,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747179697276,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Setting up Redis connection: redis://localhost:6379, db: 3","v":1}
+{"level":30,"time":1747179697290,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _chans {\"channelId\":\"_chans\"}","v":1}
+{"level":30,"time":1747179697291,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated _auth {\"channelId\":\"_auth\"}","v":1}
+{"level":30,"time":1747179697293,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated news {\"channelId\":\"news\"}","v":1}
+{"level":30,"time":1747179697294,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"channelCreated discussion {\"channelId\":\"discussion\"}","v":1}
+{"level":30,"time":1747179697294,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747179697294,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+ ✓ src/server/__tests__/messages.test.ts (4 tests) 32383ms
+   ✓ channel messages > does not post messages to a non-existing channel  20656ms
+   ✓ channel messages > non-encrypted > posts messages to an existing channel  539ms
+   ✓ channel messages > non-encrypted > subscriptions:  > notifies subscribers when messages are sent in a channel  10417ms
+   ✓ channel messages > non-encrypted > subscriptions:  > continues consuming events from redis after a first batch  621ms
+{"level":50,"time":1747179697298,"env":"test","pid":14758,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Produce error: Error: Connection is closed.\n    at close (/Users/psuzzi/projects/cad/dred/src/redis/streams/node_modules/ioredis/built/redis/event_handler.js:184:25)\n    at Socket.<anonymous> (/Users/psuzzi/projects/cad/dred/src/redis/streams/node_modules/ioredis/built/redis/event_handler.js:151:20)\n    at Object.onceWrapper (node:events:632:26)\n    at ZoneDelegate.invokeTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:389:31)\n    at Zone.runTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:174:43)\n    at ZoneTask.invokeTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:471:34)\n    at Socket.ZoneTask.invoke (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:460:48)\n    at Socket.emit (node:events:517:28)\n    at TCP.<anonymous> (node:net:350:12)","v":1}
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Can not produce in the tunnel: [object Object]
+ ❯ RedisChannels.produce src/redis/streams/channels.js:493:19
+    491|             this._log.error("Produce error:", error.stack || error.message || JSON.stringify(error));
+    492|             debugger
+    493|             throw new RedisChannelsError(
+       |                   ^
+    494|                 "Can not produce in the tunnel: " + tunnel,
+    495|                 error
+ ❯ processTicksAndRejections node:internal/process/task_queues:95:5
+ ❯ DredServer.doChannelSetup src/server/DredServer.ts:315:9
+ ❯ src/server/DredServer.ts:284:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { error: { stack: 'Error: Connection is closed.\n    at close (/Users/psuzzi/projects/cad/dred/src/redis/streams/node_modules/ioredis/built/redis/event_handler.js:184:25)\n    at Socket.<anonymous> (/Users/psuzzi/projects/cad/dred/src/redis/streams/node_modules/ioredis/built/redis/event_handler.js:151:20)\n    at Object.onceWrapper (node:events:632:26)\n    at ZoneDelegate.invokeTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:389:31)\n    at Zone.runTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:174:43)\n    at ZoneTask.invokeTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:471:34)\n    at Socket.ZoneTask.invoke (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:460:48)\n    at Socket.emit (node:events:517:28)\n    at TCP.<anonymous> (node:net:350:12)', message: 'Connection is closed.', constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } }
+This error originated in "src/server/__tests__/messages.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+     Errors  1 error
+   Start at  01:41:04
+   Duration  33.05s (transform 156ms, setup 0ms, collect 473ms, tests 32.38s, environment 0ms, prepare 43ms)
+
+ ELIFECYCLE  Test failed. See above for more details.
+~/projects/cad/dred feature/message-duplication *23 +2 ?2 >                                                                                                             35s

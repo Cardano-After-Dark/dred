@@ -926,12 +926,23 @@ export class DredServer {
                                 return;
                             }
                             
-                            // Add source information to avoid circular replication
-                            message.sourceServer = message.sourceServer || host.serverId;
-                            
                             try {
+                                // Get producer for the channel
                                 const producer = await this.mkChannelProducer(message.channel);
-                                await producer.add(message);
+                                
+                                // Extract message content and metadata
+                                const { msg, type, ocid, sourceServer, ...otherDetails } = message;
+                                
+                                // Ensure sourceServer is preserved to prevent circular replication
+                                const messageDetails = {
+                                    type: type,
+                                    ocid: ocid,
+                                    sourceServer: sourceServer || host.serverId,
+                                    ...otherDetails
+                                };
+                                
+                                // Use the correct channelConn.produce method to add the message to the local channel
+                                await this.channelConn.produce(producer, msg, messageDetails);
                                 this.log(`Replication: replicated message to channel ${message.channel}`);
                             } catch (err) {
                                 this.warn(`Replication: Failed to replicate message to channel ${message.channel}: ${err}`);

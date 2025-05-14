@@ -7,9 +7,16 @@ cd ~/cad/dred
 git co feature/message-duplication
 pnpm install
 pnpm build
-LOGGING=1 pnpm test src/redis/__tests__/RedisSet.test.ts
-LOGGING=1 pnpm test src/client/__tests__/client.test.ts # Failing
+LOGGING=1 pnpm test src/redis/__tests__/RedisSet.test.ts # Ok
+LOGGING=1 pnpm test src/client/__tests__/client.test.ts # Fail00
+LOGGING=1 pnpm test src/server/__tests__/messages.test.ts #Fail01
+LOGGING=1 pnpm test replication.test.ts # The actual test to verify   
 ```
+
+With the following:
+
+- fail00: replication/repl01-fail00.md
+- fail01: replication/repl01-fail01.md
 
 ## Scope
 
@@ -95,3 +102,7 @@ When we setup the redis db in tests, we set 1, 2, 3 for server first,s econd and
 
 - the current version seems different than the one in the recording 
 
+### Verify setup and discovery
+
+- during server inintialization, for each server, we can log which other servers are known via discovery
+- the setup should be super fast. If it takes more than 10 sec, something is wrong
