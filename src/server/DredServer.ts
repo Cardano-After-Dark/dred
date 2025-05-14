@@ -899,60 +899,72 @@ export class DredServer {
             this.log(`Found ${otherHosts.length} other hosts for replication`);
             
             // Create a client connection to each other server
-            otherHosts.forEach(host => {
-                const peerClient = this.mkClient(host.serverId);
-                
-                // Listen for all channel creations by subscribing to all channels
-                peerClient.subscribeToChannels({
-                    '*': async (message) => {
-                        // Check if this is a channel creation message
-                        if (message.type === "channel-genesis") {
-                            const channel = message.channel;
-                            this.log(`Replication: channel ${channel} created on peer ${host.serverId}`);
-                            // Ensure channel exists locally
+            for (const host of otherHosts) {
+                try {
+                    const peerClient = this.mkClient(host.serverId);
+                    
+                    // Listen for all channel creations and messages by subscribing to all channels
+                    peerClient.subscribeToChannels({
+                        '*': async (message) => {
                             try {
-                                await this.channelList.set(channel, "1");
-                                this.log(`Replication: created local channel ${channel} from peer ${host.serverId}`);
+                                // Skip if this was originally our message to prevent circular replication
+                                if (message.sourceServer === this.serverId) {
+                                    this.log(`Replication: skipping our own message from ${host.serverId}`);
+                                    return;
+                                }
+                                
+                                this.log(`Replication: received message on channel ${message.channel || '*'} from peer ${host.serverId}`);
+                                
+                                // Check if this is a channel creation message
+                                if (message.type === "channel:genesis") {
+                                    const channel = message.channel;
+                                    this.log(`Replication: channel ${channel} created on peer ${host.serverId}`);
+                                    // Ensure channel exists locally
+                                    try {
+                                        const exists = await this.channelList.has(channel);
+                                        if (!exists) {
+                                            await this.channelList.set(channel, "1");
+                                            this.log(`Replication: created local channel ${channel} from peer ${host.serverId}`);
+                                        }
+                                    } catch (err) {
+                                        this.warn(`Replication: Failed to create local channel ${channel}: ${err}`);
+                                    }
+                                } else if (message.msg) {
+                                    // For regular messages with content
+                                    try {
+                                        // Get producer for the channel
+                                        const targetChannel = message.channel || '*';
+                                        const producer = await this.mkChannelProducer(targetChannel);
+                                        
+                                        // Extract message content and metadata
+                                        const { msg, type, ocid, sourceServer, ...otherDetails } = message;
+                                        
+                                        // Ensure sourceServer is preserved to prevent circular replication
+                                        const messageDetails = {
+                                            type: type || 'replicated',
+                                            ocid: ocid || `repl-${Date.now()}`,
+                                            sourceServer: sourceServer || host.serverId,
+                                            ...otherDetails
+                                        };
+                                        
+                                        // Use the correct channelConn.produce method to add the message to the local channel
+                                        await this.channelConn.produce(producer, msg, messageDetails);
+                                        this.log(`Replication: replicated message to channel ${targetChannel}`);
+                                    } catch (err) {
+                                        this.warn(`Replication: Failed to replicate message to channel ${message.channel || '*'}: ${err}`);
+                                    }
+                                }
                             } catch (err) {
-                                this.warn(`Replication: Failed to create local channel ${channel}: ${err}`);
-                            }
-                        } else {
-                            // For regular messages
-                            this.log(`Replication: received message on channel ${message.channel} from peer ${host.serverId}`);
-                            
-                            // Skip if this was originally our message
-                            if (message.sourceServer === this.serverId) {
-                                this.log(`Replication: skipping our own message`);
-                                return;
-                            }
-                            
-                            try {
-                                // Get producer for the channel
-                                const producer = await this.mkChannelProducer(message.channel);
-                                
-                                // Extract message content and metadata
-                                const { msg, type, ocid, sourceServer, ...otherDetails } = message;
-                                
-                                // Ensure sourceServer is preserved to prevent circular replication
-                                const messageDetails = {
-                                    type: type,
-                                    ocid: ocid,
-                                    sourceServer: sourceServer || host.serverId,
-                                    ...otherDetails
-                                };
-                                
-                                // Use the correct channelConn.produce method to add the message to the local channel
-                                await this.channelConn.produce(producer, msg, messageDetails);
-                                this.log(`Replication: replicated message to channel ${message.channel}`);
-                            } catch (err) {
-                                this.warn(`Replication: Failed to replicate message to channel ${message.channel}: ${err}`);
+                                this.warn(`Replication: Error processing message from ${host.serverId}: ${err}`);
                             }
                         }
-                    }
-                });
-                
-                this.log(`Replication: setup for peer server ${host.serverId} complete`);
-            });
+                    });
+                    
+                    this.log(`Replication: setup for peer server ${host.serverId} complete`);
+                } catch (err) {
+                    this.warn(`Replication: Failed to set up connection to peer ${host.serverId}: ${err}`);
+                }
+            }
         }).catch(err => {
             this.warn(`Failed to get host list for replication: ${err}`);
         });

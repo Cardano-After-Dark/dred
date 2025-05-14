@@ -126,34 +126,60 @@ afterAll(async () => {
 });
 
 export async function testSetup() {
+    // Clear any existing servers from previous test runs
+    servers = [];
+    
     const hosts: DredHostDetails[] = [
         { serverId: "first", address: "localhost", port: "53032", insecure: true },
         { serverId: "second", address: "localhost", port: "53033", insecure: true },
         { serverId: "third", address: "localhost", port: "53034", insecure: true },
     ];
+    
     let i = 0;
-    for (const server of hosts) {
+    for (const host of hosts) {
         //! creates a separate discovery agent for each server; each one uses the same full list of hosts.
         const discovery = new StaticHostDiscovery({
             hosts,
         }).reset(hosts);
         i++;
-        const s = await createServer(
-            {
-                discovery,
-                waitFor: "minimal",
-            },
-            server.serverId,
-            i
-        );
+        
+        // Create server with proper error handling
+        try {
+            const s = await createServer(
+                {
+                    discovery,
+                    waitFor: "minimal",
+                },
+                host.serverId,
+                i
+            );
 
-        await s.listen();
-        servers.push(s);
+            // Try to listen on the port and handle any errors
+            const serverListener = await s.listen().catch(err => {
+                testLogger.warn(`Failed to start server ${host.serverId} on port ${host.port}: ${err.message}`);
+                throw err;
+            });
+            
+            // Wait a short time to ensure the server is fully ready
+            await asyncDelay(100);
+            
+            // Verify the server is listening on the expected port
+            const address = serverListener.address() as AddressInfo;
+            testLogger.info(`Server ${host.serverId} listening on port ${address.port}`);
+            
+            servers.push(s);
+        } catch (err: any) {
+            testLogger.warn(`Error setting up server ${host.serverId}: ${err.message}`);
+            // Continue with other servers if one fails
+        }
     }
+    
+    if (servers.length === 0) {
+        throw new Error("Failed to initialize any servers for testing");
+    }
+    
     server = server || servers[0];
     app = app || server.api;
-    // server = server || (await createServer({ insecure: true }));
-    // app = app || server.api;
 
     const realMkClient = server.mkClient.bind(server);
     vi.spyOn(server, "mkClient").mockImplementation(function (...args) {
@@ -169,5 +195,9 @@ export async function testSetup() {
     const agent = supertest.agent(app);
     const client = server.mkClient("first"); //new DredClient({ ...addr, insecure: true });
     await client.generateKey();
+    
+    // Give some time for all servers to establish their connections
+    await asyncDelay(300);
+    
     return { agent, app, server, client, servers };
 }

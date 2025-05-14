@@ -1,0 +1,332 @@
+Found '/Users/psuzzi/projects/cad/dred/.nvmrc' with version <20>
+Now using node v20.19.1 (npm v10.8.2)
+
+  ✓ Docker container dred_redis is running
+
+{ __dirname: '/Users/psuzzi/projects/cad/dred' }
+
+ RUN  v3.1.2 /Users/psuzzi/projects/cad/dred
+
+zonedLogger: default log levels: {"defaultLevel":"warn"}
+{"level":40,"time":1747182106487,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"default=info at     at zonedLogger (file:///Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+utils@0.8.2/node_modules/@poshplum/utils/src/zonedLogger.js:744:20)\n    at /Users/psuzzi/projects/cad/dred/src/server/testServer.ts:56:18\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at VitestExecutor.runModule (file:///Users/psuzzi/projects/cad/dred/node_modules/.pnpm/vite-node@3.1.2_@types+node@18.19.87_jiti@2.4.2_lightningcss@1.29.2/node_modules/vite-node/dist/client.mjs:354:3)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/client/__tests__/client.test.ts
+NOTE: to enable granular monitoring of redis activity, set REDIS_MONITOR=1
+
+stdout | src/client/__tests__/client.test.ts
+isColorSupported true
+
+{"level":40,"time":1747182106494,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"dred‹first›=warn by (env LOGGING=0)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106509,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹second-1›=warn by (env LOGGING=NaN)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106519,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106520,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106535,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹third-2›=warn by (env LOGGING=NaN)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106535,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106536,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747182106538,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747182106538,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747182106540,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747182106540,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747182106541,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747182106541,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+stderr | src/client/__tests__/client.test.ts > Dred client
+fetch error; see debugger -  TypeError: fetch failed
+    at node:internal/deps/undici/undici:12625:11
+    at ZoneDelegate.invoke (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:359:26)
+    at Zone.run (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:147:43)
+    at /Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:863:34
+    at ZoneDelegate.invokeTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:389:31)
+    at Zone.runTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:174:43)
+    at drainMicroTaskQueue (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:569:35)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  cause: Error: connect ECONNREFUSED ::1:53033
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16) {
+    errno: -61,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '::1',
+    port: 53033
+  }
+}
+
+stdout | src/client/__tests__/client.test.ts > Dred client
+cleanup:  localhost [second at localhost] connection failure
+
+stdout | src/client/__tests__/client.test.ts > Dred client
+cleanup:  localhost [third at localhost] connection failure
+
+stderr | src/client/__tests__/client.test.ts > Dred client
+fetch error; see debugger -  TypeError: fetch failed
+    at node:internal/deps/undici/undici:12625:11
+    at ZoneDelegate.invoke (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:359:26)
+    at Zone.run (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:147:43)
+    at /Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:863:34
+    at ZoneDelegate.invokeTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:389:31)
+    at Zone.runTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:174:43)
+    at drainMicroTaskQueue (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:569:35)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  cause: Error: connect ECONNREFUSED ::1:53034
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16) {
+    errno: -61,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '::1',
+    port: 53034
+  }
+}
+
+{"level":30,"time":1747182106662,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"Server first listening on port 53032","v":1}
+{"level":40,"time":1747182106663,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"dred‹second›=warn by (env LOGGING=0)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106665,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹first-3›=warn by (env LOGGING=NaN)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106665,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106666,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106668,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹third-4›=warn by (env LOGGING=NaN)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106668,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106668,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747182106670,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747182106670,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747182106672,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747182106672,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747182106673,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747182106673,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client
+cleanup:  localhost [third at localhost] connection failure
+
+stderr | src/client/__tests__/client.test.ts > Dred client
+fetch error; see debugger -  TypeError: fetch failed
+    at node:internal/deps/undici/undici:12625:11
+    at ZoneDelegate.invoke (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:359:26)
+    at Zone.run (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:147:43)
+    at /Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:863:34
+    at ZoneDelegate.invokeTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:389:31)
+    at Zone.runTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:174:43)
+    at drainMicroTaskQueue (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:569:35)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  cause: Error: connect ECONNREFUSED ::1:53034
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16) {
+    errno: -61,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '::1',
+    port: 53034
+  }
+}
+
+stdout | src/client/__tests__/client.test.ts > Dred client
+warning from host first : {
+  channel: '*',
+  type: 'warning',
+  message: 'invalid or expired channel'
+}
+
+{"level":30,"time":1747182106801,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"Server second listening on port 53033","v":1}
+{"level":40,"time":1747182106801,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"dred‹third›=warn by (env LOGGING=0)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106803,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹first-5›=warn by (env LOGGING=NaN)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106803,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106804,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106805,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹second-6›=warn by (env LOGGING=NaN)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106805,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106806,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747182106807,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747182106807,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747182106810,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747182106810,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747182106810,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747182106811,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client
+warning from host second : {
+  channel: '*',
+  type: 'warning',
+  message: 'invalid or expired channel'
+}
+
+stdout | src/client/__tests__/client.test.ts > Dred client
+warning from host first : {
+  channel: '*',
+  type: 'warning',
+  message: 'invalid or expired channel'
+}
+
+{"level":30,"time":1747182106923,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"Server third listening on port 53034","v":1}
+{"level":40,"time":1747182106924,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹first-7›=warn by (env LOGGING=NaN)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106925,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182106925,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747182106927,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":40,"time":1747182106929,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747182106929,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747182107230,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":50,"time":1747182116732,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Consume error: {}","v":1}
+{"level":50,"time":1747182116732,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"_chans consume error; TODO: reconnect/retry {\"error\":{}}","v":1}
+{"level":50,"time":1747182116733,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Consume error: {\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|_auth\"]}}","v":1}
+{"level":50,"time":1747182116733,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"_auth consume error; TODO: reconnect/retry {\"error\":{\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|_auth\"]}}}","v":1}
+{"level":50,"time":1747182116734,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Consume error: {\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|*\"]}}","v":1}
+{"level":50,"time":1747182116734,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"* consume error; TODO: reconnect/retry {\"error\":{\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|*\"]}}}","v":1}
+{"level":50,"time":1747182126810,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Consume error: {}","v":1}
+{"level":50,"time":1747182126810,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"_chans consume error; TODO: reconnect/retry {\"error\":{}}","v":1}
+{"level":50,"time":1747182126813,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"Consume error: {}","v":1}
+{"level":50,"time":1747182126813,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹first›","context":[],"serverId":"first","msg":"_auth consume error; TODO: reconnect/retry {\"error\":{}}","v":1}
+{"level":30,"time":1747182126826,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":50,"time":1747182126916,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Consume error: {}","v":1}
+{"level":50,"time":1747182126916,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"_chans consume error; TODO: reconnect/retry {\"error\":{}}","v":1}
+{"level":50,"time":1747182126917,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Consume error: {\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|*\"]}}","v":1}
+{"level":50,"time":1747182126918,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"* consume error; TODO: reconnect/retry {\"error\":{\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|*\"]}}}","v":1}
+{"level":50,"time":1747182126918,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"Consume error: {\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|_auth\"]}}","v":1}
+{"level":50,"time":1747182126918,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹second›","context":[],"serverId":"second","msg":"_auth consume error; TODO: reconnect/retry {\"error\":{\"command\":{\"name\":\"xinfo\",\"args\":[\"STREAM\",\"app-channels-1|_auth\"]}}}","v":1}
+{"level":30,"time":1747182126929,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747182126937,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: clean up clients","v":1}
+{"level":40,"time":1747182126938,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":30,"time":1747182126939,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"disconnected","context":["🗜️connection-manager @pendingSetup transition disconnected⦡ disconnected"],"summary":"connection-manager @pendingSetup  ➜ disconnected","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747182127092,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182127108,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182127108,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747182127272,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182127287,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182127291,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747182127444,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182127468,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182127469,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747182127470,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747182127481,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747182127491,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747182127516,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: clean up clients","v":1}
+{"level":30,"time":1747182127670,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182127681,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182127681,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747182127835,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182127844,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182127844,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747182127998,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182128021,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182128021,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747182128022,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747182128034,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747182128042,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":50,"time":1747182128054,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"client-‹first-7›","context":[],"color":"\u001b[35m","msg":"createChannel at server failed: Error: some error\n    at DredClient.fetch (/Users/psuzzi/projects/cad/dred/src/client/DredClient.ts:453:15)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at DredClient.createChannel (/Users/psuzzi/projects/cad/dred/src/client/DredClient.ts:523:20)","v":1}
+{"level":30,"time":1747182128055,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: clean up clients","v":1}
+{"level":30,"time":1747182128207,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182128219,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182128219,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747182128374,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182128391,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182128391,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747182128553,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182128563,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182128563,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747182128563,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747182128575,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747182128585,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":40,"time":1747182128593,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","context":[],"indent":"        ","summary":"client-‹first-8›=warn by (env LOGGING=NaN)","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182128594,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+{"level":40,"time":1747182128594,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"zonedLogger","transitionName":"default","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()"],"indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client > encrypted chan: > requires key creation
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747182128596,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"setupPending","context":["🗜️connection-manager @discoveringNbh transition default⦡ discoveringNbh","🗜️ConnectionManager ↝ default-state onEntry onEntry()","🗜️connection-manager @discoveringNbh transition setupPending⦡ pendingSetup"],"summary":"connection-manager @discoveringNbh  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747182128596,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: clean up clients","v":1}
+{"level":40,"time":1747182128597,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"root","name":"zonedLogger","indent":"        ","summary":"connection-manager:state=info by state-machine: connection-manager definition","msg":"▒▒▒▒ log override ▒▒▒▒","v":1}
+stdout | src/client/__tests__/client.test.ts > Dred client > encrypted chan: > requires key creation
+    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set
+
+{"level":30,"time":1747182128597,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"connection-manager:state","transitionName":"updatedHostList","context":["🗜️connection-manager @pendingSetup transition updatedHostList⦡ pendingSetup"],"summary":"connection-manager @pendingSetup  ➜ pendingSetup","msg":" ✓ transitioned","v":1}
+{"level":30,"time":1747182128751,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182128770,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182128770,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747182128923,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182128933,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182128933,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747182129088,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182129109,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182129109,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747182129110,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747182129122,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747182129130,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"beforeEach: flushing redis","v":1}
+{"level":30,"time":1747182129149,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: clean up clients","v":1}
+{"level":30,"time":1747182129302,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182129312,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182129312,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747182129465,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182129474,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182129474,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+{"level":30,"time":1747182129627,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: flushing redis","v":1}
+{"level":30,"time":1747182129636,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"afterEach: restoring default channels","v":1}
+{"level":30,"time":1747182129636,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"test","context":[],"color":"\u001b[33m","msg":"------------------ did reset redis with default channels --------------","v":1}
+ ✓ src/client/__tests__/client.test.ts (11 tests | 6 skipped) 23144ms
+   ✓ Dred client > discovery > can resolveDiscovery  20240ms
+   ✓ Dred client > unencrypted chan: > createChannel > does createChannel() on server  552ms
+   ✓ Dred client > unencrypted chan: > createChannel > throws any error json returned in a server error  541ms
+   ↓ Dred client > unencrypted chan: > subscribeChannel > keeps a list of callbacks for each channel
+   ↓ Dred client > unencrypted chan: > subscribeChannel > triggers the subscriber's callback when messages are posted
+   ✓ Dred client > encrypted chan: > requires key creation  546ms
+   ✓ Dred client > encrypted chan: > after keygen: > createChannel > does createChannel() on server  527ms
+   ↓ Dred client > encrypted chan: > after keygen: > createChannel > subscribeChannel > triggers the subscriber's callback when messages are posted
+   ↓ Dred client > encrypted chan: > after keygen: > createChannel > postMessage > fails when the channel is encrypted
+   ↓ Dred client > encrypted chan: > after keygen: > createChannel > postEncrypted > fails when the channel doesn't have encryption enabled
+   ↓ Dred client > encrypted chan: > after keygen: > createChannel > postEncrypted > encodes the provided message as a JSON with an encryption wrapper
+{"level":50,"time":1747182129640,"env":"test","pid":25133,"hostname":"max1p","type":"log","name":"dred‹third›","context":[],"serverId":"third","msg":"Produce error: Error: Connection is closed.\n    at close (/Users/psuzzi/projects/cad/dred/src/redis/streams/node_modules/ioredis/built/redis/event_handler.js:184:25)\n    at Socket.<anonymous> (/Users/psuzzi/projects/cad/dred/src/redis/streams/node_modules/ioredis/built/redis/event_handler.js:151:20)\n    at Object.onceWrapper (node:events:632:26)\n    at ZoneDelegate.invokeTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:389:31)\n    at Zone.runTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:174:43)\n    at ZoneTask.invokeTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:471:34)\n    at Socket.ZoneTask.invoke (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:460:48)\n    at Socket.emit (node:events:517:28)\n    at TCP.<anonymous> (node:net:350:12)","v":1}
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Can not produce in the tunnel: [object Object]
+ ❯ RedisChannels.produce src/redis/streams/channels.js:493:19
+    491|             this._log.error("Produce error:", error.stack || error.message || JSON.stringify(error));
+    492|             debugger
+    493|             throw new RedisChannelsError(
+       |                   ^
+    494|                 "Can not produce in the tunnel: " + tunnel,
+    495|                 error
+ ❯ processTicksAndRejections node:internal/process/task_queues:95:5
+ ❯ DredServer.doChannelSetup src/server/DredServer.ts:315:9
+ ❯ src/server/DredServer.ts:284:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { error: { stack: 'Error: Connection is closed.\n    at close (/Users/psuzzi/projects/cad/dred/src/redis/streams/node_modules/ioredis/built/redis/event_handler.js:184:25)\n    at Socket.<anonymous> (/Users/psuzzi/projects/cad/dred/src/redis/streams/node_modules/ioredis/built/redis/event_handler.js:151:20)\n    at Object.onceWrapper (node:events:632:26)\n    at ZoneDelegate.invokeTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:389:31)\n    at Zone.runTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:174:43)\n    at ZoneTask.invokeTask (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:471:34)\n    at Socket.ZoneTask.invoke (/Users/psuzzi/projects/cad/dred/node_modules/.pnpm/@poshplum+zoned-cls@https+++codeload.github.com+poshplum+zoned-cls+tar.gz+4d42abe3d5e14c0f34f5704a7bb133630cb665b6/node_modules/@poshplum/zoned-cls/dist/zoned-cls-node.js:460:48)\n    at Socket.emit (node:events:517:28)\n    at TCP.<anonymous> (node:net:350:12)', message: 'Connection is closed.', constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } }
+This error originated in "src/client/__tests__/client.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 1 skipped | 5 todo (11)
+     Errors  1 error
+   Start at  02:21:45
+   Duration  23.83s (transform 155ms, setup 0ms, collect 496ms, tests 23.14s, environment 0ms, prepare 42ms)
+
+ ELIFECYCLE  Test failed. See above for more details.
+~/projects/cad/dred feature/message-duplication *23 !3 >                                                                                                                  26s
