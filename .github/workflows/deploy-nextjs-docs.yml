@@ -53,7 +53,9 @@ jobs:
             ${{ runner.os }}-pnpm-store-
           
       - name: Install dependencies
-        run: cd docs && pnpm install --frozen-lockfile
+        run: |
+          cd docs && pnpm install --frozen-lockfile
+          cat node_modules/@donecollectively/stellar-contracts/package.json
         
       - name: Build documentation
         env:
