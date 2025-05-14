@@ -16,6 +16,8 @@ Learn how to get Dred set up in your project in under thirty minutes or it's fre
 
 {% /quick-links %}
 
+
+
 ---
 ## Quick Start
 
