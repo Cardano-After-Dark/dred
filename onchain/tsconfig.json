@@ -56,7 +56,7 @@
         "./src/**/*.ts",
         "./src/**/*.tsx",
         "./src/**/*.js",
-        "./src/**/*.jsx", "src/DredSideChain.XXts",
+        "./src/**/*.jsx",
         // "tests/**/*.ts"
     ],
     "exclude": [

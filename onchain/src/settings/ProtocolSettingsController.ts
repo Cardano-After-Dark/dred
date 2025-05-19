@@ -66,8 +66,8 @@ export class ProtocolSettingsController extends DelegatedDataContract<
                 requiredNodeUptime: 90n,
             },            
             nbhSettings: {
-                minNbhStake: makeValue(20_000n),
-                minRegistrationFee: 4_000n               
+                minNbhStake: makeValue(50_000_001n),
+                minRegistrationFee: 4_000_000_000n
             },
             /* Add other settings here */
         };

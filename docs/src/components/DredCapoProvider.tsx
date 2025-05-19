@@ -42,6 +42,7 @@ export function DredCapoProvider({
             blockfrostKey={apiKey}
             //@ts-expect-error temporarily
             capoClass={DredCapo}
+            hydra={false}
             dAppName="Dred Operator Network"
             onNetwork={updaters.updateNetwork}
             onWalletChange={updaters.updateWalletHandle}

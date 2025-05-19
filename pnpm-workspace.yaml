@@ -3,6 +3,7 @@ packages:
   - 'docs'
   - 'sampleApp'
   - 'onchain'
+  - '../stellar-contracts'
   - '.'
 
   # works better with yarn used in that subdir:
@@ -13,3 +14,9 @@ packages:
   - '!**/__tests__/**'
   
 
+overrides:
+  "@donecollectively/stellar-contracts": "$@donecollectively/stellar-contracts"
+  # ^ merge the resolution of this package so it will resolve as a transitive dependency to ONE package.
+  "react": "$react"
+  "react-dom": "$react-dom"
+  
