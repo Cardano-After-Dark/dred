@@ -1,9 +1,23 @@
 module NeighborhoodSettings
 
+import {
+    TODO,
+    REQT,
+    bREQT
+} from StellarHeliosHelpers
+
 
 struct NeighborhoodSettings {
     minRegistrationFee: Int "minRegFee"
     minNbhStake: Value "minStk"
+
+    func validate(self) -> Bool {
+        REQT("nbhSettings: must validate");
+        bREQT("reg fee must be positive") &&
+        (self.minRegistrationFee > 0).trace("reg fee ok? ") &&
+        bREQT("minStake must be > 50 ADA, is "+ self.minNbhStake.get_lovelace().show()) &&
+        (self.minNbhStake.get_lovelace() > 40_000_000).trace("minStake ok? ")
+    }
 }
 
 struct AbstractSettingsForNeighborhood {

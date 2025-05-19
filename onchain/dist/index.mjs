@@ -1,9 +1,7 @@
 import { makeInlineTxOutputDatum, makeValue, makePubKey } from '@helios-lang/ledger';
-import '@helios-lang/uplc';
 import { ContractDataBridge, EnumBridge, impliedSeedActivityMaker, DataBridgeReaderClass, DelegatedDataContract, hasReqts, BasicMintDelegate, textToBytes, Capo, delegateRoles, defineRole, mkValuesEntry, mergesInheritedReqts } from '@donecollectively/stellar-contracts';
 import ProtocolSettingsBundle from 'dred-network-registry/contracts-preprod/ProtocolSettings.hlb';
 import { makeCast } from '@helios-lang/contract-utils';
-import '@helios-lang/codec-utils';
 import DredCapoBundle from 'dred-network-registry/contracts-preprod/DredCapo.hlb';
 import MyMintSpendDelegateBundle from 'dred-network-registry/contracts-preprod/MyMintSpendDelegate.hlb';
 import NodeRegistryBundle from 'dred-network-registry/contracts-preprod/NodeRegistry.hlb';
@@ -8734,8 +8732,8 @@ class ProtocolSettingsController extends DelegatedDataContract {
         requiredNodeUptime: 90n
       },
       nbhSettings: {
-        minNbhStake: makeValue(20000n),
-        minRegistrationFee: 4000n
+        minNbhStake: makeValue(50000001n),
+        minRegistrationFee: 4000000000n
       }
       /* Add other settings here */
     };
@@ -26072,6 +26070,222 @@ class NodeRegistryController extends DelegatedDataContract {
   }
 }
 
+class DredCapo extends Capo {
+  autoSetup = true;
+  get defaultFeatureFlags() {
+    return {
+      settings: true,
+      nodeOpRegistry: true,
+      nbhRegistry: true
+      /* Add other feature-flag defaults here */
+    };
+  }
+  scriptBundle() {
+    return DredCapoBundle.create({
+      setup: this.setup
+    });
+  }
+  /**
+   * locates the current settings for the capo
+   */
+  async findSettingsInfo(options) {
+    return super.findSettingsInfo(options);
+  }
+  /**
+   * Finds and instantiates the mint delegate for the capo
+   */
+  async getMintDelegate(charterData) {
+    return super.getMintDelegate(charterData);
+  }
+  /**
+   * Finds and instantiates the spend delegate for the capo
+   */
+  async getSpendDelegate(charterData) {
+    return super.getSpendDelegate(charterData);
+  }
+  /**
+   * Finds and instantiates the node registry controller for the capo
+   */
+  async getNodeRegistryController(charterData) {
+    if (!charterData) {
+      charterData = await this.findCharterData();
+    }
+    return this.getDgDataController("nodeReg", {
+      charterData
+    });
+  }
+  /**
+   * Finds and instantiates the neighborhood registry controller for the capo
+   */
+  async getNbhRegistryController(charterData) {
+    if (!charterData) {
+      charterData = await this.findCharterData();
+    }
+    return this.getDgDataController("nbhRegistry", {
+      charterData
+    });
+  }
+  /**
+   * Finds and instantiates the settings controller for the capo
+   */
+  async getSettingsController(options) {
+    return this.getDgDataController("settings", options);
+  }
+  /* add other controller-fetching methods here */
+  /**
+   * Creates the initial settings for the capo
+   */
+  async mkInitialSettings() {
+    return {
+      nodeOpSettings: {
+        expectedHeartbeatInterval: BigInt(72 * 60 * 60 * 1e3),
+        minNodeOperatorStake: makeValue(20000n),
+        minNodeRegistrationFee: 10000000n,
+        requiredNodeUptime: 0.95
+      },
+      nbhSettings: {
+        minRegistrationFee: 3000000000n,
+        minNbhStake: makeValue(50000001n)
+      }
+    };
+  }
+  /**
+   * Finds all the node-registration records
+   * @remarks
+   * This is a convenience method for finding all the node-registration records.
+   * It is equivalent to calling `findDelegatedDataUtxos` with the type `"dredNode"`.
+   */
+  async findNodeOpEntries() {
+    return this.findDelegatedDataUtxos({
+      type: "dredNode"
+    });
+  }
+  /**
+   * Finds all the neighborhood-registration records
+   */
+  async findNbhRegistryEntries() {
+    return this.findDelegatedDataUtxos({
+      type: "dredNbh"
+    });
+  }
+  /* add other model-specific finders here */
+  /**
+   * Initializes the delegate roles for the capo
+   * @internal
+   */
+  initDelegateRoles() {
+    const inh = super.basicDelegateRoles();
+    const { mintDelegate: parentMD, spendDelegate, govAuthority } = inh;
+    const myDelegates = delegateRoles({
+      govAuthority,
+      spendDelegate: defineRole("spendDgt", MyMintSpendDelegate, {}),
+      mintDelegate: defineRole("mintDgt", MyMintSpendDelegate, {}),
+      settings: defineRole("dgDataPolicy", ProtocolSettingsController, {}),
+      nodeOpRegistry: defineRole("dgDataPolicy", NodeRegistryController, {})
+      // nbhRegistry: defineRole("dgDataPolicy", NeighborhoodController, {}),
+      /* Add other delegate roles here */
+      // optional tokenomics features:
+      // mktSale: defineRole(
+      //     "dgDataPolicy",
+      //     MarketSaleController, {}
+      // ),
+      // needs to stay disabled until it can have access to TieredScale:
+      // fundedPurpose: defineRole(
+      //     "dgDataPolicy",
+      //     FundedPurposeController,
+      //     {}
+      // ),
+    });
+    return myDelegates;
+  }
+  /**
+   * Mints fungible tokens under the Capo's minting policy
+   */
+  async txnMintingFungibleTokens(tcx, tokenName, tokenCount) {
+    if (typeof tokenName === "string") {
+      tokenName = textToBytes(tokenName);
+    }
+    const mintDgt = await this.getMintDelegate();
+    const tcx2 = await this.tcxWithCharterRef(tcx);
+    const tcx2a = await this.txnAddGovAuthority(tcx2);
+    const minter = this.minter;
+    return minter.txnMintWithDelegateAuthorizing(
+      tcx2a,
+      [mkValuesEntry(tokenName, tokenCount)],
+      mintDgt,
+      mintDgt.activity.MintingActivities.MintingFungibleTokens(tokenName)
+    );
+  }
+  // mkConfigData() {
+  //     throw new Error(`unused, but a basic example of how to create a MapData object`);
+  //     const uplcMap = makeMapData([
+  //         [makeByteArrayData(textToBytes("id")), makeByteArrayData(textToBytes("set"))],
+  //     ]);
+  //     return uplcMap;
+  // }
+  todoAddNamedDelegates() {
+  }
+  // async mkAdditionalTxnsForCharter<TCX extends hasAddlTxns<StellarTxnContext<any>>>(
+  //     this: DredCapo,
+  //     tcx: TCX,
+  //     options: {
+  //         charterData: CharterData;
+  //         capoUtxos: TxInput[];
+  //     }
+  // ) {
+  //    // now handled by autoSetup
+  //
+  //     await this.setupFundedPurpose(tcx, options);
+  //     await this.setupMarketSale(tcx, options);
+  //     await this.setupNodeRegistry(tcx, options);
+  //
+  //     return tcx;
+  // }
+  requirements() {
+    const baseTokenomics = super.requirements();
+    return mergesInheritedReqts(baseTokenomics, {
+      "has custom settings for protocol parameters": {
+        purpose: "sets up particular points of adjustability for operational policies",
+        details: [
+          "Arranges details including expiration period for node registrations, ",
+          "  ... so clients and node operator (software) can reference them and make adjustments",
+          "The configuration details can be stored in a separate script. ",
+          "The transaction-builder references the config record in txns needing to access it. ",
+          "On-chain scripts needing to read the config ('client scripts') can find it as a refInput to the txn. ",
+          "By using a CIP-68-style struct, the config's structure can be be upgraded, ",
+          "  ... allowing new scripts needing new configs to get those new configs, ",
+          "  ... while leaving its existing client scripts unmodified, "
+        ],
+        mech: [
+          "has an initial discount scale for artists and listeners",
+          "has staking-reward settings",
+          "provides a 'settings' struct in a module that other contracts import to access parameters"
+        ],
+        requires: ["can update the settings"]
+      },
+      "can update the settings": {
+        purpose: "to allow for future adjustments to protocol parameters",
+        details: [
+          "When the settings are updated, the new settings are used in all future transactions referencing settings`"
+        ],
+        mech: [
+          "applies the new settings on-chain",
+          "won't update the settings without capo govAuthority approval"
+        ]
+      },
+      "Provides a Node Operator registry, in which node operators can maintain their node registrations": {
+        purpose: "so node operators can publish their server availability",
+        details: ["Node operators can join the network and contribute capacity."],
+        mech: [
+          "Allows registering a node operator record with the DRED.nodeOperator token",
+          "Registers the member-* id with the node registration record"
+        ],
+        requires: []
+      }
+    });
+  }
+}
+
 class NeighborhoodPolicyDataBridge extends ContractDataBridge {
   static isAbstract = false;
   isAbstract = false;
@@ -36030,218 +36244,6 @@ class NeighborhoodController extends DelegatedDataContract {
   requirements() {
     return hasReqts({
       // todo
-    });
-  }
-}
-
-class DredCapo extends Capo {
-  autoSetup = true;
-  get defaultFeatureFlags() {
-    return {
-      settings: true,
-      nodeOpRegistry: true,
-      nbhRegistry: true
-      /* Add other feature-flag defaults here */
-    };
-  }
-  scriptBundle() {
-    return DredCapoBundle.create({
-      setup: this.setup
-    });
-  }
-  /**
-   * locates the current settings for the capo
-   */
-  async findSettingsInfo(options) {
-    return super.findSettingsInfo(options);
-  }
-  /**
-   * Finds and instantiates the mint delegate for the capo
-   */
-  async getMintDelegate(charterData) {
-    return super.getMintDelegate(charterData);
-  }
-  /**
-   * Finds and instantiates the spend delegate for the capo
-   */
-  async getSpendDelegate(charterData) {
-    return super.getSpendDelegate(charterData);
-  }
-  /**
-   * Finds and instantiates the node registry controller for the capo
-   */
-  async getNodeRegistryController(charterData) {
-    if (!charterData) {
-      charterData = await this.findCharterData();
-    }
-    return this.getDgDataController("nodeReg", {
-      charterData
-    });
-  }
-  /**
-   * Finds and instantiates the neighborhood registry controller for the capo
-   */
-  async getNbhRegistryController(charterData) {
-    if (!charterData) {
-      charterData = await this.findCharterData();
-    }
-    return this.getDgDataController("nbhRegistry", {
-      charterData
-    });
-  }
-  /**
-   * Finds and instantiates the settings controller for the capo
-   */
-  async getSettingsController(options) {
-    return this.getDgDataController("settings", options);
-  }
-  /* add other controller-fetching methods here */
-  /**
-   * Creates the initial settings for the capo
-   */
-  async mkInitialSettings() {
-    return {
-      nodeOpSettings: {
-        expectedHeartbeatInterval: BigInt(72 * 60 * 60 * 1e3),
-        minNodeOperatorStake: makeValue(20000n),
-        minNodeRegistrationFee: 10000n,
-        requiredNodeUptime: 0.95
-      },
-      nbhSettings: {
-        minNbhStake: makeValue(20000n),
-        minRegistrationFee: 10000n
-      }
-    };
-  }
-  /**
-   * Finds all the node-registration records
-   * @remarks
-   * This is a convenience method for finding all the node-registration records.
-   * It is equivalent to calling `findDelegatedDataUtxos` with the type `"dredNode"`.
-   */
-  async findNodeOpEntries() {
-    return this.findDelegatedDataUtxos({
-      type: "dredNode"
-    });
-  }
-  /**
-   * Finds all the neighborhood-registration records
-   */
-  async findNbhRegistryEntries() {
-    return this.findDelegatedDataUtxos({
-      type: "dredNbh"
-    });
-  }
-  /* add other model-specific finders here */
-  /**
-   * Initializes the delegate roles for the capo
-   * @internal
-   */
-  initDelegateRoles() {
-    const inh = super.basicDelegateRoles();
-    const { mintDelegate: parentMD, spendDelegate, govAuthority } = inh;
-    const myDelegates = delegateRoles({
-      govAuthority,
-      spendDelegate: defineRole("spendDgt", MyMintSpendDelegate, {}),
-      mintDelegate: defineRole("mintDgt", MyMintSpendDelegate, {}),
-      settings: defineRole("dgDataPolicy", ProtocolSettingsController, {}),
-      nodeOpRegistry: defineRole("dgDataPolicy", NodeRegistryController, {})
-      // nbhRegistry: defineRole("dgDataPolicy", NeighborhoodController, {}),
-      /* Add other delegate roles here */
-      // optional tokenomics features:
-      // mktSale: defineRole(
-      //     "dgDataPolicy",
-      //     MarketSaleController, {}
-      // ),
-      // needs to stay disabled until it can have access to TieredScale:
-      // fundedPurpose: defineRole(
-      //     "dgDataPolicy",
-      //     FundedPurposeController,
-      //     {}
-      // ),
-    });
-    return myDelegates;
-  }
-  /**
-   * Mints fungible tokens under the Capo's minting policy
-   */
-  async txnMintingFungibleTokens(tcx, tokenName, tokenCount) {
-    if (typeof tokenName === "string") {
-      tokenName = textToBytes(tokenName);
-    }
-    const mintDgt = await this.getMintDelegate();
-    const tcx2 = await this.tcxWithCharterRef(tcx);
-    const tcx2a = await this.txnAddGovAuthority(tcx2);
-    const minter = this.minter;
-    return minter.txnMintWithDelegateAuthorizing(
-      tcx2a,
-      [mkValuesEntry(tokenName, tokenCount)],
-      mintDgt,
-      mintDgt.activity.MintingActivities.MintingFungibleTokens(tokenName)
-    );
-  }
-  mkConfigData() {
-    throw new Error(`unused, but a basic example of how to create a MapData object`);
-  }
-  todoAddNamedDelegates() {
-  }
-  // async mkAdditionalTxnsForCharter<TCX extends hasAddlTxns<StellarTxnContext<any>>>(
-  //     this: DredCapo,
-  //     tcx: TCX,
-  //     options: {
-  //         charterData: CharterData;
-  //         capoUtxos: TxInput[];
-  //     }
-  // ) {
-  //    // now handled by autoSetup
-  //
-  //     await this.setupFundedPurpose(tcx, options);
-  //     await this.setupMarketSale(tcx, options);
-  //     await this.setupNodeRegistry(tcx, options);
-  //
-  //     return tcx;
-  // }
-  requirements() {
-    const baseTokenomics = super.requirements();
-    return mergesInheritedReqts(baseTokenomics, {
-      "has custom settings for protocol parameters": {
-        purpose: "sets up particular points of adjustability for operational policies",
-        details: [
-          "Arranges details including expiration period for node registrations, ",
-          "  ... so clients and node operator (software) can reference them and make adjustments",
-          "The configuration details can be stored in a separate script. ",
-          "The transaction-builder references the config record in txns needing to access it. ",
-          "On-chain scripts needing to read the config ('client scripts') can find it as a refInput to the txn. ",
-          "By using a CIP-68-style struct, the config's structure can be be upgraded, ",
-          "  ... allowing new scripts needing new configs to get those new configs, ",
-          "  ... while leaving its existing client scripts unmodified, "
-        ],
-        mech: [
-          "has an initial discount scale for artists and listeners",
-          "has staking-reward settings",
-          "provides a 'settings' struct in a module that other contracts import to access parameters"
-        ],
-        requires: ["can update the settings"]
-      },
-      "can update the settings": {
-        purpose: "to allow for future adjustments to protocol parameters",
-        details: [
-          "When the settings are updated, the new settings are used in all future transactions referencing settings`"
-        ],
-        mech: [
-          "applies the new settings on-chain",
-          "won't update the settings without capo govAuthority approval"
-        ]
-      },
-      "Provides a Node Operator registry, in which node operators can maintain their node registrations": {
-        purpose: "so node operators can publish their server availability",
-        details: ["Node operators can join the network and contribute capacity."],
-        mech: [
-          "Allows registering a node operator record with the DRED.nodeOperator token",
-          "Registers the member-* id with the node registration record"
-        ],
-        requires: []
-      }
     });
   }
 }

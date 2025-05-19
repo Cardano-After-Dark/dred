@@ -25,9 +25,10 @@ import { ErgoPendingDelegateChange as ErgoPendingDelegateChange_3 } from './heli
 import { EventEmitter } from 'eventemitter3';
 import { hasCharterRef as hasCharterRef_2 } from '@donecollectively/stellar-contracts';
 import { hasGovAuthority as hasGovAuthority_2 } from '@donecollectively/stellar-contracts';
+import { hasSeedUtxo as hasSeedUtxo_2 } from '@donecollectively/stellar-contracts';
+import { hasUutContext as hasUutContext_2 } from '@donecollectively/stellar-contracts';
 import { InlineTxOutputDatum } from '@helios-lang/ledger';
 import type { IntLike } from '@helios-lang/codec-utils';
-import { MapData } from '@helios-lang/uplc';
 import { MintingPolicyHash } from '@helios-lang/ledger';
 import type { MintingPolicyHashLike } from '@helios-lang/ledger';
 import { NetworkParams } from '@helios-lang/ledger';
@@ -1791,11 +1792,11 @@ declare abstract class Capo<SELF extends Capo<any>, featureFlags extends CapoFea
         optional: true;
         capoUtxos?: TxInput[];
     }): Promise<CharterData | undefined>;
-    findSettingsInfo<T extends boolean = false>(this: SELF, options: {
+    findSettingsInfo(this: SELF, options: {
         charterData: CharterData;
         capoUtxos?: TxInput[];
-        optional?: T;
-    }): Promise<T extends false ? FoundDatumUtxo<any, any> : FoundDatumUtxo<any, any> | undefined>;
+        optional?: boolean;
+    }): Promise<FoundDatumUtxo<any, any> | undefined>;
     /**
      * @public
      */
@@ -10030,10 +10031,10 @@ declare abstract class DelegatedDataContract<T extends AnyDataTemplate<any, any>
      * `this.activity.MintingActivities.$seeded$‹activityName›` accessors/methods,
      * which creates a record id based on the (unique) spend of a seed value.
      */
-    mkTxnCreateRecord<TCX extends StellarTxnContext>(options: DgDataCreationOptions<TLike>, tcx?: TCX): Promise<TCX>;
+    mkTxnCreateRecord<THIS extends DelegatedDataContract<any, any>, TCX extends StellarTxnContext>(this: THIS, options: DgDataCreationOptions<TLike>, tcx?: TCX): Promise<hasUutContext<THIS["idPrefix"] | "recordId"> & TCX & hasCharterRef & hasSeedUtxo & hasUutContext<"recordId" | (string extends THIS["idPrefix"] ? "‹idPrefix (hint: declare with 'idPrefix = \"...\" as const')›" : THIS["idPrefix"])>>;
     creationDefaultDetails(): Partial<TLike>;
     beforeCreate(record: TLike): TLike;
-    txnCreatingRecord<TCX extends StellarTxnContext & hasCharterRef & hasSeedUtxo & hasUutContext<DelegatedDatumIdPrefix<this>>>(tcx: TCX, options: CoreDgDataCreationOptions<TLike>): Promise<TCX>;
+    txnCreatingRecord<THIS extends DelegatedDataContract<any, any>, TCX extends StellarTxnContext & hasCharterRef & hasSeedUtxo & hasUutContext<"recordId">>(this: THIS, tcx: TCX, options: CoreDgDataCreationOptions<TLike>): Promise<TCX & hasUutContext<"recordId" | (string extends DelegatedDatumIdPrefix<THIS> ? "‹idPrefix (hint: declare with 'idPrefix = \"...\" as const')›" : DelegatedDatumIdPrefix<THIS>)>>;
     /**
      * Creates an indirect reference to an an update activity with arguments,
      * using a record-id placeholder.
@@ -12968,7 +12969,6 @@ export declare class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
      * Mints fungible tokens under the Capo's minting policy
      */
     txnMintingFungibleTokens<TCX extends StellarTxnContext>(tcx: TCX, tokenName: string | number[], tokenCount: bigint): Promise<TCX & hasCharterRef_2 & hasGovAuthority_2>;
-    mkConfigData(): MapData;
     todoAddNamedDelegates(): void;
     requirements(): any;
 }
@@ -15609,7 +15609,7 @@ declare type FeeSourceLike = IntersectedEnum<{
  * @public
  */
 declare type FindableViaCharterData = {
-    charterData: CharterData;
+    charterData?: CharterData;
     optional?: true;
 };
 
@@ -20700,7 +20700,7 @@ export declare class NeighborhoodController extends DelegatedDataContract<ErgoNe
     get recordTypeName(): string;
     exampleData(): minimalNeighborhoodData;
     get capo(): DredCapo;
-    mkTxnRegisteringNode(this: NeighborhoodController, nodeReg: minimalNeighborhoodData): Promise<StellarTxnContext<anyState_3>>;
+    mkTxnRegisteringNode(this: NeighborhoodController, nodeReg: minimalNeighborhoodData): Promise<hasUutContext_2<string> & StellarTxnContext<anyState_3> & hasCharterRef_2 & hasSeedUtxo_2 & hasUutContext_2<"recordId" | "‹idPrefix (hint: declare with 'idPrefix = \"...\" as const')›">>;
     requirements(): ReqtsMap_4<never, never>;
 }
 
@@ -21678,7 +21678,7 @@ export declare class NodeRegistryController extends DelegatedDataContract<ErgoNo
     get recordTypeName(): string;
     exampleData(): minimalNodeRegistrationData_2;
     get capo(): DredCapo;
-    mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData_2): Promise<StellarTxnContext<anyState>>;
+    mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData_2): Promise<hasUutContext_2<string> & StellarTxnContext<anyState> & hasCharterRef_2 & hasSeedUtxo_2 & hasUutContext_2<"recordId" | "‹idPrefix (hint: declare with 'idPrefix = \"...\" as const')›">>;
     mkTxnUpdatingNodeRegistration(txnName: string, item: FoundDatumUtxo<NodeRegistrationData, any>, options: DgDataUpdateOptions<NodeRegistrationDataLike>, tcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
     requirements(): ReqtsMap_4<never, never>;
 }
@@ -24957,6 +24957,9 @@ declare type RequirementEntry<reqtName extends string, reqts extends string, inh
     requiresInherited?: inheritedNames[];
 };
 
+/**
+ * @public
+ */
 declare type ResolveablePromise<T> = {
     promise: Promise<T>;
     status: "pending" | "fulfilled" | "rejected" | "cancelled" | "timeout";
@@ -26994,6 +26997,9 @@ declare type TxDescriptionWithError = TxDescription<any, "built", any, {
     error: string;
 }>;
 
+/**
+ * @public
+ */
 declare class TxNotNeededError extends Error {
     constructor(message: string);
 }

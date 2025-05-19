@@ -1,6 +1,6 @@
 {
     "name": "dred-network-registry",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "description": "Onchain registry for DRED decentralized realtime messaging",
     "keywords": [],
     "author": "Cardano After Dark",
@@ -59,7 +59,6 @@
             "autoprefixer": {}
         }
     },
-
     "prettier": {
         "printWidth": 100,
         "tabWidth": 4,
@@ -67,22 +66,22 @@
         "semi": true,
         "singleQuote": false
     },
-
     "peerFromWorkspace": {
-        "@donecollectively/stellar-contracts": "^0.9.0-beta.6",
+        "@donecollectively/stellar-contracts": "^0.9.0-beta.9",
         "stellar-tokenomics": "^0.7.0-beta.1"
     },
     "peerDependencies": {
-        "@helios-lang/cbor": "~0.3.1",
-        "@helios-lang/compiler": "~0.17.20",
-        "@helios-lang/compiler-utils": "~0.5.15",
-        "@helios-lang/contract-utils": "~0.3.21",
-        "@helios-lang/crypto": "~0.2.3",
-        "@helios-lang/ir": "~0.3.8",
-        "@helios-lang/ledger": "~0.7.7",
-        "@helios-lang/tx-utils": "~0.6.7",
-        "@helios-lang/type-utils": "~0.3.0",
-        "@helios-lang/uplc": "~0.7.15"
+        "@helios-lang/cbor": "^0.3.1",
+        "@helios-lang/codec-utils": "^0.3.4",
+        "@helios-lang/compiler": "^0.17.22",
+        "@helios-lang/compiler-utils": "^0.5.15",
+        "@helios-lang/contract-utils": "^0.3.21",
+        "@helios-lang/crypto": "^0.2.3",
+        "@helios-lang/ir": "^0.3.8",
+        "@helios-lang/ledger": "^0.7.11",
+        "@helios-lang/tx-utils": "^0.6.13",
+        "@helios-lang/type-utils": "^0.3.0",
+        "@helios-lang/uplc": "^0.7.17"
     },
     "dependencies": {
         "@microsoft/api-documenter": "^7.26.20",
@@ -93,31 +92,32 @@
         "vitest": "^3.0.9"
     },
     "fromWorkspace": {
-        "@donecollectively/stellar-contracts": "github:donecollectively/stellar-contracts#semver:0.9.0-beta.6",
+        "@donecollectively/stellar-contracts": "github:donecollectively/stellar-contracts#semver:0.9.0-beta.9",
         "stellar-tokenomics": "github:donecollectively/stellar-tokenomics-next#semver:0.7.0-beta.1"
     },
     "devDependencies": {
+        "@helios-lang/cbor": "^0.3.1",
+        "@helios-lang/codec-utils": "^0.3.4",
+        "@helios-lang/compiler": "^0.17.22",
+        "@helios-lang/compiler-utils": "^0.5.15",
+        "@helios-lang/contract-utils": "^0.3.21",
+        "@helios-lang/crypto": "^0.2.3",
+        "@helios-lang/ir": "^0.3.8",
+        "@helios-lang/ledger": "^0.7.11",
+        "@helios-lang/tx-utils": "^0.6.13",
+        "@helios-lang/type-utils": "^0.3.0",
+        "@helios-lang/uplc": "^0.7.17",
         "@microsoft/api-extractor": "^7.48.1",
-        "@helios-lang/cbor": "~0.3.1",
-        "@helios-lang/codec-utils": "~0.3.4",
-        "@helios-lang/compiler": "~0.17.20",
-        "@helios-lang/compiler-utils": "~0.5.15",
-        "@helios-lang/contract-utils": "~0.3.21",
-        "@helios-lang/crypto": "~0.2.3",
-        "@helios-lang/ir": "~0.3.8",
-        "@helios-lang/ledger": "~0.7.7",
-        "@helios-lang/tx-utils": "~0.6.7",
-        "@helios-lang/type-utils": "~0.3.0",
-        "@helios-lang/uplc": "~0.7.15",
         "@rollup/plugin-json": "^6.1.0",
         "@rollup/plugin-node-resolve": "^15.3.0",
+        "@rollup/rollup-linux-x64-gnu": "^4.40.2",
         "@types/node": "22",
         "eslint": "8.26.0",
         "eslint-config-next": "13.0.2",
         "prettier": "^2.8.8",
         "react": "^18.0",
         "react-dom": "^18.0",
-        "rollup": "^4.30.1",
+        "rollup": "4.40.1",
         "rollup-plugin-esbuild": "^6.1.1",
         "rollup-plugin-node-externals": "^7.1.3",
         "rollup-plugin-shell": "^1.0.9",
@@ -126,9 +126,3 @@
         "typescript": "^5.7.0"
     }
 }
-
-
-
-
-
-

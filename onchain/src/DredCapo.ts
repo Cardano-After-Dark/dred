@@ -180,12 +180,12 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
             nodeOpSettings: {
                 expectedHeartbeatInterval: BigInt(72 * 60 * 60 * 1000),
                 minNodeOperatorStake: makeValue(20000n),
-                minNodeRegistrationFee: 10000n,
+                minNodeRegistrationFee: 10_000_000n,
                 requiredNodeUptime: 0.95,
             },
             nbhSettings: {
-                minNbhStake: makeValue(20000n),
-                minRegistrationFee: 10000n,
+                minRegistrationFee: 3_000_000_000n,
+                minNbhStake: makeValue(50_000_001n),
             },
         };
     }
@@ -273,13 +273,13 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
         );
     }
 
-    mkConfigData() {
-        throw new Error(`unused, but a basic example of how to create a MapData object`);
-        const uplcMap = makeMapData([
-            [makeByteArrayData(textToBytes("id")), makeByteArrayData(textToBytes("set"))],
-        ]);
-        return uplcMap;
-    }
+    // mkConfigData() {
+    //     throw new Error(`unused, but a basic example of how to create a MapData object`);
+    //     const uplcMap = makeMapData([
+    //         [makeByteArrayData(textToBytes("id")), makeByteArrayData(textToBytes("set"))],
+    //     ]);
+    //     return uplcMap;
+    // }
 
     todoAddNamedDelegates() {
         const delegates = {
