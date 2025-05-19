@@ -1,7 +1,13 @@
 module ProtocolSettings
 // import {FPSettings} from FundedPurposeSettings
 
-//sample
+
+import {
+    TODO,
+    REQT,
+    bREQT
+} from StellarHeliosHelpers
+
 import {NodeOperatorSettings} from NodeOperatorSettings
 import {NeighborhoodSettings} from NeighborhoodSettings
 /* Add imports for other modules here */
@@ -17,7 +23,9 @@ struct ProtocolSettings {
     // fundedPurposeSettings: FPSettings "fPurp"
 
     func validate(self) -> Bool { 
-        self == self &&
-        true
+        REQT("protocol settings: must validate nodeOpSettings and nbhSettings");
+
+        self.nodeOpSettings.validate() &&
+        self.nbhSettings.validate()
     }
 }

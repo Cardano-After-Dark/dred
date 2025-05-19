@@ -1,11 +1,25 @@
 module NodeOperatorSettings
 
+import {
+    TODO,
+    REQT,
+    bREQT
+} from StellarHeliosHelpers
+
 struct NodeOperatorSettings {
     expectedHeartbeatInterval: Duration "ndHbi"
     requiredNodeUptime: Int "ndUpt" // percentage
 
     minNodeRegistrationFee: Int "minFee"
     minNodeOperatorStake: Value "minStk"
+
+    func validate(self) -> Bool {
+        REQT("nodeOpSettings: must validate");
+        bREQT("reg fee must be positive") &&
+        (self.minNodeRegistrationFee > 0).trace("reg fee ok? ") &&
+        bREQT("minStake must be positive") &&
+        (self.minNodeOperatorStake.get_lovelace() > 0).trace("minStake ok? ")
+    }
 }
 
 struct AbstractSettingsForNodeOperator {
