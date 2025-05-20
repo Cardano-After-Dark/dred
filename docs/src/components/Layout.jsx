@@ -12,14 +12,21 @@ import { Search } from '@/components/Search'
 import { ThemeSelector } from '@/components/ThemeSelector'
 
 const navigation = [
-  {
-    title: 'Introduction',
-    links: [
-      { title: 'Getting started', href: '/' },
-      { title: 'Installation', href: '/docs/installation' },
-    ],
-  },
-  {
+    {
+        title: 'Introduction',
+        links: [
+          { title: 'Getting started', href: '/' },
+          { title: 'Installation', href: '/docs/installation' },
+        ],
+    },
+    {
+        title: 'Blog',
+        links: [
+          { title: '2025-05-19: Hydra compatibility', href: '/blog/2025-05-19-hydra-compat' },
+          { title: '2025-05-01: Deploy Node Registry', href: '/blog/2025-05-01-deploying-node-registry' },
+        ],
+    },
+    {
     title: 'Core concepts',
     links: [
         { title: 'Understanding Dred', href: '/docs/understanding-dred' },
