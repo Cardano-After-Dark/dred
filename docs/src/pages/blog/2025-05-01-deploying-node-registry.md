@@ -9,11 +9,11 @@ How we roll out a meta-contract with long-term support for the on-chain contract
 
 Make something work "enough", and (potentially) ship it.  Update it, and ship it again.  That's one of the mantras of the Agile lifestyle.  The lesson: small changes are safer than big ones.
 
-With on-chain software, it's long been a tension that we had to make our software do everything we wanted, audit it to make it perfect (enough), and only then, to deploy.  Modifiying minting policies?  Poppycock!  Updating on-chain logic?  Hogwash!  
+With on-chain software, it's long been a tension that we had to make our on-chain software do everything we wanted, audit it to make it perfect (enough), and only then, to deploy.  Modifiying minting policies?  Poppycock!  Updating on-chain scripts?  Hogwash!  
 
 ### Upgradeable (Almost) Everything
 
-We're using Stellar Contracts to create a framework for robust on-chain managment of the on-chain software development lifecycle.  We'll post more about how it makes that possible, under separate cover.
+We're using Stellar Contracts to enable the Dred on-chain protocol to be upgraded over time, supporting the long-term on-chain software development lifecycle.  We'll post more about how it makes that possible, under separate cover.  
 
 ### Dred Node registry: Deployment
 
