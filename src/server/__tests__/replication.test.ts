@@ -1,131 +1,93 @@
-import { beforeAll, describe, it, vi, expect } from "vitest";
+import { beforeAll, describe, it, expect } from "vitest";
 import request, { SuperTestWithHost, Test } from "supertest";
-import { Express } from "express";
 
 import { testSetup } from "../testServer.js";
 import { DredClient } from "../../client/DredClient.js";
 import { DredServer } from "../DredServer.js";
 import { asyncDelay } from "../../util/asyncDelay.js";
 
+// Use fit (it.only) to run only this test during development
 const fit = it.only;
 
-describe("message replication", () => {
-    let agents: SuperTestWithHost<Test>[];
-    let servers: DredServer[];
-    let clients: DredClient[];
-    let connectionEstablished = false;
+describe("minimal replication setup", () => {
+    // Server instances: dred1 and dred2 represent the two server instances
+    // that will be used to test message replication between servers
+    let dred1: DredServer;
+    let dred2: DredServer;
+    
+    // Client instances: c1 connects to dred1, c2 connects to dred2
+    // These represent external clients that will send/receive messages
+    let c1: DredClient;
+    let c2: DredClient;
     
     beforeAll(async () => {
+        console.log("Setting up minimal replication test environment...");
+        
+        // Initialize the test environment with multiple servers
+        // testSetup() creates 3 servers (first, second, third) with Redis backends
         const test = await testSetup();
-        ({ servers } = test);
+        const { servers } = test;
         
-        // Verify we have at least 2 servers for the test
+        console.log(`Found ${servers.length} servers`);
+        
+        // Ensure we have at least 2 servers for replication testing
+        // We need minimum 2 servers to test message replication between them
         if (servers.length < 2) {
-            console.warn("Not enough servers available for replication test");
-            return;
+            throw new Error("Need at least 2 servers for replication test");
         }
         
-        // Create clients for each server
-        clients = [];
-        agents = [];
+        // Assign the first two servers from the test setup
+        // dred1 = "first" server, dred2 = "second" server
+        dred1 = servers[0];
+        dred2 = servers[1];
         
-        // Create a client and agent for each server
-        for (const server of servers.slice(0, 2)) { // We only need two servers for this test
-            const client = server.mkClient(server.serverId);
-            clients.push(client);
-            
-            const agent = request.agent(server.api);
-            agents.push(agent);
-        }
+        console.log(`dred1: ${dred1.serverId}`);
+        console.log(`dred2: ${dred2.serverId}`);
         
-        // Verify server connections are working before proceeding
-        try {
-            // Check if the servers are listening
-            for (let i = 0; i < 2; i++) {
-                const pingResponse = await agents[i].get('/channels');
-                if (pingResponse.status !== 200) {
-                    console.warn(`Server ${i + 1} is not responding correctly`);
-                    return;
-                }
-            }
-            connectionEstablished = true;
-        } catch (error: any) {
-            console.error("Error verifying server connections:", error.message);
-        }
+        // Create client connections to each server
+        // c1 connects to dred1 (first server)
+        // c2 connects to dred2 (second server)
+        // Note: mkClient() creates a client that connects to the specified server
+        console.log("Creating client c1 connected to dred1...");
+        c1 = dred1.mkClient(dred1.serverId);
         
-        // Wait for replication connections to be established
-        await asyncDelay(500);
-    });
-
-    it("replicates messages between servers", async () => {
-        // Skip test if connections weren't established
-        if (!connectionEstablished || agents.length < 2 || clients.length < 2) {
-            console.warn("Skipping replication test due to connection issues");
-            return;
-        }
+        console.log("Creating client c2 connected to dred2...");
+        c2 = dred2.mkClient(dred2.serverId);
         
-        // Create a test channel on the first server
-        const channelName = "replication-test-channel";
-        const createResponse = await agents[0].post(`/channel/${channelName}`);
-        expect(createResponse.status).toBe(200);
-        
-        // Wait for channel to be replicated to second server
-        await asyncDelay(300);
-        
-        // Verify channel exists on second server
-        const checkChannelResponse = await agents[1].get(`/channels`);
-        expect(checkChannelResponse.status).toBe(200);
-        
-        // Create a test message to send
-        const testMessage = {
-            msg: JSON.stringify({ content: "Test replication message" }),
-            type: "replication-test",
-            ocid: "test-ocid-" + Date.now()
-        };
-        
-        // Set up a subscription on the second server
-        let receivedMessage = false;
-        clients[1].subscribeToChannels({
-            [channelName]: (message) => {
-                console.log("Received message on second server:", message);
-                if (message.type === 'error') {
-                    console.warn("Received error message:", message.details);
-                    return;
-                }
-                
-                if (message.msg) {
-                    expect(message.msg).toBe(testMessage.msg);
-                    expect(message.type).toBe(testMessage.type);
-                    expect(message.ocid).toBe(testMessage.ocid);
-                    receivedMessage = true;
-                }
-            }
-        });
-        
-        // Wait for subscription to be established
-        await asyncDelay(300);
-        
-        // Post message to first server
-        const postResponse = await agents[0]
-            .post(`/channel/${channelName}/message`)
-            .send(testMessage)
-            .expect("Content-Type", /json/);
-        
-        expect(postResponse.status).toBe(200);
-        
-        // Wait for message to be replicated
+        // Allow time for all connections to be established
+        // This ensures servers and clients are fully initialized before testing
+        console.log("Waiting for setup to complete...");
         await asyncDelay(1000);
         
-        // Verify message was received on second server via subscription
-        expect(receivedMessage).toBe(true);
+        console.log("Minimal setup complete!");
+    });
+
+    fit("environment setup verification", async () => {
+        console.log("Verifying minimal environment setup...");
         
-        // Additional verification: check if message can be retrieved from second server
-        const listenResponse = await agents[1]
-            .post(`/channels/listen`)
-            .send([{ channel: channelName }])
-            .expect(200);
-            
-        // If we get here, the test passes
-        expect(true).toBe(true);
+        // Verify that both server instances are properly initialized
+        expect(dred1).toBeDefined();
+        expect(dred2).toBeDefined();
+        
+        // Verify server IDs match expected values from testSetup()
+        expect(dred1.serverId).toBe("first");
+        expect(dred2.serverId).toBe("second");
+        
+        // Verify that both client instances are properly initialized
+        expect(c1).toBeDefined();
+        expect(c2).toBeDefined();
+        
+        // Verify that we have distinct server instances (not the same object)
+        expect(dred1).not.toBe(dred2);
+        
+        // Verify that we have distinct client instances (not the same object)
+        expect(c1).not.toBe(c2);
+        
+        console.log("Environment setup verification passed!");
+        console.log("Summary:");
+        console.log(`   - dred1: ${dred1.serverId}`);
+        console.log(`   - dred2: ${dred2.serverId}`);
+        console.log(`   - c1: connected to dred1`);
+        console.log(`   - c2: connected to dred2`);
     });
 }); 

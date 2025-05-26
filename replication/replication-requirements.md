@@ -54,10 +54,19 @@ To get started with development, ensure the following prerequisites:
 1. Create a new test file `replication.test.ts` similar to `src/server/__tests__/peers.test.ts`
 
 2. Implement a test that verifies replication:
-   - Launch two instances of Dred server: `dred1` and `dred2`
-   - Create two clients: `c1` connected to `dred1` and `c2` connected to `dred2`
-   - Send a message from `c1` to `dred1`
-   - Verify the message sent from `c1` to `dred1` is also received by `c2` from `dred2`
+   - Launch two instances of Dred server: `dred1` and `dred2` 
+     - Create a neighborhood `nb1`
+     - Verify that each server has an internal replication client: `rc1` and `rc2` listening to `nb1`
+   - Create two (external) clients: `c1` connected to `dred1` and `c2` connected to `dred2`
+     - Connect the `c1` and `c2` through `nb1`
+   - Send a message from `c1` to `nb1`
+     - Verify the message sent from `c1` to `nb1` is received by `rc2` (according to the Pull model) 
+     (implementation level: could help troubleshooting)
+     - Verify the message sent from `c1` on `nb1` through `dred1` is received by `c2` through `dred2` 
+     (integration level: most important for testing )
+   - Send a message from `c2` (conn to `dred2`) to `nb1`
+     - Verify the message sent from `c2` to `nb1` is received by `rc1` (..)
+
 
 3. Testing utilities:
    - Use `make client for` to create clients targeting specific server instances
