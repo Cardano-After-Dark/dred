@@ -18,6 +18,9 @@ describe("minimal replication setup", () => {
     let c1: DredClient;
     let c2: DredClient;
     
+    // Neighborhood for connecting clients
+    const neighborhoodId = "nb1";
+    
     beforeAll(async () => {
         console.log("Setting up minimal replication test environment...");
         
@@ -49,10 +52,18 @@ describe("minimal replication setup", () => {
         console.log("Waiting for setup to complete...");
         await asyncDelay(1000);
         
-        console.log("Minimal setup complete!");
+        // Set neighborhood for both clients
+        console.log(`Setting neighborhood ${neighborhoodId} for both clients...`);
+        c1.setNeighborhood(neighborhoodId);
+        c2.setNeighborhood(neighborhoodId);
+        
+        // Allow time for neighborhood setup
+        await asyncDelay(500);
+        
+        console.log("Minimal setup with neighborhood complete!");
     });
 
-    fit("environment setup verification", async () => {
+    it("environment setup verification", async () => {
         console.log("Verifying minimal environment setup...");
         
         // Verify server instances are initialized
@@ -69,12 +80,16 @@ describe("minimal replication setup", () => {
         expect(dred1).not.toBe(dred2);
         expect(c1).not.toBe(c2);
         
+        // Verify neighborhood is set
+        expect(c1.neighborhoodId).toBe(neighborhoodId);
+        expect(c2.neighborhoodId).toBe(neighborhoodId);
+        
         console.log("Environment setup verification passed!");
         console.log("Summary:");
         console.log(`   - dred1: ${dred1.serverId}`);
         console.log(`   - dred2: ${dred2.serverId}`);
-        console.log(`   - c1: connected to dred1`);
-        console.log(`   - c2: connected to dred2`);
+        console.log(`   - c1: connected to dred1 and ${neighborhoodId}`);
+        console.log(`   - c2: connected to dred2 and ${neighborhoodId}`);
     });
 
     afterAll(async () => {
