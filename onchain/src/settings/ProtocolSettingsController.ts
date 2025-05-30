@@ -18,6 +18,7 @@ import { makeByteArrayData, makeMapData } from "@helios-lang/uplc";
 import { encodeUtf8 } from "@helios-lang/codec-utils";
 import { DredCapo } from "../DredCapo.js";
 import { makeValue } from "@helios-lang/ledger";
+import { ADA } from "@donecollectively/stellar-contracts/testing";
 
 export class ProtocolSettingsController extends DelegatedDataContract<
     ProtocolSettings,
@@ -61,13 +62,13 @@ export class ProtocolSettingsController extends DelegatedDataContract<
         const settings: minimalProtocolSettings = {
             nodeOpSettings: {
                 expectedHeartbeatInterval: 7 * 24 * 60 * 60 * 1000,
-                minNodeOperatorStake: makeValue(20_000n),
-                minNodeRegistrationFee: 2_000n,
-                requiredNodeUptime: 90n,
+                minNodeOperatorStake: makeValue(200n * ADA),
+                minNodeRegistrationFee: makeValue(50n * ADA),
+                requiredNodeUptime: 0.95
             },            
             nbhSettings: {
-                minNbhStake: makeValue(50_000_001n),
-                minRegistrationFee: 4_000_000_000n
+                minNbhStake: makeValue(5_000n * ADA),
+                minRegistrationFee: makeValue(4_000n * ADA)
             },
             /* Add other settings here */
         };

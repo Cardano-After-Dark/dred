@@ -1,7 +1,7 @@
 
 import { CapoDelegateBundle, DelegatedDataBundle } from "@donecollectively/stellar-contracts"
 import NodeRegistryPolicy from "./NodeRegistryPolicy.hl"
-import ProtocolSettings from "../settings/ProtocolSettings.hl"
+// import ProtocolSettingsData from "../settings/ProtocolSettingsData.hl"
 import NodeOperatorSettings from "./NodeOperatorSettings.hl"
 
 import DredCapoBundle from "../DredCapo.hlb.js";

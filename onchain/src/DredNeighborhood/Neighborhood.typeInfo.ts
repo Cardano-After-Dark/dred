@@ -2570,7 +2570,7 @@ export interface CapoCtxLike {
  * @public
  */
 export interface NeighborhoodSettings {
-    minRegistrationFee: /*minStructField*/ bigint
+    minRegistrationFee: /*minStructField*/ Value
     minNbhStake: /*minStructField*/ Value
 }
 
@@ -2593,7 +2593,7 @@ export type ErgoNeighborhoodSettings = NeighborhoodSettings/*like canon-other*/
  * @public
  */
 export interface NeighborhoodSettingsLike {
-    minRegistrationFee: /*minStructField*/ IntLike
+    minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
     minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 

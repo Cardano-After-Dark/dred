@@ -297,8 +297,8 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
        */
         NodeOperatorSettings: (fields: NodeOperatorSettingsLike | {
     expectedHeartbeatInterval: /*minStructField*/ IntLike
-    requiredNodeUptime: /*minStructField*/ IntLike
-    minNodeRegistrationFee: /*minStructField*/ IntLike
+    requiredNodeUptime: /*minStructField*/ number
+    minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
     minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 ) => {
@@ -9671,7 +9671,7 @@ export const NodeOperatorSettingsSchema : StructTypeSchema = {
             "name": "requiredNodeUptime",
             "type": {
                 "kind": "internal",
-                "name": "Int"
+                "name": "Real"
             },
             "key": "ndUpt"
         },
@@ -9679,7 +9679,7 @@ export const NodeOperatorSettingsSchema : StructTypeSchema = {
             "name": "minNodeRegistrationFee",
             "type": {
                 "kind": "internal",
-                "name": "Int"
+                "name": "Value"
             },
             "key": "minFee"
         },
@@ -9720,7 +9720,7 @@ export const AbstractSettingsForNodeOperatorSchema : StructTypeSchema = {
                         "name": "requiredNodeUptime",
                         "type": {
                             "kind": "internal",
-                            "name": "Int"
+                            "name": "Real"
                         },
                         "key": "ndUpt"
                     },
@@ -9728,7 +9728,7 @@ export const AbstractSettingsForNodeOperatorSchema : StructTypeSchema = {
                         "name": "minNodeRegistrationFee",
                         "type": {
                             "kind": "internal",
-                            "name": "Int"
+                            "name": "Value"
                         },
                         "key": "minFee"
                     },

@@ -184,8 +184,8 @@ export interface DelegationDetailLike {
  */
 export interface NodeOperatorSettings {
     expectedHeartbeatInterval: /*minStructField*/ bigint
-    requiredNodeUptime: /*minStructField*/ bigint
-    minNodeRegistrationFee: /*minStructField*/ bigint
+    requiredNodeUptime: /*minStructField*/ number
+    minNodeRegistrationFee: /*minStructField*/ Value
     minNodeOperatorStake: /*minStructField*/ Value
 }
 
@@ -209,8 +209,8 @@ export type ErgoNodeOperatorSettings = NodeOperatorSettings/*like canon-other*/
  */
 export interface NodeOperatorSettingsLike {
     expectedHeartbeatInterval: /*minStructField*/ IntLike
-    requiredNodeUptime: /*minStructField*/ IntLike
-    minNodeRegistrationFee: /*minStructField*/ IntLike
+    requiredNodeUptime: /*minStructField*/ number
+    minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
     minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 
@@ -225,7 +225,7 @@ export interface NodeOperatorSettingsLike {
  * @public
  */
 export interface NeighborhoodSettings {
-    minRegistrationFee: /*minStructField*/ bigint
+    minRegistrationFee: /*minStructField*/ Value
     minNbhStake: /*minStructField*/ Value
 }
 
@@ -248,7 +248,7 @@ export type ErgoNeighborhoodSettings = NeighborhoodSettings/*like canon-other*/
  * @public
  */
 export interface NeighborhoodSettingsLike {
-    minRegistrationFee: /*minStructField*/ IntLike
+    minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
     minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 

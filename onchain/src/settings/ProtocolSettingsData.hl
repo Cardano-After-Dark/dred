@@ -1,4 +1,4 @@
-module ProtocolSettings
+module ProtocolSettingsData
 // import {FPSettings} from FundedPurposeSettings
 
 

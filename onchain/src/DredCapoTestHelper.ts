@@ -19,7 +19,7 @@ import {
 } from "@donecollectively/stellar-contracts";
 
 import { DredCapo } from "./DredCapo.js";
-import type { minimalNodeRegistrationData, NodeRegistrationData, NodeRegistrationDataLike } from "dred-network-registry";
+import type { ErgoProtocolSettings, minimalNodeRegistrationData, NodeRegistrationData, NodeRegistrationDataLike } from "dred-network-registry";
 import { vi } from "vitest";
 import type { hasMemberToken } from "stellar-tokenomics";
 
@@ -175,6 +175,28 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(
         const { submit = true, txnName = "test helper node update", updatedFields = {} } = options;
         const registryDgt = await this.registryDgt();
         const tcx = await registryDgt.mkTxnUpdatingNodeRegistration(txnName, node, {
+            updatedFields: {
+                ...updatedFields,
+            },            
+        });
+        if (!submit) return tcx;
+        return this.submitTxnWithBlock(tcx);
+    }
+
+    async updateSettings(
+        settings: FoundDatumUtxo<ErgoProtocolSettings, any>,
+        options: {
+            submit?: boolean;
+            txnName?: string;
+            updatedFields: Partial<minimalData<ErgoProtocolSettings>>
+        }
+    ) {
+        const { submit = true, txnName = "test helper settings update", updatedFields = {} } = options;
+        const settingsController = await this.capo.getSettingsController({
+            charterData: await this.capo.findCharterData(),
+        });
+        const tcx = settingsController.mkTxnUpdateRecord(txnName, settings, {
+            activity: settingsController.activity.SpendingActivities.UpdatingRecord(settings.data!.id),
             updatedFields: {
                 ...updatedFields,
             },            

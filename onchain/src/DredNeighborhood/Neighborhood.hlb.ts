@@ -1,7 +1,7 @@
 // This is a template file - EJS syntax is used
 import { CapoDelegateBundle, DelegatedDataBundle } from "@donecollectively/stellar-contracts"
 import NeighborhoodPolicy from "./NeighborhoodPolicy.hl"
-import ProtocolSettings from "../settings/ProtocolSettings.hl"
+import ProtocolSettingsData from "../settings/ProtocolSettingsData.hl"
 import NeighborhoodSettings from "./NeighborhoodSettings.hl"
 
 import DredCapo from "../DredCapo.hlb.js";

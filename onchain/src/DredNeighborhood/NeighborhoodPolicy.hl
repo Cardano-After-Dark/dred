@@ -56,7 +56,7 @@ import {
 // definition instead, having only the settings area you need.
 // import {
 //     ProtocolSettings
-// } from ProtocolSettings
+// } from ProtocolSettingsData
 
 import {
     NeighborhoodData

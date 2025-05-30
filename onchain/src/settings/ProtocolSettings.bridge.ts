@@ -232,8 +232,8 @@ export class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
        */
         NodeOperatorSettings: (fields: NodeOperatorSettingsLike | {
     expectedHeartbeatInterval: /*minStructField*/ IntLike
-    requiredNodeUptime: /*minStructField*/ IntLike
-    minNodeRegistrationFee: /*minStructField*/ IntLike
+    requiredNodeUptime: /*minStructField*/ number
+    minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
     minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 ) => {
@@ -243,7 +243,7 @@ export class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
        * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
        */
         NeighborhoodSettings: (fields: NeighborhoodSettingsLike | {
-    minRegistrationFee: /*minStructField*/ IntLike
+    minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
     minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 ) => {
@@ -3258,7 +3258,7 @@ export const NodeOperatorSettingsSchema : StructTypeSchema = {
             "name": "requiredNodeUptime",
             "type": {
                 "kind": "internal",
-                "name": "Int"
+                "name": "Real"
             },
             "key": "ndUpt"
         },
@@ -3266,7 +3266,7 @@ export const NodeOperatorSettingsSchema : StructTypeSchema = {
             "name": "minNodeRegistrationFee",
             "type": {
                 "kind": "internal",
-                "name": "Int"
+                "name": "Value"
             },
             "key": "minFee"
         },
@@ -3291,7 +3291,7 @@ export const NeighborhoodSettingsSchema : StructTypeSchema = {
             "name": "minRegistrationFee",
             "type": {
                 "kind": "internal",
-                "name": "Int"
+                "name": "Value"
             },
             "key": "minRegFee"
         },
@@ -3309,7 +3309,7 @@ export const NeighborhoodSettingsSchema : StructTypeSchema = {
 export const ProtocolSettingsSchema : StructTypeSchema = {
     "kind": "struct",
     "format": "map",
-    "id": "__module__ProtocolSettings__ProtocolSettings[]",
+    "id": "__module__ProtocolSettingsData__ProtocolSettings[]",
     "name": "ProtocolSettings",
     "fieldTypes": [
         {
@@ -3348,7 +3348,7 @@ export const ProtocolSettingsSchema : StructTypeSchema = {
                         "name": "requiredNodeUptime",
                         "type": {
                             "kind": "internal",
-                            "name": "Int"
+                            "name": "Real"
                         },
                         "key": "ndUpt"
                     },
@@ -3356,7 +3356,7 @@ export const ProtocolSettingsSchema : StructTypeSchema = {
                         "name": "minNodeRegistrationFee",
                         "type": {
                             "kind": "internal",
-                            "name": "Int"
+                            "name": "Value"
                         },
                         "key": "minFee"
                     },
@@ -3384,7 +3384,7 @@ export const ProtocolSettingsSchema : StructTypeSchema = {
                         "name": "minRegistrationFee",
                         "type": {
                             "kind": "internal",
-                            "name": "Int"
+                            "name": "Value"
                         },
                         "key": "minRegFee"
                     },
@@ -3508,7 +3508,7 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                     "type": {
                         "kind": "struct",
                         "format": "map",
-                        "id": "__module__ProtocolSettings__ProtocolSettings[]",
+                        "id": "__module__ProtocolSettingsData__ProtocolSettings[]",
                         "name": "ProtocolSettings",
                         "fieldTypes": [
                             {
@@ -3547,7 +3547,7 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                             "name": "requiredNodeUptime",
                                             "type": {
                                                 "kind": "internal",
-                                                "name": "Int"
+                                                "name": "Real"
                                             },
                                             "key": "ndUpt"
                                         },
@@ -3555,7 +3555,7 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                             "name": "minNodeRegistrationFee",
                                             "type": {
                                                 "kind": "internal",
-                                                "name": "Int"
+                                                "name": "Value"
                                             },
                                             "key": "minFee"
                                         },
@@ -3583,7 +3583,7 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                             "name": "minRegistrationFee",
                                             "type": {
                                                 "kind": "internal",
-                                                "name": "Int"
+                                                "name": "Value"
                                             },
                                             "key": "minRegFee"
                                         },

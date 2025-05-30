@@ -63,7 +63,7 @@ import {
 
 import {
     ProtocolSettings
-} from ProtocolSettings
+} from ProtocolSettingsData
 
 import {
     CapoCtx,

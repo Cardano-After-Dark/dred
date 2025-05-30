@@ -336,7 +336,7 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
        * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
        */
         NeighborhoodSettings: (fields: NeighborhoodSettingsLike | {
-    minRegistrationFee: /*minStructField*/ IntLike
+    minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
     minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 ) => {
@@ -10781,7 +10781,7 @@ export const NeighborhoodSettingsSchema : StructTypeSchema = {
             "name": "minRegistrationFee",
             "type": {
                 "kind": "internal",
-                "name": "Int"
+                "name": "Value"
             },
             "key": "minRegFee"
         },
@@ -10814,7 +10814,7 @@ export const AbstractSettingsForNeighborhoodSchema : StructTypeSchema = {
                         "name": "minRegistrationFee",
                         "type": {
                             "kind": "internal",
-                            "name": "Int"
+                            "name": "Value"
                         },
                         "key": "minRegFee"
                     },

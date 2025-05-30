@@ -1,22 +1,36 @@
-import { describe, expect, it, beforeEach, vi } from "vitest";
+import { 
+    beforeEach, 
+    describe as descrWithContext, 
+    expect, 
+    it as itWithContext,
+    vi
+} from "vitest";
+
 import {
     ADA,
     addTestContext,
     type StellarTestContext,
     type TestHelperState,
 } from "@donecollectively/stellar-contracts/testing";
-import { DredTestHelper, helperState } from "./DredTestHelper.js";
+import { DredCapo } from "./DredCapo.js";
+import { DredCapoTestHelper, type DredCapo_TC, helperState } from "./DredCapoTestHelper.js";
+import { minimalData } from "@donecollectively/stellar-contracts";
+import { ErgoProtocolSettings } from "./settings/ProtocolSettings.typeInfo.js";
+import { makeValue } from "@helios-lang/ledger";
 
-// Define the test context type
-type DRED_TC = StellarTestContext<DredTestHelper>;
+const it = itWithContext<DredCapo_TC>;
+const fit = it.only;
+const xit = it.skip;
+
+const describe = descrWithContext<DredCapo_TC>;
 
 describe("DRED Settings", () => {
-    beforeEach<DRED_TC>(async (context) => {
+    beforeEach<DredCapo_TC>(async (context) => {
         await new Promise((res) => setTimeout(res, 10));
         console.log("\n\n\n\n   ==================== ======================");
         await addTestContext(
             context,
-            DredTestHelper,
+            DredCapoTestHelper,
             undefined,
             helperState
         );
@@ -24,150 +38,132 @@ describe("DRED Settings", () => {
     });
 
     describe("has custom settings for DRED node parameters", () => {
-        it("has node registration settings", async (context: DRED_TC) => {
+        it("has node registration settings", async (context: DredCapo_TC) => {
             const {
                 h,
                 h: { network, actors, delay, state },
             } = context;
 
-            const settings = await h.reusableBootstrap();
-            expect(settings.nodeRegistration).toBeDefined();
-            expect(settings.nodeRegistration.heartbeatInterval).toBe(30000);
-            expect(settings.nodeRegistration.minimumStake).toBe(8_000n * ADA);
-            expect(settings.nodeRegistration.networkAddress).toBeDefined();
-            expect(settings.nodeRegistration.networkAddress.minPort).toBe(1024);
-            expect(settings.nodeRegistration.networkAddress.maxPort).toBe(65535);
+            await h.reusableBootstrap();
+            const capo = h.capo;
+            const settings = await capo.findSettingsInfo({
+                charterData: await capo.findCharterData(),
+            });
+            const {nodeOpSettings} = settings.data!;
+            expect(nodeOpSettings).toBeDefined();
+            expect(nodeOpSettings.expectedHeartbeatInterval).toBeGreaterThan(300_000);
+            expect(nodeOpSettings.minNodeOperatorStake.lovelace).toBeGreaterThan(40n * ADA);
+            expect(nodeOpSettings.requiredNodeUptime).toBe(0.95);
+            expect(nodeOpSettings.minNodeRegistrationFee.lovelace).toBeGreaterThan(0n);
         });
 
-        it("has node heartbeat settings", async (context: DRED_TC) => {
+        it("has neighborhood settings", async (context: DredCapo_TC) => {
             const {
                 h,
                 h: { network, actors, delay, state },
             } = context;
 
-            const settings = await h.reusableBootstrap();
-            expect(settings.nodeRegistration.heartbeatInterval).toBeDefined();
-            expect(settings.nodeRegistration.maxMissedHeartbeats).toBe(3);
+            await h.reusableBootstrap();
+            const capo = h.capo;
+            const settings = await capo.findSettingsInfo({
+                charterData: await capo.findCharterData(),
+            });
+
+            const {
+                minNbhStake,
+                minRegistrationFee,
+            } = settings.data!.nbhSettings;
+
+            expect(minNbhStake.lovelace).toBeGreaterThan(0n);
+            expect(minRegistrationFee.lovelace).toBeGreaterThan(0n);
         });
     });
 
     describe("can update the settings", () => {
-        it("applies the new settings on-chain", async (context: DRED_TC) => {
+        it("applies the new settings on-chain", async (context: DredCapo_TC) => {
             const {
                 h,
                 h: { network, actors, delay, state },
             } = context;
 
-            h.setActor("admin1");
-            const settings = await h.reusableBootstrap();
+            await h.reusableBootstrap();
+            // await h.setActor("admin1");
+            const capo = h.capo;
 
-            // Test updating settings
-            const updating = {
-                nodeRegistration: {
-                    heartbeatInterval: 42000,
-                    maxMissedHeartbeats: 5
+            const charterData = await capo.findCharterData();
+            const settings = await capo.findSettingsInfo({
+                charterData,
+            });
+            const updatedFields : Partial<minimalData<ErgoProtocolSettings>> = {
+                nodeOpSettings: {
+                    expectedHeartbeatInterval: 42000n,
+                    minNodeOperatorStake: makeValue(10_000n),
+                    minNodeRegistrationFee: makeValue(10_000n),
+                    requiredNodeUptime: 0.95,
+                },
+                nbhSettings: {
+                    minNbhStake: makeValue(10_000n * ADA),
+                    minRegistrationFee: makeValue(1_000n * ADA),
                 },
             };
 
+            await h.updateSettings(settings, {
+                updatedFields,
+                submit: true,
+            });
+
+            const newSettingsUtxo = await capo.findSettingsInfo({
+                charterData,
+            });
+            const {data: newSettings} = newSettingsUtxo;
+            if (!newSettings) {
+                throw new Error("No new settings found");
+            }
             // Add update logic here
-            expect(settings.nodeRegistration.heartbeatInterval).toBe(30000);
-            expect(settings.nodeRegistration.maxMissedHeartbeats).toBe(3);
+            expect(newSettings.nodeOpSettings.expectedHeartbeatInterval).toBe(42000n);
+            expect(newSettings.nodeOpSettings.minNodeOperatorStake.lovelace).toBe(10_000n);
+            expect(newSettings.nodeOpSettings.minNodeRegistrationFee.lovelace).toBe(10_000n);
+            expect(newSettings.nbhSettings.minNbhStake.lovelace).toBe(10_000n * ADA);
+            expect(newSettings.nbhSettings.minRegistrationFee.lovelace).toBe(1_000n * ADA);
             // After update would be 42000 and 5 respectively
         });
 
-        it("won't update the settings without proper authorization", async (context: DRED_TC) => {
+        it("won't update the settings without proper authorization", async (context: DredCapo_TC) => {
             const {
                 h,
                 h: { network, actors, delay, state },
             } = context;
 
-            const settings = await h.reusableBootstrap();
-
-            // Mock authorization check
-            const authCheck = vi.fn().mockImplementation(() => {
-                throw new Error("Unauthorized settings update");
+            await h.reusableBootstrap();
+            const capo = h.capo;
+            const charterData = await capo.findCharterData();
+            const settings = await capo.findSettingsInfo({
+                charterData,
+            });
+            const updatedFields : Partial<minimalData<ErgoProtocolSettings>> = {
+                nodeOpSettings: {
+                    expectedHeartbeatInterval: 42000n,
+                    minNodeOperatorStake: makeValue(10_000n),
+                    minNodeRegistrationFee: makeValue(10_000n),
+                    requiredNodeUptime: 0.95,
+                },
+                nbhSettings: {
+                    minNbhStake: makeValue(10_000n * ADA),
+                    minRegistrationFee: makeValue(1_000n * ADA),
+                },
+            };
+            vi.spyOn(capo, "txnAddGovAuthority").mockImplementation((tcx) => tcx as any);
+            const authCheck = h.updateSettings(settings, {
+                updatedFields,
+                submit: true,
             });
 
             // Test unauthorized update
             await expect(
-                authCheck()
-            ).rejects.toThrow(/Unauthorized settings update/);
+                authCheck
+            ).rejects.toThrow(/script validation.* missing required input .* dgTkn capoGov/);
         });
     });
 
-    describe("node registration validation", () => {
-        it("validates minimum stake requirement", async (context: DRED_TC) => {
-            const {
-                h,
-                h: { network, actors, delay, state },
-            } = context;
-
-            const settings = await h.reusableBootstrap();
-            
-            // Test node with insufficient stake
-            h.setActor("node3"); // Has exactly minimum stake
-            expect(settings.nodeRegistration.minimumStake).toBe(8_000n * ADA);
-            
-            // Would throw for insufficient stake
-            const insufficientStake = () => {
-                h.addActor("insufficientNode", 7_000n * ADA);
-            };
-            expect(insufficientStake).toThrow();
-        });
-
-        it("validates network address settings", async (context: DRED_TC) => {
-            const {
-                h,
-                h: { network, actors, delay, state },
-            } = context;
-
-            const settings = await h.reusableBootstrap();
-            
-            expect(settings.nodeRegistration.networkAddress.minPort).toBe(1024);
-            expect(settings.nodeRegistration.networkAddress.maxPort).toBe(65535);
-            
-            // Invalid port numbers would be rejected
-            const invalidPort = () => {
-                return {
-                    ...settings.nodeRegistration,
-                    networkAddress: {
-                        minPort: 0, // Invalid system port
-                        maxPort: 65535
-                    }
-                };
-            };
-            expect(invalidPort).toThrow();
-        });
-    });
-
-    describe("delegates and authorization", () => {
-        it("has delegates for controlling node settings", async (context: DRED_TC) => {
-            const {
-                h,
-                h: { network, actors, delay, state },
-            } = context;
-
-            h.setActor("admin1");
-            const settings = await h.reusableBootstrap();
-            expect(settings.nodeRegistration).toBeDefined();
-        });
-
-        it("enforces proper authorization for settings updates", async (context: DRED_TC) => {
-            const {
-                h,
-                h: { network, actors, delay, state },
-            } = context;
-
-            const settings = await h.reusableBootstrap();
-            
-            // Test unauthorized access
-            const unauthorizedUpdate = () => {
-                h.setActor("node1"); // Non-admin actor
-                return settings.nodeRegistration.heartbeatInterval = 50000;
-            };
-            
-            expect(unauthorizedUpdate).toThrow();
-        });
-    });
 });
 
