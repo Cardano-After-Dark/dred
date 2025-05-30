@@ -243,7 +243,7 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
     memberToken: /*minStructField*/ string
     nodeAddress: /*minStructField*/ string
     nodePort: /*minStructField*/ IntLike
-    nodePublicKey: /*minStructField*/ number[]
+    nodePublicKey: /*minStructField*/ PubKey | string | number[]
     lastHeartbeat: /*minStructField*/ TimeLike
 }
 ) => {
@@ -3448,7 +3448,7 @@ export const NodeRegistrationDataSchema : StructTypeSchema = {
             "name": "nodePublicKey",
             "type": {
                 "kind": "internal",
-                "name": "ByteArray"
+                "name": "PubKey"
             },
             "key": "pubk"
         },
@@ -3615,7 +3615,7 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                 "name": "nodePublicKey",
                                 "type": {
                                     "kind": "internal",
-                                    "name": "ByteArray"
+                                    "name": "PubKey"
                                 },
                                 "key": "pubk"
                             },

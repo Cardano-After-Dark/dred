@@ -66,7 +66,7 @@ export class NodeRegistryController extends DelegatedDataContract<
 
             // bad data, but good enough for being a lame example.  
             // It should be a valid Ed25519 public key, expressed as a numeric array
-            nodePublicKey: makePubKey(textToBytes("0x1234567890abcdef1234567890abcdef")),
+            nodePublicKey: makeDummyPubKey()
         };
     }
 

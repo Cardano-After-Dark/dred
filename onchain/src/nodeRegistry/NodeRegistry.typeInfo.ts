@@ -188,7 +188,7 @@ export interface NodeRegistrationData {
     memberToken: /*minStructField*/ string
     nodeAddress: /*minStructField*/ string
     nodePort: /*minStructField*/ bigint
-    nodePublicKey: /*minStructField*/ number[]
+    nodePublicKey: /*minStructField*/ PubKey
     lastHeartbeat: /*minStructField*/ number
 }
 
@@ -216,7 +216,7 @@ export interface NodeRegistrationDataLike {
     memberToken: /*minStructField*/ string
     nodeAddress: /*minStructField*/ string
     nodePort: /*minStructField*/ IntLike
-    nodePublicKey: /*minStructField*/ number[]
+    nodePublicKey: /*minStructField*/ PubKey | string | number[]
     lastHeartbeat: /*minStructField*/ TimeLike
 }
 
