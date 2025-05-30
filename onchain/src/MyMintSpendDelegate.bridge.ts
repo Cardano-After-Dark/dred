@@ -101,7 +101,7 @@ import type * as types from "./MyMintSpendDelegate.typeInfo.js";
 
 
 /**
- * GENERATED data bridge for **BasicDelegate** script (defined in class ***MyMintSpendDelegateBundle***)
+ * GENERATED data bridge for **BasicDelegate** script (defined in class ***DredMintSpendDelegateBundle***)
  * main: **src/delegation/BasicDelegate.hl**, project: **stellar-contracts**
  * @remarks
 * This class doesn't need to be used directly.  Its methods are available through the ***contract's methods***:
@@ -774,7 +774,7 @@ export class DelegateDatumHelper extends EnumBridge<JustAnEnum> {
     );
 
     /**
-     * generates  InlineTxOutputDatum for ***"MyMintSpendDelegate::DelegateDatum.Cip68RefToken"***
+     * generates  InlineTxOutputDatum for ***"STokMintDelegate::DelegateDatum.Cip68RefToken"***
      * @remarks - ***DelegateDatum$Cip68RefTokenLike*** is the same as the expanded field-types.
      */
     Cip68RefToken(fields: DelegateDatum$Cip68RefTokenLike | { 
@@ -784,12 +784,12 @@ export class DelegateDatumHelper extends EnumBridge<JustAnEnum> {
     }) : InlineTxOutputDatum {
         const uplc = this.mkUplcData({
             Cip68RefToken: fields 
-        }, "MyMintSpendDelegate::DelegateDatum.Cip68RefToken");
+        }, "STokMintDelegate::DelegateDatum.Cip68RefToken");
         return makeInlineTxOutputDatum(uplc);
     } /*multiFieldVariant enum accessor*/
 
     /**
-     * generates  InlineTxOutputDatum for ***"MyMintSpendDelegate::DelegateDatum.IsDelegation"***
+     * generates  InlineTxOutputDatum for ***"STokMintDelegate::DelegateDatum.IsDelegation"***
      * @remarks - ***DelegationDetailLike*** is the same as the expanded field-type.
      */
     IsDelegation(
@@ -801,12 +801,12 @@ export class DelegateDatumHelper extends EnumBridge<JustAnEnum> {
     ) : InlineTxOutputDatum {
         const uplc = this.mkUplcData({ 
            IsDelegation: dd
-        }, "MyMintSpendDelegate::DelegateDatum.IsDelegation"); /*singleField enum variant*/
+        }, "STokMintDelegate::DelegateDatum.IsDelegation"); /*singleField enum variant*/
         return makeInlineTxOutputDatum(uplc);
     }
 
     /**
-     * generates  InlineTxOutputDatum for ***"MyMintSpendDelegate::DelegateDatum.capoStoredData"***
+     * generates  InlineTxOutputDatum for ***"STokMintDelegate::DelegateDatum.capoStoredData"***
      * @remarks - ***DelegateDatum$capoStoredDataLike*** is the same as the expanded field-types.
      */
     capoStoredData(fields: DelegateDatum$capoStoredDataLike | { 
@@ -816,7 +816,7 @@ export class DelegateDatumHelper extends EnumBridge<JustAnEnum> {
     }) : InlineTxOutputDatum {
         const uplc = this.mkUplcData({
             capoStoredData: fields 
-        }, "MyMintSpendDelegate::DelegateDatum.capoStoredData");
+        }, "STokMintDelegate::DelegateDatum.capoStoredData");
         return makeInlineTxOutputDatum(uplc);
     } /*multiFieldVariant enum accessor*/
 }/*mkEnumHelperClass*/
@@ -1603,14 +1603,14 @@ export class SpendingActivityHelper extends EnumBridge<JustAnEnum> {
     );
 
     /**
-     * generates  UplcData for ***"MyMintSpendDelegate::SpendingActivity.SampleSpendingActivity"***
+     * generates  UplcData for ***"STokMintDelegate::SpendingActivity._placeholder1SA"***
      */
-    SampleSpendingActivity(
+    _placeholder1SA(
         recId: number[]
     ) : UplcData {
         const uplc = this.mkUplcData({ 
-           SampleSpendingActivity: recId
-        }, "MyMintSpendDelegate::SpendingActivity.SampleSpendingActivity"); /*singleField enum variant*/
+           _placeholder1SA: recId
+        }, "STokMintDelegate::SpendingActivity._placeholder1SA"); /*singleField enum variant*/
        return uplc;
     }
 }/*mkEnumHelperClass*/
@@ -1631,25 +1631,56 @@ export class MintingActivityHelper extends EnumBridge<JustAnEnum> {
         { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
     );
 
-/**
- * (property getter): UplcData for ***"MyMintSpendDelegate::MintingActivity.SampleMintingActivity"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
- */
-    get SampleMintingActivity() {
-        const uplc = this.mkUplcData({ SampleMintingActivity: {} }, 
-            "MyMintSpendDelegate::MintingActivity.SampleMintingActivity");
+    /**
+    * generates  UplcData for ***"STokMintDelegate::MintingActivity.MintingParticipantToken"***, 
+    * given a transaction-context (or direct arg) with a ***seed utxo*** 
+    * @remarks
+    * ##### Seeded activity
+    * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+    *  - to get a transaction context having the seed needed for this argument, 
+    *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
+    * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+    *  - in a context providing an implicit seed utxo, use 
+    *    the `$seeded$MintingParticipantToken}` variant of this activity instead
+    *
+     */
+    MintingParticipantToken(thingWithSeed: hasSeed | TxOutputId | string) 
+    : UplcData {
+        const seedTxOutputId = this.getSeed(thingWithSeed);
+        const uplc = this.mkUplcData({ 
+           MintingParticipantToken: seedTxOutputId
+        },"STokMintDelegate::MintingActivity.MintingParticipantToken");  
         return uplc;
-    } /* tagOnly variant accessor */
+    }  /*singleField/seeded enum variant*/
 
     /**
-     * generates  UplcData for ***"MyMintSpendDelegate::MintingActivity.MintingFungibleTokens"***
+     * generates  UplcData for ***"STokMintDelegate::MintingActivity.MintingParticipantToken"***
+     * @remarks
+    * ##### Seeded activity
+    * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+     * provided implicitly by a SeedActivity-supporting library function. 
+     * #### Usage
+     * Access the activity-creator as a getter: `$seeded$MintingParticipantToken`
+     *
+     * Use the resulting activity-creator in a seed-providing context, such as the delegated-data-controller's
+     * `mkTxnCreateRecord({activity, ...})` method.
+     */
+    get $seeded$MintingParticipantToken() {
+        return impliedSeedActivityMaker(this,this.MintingParticipantToken)() // called with no args needed
+    } /* coda: seeded helper in same singleField/seeded enum variant*/
+
+
+    /**
+     * generates  UplcData for ***"STokMintDelegate::MintingActivity.MintingFungibleTokens"***
      */
     MintingFungibleTokens(
         tokenName: number[]
     ) : UplcData {
         const uplc = this.mkUplcData({ 
            MintingFungibleTokens: tokenName
-        }, "MyMintSpendDelegate::MintingActivity.MintingFungibleTokens"); /*singleField enum variant*/
+        }, "STokMintDelegate::MintingActivity.MintingFungibleTokens"); /*singleField enum variant*/
        return uplc;
     }
 }/*mkEnumHelperClass*/
@@ -1671,14 +1702,14 @@ export class BurningActivityHelper extends EnumBridge<JustAnEnum> {
     );
 
     /**
-     * generates  UplcData for ***"MyMintSpendDelegate::BurningActivity._placeholder1BA"***
+     * generates  UplcData for ***"STokMintDelegate::BurningActivity._placeholder1BA"***
      */
     _placeholder1BA(
         recId: number[]
     ) : UplcData {
         const uplc = this.mkUplcData({ 
            _placeholder1BA: recId
-        }, "MyMintSpendDelegate::BurningActivity._placeholder1BA"); /*singleField enum variant*/
+        }, "STokMintDelegate::BurningActivity._placeholder1BA"); /*singleField enum variant*/
        return uplc;
     }
 }/*mkEnumHelperClass*/
@@ -2205,19 +2236,19 @@ export class SpendingActivityHelperNested extends EnumBridge<isActivity> {
     );
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::SpendingActivity.SampleSpendingActivity"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::SpendingActivity._placeholder1SA"***
     * @remarks
     * #### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
     * the parent's uplc-encoder, producing a single uplc object with 
     * a complete wrapper for this inner activity detail.
      */
-    SampleSpendingActivity(
+    _placeholder1SA(
         recId: number[]
     ) : isActivity {
         const uplc = this.mkUplcData({ 
-           SampleSpendingActivity: recId
-        }, "MyMintSpendDelegate::SpendingActivity.SampleSpendingActivity"); /*singleField enum variant*/
+           _placeholder1SA: recId
+        }, "STokMintDelegate::SpendingActivity._placeholder1SA"); /*singleField enum variant*/
        return uplc;
     }
 }/*mkEnumHelperClass*/
@@ -2238,18 +2269,59 @@ export class MintingActivityHelperNested extends EnumBridge<isActivity> {
         { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
     );
 
-/**
- * (property getter): UplcData for ***"MyMintSpendDelegate::MintingActivity.SampleMintingActivity"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
- */
-    get SampleMintingActivity() {
-        const uplc = this.mkUplcData({ SampleMintingActivity: {} }, 
-            "MyMintSpendDelegate::MintingActivity.SampleMintingActivity");
+    /**
+    * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::MintingActivity.MintingParticipantToken"***, 
+    * given a transaction-context (or direct arg) with a ***seed utxo*** 
+    * @remarks
+    * ##### Seeded activity
+    * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+    *  - to get a transaction context having the seed needed for this argument, 
+    *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
+    * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+    *  - in a context providing an implicit seed utxo, use 
+    *    the `$seeded$MintingParticipantToken}` variant of this activity instead
+    *
+     * ##### Nested activity: 
+    * this is connected to a nested-activity wrapper, so the details are piped through 
+    * the parent's uplc-encoder, producing a single uplc object with 
+    * a complete wrapper for this inner activity detail.
+    */
+    MintingParticipantToken(thingWithSeed: hasSeed | TxOutputId | string) 
+    : isActivity {
+        const seedTxOutputId = this.getSeed(thingWithSeed);
+
+        // piped through parent's uplc-encoder
+        const uplc = this.mkUplcData({ 
+           MintingParticipantToken: seedTxOutputId
+        },"STokMintDelegate::MintingActivity.MintingParticipantToken");  
         return uplc;
-    } /* tagOnly variant accessor */
+    }  /*singleField/seeded enum variant*/
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::MintingActivity.MintingFungibleTokens"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::MintingActivity.MintingParticipantToken"***
+     * @remarks
+    * ##### Seeded activity
+    * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+     * provided implicitly by a SeedActivity-supporting library function. 
+     * #### Usage
+     * Access the activity-creator as a getter: `$seeded$MintingParticipantToken`
+     *
+     * Use the resulting activity-creator in a seed-providing context, such as the delegated-data-controller's
+     * `mkTxnCreateRecord({activity, ...})` method.
+    * #### Nested activity: 
+    * this is connected to a nested-activity wrapper, so the details are piped through 
+    * the parent's uplc-encoder, producing a single uplc object with 
+    * a complete wrapper for this inner activity detail.
+     */
+    get $seeded$MintingParticipantToken() {
+        return impliedSeedActivityMaker(this,this.MintingParticipantToken)() // called with no args needed
+    } /* coda: seeded helper in same singleField/seeded enum variant*/
+
+
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::MintingActivity.MintingFungibleTokens"***
     * @remarks
     * #### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
@@ -2261,7 +2333,7 @@ export class MintingActivityHelperNested extends EnumBridge<isActivity> {
     ) : isActivity {
         const uplc = this.mkUplcData({ 
            MintingFungibleTokens: tokenName
-        }, "MyMintSpendDelegate::MintingActivity.MintingFungibleTokens"); /*singleField enum variant*/
+        }, "STokMintDelegate::MintingActivity.MintingFungibleTokens"); /*singleField enum variant*/
        return uplc;
     }
 }/*mkEnumHelperClass*/
@@ -2283,7 +2355,7 @@ export class BurningActivityHelperNested extends EnumBridge<isActivity> {
     );
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::BurningActivity._placeholder1BA"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::BurningActivity._placeholder1BA"***
     * @remarks
     * #### Nested activity: 
     * this is connected to a nested-activity wrapper, so the details are piped through 
@@ -2295,7 +2367,7 @@ export class BurningActivityHelperNested extends EnumBridge<isActivity> {
     ) : isActivity {
         const uplc = this.mkUplcData({ 
            _placeholder1BA: recId
-        }, "MyMintSpendDelegate::BurningActivity._placeholder1BA"); /*singleField enum variant*/
+        }, "STokMintDelegate::BurningActivity._placeholder1BA"); /*singleField enum variant*/
        return uplc;
     }
 }/*mkEnumHelperClass*/
@@ -2327,7 +2399,7 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
         nestedAccessor.mkDataVia(
             (activity: CapoLifecycleActivityLike) => {
                 return  this.mkUplcData({ CapoLifecycleActivities: activity }, 
-            "MyMintSpendDelegate::DelegateActivity.CapoLifecycleActivities");
+            "STokMintDelegate::DelegateActivity.CapoLifecycleActivities");
         });
         return nestedAccessor;
     } /* nested enum accessor */
@@ -2343,7 +2415,7 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
         nestedAccessor.mkDataVia(
             (activity: DelegateLifecycleActivityLike) => {
                 return  this.mkUplcData({ DelegateLifecycleActivities: activity }, 
-            "MyMintSpendDelegate::DelegateActivity.DelegateLifecycleActivities");
+            "STokMintDelegate::DelegateActivity.DelegateLifecycleActivities");
         });
         return nestedAccessor;
     } /* nested enum accessor */
@@ -2359,7 +2431,7 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
         nestedAccessor.mkDataVia(
             (activity: SpendingActivityLike) => {
                 return  this.mkUplcData({ SpendingActivities: activity }, 
-            "MyMintSpendDelegate::DelegateActivity.SpendingActivities");
+            "STokMintDelegate::DelegateActivity.SpendingActivities");
         });
         return nestedAccessor;
     } /* nested enum accessor */
@@ -2375,7 +2447,7 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
         nestedAccessor.mkDataVia(
             (activity: MintingActivityLike) => {
                 return  this.mkUplcData({ MintingActivities: activity }, 
-            "MyMintSpendDelegate::DelegateActivity.MintingActivities");
+            "STokMintDelegate::DelegateActivity.MintingActivities");
         });
         return nestedAccessor;
     } /* nested enum accessor */
@@ -2391,13 +2463,13 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
         nestedAccessor.mkDataVia(
             (activity: BurningActivityLike) => {
                 return  this.mkUplcData({ BurningActivities: activity }, 
-            "MyMintSpendDelegate::DelegateActivity.BurningActivities");
+            "STokMintDelegate::DelegateActivity.BurningActivities");
         });
         return nestedAccessor;
     } /* nested enum accessor */
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.CreatingDelegatedData"***, 
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.CreatingDelegatedData"***, 
      * given a transaction-context ***with a seed utxo*** and other field details
      * @remarks
      * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass 
@@ -2409,7 +2481,7 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
         dataType: string 
     } ) : isActivity
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.CreatingDelegatedData"*** 
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.CreatingDelegatedData"*** 
      * with raw seed details included in fields.
      */
     CreatingDelegatedData(fields: DelegateActivity$CreatingDelegatedDataLike | {
@@ -2425,19 +2497,19 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
             const seedTxOutputId = this.getSeed(seedOrUf as hasSeed);
             const uplc = this.mkUplcData({
                 CreatingDelegatedData: { seed: seedTxOutputId, ...filteredFields } 
-            }, "MyMintSpendDelegate::DelegateActivity.CreatingDelegatedData");
+            }, "STokMintDelegate::DelegateActivity.CreatingDelegatedData");
            return uplc;
         } else {
             const fields = seedOrUf as DelegateActivity$CreatingDelegatedDataLike; 
            const uplc = this.mkUplcData({
                 CreatingDelegatedData: fields 
-            }, "MyMintSpendDelegate::DelegateActivity.CreatingDelegatedData");
+            }, "STokMintDelegate::DelegateActivity.CreatingDelegatedData");
            return uplc;
         }
     } /*multiFieldVariant/seeded enum accessor*/ 
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.CreatingDelegatedData"***, 
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.CreatingDelegatedData"***, 
      * @param fields - \{ dataType: string \}
      * @remarks
     * ##### Seeded activity
@@ -2461,7 +2533,7 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
 
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.UpdatingDelegatedData"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.UpdatingDelegatedData"***
      * @remarks - ***DelegateActivity$UpdatingDelegatedDataLike*** is the same as the expanded field-types.
      */
     UpdatingDelegatedData(fields: DelegateActivity$UpdatingDelegatedDataLike | { 
@@ -2470,12 +2542,12 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
     }) : isActivity {
         const uplc = this.mkUplcData({
             UpdatingDelegatedData: fields 
-        }, "MyMintSpendDelegate::DelegateActivity.UpdatingDelegatedData");
+        }, "STokMintDelegate::DelegateActivity.UpdatingDelegatedData");
        return uplc;
     } /*multiFieldVariant enum accessor*/
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.DeletingDelegatedData"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.DeletingDelegatedData"***
      * @remarks - ***DelegateActivity$DeletingDelegatedDataLike*** is the same as the expanded field-types.
      */
     DeletingDelegatedData(fields: DelegateActivity$DeletingDelegatedDataLike | { 
@@ -2484,19 +2556,19 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
     }) : isActivity {
         const uplc = this.mkUplcData({
             DeletingDelegatedData: fields 
-        }, "MyMintSpendDelegate::DelegateActivity.DeletingDelegatedData");
+        }, "STokMintDelegate::DelegateActivity.DeletingDelegatedData");
        return uplc;
     } /*multiFieldVariant enum accessor*/
 
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.MultipleDelegateActivities"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.MultipleDelegateActivities"***
      */
     MultipleDelegateActivities(
         activities: Array<UplcData>
     ) : isActivity {
         const uplc = this.mkUplcData({ 
            MultipleDelegateActivities: activities
-        }, "MyMintSpendDelegate::DelegateActivity.MultipleDelegateActivities"); /*singleField enum variant*/
+        }, "STokMintDelegate::DelegateActivity.MultipleDelegateActivities"); /*singleField enum variant*/
        return uplc;
     }
 }/*mkEnumHelperClass*/
@@ -3010,12 +3082,12 @@ export const DelegationDetailSchema : StructTypeSchema = {
 export const DelegateDatumSchema : EnumTypeSchema = {
     "kind": "enum",
     "name": "DelegateDatum",
-    "id": "__module__MyMintSpendDelegate__DelegateDatum[]",
+    "id": "__module__STokMintDelegate__DelegateDatum[]",
     "variantTypes": [
         {
             "kind": "variant",
             "tag": 0,
-            "id": "__module__MyMintSpendDelegate__DelegateDatum[]__Cip68RefToken",
+            "id": "__module__STokMintDelegate__DelegateDatum[]__Cip68RefToken",
             "name": "Cip68RefToken",
             "fieldTypes": [
                 {
@@ -3064,7 +3136,7 @@ export const DelegateDatumSchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 1,
-            "id": "__module__MyMintSpendDelegate__DelegateDatum[]__IsDelegation",
+            "id": "__module__STokMintDelegate__DelegateDatum[]__IsDelegation",
             "name": "IsDelegation",
             "fieldTypes": [
                 {
@@ -3104,7 +3176,7 @@ export const DelegateDatumSchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 2,
-            "id": "__module__MyMintSpendDelegate__DelegateDatum[]__capoStoredData",
+            "id": "__module__STokMintDelegate__DelegateDatum[]__capoStoredData",
             "name": "capoStoredData",
             "fieldTypes": [
                 {
@@ -3690,13 +3762,13 @@ export const DelegateLifecycleActivitySchema : EnumTypeSchema = {
 export const SpendingActivitySchema : EnumTypeSchema = {
     "kind": "enum",
     "name": "SpendingActivity",
-    "id": "__module__MyMintSpendDelegate__SpendingActivity[]",
+    "id": "__module__STokMintDelegate__SpendingActivity[]",
     "variantTypes": [
         {
             "kind": "variant",
             "tag": 0,
-            "id": "__module__MyMintSpendDelegate__SpendingActivity[]__SampleSpendingActivity",
-            "name": "SampleSpendingActivity",
+            "id": "__module__STokMintDelegate__SpendingActivity[]___placeholder1SA",
+            "name": "_placeholder1SA",
             "fieldTypes": [
                 {
                     "name": "recId",
@@ -3713,19 +3785,27 @@ export const SpendingActivitySchema : EnumTypeSchema = {
 export const MintingActivitySchema : EnumTypeSchema = {
     "kind": "enum",
     "name": "MintingActivity",
-    "id": "__module__MyMintSpendDelegate__MintingActivity[]",
+    "id": "__module__STokMintDelegate__MintingActivity[]",
     "variantTypes": [
         {
             "kind": "variant",
             "tag": 0,
-            "id": "__module__MyMintSpendDelegate__MintingActivity[]__SampleMintingActivity",
-            "name": "SampleMintingActivity",
-            "fieldTypes": []
+            "id": "__module__STokMintDelegate__MintingActivity[]__MintingParticipantToken",
+            "name": "MintingParticipantToken",
+            "fieldTypes": [
+                {
+                    "name": "seed",
+                    "type": {
+                        "kind": "internal",
+                        "name": "TxOutputId"
+                    }
+                }
+            ]
         },
         {
             "kind": "variant",
             "tag": 1,
-            "id": "__module__MyMintSpendDelegate__MintingActivity[]__MintingFungibleTokens",
+            "id": "__module__STokMintDelegate__MintingActivity[]__MintingFungibleTokens",
             "name": "MintingFungibleTokens",
             "fieldTypes": [
                 {
@@ -3743,12 +3823,12 @@ export const MintingActivitySchema : EnumTypeSchema = {
 export const BurningActivitySchema : EnumTypeSchema = {
     "kind": "enum",
     "name": "BurningActivity",
-    "id": "__module__MyMintSpendDelegate__BurningActivity[]",
+    "id": "__module__STokMintDelegate__BurningActivity[]",
     "variantTypes": [
         {
             "kind": "variant",
             "tag": 0,
-            "id": "__module__MyMintSpendDelegate__BurningActivity[]___placeholder1BA",
+            "id": "__module__STokMintDelegate__BurningActivity[]___placeholder1BA",
             "name": "_placeholder1BA",
             "fieldTypes": [
                 {
@@ -3766,12 +3846,12 @@ export const BurningActivitySchema : EnumTypeSchema = {
 export const DelegateActivitySchema : EnumTypeSchema = {
     "kind": "enum",
     "name": "DelegateActivity",
-    "id": "__module__MyMintSpendDelegate__DelegateActivity[]",
+    "id": "__module__STokMintDelegate__DelegateActivity[]",
     "variantTypes": [
         {
             "kind": "variant",
             "tag": 0,
-            "id": "__module__MyMintSpendDelegate__DelegateActivity[]__CapoLifecycleActivities",
+            "id": "__module__STokMintDelegate__DelegateActivity[]__CapoLifecycleActivities",
             "name": "CapoLifecycleActivities",
             "fieldTypes": [
                 {
@@ -4080,7 +4160,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 1,
-            "id": "__module__MyMintSpendDelegate__DelegateActivity[]__DelegateLifecycleActivities",
+            "id": "__module__STokMintDelegate__DelegateActivity[]__DelegateLifecycleActivities",
             "name": "DelegateLifecycleActivities",
             "fieldTypes": [
                 {
@@ -4134,7 +4214,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 2,
-            "id": "__module__MyMintSpendDelegate__DelegateActivity[]__SpendingActivities",
+            "id": "__module__STokMintDelegate__DelegateActivity[]__SpendingActivities",
             "name": "SpendingActivities",
             "fieldTypes": [
                 {
@@ -4142,13 +4222,13 @@ export const DelegateActivitySchema : EnumTypeSchema = {
                     "type": {
                         "kind": "enum",
                         "name": "SpendingActivity",
-                        "id": "__module__MyMintSpendDelegate__SpendingActivity[]",
+                        "id": "__module__STokMintDelegate__SpendingActivity[]",
                         "variantTypes": [
                             {
                                 "kind": "variant",
                                 "tag": 0,
-                                "id": "__module__MyMintSpendDelegate__SpendingActivity[]__SampleSpendingActivity",
-                                "name": "SampleSpendingActivity",
+                                "id": "__module__STokMintDelegate__SpendingActivity[]___placeholder1SA",
+                                "name": "_placeholder1SA",
                                 "fieldTypes": [
                                     {
                                         "name": "recId",
@@ -4167,7 +4247,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 3,
-            "id": "__module__MyMintSpendDelegate__DelegateActivity[]__MintingActivities",
+            "id": "__module__STokMintDelegate__DelegateActivity[]__MintingActivities",
             "name": "MintingActivities",
             "fieldTypes": [
                 {
@@ -4175,19 +4255,27 @@ export const DelegateActivitySchema : EnumTypeSchema = {
                     "type": {
                         "kind": "enum",
                         "name": "MintingActivity",
-                        "id": "__module__MyMintSpendDelegate__MintingActivity[]",
+                        "id": "__module__STokMintDelegate__MintingActivity[]",
                         "variantTypes": [
                             {
                                 "kind": "variant",
                                 "tag": 0,
-                                "id": "__module__MyMintSpendDelegate__MintingActivity[]__SampleMintingActivity",
-                                "name": "SampleMintingActivity",
-                                "fieldTypes": []
+                                "id": "__module__STokMintDelegate__MintingActivity[]__MintingParticipantToken",
+                                "name": "MintingParticipantToken",
+                                "fieldTypes": [
+                                    {
+                                        "name": "seed",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "TxOutputId"
+                                        }
+                                    }
+                                ]
                             },
                             {
                                 "kind": "variant",
                                 "tag": 1,
-                                "id": "__module__MyMintSpendDelegate__MintingActivity[]__MintingFungibleTokens",
+                                "id": "__module__STokMintDelegate__MintingActivity[]__MintingFungibleTokens",
                                 "name": "MintingFungibleTokens",
                                 "fieldTypes": [
                                     {
@@ -4207,7 +4295,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 4,
-            "id": "__module__MyMintSpendDelegate__DelegateActivity[]__BurningActivities",
+            "id": "__module__STokMintDelegate__DelegateActivity[]__BurningActivities",
             "name": "BurningActivities",
             "fieldTypes": [
                 {
@@ -4215,12 +4303,12 @@ export const DelegateActivitySchema : EnumTypeSchema = {
                     "type": {
                         "kind": "enum",
                         "name": "BurningActivity",
-                        "id": "__module__MyMintSpendDelegate__BurningActivity[]",
+                        "id": "__module__STokMintDelegate__BurningActivity[]",
                         "variantTypes": [
                             {
                                 "kind": "variant",
                                 "tag": 0,
-                                "id": "__module__MyMintSpendDelegate__BurningActivity[]___placeholder1BA",
+                                "id": "__module__STokMintDelegate__BurningActivity[]___placeholder1BA",
                                 "name": "_placeholder1BA",
                                 "fieldTypes": [
                                     {
@@ -4240,7 +4328,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 5,
-            "id": "__module__MyMintSpendDelegate__DelegateActivity[]__CreatingDelegatedData",
+            "id": "__module__STokMintDelegate__DelegateActivity[]__CreatingDelegatedData",
             "name": "CreatingDelegatedData",
             "fieldTypes": [
                 {
@@ -4262,7 +4350,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 6,
-            "id": "__module__MyMintSpendDelegate__DelegateActivity[]__UpdatingDelegatedData",
+            "id": "__module__STokMintDelegate__DelegateActivity[]__UpdatingDelegatedData",
             "name": "UpdatingDelegatedData",
             "fieldTypes": [
                 {
@@ -4284,7 +4372,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 7,
-            "id": "__module__MyMintSpendDelegate__DelegateActivity[]__DeletingDelegatedData",
+            "id": "__module__STokMintDelegate__DelegateActivity[]__DeletingDelegatedData",
             "name": "DeletingDelegatedData",
             "fieldTypes": [
                 {
@@ -4306,7 +4394,7 @@ export const DelegateActivitySchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 8,
-            "id": "__module__MyMintSpendDelegate__DelegateActivity[]__MultipleDelegateActivities",
+            "id": "__module__STokMintDelegate__DelegateActivity[]__MultipleDelegateActivities",
             "name": "MultipleDelegateActivities",
             "fieldTypes": [
                 {

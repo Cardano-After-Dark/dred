@@ -8,8 +8,9 @@ import {
 import NodeOperatorSettings from "./nodeRegistry/NodeOperatorSettings.hl";
 import NeighborhoodSettings from "./DredNeighborhood/NeighborhoodSettings.hl";
 
-// recommended NOT to do this, as it can cause unintended side effects (see more below)
+// recommended NOT to do this:
 // import ProtocolSettings from "./settings/ProtocolSettings.hl";
+// ...  as it can cause unintended side effects (see more below)
 
 export default class DredCapoBundle extends CapoHeliosBundle {
     preConfigured = capoConfigurationDetails;

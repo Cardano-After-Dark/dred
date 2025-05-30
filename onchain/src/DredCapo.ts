@@ -13,6 +13,11 @@ import type {
     FoundDatumUtxo,
     hasBootstrappedCapoConfig,
 } from "@donecollectively/stellar-contracts";
+
+import {
+    StellarTokenomicsCapo,
+} from "stellar-tokenomics"
+
 import {
     AuthorityPolicy,
     StellarTxnContext,
@@ -52,16 +57,8 @@ import type {
 import type { ErgoNeighborhoodData } from "src/DredNeighborhood/Neighborhood.typeInfo.js";
 /* Add imports for each model-specific controller class here */
 
-const currentVersions = {
-    nodeReg: "nodeRegPolV1" as const,
-    nbhReg: "nbhRegPolV1" as const,
-    mktSalePol: "mktSalePolV1" as const,
-    fPurpPol: "fPurpPolV1" as const,
-    settingPol: "settingPolV1" as const,
-};
-
 const useAll = {
-    nodeOpReg: true,
+    DredNode: true,
     mktSale: false,
     fundedPurpose: false,
 };
@@ -69,7 +66,7 @@ const useAll = {
 const setup: typeof useAll = {
     fundedPurpose: false,
     mktSale: false,
-    nodeOpReg: true,
+    DredNode: true,
 };
 
 export type Expand<T> = T extends (...args: infer A) => infer R
@@ -80,9 +77,9 @@ export type Expand<T> = T extends (...args: infer A) => infer R
 
 type DredCapoFeatures = {
     settings?: boolean;
-    nodeOpRegistry?: boolean;
-    nbhRegistry?: boolean;
-    s3domain?: boolean;
+    DredNode?: boolean;
+    DredNeighborhood?: boolean;
+    // s3domain?: boolean;
     /* Add other feature-flag definitions here */
 };
 
@@ -91,13 +88,13 @@ type DredCapoFeatures = {
 /**
  * @public
  */
-export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
+export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> {
     autoSetup = true;
     get defaultFeatureFlags(): DredCapoFeatures {
         return {
             settings: true,
-            nodeOpRegistry: true,
-            nbhRegistry: true,
+            DredNode: true,
+            DredNeighborhood: true,
             /* Add other feature-flag defaults here */
         };
     }
@@ -141,7 +138,7 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
         if (!charterData) {
             charterData = await this.findCharterData();
         }
-        return this.getDgDataController("nodeReg", {
+        return this.getDgDataController("DredNode", {
             charterData: charterData as CapoDatum$Ergo$CharterData,
         }) as Promise<NodeRegistryController>;
     }
@@ -221,13 +218,12 @@ export class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
         const inh = super.basicDelegateRoles();
 
         const { mintDelegate: parentMD, spendDelegate, govAuthority } = inh;
-
         const myDelegates = delegateRoles({
-            govAuthority,
             spendDelegate: defineRole("spendDgt", MyMintSpendDelegate, {}),
             mintDelegate: defineRole("mintDgt", MyMintSpendDelegate, {}),
+            govAuthority,
             settings: defineRole("dgDataPolicy", ProtocolSettingsController, {}),
-            nodeOpRegistry: defineRole("dgDataPolicy", NodeRegistryController, {}),
+            DredNode: defineRole("dgDataPolicy", NodeRegistryController, {}),
             // nbhRegistry: defineRole("dgDataPolicy", NeighborhoodController, {}),
             /* Add other delegate roles here */
 

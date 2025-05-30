@@ -46,7 +46,7 @@ export class NodeRegistryController extends DelegatedDataContract<
     idPrefix = "dredNode";
 
     get delegateName() {
-        return "NodeRegistryDgt";
+        return "nodeRegistry";
     }
 
     get recordTypeName() {

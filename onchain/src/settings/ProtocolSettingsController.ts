@@ -33,7 +33,7 @@ export class ProtocolSettingsController extends DelegatedDataContract<
     }
 
     get delegateName() {
-        return "ProtocolSettings";
+        return "protocolSettings";
     }
 
     get idPrefix() {

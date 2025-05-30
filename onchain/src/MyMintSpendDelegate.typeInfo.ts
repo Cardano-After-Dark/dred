@@ -224,7 +224,7 @@ export interface DelegateDatum$capoStoredDataLike {
             * @internal
             */
             export type DelegateDatumMeta = EnumTypeMeta<
-    {module: "MyMintSpendDelegate", enumName: "DelegateDatum"}, {
+    {module: "STokMintDelegate", enumName: "DelegateDatum"}, {
         Cip68RefToken: singleEnumVariantMeta<DelegateDatumMeta, "Cip68RefToken",
             "Constr#0", 
             "fields", DelegateDatum$Cip68RefToken, "noSpecialFlags"
@@ -952,8 +952,8 @@ export type DelegateLifecycleActivityLike = IntersectedEnum<
             * @internal
             */
             export type SpendingActivityMeta = EnumTypeMeta<
-    {module: "MyMintSpendDelegate", enumName: "SpendingActivity"}, {
-        SampleSpendingActivity: singleEnumVariantMeta<SpendingActivityMeta, "SampleSpendingActivity",
+    {module: "STokMintDelegate", enumName: "SpendingActivity"}, {
+        _placeholder1SA: singleEnumVariantMeta<SpendingActivityMeta, "_placeholder1SA",
             "Constr#0", "singletonField", /* implied wrapper { recId: ... } for singleVariantField */ 
 			number[]   , "noSpecialFlags"
         >
@@ -972,7 +972,7 @@ export type DelegateLifecycleActivityLike = IntersectedEnum<
  * @public
  */
 export type SpendingActivity = 
-        | { SampleSpendingActivity: /* implied wrapper { recId: ... } for singleVariantField */ 
+        | { _placeholder1SA: /* implied wrapper { recId: ... } for singleVariantField */ 
 			number[]    /*minEnumVariant*/ }
 
 /**
@@ -999,7 +999,7 @@ export type ErgoSpendingActivity = IntersectedEnum<SpendingActivity/*like canon 
  * @public
  */
 export type SpendingActivityLike = IntersectedEnum<
-        | { SampleSpendingActivity: /* implied wrapper { recId: ... } for singleVariantField */ 
+        | { _placeholder1SA: /* implied wrapper { recId: ... } for singleVariantField */ 
 			number[]    /*minEnumVariant*/ }
 >
 
@@ -1008,9 +1008,10 @@ export type SpendingActivityLike = IntersectedEnum<
             * @internal
             */
             export type MintingActivityMeta = EnumTypeMeta<
-    {module: "MyMintSpendDelegate", enumName: "MintingActivity"}, {
-        SampleMintingActivity: singleEnumVariantMeta<MintingActivityMeta, "SampleMintingActivity",
-            "Constr#0", "tagOnly", tagOnly, "noSpecialFlags"
+    {module: "STokMintDelegate", enumName: "MintingActivity"}, {
+        MintingParticipantToken: singleEnumVariantMeta<MintingActivityMeta, "MintingParticipantToken",
+            "Constr#0", "singletonField", /* implied wrapper { seed: ... } for singleVariantField */ 
+			TxOutputId   , "isSeededActivity"
         >,
         MintingFungibleTokens: singleEnumVariantMeta<MintingActivityMeta, "MintingFungibleTokens",
             "Constr#1", "singletonField", /* implied wrapper { tokenName: ... } for singleVariantField */ 
@@ -1031,7 +1032,8 @@ export type SpendingActivityLike = IntersectedEnum<
  * @public
  */
 export type MintingActivity = 
-        | { SampleMintingActivity: tagOnly /*minEnumVariant*/ }
+        | { MintingParticipantToken: /* implied wrapper { seed: ... } for singleVariantField */ 
+			TxOutputId    /*minEnumVariant*/ }
         | { MintingFungibleTokens: /* implied wrapper { tokenName: ... } for singleVariantField */ 
 			number[]    /*minEnumVariant*/ }
 
@@ -1059,7 +1061,8 @@ export type ErgoMintingActivity = IntersectedEnum<MintingActivity/*like canon en
  * @public
  */
 export type MintingActivityLike = IntersectedEnum<
-        | { SampleMintingActivity: tagOnly /*minEnumVariant*/ }
+        | { MintingParticipantToken: /* implied wrapper { seed: ... } for singleVariantField */ 
+			TxOutputId | string    /*minEnumVariant*/ }
         | { MintingFungibleTokens: /* implied wrapper { tokenName: ... } for singleVariantField */ 
 			number[]    /*minEnumVariant*/ }
 >
@@ -1069,7 +1072,7 @@ export type MintingActivityLike = IntersectedEnum<
             * @internal
             */
             export type BurningActivityMeta = EnumTypeMeta<
-    {module: "MyMintSpendDelegate", enumName: "BurningActivity"}, {
+    {module: "STokMintDelegate", enumName: "BurningActivity"}, {
         _placeholder1BA: singleEnumVariantMeta<BurningActivityMeta, "_placeholder1BA",
             "Constr#0", "singletonField", /* implied wrapper { recId: ... } for singleVariantField */ 
 			number[]   , "noSpecialFlags"
@@ -1239,7 +1242,7 @@ export interface DelegateActivity$DeletingDelegatedDataLike {
             * @internal
             */
             export type DelegateActivityMeta = EnumTypeMeta<
-    {module: "MyMintSpendDelegate", enumName: "DelegateActivity"}, {
+    {module: "STokMintDelegate", enumName: "DelegateActivity"}, {
         CapoLifecycleActivities: singleEnumVariantMeta<DelegateActivityMeta, "CapoLifecycleActivities",
             "Constr#0", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
 			CapoLifecycleActivity   , "noSpecialFlags"
