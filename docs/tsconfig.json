@@ -22,7 +22,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./src/*"
+        "./src/*",
+      ],
+      "@donecollectively/stellar-contracts": [
+        "./node_modules/@donecollectively/stellar-contracts"
       ]
     }
   },
