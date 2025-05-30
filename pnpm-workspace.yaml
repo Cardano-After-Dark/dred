@@ -3,9 +3,8 @@ packages:
   - 'docs'
   - 'sampleApp'
   - 'onchain'
-  - '../stellar-contracts'
   - '.'
-
+  # - '../stellar-contracts'
   # works better with yarn used in that subdir:
   # - 'src/redis/streams'
   
@@ -17,6 +16,9 @@ packages:
 overrides:
   "@donecollectively/stellar-contracts": "$@donecollectively/stellar-contracts"
   # ^ merge the resolution of this package so it will resolve as a transitive dependency to ONE package.
+  # vv use local override for stellar-contracts/tokenomics local dev, commenting out the first override ^^
+  #"@donecollectively/stellar-contracts": "file:../stellar-contracts"
+  # "stellar-tokenomics": "file:../stellar-tokenomics"
   "react": "$react"
   "react-dom": "$react-dom"
   
