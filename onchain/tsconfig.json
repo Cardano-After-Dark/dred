@@ -32,7 +32,7 @@
         "importHelpers": true,
         "rootDir": ".",
 
-        // "exactOptionalPropertyTypes": true,        
+        // "exactOptionalPropertyTypes": true,
         "noImplicitAny": false,
         "noErrorTruncation": true,
         "typeRoots": ["./node_modules/@types", "./heliosModule.d.ts"],
@@ -44,6 +44,7 @@
         // "outFile": ".api-extractor-temp/stellar-tokenomics-raw.d.ts",
         "paths": {
             // "@/*": ["./src/*"],
+            "dred-network-registry": ["./src/index.ts"],
             // "@donecollectively/stellar-contracts": [
             //     "../stellar-contracts/src/index.ts"
             // ]
