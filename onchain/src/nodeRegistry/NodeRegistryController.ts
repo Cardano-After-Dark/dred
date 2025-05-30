@@ -1,4 +1,4 @@
-import { makePubKey, makeTxOutput, makeValue, type Value } from "@helios-lang/ledger";
+import { makeDummyPubKey, makePubKey, makeTxOutput, makeValue, type Value } from "@helios-lang/ledger";
 import {
     Activity,
     DelegatedDataContract,
@@ -18,7 +18,7 @@ import type {
 
 import NodeRegistryBundle from "./NodeRegistry.hlb.js";
 import type { DredCapo } from "../DredCapo.js";
-import type { ErgoNodeRegistrationData, NodeRegistrationData, NodeRegistrationDataLike } from "./NodeRegistry.typeInfo.js";
+import type { ErgoNodeRegistrationData, NodeRegistrationData, NodeRegistrationDataLike, minimalNodeRegistrationData } from "./NodeRegistry.typeInfo.js";
 import DredNodeRegistryPolicyDataBridge from "./NodeRegistry.bridge.js";
 
 export type PartialPartialData<T extends AnyDataTemplate<any, any>> = Partial<{
@@ -29,7 +29,7 @@ export type PartialPartialData<T extends AnyDataTemplate<any, any>> = Partial<{
         : T[K];
 }>;
 
-export type minimalNodeRegistrationData = minimalData<ErgoNodeRegistrationData>;
+// export type minimalNodeRegistrationData = minimalData<ErgoNodeRegistrationData>;
 
 export type partialMinimalData<T extends AnyDataTemplate<any, any>> =
     PartialPartialData<minimalData<T>>;
@@ -77,9 +77,27 @@ export class NodeRegistryController extends DelegatedDataContract<
     async mkTxnRegisteringNode(
         this: NodeRegistryController,
         nodeReg: minimalNodeRegistrationData,
-        // initialVaultStake: bigint
+        // initialVaultStake: bigint,
+        initialTcx?: StellarTxnContext
     ) {
         const mintDelegate = await this.capo.getMintDelegate();
+        const {capo} = this
+        const tcx0 = initialTcx || this.mkTcx(
+            "registering dred node"
+        );
+
+        const tcx1 = await capo.mkTxnWithMemberInfo(undefined, tcx0);
+        
+        const capoUtxos = await capo.findCapoUtxos();
+        const charterData = await capo.findCharterData(undefined, {
+            capoUtxos,
+            optional: false,
+        });
+        const tcx2 = await capo.tcxWithSettingsRef(tcx1, {
+            capoUtxos,
+            charterData,
+        });
+
 
         // const tcx = await this.capo.mkTxnWithMemberInfo();
         return this.mkTxnCreateRecord(
@@ -88,23 +106,39 @@ export class NodeRegistryController extends DelegatedDataContract<
                     this.activity.MintingActivities.$seeded$CreatingRecord,
                 data: {
                     ...nodeReg,
-                    // memberToken: tcx.state.memberToken.name,
+                    memberToken: tcx2.state.memberToken.name,
                 },
                 // addedUtxoValue: makeValue(initialVaultStake),
             },
-            // tcx
-        );
+            tcx2
+        ).then((tcx) => tcx)
     }
 
     async mkTxnUpdatingNodeRegistration( 
         txnName: string, 
         item: FoundDatumUtxo<NodeRegistrationData, any>, 
-        options: DgDataUpdateOptions<
+        options: Omit<DgDataUpdateOptions<
             NodeRegistrationDataLike
-        >, 
-        tcx?: StellarTxnContext<anyState> | undefined
+        >, "activity">, 
+        initialTcx?: StellarTxnContext<anyState> | undefined
     ): Promise<StellarTxnContext<anyState>> {
-        return super.mkTxnUpdateRecord(txnName, item, options, tcx)
+        const tcx0 = initialTcx || this.mkTcx(
+            "registering dred node"
+        );
+        const tcx1 = await this.capo.mkTxnWithMemberInfo(undefined, tcx0);
+        const capoUtxos = await this.capo.findCapoUtxos();
+        const tcx2 = await this.capo.tcxWithSettingsRef(tcx1, {
+            capoUtxos: capoUtxos,
+            charterData: await this.capo.findCharterData(undefined, {
+                capoUtxos,
+                optional: false,
+            }),
+        })
+
+        return super.mkTxnUpdateRecord(txnName, item, {
+            ...options,
+            activity: this.activity.SpendingActivities.UpdatingRecord(item.data!.id),
+        }, tcx2)
     }
 
     requirements() {
