@@ -193,7 +193,6 @@ export class DredServer {
 
     constructor(args: DredServerArgs, serverId: string, redisDb: number) {
         this.args = args;
-        debugger;
         const loggerName = `dred‹${serverId}›`;
         this.logger = zonedLogger(loggerName, {
             serverId,
@@ -260,6 +259,7 @@ export class DredServer {
                 url: url,
                 db: this.redisDb,
             },
+            channels: {log: this.logger }
         });
         this.channelConn._log = this.logger;
         this.ensureDefaultChannels();
@@ -332,6 +332,7 @@ export class DredServer {
     }
 
     async reset(reconnect?: boolean, finalCleanup?: (r?: Redis) => any) {
+        this.log("server: reset()");
         await this.channelConn.cleanup().catch(warning.bind(this, "channelConn.cleanup()"));
         // await this.channelConn.this?.redis?.quit().catch(warning.bind(this,"channelConn.redis.quit()"));
         // this.channelConn?.redis?.disconnect();

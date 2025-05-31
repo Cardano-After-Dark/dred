@@ -107,6 +107,7 @@ export class RedisChannels {
         this._nonBlockRedisClient = this._createRedisClient(redis);
 
         this._consumers = {};
+        this.closing = false
 
         this._workInTeam = false;
         this._consumerIsGennerated = true;
@@ -434,6 +435,10 @@ export class RedisChannels {
             ]);
         } catch (error) {
             this._log.error("Unsubscribe error: %o", error);
+            if (this.closing) {
+                this._log.error(" ... ^^ after channels shutdown");
+                return
+            }
             if (error instanceof RedisChannelsError) {
                 throw error;
             }
@@ -489,6 +494,11 @@ export class RedisChannels {
             return id;
         } catch (error) {
             this._log.error("Produce error:", error.stack || error.message || JSON.stringify(error));
+            this._log.error(" ... while sending message", message);
+            if (this.closing) {
+                this._log.error(" ... ^^ after channels shutdown");
+                return
+            }
             debugger
             throw new RedisChannelsError(
                 "Can not produce in the tunnel: " + tunnel,
@@ -714,6 +724,9 @@ export class RedisChannels {
                 yield result;
             }
         } catch (error) {
+            if (this.closing) {
+                return
+            }
             this._log.error("Consume error: %o", error);
             throw new RedisChannelsError(
                 "Can not consume from the tunnel: " +
@@ -746,14 +759,23 @@ export class RedisChannels {
      */
     // --------------------------------------------------------------------------|
     async cleanup() {
+        this.closing = true
         for (const i in this._consumers) {
+            if (this._workInTeam) {
             await this._deleteRedisConsumerAndGroup(this._consumers[i], true);
+            }
+            // shutdown shouldn't need to do any special connection cleanup like quit()
+            // so it's okay to just disconnect.
+            // await this._consumers[i][tun.CONNECTION].quit() 
+            // ^ can take <timeout> if a connection is listening for messages
+            await this._consumers[i][tun.CONNECTION].disconnect();
 
-            await this._consumers[i][tun.CONNECTION].quit();
             this._consumers[i][tun.CONNECTION].removeAllListeners();
             delete this._consumers[i];
         }
-        await this._nonBlockRedisClient.quit();
+
+        // reconnect after disconnect
+        await this._nonBlockRedisClient.disconnect(true);
         this._nonBlockRedisClient.removeAllListeners();
     }
 
@@ -765,6 +787,7 @@ export class RedisChannels {
         try {
             // Deletes a consumer and a consumer group
             if (this._workInTeam === false || force) {
+                // this stuff is all extraneous unless there is "team" behavior happening.
                 await this._nonBlockRedisClient.xgroup([
                     "DELCONSUMER",
                     tunnel[tun.KEY],

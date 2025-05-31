@@ -79,36 +79,40 @@ beforeAll(async () => {
         });
     });
 });
+
 beforeEach(async () => {
-    for (const s of servers) {
-        testLogger.info("beforeEach: flushing redis");
-        await s.redis?.flushdb();
-        await s.reset();
+    testLogger.debug("beforeEach: resetting redis and channels");
+    for (const server of servers) {
+        await server.redis?.flushdb();
+        await server.reset();
+        // testLogger.debug("beforeEach: establishing default channels");
+        server.ensureDefaultChannels();
+        // server.listen();
     }
+    testLogger.info("  ---- did reset redis with default channels in beforeEach");
 });
 
 afterEach(async () => {
-    testLogger.info("afterEach: clean up clients");
+    testLogger.debug("afterEach: cleaning up clients");
     for (const client of clientCleanupList) {
         client.disconnect();
     }
     clientCleanupList = [];
-
     for (const server of servers) {
         const redis = server?.redis;
         if (redis) {
-            await asyncDelay(150); // avoid race with existing channel-subscriptions?
+            testLogger.debug("afterEach: closing server", server.myServerInfo?.port);
+
             await server.reset(true, (redis) => {
-                testLogger.info("afterEach: flushing redis");
-                return redis?.flushdb()
+                testLogger.debug("afterEach: flushing redis");
+                redis?.flushdb("SYNC")
+                testLogger.debug("afterEach: done flushing redis");
             });
             // await  server.close();
-
-            testLogger.info("afterEach: restoring default channels");
-            server.ensureDefaultChannels();
-            testLogger.info("------------------ did reset redis with default channels --------------");
         }
     }
+    testLogger.info("  ---- cleanup done in afterEach");
+
     // const stream = redis.scanStream();
     // stream.on("data", (resultKeys) => {
 
@@ -117,11 +121,10 @@ afterEach(async () => {
 afterAll(async () => {
     // debugger
     monitor?.disconnect();
-    for (const s of servers) {
-        // console.log("closing server", s.myServerInfo?.port)
-        // s.channelConn.close();
+    for (const server of servers) {
+        testLogger.debug("closing server", server.myServerInfo?.port)
         // await  s.close();
-        s.reset(false);
+        server.reset(false);
     }
 });
 
@@ -146,7 +149,7 @@ export async function testSetup() {
             server.serverId,
             i
         );
-
+ 
         await s.listen();
         servers.push(s);
     }
@@ -169,5 +172,6 @@ export async function testSetup() {
     const agent = supertest.agent(app);
     const client = server.mkClient("first"); //new DredClient({ ...addr, insecure: true });
     await client.generateKey();
-    return { agent, app, server, client, servers };
+
+    return { agent, app, server, client, servers, testLogger };
 }

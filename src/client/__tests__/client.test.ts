@@ -92,7 +92,7 @@ describe("Dred client", () => {
                     type: "poetry",
                     msg: JSON.stringify(msg)
                 });
-                await asyncDelay(20);
+                // await asyncDelay(20);
 
                 await client.postMessage(chan, {
                     type: "poetry",
@@ -148,7 +148,7 @@ describe("Dred client", () => {
                             type: "poetry",
                             msg: JSON.stringify(msg)
                         });
-                        await asyncDelay(20);
+                        // await asyncDelay(20);
 
                         await client.postMessage(chan, {
                             type: "poetry",

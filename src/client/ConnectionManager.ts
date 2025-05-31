@@ -52,7 +52,7 @@ type healthStatus = "unhealthy" | "partial" | "healthy";
 
 type cm = ConnectionManager;
 const connectionManagerStates = {
-    logLevel: "info",
+    // logLevel: "info",
     discoveringNbh: {
         default: true,
         async onEntry(this: cm) {

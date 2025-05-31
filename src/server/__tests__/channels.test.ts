@@ -50,7 +50,7 @@ describe("channels", () => {
         it("creates a channel on request, with createdAt set", async () => {
             const channelName = "fooChannel";
 
-            await asyncDelay(1000);
+            await asyncDelay(50);
             const response = await agent
                 .post(`/channel/${channelName}`)
                 .send({ createdAt: new Date().getTime() - 100000 })

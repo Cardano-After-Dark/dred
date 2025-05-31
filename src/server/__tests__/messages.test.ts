@@ -67,18 +67,18 @@ describe("channel messages", () => {
 
                 let received = 0;
 
-                debugger;
                 client.subscribeToChannels({
                     [chan]: (inbound) => {
+                        // const {ocid, message} = inbound
                         // party emoji: 🎉
-                        // console.log("  🎉🎉🎉🎉🎉🎉  inbound", inbound);
+                        // console.log("  🎉🎉  inbound", {ocid, message});
                         expect(inbound).toMatchObject(msg);
                         received += 1;
                     },
                 });
-                await asyncDelay(200);
+                await asyncDelay(80);
 
-                // high-level message creation:
+                // low-level message creation:
                 await agent
                     .post(`/channel/${chan}/message`)
                     .send({ 
@@ -95,7 +95,6 @@ describe("channel messages", () => {
                     })
                     .expect("Content-Type", /json/)
                     .expect(200);
-            // await asyncDelay(20);
 
                 // high-level message creation:
                 // await client.postMessage(chan, msg);
@@ -144,7 +143,6 @@ describe("channel messages", () => {
                 //     .expect("Content-Type", /json/)
                     // .expect(200);
 
-                await asyncDelay(20);
 
                 // console.log("posting again");
 
@@ -158,7 +156,7 @@ describe("channel messages", () => {
                     .expect("Content-Type", /json/)
                     .expect(200);
 
-                await asyncDelay(20);
+                await asyncDelay(40);
 
                 expect(received).toBe(2);
             });
