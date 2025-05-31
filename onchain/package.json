@@ -93,7 +93,8 @@
     },
     "fromWorkspace": {
         "@donecollectively/stellar-contracts": "github:donecollectively/stellar-contracts#semver:0.9.1-beta.1",
-        "stellar-tokenomics": "github:donecollectively/stellar-tokenomics-next#semver:0.7.0-beta.2"
+        "stellar-tokenomics": "github:donecollectively/stellar-tokenomics-next#semver:0.7.0-beta.2",
+        "prettier": "^...whatever"
     },
     "devDependencies": {
         "@helios-lang/cbor": "^0.3.1",
@@ -108,13 +109,13 @@
         "@helios-lang/type-utils": "^0.3.0",
         "@helios-lang/uplc": "^0.7.17",
         "@microsoft/api-extractor": "^7.48.1",
+        "@rollup/plugin-alias": "^4.0.4",
         "@rollup/plugin-json": "^6.1.0",
         "@rollup/plugin-node-resolve": "^15.3.0",
         "@rollup/rollup-linux-x64-gnu": "^4.40.2",
         "@types/node": "22",
         "eslint": "8.26.0",
         "eslint-config-next": "13.0.2",
-        "prettier": "^2.8.8",
         "react": "^18.0",
         "react-dom": "^18.0",
         "rollup": "4.40.1",

@@ -71,7 +71,7 @@
   "devDependencies": {
     "@microsoft/tsdoc": "^0.15.1",
     "eslint-config-next": "^14.2.25",
-    "prettier": "^2.7.1",
+    "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "serve": "^14.2.4"
   }
