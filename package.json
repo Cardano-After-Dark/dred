@@ -39,7 +39,7 @@
         "test:streams": "cd src/redis/streams/ ; yarn ; yarn test",
         "testing": "scripts/setupEnvironment ;  ENV_FILE=./config/.env.test vitest watch",
         "test:debug": "scripts/setupEnvironment ; VITEST_TIMEOUT=100000 ENV_FILE=./config/.env.test vitest run --inspect-brk --poolOptions.threads.singleThread --no-file-parallelism ",
-        "testing:debug": "scripts/setupEnvironment ; VITEST_TIMEOUT=100000 ENV_FILE=./config/.env.test vitest watch --inspect-brk --poolOptions.threads.singleThread --no-file-parallelism ",
+        "testing:debug": "scripts/setupEnvironment ; VITEST_TIMEOUT=100000 ENV_FILE=./config/.env.test vitest watch --inspect --poolOptions.threads.singleThread --no-file-parallelism ",
         "test:ui": "scripts/setupEnvironment ; ENV_FILE=./config/.env.test vitest --ui",
         "test:coverage": "scripts/setupEnvironment ; ENV_FILE=./config/.env.test vitest run --coverage",
         "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx || true",
