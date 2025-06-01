@@ -61,3 +61,4 @@ All the peers participating in a Hydra head/channel need to be involved in snaps
 
 Check out our rundown on how deployment of our smart contract suite works.  This powerful mechanism for adopting normal practices of the software development lifecycle supports upgradability for on-chain contracts and much more advanced capabilities than would be possible in smart contracts using monolithic, immutable deployments.
 
+

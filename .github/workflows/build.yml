@@ -132,7 +132,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 9.15.4
+          version: 10.11.0
           run_install: false
           
       # Set up caching for pnpm to speed up subsequent builds
@@ -184,7 +184,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 9.15.4
+          version: 10.11.0
           run_install: false
           
       # Set up caching for pnpm to speed up subsequent builds
