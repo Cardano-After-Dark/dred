@@ -5,7 +5,6 @@ import { ContractDataBridge, EnumBridge, impliedSeedActivityMaker, DataBridgeRea
 import ProtocolSettingsBundle from 'dred-network-registry/contracts-preprod/ProtocolSettings.hlb';
 import { makeCast } from '@helios-lang/contract-utils';
 import '@helios-lang/codec-utils';
-import { ADA } from '@donecollectively/stellar-contracts/testing';
 import DredCapoBundle from 'dred-network-registry/contracts-preprod/DredCapo.hlb';
 import MyMintSpendDelegateBundle from 'dred-network-registry/contracts-preprod/MyMintSpendDelegate.hlb';
 import NodeRegistryBundle from 'dred-network-registry/contracts-preprod/NodeRegistry.hlb';
@@ -8731,13 +8730,13 @@ class ProtocolSettingsController extends DelegatedDataContract {
     const settings = {
       nodeOpSettings: {
         expectedHeartbeatInterval: 7 * 24 * 60 * 60 * 1e3,
-        minNodeOperatorStake: makeValue(200n * ADA),
-        minNodeRegistrationFee: makeValue(50n * ADA),
+        minNodeOperatorStake: makeValue(this.ADA(200n)),
+        minNodeRegistrationFee: makeValue(this.ADA(50n)),
         requiredNodeUptime: 0.95
       },
       nbhSettings: {
-        minNbhStake: makeValue(5000n * ADA),
-        minRegistrationFee: makeValue(4000n * ADA)
+        minNbhStake: makeValue(this.ADA(5000n)),
+        minRegistrationFee: makeValue(this.ADA(4000n))
       }
       /* Add other settings here */
     };
@@ -36212,13 +36211,13 @@ class DredCapo extends StellarTokenomicsCapo {
     return {
       nodeOpSettings: {
         expectedHeartbeatInterval: BigInt(72 * 60 * 60 * 1e3),
-        minNodeOperatorStake: makeValue(200n * ADA),
-        minNodeRegistrationFee: makeValue(50n * ADA),
+        minNodeOperatorStake: makeValue(this.ADA(200n)),
+        minNodeRegistrationFee: makeValue(this.ADA(50n)),
         requiredNodeUptime: 0.95
       },
       nbhSettings: {
-        minNbhStake: makeValue(5000n * ADA),
-        minRegistrationFee: makeValue(4000n * ADA)
+        minNbhStake: makeValue(this.ADA(5000n)),
+        minRegistrationFee: makeValue(this.ADA(4000n))
       }
     };
   }
