@@ -1,7 +1,11 @@
-import { makeInlineTxOutputDatum, makeValue, makePubKey } from '@helios-lang/ledger';
-import { ContractDataBridge, EnumBridge, impliedSeedActivityMaker, DataBridgeReaderClass, DelegatedDataContract, hasReqts, BasicMintDelegate, textToBytes, Capo, delegateRoles, defineRole, mkValuesEntry, mergesInheritedReqts } from '@donecollectively/stellar-contracts';
+import { makeInlineTxOutputDatum, makeValue, makeDummyPubKey } from '@helios-lang/ledger';
+import '@helios-lang/uplc';
+import { STokMintDelegate, StellarTokenomicsCapo } from 'stellar-tokenomics';
+import { ContractDataBridge, EnumBridge, impliedSeedActivityMaker, DataBridgeReaderClass, DelegatedDataContract, hasReqts, delegateRoles, defineRole, textToBytes, mkValuesEntry, mergesInheritedReqts } from '@donecollectively/stellar-contracts';
 import ProtocolSettingsBundle from 'dred-network-registry/contracts-preprod/ProtocolSettings.hlb';
 import { makeCast } from '@helios-lang/contract-utils';
+import '@helios-lang/codec-utils';
+import { ADA } from '@donecollectively/stellar-contracts/testing';
 import DredCapoBundle from 'dred-network-registry/contracts-preprod/DredCapo.hlb';
 import MyMintSpendDelegateBundle from 'dred-network-registry/contracts-preprod/MyMintSpendDelegate.hlb';
 import NodeRegistryBundle from 'dred-network-registry/contracts-preprod/NodeRegistry.hlb';
@@ -2348,7 +2352,7 @@ const NodeOperatorSettingsSchema$1 = {
       "name": "requiredNodeUptime",
       "type": {
         "kind": "internal",
-        "name": "Int"
+        "name": "Real"
       },
       "key": "ndUpt"
     },
@@ -2356,7 +2360,7 @@ const NodeOperatorSettingsSchema$1 = {
       "name": "minNodeRegistrationFee",
       "type": {
         "kind": "internal",
-        "name": "Int"
+        "name": "Value"
       },
       "key": "minFee"
     },
@@ -2380,7 +2384,7 @@ const NeighborhoodSettingsSchema$1 = {
       "name": "minRegistrationFee",
       "type": {
         "kind": "internal",
-        "name": "Int"
+        "name": "Value"
       },
       "key": "minRegFee"
     },
@@ -2397,7 +2401,7 @@ const NeighborhoodSettingsSchema$1 = {
 const ProtocolSettingsSchema = {
   "kind": "struct",
   "format": "map",
-  "id": "__module__ProtocolSettings__ProtocolSettings[]",
+  "id": "__module__ProtocolSettingsData__ProtocolSettings[]",
   "name": "ProtocolSettings",
   "fieldTypes": [
     {
@@ -2436,7 +2440,7 @@ const ProtocolSettingsSchema = {
             "name": "requiredNodeUptime",
             "type": {
               "kind": "internal",
-              "name": "Int"
+              "name": "Real"
             },
             "key": "ndUpt"
           },
@@ -2444,7 +2448,7 @@ const ProtocolSettingsSchema = {
             "name": "minNodeRegistrationFee",
             "type": {
               "kind": "internal",
-              "name": "Int"
+              "name": "Value"
             },
             "key": "minFee"
           },
@@ -2472,7 +2476,7 @@ const ProtocolSettingsSchema = {
             "name": "minRegistrationFee",
             "type": {
               "kind": "internal",
-              "name": "Int"
+              "name": "Value"
             },
             "key": "minRegFee"
           },
@@ -2595,7 +2599,7 @@ const DelegateDatumSchema$3 = {
           "type": {
             "kind": "struct",
             "format": "map",
-            "id": "__module__ProtocolSettings__ProtocolSettings[]",
+            "id": "__module__ProtocolSettingsData__ProtocolSettings[]",
             "name": "ProtocolSettings",
             "fieldTypes": [
               {
@@ -2634,7 +2638,7 @@ const DelegateDatumSchema$3 = {
                       "name": "requiredNodeUptime",
                       "type": {
                         "kind": "internal",
-                        "name": "Int"
+                        "name": "Real"
                       },
                       "key": "ndUpt"
                     },
@@ -2642,7 +2646,7 @@ const DelegateDatumSchema$3 = {
                       "name": "minNodeRegistrationFee",
                       "type": {
                         "kind": "internal",
-                        "name": "Int"
+                        "name": "Value"
                       },
                       "key": "minFee"
                     },
@@ -2670,7 +2674,7 @@ const DelegateDatumSchema$3 = {
                       "name": "minRegistrationFee",
                       "type": {
                         "kind": "internal",
-                        "name": "Int"
+                        "name": "Value"
                       },
                       "key": "minRegFee"
                     },
@@ -8705,7 +8709,7 @@ class ProtocolSettingsController extends DelegatedDataContract {
     return super.capo;
   }
   get delegateName() {
-    return "ProtocolSettings";
+    return "protocolSettings";
   }
   get idPrefix() {
     return "set";
@@ -8727,13 +8731,13 @@ class ProtocolSettingsController extends DelegatedDataContract {
     const settings = {
       nodeOpSettings: {
         expectedHeartbeatInterval: 7 * 24 * 60 * 60 * 1e3,
-        minNodeOperatorStake: makeValue(20000n),
-        minNodeRegistrationFee: 2000n,
-        requiredNodeUptime: 90n
+        minNodeOperatorStake: makeValue(200n * ADA),
+        minNodeRegistrationFee: makeValue(50n * ADA),
+        requiredNodeUptime: 0.95
       },
       nbhSettings: {
-        minNbhStake: makeValue(50000001n),
-        minRegistrationFee: 4000000000n
+        minNbhStake: makeValue(5000n * ADA),
+        minRegistrationFee: makeValue(4000n * ADA)
       }
       /* Add other settings here */
     };
@@ -9292,34 +9296,34 @@ let DelegateDatumHelper$2 = class DelegateDatumHelper extends EnumBridge {
     { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
   );
   /**
-   * generates  InlineTxOutputDatum for ***"MyMintSpendDelegate::DelegateDatum.Cip68RefToken"***
+   * generates  InlineTxOutputDatum for ***"STokMintDelegate::DelegateDatum.Cip68RefToken"***
    * @remarks - ***DelegateDatum$Cip68RefTokenLike*** is the same as the expanded field-types.
    */
   Cip68RefToken(fields) {
     const uplc = this.mkUplcData({
       Cip68RefToken: fields
-    }, "MyMintSpendDelegate::DelegateDatum.Cip68RefToken");
+    }, "STokMintDelegate::DelegateDatum.Cip68RefToken");
     return makeInlineTxOutputDatum(uplc);
   }
   /*multiFieldVariant enum accessor*/
   /**
-   * generates  InlineTxOutputDatum for ***"MyMintSpendDelegate::DelegateDatum.IsDelegation"***
+   * generates  InlineTxOutputDatum for ***"STokMintDelegate::DelegateDatum.IsDelegation"***
    * @remarks - ***DelegationDetailLike*** is the same as the expanded field-type.
    */
   IsDelegation(dd) {
     const uplc = this.mkUplcData({
       IsDelegation: dd
-    }, "MyMintSpendDelegate::DelegateDatum.IsDelegation");
+    }, "STokMintDelegate::DelegateDatum.IsDelegation");
     return makeInlineTxOutputDatum(uplc);
   }
   /**
-   * generates  InlineTxOutputDatum for ***"MyMintSpendDelegate::DelegateDatum.capoStoredData"***
+   * generates  InlineTxOutputDatum for ***"STokMintDelegate::DelegateDatum.capoStoredData"***
    * @remarks - ***DelegateDatum$capoStoredDataLike*** is the same as the expanded field-types.
    */
   capoStoredData(fields) {
     const uplc = this.mkUplcData({
       capoStoredData: fields
-    }, "MyMintSpendDelegate::DelegateDatum.capoStoredData");
+    }, "STokMintDelegate::DelegateDatum.capoStoredData");
     return makeInlineTxOutputDatum(uplc);
   }
   /*multiFieldVariant enum accessor*/
@@ -9945,12 +9949,12 @@ let SpendingActivityHelper$2 = class SpendingActivityHelper extends EnumBridge {
     { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
   );
   /**
-   * generates  UplcData for ***"MyMintSpendDelegate::SpendingActivity.SampleSpendingActivity"***
+   * generates  UplcData for ***"STokMintDelegate::SpendingActivity._placeholder1SA"***
    */
-  SampleSpendingActivity(recId) {
+  _placeholder1SA(recId) {
     const uplc = this.mkUplcData({
-      SampleSpendingActivity: recId
-    }, "MyMintSpendDelegate::SpendingActivity.SampleSpendingActivity");
+      _placeholder1SA: recId
+    }, "STokMintDelegate::SpendingActivity._placeholder1SA");
     return uplc;
   }
 };
@@ -9964,24 +9968,51 @@ let MintingActivityHelper$2 = class MintingActivityHelper extends EnumBridge {
     { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
   );
   /**
-   * (property getter): UplcData for ***"MyMintSpendDelegate::MintingActivity.SampleMintingActivity"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+  * generates  UplcData for ***"STokMintDelegate::MintingActivity.MintingParticipantToken"***, 
+  * given a transaction-context (or direct arg) with a ***seed utxo*** 
+  * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+  *  - to get a transaction context having the seed needed for this argument, 
+  *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
+  * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+  *  - in a context providing an implicit seed utxo, use 
+  *    the `$seeded$MintingParticipantToken}` variant of this activity instead
+  *
    */
-  get SampleMintingActivity() {
-    const uplc = this.mkUplcData(
-      { SampleMintingActivity: {} },
-      "MyMintSpendDelegate::MintingActivity.SampleMintingActivity"
-    );
+  MintingParticipantToken(thingWithSeed) {
+    const seedTxOutputId = this.getSeed(thingWithSeed);
+    const uplc = this.mkUplcData({
+      MintingParticipantToken: seedTxOutputId
+    }, "STokMintDelegate::MintingActivity.MintingParticipantToken");
     return uplc;
   }
-  /* tagOnly variant accessor */
+  /*singleField/seeded enum variant*/
   /**
-   * generates  UplcData for ***"MyMintSpendDelegate::MintingActivity.MintingFungibleTokens"***
+   * generates  UplcData for ***"STokMintDelegate::MintingActivity.MintingParticipantToken"***
+   * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+   * ##### Activity contains implied seed
+   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+   * provided implicitly by a SeedActivity-supporting library function. 
+   * #### Usage
+   * Access the activity-creator as a getter: `$seeded$MintingParticipantToken`
+   *
+   * Use the resulting activity-creator in a seed-providing context, such as the delegated-data-controller's
+   * `mkTxnCreateRecord({activity, ...})` method.
+   */
+  get $seeded$MintingParticipantToken() {
+    return impliedSeedActivityMaker(this, this.MintingParticipantToken)();
+  }
+  /* coda: seeded helper in same singleField/seeded enum variant*/
+  /**
+   * generates  UplcData for ***"STokMintDelegate::MintingActivity.MintingFungibleTokens"***
    */
   MintingFungibleTokens(tokenName) {
     const uplc = this.mkUplcData({
       MintingFungibleTokens: tokenName
-    }, "MyMintSpendDelegate::MintingActivity.MintingFungibleTokens");
+    }, "STokMintDelegate::MintingActivity.MintingFungibleTokens");
     return uplc;
   }
 };
@@ -9995,12 +10026,12 @@ let BurningActivityHelper$2 = class BurningActivityHelper extends EnumBridge {
     { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
   );
   /**
-   * generates  UplcData for ***"MyMintSpendDelegate::BurningActivity._placeholder1BA"***
+   * generates  UplcData for ***"STokMintDelegate::BurningActivity._placeholder1BA"***
    */
   _placeholder1BA(recId) {
     const uplc = this.mkUplcData({
       _placeholder1BA: recId
-    }, "MyMintSpendDelegate::BurningActivity._placeholder1BA");
+    }, "STokMintDelegate::BurningActivity._placeholder1BA");
     return uplc;
   }
 };
@@ -10394,17 +10425,17 @@ let SpendingActivityHelperNested$2 = class SpendingActivityHelperNested extends 
     { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
   );
   /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::SpendingActivity.SampleSpendingActivity"***
+   * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::SpendingActivity._placeholder1SA"***
   * @remarks
   * #### Nested activity: 
   * this is connected to a nested-activity wrapper, so the details are piped through 
   * the parent's uplc-encoder, producing a single uplc object with 
   * a complete wrapper for this inner activity detail.
    */
-  SampleSpendingActivity(recId) {
+  _placeholder1SA(recId) {
     const uplc = this.mkUplcData({
-      SampleSpendingActivity: recId
-    }, "MyMintSpendDelegate::SpendingActivity.SampleSpendingActivity");
+      _placeholder1SA: recId
+    }, "STokMintDelegate::SpendingActivity._placeholder1SA");
     return uplc;
   }
 };
@@ -10418,19 +10449,54 @@ let MintingActivityHelperNested$2 = class MintingActivityHelperNested extends En
     { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
   );
   /**
-   * (property getter): UplcData for ***"MyMintSpendDelegate::MintingActivity.SampleMintingActivity"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-   */
-  get SampleMintingActivity() {
-    const uplc = this.mkUplcData(
-      { SampleMintingActivity: {} },
-      "MyMintSpendDelegate::MintingActivity.SampleMintingActivity"
-    );
+  * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::MintingActivity.MintingParticipantToken"***, 
+  * given a transaction-context (or direct arg) with a ***seed utxo*** 
+  * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+  *  - to get a transaction context having the seed needed for this argument, 
+  *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
+  * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+  *  - in a context providing an implicit seed utxo, use 
+  *    the `$seeded$MintingParticipantToken}` variant of this activity instead
+  *
+   * ##### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+  */
+  MintingParticipantToken(thingWithSeed) {
+    const seedTxOutputId = this.getSeed(thingWithSeed);
+    const uplc = this.mkUplcData({
+      MintingParticipantToken: seedTxOutputId
+    }, "STokMintDelegate::MintingActivity.MintingParticipantToken");
     return uplc;
   }
-  /* tagOnly variant accessor */
+  /*singleField/seeded enum variant*/
   /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::MintingActivity.MintingFungibleTokens"***
+   * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::MintingActivity.MintingParticipantToken"***
+   * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+   * ##### Activity contains implied seed
+   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+   * provided implicitly by a SeedActivity-supporting library function. 
+   * #### Usage
+   * Access the activity-creator as a getter: `$seeded$MintingParticipantToken`
+   *
+   * Use the resulting activity-creator in a seed-providing context, such as the delegated-data-controller's
+   * `mkTxnCreateRecord({activity, ...})` method.
+  * #### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  get $seeded$MintingParticipantToken() {
+    return impliedSeedActivityMaker(this, this.MintingParticipantToken)();
+  }
+  /* coda: seeded helper in same singleField/seeded enum variant*/
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::MintingActivity.MintingFungibleTokens"***
   * @remarks
   * #### Nested activity: 
   * this is connected to a nested-activity wrapper, so the details are piped through 
@@ -10440,7 +10506,7 @@ let MintingActivityHelperNested$2 = class MintingActivityHelperNested extends En
   MintingFungibleTokens(tokenName) {
     const uplc = this.mkUplcData({
       MintingFungibleTokens: tokenName
-    }, "MyMintSpendDelegate::MintingActivity.MintingFungibleTokens");
+    }, "STokMintDelegate::MintingActivity.MintingFungibleTokens");
     return uplc;
   }
 };
@@ -10454,7 +10520,7 @@ let BurningActivityHelperNested$2 = class BurningActivityHelperNested extends En
     { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
   );
   /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::BurningActivity._placeholder1BA"***
+   * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::BurningActivity._placeholder1BA"***
   * @remarks
   * #### Nested activity: 
   * this is connected to a nested-activity wrapper, so the details are piped through 
@@ -10464,7 +10530,7 @@ let BurningActivityHelperNested$2 = class BurningActivityHelperNested extends En
   _placeholder1BA(recId) {
     const uplc = this.mkUplcData({
       _placeholder1BA: recId
-    }, "MyMintSpendDelegate::BurningActivity._placeholder1BA");
+    }, "STokMintDelegate::BurningActivity._placeholder1BA");
     return uplc;
   }
 };
@@ -10490,7 +10556,7 @@ let DelegateActivityHelper$2 = class DelegateActivityHelper extends EnumBridge {
       (activity) => {
         return this.mkUplcData(
           { CapoLifecycleActivities: activity },
-          "MyMintSpendDelegate::DelegateActivity.CapoLifecycleActivities"
+          "STokMintDelegate::DelegateActivity.CapoLifecycleActivities"
         );
       }
     );
@@ -10510,7 +10576,7 @@ let DelegateActivityHelper$2 = class DelegateActivityHelper extends EnumBridge {
       (activity) => {
         return this.mkUplcData(
           { DelegateLifecycleActivities: activity },
-          "MyMintSpendDelegate::DelegateActivity.DelegateLifecycleActivities"
+          "STokMintDelegate::DelegateActivity.DelegateLifecycleActivities"
         );
       }
     );
@@ -10530,7 +10596,7 @@ let DelegateActivityHelper$2 = class DelegateActivityHelper extends EnumBridge {
       (activity) => {
         return this.mkUplcData(
           { SpendingActivities: activity },
-          "MyMintSpendDelegate::DelegateActivity.SpendingActivities"
+          "STokMintDelegate::DelegateActivity.SpendingActivities"
         );
       }
     );
@@ -10550,7 +10616,7 @@ let DelegateActivityHelper$2 = class DelegateActivityHelper extends EnumBridge {
       (activity) => {
         return this.mkUplcData(
           { MintingActivities: activity },
-          "MyMintSpendDelegate::DelegateActivity.MintingActivities"
+          "STokMintDelegate::DelegateActivity.MintingActivities"
         );
       }
     );
@@ -10570,7 +10636,7 @@ let DelegateActivityHelper$2 = class DelegateActivityHelper extends EnumBridge {
       (activity) => {
         return this.mkUplcData(
           { BurningActivities: activity },
-          "MyMintSpendDelegate::DelegateActivity.BurningActivities"
+          "STokMintDelegate::DelegateActivity.BurningActivities"
         );
       }
     );
@@ -10581,19 +10647,19 @@ let DelegateActivityHelper$2 = class DelegateActivityHelper extends EnumBridge {
       const seedTxOutputId = this.getSeed(seedOrUf);
       const uplc = this.mkUplcData({
         CreatingDelegatedData: { seed: seedTxOutputId, ...filteredFields }
-      }, "MyMintSpendDelegate::DelegateActivity.CreatingDelegatedData");
+      }, "STokMintDelegate::DelegateActivity.CreatingDelegatedData");
       return uplc;
     } else {
       const fields = seedOrUf;
       const uplc = this.mkUplcData({
         CreatingDelegatedData: fields
-      }, "MyMintSpendDelegate::DelegateActivity.CreatingDelegatedData");
+      }, "STokMintDelegate::DelegateActivity.CreatingDelegatedData");
       return uplc;
     }
   }
   /*multiFieldVariant/seeded enum accessor*/
   /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.CreatingDelegatedData"***, 
+   * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.CreatingDelegatedData"***, 
    * @param fields - \{ dataType: string \}
    * @remarks
   * ##### Seeded activity
@@ -10614,34 +10680,34 @@ let DelegateActivityHelper$2 = class DelegateActivityHelper extends EnumBridge {
   );
   /* coda: seeded helper in same multiFieldVariant/seeded */
   /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.UpdatingDelegatedData"***
+   * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.UpdatingDelegatedData"***
    * @remarks - ***DelegateActivity$UpdatingDelegatedDataLike*** is the same as the expanded field-types.
    */
   UpdatingDelegatedData(fields) {
     const uplc = this.mkUplcData({
       UpdatingDelegatedData: fields
-    }, "MyMintSpendDelegate::DelegateActivity.UpdatingDelegatedData");
+    }, "STokMintDelegate::DelegateActivity.UpdatingDelegatedData");
     return uplc;
   }
   /*multiFieldVariant enum accessor*/
   /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.DeletingDelegatedData"***
+   * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.DeletingDelegatedData"***
    * @remarks - ***DelegateActivity$DeletingDelegatedDataLike*** is the same as the expanded field-types.
    */
   DeletingDelegatedData(fields) {
     const uplc = this.mkUplcData({
       DeletingDelegatedData: fields
-    }, "MyMintSpendDelegate::DelegateActivity.DeletingDelegatedData");
+    }, "STokMintDelegate::DelegateActivity.DeletingDelegatedData");
     return uplc;
   }
   /*multiFieldVariant enum accessor*/
   /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.MultipleDelegateActivities"***
+   * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.MultipleDelegateActivities"***
    */
   MultipleDelegateActivities(activities) {
     const uplc = this.mkUplcData({
       MultipleDelegateActivities: activities
-    }, "MyMintSpendDelegate::DelegateActivity.MultipleDelegateActivities");
+    }, "STokMintDelegate::DelegateActivity.MultipleDelegateActivities");
     return uplc;
   }
 };
@@ -10939,12 +11005,12 @@ const DelegationDetailSchema$2 = {
 const DelegateDatumSchema$2 = {
   "kind": "enum",
   "name": "DelegateDatum",
-  "id": "__module__MyMintSpendDelegate__DelegateDatum[]",
+  "id": "__module__STokMintDelegate__DelegateDatum[]",
   "variantTypes": [
     {
       "kind": "variant",
       "tag": 0,
-      "id": "__module__MyMintSpendDelegate__DelegateDatum[]__Cip68RefToken",
+      "id": "__module__STokMintDelegate__DelegateDatum[]__Cip68RefToken",
       "name": "Cip68RefToken",
       "fieldTypes": [
         {
@@ -10993,7 +11059,7 @@ const DelegateDatumSchema$2 = {
     {
       "kind": "variant",
       "tag": 1,
-      "id": "__module__MyMintSpendDelegate__DelegateDatum[]__IsDelegation",
+      "id": "__module__STokMintDelegate__DelegateDatum[]__IsDelegation",
       "name": "IsDelegation",
       "fieldTypes": [
         {
@@ -11033,7 +11099,7 @@ const DelegateDatumSchema$2 = {
     {
       "kind": "variant",
       "tag": 2,
-      "id": "__module__MyMintSpendDelegate__DelegateDatum[]__capoStoredData",
+      "id": "__module__STokMintDelegate__DelegateDatum[]__capoStoredData",
       "name": "capoStoredData",
       "fieldTypes": [
         {
@@ -11614,13 +11680,13 @@ const DelegateLifecycleActivitySchema$2 = {
 const SpendingActivitySchema$2 = {
   "kind": "enum",
   "name": "SpendingActivity",
-  "id": "__module__MyMintSpendDelegate__SpendingActivity[]",
+  "id": "__module__STokMintDelegate__SpendingActivity[]",
   "variantTypes": [
     {
       "kind": "variant",
       "tag": 0,
-      "id": "__module__MyMintSpendDelegate__SpendingActivity[]__SampleSpendingActivity",
-      "name": "SampleSpendingActivity",
+      "id": "__module__STokMintDelegate__SpendingActivity[]___placeholder1SA",
+      "name": "_placeholder1SA",
       "fieldTypes": [
         {
           "name": "recId",
@@ -11636,19 +11702,27 @@ const SpendingActivitySchema$2 = {
 const MintingActivitySchema$2 = {
   "kind": "enum",
   "name": "MintingActivity",
-  "id": "__module__MyMintSpendDelegate__MintingActivity[]",
+  "id": "__module__STokMintDelegate__MintingActivity[]",
   "variantTypes": [
     {
       "kind": "variant",
       "tag": 0,
-      "id": "__module__MyMintSpendDelegate__MintingActivity[]__SampleMintingActivity",
-      "name": "SampleMintingActivity",
-      "fieldTypes": []
+      "id": "__module__STokMintDelegate__MintingActivity[]__MintingParticipantToken",
+      "name": "MintingParticipantToken",
+      "fieldTypes": [
+        {
+          "name": "seed",
+          "type": {
+            "kind": "internal",
+            "name": "TxOutputId"
+          }
+        }
+      ]
     },
     {
       "kind": "variant",
       "tag": 1,
-      "id": "__module__MyMintSpendDelegate__MintingActivity[]__MintingFungibleTokens",
+      "id": "__module__STokMintDelegate__MintingActivity[]__MintingFungibleTokens",
       "name": "MintingFungibleTokens",
       "fieldTypes": [
         {
@@ -11665,12 +11739,12 @@ const MintingActivitySchema$2 = {
 const BurningActivitySchema$2 = {
   "kind": "enum",
   "name": "BurningActivity",
-  "id": "__module__MyMintSpendDelegate__BurningActivity[]",
+  "id": "__module__STokMintDelegate__BurningActivity[]",
   "variantTypes": [
     {
       "kind": "variant",
       "tag": 0,
-      "id": "__module__MyMintSpendDelegate__BurningActivity[]___placeholder1BA",
+      "id": "__module__STokMintDelegate__BurningActivity[]___placeholder1BA",
       "name": "_placeholder1BA",
       "fieldTypes": [
         {
@@ -11687,12 +11761,12 @@ const BurningActivitySchema$2 = {
 const DelegateActivitySchema$2 = {
   "kind": "enum",
   "name": "DelegateActivity",
-  "id": "__module__MyMintSpendDelegate__DelegateActivity[]",
+  "id": "__module__STokMintDelegate__DelegateActivity[]",
   "variantTypes": [
     {
       "kind": "variant",
       "tag": 0,
-      "id": "__module__MyMintSpendDelegate__DelegateActivity[]__CapoLifecycleActivities",
+      "id": "__module__STokMintDelegate__DelegateActivity[]__CapoLifecycleActivities",
       "name": "CapoLifecycleActivities",
       "fieldTypes": [
         {
@@ -12001,7 +12075,7 @@ const DelegateActivitySchema$2 = {
     {
       "kind": "variant",
       "tag": 1,
-      "id": "__module__MyMintSpendDelegate__DelegateActivity[]__DelegateLifecycleActivities",
+      "id": "__module__STokMintDelegate__DelegateActivity[]__DelegateLifecycleActivities",
       "name": "DelegateLifecycleActivities",
       "fieldTypes": [
         {
@@ -12055,7 +12129,7 @@ const DelegateActivitySchema$2 = {
     {
       "kind": "variant",
       "tag": 2,
-      "id": "__module__MyMintSpendDelegate__DelegateActivity[]__SpendingActivities",
+      "id": "__module__STokMintDelegate__DelegateActivity[]__SpendingActivities",
       "name": "SpendingActivities",
       "fieldTypes": [
         {
@@ -12063,13 +12137,13 @@ const DelegateActivitySchema$2 = {
           "type": {
             "kind": "enum",
             "name": "SpendingActivity",
-            "id": "__module__MyMintSpendDelegate__SpendingActivity[]",
+            "id": "__module__STokMintDelegate__SpendingActivity[]",
             "variantTypes": [
               {
                 "kind": "variant",
                 "tag": 0,
-                "id": "__module__MyMintSpendDelegate__SpendingActivity[]__SampleSpendingActivity",
-                "name": "SampleSpendingActivity",
+                "id": "__module__STokMintDelegate__SpendingActivity[]___placeholder1SA",
+                "name": "_placeholder1SA",
                 "fieldTypes": [
                   {
                     "name": "recId",
@@ -12088,7 +12162,7 @@ const DelegateActivitySchema$2 = {
     {
       "kind": "variant",
       "tag": 3,
-      "id": "__module__MyMintSpendDelegate__DelegateActivity[]__MintingActivities",
+      "id": "__module__STokMintDelegate__DelegateActivity[]__MintingActivities",
       "name": "MintingActivities",
       "fieldTypes": [
         {
@@ -12096,19 +12170,27 @@ const DelegateActivitySchema$2 = {
           "type": {
             "kind": "enum",
             "name": "MintingActivity",
-            "id": "__module__MyMintSpendDelegate__MintingActivity[]",
+            "id": "__module__STokMintDelegate__MintingActivity[]",
             "variantTypes": [
               {
                 "kind": "variant",
                 "tag": 0,
-                "id": "__module__MyMintSpendDelegate__MintingActivity[]__SampleMintingActivity",
-                "name": "SampleMintingActivity",
-                "fieldTypes": []
+                "id": "__module__STokMintDelegate__MintingActivity[]__MintingParticipantToken",
+                "name": "MintingParticipantToken",
+                "fieldTypes": [
+                  {
+                    "name": "seed",
+                    "type": {
+                      "kind": "internal",
+                      "name": "TxOutputId"
+                    }
+                  }
+                ]
               },
               {
                 "kind": "variant",
                 "tag": 1,
-                "id": "__module__MyMintSpendDelegate__MintingActivity[]__MintingFungibleTokens",
+                "id": "__module__STokMintDelegate__MintingActivity[]__MintingFungibleTokens",
                 "name": "MintingFungibleTokens",
                 "fieldTypes": [
                   {
@@ -12128,7 +12210,7 @@ const DelegateActivitySchema$2 = {
     {
       "kind": "variant",
       "tag": 4,
-      "id": "__module__MyMintSpendDelegate__DelegateActivity[]__BurningActivities",
+      "id": "__module__STokMintDelegate__DelegateActivity[]__BurningActivities",
       "name": "BurningActivities",
       "fieldTypes": [
         {
@@ -12136,12 +12218,12 @@ const DelegateActivitySchema$2 = {
           "type": {
             "kind": "enum",
             "name": "BurningActivity",
-            "id": "__module__MyMintSpendDelegate__BurningActivity[]",
+            "id": "__module__STokMintDelegate__BurningActivity[]",
             "variantTypes": [
               {
                 "kind": "variant",
                 "tag": 0,
-                "id": "__module__MyMintSpendDelegate__BurningActivity[]___placeholder1BA",
+                "id": "__module__STokMintDelegate__BurningActivity[]___placeholder1BA",
                 "name": "_placeholder1BA",
                 "fieldTypes": [
                   {
@@ -12161,7 +12243,7 @@ const DelegateActivitySchema$2 = {
     {
       "kind": "variant",
       "tag": 5,
-      "id": "__module__MyMintSpendDelegate__DelegateActivity[]__CreatingDelegatedData",
+      "id": "__module__STokMintDelegate__DelegateActivity[]__CreatingDelegatedData",
       "name": "CreatingDelegatedData",
       "fieldTypes": [
         {
@@ -12183,7 +12265,7 @@ const DelegateActivitySchema$2 = {
     {
       "kind": "variant",
       "tag": 6,
-      "id": "__module__MyMintSpendDelegate__DelegateActivity[]__UpdatingDelegatedData",
+      "id": "__module__STokMintDelegate__DelegateActivity[]__UpdatingDelegatedData",
       "name": "UpdatingDelegatedData",
       "fieldTypes": [
         {
@@ -12205,7 +12287,7 @@ const DelegateActivitySchema$2 = {
     {
       "kind": "variant",
       "tag": 7,
-      "id": "__module__MyMintSpendDelegate__DelegateActivity[]__DeletingDelegatedData",
+      "id": "__module__STokMintDelegate__DelegateActivity[]__DeletingDelegatedData",
       "name": "DeletingDelegatedData",
       "fieldTypes": [
         {
@@ -12227,7 +12309,7 @@ const DelegateActivitySchema$2 = {
     {
       "kind": "variant",
       "tag": 8,
-      "id": "__module__MyMintSpendDelegate__DelegateActivity[]__MultipleDelegateActivities",
+      "id": "__module__STokMintDelegate__DelegateActivity[]__MultipleDelegateActivities",
       "name": "MultipleDelegateActivities",
       "fieldTypes": [
         {
@@ -17084,7 +17166,7 @@ const CapoCtxSchema$2 = {
   ]
 };
 
-class MyMintSpendDelegate extends BasicMintDelegate {
+class MyMintSpendDelegate extends STokMintDelegate {
   get delegateName() {
     return "MyMintSpendDelegate";
   }
@@ -19573,7 +19655,7 @@ const NodeRegistrationDataSchema = {
       "name": "nodePublicKey",
       "type": {
         "kind": "internal",
-        "name": "ByteArray"
+        "name": "PubKey"
       },
       "key": "pubk"
     },
@@ -19739,7 +19821,7 @@ const DelegateDatumSchema$1 = {
                 "name": "nodePublicKey",
                 "type": {
                   "kind": "internal",
-                  "name": "ByteArray"
+                  "name": "PubKey"
                 },
                 "key": "pubk"
               },
@@ -25778,7 +25860,7 @@ const NodeOperatorSettingsSchema = {
       "name": "requiredNodeUptime",
       "type": {
         "kind": "internal",
-        "name": "Int"
+        "name": "Real"
       },
       "key": "ndUpt"
     },
@@ -25786,7 +25868,7 @@ const NodeOperatorSettingsSchema = {
       "name": "minNodeRegistrationFee",
       "type": {
         "kind": "internal",
-        "name": "Int"
+        "name": "Value"
       },
       "key": "minFee"
     },
@@ -25826,7 +25908,7 @@ const AbstractSettingsForNodeOperatorSchema = {
             "name": "requiredNodeUptime",
             "type": {
               "kind": "internal",
-              "name": "Int"
+              "name": "Real"
             },
             "key": "ndUpt"
           },
@@ -25834,7 +25916,7 @@ const AbstractSettingsForNodeOperatorSchema = {
             "name": "minNodeRegistrationFee",
             "type": {
               "kind": "internal",
-              "name": "Int"
+              "name": "Value"
             },
             "key": "minFee"
           },
@@ -26024,7 +26106,7 @@ class NodeRegistryController extends DelegatedDataContract {
   }
   idPrefix = "dredNode";
   get delegateName() {
-    return "NodeRegistryDgt";
+    return "nodeRegistry";
   }
   get recordTypeName() {
     return "DredNode";
@@ -26040,248 +26122,61 @@ class NodeRegistryController extends DelegatedDataContract {
       nodePort: 13337n,
       // bad data, but good enough for being a lame example.  
       // It should be a valid Ed25519 public key, expressed as a numeric array
-      nodePublicKey: makePubKey(textToBytes("0x1234567890abcdef1234567890abcdef"))
+      nodePublicKey: makeDummyPubKey()
     };
   }
   get capo() {
     return super.capo;
   }
-  async mkTxnRegisteringNode(nodeReg) {
+  async mkTxnRegisteringNode(nodeReg, initialTcx) {
     await this.capo.getMintDelegate();
+    const { capo } = this;
+    const tcx0 = initialTcx || this.mkTcx(
+      "registering dred node"
+    );
+    const tcx1 = await capo.mkTxnWithMemberInfo(void 0, tcx0);
+    const capoUtxos = await capo.findCapoUtxos();
+    const charterData = await capo.findCharterData(void 0, {
+      capoUtxos,
+      optional: false
+    });
+    const tcx2 = await capo.tcxWithSettingsRef(tcx1, {
+      capoUtxos,
+      charterData
+    });
     return this.mkTxnCreateRecord(
       {
         activity: this.activity.MintingActivities.$seeded$CreatingRecord,
         data: {
-          ...nodeReg
-          // memberToken: tcx.state.memberToken.name,
+          ...nodeReg,
+          memberToken: tcx2.state.memberToken.name
         }
         // addedUtxoValue: makeValue(initialVaultStake),
-      }
-      // tcx
-    );
+      },
+      tcx2
+    ).then((tcx) => tcx);
   }
-  async mkTxnUpdatingNodeRegistration(txnName, item, options, tcx) {
-    return super.mkTxnUpdateRecord(txnName, item, options, tcx);
+  async mkTxnUpdatingNodeRegistration(txnName, item, options, initialTcx) {
+    const tcx0 = initialTcx || this.mkTcx(
+      "registering dred node"
+    );
+    const tcx1 = await this.capo.mkTxnWithMemberInfo(void 0, tcx0);
+    const capoUtxos = await this.capo.findCapoUtxos();
+    const tcx2 = await this.capo.tcxWithSettingsRef(tcx1, {
+      capoUtxos,
+      charterData: await this.capo.findCharterData(void 0, {
+        capoUtxos,
+        optional: false
+      })
+    });
+    return super.mkTxnUpdateRecord(txnName, item, {
+      ...options,
+      activity: this.activity.SpendingActivities.UpdatingRecord(item.data.id)
+    }, tcx2);
   }
   requirements() {
     return hasReqts({
       // todo
-    });
-  }
-}
-
-class DredCapo extends Capo {
-  autoSetup = true;
-  get defaultFeatureFlags() {
-    return {
-      settings: true,
-      nodeOpRegistry: true,
-      nbhRegistry: true
-      /* Add other feature-flag defaults here */
-    };
-  }
-  scriptBundle() {
-    return DredCapoBundle.create({
-      setup: this.setup
-    });
-  }
-  /**
-   * locates the current settings for the capo
-   */
-  async findSettingsInfo(options) {
-    return super.findSettingsInfo(options);
-  }
-  /**
-   * Finds and instantiates the mint delegate for the capo
-   */
-  async getMintDelegate(charterData) {
-    return super.getMintDelegate(charterData);
-  }
-  /**
-   * Finds and instantiates the spend delegate for the capo
-   */
-  async getSpendDelegate(charterData) {
-    return super.getSpendDelegate(charterData);
-  }
-  /**
-   * Finds and instantiates the node registry controller for the capo
-   */
-  async getNodeRegistryController(charterData) {
-    if (!charterData) {
-      charterData = await this.findCharterData();
-    }
-    return this.getDgDataController("nodeReg", {
-      charterData
-    });
-  }
-  /**
-   * Finds and instantiates the neighborhood registry controller for the capo
-   */
-  async getNbhRegistryController(charterData) {
-    if (!charterData) {
-      charterData = await this.findCharterData();
-    }
-    return this.getDgDataController("nbhRegistry", {
-      charterData
-    });
-  }
-  /**
-   * Finds and instantiates the settings controller for the capo
-   */
-  async getSettingsController(options) {
-    return this.getDgDataController("settings", options);
-  }
-  /* add other controller-fetching methods here */
-  /**
-   * Creates the initial settings for the capo
-   */
-  async mkInitialSettings() {
-    return {
-      nodeOpSettings: {
-        expectedHeartbeatInterval: BigInt(72 * 60 * 60 * 1e3),
-        minNodeOperatorStake: makeValue(20000n),
-        minNodeRegistrationFee: 10000000n,
-        requiredNodeUptime: 0.95
-      },
-      nbhSettings: {
-        minRegistrationFee: 3000000000n,
-        minNbhStake: makeValue(50000001n)
-      }
-    };
-  }
-  /**
-   * Finds all the node-registration records
-   * @remarks
-   * This is a convenience method for finding all the node-registration records.
-   * It is equivalent to calling `findDelegatedDataUtxos` with the type `"dredNode"`.
-   */
-  async findNodeOpEntries() {
-    return this.findDelegatedDataUtxos({
-      type: "dredNode"
-    });
-  }
-  /**
-   * Finds all the neighborhood-registration records
-   */
-  async findNbhRegistryEntries() {
-    return this.findDelegatedDataUtxos({
-      type: "dredNbh"
-    });
-  }
-  /* add other model-specific finders here */
-  /**
-   * Initializes the delegate roles for the capo
-   * @internal
-   */
-  initDelegateRoles() {
-    const inh = super.basicDelegateRoles();
-    const { mintDelegate: parentMD, spendDelegate, govAuthority } = inh;
-    const myDelegates = delegateRoles({
-      govAuthority,
-      spendDelegate: defineRole("spendDgt", MyMintSpendDelegate, {}),
-      mintDelegate: defineRole("mintDgt", MyMintSpendDelegate, {}),
-      settings: defineRole("dgDataPolicy", ProtocolSettingsController, {}),
-      nodeOpRegistry: defineRole("dgDataPolicy", NodeRegistryController, {})
-      // nbhRegistry: defineRole("dgDataPolicy", NeighborhoodController, {}),
-      /* Add other delegate roles here */
-      // optional tokenomics features:
-      // mktSale: defineRole(
-      //     "dgDataPolicy",
-      //     MarketSaleController, {}
-      // ),
-      // needs to stay disabled until it can have access to TieredScale:
-      // fundedPurpose: defineRole(
-      //     "dgDataPolicy",
-      //     FundedPurposeController,
-      //     {}
-      // ),
-    });
-    return myDelegates;
-  }
-  /**
-   * Mints fungible tokens under the Capo's minting policy
-   */
-  async txnMintingFungibleTokens(tcx, tokenName, tokenCount) {
-    if (typeof tokenName === "string") {
-      tokenName = textToBytes(tokenName);
-    }
-    const mintDgt = await this.getMintDelegate();
-    const tcx2 = await this.tcxWithCharterRef(tcx);
-    const tcx2a = await this.txnAddGovAuthority(tcx2);
-    const minter = this.minter;
-    return minter.txnMintWithDelegateAuthorizing(
-      tcx2a,
-      [mkValuesEntry(tokenName, tokenCount)],
-      mintDgt,
-      mintDgt.activity.MintingActivities.MintingFungibleTokens(tokenName)
-    );
-  }
-  // mkConfigData() {
-  //     throw new Error(`unused, but a basic example of how to create a MapData object`);
-  //     const uplcMap = makeMapData([
-  //         [makeByteArrayData(textToBytes("id")), makeByteArrayData(textToBytes("set"))],
-  //     ]);
-  //     return uplcMap;
-  // }
-  todoAddNamedDelegates() {
-  }
-  // async mkAdditionalTxnsForCharter<TCX extends hasAddlTxns<StellarTxnContext<any>>>(
-  //     this: DredCapo,
-  //     tcx: TCX,
-  //     options: {
-  //         charterData: CharterData;
-  //         capoUtxos: TxInput[];
-  //     }
-  // ) {
-  //    // now handled by autoSetup
-  //
-  //     await this.setupFundedPurpose(tcx, options);
-  //     await this.setupMarketSale(tcx, options);
-  //     await this.setupNodeRegistry(tcx, options);
-  //
-  //     return tcx;
-  // }
-  requirements() {
-    const baseTokenomics = super.requirements();
-    return mergesInheritedReqts(baseTokenomics, {
-      "has custom settings for protocol parameters": {
-        purpose: "sets up particular points of adjustability for operational policies",
-        details: [
-          "Arranges details including expiration period for node registrations, ",
-          "  ... so clients and node operator (software) can reference them and make adjustments",
-          "The configuration details can be stored in a separate script. ",
-          "The transaction-builder references the config record in txns needing to access it. ",
-          "On-chain scripts needing to read the config ('client scripts') can find it as a refInput to the txn. ",
-          "By using a CIP-68-style struct, the config's structure can be be upgraded, ",
-          "  ... allowing new scripts needing new configs to get those new configs, ",
-          "  ... while leaving its existing client scripts unmodified, "
-        ],
-        mech: [
-          "has an initial discount scale for artists and listeners",
-          "has staking-reward settings",
-          "provides a 'settings' struct in a module that other contracts import to access parameters"
-        ],
-        requires: ["can update the settings"]
-      },
-      "can update the settings": {
-        purpose: "to allow for future adjustments to protocol parameters",
-        details: [
-          "When the settings are updated, the new settings are used in all future transactions referencing settings`"
-        ],
-        mech: [
-          "applies the new settings on-chain",
-          "won't update the settings without capo govAuthority approval"
-        ]
-      },
-      "Provides a Node Operator registry, in which node operators can maintain their node registrations": {
-        purpose: "so node operators can publish their server availability",
-        details: ["Node operators can join the network and contribute capacity."],
-        mech: [
-          "Allows registering a node operator record with the DRED.nodeOperator token",
-          "Registers the member-* id with the node registration record"
-        ],
-        requires: []
-      }
     });
   }
 }
@@ -35968,7 +35863,7 @@ const NeighborhoodSettingsSchema = {
       "name": "minRegistrationFee",
       "type": {
         "kind": "internal",
-        "name": "Int"
+        "name": "Value"
       },
       "key": "minRegFee"
     },
@@ -36000,7 +35895,7 @@ const AbstractSettingsForNeighborhoodSchema = {
             "name": "minRegistrationFee",
             "type": {
               "kind": "internal",
-              "name": "Int"
+              "name": "Value"
             },
             "key": "minRegFee"
           },
@@ -36244,6 +36139,222 @@ class NeighborhoodController extends DelegatedDataContract {
   requirements() {
     return hasReqts({
       // todo
+    });
+  }
+}
+
+class DredCapo extends StellarTokenomicsCapo {
+  autoSetup = true;
+  get defaultFeatureFlags() {
+    return {
+      settings: true,
+      DredNode: true,
+      DredNeighborhood: true
+      /* Add other feature-flag defaults here */
+    };
+  }
+  scriptBundle() {
+    return DredCapoBundle.create({
+      setup: this.setup
+    });
+  }
+  /**
+   * locates the current settings for the capo
+   */
+  async findSettingsInfo(options) {
+    return super.findSettingsInfo(options);
+  }
+  /**
+   * Finds and instantiates the mint delegate for the capo
+   */
+  async getMintDelegate(charterData) {
+    return super.getMintDelegate(charterData);
+  }
+  /**
+   * Finds and instantiates the spend delegate for the capo
+   */
+  async getSpendDelegate(charterData) {
+    return super.getSpendDelegate(charterData);
+  }
+  /**
+   * Finds and instantiates the node registry controller for the capo
+   */
+  async getNodeRegistryController(charterData) {
+    if (!charterData) {
+      charterData = await this.findCharterData();
+    }
+    return this.getDgDataController("DredNode", {
+      charterData
+    });
+  }
+  /**
+   * Finds and instantiates the neighborhood registry controller for the capo
+   */
+  async getNbhRegistryController(charterData) {
+    if (!charterData) {
+      charterData = await this.findCharterData();
+    }
+    return this.getDgDataController("nbhRegistry", {
+      charterData
+    });
+  }
+  /**
+   * Finds and instantiates the settings controller for the capo
+   */
+  async getSettingsController(options) {
+    return this.getDgDataController("settings", options);
+  }
+  /* add other controller-fetching methods here */
+  /**
+   * Creates the initial settings for the capo
+   */
+  async mkInitialSettings() {
+    return {
+      nodeOpSettings: {
+        expectedHeartbeatInterval: BigInt(72 * 60 * 60 * 1e3),
+        minNodeOperatorStake: makeValue(200n * ADA),
+        minNodeRegistrationFee: makeValue(50n * ADA),
+        requiredNodeUptime: 0.95
+      },
+      nbhSettings: {
+        minNbhStake: makeValue(5000n * ADA),
+        minRegistrationFee: makeValue(4000n * ADA)
+      }
+    };
+  }
+  /**
+   * Finds all the node-registration records
+   * @remarks
+   * This is a convenience method for finding all the node-registration records.
+   * It is equivalent to calling `findDelegatedDataUtxos` with the type `"dredNode"`.
+   */
+  async findNodeOpEntries() {
+    return this.findDelegatedDataUtxos({
+      type: "dredNode"
+    });
+  }
+  /**
+   * Finds all the neighborhood-registration records
+   */
+  async findNbhRegistryEntries() {
+    return this.findDelegatedDataUtxos({
+      type: "dredNbh"
+    });
+  }
+  /* add other model-specific finders here */
+  /**
+   * Initializes the delegate roles for the capo
+   * @internal
+   */
+  initDelegateRoles() {
+    const inh = super.basicDelegateRoles();
+    const { mintDelegate: parentMD, spendDelegate, govAuthority } = inh;
+    const myDelegates = delegateRoles({
+      spendDelegate: defineRole("spendDgt", MyMintSpendDelegate, {}),
+      mintDelegate: defineRole("mintDgt", MyMintSpendDelegate, {}),
+      govAuthority,
+      settings: defineRole("dgDataPolicy", ProtocolSettingsController, {}),
+      DredNode: defineRole("dgDataPolicy", NodeRegistryController, {})
+      // nbhRegistry: defineRole("dgDataPolicy", NeighborhoodController, {}),
+      /* Add other delegate roles here */
+      // optional tokenomics features:
+      // mktSale: defineRole(
+      //     "dgDataPolicy",
+      //     MarketSaleController, {}
+      // ),
+      // needs to stay disabled until it can have access to TieredScale:
+      // fundedPurpose: defineRole(
+      //     "dgDataPolicy",
+      //     FundedPurposeController,
+      //     {}
+      // ),
+    });
+    return myDelegates;
+  }
+  /**
+   * Mints fungible tokens under the Capo's minting policy
+   */
+  async txnMintingFungibleTokens(tcx, tokenName, tokenCount) {
+    if (typeof tokenName === "string") {
+      tokenName = textToBytes(tokenName);
+    }
+    const mintDgt = await this.getMintDelegate();
+    const tcx2 = await this.tcxWithCharterRef(tcx);
+    const tcx2a = await this.txnAddGovAuthority(tcx2);
+    const minter = this.minter;
+    return minter.txnMintWithDelegateAuthorizing(
+      tcx2a,
+      [mkValuesEntry(tokenName, tokenCount)],
+      mintDgt,
+      mintDgt.activity.MintingActivities.MintingFungibleTokens(tokenName)
+    );
+  }
+  // mkConfigData() {
+  //     throw new Error(`unused, but a basic example of how to create a MapData object`);
+  //     const uplcMap = makeMapData([
+  //         [makeByteArrayData(textToBytes("id")), makeByteArrayData(textToBytes("set"))],
+  //     ]);
+  //     return uplcMap;
+  // }
+  todoAddNamedDelegates() {
+  }
+  // async mkAdditionalTxnsForCharter<TCX extends hasAddlTxns<StellarTxnContext<any>>>(
+  //     this: DredCapo,
+  //     tcx: TCX,
+  //     options: {
+  //         charterData: CharterData;
+  //         capoUtxos: TxInput[];
+  //     }
+  // ) {
+  //    // now handled by autoSetup
+  //
+  //     await this.setupFundedPurpose(tcx, options);
+  //     await this.setupMarketSale(tcx, options);
+  //     await this.setupNodeRegistry(tcx, options);
+  //
+  //     return tcx;
+  // }
+  requirements() {
+    const baseTokenomics = super.requirements();
+    return mergesInheritedReqts(baseTokenomics, {
+      "has custom settings for protocol parameters": {
+        purpose: "sets up particular points of adjustability for operational policies",
+        details: [
+          "Arranges details including expiration period for node registrations, ",
+          "  ... so clients and node operator (software) can reference them and make adjustments",
+          "The configuration details can be stored in a separate script. ",
+          "The transaction-builder references the config record in txns needing to access it. ",
+          "On-chain scripts needing to read the config ('client scripts') can find it as a refInput to the txn. ",
+          "By using a CIP-68-style struct, the config's structure can be be upgraded, ",
+          "  ... allowing new scripts needing new configs to get those new configs, ",
+          "  ... while leaving its existing client scripts unmodified, "
+        ],
+        mech: [
+          "has an initial discount scale for artists and listeners",
+          "has staking-reward settings",
+          "provides a 'settings' struct in a module that other contracts import to access parameters"
+        ],
+        requires: ["can update the settings"]
+      },
+      "can update the settings": {
+        purpose: "to allow for future adjustments to protocol parameters",
+        details: [
+          "When the settings are updated, the new settings are used in all future transactions referencing settings`"
+        ],
+        mech: [
+          "applies the new settings on-chain",
+          "won't update the settings without capo govAuthority approval"
+        ]
+      },
+      "Provides a Node Operator registry, in which node operators can maintain their node registrations": {
+        purpose: "so node operators can publish their server availability",
+        details: ["Node operators can join the network and contribute capacity."],
+        mech: [
+          "Allows registering a node operator record with the DRED.nodeOperator token",
+          "Registers the member-* id with the node registration record"
+        ],
+        requires: []
+      }
     });
   }
 }

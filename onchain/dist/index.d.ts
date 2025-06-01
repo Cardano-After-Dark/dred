@@ -10,21 +10,21 @@ import { CardanoClient } from '@helios-lang/tx-utils';
 import type { CardanoTxSubmitter } from '@helios-lang/tx-utils';
 import { Cast } from '@helios-lang/contract-utils';
 import { CompileOptions } from '@helios-lang/compiler';
-import { Constructor as Constructor_2 } from '../helios/HeliosMetaTypes.js';
+import { ConcreteCapoDelegateBundle as ConcreteCapoDelegateBundle_2 } from '../helios/scriptBundling/CapoDelegateBundle.js';
 import type { Cost } from '@helios-lang/uplc';
 import type { DataType } from '@helios-lang/compiler';
 import { DeferredState as DeferredState_2 } from '../StateMachine.js';
 import { DelegateMap } from '@donecollectively/stellar-contracts';
 import { DelegateSetup as DelegateSetup_2 } from '@donecollectively/stellar-contracts';
 import { DeployedProgramBundle as DeployedProgramBundle_2 } from '../CachedHeliosProgram.js';
-import { EmptyConstructor as EmptyConstructor_2 } from '../helios/HeliosMetaTypes.js';
 import { Emulator } from '@helios-lang/tx-utils';
 import type { EnumMemberType } from '@helios-lang/compiler';
-import { ErgoCapoManifestEntry as ErgoCapoManifestEntry_4 } from './helios/scriptBundling/CapoHeliosBundle.typeInfo.js';
+import { ErgoCapoManifestEntry as ErgoCapoManifestEntry_2 } from './helios/scriptBundling/CapoHeliosBundle.typeInfo.js';
 import { ErgoPendingDelegateChange as ErgoPendingDelegateChange_3 } from './helios/scriptBundling/CapoHeliosBundle.typeInfo.js';
 import { EventEmitter } from 'eventemitter3';
 import { hasCharterRef as hasCharterRef_2 } from '@donecollectively/stellar-contracts';
 import { hasGovAuthority as hasGovAuthority_2 } from '@donecollectively/stellar-contracts';
+import { hasMemberToken as hasMemberToken_2 } from 'stellar-tokenomics';
 import { hasSeedUtxo as hasSeedUtxo_2 } from '@donecollectively/stellar-contracts';
 import { hasUutContext as hasUutContext_2 } from '@donecollectively/stellar-contracts';
 import { InlineTxOutputDatum } from '@helios-lang/ledger';
@@ -35,6 +35,7 @@ import { NetworkParams } from '@helios-lang/ledger';
 import { PendingCharterChange$Ergo$otherManifestChange as PendingCharterChange$Ergo$otherManifestChange_3 } from './helios/scriptBundling/CapoHeliosBundle.typeInfo.js';
 import { Program } from '@helios-lang/compiler';
 import { ProgramProps } from '@helios-lang/compiler';
+import type { PubKey } from '@helios-lang/ledger';
 import { PubKeyHash } from '@helios-lang/ledger';
 import { ReqtsMap } from '../Requirements.js';
 import { ReqtsMap as ReqtsMap_3 } from './Requirements.js';
@@ -116,8 +117,8 @@ declare interface AbstractSettingsForNeighborhoodLike {
  * For a more ergonomic, though less strictly-safe form of this type, see ErgoAbstractSettingsForNodeOperator instead.
  * @public
  */
-export declare interface AbstractSettingsForNodeOperator {
-    nodeOpSettings: NodeOperatorSettings;
+declare interface AbstractSettingsForNodeOperator {
+    nodeOpSettings: NodeOperatorSettings_2;
 }
 
 /**
@@ -126,7 +127,7 @@ export declare interface AbstractSettingsForNodeOperator {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface AbstractSettingsForNodeOperatorLike {
+declare interface AbstractSettingsForNodeOperatorLike {
     nodeOpSettings: NodeOperatorSettingsLike;
 }
 
@@ -136,249 +137,6 @@ export declare interface AbstractSettingsForNodeOperatorLike {
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 declare class ActivityDelegateRoleHelperNested extends EnumBridge<isActivity> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_2, Partial<{
-        MintDgt: tagOnly;
-        SpendDgt: tagOnly;
-        MintInvariant: tagOnly;
-        SpendInvariant: tagOnly;
-        DgDataPolicy: string;
-        OtherNamedDgt: string;
-        BothMintAndSpendDgt: tagOnly;
-        HandledByCapoOnly: tagOnly;
-    }>>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-     */
-    get MintDgt(): {
-        redeemer: UplcData;
-    };
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get SpendDgt(): {
-        redeemer: UplcData;
-    };
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-     */
-    get MintInvariant(): {
-        redeemer: UplcData;
-    };
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get SpendInvariant(): {
-        redeemer: UplcData;
-    };
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    DgDataPolicy(name: string): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    OtherNamedDgt(name: string): isActivity;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
-     */
-    get BothMintAndSpendDgt(): {
-        redeemer: UplcData;
-    };
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
-     */
-    get HandledByCapoOnly(): {
-        redeemer: UplcData;
-    };
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class ActivityDelegateRoleHelperNested_2 extends EnumBridge<isActivity> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_2_2, Partial<{
-        MintDgt: tagOnly;
-        SpendDgt: tagOnly;
-        MintInvariant: tagOnly;
-        SpendInvariant: tagOnly;
-        DgDataPolicy: string;
-        OtherNamedDgt: string;
-        BothMintAndSpendDgt: tagOnly;
-        HandledByCapoOnly: tagOnly;
-    }>>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-     */
-    get MintDgt(): {
-        redeemer: UplcData;
-    };
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get SpendDgt(): {
-        redeemer: UplcData;
-    };
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-     */
-    get MintInvariant(): {
-        redeemer: UplcData;
-    };
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get SpendInvariant(): {
-        redeemer: UplcData;
-    };
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    DgDataPolicy(name: string): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    OtherNamedDgt(name: string): isActivity;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
-     */
-    get BothMintAndSpendDgt(): {
-        redeemer: UplcData;
-    };
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
-     */
-    get HandledByCapoOnly(): {
-        redeemer: UplcData;
-    };
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class ActivityDelegateRoleHelperNested_3 extends EnumBridge<isActivity> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_4, Partial<{
-        MintDgt: tagOnly;
-        SpendDgt: tagOnly;
-        MintInvariant: tagOnly;
-        SpendInvariant: tagOnly;
-        DgDataPolicy: string;
-        OtherNamedDgt: string;
-        BothMintAndSpendDgt: tagOnly;
-        HandledByCapoOnly: tagOnly;
-    }>>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-     */
-    get MintDgt(): {
-        redeemer: UplcData;
-    };
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get SpendDgt(): {
-        redeemer: UplcData;
-    };
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-     */
-    get MintInvariant(): {
-        redeemer: UplcData;
-    };
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get SpendInvariant(): {
-        redeemer: UplcData;
-    };
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    DgDataPolicy(name: string): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    OtherNamedDgt(name: string): isActivity;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
-     */
-    get BothMintAndSpendDgt(): {
-        redeemer: UplcData;
-    };
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
-     */
-    get HandledByCapoOnly(): {
-        redeemer: UplcData;
-    };
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class ActivityDelegateRoleHelperNested_4 extends EnumBridge<isActivity> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -459,7 +217,88 @@ declare class ActivityDelegateRoleHelperNested_4 extends EnumBridge<isActivity> 
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class ActivityDelegateRoleHelperNested_5 extends EnumBridge<isActivity> {
+declare class ActivityDelegateRoleHelperNested_2 extends EnumBridge<isActivity> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<DelegateRole_2, Partial<{
+        MintDgt: tagOnly;
+        SpendDgt: tagOnly;
+        MintInvariant: tagOnly;
+        SpendInvariant: tagOnly;
+        DgDataPolicy: string;
+        OtherNamedDgt: string;
+        BothMintAndSpendDgt: tagOnly;
+        HandledByCapoOnly: tagOnly;
+    }>>;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+     */
+    get MintDgt(): {
+        redeemer: UplcData;
+    };
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+     */
+    get SpendDgt(): {
+        redeemer: UplcData;
+    };
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+     */
+    get MintInvariant(): {
+        redeemer: UplcData;
+    };
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+     */
+    get SpendInvariant(): {
+        redeemer: UplcData;
+    };
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
+     * @remarks
+     * #### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    DgDataPolicy(name: string): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
+     * @remarks
+     * #### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    OtherNamedDgt(name: string): isActivity;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
+     */
+    get BothMintAndSpendDgt(): {
+        redeemer: UplcData;
+    };
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
+     */
+    get HandledByCapoOnly(): {
+        redeemer: UplcData;
+    };
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class ActivityDelegateRoleHelperNested_3 extends EnumBridge<isActivity> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -540,11 +379,173 @@ declare class ActivityDelegateRoleHelperNested_5 extends EnumBridge<isActivity> 
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class ActivityDelegateRoleHelperNested_6 extends EnumBridge<isActivity> {
+declare class ActivityDelegateRoleHelperNested_4 extends EnumBridge<isActivity> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<DelegateRole_6, Partial<{
+        MintDgt: tagOnly;
+        SpendDgt: tagOnly;
+        MintInvariant: tagOnly;
+        SpendInvariant: tagOnly;
+        DgDataPolicy: string;
+        OtherNamedDgt: string;
+        BothMintAndSpendDgt: tagOnly;
+        HandledByCapoOnly: tagOnly;
+    }>>;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+     */
+    get MintDgt(): {
+        redeemer: UplcData;
+    };
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+     */
+    get SpendDgt(): {
+        redeemer: UplcData;
+    };
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+     */
+    get MintInvariant(): {
+        redeemer: UplcData;
+    };
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+     */
+    get SpendInvariant(): {
+        redeemer: UplcData;
+    };
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
+     * @remarks
+     * #### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    DgDataPolicy(name: string): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
+     * @remarks
+     * #### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    OtherNamedDgt(name: string): isActivity;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
+     */
+    get BothMintAndSpendDgt(): {
+        redeemer: UplcData;
+    };
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
+     */
+    get HandledByCapoOnly(): {
+        redeemer: UplcData;
+    };
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class ActivityDelegateRoleHelperNested_5 extends EnumBridge<isActivity> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<DelegateRole_7, Partial<{
+        MintDgt: tagOnly;
+        SpendDgt: tagOnly;
+        MintInvariant: tagOnly;
+        SpendInvariant: tagOnly;
+        DgDataPolicy: string;
+        OtherNamedDgt: string;
+        BothMintAndSpendDgt: tagOnly;
+        HandledByCapoOnly: tagOnly;
+    }>>;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+     */
+    get MintDgt(): {
+        redeemer: UplcData;
+    };
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+     */
+    get SpendDgt(): {
+        redeemer: UplcData;
+    };
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+     */
+    get MintInvariant(): {
+        redeemer: UplcData;
+    };
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+     */
+    get SpendInvariant(): {
+        redeemer: UplcData;
+    };
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
+     * @remarks
+     * #### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    DgDataPolicy(name: string): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
+     * @remarks
+     * #### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    OtherNamedDgt(name: string): isActivity;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
+     */
+    get BothMintAndSpendDgt(): {
+        redeemer: UplcData;
+    };
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
+     */
+    get HandledByCapoOnly(): {
+        redeemer: UplcData;
+    };
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class ActivityDelegateRoleHelperNested_6 extends EnumBridge<isActivity> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<DelegateRole_8, Partial<{
         MintDgt: tagOnly;
         SpendDgt: tagOnly;
         MintInvariant: tagOnly;
@@ -642,7 +643,7 @@ declare interface AllTxSubmissionStates {
  * For a more ergonomic, though less strictly-safe form of this type, see ErgoAnyData instead.
  * @public
  */
-export declare interface AnyData {
+declare interface AnyData {
     id: number[];
     type: string;
 }
@@ -656,19 +657,6 @@ export declare interface AnyData {
  * @public
  */
 declare interface AnyData_2 {
-    id: number[];
-    type: string;
-}
-
-/**
- * A strong type for the canonical form of AnyData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoAnyData instead.
- * @public
- */
-declare interface AnyData_2_2 {
     id: number[];
     type: string;
 }
@@ -713,12 +701,25 @@ declare interface AnyData_5 {
 }
 
 /**
+ * A strong type for the canonical form of AnyData
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoAnyData instead.
+ * @public
+ */
+declare interface AnyData_6 {
+    id: number[];
+    type: string;
+}
+
+/**
  * A strong type for the permissive form of AnyData
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface AnyDataLike {
+declare interface AnyDataLike {
     id: number[];
     type: string;
 }
@@ -730,17 +731,6 @@ export declare interface AnyDataLike {
  * @public
  */
 declare interface AnyDataLike_2 {
-    id: number[];
-    type: string;
-}
-
-/**
- * A strong type for the permissive form of AnyData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface AnyDataLike_2_2 {
     id: number[];
     type: string;
 }
@@ -774,6 +764,17 @@ declare interface AnyDataLike_4 {
  * @public
  */
 declare interface AnyDataLike_5 {
+    id: number[];
+    type: string;
+}
+
+/**
+ * A strong type for the permissive form of AnyData
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface AnyDataLike_6 {
     id: number[];
     type: string;
 }
@@ -1103,8 +1104,8 @@ declare type BuiltTcxStats = {
  *     for generating UPLC data for this enum type
  * @public
  */
-export declare type BurningActivity = {
-    DeletingRecord: number[];
+declare type BurningActivity = {
+    _placeholder1BA: number[];
 };
 
 /**
@@ -1132,7 +1133,7 @@ declare type BurningActivity_2 = {
  * @public
  */
 declare type BurningActivity_3 = {
-    _placeholder1BA: number[];
+    DeletingRecord: number[];
 };
 
 /**
@@ -1198,7 +1199,7 @@ declare class BurningActivityHelper_2 extends EnumBridge<JustAnEnum_3> {
         _placeholder1BA: number[];
     }>>;
     /**
-     * generates  UplcData for ***"MyMintSpendDelegate::BurningActivity._placeholder1BA"***
+     * generates  UplcData for ***"STokMintDelegate::BurningActivity._placeholder1BA"***
      */
     _placeholder1BA(recId: number[]): UplcData;
 }
@@ -1303,7 +1304,7 @@ declare class BurningActivityHelperNested_2 extends EnumBridge<isActivity> {
         _placeholder1BA: number[];
     }>>;
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::BurningActivity._placeholder1BA"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::BurningActivity._placeholder1BA"***
      * @remarks
      * #### Nested activity:
      * this is connected to a nested-activity wrapper, so the details are piped through
@@ -1402,8 +1403,8 @@ declare class BurningActivityHelperNested_5 extends EnumBridge<isActivity> {
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-export declare type BurningActivityLike = IntersectedEnum<{
-    DeletingRecord: number[];
+declare type BurningActivityLike = IntersectedEnum<{
+    _placeholder1BA: number[];
 }>;
 
 /**
@@ -1439,7 +1440,7 @@ declare type BurningActivityLike_2 = IntersectedEnum<{
  * @public
  */
 declare type BurningActivityLike_3 = IntersectedEnum<{
-    _placeholder1BA: number[];
+    DeletingRecord: number[];
 }>;
 
 /**
@@ -1476,16 +1477,6 @@ declare type BurningActivityLike_4 = IntersectedEnum<{
  */
 declare type BurningActivityLike_5 = IntersectedEnum<{
     DeletingRecord: number[];
-}>;
-
-/**
- * @internal
- */
-export declare type BurningActivityMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "BurningActivity";
-}, {
-    DeletingRecord: singleEnumVariantMeta<BurningActivityMeta, "DeletingRecord", "Constr#0", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ number[], "noSpecialFlags">;
 }>;
 
 declare type CacheableProgramProps = ProgramProps & {
@@ -1766,9 +1757,9 @@ declare abstract class Capo<SELF extends Capo<any>, featureFlags extends CapoFea
      * parses details in a delegate-link
      * @deprecated - use an adapter for CharterData instead?
      */
-    offchainLink<T extends MinimalDelegateLink | OffchainPartialDelegateLink | RelativeDelegateLinkLike_2>(link: T): T;
+    offchainLink<T extends MinimalDelegateLink | OffchainPartialDelegateLink | RelativeDelegateLinkLike>(link: T): T;
     parseDgtConfig(inLink: // | MinimalDelegateLink
-    ErgoRelativeDelegateLink_2 | RelativeDelegateLinkLike_2): Partial<capoDelegateConfig>;
+    ErgoRelativeDelegateLink | RelativeDelegateLinkLike): Partial<capoDelegateConfig>;
     serializeDgtConfig(config: Partial<capoDelegateConfig>): number[];
     /**
      * @deprecated - use the bridge type directly, and parseDgtConfig iff we ever need that.
@@ -1792,8 +1783,36 @@ declare abstract class Capo<SELF extends Capo<any>, featureFlags extends CapoFea
         optional: true;
         capoUtxos?: TxInput[];
     }): Promise<CharterData | undefined>;
-    findSettingsInfo(this: SELF, options: {
-        charterData: CharterData;
+    findCharterData(currentCharterUtxo?: TxInput, options?: {
+        optional: boolean;
+        capoUtxos?: TxInput[];
+    }): Promise<CharterData>;
+    /**
+     * Finds the currentSettings record for a Capo
+     * @remarks
+     * A Capo's currentSettings can be different in any deployment, but
+     * any deployment can have one.  This function finds the currentSettings
+     * as found in the Capo's `charterData.manifest`, and returns it with its
+     * underlying `data` and possible application-layer `dataWrapped` object.
+     *
+     * Provide charterData and capoUtxos to resolve the currentSettings without
+     * extra queries.
+     *
+     * Define your SettingsController as a subclass of WrappedDgDataContract
+     * to provide a custom data-wrapper.
+     *
+     * If your protocol doesn't use settings, you probably aren't using
+     * this method.  If you are writing some protocol-independent code, be sure
+     * to use the `optional` attribute and be robust to cases of "no settings yet"
+     * and "the specific current protocol doesn't use settings at all".
+     *
+     * Future: we will cache charterData and UTxOs so that this function will be
+     * simpler in its interface and fast to execute without external management
+     * of `{charterData, capoUtxos}`.
+     * @public
+     */
+    findSettingsInfo(this: SELF, options?: {
+        charterData?: CharterData;
         capoUtxos?: TxInput[];
         optional?: boolean;
     }): Promise<FoundDatumUtxo<any, any> | undefined>;
@@ -1869,7 +1888,7 @@ declare abstract class Capo<SELF extends Capo<any>, featureFlags extends CapoFea
      * extracts the key details for creating an on-chain delegate link, given a setup-phase
      * configuration for that delegate.
      */
-    mkOnchainRelativeDelegateLink<CT extends ConfiguredDelegate<any>>(configured: CT): RelativeDelegateLinkLike_2;
+    mkOnchainRelativeDelegateLink<CT extends ConfiguredDelegate<any>>(configured: CT): RelativeDelegateLinkLike;
     /**
      * extracts the key details of a delegate link, given a delegate configuration.
      * @remarks
@@ -1899,7 +1918,7 @@ declare abstract class Capo<SELF extends Capo<any>, featureFlags extends CapoFea
      * @public
      **/
     txnCreateConfiguredDelegate<RN extends string & keyof SELF["_delegateRoles"], DT extends StellarDelegate = ContractBasedDelegate>(tcx: hasUutContext<RN>, role: RN, delegateInfo: OffchainPartialDelegateLink): Promise<ConfiguredDelegate<DT>>;
-    mkImpliedDelegationDetails(uut: UutName): DelegationDetail_3;
+    mkImpliedDelegationDetails(uut: UutName): DelegationDetail;
     _delegateCache: {
         [roleName: string]: {
             [delegateLink: string]: {
@@ -1907,8 +1926,8 @@ declare abstract class Capo<SELF extends Capo<any>, featureFlags extends CapoFea
             };
         };
     };
-    connectDelegateWithOnchainRDLink<RN extends string & keyof SELF["_delegateRoles"], DT extends StellarDelegate = ContractBasedDelegate>(role: RN, delegateLink: RelativeDelegateLinkLike_2): Promise<DT>;
-    showDelegateLink(delegateLink: RelativeDelegateLinkLike_2): string;
+    connectDelegateWithOnchainRDLink<RN extends string & keyof SELF["_delegateRoles"], DT extends StellarDelegate = ContractBasedDelegate>(role: RN, delegateLink: RelativeDelegateLinkLike): Promise<DT>;
+    showDelegateLink(delegateLink: RelativeDelegateLinkLike): string;
     /**
      * Given a role name and configuration details,
      * finds and creates the class for the delegate in that role.
@@ -1929,8 +1948,8 @@ declare abstract class Capo<SELF extends Capo<any>, featureFlags extends CapoFea
      * after the package is installed.
      */
     mustGetDelegate<T extends StellarDelegate>(scriptRole: string, configuredDelegate: PreconfiguredDelegate<T>, deployedName?: string): Promise<T>;
-    tvForDelegate(dgtLink: ErgoRelativeDelegateLink_2): Value;
-    mkDelegatePredicate(dgtLink: ErgoRelativeDelegateLink_2): tokenPredicate<any>;
+    tvForDelegate(dgtLink: ErgoRelativeDelegateLink): Value;
+    mkDelegatePredicate(dgtLink: ErgoRelativeDelegateLink): tokenPredicate<any>;
     activityUpdatingCharter(): isActivity;
     activitySpendingDelegatedDatum(): {
         redeemer: UplcData;
@@ -1978,7 +1997,7 @@ declare abstract class Capo<SELF extends Capo<any>, featureFlags extends CapoFea
      * and that the off-chain Capo delegateMap provides an off-chain controller
      * for that typeName.
      */
-    getDgDataController<RN extends string & keyof SELF["_delegateRoles"]>(this: SELF, roleName: RN, options?: FindableViaCharterData): Promise<undefined | DelegatedDataContract<any, any>>;
+    getDgDataController<RN extends string & keyof SELF["_delegateRoles"]>(this: SELF, recordTypeName: RN, options?: FindableViaCharterData): Promise<undefined | DelegatedDataContract<any, any>>;
     /**
      * @deprecated - use getOtherNamedDelegate() or getDgDataController() instead
      */
@@ -2120,7 +2139,7 @@ declare abstract class Capo<SELF extends Capo<any>, featureFlags extends CapoFea
      * @public
      **/
     mkTxnUpdatingMintDelegate<THIS extends Capo<any>, TCX extends hasSeedUtxo = hasSeedUtxo>(this: THIS, delegateInfo: MinimalDelegateUpdateLink, tcx?: TCX): Promise<TCX & hasUutContext<"mintDelegate" | "mintDgt"> & hasSeedUtxo>;
-    mkValuesBurningDelegateUut(current: ErgoRelativeDelegateLink_2): valuesEntry_2[];
+    mkValuesBurningDelegateUut(current: ErgoRelativeDelegateLink): valuesEntry_2[];
     mkTxnUpdatingSpendDelegate<THIS extends Capo<any>, TCX extends hasSeedUtxo = hasSeedUtxo>(this: THIS, delegateInfo: MinimalDelegateUpdateLink, tcx?: TCX): Promise<TCX>;
     mkTxnAddingMintInvariant<THIS extends Capo<any>, TCX extends hasSeedUtxo = hasSeedUtxo>(this: THIS, delegateInfo: OffchainPartialDelegateLink, tcx?: TCX): Promise<StellarTxnContext>;
     mkTxnAddingSpendInvariant<THIS extends Capo<any>, const SN extends string & keyof THIS["delegateRoles"]["spendDelegate"]["variants"], TCX extends hasSeedUtxo = hasSeedUtxo>(this: THIS, delegateInfo: OffchainPartialDelegateLink, tcx?: TCX): Promise<hasUutContext<"spendDelegate" | "spendDgt"> & TCX & hasSeedUtxo>;
@@ -2156,7 +2175,7 @@ declare abstract class Capo<SELF extends Capo<any>, featureFlags extends CapoFea
      * An addlTxn for committing pending changes is NOT included, leaving pendingChange queued in the Capo's charter.
      * Use mkTxnInstallPolicyDelegate to also ***commit*** pending changes.
      */
-    mkTxnInstallingPolicyDelegate<const RoLabel extends string & keyof SELF["delegateRoles"], THIS extends Capo<any>>(this: THIS, options: InstallPolicyDgtOptions<THIS, RoLabel>): Promise<hasAddlTxns<StellarTxnContext<anyState> & hasSeedUtxo & hasNamedDelegate<StellarDelegate, RoLabel, "dgData">> & hasUutContext<RoLabel | "dgDataPolicy">>;
+    mkTxnInstallingPolicyDelegate<const TypeName extends string & keyof SELF["delegateRoles"], THIS extends Capo<any>>(this: THIS, options: InstallPolicyDgtOptions<THIS, TypeName>): Promise<hasAddlTxns<StellarTxnContext<anyState> & hasSeedUtxo & hasNamedDelegate<StellarDelegate, TypeName, "dgData">> & hasUutContext<TypeName | "dgDataPolicy">>;
     /**
      * Helper for installing a named policy delegate
      * @remarks
@@ -2172,7 +2191,7 @@ declare abstract class Capo<SELF extends Capo<any>, featureFlags extends CapoFea
      *
      * @public
      */
-    mkTxnInstallPolicyDelegate<const RoLabel extends string & keyof SELF["delegateRoles"], THIS extends Capo<any>>(this: THIS, options: InstallPolicyDgtOptions<THIS, RoLabel>): Promise<hasAddlTxns<StellarTxnContext<anyState>, anyState>>;
+    mkTxnInstallPolicyDelegate<const TypeName extends string & keyof SELF["delegateRoles"], THIS extends Capo<any>>(this: THIS, options: InstallPolicyDgtOptions<THIS, TypeName>): Promise<hasAddlTxns<StellarTxnContext<anyState>, anyState>>;
     /**
      * Adds a new entry to the Capo's manifest
      * @remarks
@@ -2184,27 +2203,27 @@ declare abstract class Capo<SELF extends Capo<any>, featureFlags extends CapoFea
      * Other types can be eligible for adding to this API or to a different call.
      */
     mkTxnAddManifestEntry<THIS extends Capo<any>, TCX extends StellarTxnContext<anyState> = StellarTxnContext<anyState>>(this: THIS, key: string, utxo: FoundDatumUtxo<any, any>, entry: ManifestEntryTokenRef, tcx?: TCX): Promise<StellarTxnContext<anyState>>;
-    mkTxnQueuingDelegateChange<DT extends StellarDelegate, THIS extends Capo<any>, const RoLabel extends string & keyof SELF["delegateRoles"], OPTIONS extends OffchainPartialDelegateLink, TCX extends StellarTxnContext<anyState> = StellarTxnContext<anyState>>(this: THIS, change: "Add" | "Replace", options: {
-        policyName: RoLabel;
+    mkTxnQueuingDelegateChange<DT extends StellarDelegate, THIS extends Capo<any>, const TypeName extends string & keyof SELF["delegateRoles"], OPTIONS extends OffchainPartialDelegateLink, TCX extends StellarTxnContext<anyState> = StellarTxnContext<anyState>>(this: THIS, change: "Add" | "Replace", options: {
+        typeName: TypeName;
         charterData: CharterData;
         idPrefix: string;
         dgtOptions?: OPTIONS;
-    }, tcx?: TCX): Promise<hasAddlTxns<TCX & hasNamedDelegate<DT, RoLabel, "dgData">> & hasUutContext<RoLabel | "dgDataPolicy">>;
+    }, tcx?: TCX): Promise<hasAddlTxns<TCX & hasNamedDelegate<DT, TypeName, "dgData">> & hasUutContext<TypeName | "dgDataPolicy">>;
     /**
      * Looks up a policy in the manifest, returning the policy name and the manifest entry if found.
      * @remarks
      * Returns a pair of [ policyName, manifestEntry ] if found.  Returns undefined if the policy is not found.
      * @public
      */
-    hasPolicyInManifest<const RoLabel extends string & keyof SELF["delegateRoles"]>(policyName: RoLabel, charterData: CapoDatum$Ergo$CharterData_2): [string, ErgoCapoManifestEntry_4] | undefined;
+    hasPolicyInManifest<const RoLabel extends string & keyof SELF["delegateRoles"]>(policyName: RoLabel, charterData: CapoDatum$Ergo$CharterData): [string, ErgoCapoManifestEntry_2] | undefined;
     /**
      * mockable helper for finding a pending change in the charter, to make it easier to test
      */
-    findPendingChange(charterData: CapoDatum$Ergo$CharterData_2, changingThisRole: (pc: ErgoPendingCharterChange_2_2) => boolean): Partial<{
+    findPendingChange(charterData: CapoDatum$Ergo$CharterData, changingThisRole: (pc: ErgoPendingCharterChange_2) => boolean): Partial<{
         delegateChange: ErgoPendingDelegateChange_3;
         otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_3;
     }> | undefined;
-    tempMkDelegateLinkForQueuingDgtChange(seedUtxo: TxInput, mintDgtActivity: SomeDgtActivityHelper, purpose: string, policyName: string, idPrefix: string, options: OffchainPartialDelegateLink): Promise<{
+    tempMkDelegateLinkForQueuingDgtChange(seedUtxo: TxInput, mintDgtActivity: SomeDgtActivityHelper, purpose: string, typeName: string, idPrefix: string, options: OffchainPartialDelegateLink): Promise<{
         delegateClass: stellarSubclass<ContractBasedDelegate>;
         delegate: ContractBasedDelegate;
         roleName: string;
@@ -2275,7 +2294,7 @@ declare abstract class Capo<SELF extends Capo<any>, featureFlags extends CapoFea
  * @public
  */
 declare type CapoActivity = {
-    capoLifecycleActivity: CapoLifecycleActivity_2;
+    capoLifecycleActivity: CapoLifecycleActivity;
 } | {
     usingAuthority: tagOnly;
 } | {
@@ -2298,7 +2317,7 @@ declare class CapoActivityHelper extends EnumBridge<isActivity> {
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<CapoActivity, Partial<{
-        capoLifecycleActivity: CapoLifecycleActivityLike_2;
+        capoLifecycleActivity: CapoLifecycleActivityLike;
         usingAuthority: tagOnly;
         retiringRefScript: tagOnly;
         addingSpendInvariant: tagOnly;
@@ -2368,7 +2387,7 @@ declare type CapoConfig<FF extends CapoFeatureFlags = {}> = configBase & rootCap
  * For a more ergonomic, though less strictly-safe form of this type, see ErgoCapoCtx instead.
  * @public
  */
-export declare interface CapoCtx {
+declare interface CapoCtx {
     mph: MintingPolicyHash;
     charter: cctx_CharterInputType;
 }
@@ -2431,7 +2450,7 @@ declare interface CapoCtx_5 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface CapoCtxLike {
+declare interface CapoCtxLike {
     mph: /*minStructField*/ MintingPolicyHash | string | number[];
     charter: cctx_CharterInputTypeLike;
 }
@@ -2556,7 +2575,7 @@ declare class CapoDataBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***RelativeDelegateLink*** for the `Capo` script
          */
-        RelativeDelegateLink: (fields: RelativeDelegateLinkLike_2 | {
+        RelativeDelegateLink: (fields: RelativeDelegateLinkLike | {
             uutName: string;
             delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
             config: number[];
@@ -2564,39 +2583,39 @@ declare class CapoDataBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***CapoManifestEntry*** for the `Capo` script
          */
-        CapoManifestEntry: (fields: CapoManifestEntryLike_2 | {
-            entryType: ManifestEntryTypeLike_2;
+        CapoManifestEntry: (fields: CapoManifestEntryLike | {
+            entryType: ManifestEntryTypeLike;
             tokenName: number[];
             mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***PendingDelegateChange*** for the `Capo` script
          */
-        PendingDelegateChange: (fields: PendingDelegateChangeLike_2 | {
-            action: PendingDelegateActionLike_2;
-            role: DelegateRoleLike_2;
-            dgtLink: /*minStructField*/ RelativeDelegateLinkLike_2 | undefined;
+        PendingDelegateChange: (fields: PendingDelegateChangeLike | {
+            action: PendingDelegateActionLike;
+            role: DelegateRoleLike;
+            dgtLink: /*minStructField*/ RelativeDelegateLinkLike | undefined;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***AnyData*** for the `Capo` script
          */
-        AnyData: (fields: AnyDataLike_2 | {
+        AnyData: (fields: AnyDataLike | {
             id: number[];
             type: string;
         }) => UplcData;
     };
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink_2, RelativeDelegateLinkLike_2>;
+    ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink, RelativeDelegateLinkLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺCapoManifestEntryCast: Cast<CapoManifestEntry_2, CapoManifestEntryLike_2>;
+    ᱺᱺCapoManifestEntryCast: Cast<CapoManifestEntry, CapoManifestEntryLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺPendingDelegateChangeCast: Cast<PendingDelegateChange_2, PendingDelegateChangeLike_2>;
+    ᱺᱺPendingDelegateChangeCast: Cast<PendingDelegateChange, PendingDelegateChangeLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺAnyDataCast: Cast<AnyData_2, AnyDataLike_2>;
+    ᱺᱺAnyDataCast: Cast<AnyData, AnyDataLike>;
 }
 
 declare class CapoDataBridgeReader extends DataBridgeReaderClass {
@@ -2616,7 +2635,7 @@ declare class CapoDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateRole(d: UplcData): ErgoDelegateRole_2;
+    DelegateRole(d: UplcData): ErgoDelegateRole;
     /**
      * reads UplcData *known to fit the **ManifestEntryType*** enum type,
      * for the Capo script.
@@ -2631,7 +2650,7 @@ declare class CapoDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    ManifestEntryType(d: UplcData): ErgoManifestEntryType_2;
+    ManifestEntryType(d: UplcData): ErgoManifestEntryType;
     /**
      * reads UplcData *known to fit the **PendingDelegateAction*** enum type,
      * for the Capo script.
@@ -2646,7 +2665,7 @@ declare class CapoDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingDelegateAction(d: UplcData): ErgoPendingDelegateAction_2;
+    PendingDelegateAction(d: UplcData): ErgoPendingDelegateAction;
     /**
      * reads UplcData *known to fit the **ManifestActivity*** enum type,
      * for the Capo script.
@@ -2661,7 +2680,7 @@ declare class CapoDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    ManifestActivity(d: UplcData): ErgoManifestActivity_2;
+    ManifestActivity(d: UplcData): ErgoManifestActivity;
     /**
      * reads UplcData *known to fit the **PendingCharterChange*** enum type,
      * for the Capo script.
@@ -2676,9 +2695,9 @@ declare class CapoDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingCharterChange(d: UplcData): ErgoPendingCharterChange_2;
+    PendingCharterChange(d: UplcData): ErgoPendingCharterChange;
     datum: (d: UplcData) => Partial<{
-        CharterData: CapoDatum$Ergo$CharterData_2;
+        CharterData: CapoDatum$Ergo$CharterData;
         ScriptReference: tagOnly;
         DelegatedData: CapoDatum$Ergo$DelegatedData;
     }>;
@@ -2711,7 +2730,7 @@ declare class CapoDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    CapoLifecycleActivity(d: UplcData): ErgoCapoLifecycleActivity_2;
+    CapoLifecycleActivity(d: UplcData): ErgoCapoLifecycleActivity;
     /**
      * reads UplcData *known to fit the **CapoActivity*** enum type,
      * for the Capo script.
@@ -2741,7 +2760,7 @@ declare class CapoDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    RelativeDelegateLink(d: UplcData): RelativeDelegateLink_2;
+    RelativeDelegateLink(d: UplcData): RelativeDelegateLink;
     /**
      * reads UplcData *known to fit the **CapoManifestEntry*** struct type,
      * for the Capo script.
@@ -2756,7 +2775,7 @@ declare class CapoDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    CapoManifestEntry(d: UplcData): CapoManifestEntry_2;
+    CapoManifestEntry(d: UplcData): CapoManifestEntry;
     /**
      * reads UplcData *known to fit the **PendingDelegateChange*** struct type,
      * for the Capo script.
@@ -2771,7 +2790,7 @@ declare class CapoDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingDelegateChange(d: UplcData): PendingDelegateChange_2;
+    PendingDelegateChange(d: UplcData): PendingDelegateChange;
     /**
      * reads UplcData *known to fit the **AnyData*** struct type,
      * for the Capo script.
@@ -2786,7 +2805,7 @@ declare class CapoDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    AnyData(d: UplcData): AnyData_2;
+    AnyData(d: UplcData): AnyData;
 }
 
 /**
@@ -2797,7 +2816,7 @@ declare class CapoDataBridgeReader extends DataBridgeReaderClass {
  * For a more ergonomic, though less strictly-safe form of this type, see CapoDatum$Ergo$CharterData instead.
  * @public
  */
-export declare interface CapoDatum$CharterData {
+declare interface CapoDatum$CharterData {
     spendDelegateLink: RelativeDelegateLink;
     spendInvariants: Array<RelativeDelegateLink>;
     otherNamedDelegates: Map<string, RelativeDelegateLink>;
@@ -2817,12 +2836,12 @@ export declare interface CapoDatum$CharterData {
  * @public
  */
 declare interface CapoDatum$CharterData_2 {
-    spendDelegateLink: RelativeDelegateLink_2;
-    spendInvariants: Array<RelativeDelegateLink_2>;
-    otherNamedDelegates: Map<string, RelativeDelegateLink_2>;
-    mintDelegateLink: RelativeDelegateLink_2;
-    mintInvariants: Array<RelativeDelegateLink_2>;
-    govAuthorityLink: RelativeDelegateLink_2;
+    spendDelegateLink: RelativeDelegateLink_3;
+    spendInvariants: Array<RelativeDelegateLink_3>;
+    otherNamedDelegates: Map<string, RelativeDelegateLink_3>;
+    mintDelegateLink: RelativeDelegateLink_3;
+    mintInvariants: Array<RelativeDelegateLink_3>;
+    govAuthorityLink: RelativeDelegateLink_3;
     manifest: Map<string, CapoManifestEntry_2>;
     pendingChanges: Array<PendingCharterChange_2>;
 }
@@ -2835,32 +2854,13 @@ declare interface CapoDatum$CharterData_2 {
  * For a more ergonomic, though less strictly-safe form of this type, see CapoDatum$Ergo$CharterData instead.
  * @public
  */
-declare interface CapoDatum$CharterData_2_2 {
-    spendDelegateLink: RelativeDelegateLink_3;
-    spendInvariants: Array<RelativeDelegateLink_3>;
-    otherNamedDelegates: Map<string, RelativeDelegateLink_3>;
-    mintDelegateLink: RelativeDelegateLink_3;
-    mintInvariants: Array<RelativeDelegateLink_3>;
-    govAuthorityLink: RelativeDelegateLink_3;
-    manifest: Map<string, CapoManifestEntry_2_2>;
-    pendingChanges: Array<PendingCharterChange_2_2>;
-}
-
-/**
- * A strong type for the canonical form of CapoDatum$CharterData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoDatum$Ergo$CharterData instead.
- * @public
- */
 declare interface CapoDatum$CharterData_3 {
-    spendDelegateLink: RelativeDelegateLink_5;
-    spendInvariants: Array<RelativeDelegateLink_5>;
-    otherNamedDelegates: Map<string, RelativeDelegateLink_5>;
-    mintDelegateLink: RelativeDelegateLink_5;
-    mintInvariants: Array<RelativeDelegateLink_5>;
-    govAuthorityLink: RelativeDelegateLink_5;
+    spendDelegateLink: RelativeDelegateLink_6;
+    spendInvariants: Array<RelativeDelegateLink_6>;
+    otherNamedDelegates: Map<string, RelativeDelegateLink_6>;
+    mintDelegateLink: RelativeDelegateLink_6;
+    mintInvariants: Array<RelativeDelegateLink_6>;
+    govAuthorityLink: RelativeDelegateLink_6;
     manifest: Map<string, CapoManifestEntry_3>;
     pendingChanges: Array<PendingCharterChange_3>;
 }
@@ -2874,12 +2874,12 @@ declare interface CapoDatum$CharterData_3 {
  * @public
  */
 declare interface CapoDatum$CharterData_4 {
-    spendDelegateLink: RelativeDelegateLink_6;
-    spendInvariants: Array<RelativeDelegateLink_6>;
-    otherNamedDelegates: Map<string, RelativeDelegateLink_6>;
-    mintDelegateLink: RelativeDelegateLink_6;
-    mintInvariants: Array<RelativeDelegateLink_6>;
-    govAuthorityLink: RelativeDelegateLink_6;
+    spendDelegateLink: RelativeDelegateLink_7;
+    spendInvariants: Array<RelativeDelegateLink_7>;
+    otherNamedDelegates: Map<string, RelativeDelegateLink_7>;
+    mintDelegateLink: RelativeDelegateLink_7;
+    mintInvariants: Array<RelativeDelegateLink_7>;
+    govAuthorityLink: RelativeDelegateLink_7;
     manifest: Map<string, CapoManifestEntry_4>;
     pendingChanges: Array<PendingCharterChange_4>;
 }
@@ -2893,14 +2893,33 @@ declare interface CapoDatum$CharterData_4 {
  * @public
  */
 declare interface CapoDatum$CharterData_5 {
-    spendDelegateLink: RelativeDelegateLink_7;
-    spendInvariants: Array<RelativeDelegateLink_7>;
-    otherNamedDelegates: Map<string, RelativeDelegateLink_7>;
-    mintDelegateLink: RelativeDelegateLink_7;
-    mintInvariants: Array<RelativeDelegateLink_7>;
-    govAuthorityLink: RelativeDelegateLink_7;
+    spendDelegateLink: RelativeDelegateLink_8;
+    spendInvariants: Array<RelativeDelegateLink_8>;
+    otherNamedDelegates: Map<string, RelativeDelegateLink_8>;
+    mintDelegateLink: RelativeDelegateLink_8;
+    mintInvariants: Array<RelativeDelegateLink_8>;
+    govAuthorityLink: RelativeDelegateLink_8;
     manifest: Map<string, CapoManifestEntry_5>;
     pendingChanges: Array<PendingCharterChange_5>;
+}
+
+/**
+ * A strong type for the canonical form of CapoDatum$CharterData
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see CapoDatum$Ergo$CharterData instead.
+ * @public
+ */
+declare interface CapoDatum$CharterData_6 {
+    spendDelegateLink: RelativeDelegateLink_9;
+    spendInvariants: Array<RelativeDelegateLink_9>;
+    otherNamedDelegates: Map<string, RelativeDelegateLink_9>;
+    mintDelegateLink: RelativeDelegateLink_9;
+    mintInvariants: Array<RelativeDelegateLink_9>;
+    govAuthorityLink: RelativeDelegateLink_9;
+    manifest: Map<string, CapoManifestEntry_6>;
+    pendingChanges: Array<PendingCharterChange_6>;
 }
 
 /**
@@ -2909,7 +2928,7 @@ declare interface CapoDatum$CharterData_5 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface CapoDatum$CharterDataLike {
+declare interface CapoDatum$CharterDataLike {
     spendDelegateLink: RelativeDelegateLinkLike;
     spendInvariants: Array<RelativeDelegateLinkLike>;
     otherNamedDelegates: Map<string, RelativeDelegateLinkLike>;
@@ -2927,31 +2946,14 @@ export declare interface CapoDatum$CharterDataLike {
  * @public
  */
 declare interface CapoDatum$CharterDataLike_2 {
-    spendDelegateLink: RelativeDelegateLinkLike_2;
-    spendInvariants: Array<RelativeDelegateLinkLike_2>;
-    otherNamedDelegates: Map<string, RelativeDelegateLinkLike_2>;
-    mintDelegateLink: RelativeDelegateLinkLike_2;
-    mintInvariants: Array<RelativeDelegateLinkLike_2>;
-    govAuthorityLink: RelativeDelegateLinkLike_2;
-    manifest: Map<string, CapoManifestEntryLike_2>;
-    pendingChanges: Array<PendingCharterChangeLike_2>;
-}
-
-/**
- * A strong type for the permissive form of CapoDatum$CharterData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoDatum$CharterDataLike_2_2 {
     spendDelegateLink: RelativeDelegateLinkLike_3;
     spendInvariants: Array<RelativeDelegateLinkLike_3>;
     otherNamedDelegates: Map<string, RelativeDelegateLinkLike_3>;
     mintDelegateLink: RelativeDelegateLinkLike_3;
     mintInvariants: Array<RelativeDelegateLinkLike_3>;
     govAuthorityLink: RelativeDelegateLinkLike_3;
-    manifest: Map<string, CapoManifestEntryLike_2_2>;
-    pendingChanges: Array<PendingCharterChangeLike_2_2>;
+    manifest: Map<string, CapoManifestEntryLike_2>;
+    pendingChanges: Array<PendingCharterChangeLike_2>;
 }
 
 /**
@@ -3006,6 +3008,23 @@ declare interface CapoDatum$CharterDataLike_5 {
 }
 
 /**
+ * A strong type for the permissive form of CapoDatum$CharterData
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface CapoDatum$CharterDataLike_6 {
+    spendDelegateLink: RelativeDelegateLinkLike_7;
+    spendInvariants: Array<RelativeDelegateLinkLike_7>;
+    otherNamedDelegates: Map<string, RelativeDelegateLinkLike_7>;
+    mintDelegateLink: RelativeDelegateLinkLike_7;
+    mintInvariants: Array<RelativeDelegateLinkLike_7>;
+    govAuthorityLink: RelativeDelegateLinkLike_7;
+    manifest: Map<string, CapoManifestEntryLike_6>;
+    pendingChanges: Array<PendingCharterChangeLike_6>;
+}
+
+/**
  * A strong type for the canonical form of CapoDatum$DelegatedData
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -3040,7 +3059,7 @@ declare interface CapoDatum$DelegatedDataLike {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type CapoDatum$Ergo$CharterData = {
+declare type CapoDatum$Ergo$CharterData = {
     spendDelegateLink: ErgoRelativeDelegateLink;
     spendInvariants: Array<ErgoRelativeDelegateLink>;
     otherNamedDelegates: Map<string, ErgoRelativeDelegateLink>;
@@ -3067,28 +3086,8 @@ declare type CapoDatum$Ergo$CharterData_2 = {
     mintDelegateLink: ErgoRelativeDelegateLink_2;
     mintInvariants: Array<ErgoRelativeDelegateLink_2>;
     govAuthorityLink: ErgoRelativeDelegateLink_2;
-    manifest: Map<string, ErgoCapoManifestEntry_2>;
-    pendingChanges: Array<ErgoPendingCharterChange_2>;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of CapoDatum$CharterData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoDatum$CharterDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoDatum$Ergo$CharterData_2_2 = {
-    spendDelegateLink: ErgoRelativeDelegateLink_2_2;
-    spendInvariants: Array<ErgoRelativeDelegateLink_2_2>;
-    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink_2_2>;
-    mintDelegateLink: ErgoRelativeDelegateLink_2_2;
-    mintInvariants: Array<ErgoRelativeDelegateLink_2_2>;
-    govAuthorityLink: ErgoRelativeDelegateLink_2_2;
     manifest: Map<string, ErgoCapoManifestEntry_3>;
-    pendingChanges: Array<ErgoPendingCharterChange_2_2>;
+    pendingChanges: Array<ErgoPendingCharterChange_2>;
 };
 
 /**
@@ -3107,7 +3106,7 @@ declare type CapoDatum$Ergo$CharterData_3 = {
     mintDelegateLink: ErgoRelativeDelegateLink_3;
     mintInvariants: Array<ErgoRelativeDelegateLink_3>;
     govAuthorityLink: ErgoRelativeDelegateLink_3;
-    manifest: Map<string, ErgoCapoManifestEntry_5>;
+    manifest: Map<string, ErgoCapoManifestEntry_4>;
     pendingChanges: Array<ErgoPendingCharterChange_3>;
 };
 
@@ -3127,7 +3126,7 @@ declare type CapoDatum$Ergo$CharterData_4 = {
     mintDelegateLink: ErgoRelativeDelegateLink_4;
     mintInvariants: Array<ErgoRelativeDelegateLink_4>;
     govAuthorityLink: ErgoRelativeDelegateLink_4;
-    manifest: Map<string, ErgoCapoManifestEntry_6>;
+    manifest: Map<string, ErgoCapoManifestEntry_5>;
     pendingChanges: Array<ErgoPendingCharterChange_4>;
 };
 
@@ -3147,7 +3146,7 @@ declare type CapoDatum$Ergo$CharterData_5 = {
     mintDelegateLink: ErgoRelativeDelegateLink_5;
     mintInvariants: Array<ErgoRelativeDelegateLink_5>;
     govAuthorityLink: ErgoRelativeDelegateLink_5;
-    manifest: Map<string, ErgoCapoManifestEntry_7>;
+    manifest: Map<string, ErgoCapoManifestEntry_6>;
     pendingChanges: Array<ErgoPendingCharterChange_5>;
 };
 
@@ -3167,8 +3166,48 @@ declare type CapoDatum$Ergo$CharterData_6 = {
     mintDelegateLink: ErgoRelativeDelegateLink_6;
     mintInvariants: Array<ErgoRelativeDelegateLink_6>;
     govAuthorityLink: ErgoRelativeDelegateLink_6;
-    manifest: Map<string, ErgoCapoManifestEntry_8>;
+    manifest: Map<string, ErgoCapoManifestEntry_7>;
     pendingChanges: Array<ErgoPendingCharterChange_6>;
+};
+
+/**
+ * An ergonomic, though less strictly-safe form of CapoDatum$CharterData
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the CapoDatum$CharterDataLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type CapoDatum$Ergo$CharterData_7 = {
+    spendDelegateLink: ErgoRelativeDelegateLink_7;
+    spendInvariants: Array<ErgoRelativeDelegateLink_7>;
+    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink_7>;
+    mintDelegateLink: ErgoRelativeDelegateLink_7;
+    mintInvariants: Array<ErgoRelativeDelegateLink_7>;
+    govAuthorityLink: ErgoRelativeDelegateLink_7;
+    manifest: Map<string, ErgoCapoManifestEntry_8>;
+    pendingChanges: Array<ErgoPendingCharterChange_7>;
+};
+
+/**
+ * An ergonomic, though less strictly-safe form of CapoDatum$CharterData
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the CapoDatum$CharterDataLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type CapoDatum$Ergo$CharterData_8 = {
+    spendDelegateLink: ErgoRelativeDelegateLink_8;
+    spendInvariants: Array<ErgoRelativeDelegateLink_8>;
+    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink_8>;
+    mintDelegateLink: ErgoRelativeDelegateLink_8;
+    mintInvariants: Array<ErgoRelativeDelegateLink_8>;
+    govAuthorityLink: ErgoRelativeDelegateLink_8;
+    manifest: Map<string, ErgoCapoManifestEntry_9>;
+    pendingChanges: Array<ErgoPendingCharterChange_8>;
 };
 
 /**
@@ -3193,7 +3232,7 @@ declare type CapoDatum$Ergo$DelegatedData = CapoDatum$DelegatedData;
  * @public
  */
 declare type CapoDatum_2 = {
-    CharterData: CapoDatum$CharterData_2;
+    CharterData: CapoDatum$CharterData;
 } | {
     ScriptReference: tagOnly;
 } | {
@@ -3210,7 +3249,7 @@ declare class CapoDatumHelper extends EnumBridge<JustAnEnum> {
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<CapoDatum_2, Partial<{
-        CharterData: CapoDatum$CharterDataLike_2;
+        CharterData: CapoDatum$CharterDataLike;
         ScriptReference: tagOnly;
         DelegatedData: CapoDatum$DelegatedDataLike;
     }>>;
@@ -3218,15 +3257,15 @@ declare class CapoDatumHelper extends EnumBridge<JustAnEnum> {
      * generates  InlineTxOutputDatum for ***"CapoHelpers::CapoDatum.CharterData"***
      * @remarks - ***CapoDatum$CharterDataLike*** is the same as the expanded field-types.
      */
-    CharterData(fields: CapoDatum$CharterDataLike_2 | {
-        spendDelegateLink: RelativeDelegateLinkLike_2;
-        spendInvariants: Array<RelativeDelegateLinkLike_2>;
-        otherNamedDelegates: Map<string, RelativeDelegateLinkLike_2>;
-        mintDelegateLink: RelativeDelegateLinkLike_2;
-        mintInvariants: Array<RelativeDelegateLinkLike_2>;
-        govAuthorityLink: RelativeDelegateLinkLike_2;
-        manifest: Map<string, CapoManifestEntryLike_2>;
-        pendingChanges: Array<PendingCharterChangeLike_2>;
+    CharterData(fields: CapoDatum$CharterDataLike | {
+        spendDelegateLink: RelativeDelegateLinkLike;
+        spendInvariants: Array<RelativeDelegateLinkLike>;
+        otherNamedDelegates: Map<string, RelativeDelegateLinkLike>;
+        mintDelegateLink: RelativeDelegateLinkLike;
+        mintInvariants: Array<RelativeDelegateLinkLike>;
+        govAuthorityLink: RelativeDelegateLinkLike;
+        manifest: Map<string, CapoManifestEntryLike>;
+        pendingChanges: Array<PendingCharterChangeLike>;
     }): InlineTxOutputDatum;
     /**
      * (property getter): InlineTxOutputDatum for ***"CapoHelpers::CapoDatum.ScriptReference"***
@@ -3395,7 +3434,7 @@ declare class CapoHeliosBundle extends HeliosScriptBundle {
  * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$CreatingDelegate instead.
  * @public
  */
-export declare interface CapoLifecycleActivity$CreatingDelegate {
+declare interface CapoLifecycleActivity$CreatingDelegate {
     seed: TxOutputId;
     purpose: string;
 }
@@ -3409,19 +3448,6 @@ export declare interface CapoLifecycleActivity$CreatingDelegate {
  * @public
  */
 declare interface CapoLifecycleActivity$CreatingDelegate_2 {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
- * A strong type for the canonical form of CapoLifecycleActivity$CreatingDelegate
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$CreatingDelegate instead.
- * @public
- */
-declare interface CapoLifecycleActivity$CreatingDelegate_2_2 {
     seed: TxOutputId;
     purpose: string;
 }
@@ -3466,12 +3492,25 @@ declare interface CapoLifecycleActivity$CreatingDelegate_5 {
 }
 
 /**
+ * A strong type for the canonical form of CapoLifecycleActivity$CreatingDelegate
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$CreatingDelegate instead.
+ * @public
+ */
+declare interface CapoLifecycleActivity$CreatingDelegate_6 {
+    seed: TxOutputId;
+    purpose: string;
+}
+
+/**
  * A strong type for the permissive form of CapoLifecycleActivity$CreatingDelegate
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface CapoLifecycleActivity$CreatingDelegateLike {
+declare interface CapoLifecycleActivity$CreatingDelegateLike {
     seed: TxOutputId | string;
     purpose: string;
 }
@@ -3483,17 +3522,6 @@ export declare interface CapoLifecycleActivity$CreatingDelegateLike {
  * @public
  */
 declare interface CapoLifecycleActivity$CreatingDelegateLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
- * A strong type for the permissive form of CapoLifecycleActivity$CreatingDelegate
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoLifecycleActivity$CreatingDelegateLike_2_2 {
     seed: TxOutputId | string;
     purpose: string;
 }
@@ -3532,6 +3560,17 @@ declare interface CapoLifecycleActivity$CreatingDelegateLike_5 {
 }
 
 /**
+ * A strong type for the permissive form of CapoLifecycleActivity$CreatingDelegate
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface CapoLifecycleActivity$CreatingDelegateLike_6 {
+    seed: TxOutputId | string;
+    purpose: string;
+}
+
+/**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$CreatingDelegate
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -3540,7 +3579,7 @@ declare interface CapoLifecycleActivity$CreatingDelegateLike_5 {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type CapoLifecycleActivity$Ergo$CreatingDelegate = CapoLifecycleActivity$CreatingDelegate;
+declare type CapoLifecycleActivity$Ergo$CreatingDelegate = CapoLifecycleActivity$CreatingDelegate;
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$CreatingDelegate
@@ -3552,17 +3591,6 @@ export declare type CapoLifecycleActivity$Ergo$CreatingDelegate = CapoLifecycleA
  * @public
  */
 declare type CapoLifecycleActivity$Ergo$CreatingDelegate_2 = CapoLifecycleActivity$CreatingDelegate_2;
-
-/**
- * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$CreatingDelegate
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$CreatingDelegateLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoLifecycleActivity$Ergo$CreatingDelegate_2_2 = CapoLifecycleActivity$CreatingDelegate_2_2;
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$CreatingDelegate
@@ -3598,6 +3626,17 @@ declare type CapoLifecycleActivity$Ergo$CreatingDelegate_4 = CapoLifecycleActivi
 declare type CapoLifecycleActivity$Ergo$CreatingDelegate_5 = CapoLifecycleActivity$CreatingDelegate_5;
 
 /**
+ * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$CreatingDelegate
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$CreatingDelegateLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type CapoLifecycleActivity$Ergo$CreatingDelegate_6 = CapoLifecycleActivity$CreatingDelegate_6;
+
+/**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewMintDelegate
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -3606,7 +3645,7 @@ declare type CapoLifecycleActivity$Ergo$CreatingDelegate_5 = CapoLifecycleActivi
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate = CapoLifecycleActivity$forcingNewMintDelegate;
+declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate = CapoLifecycleActivity$forcingNewMintDelegate;
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewMintDelegate
@@ -3618,17 +3657,6 @@ export declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate = CapoLife
  * @public
  */
 declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_2 = CapoLifecycleActivity$forcingNewMintDelegate_2;
-
-/**
- * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewMintDelegate
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$forcingNewMintDelegateLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_2_2 = CapoLifecycleActivity$forcingNewMintDelegate_2_2;
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewMintDelegate
@@ -3664,6 +3692,17 @@ declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_4 = CapoLifecycle
 declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_5 = CapoLifecycleActivity$forcingNewMintDelegate_5;
 
 /**
+ * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewMintDelegate
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$forcingNewMintDelegateLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_6 = CapoLifecycleActivity$forcingNewMintDelegate_6;
+
+/**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewSpendDelegate
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -3672,7 +3711,7 @@ declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_5 = CapoLifecycle
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate = CapoLifecycleActivity$forcingNewSpendDelegate;
+declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate = CapoLifecycleActivity$forcingNewSpendDelegate;
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewSpendDelegate
@@ -3684,17 +3723,6 @@ export declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate = CapoLif
  * @public
  */
 declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_2 = CapoLifecycleActivity$forcingNewSpendDelegate_2;
-
-/**
- * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewSpendDelegate
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$forcingNewSpendDelegateLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_2_2 = CapoLifecycleActivity$forcingNewSpendDelegate_2_2;
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewSpendDelegate
@@ -3730,6 +3758,17 @@ declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_4 = CapoLifecycl
 declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_5 = CapoLifecycleActivity$forcingNewSpendDelegate_5;
 
 /**
+ * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewSpendDelegate
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$forcingNewSpendDelegateLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_6 = CapoLifecycleActivity$forcingNewSpendDelegate_6;
+
+/**
  * A strong type for the canonical form of CapoLifecycleActivity$forcingNewMintDelegate
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -3737,7 +3776,7 @@ declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_5 = CapoLifecycl
  * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$forcingNewMintDelegate instead.
  * @public
  */
-export declare interface CapoLifecycleActivity$forcingNewMintDelegate {
+declare interface CapoLifecycleActivity$forcingNewMintDelegate {
     seed: TxOutputId;
     purpose: string;
 }
@@ -3751,19 +3790,6 @@ export declare interface CapoLifecycleActivity$forcingNewMintDelegate {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewMintDelegate_2 {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
- * A strong type for the canonical form of CapoLifecycleActivity$forcingNewMintDelegate
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$forcingNewMintDelegate instead.
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewMintDelegate_2_2 {
     seed: TxOutputId;
     purpose: string;
 }
@@ -3808,12 +3834,25 @@ declare interface CapoLifecycleActivity$forcingNewMintDelegate_5 {
 }
 
 /**
+ * A strong type for the canonical form of CapoLifecycleActivity$forcingNewMintDelegate
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$forcingNewMintDelegate instead.
+ * @public
+ */
+declare interface CapoLifecycleActivity$forcingNewMintDelegate_6 {
+    seed: TxOutputId;
+    purpose: string;
+}
+
+/**
  * A strong type for the permissive form of CapoLifecycleActivity$forcingNewMintDelegate
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface CapoLifecycleActivity$forcingNewMintDelegateLike {
+declare interface CapoLifecycleActivity$forcingNewMintDelegateLike {
     seed: TxOutputId | string;
     purpose: string;
 }
@@ -3825,17 +3864,6 @@ export declare interface CapoLifecycleActivity$forcingNewMintDelegateLike {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
- * A strong type for the permissive form of CapoLifecycleActivity$forcingNewMintDelegate
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_2_2 {
     seed: TxOutputId | string;
     purpose: string;
 }
@@ -3874,6 +3902,17 @@ declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_5 {
 }
 
 /**
+ * A strong type for the permissive form of CapoLifecycleActivity$forcingNewMintDelegate
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_6 {
+    seed: TxOutputId | string;
+    purpose: string;
+}
+
+/**
  * A strong type for the canonical form of CapoLifecycleActivity$forcingNewSpendDelegate
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -3881,7 +3920,7 @@ declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_5 {
  * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$forcingNewSpendDelegate instead.
  * @public
  */
-export declare interface CapoLifecycleActivity$forcingNewSpendDelegate {
+declare interface CapoLifecycleActivity$forcingNewSpendDelegate {
     seed: TxOutputId;
     purpose: string;
 }
@@ -3895,19 +3934,6 @@ export declare interface CapoLifecycleActivity$forcingNewSpendDelegate {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewSpendDelegate_2 {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
- * A strong type for the canonical form of CapoLifecycleActivity$forcingNewSpendDelegate
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$forcingNewSpendDelegate instead.
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewSpendDelegate_2_2 {
     seed: TxOutputId;
     purpose: string;
 }
@@ -3952,12 +3978,25 @@ declare interface CapoLifecycleActivity$forcingNewSpendDelegate_5 {
 }
 
 /**
+ * A strong type for the canonical form of CapoLifecycleActivity$forcingNewSpendDelegate
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$forcingNewSpendDelegate instead.
+ * @public
+ */
+declare interface CapoLifecycleActivity$forcingNewSpendDelegate_6 {
+    seed: TxOutputId;
+    purpose: string;
+}
+
+/**
  * A strong type for the permissive form of CapoLifecycleActivity$forcingNewSpendDelegate
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike {
+declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike {
     seed: TxOutputId | string;
     purpose: string;
 }
@@ -3969,17 +4008,6 @@ export declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
- * A strong type for the permissive form of CapoLifecycleActivity$forcingNewSpendDelegate
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike_2_2 {
     seed: TxOutputId | string;
     purpose: string;
 }
@@ -4018,6 +4046,17 @@ declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike_5 {
 }
 
 /**
+ * A strong type for the permissive form of CapoLifecycleActivity$forcingNewSpendDelegate
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike_6 {
+    seed: TxOutputId | string;
+    purpose: string;
+}
+
+/**
  * CapoLifecycleActivity enum variants
  *
  * @remarks - expresses the essential raw data structures
@@ -4027,7 +4066,7 @@ declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike_5 {
  *     for generating UPLC data for this enum type
  * @public
  */
-export declare type CapoLifecycleActivity = {
+declare type CapoLifecycleActivity = {
     CreatingDelegate: CapoLifecycleActivity$CreatingDelegate;
 } | {
     queuePendingChange: tagOnly;
@@ -4079,38 +4118,12 @@ declare type CapoLifecycleActivity_2 = {
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type CapoLifecycleActivity_2_2 = {
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegate_2_2;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRole_2_2;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegate_2_2;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegate_2_2;
-} | {
-    updatingManifest: ManifestActivity_2_2;
-};
-
-/**
- * CapoLifecycleActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
 declare type CapoLifecycleActivity_3 = {
     CreatingDelegate: CapoLifecycleActivity$CreatingDelegate_3;
 } | {
     queuePendingChange: tagOnly;
 } | {
-    removePendingChange: DelegateRole_4;
+    removePendingChange: DelegateRole_5;
 } | {
     commitPendingChanges: tagOnly;
 } | {
@@ -4136,7 +4149,7 @@ declare type CapoLifecycleActivity_4 = {
 } | {
     queuePendingChange: tagOnly;
 } | {
-    removePendingChange: DelegateRole_5;
+    removePendingChange: DelegateRole_6;
 } | {
     commitPendingChanges: tagOnly;
 } | {
@@ -4162,7 +4175,7 @@ declare type CapoLifecycleActivity_5 = {
 } | {
     queuePendingChange: tagOnly;
 } | {
-    removePendingChange: DelegateRole_6;
+    removePendingChange: DelegateRole_7;
 } | {
     commitPendingChanges: tagOnly;
 } | {
@@ -4174,11 +4187,198 @@ declare type CapoLifecycleActivity_5 = {
 };
 
 /**
+ * CapoLifecycleActivity enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **7 variant(s)** of the CapoLifecycleActivity enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type CapoLifecycleActivity_6 = {
+    CreatingDelegate: CapoLifecycleActivity$CreatingDelegate_6;
+} | {
+    queuePendingChange: tagOnly;
+} | {
+    removePendingChange: DelegateRole_8;
+} | {
+    commitPendingChanges: tagOnly;
+} | {
+    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegate_6;
+} | {
+    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegate_6;
+} | {
+    updatingManifest: ManifestActivity_6;
+};
+
+/**
  * Helper class for generating UplcData for variants of the ***CapoLifecycleActivity*** enum type.
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 declare class CapoLifecycleActivityHelper extends EnumBridge<JustAnEnum> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<CapoLifecycleActivity, Partial<{
+        CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike;
+        queuePendingChange: tagOnly;
+        removePendingChange: DelegateRoleLike;
+        commitPendingChanges: tagOnly;
+        forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike;
+        forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike;
+        updatingManifest: ManifestActivityLike;
+    }>>;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$CreatingDelegate}` for use in a context
+     * providing an implicit seed utxo.
+     */
+    CreatingDelegate(value: hasSeed, fields: {
+        purpose: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***
+     * with raw seed details included in fields.
+     */
+    CreatingDelegate(fields: CapoLifecycleActivity$CreatingDelegateLike | {
+        seed: TxOutputId | string;
+        purpose: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
+     * @param fields - \{ purpose: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$CreatingDelegate({ purpose })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     */
+    $seeded$CreatingDelegate: (fields: {
+        purpose: string;
+    }) => SeedActivity<(value: hasSeed, fields: {
+        purpose: string;
+    }) => UplcData>;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+     */
+    get queuePendingChange(): UplcData;
+    /**
+     * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
+     */
+    get removePendingChange(): DelegateRoleHelperNested;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+     */
+    get commitPendingChanges(): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$forcingNewSpendDelegate}` for use in a context
+     * providing an implicit seed utxo.
+     */
+    forcingNewSpendDelegate(value: hasSeed, fields: {
+        purpose: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***
+     * with raw seed details included in fields.
+     */
+    forcingNewSpendDelegate(fields: CapoLifecycleActivity$forcingNewSpendDelegateLike | {
+        seed: TxOutputId | string;
+        purpose: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
+     * @param fields - \{ purpose: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$forcingNewSpendDelegate({ purpose })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     */
+    $seeded$forcingNewSpendDelegate: (fields: {
+        purpose: string;
+    }) => SeedActivity<(value: hasSeed, fields: {
+        purpose: string;
+    }) => UplcData>;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$forcingNewMintDelegate}` for use in a context
+     * providing an implicit seed utxo.
+     */
+    forcingNewMintDelegate(value: hasSeed, fields: {
+        purpose: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***
+     * with raw seed details included in fields.
+     */
+    forcingNewMintDelegate(fields: CapoLifecycleActivity$forcingNewMintDelegateLike | {
+        seed: TxOutputId | string;
+        purpose: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
+     * @param fields - \{ purpose: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$forcingNewMintDelegate({ purpose })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     */
+    $seeded$forcingNewMintDelegate: (fields: {
+        purpose: string;
+    }) => SeedActivity<(value: hasSeed, fields: {
+        purpose: string;
+    }) => UplcData>;
+    /**
+     * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
+     */
+    get updatingManifest(): ManifestActivityHelperNested;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***CapoLifecycleActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class CapoLifecycleActivityHelper_2 extends EnumBridge<JustAnEnum> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -4240,7 +4440,7 @@ declare class CapoLifecycleActivityHelper extends EnumBridge<JustAnEnum> {
     /**
      * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
      */
-    get removePendingChange(): DelegateRoleHelperNested;
+    get removePendingChange(): DelegateRoleHelperNested_2;
     /**
      * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
      * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
@@ -4304,167 +4504,6 @@ declare class CapoLifecycleActivityHelper extends EnumBridge<JustAnEnum> {
      * with raw seed details included in fields.
      */
     forcingNewMintDelegate(fields: CapoLifecycleActivity$forcingNewMintDelegateLike_2 | {
-        seed: TxOutputId | string;
-        purpose: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
-     * @param fields - \{ purpose: string \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$forcingNewMintDelegate({ purpose })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     */
-    $seeded$forcingNewMintDelegate: (fields: {
-        purpose: string;
-    }) => SeedActivity<(value: hasSeed, fields: {
-        purpose: string;
-    }) => UplcData>;
-    /**
-     * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
-     */
-    get updatingManifest(): ManifestActivityHelperNested;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***CapoLifecycleActivity*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class CapoLifecycleActivityHelper_2 extends EnumBridge<JustAnEnum> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<CapoLifecycleActivity_2_2, Partial<{
-        CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_2_2;
-        queuePendingChange: tagOnly;
-        removePendingChange: DelegateRoleLike_2_2;
-        commitPendingChanges: tagOnly;
-        forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_2_2;
-        forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_2_2;
-        updatingManifest: ManifestActivityLike_2_2;
-    }>>;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$CreatingDelegate}` for use in a context
-     * providing an implicit seed utxo.
-     */
-    CreatingDelegate(value: hasSeed, fields: {
-        purpose: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***
-     * with raw seed details included in fields.
-     */
-    CreatingDelegate(fields: CapoLifecycleActivity$CreatingDelegateLike_2_2 | {
-        seed: TxOutputId | string;
-        purpose: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
-     * @param fields - \{ purpose: string \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$CreatingDelegate({ purpose })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     */
-    $seeded$CreatingDelegate: (fields: {
-        purpose: string;
-    }) => SeedActivity<(value: hasSeed, fields: {
-        purpose: string;
-    }) => UplcData>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get queuePendingChange(): UplcData;
-    /**
-     * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
-     */
-    get removePendingChange(): DelegateRoleHelperNested_2;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get commitPendingChanges(): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$forcingNewSpendDelegate}` for use in a context
-     * providing an implicit seed utxo.
-     */
-    forcingNewSpendDelegate(value: hasSeed, fields: {
-        purpose: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***
-     * with raw seed details included in fields.
-     */
-    forcingNewSpendDelegate(fields: CapoLifecycleActivity$forcingNewSpendDelegateLike_2_2 | {
-        seed: TxOutputId | string;
-        purpose: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
-     * @param fields - \{ purpose: string \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$forcingNewSpendDelegate({ purpose })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     */
-    $seeded$forcingNewSpendDelegate: (fields: {
-        purpose: string;
-    }) => SeedActivity<(value: hasSeed, fields: {
-        purpose: string;
-    }) => UplcData>;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$forcingNewMintDelegate}` for use in a context
-     * providing an implicit seed utxo.
-     */
-    forcingNewMintDelegate(value: hasSeed, fields: {
-        purpose: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***
-     * with raw seed details included in fields.
-     */
-    forcingNewMintDelegate(fields: CapoLifecycleActivity$forcingNewMintDelegateLike_2_2 | {
         seed: TxOutputId | string;
         purpose: string;
     }): UplcData;
@@ -4665,167 +4704,6 @@ declare class CapoLifecycleActivityHelper_4 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<CapoLifecycleActivity, Partial<{
-        CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike;
-        queuePendingChange: tagOnly;
-        removePendingChange: DelegateRoleLike;
-        commitPendingChanges: tagOnly;
-        forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike;
-        forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike;
-        updatingManifest: ManifestActivityLike;
-    }>>;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$CreatingDelegate}` for use in a context
-     * providing an implicit seed utxo.
-     */
-    CreatingDelegate(value: hasSeed, fields: {
-        purpose: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***
-     * with raw seed details included in fields.
-     */
-    CreatingDelegate(fields: CapoLifecycleActivity$CreatingDelegateLike | {
-        seed: TxOutputId | string;
-        purpose: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
-     * @param fields - \{ purpose: string \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$CreatingDelegate({ purpose })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     */
-    $seeded$CreatingDelegate: (fields: {
-        purpose: string;
-    }) => SeedActivity_2<(value: hasSeed, fields: {
-    purpose: string;
-    }) => UplcData>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get queuePendingChange(): UplcData;
-    /**
-     * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
-     */
-    get removePendingChange(): DelegateRoleHelperNested_4;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get commitPendingChanges(): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$forcingNewSpendDelegate}` for use in a context
-     * providing an implicit seed utxo.
-     */
-    forcingNewSpendDelegate(value: hasSeed, fields: {
-        purpose: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***
-     * with raw seed details included in fields.
-     */
-    forcingNewSpendDelegate(fields: CapoLifecycleActivity$forcingNewSpendDelegateLike | {
-        seed: TxOutputId | string;
-        purpose: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
-     * @param fields - \{ purpose: string \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$forcingNewSpendDelegate({ purpose })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     */
-    $seeded$forcingNewSpendDelegate: (fields: {
-        purpose: string;
-    }) => SeedActivity_2<(value: hasSeed, fields: {
-    purpose: string;
-    }) => UplcData>;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$forcingNewMintDelegate}` for use in a context
-     * providing an implicit seed utxo.
-     */
-    forcingNewMintDelegate(value: hasSeed, fields: {
-        purpose: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***
-     * with raw seed details included in fields.
-     */
-    forcingNewMintDelegate(fields: CapoLifecycleActivity$forcingNewMintDelegateLike | {
-        seed: TxOutputId | string;
-        purpose: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
-     * @param fields - \{ purpose: string \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$forcingNewMintDelegate({ purpose })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     */
-    $seeded$forcingNewMintDelegate: (fields: {
-        purpose: string;
-    }) => SeedActivity_2<(value: hasSeed, fields: {
-    purpose: string;
-    }) => UplcData>;
-    /**
-     * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
-     */
-    get updatingManifest(): ManifestActivityHelperNested_4;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***CapoLifecycleActivity*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class CapoLifecycleActivityHelper_5 extends EnumBridge<JustAnEnum_3> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<CapoLifecycleActivity_4, Partial<{
         CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_4;
         queuePendingChange: tagOnly;
@@ -4884,7 +4762,7 @@ declare class CapoLifecycleActivityHelper_5 extends EnumBridge<JustAnEnum_3> {
     /**
      * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
      */
-    get removePendingChange(): DelegateRoleHelperNested_5;
+    get removePendingChange(): DelegateRoleHelperNested_4;
     /**
      * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
      * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
@@ -4975,7 +4853,7 @@ declare class CapoLifecycleActivityHelper_5 extends EnumBridge<JustAnEnum_3> {
     /**
      * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
      */
-    get updatingManifest(): ManifestActivityHelperNested_5;
+    get updatingManifest(): ManifestActivityHelperNested_4;
 }
 
 /**
@@ -4983,7 +4861,7 @@ declare class CapoLifecycleActivityHelper_5 extends EnumBridge<JustAnEnum_3> {
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class CapoLifecycleActivityHelper_6 extends EnumBridge<JustAnEnum_3> {
+declare class CapoLifecycleActivityHelper_5 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -5045,7 +4923,7 @@ declare class CapoLifecycleActivityHelper_6 extends EnumBridge<JustAnEnum_3> {
     /**
      * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
      */
-    get removePendingChange(): DelegateRoleHelperNested_6;
+    get removePendingChange(): DelegateRoleHelperNested_5;
     /**
      * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
      * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
@@ -5136,6 +5014,167 @@ declare class CapoLifecycleActivityHelper_6 extends EnumBridge<JustAnEnum_3> {
     /**
      * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
      */
+    get updatingManifest(): ManifestActivityHelperNested_5;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***CapoLifecycleActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class CapoLifecycleActivityHelper_6 extends EnumBridge<JustAnEnum_3> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<CapoLifecycleActivity_6, Partial<{
+        CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_6;
+        queuePendingChange: tagOnly;
+        removePendingChange: DelegateRoleLike_6;
+        commitPendingChanges: tagOnly;
+        forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_6;
+        forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_6;
+        updatingManifest: ManifestActivityLike_6;
+    }>>;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$CreatingDelegate}` for use in a context
+     * providing an implicit seed utxo.
+     */
+    CreatingDelegate(value: hasSeed, fields: {
+        purpose: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***
+     * with raw seed details included in fields.
+     */
+    CreatingDelegate(fields: CapoLifecycleActivity$CreatingDelegateLike_6 | {
+        seed: TxOutputId | string;
+        purpose: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
+     * @param fields - \{ purpose: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$CreatingDelegate({ purpose })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     */
+    $seeded$CreatingDelegate: (fields: {
+        purpose: string;
+    }) => SeedActivity_2<(value: hasSeed, fields: {
+    purpose: string;
+    }) => UplcData>;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+     */
+    get queuePendingChange(): UplcData;
+    /**
+     * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
+     */
+    get removePendingChange(): DelegateRoleHelperNested_6;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+     */
+    get commitPendingChanges(): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$forcingNewSpendDelegate}` for use in a context
+     * providing an implicit seed utxo.
+     */
+    forcingNewSpendDelegate(value: hasSeed, fields: {
+        purpose: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***
+     * with raw seed details included in fields.
+     */
+    forcingNewSpendDelegate(fields: CapoLifecycleActivity$forcingNewSpendDelegateLike_6 | {
+        seed: TxOutputId | string;
+        purpose: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
+     * @param fields - \{ purpose: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$forcingNewSpendDelegate({ purpose })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     */
+    $seeded$forcingNewSpendDelegate: (fields: {
+        purpose: string;
+    }) => SeedActivity_2<(value: hasSeed, fields: {
+    purpose: string;
+    }) => UplcData>;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$forcingNewMintDelegate}` for use in a context
+     * providing an implicit seed utxo.
+     */
+    forcingNewMintDelegate(value: hasSeed, fields: {
+        purpose: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***
+     * with raw seed details included in fields.
+     */
+    forcingNewMintDelegate(fields: CapoLifecycleActivity$forcingNewMintDelegateLike_6 | {
+        seed: TxOutputId | string;
+        purpose: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
+     * @param fields - \{ purpose: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$forcingNewMintDelegate({ purpose })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     */
+    $seeded$forcingNewMintDelegate: (fields: {
+        purpose: string;
+    }) => SeedActivity_2<(value: hasSeed, fields: {
+    purpose: string;
+    }) => UplcData>;
+    /**
+     * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
+     */
     get updatingManifest(): ManifestActivityHelperNested_6;
 }
 
@@ -5145,6 +5184,195 @@ declare class CapoLifecycleActivityHelper_6 extends EnumBridge<JustAnEnum_3> {
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 declare class CapoLifecycleActivityHelperNested extends EnumBridge<isActivity> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<CapoLifecycleActivity, Partial<{
+        CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike;
+        queuePendingChange: tagOnly;
+        removePendingChange: DelegateRoleLike;
+        commitPendingChanges: tagOnly;
+        forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike;
+        forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike;
+        updatingManifest: ManifestActivityLike;
+    }>>;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$CreatingDelegate}` for use in a context
+     * providing an implicit seed utxo.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    CreatingDelegate(value: hasSeed, fields: {
+        purpose: string;
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***
+     * with raw seed details included in fields.
+     */
+    CreatingDelegate(fields: CapoLifecycleActivity$CreatingDelegateLike | {
+        seed: TxOutputId | string;
+        purpose: string;
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
+     * @param fields - \{ purpose: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$CreatingDelegate({ purpose })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    $seeded$CreatingDelegate: (fields: {
+        purpose: string;
+    }) => SeedActivity<(value: hasSeed, fields: {
+        purpose: string;
+    }) => isActivity>;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+     */
+    get queuePendingChange(): {
+        redeemer: UplcData;
+    };
+    /**
+     * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
+     */
+    get removePendingChange(): ActivityDelegateRoleHelperNested;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+     */
+    get commitPendingChanges(): {
+        redeemer: UplcData;
+    };
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$forcingNewSpendDelegate}` for use in a context
+     * providing an implicit seed utxo.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    forcingNewSpendDelegate(value: hasSeed, fields: {
+        purpose: string;
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***
+     * with raw seed details included in fields.
+     */
+    forcingNewSpendDelegate(fields: CapoLifecycleActivity$forcingNewSpendDelegateLike | {
+        seed: TxOutputId | string;
+        purpose: string;
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
+     * @param fields - \{ purpose: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$forcingNewSpendDelegate({ purpose })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    $seeded$forcingNewSpendDelegate: (fields: {
+        purpose: string;
+    }) => SeedActivity<(value: hasSeed, fields: {
+        purpose: string;
+    }) => isActivity>;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$forcingNewMintDelegate}` for use in a context
+     * providing an implicit seed utxo.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    forcingNewMintDelegate(value: hasSeed, fields: {
+        purpose: string;
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***
+     * with raw seed details included in fields.
+     */
+    forcingNewMintDelegate(fields: CapoLifecycleActivity$forcingNewMintDelegateLike | {
+        seed: TxOutputId | string;
+        purpose: string;
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
+     * @param fields - \{ purpose: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$forcingNewMintDelegate({ purpose })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    $seeded$forcingNewMintDelegate: (fields: {
+        purpose: string;
+    }) => SeedActivity<(value: hasSeed, fields: {
+        purpose: string;
+    }) => isActivity>;
+    /**
+     * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
+     */
+    get updatingManifest(): ManifestActivityHelperNested;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***CapoLifecycleActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class CapoLifecycleActivityHelperNested_2 extends EnumBridge<isActivity> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -5216,7 +5444,7 @@ declare class CapoLifecycleActivityHelperNested extends EnumBridge<isActivity> {
     /**
      * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
      */
-    get removePendingChange(): ActivityDelegateRoleHelperNested;
+    get removePendingChange(): ActivityDelegateRoleHelperNested_2;
     /**
      * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
      * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
@@ -5294,195 +5522,6 @@ declare class CapoLifecycleActivityHelperNested extends EnumBridge<isActivity> {
      * with raw seed details included in fields.
      */
     forcingNewMintDelegate(fields: CapoLifecycleActivity$forcingNewMintDelegateLike_2 | {
-        seed: TxOutputId | string;
-        purpose: string;
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
-     * @param fields - \{ purpose: string \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$forcingNewMintDelegate({ purpose })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    $seeded$forcingNewMintDelegate: (fields: {
-        purpose: string;
-    }) => SeedActivity<(value: hasSeed, fields: {
-        purpose: string;
-    }) => isActivity>;
-    /**
-     * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
-     */
-    get updatingManifest(): ManifestActivityHelperNested;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***CapoLifecycleActivity*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class CapoLifecycleActivityHelperNested_2 extends EnumBridge<isActivity> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<CapoLifecycleActivity_2_2, Partial<{
-        CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_2_2;
-        queuePendingChange: tagOnly;
-        removePendingChange: DelegateRoleLike_2_2;
-        commitPendingChanges: tagOnly;
-        forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_2_2;
-        forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_2_2;
-        updatingManifest: ManifestActivityLike_2_2;
-    }>>;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$CreatingDelegate}` for use in a context
-     * providing an implicit seed utxo.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    CreatingDelegate(value: hasSeed, fields: {
-        purpose: string;
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***
-     * with raw seed details included in fields.
-     */
-    CreatingDelegate(fields: CapoLifecycleActivity$CreatingDelegateLike_2_2 | {
-        seed: TxOutputId | string;
-        purpose: string;
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
-     * @param fields - \{ purpose: string \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$CreatingDelegate({ purpose })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    $seeded$CreatingDelegate: (fields: {
-        purpose: string;
-    }) => SeedActivity<(value: hasSeed, fields: {
-        purpose: string;
-    }) => isActivity>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get queuePendingChange(): {
-        redeemer: UplcData;
-    };
-    /**
-     * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
-     */
-    get removePendingChange(): ActivityDelegateRoleHelperNested_2;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get commitPendingChanges(): {
-        redeemer: UplcData;
-    };
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$forcingNewSpendDelegate}` for use in a context
-     * providing an implicit seed utxo.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    forcingNewSpendDelegate(value: hasSeed, fields: {
-        purpose: string;
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***
-     * with raw seed details included in fields.
-     */
-    forcingNewSpendDelegate(fields: CapoLifecycleActivity$forcingNewSpendDelegateLike_2_2 | {
-        seed: TxOutputId | string;
-        purpose: string;
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
-     * @param fields - \{ purpose: string \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$forcingNewSpendDelegate({ purpose })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    $seeded$forcingNewSpendDelegate: (fields: {
-        purpose: string;
-    }) => SeedActivity<(value: hasSeed, fields: {
-        purpose: string;
-    }) => isActivity>;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$forcingNewMintDelegate}` for use in a context
-     * providing an implicit seed utxo.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    forcingNewMintDelegate(value: hasSeed, fields: {
-        purpose: string;
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***
-     * with raw seed details included in fields.
-     */
-    forcingNewMintDelegate(fields: CapoLifecycleActivity$forcingNewMintDelegateLike_2_2 | {
         seed: TxOutputId | string;
         purpose: string;
     }): isActivity;
@@ -5715,195 +5754,6 @@ declare class CapoLifecycleActivityHelperNested_4 extends EnumBridge<isActivity>
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<CapoLifecycleActivity, Partial<{
-        CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike;
-        queuePendingChange: tagOnly;
-        removePendingChange: DelegateRoleLike;
-        commitPendingChanges: tagOnly;
-        forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike;
-        forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike;
-        updatingManifest: ManifestActivityLike;
-    }>>;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$CreatingDelegate}` for use in a context
-     * providing an implicit seed utxo.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    CreatingDelegate(value: hasSeed, fields: {
-        purpose: string;
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***
-     * with raw seed details included in fields.
-     */
-    CreatingDelegate(fields: CapoLifecycleActivity$CreatingDelegateLike | {
-        seed: TxOutputId | string;
-        purpose: string;
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
-     * @param fields - \{ purpose: string \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$CreatingDelegate({ purpose })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    $seeded$CreatingDelegate: (fields: {
-        purpose: string;
-    }) => SeedActivity_2<(value: hasSeed, fields: {
-    purpose: string;
-    }) => isActivity>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get queuePendingChange(): {
-        redeemer: UplcData;
-    };
-    /**
-     * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
-     */
-    get removePendingChange(): ActivityDelegateRoleHelperNested_4;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get commitPendingChanges(): {
-        redeemer: UplcData;
-    };
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$forcingNewSpendDelegate}` for use in a context
-     * providing an implicit seed utxo.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    forcingNewSpendDelegate(value: hasSeed, fields: {
-        purpose: string;
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***
-     * with raw seed details included in fields.
-     */
-    forcingNewSpendDelegate(fields: CapoLifecycleActivity$forcingNewSpendDelegateLike | {
-        seed: TxOutputId | string;
-        purpose: string;
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
-     * @param fields - \{ purpose: string \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$forcingNewSpendDelegate({ purpose })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    $seeded$forcingNewSpendDelegate: (fields: {
-        purpose: string;
-    }) => SeedActivity_2<(value: hasSeed, fields: {
-    purpose: string;
-    }) => isActivity>;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$forcingNewMintDelegate}` for use in a context
-     * providing an implicit seed utxo.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    forcingNewMintDelegate(value: hasSeed, fields: {
-        purpose: string;
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***
-     * with raw seed details included in fields.
-     */
-    forcingNewMintDelegate(fields: CapoLifecycleActivity$forcingNewMintDelegateLike | {
-        seed: TxOutputId | string;
-        purpose: string;
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
-     * @param fields - \{ purpose: string \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$forcingNewMintDelegate({ purpose })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    $seeded$forcingNewMintDelegate: (fields: {
-        purpose: string;
-    }) => SeedActivity_2<(value: hasSeed, fields: {
-    purpose: string;
-    }) => isActivity>;
-    /**
-     * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
-     */
-    get updatingManifest(): ManifestActivityHelperNested_4;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***CapoLifecycleActivity*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class CapoLifecycleActivityHelperNested_5 extends EnumBridge<isActivity> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<CapoLifecycleActivity_4, Partial<{
         CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_4;
         queuePendingChange: tagOnly;
@@ -5972,7 +5822,7 @@ declare class CapoLifecycleActivityHelperNested_5 extends EnumBridge<isActivity>
     /**
      * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
      */
-    get removePendingChange(): ActivityDelegateRoleHelperNested_5;
+    get removePendingChange(): ActivityDelegateRoleHelperNested_4;
     /**
      * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
      * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
@@ -6081,7 +5931,7 @@ declare class CapoLifecycleActivityHelperNested_5 extends EnumBridge<isActivity>
     /**
      * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
      */
-    get updatingManifest(): ManifestActivityHelperNested_5;
+    get updatingManifest(): ManifestActivityHelperNested_4;
 }
 
 /**
@@ -6089,7 +5939,7 @@ declare class CapoLifecycleActivityHelperNested_5 extends EnumBridge<isActivity>
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class CapoLifecycleActivityHelperNested_6 extends EnumBridge<isActivity> {
+declare class CapoLifecycleActivityHelperNested_5 extends EnumBridge<isActivity> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -6161,7 +6011,7 @@ declare class CapoLifecycleActivityHelperNested_6 extends EnumBridge<isActivity>
     /**
      * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
      */
-    get removePendingChange(): ActivityDelegateRoleHelperNested_6;
+    get removePendingChange(): ActivityDelegateRoleHelperNested_5;
     /**
      * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
      * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
@@ -6270,6 +6120,195 @@ declare class CapoLifecycleActivityHelperNested_6 extends EnumBridge<isActivity>
     /**
      * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
      */
+    get updatingManifest(): ManifestActivityHelperNested_5;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***CapoLifecycleActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class CapoLifecycleActivityHelperNested_6 extends EnumBridge<isActivity> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<CapoLifecycleActivity_6, Partial<{
+        CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_6;
+        queuePendingChange: tagOnly;
+        removePendingChange: DelegateRoleLike_6;
+        commitPendingChanges: tagOnly;
+        forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_6;
+        forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_6;
+        updatingManifest: ManifestActivityLike_6;
+    }>>;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$CreatingDelegate}` for use in a context
+     * providing an implicit seed utxo.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    CreatingDelegate(value: hasSeed, fields: {
+        purpose: string;
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***
+     * with raw seed details included in fields.
+     */
+    CreatingDelegate(fields: CapoLifecycleActivity$CreatingDelegateLike_6 | {
+        seed: TxOutputId | string;
+        purpose: string;
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***,
+     * @param fields - \{ purpose: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$CreatingDelegate({ purpose })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    $seeded$CreatingDelegate: (fields: {
+        purpose: string;
+    }) => SeedActivity_2<(value: hasSeed, fields: {
+    purpose: string;
+    }) => isActivity>;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+     */
+    get queuePendingChange(): {
+        redeemer: UplcData;
+    };
+    /**
+     * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
+     */
+    get removePendingChange(): ActivityDelegateRoleHelperNested_6;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+     */
+    get commitPendingChanges(): {
+        redeemer: UplcData;
+    };
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$forcingNewSpendDelegate}` for use in a context
+     * providing an implicit seed utxo.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    forcingNewSpendDelegate(value: hasSeed, fields: {
+        purpose: string;
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***
+     * with raw seed details included in fields.
+     */
+    forcingNewSpendDelegate(fields: CapoLifecycleActivity$forcingNewSpendDelegateLike_6 | {
+        seed: TxOutputId | string;
+        purpose: string;
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***,
+     * @param fields - \{ purpose: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$forcingNewSpendDelegate({ purpose })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    $seeded$forcingNewSpendDelegate: (fields: {
+        purpose: string;
+    }) => SeedActivity_2<(value: hasSeed, fields: {
+    purpose: string;
+    }) => isActivity>;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$forcingNewMintDelegate}` for use in a context
+     * providing an implicit seed utxo.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    forcingNewMintDelegate(value: hasSeed, fields: {
+        purpose: string;
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***
+     * with raw seed details included in fields.
+     */
+    forcingNewMintDelegate(fields: CapoLifecycleActivity$forcingNewMintDelegateLike_6 | {
+        seed: TxOutputId | string;
+        purpose: string;
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***,
+     * @param fields - \{ purpose: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$forcingNewMintDelegate({ purpose })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    $seeded$forcingNewMintDelegate: (fields: {
+        purpose: string;
+    }) => SeedActivity_2<(value: hasSeed, fields: {
+    purpose: string;
+    }) => isActivity>;
+    /**
+     * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
+     */
     get updatingManifest(): ManifestActivityHelperNested_6;
 }
 
@@ -6287,7 +6326,7 @@ declare class CapoLifecycleActivityHelperNested_6 extends EnumBridge<isActivity>
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-export declare type CapoLifecycleActivityLike = IntersectedEnum<{
+declare type CapoLifecycleActivityLike = IntersectedEnum<{
     CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike;
 } | {
     queuePendingChange: tagOnly;
@@ -6331,36 +6370,6 @@ declare type CapoLifecycleActivityLike_2 = IntersectedEnum<{
     forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_2;
 } | {
     updatingManifest: ManifestActivityLike_2;
-}>;
-
-/**
- * CapoLifecycleActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type CapoLifecycleActivityLike_2_2 = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_2_2;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRoleLike_2_2;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_2_2;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_2_2;
-} | {
-    updatingManifest: ManifestActivityLike_2_2;
 }>;
 
 /**
@@ -6454,19 +6463,33 @@ declare type CapoLifecycleActivityLike_5 = IntersectedEnum<{
 }>;
 
 /**
- * @internal
+ * CapoLifecycleActivity enum variants (permissive)
+ *
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **7 variant(s)** of the CapoLifecycleActivity enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
  */
-export declare type CapoLifecycleActivityMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "CapoLifecycleActivity";
-}, {
-    CreatingDelegate: singleEnumVariantMeta<CapoLifecycleActivityMeta, "CreatingDelegate", "Constr#0", "fields", CapoLifecycleActivity$CreatingDelegate, "isSeededActivity">;
-    queuePendingChange: singleEnumVariantMeta<CapoLifecycleActivityMeta, "queuePendingChange", "Constr#1", "tagOnly", tagOnly, "noSpecialFlags">;
-    removePendingChange: singleEnumVariantMeta<CapoLifecycleActivityMeta, "removePendingChange", "Constr#2", "singletonField", /* implied wrapper { role: ... } for singleVariantField */ DelegateRole, "noSpecialFlags">;
-    commitPendingChanges: singleEnumVariantMeta<CapoLifecycleActivityMeta, "commitPendingChanges", "Constr#3", "tagOnly", tagOnly, "noSpecialFlags">;
-    forcingNewSpendDelegate: singleEnumVariantMeta<CapoLifecycleActivityMeta, "forcingNewSpendDelegate", "Constr#4", "fields", CapoLifecycleActivity$forcingNewSpendDelegate, "isSeededActivity">;
-    forcingNewMintDelegate: singleEnumVariantMeta<CapoLifecycleActivityMeta, "forcingNewMintDelegate", "Constr#5", "fields", CapoLifecycleActivity$forcingNewMintDelegate, "isSeededActivity">;
-    updatingManifest: singleEnumVariantMeta<CapoLifecycleActivityMeta, "updatingManifest", "Constr#6", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ ManifestActivity, "noSpecialFlags">;
+declare type CapoLifecycleActivityLike_6 = IntersectedEnum<{
+    CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_6;
+} | {
+    queuePendingChange: tagOnly;
+} | {
+    removePendingChange: DelegateRoleLike_6;
+} | {
+    commitPendingChanges: tagOnly;
+} | {
+    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_6;
+} | {
+    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_6;
+} | {
+    updatingManifest: ManifestActivityLike_6;
 }>;
 
 /**
@@ -6477,7 +6500,7 @@ export declare type CapoLifecycleActivityMeta = EnumTypeMeta<{
  * For a more ergonomic, though less strictly-safe form of this type, see ErgoCapoManifestEntry instead.
  * @public
  */
-export declare interface CapoManifestEntry {
+declare interface CapoManifestEntry {
     entryType: ManifestEntryType;
     tokenName: number[];
     mph: /*minStructField*/ MintingPolicyHash | undefined;
@@ -6493,20 +6516,6 @@ export declare interface CapoManifestEntry {
  */
 declare interface CapoManifestEntry_2 {
     entryType: ManifestEntryType_2;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
-}
-
-/**
- * A strong type for the canonical form of CapoManifestEntry
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoCapoManifestEntry instead.
- * @public
- */
-declare interface CapoManifestEntry_2_2 {
-    entryType: ManifestEntryType_2_2;
     tokenName: number[];
     mph: /*minStructField*/ MintingPolicyHash | undefined;
 }
@@ -6554,12 +6563,26 @@ declare interface CapoManifestEntry_5 {
 }
 
 /**
+ * A strong type for the canonical form of CapoManifestEntry
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoCapoManifestEntry instead.
+ * @public
+ */
+declare interface CapoManifestEntry_6 {
+    entryType: ManifestEntryType_6;
+    tokenName: number[];
+    mph: /*minStructField*/ MintingPolicyHash | undefined;
+}
+
+/**
  * A strong type for the permissive form of CapoManifestEntry
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface CapoManifestEntryLike {
+declare interface CapoManifestEntryLike {
     entryType: ManifestEntryTypeLike;
     tokenName: number[];
     mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
@@ -6573,18 +6596,6 @@ export declare interface CapoManifestEntryLike {
  */
 declare interface CapoManifestEntryLike_2 {
     entryType: ManifestEntryTypeLike_2;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
-}
-
-/**
- * A strong type for the permissive form of CapoManifestEntry
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoManifestEntryLike_2_2 {
-    entryType: ManifestEntryTypeLike_2_2;
     tokenName: number[];
     mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
 }
@@ -6621,6 +6632,18 @@ declare interface CapoManifestEntryLike_4 {
  */
 declare interface CapoManifestEntryLike_5 {
     entryType: ManifestEntryTypeLike_5;
+    tokenName: number[];
+    mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
+}
+
+/**
+ * A strong type for the permissive form of CapoManifestEntry
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface CapoManifestEntryLike_6 {
+    entryType: ManifestEntryTypeLike_6;
     tokenName: number[];
     mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
 }
@@ -6772,7 +6795,7 @@ declare class CapoMinterDataBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***RelativeDelegateLink*** for the `CapoMinter` script
          */
-        RelativeDelegateLink: (fields: RelativeDelegateLinkLike_2_2 | {
+        RelativeDelegateLink: (fields: RelativeDelegateLinkLike_2 | {
             uutName: string;
             delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
             config: number[];
@@ -6780,7 +6803,7 @@ declare class CapoMinterDataBridge extends ContractDataBridge {
     };
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink_2_2, RelativeDelegateLinkLike_2_2>;
+    ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink_2, RelativeDelegateLinkLike_2>;
 }
 
 declare class CapoMinterDataBridgeReader extends DataBridgeReaderClass {
@@ -6815,7 +6838,7 @@ declare class CapoMinterDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    RelativeDelegateLink(d: UplcData): RelativeDelegateLink_2_2;
+    RelativeDelegateLink(d: UplcData): RelativeDelegateLink_2;
 }
 
 /**
@@ -6827,8 +6850,8 @@ declare class CapoMinterDataBridgeReader extends DataBridgeReaderClass {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type cctx_CharterInputType$Ergo$Input = {
-    datum: CapoDatum$Ergo$CharterData;
+declare type cctx_CharterInputType$Ergo$Input = {
+    datum: CapoDatum$Ergo$CharterData_2;
     utxo: TxInput;
 };
 
@@ -6842,7 +6865,7 @@ export declare type cctx_CharterInputType$Ergo$Input = {
  * @public
  */
 declare type cctx_CharterInputType$Ergo$Input_2 = {
-    datum: CapoDatum$Ergo$CharterData_2_2;
+    datum: CapoDatum$Ergo$CharterData_5;
     utxo: TxInput;
 };
 
@@ -6856,7 +6879,7 @@ declare type cctx_CharterInputType$Ergo$Input_2 = {
  * @public
  */
 declare type cctx_CharterInputType$Ergo$Input_3 = {
-    datum: CapoDatum$Ergo$CharterData_4;
+    datum: CapoDatum$Ergo$CharterData_6;
     utxo: TxInput;
 };
 
@@ -6870,7 +6893,7 @@ declare type cctx_CharterInputType$Ergo$Input_3 = {
  * @public
  */
 declare type cctx_CharterInputType$Ergo$Input_4 = {
-    datum: CapoDatum$Ergo$CharterData_5;
+    datum: CapoDatum$Ergo$CharterData_7;
     utxo: TxInput;
 };
 
@@ -6884,7 +6907,7 @@ declare type cctx_CharterInputType$Ergo$Input_4 = {
  * @public
  */
 declare type cctx_CharterInputType$Ergo$Input_5 = {
-    datum: CapoDatum$Ergo$CharterData_6;
+    datum: CapoDatum$Ergo$CharterData_8;
     utxo: TxInput;
 };
 
@@ -6897,8 +6920,8 @@ declare type cctx_CharterInputType$Ergo$Input_5 = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type cctx_CharterInputType$Ergo$RefInput = {
-    datum: CapoDatum$Ergo$CharterData;
+declare type cctx_CharterInputType$Ergo$RefInput = {
+    datum: CapoDatum$Ergo$CharterData_2;
     utxo: TxInput;
 };
 
@@ -6912,34 +6935,6 @@ export declare type cctx_CharterInputType$Ergo$RefInput = {
  * @public
  */
 declare type cctx_CharterInputType$Ergo$RefInput_2 = {
-    datum: CapoDatum$Ergo$CharterData_2_2;
-    utxo: TxInput;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of cctx_CharterInputType$RefInput
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the cctx_CharterInputType$RefInputLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type cctx_CharterInputType$Ergo$RefInput_3 = {
-    datum: CapoDatum$Ergo$CharterData_4;
-    utxo: TxInput;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of cctx_CharterInputType$RefInput
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the cctx_CharterInputType$RefInputLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type cctx_CharterInputType$Ergo$RefInput_4 = {
     datum: CapoDatum$Ergo$CharterData_5;
     utxo: TxInput;
 };
@@ -6953,8 +6948,36 @@ declare type cctx_CharterInputType$Ergo$RefInput_4 = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type cctx_CharterInputType$Ergo$RefInput_5 = {
+declare type cctx_CharterInputType$Ergo$RefInput_3 = {
     datum: CapoDatum$Ergo$CharterData_6;
+    utxo: TxInput;
+};
+
+/**
+ * An ergonomic, though less strictly-safe form of cctx_CharterInputType$RefInput
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the cctx_CharterInputType$RefInputLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type cctx_CharterInputType$Ergo$RefInput_4 = {
+    datum: CapoDatum$Ergo$CharterData_7;
+    utxo: TxInput;
+};
+
+/**
+ * An ergonomic, though less strictly-safe form of cctx_CharterInputType$RefInput
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the cctx_CharterInputType$RefInputLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type cctx_CharterInputType$Ergo$RefInput_5 = {
+    datum: CapoDatum$Ergo$CharterData_8;
     utxo: TxInput;
 };
 
@@ -6966,8 +6989,8 @@ declare type cctx_CharterInputType$Ergo$RefInput_5 = {
  * For a more ergonomic, though less strictly-safe form of this type, see cctx_CharterInputType$Ergo$Input instead.
  * @public
  */
-export declare interface cctx_CharterInputType$Input {
-    datum: CapoDatum$CharterData;
+declare interface cctx_CharterInputType$Input {
+    datum: CapoDatum$CharterData_2;
     utxo: TxInput;
 }
 
@@ -6980,7 +7003,7 @@ export declare interface cctx_CharterInputType$Input {
  * @public
  */
 declare interface cctx_CharterInputType$Input_2 {
-    datum: CapoDatum$CharterData_2_2;
+    datum: CapoDatum$CharterData_3;
     utxo: TxInput;
 }
 
@@ -6993,7 +7016,7 @@ declare interface cctx_CharterInputType$Input_2 {
  * @public
  */
 declare interface cctx_CharterInputType$Input_3 {
-    datum: CapoDatum$CharterData_3;
+    datum: CapoDatum$CharterData_4;
     utxo: TxInput;
 }
 
@@ -7006,7 +7029,7 @@ declare interface cctx_CharterInputType$Input_3 {
  * @public
  */
 declare interface cctx_CharterInputType$Input_4 {
-    datum: CapoDatum$CharterData_4;
+    datum: CapoDatum$CharterData_5;
     utxo: TxInput;
 }
 
@@ -7019,7 +7042,7 @@ declare interface cctx_CharterInputType$Input_4 {
  * @public
  */
 declare interface cctx_CharterInputType$Input_5 {
-    datum: CapoDatum$CharterData_5;
+    datum: CapoDatum$CharterData_6;
     utxo: TxInput;
 }
 
@@ -7029,8 +7052,8 @@ declare interface cctx_CharterInputType$Input_5 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface cctx_CharterInputType$InputLike {
-    datum: CapoDatum$CharterDataLike;
+declare interface cctx_CharterInputType$InputLike {
+    datum: CapoDatum$CharterDataLike_2;
     utxo: TxInput;
 }
 
@@ -7041,17 +7064,6 @@ export declare interface cctx_CharterInputType$InputLike {
  * @public
  */
 declare interface cctx_CharterInputType$InputLike_2 {
-    datum: CapoDatum$CharterDataLike_2_2;
-    utxo: TxInput;
-}
-
-/**
- * A strong type for the permissive form of cctx_CharterInputType$Input
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface cctx_CharterInputType$InputLike_3 {
     datum: CapoDatum$CharterDataLike_3;
     utxo: TxInput;
 }
@@ -7062,7 +7074,7 @@ declare interface cctx_CharterInputType$InputLike_3 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface cctx_CharterInputType$InputLike_4 {
+declare interface cctx_CharterInputType$InputLike_3 {
     datum: CapoDatum$CharterDataLike_4;
     utxo: TxInput;
 }
@@ -7073,8 +7085,19 @@ declare interface cctx_CharterInputType$InputLike_4 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface cctx_CharterInputType$InputLike_5 {
+declare interface cctx_CharterInputType$InputLike_4 {
     datum: CapoDatum$CharterDataLike_5;
+    utxo: TxInput;
+}
+
+/**
+ * A strong type for the permissive form of cctx_CharterInputType$Input
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface cctx_CharterInputType$InputLike_5 {
+    datum: CapoDatum$CharterDataLike_6;
     utxo: TxInput;
 }
 
@@ -7086,8 +7109,8 @@ declare interface cctx_CharterInputType$InputLike_5 {
  * For a more ergonomic, though less strictly-safe form of this type, see cctx_CharterInputType$Ergo$RefInput instead.
  * @public
  */
-export declare interface cctx_CharterInputType$RefInput {
-    datum: CapoDatum$CharterData;
+declare interface cctx_CharterInputType$RefInput {
+    datum: CapoDatum$CharterData_2;
     utxo: TxInput;
 }
 
@@ -7100,19 +7123,6 @@ export declare interface cctx_CharterInputType$RefInput {
  * @public
  */
 declare interface cctx_CharterInputType$RefInput_2 {
-    datum: CapoDatum$CharterData_2_2;
-    utxo: TxInput;
-}
-
-/**
- * A strong type for the canonical form of cctx_CharterInputType$RefInput
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see cctx_CharterInputType$Ergo$RefInput instead.
- * @public
- */
-declare interface cctx_CharterInputType$RefInput_3 {
     datum: CapoDatum$CharterData_3;
     utxo: TxInput;
 }
@@ -7125,7 +7135,7 @@ declare interface cctx_CharterInputType$RefInput_3 {
  * For a more ergonomic, though less strictly-safe form of this type, see cctx_CharterInputType$Ergo$RefInput instead.
  * @public
  */
-declare interface cctx_CharterInputType$RefInput_4 {
+declare interface cctx_CharterInputType$RefInput_3 {
     datum: CapoDatum$CharterData_4;
     utxo: TxInput;
 }
@@ -7138,8 +7148,21 @@ declare interface cctx_CharterInputType$RefInput_4 {
  * For a more ergonomic, though less strictly-safe form of this type, see cctx_CharterInputType$Ergo$RefInput instead.
  * @public
  */
-declare interface cctx_CharterInputType$RefInput_5 {
+declare interface cctx_CharterInputType$RefInput_4 {
     datum: CapoDatum$CharterData_5;
+    utxo: TxInput;
+}
+
+/**
+ * A strong type for the canonical form of cctx_CharterInputType$RefInput
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see cctx_CharterInputType$Ergo$RefInput instead.
+ * @public
+ */
+declare interface cctx_CharterInputType$RefInput_5 {
+    datum: CapoDatum$CharterData_6;
     utxo: TxInput;
 }
 
@@ -7149,8 +7172,8 @@ declare interface cctx_CharterInputType$RefInput_5 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface cctx_CharterInputType$RefInputLike {
-    datum: CapoDatum$CharterDataLike;
+declare interface cctx_CharterInputType$RefInputLike {
+    datum: CapoDatum$CharterDataLike_2;
     utxo: TxInput;
 }
 
@@ -7161,17 +7184,6 @@ export declare interface cctx_CharterInputType$RefInputLike {
  * @public
  */
 declare interface cctx_CharterInputType$RefInputLike_2 {
-    datum: CapoDatum$CharterDataLike_2_2;
-    utxo: TxInput;
-}
-
-/**
- * A strong type for the permissive form of cctx_CharterInputType$RefInput
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface cctx_CharterInputType$RefInputLike_3 {
     datum: CapoDatum$CharterDataLike_3;
     utxo: TxInput;
 }
@@ -7182,7 +7194,7 @@ declare interface cctx_CharterInputType$RefInputLike_3 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface cctx_CharterInputType$RefInputLike_4 {
+declare interface cctx_CharterInputType$RefInputLike_3 {
     datum: CapoDatum$CharterDataLike_4;
     utxo: TxInput;
 }
@@ -7193,8 +7205,19 @@ declare interface cctx_CharterInputType$RefInputLike_4 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface cctx_CharterInputType$RefInputLike_5 {
+declare interface cctx_CharterInputType$RefInputLike_4 {
     datum: CapoDatum$CharterDataLike_5;
+    utxo: TxInput;
+}
+
+/**
+ * A strong type for the permissive form of cctx_CharterInputType$RefInput
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface cctx_CharterInputType$RefInputLike_5 {
+    datum: CapoDatum$CharterDataLike_6;
     utxo: TxInput;
 }
 
@@ -7208,7 +7231,7 @@ declare interface cctx_CharterInputType$RefInputLike_5 {
  *     for generating UPLC data for this enum type
  * @public
  */
-export declare type cctx_CharterInputType = {
+declare type cctx_CharterInputType = {
     Unk: tagOnly;
 } | {
     RefInput: cctx_CharterInputType$RefInput;
@@ -7297,6 +7320,43 @@ declare class cctx_CharterInputTypeHelper extends EnumBridge<JustAnEnum> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<cctx_CharterInputType, Partial<{
+        Unk: tagOnly;
+        RefInput: cctx_CharterInputType$RefInputLike;
+        Input: cctx_CharterInputType$InputLike;
+    }>>;
+    /**
+     * (property getter): UplcData for ***"CapoHelpers::cctx_CharterInputType.Unk"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+     */
+    get Unk(): UplcData;
+    /**
+     * generates  UplcData for ***"CapoHelpers::cctx_CharterInputType.RefInput"***
+     * @remarks - ***cctx_CharterInputType$RefInputLike*** is the same as the expanded field-types.
+     */
+    RefInput(fields: cctx_CharterInputType$RefInputLike | {
+        datum: CapoDatum$CharterDataLike_2;
+        utxo: TxInput;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoHelpers::cctx_CharterInputType.Input"***
+     * @remarks - ***cctx_CharterInputType$InputLike*** is the same as the expanded field-types.
+     */
+    Input(fields: cctx_CharterInputType$InputLike | {
+        datum: CapoDatum$CharterDataLike_2;
+        utxo: TxInput;
+    }): UplcData;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***cctx_CharterInputType*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class cctx_CharterInputTypeHelper_2 extends EnumBridge<JustAnEnum_3> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<cctx_CharterInputType_2, Partial<{
         Unk: tagOnly;
         RefInput: cctx_CharterInputType$RefInputLike_2;
@@ -7312,7 +7372,7 @@ declare class cctx_CharterInputTypeHelper extends EnumBridge<JustAnEnum> {
      * @remarks - ***cctx_CharterInputType$RefInputLike*** is the same as the expanded field-types.
      */
     RefInput(fields: cctx_CharterInputType$RefInputLike_2 | {
-        datum: CapoDatum$CharterDataLike_2_2;
+        datum: CapoDatum$CharterDataLike_3;
         utxo: TxInput;
     }): UplcData;
     /**
@@ -7320,7 +7380,7 @@ declare class cctx_CharterInputTypeHelper extends EnumBridge<JustAnEnum> {
      * @remarks - ***cctx_CharterInputType$InputLike*** is the same as the expanded field-types.
      */
     Input(fields: cctx_CharterInputType$InputLike_2 | {
-        datum: CapoDatum$CharterDataLike_2_2;
+        datum: CapoDatum$CharterDataLike_3;
         utxo: TxInput;
     }): UplcData;
 }
@@ -7330,7 +7390,7 @@ declare class cctx_CharterInputTypeHelper extends EnumBridge<JustAnEnum> {
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class cctx_CharterInputTypeHelper_2 extends EnumBridge<JustAnEnum_3> {
+declare class cctx_CharterInputTypeHelper_3 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -7349,7 +7409,7 @@ declare class cctx_CharterInputTypeHelper_2 extends EnumBridge<JustAnEnum_3> {
      * @remarks - ***cctx_CharterInputType$RefInputLike*** is the same as the expanded field-types.
      */
     RefInput(fields: cctx_CharterInputType$RefInputLike_3 | {
-        datum: CapoDatum$CharterDataLike_3;
+        datum: CapoDatum$CharterDataLike_4;
         utxo: TxInput;
     }): UplcData;
     /**
@@ -7357,44 +7417,7 @@ declare class cctx_CharterInputTypeHelper_2 extends EnumBridge<JustAnEnum_3> {
      * @remarks - ***cctx_CharterInputType$InputLike*** is the same as the expanded field-types.
      */
     Input(fields: cctx_CharterInputType$InputLike_3 | {
-        datum: CapoDatum$CharterDataLike_3;
-        utxo: TxInput;
-    }): UplcData;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***cctx_CharterInputType*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class cctx_CharterInputTypeHelper_3 extends EnumBridge<JustAnEnum_3> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<cctx_CharterInputType, Partial<{
-        Unk: tagOnly;
-        RefInput: cctx_CharterInputType$RefInputLike;
-        Input: cctx_CharterInputType$InputLike;
-    }>>;
-    /**
-     * (property getter): UplcData for ***"CapoHelpers::cctx_CharterInputType.Unk"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-     */
-    get Unk(): UplcData;
-    /**
-     * generates  UplcData for ***"CapoHelpers::cctx_CharterInputType.RefInput"***
-     * @remarks - ***cctx_CharterInputType$RefInputLike*** is the same as the expanded field-types.
-     */
-    RefInput(fields: cctx_CharterInputType$RefInputLike | {
-        datum: CapoDatum$CharterDataLike;
-        utxo: TxInput;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoHelpers::cctx_CharterInputType.Input"***
-     * @remarks - ***cctx_CharterInputType$InputLike*** is the same as the expanded field-types.
-     */
-    Input(fields: cctx_CharterInputType$InputLike | {
-        datum: CapoDatum$CharterDataLike;
+        datum: CapoDatum$CharterDataLike_4;
         utxo: TxInput;
     }): UplcData;
 }
@@ -7423,7 +7446,7 @@ declare class cctx_CharterInputTypeHelper_4 extends EnumBridge<JustAnEnum_3> {
      * @remarks - ***cctx_CharterInputType$RefInputLike*** is the same as the expanded field-types.
      */
     RefInput(fields: cctx_CharterInputType$RefInputLike_4 | {
-        datum: CapoDatum$CharterDataLike_4;
+        datum: CapoDatum$CharterDataLike_5;
         utxo: TxInput;
     }): UplcData;
     /**
@@ -7431,7 +7454,7 @@ declare class cctx_CharterInputTypeHelper_4 extends EnumBridge<JustAnEnum_3> {
      * @remarks - ***cctx_CharterInputType$InputLike*** is the same as the expanded field-types.
      */
     Input(fields: cctx_CharterInputType$InputLike_4 | {
-        datum: CapoDatum$CharterDataLike_4;
+        datum: CapoDatum$CharterDataLike_5;
         utxo: TxInput;
     }): UplcData;
 }
@@ -7460,7 +7483,7 @@ declare class cctx_CharterInputTypeHelper_5 extends EnumBridge<JustAnEnum_3> {
      * @remarks - ***cctx_CharterInputType$RefInputLike*** is the same as the expanded field-types.
      */
     RefInput(fields: cctx_CharterInputType$RefInputLike_5 | {
-        datum: CapoDatum$CharterDataLike_5;
+        datum: CapoDatum$CharterDataLike_6;
         utxo: TxInput;
     }): UplcData;
     /**
@@ -7468,7 +7491,7 @@ declare class cctx_CharterInputTypeHelper_5 extends EnumBridge<JustAnEnum_3> {
      * @remarks - ***cctx_CharterInputType$InputLike*** is the same as the expanded field-types.
      */
     Input(fields: cctx_CharterInputType$InputLike_5 | {
-        datum: CapoDatum$CharterDataLike_5;
+        datum: CapoDatum$CharterDataLike_6;
         utxo: TxInput;
     }): UplcData;
 }
@@ -7487,7 +7510,7 @@ declare class cctx_CharterInputTypeHelper_5 extends EnumBridge<JustAnEnum_3> {
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-export declare type cctx_CharterInputTypeLike = IntersectedEnum<{
+declare type cctx_CharterInputTypeLike = IntersectedEnum<{
     Unk: tagOnly;
 } | {
     RefInput: cctx_CharterInputType$RefInputLike;
@@ -7584,26 +7607,14 @@ declare type cctx_CharterInputTypeLike_5 = IntersectedEnum<{
 }>;
 
 /**
- * @internal
+ * @public
  */
-export declare type cctx_CharterInputTypeMeta = EnumTypeMeta<{
-    module: "CapoHelpers";
-    enumName: "cctx_CharterInputType";
-}, {
-    Unk: singleEnumVariantMeta<cctx_CharterInputTypeMeta, "Unk", "Constr#0", "tagOnly", tagOnly, "noSpecialFlags">;
-    RefInput: singleEnumVariantMeta<cctx_CharterInputTypeMeta, "RefInput", "Constr#1", "fields", cctx_CharterInputType$RefInput, "noSpecialFlags">;
-    Input: singleEnumVariantMeta<cctx_CharterInputTypeMeta, "Input", "Constr#2", "fields", cctx_CharterInputType$Input, "noSpecialFlags">;
-}>;
+declare type CharterData = CapoDatum$Ergo$CharterData;
 
 /**
  * @public
  */
-declare type CharterData = CapoDatum$Ergo$CharterData_2;
-
-/**
- * @public
- */
-declare type CharterDataLike = CapoDatum$CharterDataLike_2;
+declare type CharterDataLike = CapoDatum$CharterDataLike;
 
 /**
  * @public
@@ -7791,7 +7802,7 @@ declare class ContractBasedDelegate extends StellarDelegate {
      * @param dd - Delegation details
      * @public
      **/
-    mkDatumIsDelegation(dd: DelegationDetail_3): InlineTxOutputDatum;
+    mkDatumIsDelegation(dd: DelegationDetail): InlineTxOutputDatum;
     /**
      * returns the ValidatorHash of the delegate script, if relevant
      * @public
@@ -7963,7 +7974,7 @@ declare type DeferredTransition<SM extends StateMachine<any, any>> = DeferredSta
  * For a more ergonomic, though less strictly-safe form of this type, see DelegateActivity$Ergo$CreatingDelegatedData instead.
  * @public
  */
-export declare interface DelegateActivity$CreatingDelegatedData {
+declare interface DelegateActivity$CreatingDelegatedData {
     seed: TxOutputId;
     dataType: string;
 }
@@ -8026,7 +8037,7 @@ declare interface DelegateActivity$CreatingDelegatedData_5 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface DelegateActivity$CreatingDelegatedDataLike {
+declare interface DelegateActivity$CreatingDelegatedDataLike {
     seed: TxOutputId | string;
     dataType: string;
 }
@@ -8083,7 +8094,7 @@ declare interface DelegateActivity$CreatingDelegatedDataLike_5 {
  * For a more ergonomic, though less strictly-safe form of this type, see DelegateActivity$Ergo$DeletingDelegatedData instead.
  * @public
  */
-export declare interface DelegateActivity$DeletingDelegatedData {
+declare interface DelegateActivity$DeletingDelegatedData {
     dataType: string;
     recId: number[];
 }
@@ -8146,7 +8157,7 @@ declare interface DelegateActivity$DeletingDelegatedData_5 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface DelegateActivity$DeletingDelegatedDataLike {
+declare interface DelegateActivity$DeletingDelegatedDataLike {
     dataType: string;
     recId: number[];
 }
@@ -8204,7 +8215,7 @@ declare interface DelegateActivity$DeletingDelegatedDataLike_5 {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type DelegateActivity$Ergo$CreatingDelegatedData = DelegateActivity$CreatingDelegatedData;
+declare type DelegateActivity$Ergo$CreatingDelegatedData = DelegateActivity$CreatingDelegatedData;
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateActivity$CreatingDelegatedData
@@ -8259,7 +8270,7 @@ declare type DelegateActivity$Ergo$CreatingDelegatedData_5 = DelegateActivity$Cr
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type DelegateActivity$Ergo$DeletingDelegatedData = DelegateActivity$DeletingDelegatedData;
+declare type DelegateActivity$Ergo$DeletingDelegatedData = DelegateActivity$DeletingDelegatedData;
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateActivity$DeletingDelegatedData
@@ -8314,7 +8325,7 @@ declare type DelegateActivity$Ergo$DeletingDelegatedData_5 = DelegateActivity$De
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type DelegateActivity$Ergo$UpdatingDelegatedData = DelegateActivity$UpdatingDelegatedData;
+declare type DelegateActivity$Ergo$UpdatingDelegatedData = DelegateActivity$UpdatingDelegatedData;
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateActivity$UpdatingDelegatedData
@@ -8368,7 +8379,7 @@ declare type DelegateActivity$Ergo$UpdatingDelegatedData_5 = DelegateActivity$Up
  * For a more ergonomic, though less strictly-safe form of this type, see DelegateActivity$Ergo$UpdatingDelegatedData instead.
  * @public
  */
-export declare interface DelegateActivity$UpdatingDelegatedData {
+declare interface DelegateActivity$UpdatingDelegatedData {
     dataType: string;
     recId: number[];
 }
@@ -8431,7 +8442,7 @@ declare interface DelegateActivity$UpdatingDelegatedData_5 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface DelegateActivity$UpdatingDelegatedDataLike {
+declare interface DelegateActivity$UpdatingDelegatedDataLike {
     dataType: string;
     recId: number[];
 }
@@ -8490,8 +8501,8 @@ declare interface DelegateActivity$UpdatingDelegatedDataLike_5 {
  *     for generating UPLC data for this enum type
  * @public
  */
-export declare type DelegateActivity = {
-    CapoLifecycleActivities: CapoLifecycleActivity;
+declare type DelegateActivity = {
+    CapoLifecycleActivities: CapoLifecycleActivity_2;
 } | {
     DelegateLifecycleActivities: DelegateLifecycleActivity;
 } | {
@@ -8521,7 +8532,7 @@ export declare type DelegateActivity = {
  * @public
  */
 declare type DelegateActivity_2 = {
-    CapoLifecycleActivities: CapoLifecycleActivity_2_2;
+    CapoLifecycleActivities: CapoLifecycleActivity_3;
 } | {
     DelegateLifecycleActivities: DelegateLifecycleActivity_2;
 } | {
@@ -8551,7 +8562,7 @@ declare type DelegateActivity_2 = {
  * @public
  */
 declare type DelegateActivity_3 = {
-    CapoLifecycleActivities: CapoLifecycleActivity_3;
+    CapoLifecycleActivities: CapoLifecycleActivity_4;
 } | {
     DelegateLifecycleActivities: DelegateLifecycleActivity_3;
 } | {
@@ -8581,7 +8592,7 @@ declare type DelegateActivity_3 = {
  * @public
  */
 declare type DelegateActivity_4 = {
-    CapoLifecycleActivities: CapoLifecycleActivity_4;
+    CapoLifecycleActivities: CapoLifecycleActivity_5;
 } | {
     DelegateLifecycleActivities: DelegateLifecycleActivity_4;
 } | {
@@ -8611,7 +8622,7 @@ declare type DelegateActivity_4 = {
  * @public
  */
 declare type DelegateActivity_5 = {
-    CapoLifecycleActivities: CapoLifecycleActivity_5;
+    CapoLifecycleActivities: CapoLifecycleActivity_6;
 } | {
     DelegateLifecycleActivities: DelegateLifecycleActivity_5;
 } | {
@@ -8639,15 +8650,15 @@ declare class DelegateActivityHelper extends EnumBridge<isActivity> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateActivity_2, Partial<{
-        CapoLifecycleActivities: CapoLifecycleActivityLike_2_2;
-        DelegateLifecycleActivities: DelegateLifecycleActivityLike_2;
-        SpendingActivities: SpendingActivityLike_2;
-        MintingActivities: MintingActivityLike_2;
-        BurningActivities: BurningActivityLike_2;
-        CreatingDelegatedData: DelegateActivity$CreatingDelegatedDataLike_2;
-        UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedDataLike_2;
-        DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike_2;
+    ᱺᱺcast: Cast<DelegateActivity, Partial<{
+        CapoLifecycleActivities: CapoLifecycleActivityLike_2;
+        DelegateLifecycleActivities: DelegateLifecycleActivityLike;
+        SpendingActivities: SpendingActivityLike;
+        MintingActivities: MintingActivityLike;
+        BurningActivities: BurningActivityLike;
+        CreatingDelegatedData: DelegateActivity$CreatingDelegatedDataLike;
+        UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedDataLike;
+        DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike;
         MultipleDelegateActivities: Array<UplcData>;
     }>>;
     /**
@@ -8686,7 +8697,7 @@ declare class DelegateActivityHelper extends EnumBridge<isActivity> {
      * generates isActivity/redeemer wrapper with UplcData for ***"UnspecializedDelegate::DelegateActivity.CreatingDelegatedData"***
      * with raw seed details included in fields.
      */
-    CreatingDelegatedData(fields: DelegateActivity$CreatingDelegatedDataLike_2 | {
+    CreatingDelegatedData(fields: DelegateActivity$CreatingDelegatedDataLike | {
         seed: TxOutputId | string;
         dataType: string;
     }): isActivity;
@@ -8715,7 +8726,7 @@ declare class DelegateActivityHelper extends EnumBridge<isActivity> {
      * generates isActivity/redeemer wrapper with UplcData for ***"UnspecializedDelegate::DelegateActivity.UpdatingDelegatedData"***
      * @remarks - ***DelegateActivity$UpdatingDelegatedDataLike*** is the same as the expanded field-types.
      */
-    UpdatingDelegatedData(fields: DelegateActivity$UpdatingDelegatedDataLike_2 | {
+    UpdatingDelegatedData(fields: DelegateActivity$UpdatingDelegatedDataLike | {
         dataType: string;
         recId: number[];
     }): isActivity;
@@ -8723,7 +8734,7 @@ declare class DelegateActivityHelper extends EnumBridge<isActivity> {
      * generates isActivity/redeemer wrapper with UplcData for ***"UnspecializedDelegate::DelegateActivity.DeletingDelegatedData"***
      * @remarks - ***DelegateActivity$DeletingDelegatedDataLike*** is the same as the expanded field-types.
      */
-    DeletingDelegatedData(fields: DelegateActivity$DeletingDelegatedDataLike_2 | {
+    DeletingDelegatedData(fields: DelegateActivity$DeletingDelegatedDataLike | {
         dataType: string;
         recId: number[];
     }): isActivity;
@@ -8742,15 +8753,15 @@ declare class DelegateActivityHelper_2 extends EnumBridge<isActivity> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateActivity_3, Partial<{
+    ᱺᱺcast: Cast<DelegateActivity_2, Partial<{
         CapoLifecycleActivities: CapoLifecycleActivityLike_3;
-        DelegateLifecycleActivities: DelegateLifecycleActivityLike_3;
-        SpendingActivities: SpendingActivityLike_3;
-        MintingActivities: MintingActivityLike_3;
-        BurningActivities: BurningActivityLike_3;
-        CreatingDelegatedData: DelegateActivity$CreatingDelegatedDataLike_3;
-        UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedDataLike_3;
-        DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike_3;
+        DelegateLifecycleActivities: DelegateLifecycleActivityLike_2;
+        SpendingActivities: SpendingActivityLike_2;
+        MintingActivities: MintingActivityLike_2;
+        BurningActivities: BurningActivityLike_2;
+        CreatingDelegatedData: DelegateActivity$CreatingDelegatedDataLike_2;
+        UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedDataLike_2;
+        DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike_2;
         MultipleDelegateActivities: Array<UplcData>;
     }>>;
     /**
@@ -8774,7 +8785,7 @@ declare class DelegateActivityHelper_2 extends EnumBridge<isActivity> {
      */
     get BurningActivities(): BurningActivityHelperNested_2;
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.CreatingDelegatedData"***,
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.CreatingDelegatedData"***,
      * given a transaction-context ***with a seed utxo*** and other field details
      * @remarks
      * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
@@ -8786,15 +8797,15 @@ declare class DelegateActivityHelper_2 extends EnumBridge<isActivity> {
         dataType: string;
     }): isActivity;
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.CreatingDelegatedData"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.CreatingDelegatedData"***
      * with raw seed details included in fields.
      */
-    CreatingDelegatedData(fields: DelegateActivity$CreatingDelegatedDataLike_3 | {
+    CreatingDelegatedData(fields: DelegateActivity$CreatingDelegatedDataLike_2 | {
         seed: TxOutputId | string;
         dataType: string;
     }): isActivity;
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.CreatingDelegatedData"***,
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.CreatingDelegatedData"***,
      * @param fields - \{ dataType: string \}
      * @remarks
      * ##### Seeded activity
@@ -8815,23 +8826,23 @@ declare class DelegateActivityHelper_2 extends EnumBridge<isActivity> {
     dataType: string;
     }) => isActivity>;
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.UpdatingDelegatedData"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.UpdatingDelegatedData"***
      * @remarks - ***DelegateActivity$UpdatingDelegatedDataLike*** is the same as the expanded field-types.
      */
-    UpdatingDelegatedData(fields: DelegateActivity$UpdatingDelegatedDataLike_3 | {
+    UpdatingDelegatedData(fields: DelegateActivity$UpdatingDelegatedDataLike_2 | {
         dataType: string;
         recId: number[];
     }): isActivity;
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.DeletingDelegatedData"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.DeletingDelegatedData"***
      * @remarks - ***DelegateActivity$DeletingDelegatedDataLike*** is the same as the expanded field-types.
      */
-    DeletingDelegatedData(fields: DelegateActivity$DeletingDelegatedDataLike_3 | {
+    DeletingDelegatedData(fields: DelegateActivity$DeletingDelegatedDataLike_2 | {
         dataType: string;
         recId: number[];
     }): isActivity;
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::DelegateActivity.MultipleDelegateActivities"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.MultipleDelegateActivities"***
      */
     MultipleDelegateActivities(activities: Array<UplcData>): isActivity;
 }
@@ -8845,15 +8856,15 @@ declare class DelegateActivityHelper_3 extends EnumBridge<isActivity> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateActivity, Partial<{
-        CapoLifecycleActivities: CapoLifecycleActivityLike;
-        DelegateLifecycleActivities: DelegateLifecycleActivityLike;
-        SpendingActivities: SpendingActivityLike;
-        MintingActivities: MintingActivityLike;
-        BurningActivities: BurningActivityLike;
-        CreatingDelegatedData: DelegateActivity$CreatingDelegatedDataLike;
-        UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedDataLike;
-        DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike;
+    ᱺᱺcast: Cast<DelegateActivity_3, Partial<{
+        CapoLifecycleActivities: CapoLifecycleActivityLike_4;
+        DelegateLifecycleActivities: DelegateLifecycleActivityLike_3;
+        SpendingActivities: SpendingActivityLike_3;
+        MintingActivities: MintingActivityLike_3;
+        BurningActivities: BurningActivityLike_3;
+        CreatingDelegatedData: DelegateActivity$CreatingDelegatedDataLike_3;
+        UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedDataLike_3;
+        DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike_3;
         MultipleDelegateActivities: Array<UplcData>;
     }>>;
     /**
@@ -8892,7 +8903,7 @@ declare class DelegateActivityHelper_3 extends EnumBridge<isActivity> {
      * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::DelegateActivity.CreatingDelegatedData"***
      * with raw seed details included in fields.
      */
-    CreatingDelegatedData(fields: DelegateActivity$CreatingDelegatedDataLike | {
+    CreatingDelegatedData(fields: DelegateActivity$CreatingDelegatedDataLike_3 | {
         seed: TxOutputId | string;
         dataType: string;
     }): isActivity;
@@ -8921,7 +8932,7 @@ declare class DelegateActivityHelper_3 extends EnumBridge<isActivity> {
      * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::DelegateActivity.UpdatingDelegatedData"***
      * @remarks - ***DelegateActivity$UpdatingDelegatedDataLike*** is the same as the expanded field-types.
      */
-    UpdatingDelegatedData(fields: DelegateActivity$UpdatingDelegatedDataLike | {
+    UpdatingDelegatedData(fields: DelegateActivity$UpdatingDelegatedDataLike_3 | {
         dataType: string;
         recId: number[];
     }): isActivity;
@@ -8929,7 +8940,7 @@ declare class DelegateActivityHelper_3 extends EnumBridge<isActivity> {
      * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::DelegateActivity.DeletingDelegatedData"***
      * @remarks - ***DelegateActivity$DeletingDelegatedDataLike*** is the same as the expanded field-types.
      */
-    DeletingDelegatedData(fields: DelegateActivity$DeletingDelegatedDataLike | {
+    DeletingDelegatedData(fields: DelegateActivity$DeletingDelegatedDataLike_3 | {
         dataType: string;
         recId: number[];
     }): isActivity;
@@ -8949,7 +8960,7 @@ declare class DelegateActivityHelper_4 extends EnumBridge<isActivity> {
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<DelegateActivity_4, Partial<{
-        CapoLifecycleActivities: CapoLifecycleActivityLike_4;
+        CapoLifecycleActivities: CapoLifecycleActivityLike_5;
         DelegateLifecycleActivities: DelegateLifecycleActivityLike_4;
         SpendingActivities: SpendingActivityLike_4;
         MintingActivities: MintingActivityLike_4;
@@ -9052,7 +9063,7 @@ declare class DelegateActivityHelper_5 extends EnumBridge<isActivity> {
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<DelegateActivity_5, Partial<{
-        CapoLifecycleActivities: CapoLifecycleActivityLike_5;
+        CapoLifecycleActivities: CapoLifecycleActivityLike_6;
         DelegateLifecycleActivities: DelegateLifecycleActivityLike_5;
         SpendingActivities: SpendingActivityLike_5;
         MintingActivities: MintingActivityLike_5;
@@ -9146,58 +9157,6 @@ declare class DelegateActivityHelper_5 extends EnumBridge<isActivity> {
 }
 
 /**
- * DelegateActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **9 variant(s)** of the DelegateActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-export declare type DelegateActivityLike = IntersectedEnum<{
-    CapoLifecycleActivities: CapoLifecycleActivityLike;
-} | {
-    DelegateLifecycleActivities: DelegateLifecycleActivityLike;
-} | {
-    SpendingActivities: SpendingActivityLike;
-} | {
-    MintingActivities: MintingActivityLike;
-} | {
-    BurningActivities: BurningActivityLike;
-} | {
-    CreatingDelegatedData: DelegateActivity$CreatingDelegatedDataLike;
-} | {
-    UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedDataLike;
-} | {
-    DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-}>;
-
-/**
- * @internal
- */
-export declare type DelegateActivityMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "DelegateActivity";
-}, {
-    CapoLifecycleActivities: singleEnumVariantMeta<DelegateActivityMeta, "CapoLifecycleActivities", "Constr#0", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ CapoLifecycleActivity, "noSpecialFlags">;
-    DelegateLifecycleActivities: singleEnumVariantMeta<DelegateActivityMeta, "DelegateLifecycleActivities", "Constr#1", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ DelegateLifecycleActivity, "noSpecialFlags">;
-    SpendingActivities: singleEnumVariantMeta<DelegateActivityMeta, "SpendingActivities", "Constr#2", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ SpendingActivity, "noSpecialFlags">;
-    MintingActivities: singleEnumVariantMeta<DelegateActivityMeta, "MintingActivities", "Constr#3", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ MintingActivity, "noSpecialFlags">;
-    BurningActivities: singleEnumVariantMeta<DelegateActivityMeta, "BurningActivities", "Constr#4", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ BurningActivity, "noSpecialFlags">;
-    CreatingDelegatedData: singleEnumVariantMeta<DelegateActivityMeta, "CreatingDelegatedData", "Constr#5", "fields", DelegateActivity$CreatingDelegatedData, "isSeededActivity">;
-    UpdatingDelegatedData: singleEnumVariantMeta<DelegateActivityMeta, "UpdatingDelegatedData", "Constr#6", "fields", DelegateActivity$UpdatingDelegatedData, "noSpecialFlags">;
-    DeletingDelegatedData: singleEnumVariantMeta<DelegateActivityMeta, "DeletingDelegatedData", "Constr#7", "fields", DelegateActivity$DeletingDelegatedData, "noSpecialFlags">;
-    MultipleDelegateActivities: singleEnumVariantMeta<DelegateActivityMeta, "MultipleDelegateActivities", "Constr#8", "singletonField", /* implied wrapper { activities: ... } for singleVariantField */ Array<UplcData>, "noSpecialFlags">;
-}>;
-
-/**
  * declaration for one strategy-variant of a delegate role
  * @remarks
  *
@@ -9225,8 +9184,8 @@ declare type delegateConfigValidation = ErrorMap | undefined | void;
  * For a more ergonomic, though less strictly-safe form of this type, see DelegateDatum$Ergo$capoStoredData instead.
  * @public
  */
-export declare interface DelegateDatum$capoStoredData {
-    data: NodeRegistrationData;
+declare interface DelegateDatum$capoStoredData {
+    data: AnyData_2;
     version: bigint;
     otherDetails: UplcData;
 }
@@ -9240,7 +9199,7 @@ export declare interface DelegateDatum$capoStoredData {
  * @public
  */
 declare interface DelegateDatum$capoStoredData_2 {
-    data: AnyData_2_2;
+    data: AnyData_3;
     version: bigint;
     otherDetails: UplcData;
 }
@@ -9254,7 +9213,7 @@ declare interface DelegateDatum$capoStoredData_2 {
  * @public
  */
 declare interface DelegateDatum$capoStoredData_3 {
-    data: AnyData_3;
+    data: NodeRegistrationData;
     version: bigint;
     otherDetails: UplcData;
 }
@@ -9293,8 +9252,8 @@ declare interface DelegateDatum$capoStoredData_5 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface DelegateDatum$capoStoredDataLike {
-    data: NodeRegistrationDataLike;
+declare interface DelegateDatum$capoStoredDataLike {
+    data: AnyDataLike_2;
     version: IntLike;
     otherDetails: UplcData;
 }
@@ -9306,7 +9265,7 @@ export declare interface DelegateDatum$capoStoredDataLike {
  * @public
  */
 declare interface DelegateDatum$capoStoredDataLike_2 {
-    data: AnyDataLike_2_2;
+    data: AnyDataLike_3;
     version: IntLike;
     otherDetails: UplcData;
 }
@@ -9318,7 +9277,7 @@ declare interface DelegateDatum$capoStoredDataLike_2 {
  * @public
  */
 declare interface DelegateDatum$capoStoredDataLike_3 {
-    data: AnyDataLike_3;
+    data: NodeRegistrationDataLike;
     version: IntLike;
     otherDetails: UplcData;
 }
@@ -9355,8 +9314,8 @@ declare interface DelegateDatum$capoStoredDataLike_5 {
  * For a more ergonomic, though less strictly-safe form of this type, see DelegateDatum$Ergo$Cip68RefToken instead.
  * @public
  */
-export declare interface DelegateDatum$Cip68RefToken {
-    cip68meta: AnyData;
+declare interface DelegateDatum$Cip68RefToken {
+    cip68meta: AnyData_2;
     cip68version: bigint;
     otherDetails: UplcData;
 }
@@ -9370,20 +9329,6 @@ export declare interface DelegateDatum$Cip68RefToken {
  * @public
  */
 declare interface DelegateDatum$Cip68RefToken_2 {
-    cip68meta: AnyData_2_2;
-    cip68version: bigint;
-    otherDetails: UplcData;
-}
-
-/**
- * A strong type for the canonical form of DelegateDatum$Cip68RefToken
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateDatum$Ergo$Cip68RefToken instead.
- * @public
- */
-declare interface DelegateDatum$Cip68RefToken_3 {
     cip68meta: AnyData_3;
     cip68version: bigint;
     otherDetails: UplcData;
@@ -9397,7 +9342,7 @@ declare interface DelegateDatum$Cip68RefToken_3 {
  * For a more ergonomic, though less strictly-safe form of this type, see DelegateDatum$Ergo$Cip68RefToken instead.
  * @public
  */
-declare interface DelegateDatum$Cip68RefToken_4 {
+declare interface DelegateDatum$Cip68RefToken_3 {
     cip68meta: AnyData_4;
     cip68version: bigint;
     otherDetails: UplcData;
@@ -9411,8 +9356,22 @@ declare interface DelegateDatum$Cip68RefToken_4 {
  * For a more ergonomic, though less strictly-safe form of this type, see DelegateDatum$Ergo$Cip68RefToken instead.
  * @public
  */
-declare interface DelegateDatum$Cip68RefToken_5 {
+declare interface DelegateDatum$Cip68RefToken_4 {
     cip68meta: AnyData_5;
+    cip68version: bigint;
+    otherDetails: UplcData;
+}
+
+/**
+ * A strong type for the canonical form of DelegateDatum$Cip68RefToken
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see DelegateDatum$Ergo$Cip68RefToken instead.
+ * @public
+ */
+declare interface DelegateDatum$Cip68RefToken_5 {
+    cip68meta: AnyData_6;
     cip68version: bigint;
     otherDetails: UplcData;
 }
@@ -9423,8 +9382,8 @@ declare interface DelegateDatum$Cip68RefToken_5 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface DelegateDatum$Cip68RefTokenLike {
-    cip68meta: AnyDataLike;
+declare interface DelegateDatum$Cip68RefTokenLike {
+    cip68meta: AnyDataLike_2;
     cip68version: IntLike;
     otherDetails: UplcData;
 }
@@ -9436,18 +9395,6 @@ export declare interface DelegateDatum$Cip68RefTokenLike {
  * @public
  */
 declare interface DelegateDatum$Cip68RefTokenLike_2 {
-    cip68meta: AnyDataLike_2_2;
-    cip68version: IntLike;
-    otherDetails: UplcData;
-}
-
-/**
- * A strong type for the permissive form of DelegateDatum$Cip68RefToken
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateDatum$Cip68RefTokenLike_3 {
     cip68meta: AnyDataLike_3;
     cip68version: IntLike;
     otherDetails: UplcData;
@@ -9459,7 +9406,7 @@ declare interface DelegateDatum$Cip68RefTokenLike_3 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface DelegateDatum$Cip68RefTokenLike_4 {
+declare interface DelegateDatum$Cip68RefTokenLike_3 {
     cip68meta: AnyDataLike_4;
     cip68version: IntLike;
     otherDetails: UplcData;
@@ -9471,8 +9418,20 @@ declare interface DelegateDatum$Cip68RefTokenLike_4 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface DelegateDatum$Cip68RefTokenLike_5 {
+declare interface DelegateDatum$Cip68RefTokenLike_4 {
     cip68meta: AnyDataLike_5;
+    cip68version: IntLike;
+    otherDetails: UplcData;
+}
+
+/**
+ * A strong type for the permissive form of DelegateDatum$Cip68RefToken
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface DelegateDatum$Cip68RefTokenLike_5 {
+    cip68meta: AnyDataLike_6;
     cip68version: IntLike;
     otherDetails: UplcData;
 }
@@ -9486,8 +9445,8 @@ declare interface DelegateDatum$Cip68RefTokenLike_5 {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type DelegateDatum$Ergo$capoStoredData = {
-    data: ErgoNodeRegistrationData;
+declare type DelegateDatum$Ergo$capoStoredData = {
+    data: ErgoAnyData;
     version: bigint;
     otherDetails: UplcData;
 };
@@ -9517,7 +9476,7 @@ declare type DelegateDatum$Ergo$capoStoredData_2 = {
  * @public
  */
 declare type DelegateDatum$Ergo$capoStoredData_3 = {
-    data: ErgoAnyData_3;
+    data: ErgoNodeRegistrationData;
     version: bigint;
     otherDetails: UplcData;
 };
@@ -9561,7 +9520,7 @@ declare type DelegateDatum$Ergo$capoStoredData_5 = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type DelegateDatum$Ergo$Cip68RefToken = {
+declare type DelegateDatum$Ergo$Cip68RefToken = {
     cip68meta: ErgoAnyData;
     cip68version: bigint;
     otherDetails: UplcData;
@@ -9637,10 +9596,10 @@ declare type DelegateDatum$Ergo$Cip68RefToken_5 = {
  *     for generating UPLC data for this enum type
  * @public
  */
-export declare type DelegateDatum = {
+declare type DelegateDatum = {
     Cip68RefToken: DelegateDatum$Cip68RefToken;
 } | {
-    IsDelegation: DelegationDetail;
+    IsDelegation: DelegationDetail_2;
 } | {
     capoStoredData: DelegateDatum$capoStoredData;
 };
@@ -9658,7 +9617,7 @@ export declare type DelegateDatum = {
 declare type DelegateDatum_2 = {
     Cip68RefToken: DelegateDatum$Cip68RefToken_2;
 } | {
-    IsDelegation: DelegationDetail_2;
+    IsDelegation: DelegationDetail_3;
 } | {
     capoStoredData: DelegateDatum$capoStoredData_2;
 };
@@ -9726,17 +9685,17 @@ declare class DelegateDatumHelper extends EnumBridge<JustAnEnum> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateDatum_2, Partial<{
-        Cip68RefToken: DelegateDatum$Cip68RefTokenLike_2;
-        IsDelegation: DelegationDetailLike_2;
-        capoStoredData: DelegateDatum$capoStoredDataLike_2;
+    ᱺᱺcast: Cast<DelegateDatum, Partial<{
+        Cip68RefToken: DelegateDatum$Cip68RefTokenLike;
+        IsDelegation: DelegationDetailLike;
+        capoStoredData: DelegateDatum$capoStoredDataLike;
     }>>;
     /**
      * generates  InlineTxOutputDatum for ***"UnspecializedDelegate::DelegateDatum.Cip68RefToken"***
      * @remarks - ***DelegateDatum$Cip68RefTokenLike*** is the same as the expanded field-types.
      */
-    Cip68RefToken(fields: DelegateDatum$Cip68RefTokenLike_2 | {
-        cip68meta: AnyDataLike_2_2;
+    Cip68RefToken(fields: DelegateDatum$Cip68RefTokenLike | {
+        cip68meta: AnyDataLike_2;
         cip68version: IntLike;
         otherDetails: UplcData;
     }): InlineTxOutputDatum;
@@ -9744,7 +9703,7 @@ declare class DelegateDatumHelper extends EnumBridge<JustAnEnum> {
      * generates  InlineTxOutputDatum for ***"UnspecializedDelegate::DelegateDatum.IsDelegation"***
      * @remarks - ***DelegationDetailLike*** is the same as the expanded field-type.
      */
-    IsDelegation(dd: DelegationDetailLike_2 | {
+    IsDelegation(dd: DelegationDetailLike | {
         capoAddr: /*minStructField*/ Address | string;
         mph: /*minStructField*/ MintingPolicyHash | string | number[];
         tn: number[];
@@ -9753,8 +9712,8 @@ declare class DelegateDatumHelper extends EnumBridge<JustAnEnum> {
      * generates  InlineTxOutputDatum for ***"UnspecializedDelegate::DelegateDatum.capoStoredData"***
      * @remarks - ***DelegateDatum$capoStoredDataLike*** is the same as the expanded field-types.
      */
-    capoStoredData(fields: DelegateDatum$capoStoredDataLike_2 | {
-        data: AnyDataLike_2_2;
+    capoStoredData(fields: DelegateDatum$capoStoredDataLike | {
+        data: AnyDataLike_2;
         version: IntLike;
         otherDetails: UplcData;
     }): InlineTxOutputDatum;
@@ -9769,34 +9728,34 @@ declare class DelegateDatumHelper_2 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateDatum_3, Partial<{
-        Cip68RefToken: DelegateDatum$Cip68RefTokenLike_3;
-        IsDelegation: DelegationDetailLike_3;
-        capoStoredData: DelegateDatum$capoStoredDataLike_3;
+    ᱺᱺcast: Cast<DelegateDatum_2, Partial<{
+        Cip68RefToken: DelegateDatum$Cip68RefTokenLike_2;
+        IsDelegation: DelegationDetailLike_2;
+        capoStoredData: DelegateDatum$capoStoredDataLike_2;
     }>>;
     /**
-     * generates  InlineTxOutputDatum for ***"MyMintSpendDelegate::DelegateDatum.Cip68RefToken"***
+     * generates  InlineTxOutputDatum for ***"STokMintDelegate::DelegateDatum.Cip68RefToken"***
      * @remarks - ***DelegateDatum$Cip68RefTokenLike*** is the same as the expanded field-types.
      */
-    Cip68RefToken(fields: DelegateDatum$Cip68RefTokenLike_3 | {
+    Cip68RefToken(fields: DelegateDatum$Cip68RefTokenLike_2 | {
         cip68meta: AnyDataLike_3;
         cip68version: IntLike;
         otherDetails: UplcData;
     }): InlineTxOutputDatum;
     /**
-     * generates  InlineTxOutputDatum for ***"MyMintSpendDelegate::DelegateDatum.IsDelegation"***
+     * generates  InlineTxOutputDatum for ***"STokMintDelegate::DelegateDatum.IsDelegation"***
      * @remarks - ***DelegationDetailLike*** is the same as the expanded field-type.
      */
-    IsDelegation(dd: DelegationDetailLike_3 | {
+    IsDelegation(dd: DelegationDetailLike_2 | {
         capoAddr: /*minStructField*/ Address | string;
         mph: /*minStructField*/ MintingPolicyHash | string | number[];
         tn: number[];
     }): InlineTxOutputDatum;
     /**
-     * generates  InlineTxOutputDatum for ***"MyMintSpendDelegate::DelegateDatum.capoStoredData"***
+     * generates  InlineTxOutputDatum for ***"STokMintDelegate::DelegateDatum.capoStoredData"***
      * @remarks - ***DelegateDatum$capoStoredDataLike*** is the same as the expanded field-types.
      */
-    capoStoredData(fields: DelegateDatum$capoStoredDataLike_3 | {
+    capoStoredData(fields: DelegateDatum$capoStoredDataLike_2 | {
         data: AnyDataLike_3;
         version: IntLike;
         otherDetails: UplcData;
@@ -9812,17 +9771,17 @@ declare class DelegateDatumHelper_3 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateDatum, Partial<{
-        Cip68RefToken: DelegateDatum$Cip68RefTokenLike;
-        IsDelegation: DelegationDetailLike;
-        capoStoredData: DelegateDatum$capoStoredDataLike;
+    ᱺᱺcast: Cast<DelegateDatum_3, Partial<{
+        Cip68RefToken: DelegateDatum$Cip68RefTokenLike_3;
+        IsDelegation: DelegationDetailLike_3;
+        capoStoredData: DelegateDatum$capoStoredDataLike_3;
     }>>;
     /**
      * generates  InlineTxOutputDatum for ***"DredNodeRegistryPolicy::DelegateDatum.Cip68RefToken"***
      * @remarks - ***DelegateDatum$Cip68RefTokenLike*** is the same as the expanded field-types.
      */
-    Cip68RefToken(fields: DelegateDatum$Cip68RefTokenLike | {
-        cip68meta: AnyDataLike;
+    Cip68RefToken(fields: DelegateDatum$Cip68RefTokenLike_3 | {
+        cip68meta: AnyDataLike_4;
         cip68version: IntLike;
         otherDetails: UplcData;
     }): InlineTxOutputDatum;
@@ -9830,7 +9789,7 @@ declare class DelegateDatumHelper_3 extends EnumBridge<JustAnEnum_3> {
      * generates  InlineTxOutputDatum for ***"DredNodeRegistryPolicy::DelegateDatum.IsDelegation"***
      * @remarks - ***DelegationDetailLike*** is the same as the expanded field-type.
      */
-    IsDelegation(dd: DelegationDetailLike | {
+    IsDelegation(dd: DelegationDetailLike_3 | {
         capoAddr: /*minStructField*/ Address | string;
         mph: /*minStructField*/ MintingPolicyHash | string | number[];
         tn: number[];
@@ -9839,7 +9798,7 @@ declare class DelegateDatumHelper_3 extends EnumBridge<JustAnEnum_3> {
      * generates  InlineTxOutputDatum for ***"DredNodeRegistryPolicy::DelegateDatum.capoStoredData"***
      * @remarks - ***DelegateDatum$capoStoredDataLike*** is the same as the expanded field-types.
      */
-    capoStoredData(fields: DelegateDatum$capoStoredDataLike | {
+    capoStoredData(fields: DelegateDatum$capoStoredDataLike_3 | {
         data: NodeRegistrationDataLike;
         version: IntLike;
         otherDetails: UplcData;
@@ -9865,7 +9824,7 @@ declare class DelegateDatumHelper_4 extends EnumBridge<JustAnEnum_3> {
      * @remarks - ***DelegateDatum$Cip68RefTokenLike*** is the same as the expanded field-types.
      */
     Cip68RefToken(fields: DelegateDatum$Cip68RefTokenLike_4 | {
-        cip68meta: AnyDataLike_4;
+        cip68meta: AnyDataLike_5;
         cip68version: IntLike;
         otherDetails: UplcData;
     }): InlineTxOutputDatum;
@@ -9908,7 +9867,7 @@ declare class DelegateDatumHelper_5 extends EnumBridge<JustAnEnum_3> {
      * @remarks - ***DelegateDatum$Cip68RefTokenLike*** is the same as the expanded field-types.
      */
     Cip68RefToken(fields: DelegateDatum$Cip68RefTokenLike_5 | {
-        cip68meta: AnyDataLike_5;
+        cip68meta: AnyDataLike_6;
         cip68version: IntLike;
         otherDetails: UplcData;
     }): InlineTxOutputDatum;
@@ -9931,40 +9890,6 @@ declare class DelegateDatumHelper_5 extends EnumBridge<JustAnEnum_3> {
         otherDetails: UplcData;
     }): InlineTxOutputDatum;
 }
-
-/**
- * DelegateDatum enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **3 variant(s)** of the DelegateDatum enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateDatumHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-export declare type DelegateDatumLike = IntersectedEnum<{
-    Cip68RefToken: DelegateDatum$Cip68RefTokenLike;
-} | {
-    IsDelegation: DelegationDetailLike;
-} | {
-    capoStoredData: DelegateDatum$capoStoredDataLike;
-}>;
-
-/**
- * @internal
- */
-export declare type DelegateDatumMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "DelegateDatum";
-}, {
-    Cip68RefToken: singleEnumVariantMeta<DelegateDatumMeta, "Cip68RefToken", "Constr#0", "fields", DelegateDatum$Cip68RefToken, "noSpecialFlags">;
-    IsDelegation: singleEnumVariantMeta<DelegateDatumMeta, "IsDelegation", "Constr#1", "singletonField", /* implied wrapper { dd: ... } for singleVariantField */ DelegationDetail, "noSpecialFlags">;
-    capoStoredData: singleEnumVariantMeta<DelegateDatumMeta, "capoStoredData", "Constr#2", "fields", DelegateDatum$capoStoredData, "noSpecialFlags">;
-}>;
 
 /**
  * DelegatedDataContract provides a base class for utility functions
@@ -10088,10 +10013,10 @@ declare abstract class DelegatedDataContract<T extends AnyDataTemplate<any, any>
      * perform any needed queries for ***fresh state of the on-chain data***, such as
      * for settings or the Capo's fresh charter data, INSIDE your mkTcx() function.
      */
-    setupCapoPolicy(tcx: StellarTxnContext, policyName: string, options: {
+    setupCapoPolicy(tcx: StellarTxnContext, typeName: string, options: {
         charterData: CharterData;
         capoUtxos: TxInput[];
-    }): Promise<void>;
+    }): Promise<undefined>;
 }
 
 /**
@@ -10110,7 +10035,7 @@ declare type DelegatedDatumIdPrefix<T extends DelegatedDataContract<any, any>, T
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type DelegateLifecycleActivity$Ergo$ReplacingMe = DelegateLifecycleActivity$ReplacingMe;
+declare type DelegateLifecycleActivity$Ergo$ReplacingMe = DelegateLifecycleActivity$ReplacingMe;
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateLifecycleActivity$ReplacingMe
@@ -10164,7 +10089,7 @@ declare type DelegateLifecycleActivity$Ergo$ReplacingMe_5 = DelegateLifecycleAct
  * For a more ergonomic, though less strictly-safe form of this type, see DelegateLifecycleActivity$Ergo$ReplacingMe instead.
  * @public
  */
-export declare interface DelegateLifecycleActivity$ReplacingMe {
+declare interface DelegateLifecycleActivity$ReplacingMe {
     seed: TxOutputId;
     purpose: string;
 }
@@ -10227,7 +10152,7 @@ declare interface DelegateLifecycleActivity$ReplacingMe_5 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface DelegateLifecycleActivity$ReplacingMeLike {
+declare interface DelegateLifecycleActivity$ReplacingMeLike {
     seed: TxOutputId | string;
     purpose: string;
 }
@@ -10286,7 +10211,7 @@ declare interface DelegateLifecycleActivity$ReplacingMeLike_5 {
  *     for generating UPLC data for this enum type
  * @public
  */
-export declare type DelegateLifecycleActivity = {
+declare type DelegateLifecycleActivity = {
     ReplacingMe: DelegateLifecycleActivity$ReplacingMe;
 } | {
     Retiring: tagOnly;
@@ -10375,8 +10300,8 @@ declare class DelegateLifecycleActivityHelper extends EnumBridge<JustAnEnum> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateLifecycleActivity_2, Partial<{
-        ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_2;
+    ᱺᱺcast: Cast<DelegateLifecycleActivity, Partial<{
+        ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike;
         Retiring: tagOnly;
         ValidatingSettings: tagOnly;
     }>>;
@@ -10396,7 +10321,7 @@ declare class DelegateLifecycleActivityHelper extends EnumBridge<JustAnEnum> {
      * generates  UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe"***
      * with raw seed details included in fields.
      */
-    ReplacingMe(fields: DelegateLifecycleActivity$ReplacingMeLike_2 | {
+    ReplacingMe(fields: DelegateLifecycleActivity$ReplacingMeLike | {
         seed: TxOutputId | string;
         purpose: string;
     }): UplcData;
@@ -10442,8 +10367,8 @@ declare class DelegateLifecycleActivityHelper_2 extends EnumBridge<JustAnEnum_3>
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateLifecycleActivity_3, Partial<{
-        ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_3;
+    ᱺᱺcast: Cast<DelegateLifecycleActivity_2, Partial<{
+        ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_2;
         Retiring: tagOnly;
         ValidatingSettings: tagOnly;
     }>>;
@@ -10463,7 +10388,7 @@ declare class DelegateLifecycleActivityHelper_2 extends EnumBridge<JustAnEnum_3>
      * generates  UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe"***
      * with raw seed details included in fields.
      */
-    ReplacingMe(fields: DelegateLifecycleActivity$ReplacingMeLike_3 | {
+    ReplacingMe(fields: DelegateLifecycleActivity$ReplacingMeLike_2 | {
         seed: TxOutputId | string;
         purpose: string;
     }): UplcData;
@@ -10509,8 +10434,8 @@ declare class DelegateLifecycleActivityHelper_3 extends EnumBridge<JustAnEnum_3>
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateLifecycleActivity, Partial<{
-        ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike;
+    ᱺᱺcast: Cast<DelegateLifecycleActivity_3, Partial<{
+        ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_3;
         Retiring: tagOnly;
         ValidatingSettings: tagOnly;
     }>>;
@@ -10530,7 +10455,7 @@ declare class DelegateLifecycleActivityHelper_3 extends EnumBridge<JustAnEnum_3>
      * generates  UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe"***
      * with raw seed details included in fields.
      */
-    ReplacingMe(fields: DelegateLifecycleActivity$ReplacingMeLike | {
+    ReplacingMe(fields: DelegateLifecycleActivity$ReplacingMeLike_3 | {
         seed: TxOutputId | string;
         purpose: string;
     }): UplcData;
@@ -10710,8 +10635,8 @@ declare class DelegateLifecycleActivityHelperNested extends EnumBridge<isActivit
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateLifecycleActivity_2, Partial<{
-        ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_2;
+    ᱺᱺcast: Cast<DelegateLifecycleActivity, Partial<{
+        ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike;
         Retiring: tagOnly;
         ValidatingSettings: tagOnly;
     }>>;
@@ -10735,7 +10660,7 @@ declare class DelegateLifecycleActivityHelperNested extends EnumBridge<isActivit
      * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe"***
      * with raw seed details included in fields.
      */
-    ReplacingMe(fields: DelegateLifecycleActivity$ReplacingMeLike_2 | {
+    ReplacingMe(fields: DelegateLifecycleActivity$ReplacingMeLike | {
         seed: TxOutputId | string;
         purpose: string;
     }): isActivity;
@@ -10789,8 +10714,8 @@ declare class DelegateLifecycleActivityHelperNested_2 extends EnumBridge<isActiv
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateLifecycleActivity_3, Partial<{
-        ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_3;
+    ᱺᱺcast: Cast<DelegateLifecycleActivity_2, Partial<{
+        ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_2;
         Retiring: tagOnly;
         ValidatingSettings: tagOnly;
     }>>;
@@ -10814,7 +10739,7 @@ declare class DelegateLifecycleActivityHelperNested_2 extends EnumBridge<isActiv
      * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe"***
      * with raw seed details included in fields.
      */
-    ReplacingMe(fields: DelegateLifecycleActivity$ReplacingMeLike_3 | {
+    ReplacingMe(fields: DelegateLifecycleActivity$ReplacingMeLike_2 | {
         seed: TxOutputId | string;
         purpose: string;
     }): isActivity;
@@ -10868,8 +10793,8 @@ declare class DelegateLifecycleActivityHelperNested_3 extends EnumBridge<isActiv
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateLifecycleActivity, Partial<{
-        ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike;
+    ᱺᱺcast: Cast<DelegateLifecycleActivity_3, Partial<{
+        ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_3;
         Retiring: tagOnly;
         ValidatingSettings: tagOnly;
     }>>;
@@ -10893,7 +10818,7 @@ declare class DelegateLifecycleActivityHelperNested_3 extends EnumBridge<isActiv
      * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe"***
      * with raw seed details included in fields.
      */
-    ReplacingMe(fields: DelegateLifecycleActivity$ReplacingMeLike | {
+    ReplacingMe(fields: DelegateLifecycleActivity$ReplacingMeLike_3 | {
         seed: TxOutputId | string;
         purpose: string;
     }): isActivity;
@@ -11110,7 +11035,7 @@ declare class DelegateLifecycleActivityHelperNested_5 extends EnumBridge<isActiv
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-export declare type DelegateLifecycleActivityLike = IntersectedEnum<{
+declare type DelegateLifecycleActivityLike = IntersectedEnum<{
     ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike;
 } | {
     Retiring: tagOnly;
@@ -11207,18 +11132,6 @@ declare type DelegateLifecycleActivityLike_5 = IntersectedEnum<{
 }>;
 
 /**
- * @internal
- */
-export declare type DelegateLifecycleActivityMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "DelegateLifecycleActivity";
-}, {
-    ReplacingMe: singleEnumVariantMeta<DelegateLifecycleActivityMeta, "ReplacingMe", "Constr#0", "fields", DelegateLifecycleActivity$ReplacingMe, "isSeededActivity">;
-    Retiring: singleEnumVariantMeta<DelegateLifecycleActivityMeta, "Retiring", "Constr#1", "tagOnly", tagOnly, "noSpecialFlags">;
-    ValidatingSettings: singleEnumVariantMeta<DelegateLifecycleActivityMeta, "ValidatingSettings", "Constr#2", "tagOnly", tagOnly, "noSpecialFlags">;
-}>;
-
-/**
  * DelegateRole enum variants
  *
  * @remarks - expresses the essential raw data structures
@@ -11228,7 +11141,7 @@ export declare type DelegateLifecycleActivityMeta = EnumTypeMeta<{
  *     for generating UPLC data for this enum type
  * @public
  */
-export declare type DelegateRole = {
+declare type DelegateRole = {
     MintDgt: tagOnly;
 } | {
     SpendDgt: tagOnly;
@@ -11257,34 +11170,6 @@ export declare type DelegateRole = {
  * @public
  */
 declare type DelegateRole_2 = {
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-};
-
-/**
- * DelegateRole enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **8 variant(s)** of the DelegateRole enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type DelegateRole_2_2 = {
     MintDgt: tagOnly;
 } | {
     SpendDgt: tagOnly;
@@ -11415,188 +11300,67 @@ declare type DelegateRole_6 = {
 };
 
 /**
+ * DelegateRole enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **8 variant(s)** of the DelegateRole enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type DelegateRole_7 = {
+    MintDgt: tagOnly;
+} | {
+    SpendDgt: tagOnly;
+} | {
+    MintInvariant: tagOnly;
+} | {
+    SpendInvariant: tagOnly;
+} | {
+    DgDataPolicy: string;
+} | {
+    OtherNamedDgt: string;
+} | {
+    BothMintAndSpendDgt: tagOnly;
+} | {
+    HandledByCapoOnly: tagOnly;
+};
+
+/**
+ * DelegateRole enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **8 variant(s)** of the DelegateRole enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type DelegateRole_8 = {
+    MintDgt: tagOnly;
+} | {
+    SpendDgt: tagOnly;
+} | {
+    MintInvariant: tagOnly;
+} | {
+    SpendInvariant: tagOnly;
+} | {
+    DgDataPolicy: string;
+} | {
+    OtherNamedDgt: string;
+} | {
+    BothMintAndSpendDgt: tagOnly;
+} | {
+    HandledByCapoOnly: tagOnly;
+};
+
+/**
  * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 declare class DelegateRoleHelper extends EnumBridge<JustAnEnum> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_2, Partial<{
-        MintDgt: tagOnly;
-        SpendDgt: tagOnly;
-        MintInvariant: tagOnly;
-        SpendInvariant: tagOnly;
-        DgDataPolicy: string;
-        OtherNamedDgt: string;
-        BothMintAndSpendDgt: tagOnly;
-        HandledByCapoOnly: tagOnly;
-    }>>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-     */
-    get MintDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get SpendDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-     */
-    get MintInvariant(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get SpendInvariant(): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-     */
-    DgDataPolicy(name: string): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-     */
-    OtherNamedDgt(name: string): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
-     */
-    get BothMintAndSpendDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
-     */
-    get HandledByCapoOnly(): UplcData;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class DelegateRoleHelper_2 extends EnumBridge<JustAnEnum> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_2_2, Partial<{
-        MintDgt: tagOnly;
-        SpendDgt: tagOnly;
-        MintInvariant: tagOnly;
-        SpendInvariant: tagOnly;
-        DgDataPolicy: string;
-        OtherNamedDgt: string;
-        BothMintAndSpendDgt: tagOnly;
-        HandledByCapoOnly: tagOnly;
-    }>>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-     */
-    get MintDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get SpendDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-     */
-    get MintInvariant(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get SpendInvariant(): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-     */
-    DgDataPolicy(name: string): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-     */
-    OtherNamedDgt(name: string): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
-     */
-    get BothMintAndSpendDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
-     */
-    get HandledByCapoOnly(): UplcData;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class DelegateRoleHelper_3 extends EnumBridge<JustAnEnum_3> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_4, Partial<{
-        MintDgt: tagOnly;
-        SpendDgt: tagOnly;
-        MintInvariant: tagOnly;
-        SpendInvariant: tagOnly;
-        DgDataPolicy: string;
-        OtherNamedDgt: string;
-        BothMintAndSpendDgt: tagOnly;
-        HandledByCapoOnly: tagOnly;
-    }>>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-     */
-    get MintDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get SpendDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-     */
-    get MintInvariant(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get SpendInvariant(): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-     */
-    DgDataPolicy(name: string): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-     */
-    OtherNamedDgt(name: string): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
-     */
-    get BothMintAndSpendDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
-     */
-    get HandledByCapoOnly(): UplcData;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class DelegateRoleHelper_4 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -11655,7 +11419,66 @@ declare class DelegateRoleHelper_4 extends EnumBridge<JustAnEnum_3> {
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class DelegateRoleHelper_5 extends EnumBridge<JustAnEnum_3> {
+declare class DelegateRoleHelper_2 extends EnumBridge<JustAnEnum> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<DelegateRole_2, Partial<{
+        MintDgt: tagOnly;
+        SpendDgt: tagOnly;
+        MintInvariant: tagOnly;
+        SpendInvariant: tagOnly;
+        DgDataPolicy: string;
+        OtherNamedDgt: string;
+        BothMintAndSpendDgt: tagOnly;
+        HandledByCapoOnly: tagOnly;
+    }>>;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+     */
+    get MintDgt(): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+     */
+    get SpendDgt(): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+     */
+    get MintInvariant(): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+     */
+    get SpendInvariant(): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
+     */
+    DgDataPolicy(name: string): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
+     */
+    OtherNamedDgt(name: string): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
+     */
+    get BothMintAndSpendDgt(): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
+     */
+    get HandledByCapoOnly(): UplcData;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class DelegateRoleHelper_3 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -11714,7 +11537,7 @@ declare class DelegateRoleHelper_5 extends EnumBridge<JustAnEnum_3> {
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class DelegateRoleHelper_6 extends EnumBridge<JustAnEnum_3> {
+declare class DelegateRoleHelper_4 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -11773,11 +11596,129 @@ declare class DelegateRoleHelper_6 extends EnumBridge<JustAnEnum_3> {
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class DelegateRoleHelper_5 extends EnumBridge<JustAnEnum_3> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<DelegateRole_7, Partial<{
+        MintDgt: tagOnly;
+        SpendDgt: tagOnly;
+        MintInvariant: tagOnly;
+        SpendInvariant: tagOnly;
+        DgDataPolicy: string;
+        OtherNamedDgt: string;
+        BothMintAndSpendDgt: tagOnly;
+        HandledByCapoOnly: tagOnly;
+    }>>;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+     */
+    get MintDgt(): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+     */
+    get SpendDgt(): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+     */
+    get MintInvariant(): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+     */
+    get SpendInvariant(): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
+     */
+    DgDataPolicy(name: string): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
+     */
+    OtherNamedDgt(name: string): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
+     */
+    get BothMintAndSpendDgt(): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
+     */
+    get HandledByCapoOnly(): UplcData;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class DelegateRoleHelper_6 extends EnumBridge<JustAnEnum_3> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<DelegateRole_8, Partial<{
+        MintDgt: tagOnly;
+        SpendDgt: tagOnly;
+        MintInvariant: tagOnly;
+        SpendInvariant: tagOnly;
+        DgDataPolicy: string;
+        OtherNamedDgt: string;
+        BothMintAndSpendDgt: tagOnly;
+        HandledByCapoOnly: tagOnly;
+    }>>;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+     */
+    get MintDgt(): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+     */
+    get SpendDgt(): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+     */
+    get MintInvariant(): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+     */
+    get SpendInvariant(): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
+     */
+    DgDataPolicy(name: string): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
+     */
+    OtherNamedDgt(name: string): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
+     */
+    get BothMintAndSpendDgt(): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
+     */
+    get HandledByCapoOnly(): UplcData;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 declare class DelegateRoleHelperNested extends EnumBridge<JustAnEnum> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_2, Partial<{
+    ᱺᱺcast: Cast<DelegateRole, Partial<{
         MintDgt: tagOnly;
         SpendDgt: tagOnly;
         MintInvariant: tagOnly;
@@ -11846,7 +11787,7 @@ declare class DelegateRoleHelperNested_2 extends EnumBridge<JustAnEnum> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_2_2, Partial<{
+    ᱺᱺcast: Cast<DelegateRole_2, Partial<{
         MintDgt: tagOnly;
         SpendDgt: tagOnly;
         MintInvariant: tagOnly;
@@ -11915,7 +11856,7 @@ declare class DelegateRoleHelperNested_3 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_4, Partial<{
+    ᱺᱺcast: Cast<DelegateRole_5, Partial<{
         MintDgt: tagOnly;
         SpendDgt: tagOnly;
         MintInvariant: tagOnly;
@@ -11984,7 +11925,7 @@ declare class DelegateRoleHelperNested_4 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole, Partial<{
+    ᱺᱺcast: Cast<DelegateRole_6, Partial<{
         MintDgt: tagOnly;
         SpendDgt: tagOnly;
         MintInvariant: tagOnly;
@@ -12053,7 +11994,7 @@ declare class DelegateRoleHelperNested_5 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_5, Partial<{
+    ᱺᱺcast: Cast<DelegateRole_7, Partial<{
         MintDgt: tagOnly;
         SpendDgt: tagOnly;
         MintInvariant: tagOnly;
@@ -12122,7 +12063,7 @@ declare class DelegateRoleHelperNested_6 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_6, Partial<{
+    ᱺᱺcast: Cast<DelegateRole_8, Partial<{
         MintDgt: tagOnly;
         SpendDgt: tagOnly;
         MintInvariant: tagOnly;
@@ -12196,7 +12137,7 @@ declare class DelegateRoleHelperNested_6 extends EnumBridge<JustAnEnum_3> {
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-export declare type DelegateRoleLike = IntersectedEnum<{
+declare type DelegateRoleLike = IntersectedEnum<{
     MintDgt: tagOnly;
 } | {
     SpendDgt: tagOnly;
@@ -12229,38 +12170,6 @@ export declare type DelegateRoleLike = IntersectedEnum<{
  * @public
  */
 declare type DelegateRoleLike_2 = IntersectedEnum<{
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-}>;
-
-/**
- * DelegateRole enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **8 variant(s)** of the DelegateRole enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type DelegateRoleLike_2_2 = IntersectedEnum<{
     MintDgt: tagOnly;
 } | {
     SpendDgt: tagOnly;
@@ -12375,20 +12284,35 @@ declare type DelegateRoleLike_5 = IntersectedEnum<{
 }>;
 
 /**
- * @internal
+ * DelegateRole enum variants (permissive)
+ *
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **8 variant(s)** of the DelegateRole enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
  */
-export declare type DelegateRoleMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "DelegateRole";
-}, {
-    MintDgt: singleEnumVariantMeta<DelegateRoleMeta, "MintDgt", "Constr#0", "tagOnly", tagOnly, "noSpecialFlags">;
-    SpendDgt: singleEnumVariantMeta<DelegateRoleMeta, "SpendDgt", "Constr#1", "tagOnly", tagOnly, "noSpecialFlags">;
-    MintInvariant: singleEnumVariantMeta<DelegateRoleMeta, "MintInvariant", "Constr#2", "tagOnly", tagOnly, "noSpecialFlags">;
-    SpendInvariant: singleEnumVariantMeta<DelegateRoleMeta, "SpendInvariant", "Constr#3", "tagOnly", tagOnly, "noSpecialFlags">;
-    DgDataPolicy: singleEnumVariantMeta<DelegateRoleMeta, "DgDataPolicy", "Constr#4", "singletonField", /* implied wrapper { name: ... } for singleVariantField */ string, "noSpecialFlags">;
-    OtherNamedDgt: singleEnumVariantMeta<DelegateRoleMeta, "OtherNamedDgt", "Constr#5", "singletonField", /* implied wrapper { name: ... } for singleVariantField */ string, "noSpecialFlags">;
-    BothMintAndSpendDgt: singleEnumVariantMeta<DelegateRoleMeta, "BothMintAndSpendDgt", "Constr#6", "tagOnly", tagOnly, "noSpecialFlags">;
-    HandledByCapoOnly: singleEnumVariantMeta<DelegateRoleMeta, "HandledByCapoOnly", "Constr#7", "tagOnly", tagOnly, "noSpecialFlags">;
+declare type DelegateRoleLike_6 = IntersectedEnum<{
+    MintDgt: tagOnly;
+} | {
+    SpendDgt: tagOnly;
+} | {
+    MintInvariant: tagOnly;
+} | {
+    SpendInvariant: tagOnly;
+} | {
+    DgDataPolicy: string;
+} | {
+    OtherNamedDgt: string;
+} | {
+    BothMintAndSpendDgt: tagOnly;
+} | {
+    HandledByCapoOnly: tagOnly;
 }>;
 
 /**
@@ -12419,18 +12343,18 @@ declare type DelegateSetupWithoutMintDelegate = {
 declare type DelegateTypes = "spendDgt" | "mintDgt" | "authority" | "dgDataPolicy" | "other";
 
 /**
- * A strong type for the canonical form of DelegationDetail
+ * Captures normal details of every delegate relationship
  * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoDelegationDetail instead.
+ *
+ * Includes the address of the leader contract, its minting policy, and the token-name
+ * used for the delegate
  * @public
- */
-export declare interface DelegationDetail {
+ **/
+declare type DelegationDetail = {
     capoAddr: Address;
     mph: MintingPolicyHash;
     tn: number[];
-}
+};
 
 /**
  * A strong type for the canonical form of DelegationDetail
@@ -12447,18 +12371,18 @@ declare interface DelegationDetail_2 {
 }
 
 /**
- * Captures normal details of every delegate relationship
+ * A strong type for the canonical form of DelegationDetail
  * @remarks
- *
- * Includes the address of the leader contract, its minting policy, and the token-name
- * used for the delegate
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoDelegationDetail instead.
  * @public
- **/
-declare type DelegationDetail_3 = {
+ */
+declare interface DelegationDetail_3 {
     capoAddr: Address;
     mph: MintingPolicyHash;
     tn: number[];
-};
+}
 
 /**
  * A strong type for the canonical form of DelegationDetail
@@ -12508,7 +12432,7 @@ declare interface DelegationDetail_6 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface DelegationDetailLike {
+declare interface DelegationDetailLike {
     capoAddr: /*minStructField*/ Address | string;
     mph: /*minStructField*/ MintingPolicyHash | string | number[];
     tn: number[];
@@ -12584,7 +12508,7 @@ declare type DeployedScriptDetails<CT extends configBase = configBase, form exte
  * For a more ergonomic, though less strictly-safe form of this type, see dgd_DataSrc$Ergo$Both instead.
  * @public
  */
-export declare interface dgd_DataSrc$Both {
+declare interface dgd_DataSrc$Both {
     utxo: TxInput;
     txo: TxOutput;
 }
@@ -12608,7 +12532,7 @@ declare interface dgd_DataSrc$Both_2 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface dgd_DataSrc$BothLike {
+declare interface dgd_DataSrc$BothLike {
     utxo: TxInput;
     txo: TxOutput;
 }
@@ -12633,7 +12557,7 @@ declare interface dgd_DataSrc$BothLike_2 {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type dgd_DataSrc$Ergo$Both = dgd_DataSrc$Both;
+declare type dgd_DataSrc$Ergo$Both = dgd_DataSrc$Both;
 
 /**
  * An ergonomic, though less strictly-safe form of dgd_DataSrc$Both
@@ -12656,7 +12580,7 @@ declare type dgd_DataSrc$Ergo$Both_2 = dgd_DataSrc$Both_2;
  *     for generating UPLC data for this enum type
  * @public
  */
-export declare type dgd_DataSrc = {
+declare type dgd_DataSrc = {
     Unk: tagOnly;
 } | {
     Input: TxInput;
@@ -12776,7 +12700,7 @@ declare class dgd_DataSrcHelper_2 extends EnumBridge<JustAnEnum_3> {
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-export declare type dgd_DataSrcLike = IntersectedEnum<{
+declare type dgd_DataSrcLike = IntersectedEnum<{
     Unk: tagOnly;
 } | {
     Input: TxInput;
@@ -12811,19 +12735,6 @@ declare type dgd_DataSrcLike_2 = IntersectedEnum<{
 }>;
 
 /**
- * @internal
- */
-export declare type dgd_DataSrcMeta = EnumTypeMeta<{
-    module: "CapoHelpers";
-    enumName: "dgd_DataSrc";
-}, {
-    Unk: singleEnumVariantMeta<dgd_DataSrcMeta, "Unk", "Constr#0", "tagOnly", tagOnly, "noSpecialFlags">;
-    Input: singleEnumVariantMeta<dgd_DataSrcMeta, "Input", "Constr#1", "singletonField", /* implied wrapper { utxo: ... } for singleVariantField */ TxInput, "noSpecialFlags">;
-    Output: singleEnumVariantMeta<dgd_DataSrcMeta, "Output", "Constr#2", "singletonField", /* implied wrapper { txo: ... } for singleVariantField */ TxOutput, "noSpecialFlags">;
-    Both: singleEnumVariantMeta<dgd_DataSrcMeta, "Both", "Constr#3", "fields", dgd_DataSrc$Both, "noSpecialFlags">;
-}>;
-
-/**
  * @public
  */
 declare type DgDataCreationOptions<TLike extends AnyDataTemplate<any, any>> = {
@@ -12840,7 +12751,7 @@ declare type DgDataCreationOptions<TLike extends AnyDataTemplate<any, any>> = {
  * For a more ergonomic, though less strictly-safe form of this type, see ErgoDgDataDetails instead.
  * @public
  */
-export declare interface DgDataDetails {
+declare interface DgDataDetails {
     dataSrc: dgd_DataSrc;
     id: number[];
     type: string;
@@ -12868,7 +12779,7 @@ declare interface DgDataDetails_2 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface DgDataDetailsLike {
+declare interface DgDataDetailsLike {
     dataSrc: dgd_DataSrcLike;
     id: number[];
     type: string;
@@ -12905,7 +12816,7 @@ declare type dgtStateKey<N extends string, PREFIX extends string = "dgPol"> = `$
 /**
  * @public
  */
-export declare class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
+export declare class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> {
     autoSetup: boolean;
     get defaultFeatureFlags(): DredCapoFeatures;
     scriptBundle(): CapoHeliosBundle;
@@ -12919,19 +12830,19 @@ export declare class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
     /**
      * Finds and instantiates the mint delegate for the capo
      */
-    getMintDelegate(charterData?: CapoDatum$Ergo$CharterData_3): Promise<MyMintSpendDelegate>;
+    getMintDelegate(charterData?: CapoDatum$Ergo$CharterData_4): Promise<MyMintSpendDelegate>;
     /**
      * Finds and instantiates the spend delegate for the capo
      */
-    getSpendDelegate(charterData?: CapoDatum$Ergo$CharterData_3): Promise<MyMintSpendDelegate>;
+    getSpendDelegate(charterData?: CapoDatum$Ergo$CharterData_4): Promise<MyMintSpendDelegate>;
     /**
      * Finds and instantiates the node registry controller for the capo
      */
-    getNodeRegistryController(charterData?: CapoDatum$Ergo$CharterData_3): Promise<NodeRegistryController>;
+    getNodeRegistryController(charterData?: CapoDatum$Ergo$CharterData_4): Promise<NodeRegistryController>;
     /**
      * Finds and instantiates the neighborhood registry controller for the capo
      */
-    getNbhRegistryController(charterData?: CapoDatum$Ergo$CharterData_3): Promise<NeighborhoodController>;
+    getNbhRegistryController(charterData?: CapoDatum$Ergo$CharterData_4): Promise<NeighborhoodController>;
     /**
      * Finds and instantiates the settings controller for the capo
      */
@@ -12959,25 +12870,24 @@ export declare class DredCapo extends Capo<DredCapo, DredCapoFeatures> {
      * @internal
      */
     initDelegateRoles(): DelegateMap<    {
-    readonly govAuthority: DelegateSetup_2<"authority", StellarDelegate_2, any>;
     readonly spendDelegate: DelegateSetup_2<"spendDgt", any, {}>;
     readonly mintDelegate: DelegateSetup_2<"mintDgt", any, {}>;
+    readonly govAuthority: DelegateSetup_2<"authority", StellarDelegate_2, any>;
     readonly settings: DelegateSetup_2<"dgDataPolicy", any, {}>;
-    readonly nodeOpRegistry: DelegateSetup_2<"dgDataPolicy", any, {}>;
+    readonly DredNode: DelegateSetup_2<"dgDataPolicy", any, {}>;
     }>;
     /**
      * Mints fungible tokens under the Capo's minting policy
      */
     txnMintingFungibleTokens<TCX extends StellarTxnContext>(tcx: TCX, tokenName: string | number[], tokenCount: bigint): Promise<TCX & hasCharterRef_2 & hasGovAuthority_2>;
     todoAddNamedDelegates(): void;
-    requirements(): any;
+    requirements(): ReqtsMap_4<"Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants" | "has custom settings for protocol parameters" | "can update the settings" | "Provides a Node Operator registry, in which node operators can maintain their node registrations", "Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants"> & ReqtsMap_4<"Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants", never>;
 }
 
 declare type DredCapoFeatures = {
     settings?: boolean;
-    nodeOpRegistry?: boolean;
-    nbhRegistry?: boolean;
-    s3domain?: boolean;
+    DredNode?: boolean;
+    DredNeighborhood?: boolean;
 };
 
 /**
@@ -13009,7 +12919,7 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
      * this is the specific type of datum for the `BasicDelegate` script
      */
     DelegateDatum: DelegateDatumHelper_3;
-    readDatum: (d: UplcData) => ErgoDelegateDatum;
+    readDatum: (d: UplcData) => ErgoDelegateDatum_3;
     /**
      * generates UplcData for the activity type (***DelegateActivity***) for the `BasicDelegate` script
      */
@@ -13080,14 +12990,14 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***AnyData*** for the `BasicDelegate` script
          */
-        AnyData: (fields: AnyDataLike | {
+        AnyData: (fields: AnyDataLike_4 | {
             id: number[];
             type: string;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***DelegationDetail*** for the `BasicDelegate` script
          */
-        DelegationDetail: (fields: DelegationDetailLike | {
+        DelegationDetail: (fields: DelegationDetailLike_3 | {
             capoAddr: /*minStructField*/ Address | string;
             mph: /*minStructField*/ MintingPolicyHash | string | number[];
             tn: number[];
@@ -13101,13 +13011,13 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
             memberToken: string;
             nodeAddress: string;
             nodePort: IntLike;
-            nodePublicKey: number[];
+            nodePublicKey: /*minStructField*/ PubKey | string | number[];
             lastHeartbeat: TimeLike_2;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***RelativeDelegateLink*** for the `BasicDelegate` script
          */
-        RelativeDelegateLink: (fields: RelativeDelegateLinkLike | {
+        RelativeDelegateLink: (fields: RelativeDelegateLinkLike_5 | {
             uutName: string;
             delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
             config: number[];
@@ -13115,33 +13025,39 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***PendingDelegateChange*** for the `BasicDelegate` script
          */
-        PendingDelegateChange: (fields: PendingDelegateChangeLike | {
-            action: PendingDelegateActionLike;
-            role: DelegateRoleLike;
-            dgtLink: /*minStructField*/ RelativeDelegateLinkLike | undefined;
+        PendingDelegateChange: (fields: PendingDelegateChangeLike_4 | {
+            action: PendingDelegateActionLike_4;
+            role: DelegateRoleLike_4;
+            dgtLink: /*minStructField*/ RelativeDelegateLinkLike_5 | undefined;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***CapoManifestEntry*** for the `BasicDelegate` script
          */
-        CapoManifestEntry: (fields: CapoManifestEntryLike | {
-            entryType: ManifestEntryTypeLike;
+        CapoManifestEntry: (fields: CapoManifestEntryLike_4 | {
+            entryType: ManifestEntryTypeLike_4;
             tokenName: number[];
             mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***CapoCtx*** for the `BasicDelegate` script
          */
-        CapoCtx: (fields: CapoCtxLike | {
+        CapoCtx: (fields: CapoCtxLike_3 | {
             mph: /*minStructField*/ MintingPolicyHash | string | number[];
-            charter: cctx_CharterInputTypeLike;
+            charter: cctx_CharterInputTypeLike_3;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***NodeOperatorSettings*** for the `BasicDelegate` script
          */
         NodeOperatorSettings: (fields: NodeOperatorSettingsLike | {
             expectedHeartbeatInterval: IntLike;
-            requiredNodeUptime: IntLike;
-            minNodeRegistrationFee: IntLike;
+            requiredNodeUptime: number;
+            minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+                mph: MintingPolicyHash | string | number[];
+                tokens: {
+                    name: number[] | string;
+                    qty: IntLike;
+                }[];
+            }[];
             minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
                 mph: MintingPolicyHash | string | number[];
                 tokens: {
@@ -13168,28 +13084,28 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
     };
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺAnyDataCast: Cast<AnyData, AnyDataLike>;
+    ᱺᱺAnyDataCast: Cast<AnyData_4, AnyDataLike_4>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺDelegationDetailCast: Cast<DelegationDetail, DelegationDetailLike>;
+    ᱺᱺDelegationDetailCast: Cast<DelegationDetail_4, DelegationDetailLike_3>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺNodeRegistrationDataCast: Cast<NodeRegistrationData, NodeRegistrationDataLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink, RelativeDelegateLinkLike>;
+    ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink_7, RelativeDelegateLinkLike_5>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺPendingDelegateChangeCast: Cast<PendingDelegateChange, PendingDelegateChangeLike>;
+    ᱺᱺPendingDelegateChangeCast: Cast<PendingDelegateChange_4, PendingDelegateChangeLike_4>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺCapoManifestEntryCast: Cast<CapoManifestEntry, CapoManifestEntryLike>;
+    ᱺᱺCapoManifestEntryCast: Cast<CapoManifestEntry_4, CapoManifestEntryLike_4>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺCapoCtxCast: Cast<CapoCtx, CapoCtxLike>;
+    ᱺᱺCapoCtxCast: Cast<CapoCtx_3, CapoCtxLike_3>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNodeOperatorSettingsCast: Cast<NodeOperatorSettings, NodeOperatorSettingsLike>;
+    ᱺᱺNodeOperatorSettingsCast: Cast<NodeOperatorSettings_2, NodeOperatorSettingsLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺAbstractSettingsForNodeOperatorCast: Cast<AbstractSettingsForNodeOperator, AbstractSettingsForNodeOperatorLike>;
@@ -13202,9 +13118,9 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
     bridge: DredNodeRegistryPolicyDataBridge;
     constructor(bridge: DredNodeRegistryPolicyDataBridge, isMainnet: boolean);
     datum: (d: UplcData) => Partial<{
-        Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken;
-        IsDelegation: ErgoDelegationDetail;
-        capoStoredData: DelegateDatum$Ergo$capoStoredData;
+        Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_3;
+        IsDelegation: ErgoDelegationDetail_3;
+        capoStoredData: DelegateDatum$Ergo$capoStoredData_3;
     }>;
     /**
      * reads UplcData *known to fit the **DelegateDatum*** enum type,
@@ -13220,7 +13136,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateDatum(d: UplcData): ErgoDelegateDatum;
+    DelegateDatum(d: UplcData): ErgoDelegateDatum_3;
     /**
      * reads UplcData *known to fit the **DelegateRole*** enum type,
      * for the BasicDelegate script.
@@ -13235,7 +13151,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateRole(d: UplcData): ErgoDelegateRole;
+    DelegateRole(d: UplcData): ErgoDelegateRole_6;
     /**
      * reads UplcData *known to fit the **ManifestActivity*** enum type,
      * for the BasicDelegate script.
@@ -13250,7 +13166,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    ManifestActivity(d: UplcData): ErgoManifestActivity;
+    ManifestActivity(d: UplcData): ErgoManifestActivity_6;
     /**
      * reads UplcData *known to fit the **CapoLifecycleActivity*** enum type,
      * for the BasicDelegate script.
@@ -13265,7 +13181,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    CapoLifecycleActivity(d: UplcData): ErgoCapoLifecycleActivity;
+    CapoLifecycleActivity(d: UplcData): ErgoCapoLifecycleActivity_4;
     /**
      * reads UplcData *known to fit the **DelegateLifecycleActivity*** enum type,
      * for the BasicDelegate script.
@@ -13280,7 +13196,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateLifecycleActivity(d: UplcData): ErgoDelegateLifecycleActivity;
+    DelegateLifecycleActivity(d: UplcData): ErgoDelegateLifecycleActivity_3;
     /**
      * reads UplcData *known to fit the **SpendingActivity*** enum type,
      * for the BasicDelegate script.
@@ -13295,7 +13211,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    SpendingActivity(d: UplcData): ErgoSpendingActivity;
+    SpendingActivity(d: UplcData): ErgoSpendingActivity_3;
     /**
      * reads UplcData *known to fit the **MintingActivity*** enum type,
      * for the BasicDelegate script.
@@ -13310,7 +13226,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    MintingActivity(d: UplcData): ErgoMintingActivity;
+    MintingActivity(d: UplcData): ErgoMintingActivity_3;
     /**
      * reads UplcData *known to fit the **BurningActivity*** enum type,
      * for the BasicDelegate script.
@@ -13325,7 +13241,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    BurningActivity(d: UplcData): ErgoBurningActivity;
+    BurningActivity(d: UplcData): ErgoBurningActivity_3;
     /**
      * reads UplcData *known to fit the **DelegateActivity*** enum type,
      * for the BasicDelegate script.
@@ -13340,7 +13256,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateActivity(d: UplcData): ErgoDelegateActivity;
+    DelegateActivity(d: UplcData): ErgoDelegateActivity_3;
     /**
      * reads UplcData *known to fit the **PendingDelegateAction*** enum type,
      * for the BasicDelegate script.
@@ -13355,7 +13271,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingDelegateAction(d: UplcData): ErgoPendingDelegateAction;
+    PendingDelegateAction(d: UplcData): ErgoPendingDelegateAction_6;
     /**
      * reads UplcData *known to fit the **ManifestEntryType*** enum type,
      * for the BasicDelegate script.
@@ -13370,7 +13286,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    ManifestEntryType(d: UplcData): ErgoManifestEntryType;
+    ManifestEntryType(d: UplcData): ErgoManifestEntryType_6;
     /**
      * reads UplcData *known to fit the **PendingCharterChange*** enum type,
      * for the BasicDelegate script.
@@ -13385,7 +13301,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingCharterChange(d: UplcData): ErgoPendingCharterChange;
+    PendingCharterChange(d: UplcData): ErgoPendingCharterChange_6;
     /**
      * reads UplcData *known to fit the **cctx_CharterInputType*** enum type,
      * for the BasicDelegate script.
@@ -13400,7 +13316,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    cctx_CharterInputType(d: UplcData): Ergocctx_CharterInputType;
+    cctx_CharterInputType(d: UplcData): Ergocctx_CharterInputType_3;
     /**
      * reads UplcData *known to fit the **dgd_DataSrc*** enum type,
      * for the BasicDelegate script.
@@ -13430,7 +13346,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    AnyData(d: UplcData): AnyData;
+    AnyData(d: UplcData): AnyData_4;
     /**
      * reads UplcData *known to fit the **DelegationDetail*** struct type,
      * for the BasicDelegate script.
@@ -13445,7 +13361,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegationDetail(d: UplcData): DelegationDetail;
+    DelegationDetail(d: UplcData): DelegationDetail_4;
     /**
      * reads UplcData *known to fit the **NodeRegistrationData*** struct type,
      * for the BasicDelegate script.
@@ -13475,7 +13391,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    RelativeDelegateLink(d: UplcData): RelativeDelegateLink;
+    RelativeDelegateLink(d: UplcData): RelativeDelegateLink_7;
     /**
      * reads UplcData *known to fit the **PendingDelegateChange*** struct type,
      * for the BasicDelegate script.
@@ -13490,7 +13406,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingDelegateChange(d: UplcData): PendingDelegateChange;
+    PendingDelegateChange(d: UplcData): PendingDelegateChange_4;
     /**
      * reads UplcData *known to fit the **CapoManifestEntry*** struct type,
      * for the BasicDelegate script.
@@ -13505,7 +13421,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    CapoManifestEntry(d: UplcData): CapoManifestEntry;
+    CapoManifestEntry(d: UplcData): CapoManifestEntry_4;
     /**
      * reads UplcData *known to fit the **CapoCtx*** struct type,
      * for the BasicDelegate script.
@@ -13520,7 +13436,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    CapoCtx(d: UplcData): CapoCtx;
+    CapoCtx(d: UplcData): CapoCtx_3;
     /**
      * reads UplcData *known to fit the **NodeOperatorSettings*** struct type,
      * for the BasicDelegate script.
@@ -13535,7 +13451,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NodeOperatorSettings(d: UplcData): NodeOperatorSettings;
+    NodeOperatorSettings(d: UplcData): NodeOperatorSettings_2;
     /**
      * reads UplcData *known to fit the **AbstractSettingsForNodeOperator*** struct type,
      * for the BasicDelegate script.
@@ -13584,40 +13500,16 @@ declare class EnumBridge<TYPE extends isActivity | isDatum | JustAnEnum = JustAn
     protected mkUplcData(value: any, enumPathExpr: string): uplcReturnType;
 }
 
-declare type EnumId = {
-    module: string;
-    enumName: string;
-};
-
 /**
- * ### Don't use this type directly.
- *
- * This type is used as an intermediate representation of an enum,
- * for generating the types for reading and writing data conforming to the type.
- * @public
- */
-declare type EnumTypeMeta<EID extends EnumId, enumVariants extends VariantMap> = {
-    NEVER_INSTANTIATED: "?maybe?";
-    SEE_BUNDLE_CLASS: "accessor gateway there";
-    kind: "enum";
-    enumId: EID;
-    variants: {
-        [k in keyof enumVariants]: enumVariants[k];
-    };
-};
-
-/**
- * An ergonomic, though less strictly-safe form of AbstractSettingsForNodeOperator
+ * An ergonomic, though less strictly-safe form of AnyData
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the AbstractSettingsForNodeOperatorLike type,
+ * conversion to on-chain use.  For creating such data, use the AnyDataLike type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ErgoAbstractSettingsForNodeOperator = {
-    nodeOpSettings: ErgoNodeOperatorSettings;
-};
+declare type ErgoAnyData = AnyData_2;
 
 /**
  * An ergonomic, though less strictly-safe form of AnyData
@@ -13628,7 +13520,7 @@ export declare type ErgoAbstractSettingsForNodeOperator = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ErgoAnyData = AnyData;
+declare type ErgoAnyData_2 = AnyData_3;
 
 /**
  * An ergonomic, though less strictly-safe form of AnyData
@@ -13639,7 +13531,7 @@ export declare type ErgoAnyData = AnyData;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoAnyData_2 = AnyData_2_2;
+declare type ErgoAnyData_3 = AnyData_4;
 
 /**
  * An ergonomic, though less strictly-safe form of AnyData
@@ -13650,7 +13542,7 @@ declare type ErgoAnyData_2 = AnyData_2_2;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoAnyData_3 = AnyData_3;
+declare type ErgoAnyData_4 = AnyData_5;
 
 /**
  * An ergonomic, though less strictly-safe form of AnyData
@@ -13661,18 +13553,7 @@ declare type ErgoAnyData_3 = AnyData_3;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoAnyData_4 = AnyData_4;
-
-/**
- * An ergonomic, though less strictly-safe form of AnyData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the AnyDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoAnyData_5 = AnyData_5;
+declare type ErgoAnyData_5 = AnyData_6;
 
 /**
  * An ergonomic, though less strictly-safe form of AppInfo
@@ -13709,7 +13590,7 @@ declare type ErgoAppInfo_2 = {
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type ErgoBurningActivity = IntersectedEnum<BurningActivity>;
+declare type ErgoBurningActivity = IntersectedEnum<BurningActivity>;
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -13755,7 +13636,7 @@ declare type ErgoBurningActivity_5 = IntersectedEnum<BurningActivity_5>;
  * @public
  */
 declare type ErgoCapoActivity = IntersectedEnum<{
-    capoLifecycleActivity: ErgoCapoLifecycleActivity_2;
+    capoLifecycleActivity: ErgoCapoLifecycleActivity;
 } | {
     usingAuthority: tagOnly;
 } | {
@@ -13769,20 +13650,6 @@ declare type ErgoCapoActivity = IntersectedEnum<{
 }>;
 
 /**
- * An ergonomic, though less strictly-safe form of CapoCtx
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoCtxLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-export declare type ErgoCapoCtx = {
-    mph: MintingPolicyHash;
-    charter: Ergocctx_CharterInputType;
-};
-
-/**
  * ergonomic type enabling easy access to values converted from the on-chain form
  * @remarks
  * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
@@ -13790,7 +13657,7 @@ export declare type ErgoCapoCtx = {
  * @public
  */
 declare type ErgoCapoDatum = IntersectedEnum<{
-    CharterData: CapoDatum$Ergo$CharterData_2;
+    CharterData: CapoDatum$Ergo$CharterData;
 } | {
     ScriptReference: tagOnly;
 } | {
@@ -13804,7 +13671,7 @@ declare type ErgoCapoDatum = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type ErgoCapoLifecycleActivity = IntersectedEnum<{
+declare type ErgoCapoLifecycleActivity = IntersectedEnum<{
     CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate;
 } | {
     queuePendingChange: tagOnly;
@@ -13850,35 +13717,12 @@ declare type ErgoCapoLifecycleActivity_2 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoCapoLifecycleActivity_2_2 = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate_2_2;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: ErgoDelegateRole_2_2;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_2_2;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate_2_2;
-} | {
-    updatingManifest: ErgoManifestActivity_2_2;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
 declare type ErgoCapoLifecycleActivity_3 = IntersectedEnum<{
     CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate_3;
 } | {
     queuePendingChange: tagOnly;
 } | {
-    removePendingChange: ErgoDelegateRole_4;
+    removePendingChange: ErgoDelegateRole_5;
 } | {
     commitPendingChanges: tagOnly;
 } | {
@@ -13886,7 +13730,7 @@ declare type ErgoCapoLifecycleActivity_3 = IntersectedEnum<{
 } | {
     forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate_3;
 } | {
-    updatingManifest: ErgoManifestActivity_4;
+    updatingManifest: ErgoManifestActivity_5;
 }>;
 
 /**
@@ -13901,7 +13745,7 @@ declare type ErgoCapoLifecycleActivity_4 = IntersectedEnum<{
 } | {
     queuePendingChange: tagOnly;
 } | {
-    removePendingChange: ErgoDelegateRole_5;
+    removePendingChange: ErgoDelegateRole_6;
 } | {
     commitPendingChanges: tagOnly;
 } | {
@@ -13909,7 +13753,7 @@ declare type ErgoCapoLifecycleActivity_4 = IntersectedEnum<{
 } | {
     forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate_4;
 } | {
-    updatingManifest: ErgoManifestActivity_5;
+    updatingManifest: ErgoManifestActivity_6;
 }>;
 
 /**
@@ -13924,7 +13768,7 @@ declare type ErgoCapoLifecycleActivity_5 = IntersectedEnum<{
 } | {
     queuePendingChange: tagOnly;
 } | {
-    removePendingChange: ErgoDelegateRole_6;
+    removePendingChange: ErgoDelegateRole_7;
 } | {
     commitPendingChanges: tagOnly;
 } | {
@@ -13932,7 +13776,30 @@ declare type ErgoCapoLifecycleActivity_5 = IntersectedEnum<{
 } | {
     forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate_5;
 } | {
-    updatingManifest: ErgoManifestActivity_6;
+    updatingManifest: ErgoManifestActivity_7;
+}>;
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoCapoLifecycleActivity_6 = IntersectedEnum<{
+    CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate_6;
+} | {
+    queuePendingChange: tagOnly;
+} | {
+    removePendingChange: ErgoDelegateRole_8;
+} | {
+    commitPendingChanges: tagOnly;
+} | {
+    forcingNewSpendDelegate: CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_6;
+} | {
+    forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate_6;
+} | {
+    updatingManifest: ErgoManifestActivity_8;
 }>;
 
 /**
@@ -13944,7 +13811,7 @@ declare type ErgoCapoLifecycleActivity_5 = IntersectedEnum<{
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ErgoCapoManifestEntry = {
+declare type ErgoCapoManifestEntry = {
     entryType: ErgoManifestEntryType;
     tokenName: number[];
     mph: /*minStructField*/ MintingPolicyHash | undefined;
@@ -13959,7 +13826,7 @@ export declare type ErgoCapoManifestEntry = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoCapoManifestEntry_2 = {
+declare type ErgoCapoManifestEntry_3 = {
     entryType: ErgoManifestEntryType_2;
     tokenName: number[];
     mph: /*minStructField*/ MintingPolicyHash | undefined;
@@ -13974,22 +13841,7 @@ declare type ErgoCapoManifestEntry_2 = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoCapoManifestEntry_3 = {
-    entryType: ErgoManifestEntryType_2_2;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of CapoManifestEntry
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoManifestEntryLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoCapoManifestEntry_5 = {
+declare type ErgoCapoManifestEntry_4 = {
     entryType: ErgoManifestEntryType_3;
     tokenName: number[];
     mph: /*minStructField*/ MintingPolicyHash | undefined;
@@ -14004,7 +13856,7 @@ declare type ErgoCapoManifestEntry_5 = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoCapoManifestEntry_6 = {
+declare type ErgoCapoManifestEntry_5 = {
     entryType: ErgoManifestEntryType_4;
     tokenName: number[];
     mph: /*minStructField*/ MintingPolicyHash | undefined;
@@ -14019,7 +13871,7 @@ declare type ErgoCapoManifestEntry_6 = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoCapoManifestEntry_7 = {
+declare type ErgoCapoManifestEntry_6 = {
     entryType: ErgoManifestEntryType_5;
     tokenName: number[];
     mph: /*minStructField*/ MintingPolicyHash | undefined;
@@ -14034,8 +13886,38 @@ declare type ErgoCapoManifestEntry_7 = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoCapoManifestEntry_8 = {
+declare type ErgoCapoManifestEntry_7 = {
     entryType: ErgoManifestEntryType_6;
+    tokenName: number[];
+    mph: /*minStructField*/ MintingPolicyHash | undefined;
+};
+
+/**
+ * An ergonomic, though less strictly-safe form of CapoManifestEntry
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the CapoManifestEntryLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ErgoCapoManifestEntry_8 = {
+    entryType: ErgoManifestEntryType_7;
+    tokenName: number[];
+    mph: /*minStructField*/ MintingPolicyHash | undefined;
+};
+
+/**
+ * An ergonomic, though less strictly-safe form of CapoManifestEntry
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the CapoManifestEntryLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ErgoCapoManifestEntry_9 = {
+    entryType: ErgoManifestEntryType_8;
     tokenName: number[];
     mph: /*minStructField*/ MintingPolicyHash | undefined;
 };
@@ -14047,7 +13929,7 @@ declare type ErgoCapoManifestEntry_8 = {
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type Ergocctx_CharterInputType = IntersectedEnum<{
+declare type Ergocctx_CharterInputType = IntersectedEnum<{
     Unk: tagOnly;
 } | {
     RefInput: cctx_CharterInputType$Ergo$RefInput;
@@ -14122,8 +14004,8 @@ declare type Ergocctx_CharterInputType_5 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type ErgoDelegateActivity = IntersectedEnum<{
-    CapoLifecycleActivities: ErgoCapoLifecycleActivity;
+declare type ErgoDelegateActivity = IntersectedEnum<{
+    CapoLifecycleActivities: ErgoCapoLifecycleActivity_2;
 } | {
     DelegateLifecycleActivities: ErgoDelegateLifecycleActivity;
 } | {
@@ -14150,7 +14032,7 @@ export declare type ErgoDelegateActivity = IntersectedEnum<{
  * @public
  */
 declare type ErgoDelegateActivity_2 = IntersectedEnum<{
-    CapoLifecycleActivities: ErgoCapoLifecycleActivity_2_2;
+    CapoLifecycleActivities: ErgoCapoLifecycleActivity_3;
 } | {
     DelegateLifecycleActivities: ErgoDelegateLifecycleActivity_2;
 } | {
@@ -14177,7 +14059,7 @@ declare type ErgoDelegateActivity_2 = IntersectedEnum<{
  * @public
  */
 declare type ErgoDelegateActivity_3 = IntersectedEnum<{
-    CapoLifecycleActivities: ErgoCapoLifecycleActivity_3;
+    CapoLifecycleActivities: ErgoCapoLifecycleActivity_4;
 } | {
     DelegateLifecycleActivities: ErgoDelegateLifecycleActivity_3;
 } | {
@@ -14204,7 +14086,7 @@ declare type ErgoDelegateActivity_3 = IntersectedEnum<{
  * @public
  */
 declare type ErgoDelegateActivity_4 = IntersectedEnum<{
-    CapoLifecycleActivities: ErgoCapoLifecycleActivity_4;
+    CapoLifecycleActivities: ErgoCapoLifecycleActivity_5;
 } | {
     DelegateLifecycleActivities: ErgoDelegateLifecycleActivity_4;
 } | {
@@ -14231,7 +14113,7 @@ declare type ErgoDelegateActivity_4 = IntersectedEnum<{
  * @public
  */
 declare type ErgoDelegateActivity_5 = IntersectedEnum<{
-    CapoLifecycleActivities: ErgoCapoLifecycleActivity_5;
+    CapoLifecycleActivities: ErgoCapoLifecycleActivity_6;
 } | {
     DelegateLifecycleActivities: ErgoDelegateLifecycleActivity_5;
 } | {
@@ -14257,7 +14139,7 @@ declare type ErgoDelegateActivity_5 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type ErgoDelegateDatum = IntersectedEnum<{
+declare type ErgoDelegateDatum = IntersectedEnum<{
     Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken;
 } | {
     IsDelegation: ErgoDelegationDetail;
@@ -14332,7 +14214,7 @@ declare type ErgoDelegateDatum_5 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type ErgoDelegateLifecycleActivity = IntersectedEnum<{
+declare type ErgoDelegateLifecycleActivity = IntersectedEnum<{
     ReplacingMe: DelegateLifecycleActivity$Ergo$ReplacingMe;
 } | {
     Retiring: tagOnly;
@@ -14407,7 +14289,7 @@ declare type ErgoDelegateLifecycleActivity_5 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type ErgoDelegateRole = IntersectedEnum<DelegateRole>;
+declare type ErgoDelegateRole = IntersectedEnum<DelegateRole>;
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -14417,15 +14299,6 @@ export declare type ErgoDelegateRole = IntersectedEnum<DelegateRole>;
  * @public
  */
 declare type ErgoDelegateRole_2 = IntersectedEnum<DelegateRole_2>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoDelegateRole_2_2 = IntersectedEnum<DelegateRole_2_2>;
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -14464,15 +14337,22 @@ declare type ErgoDelegateRole_5 = IntersectedEnum<DelegateRole_5>;
 declare type ErgoDelegateRole_6 = IntersectedEnum<DelegateRole_6>;
 
 /**
- * An ergonomic, though less strictly-safe form of DelegationDetail
+ * ergonomic type enabling easy access to values converted from the on-chain form
  * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegationDetailLike type,
- * or the on-chain data-building helpers instead.
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type ErgoDelegationDetail = DelegationDetail;
+declare type ErgoDelegateRole_7 = IntersectedEnum<DelegateRole_7>;
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoDelegateRole_8 = IntersectedEnum<DelegateRole_8>;
 
 /**
  * An ergonomic, though less strictly-safe form of DelegationDetail
@@ -14483,7 +14363,18 @@ export declare type ErgoDelegationDetail = DelegationDetail;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoDelegationDetail_2 = DelegationDetail_2;
+declare type ErgoDelegationDetail = DelegationDetail_2;
+
+/**
+ * An ergonomic, though less strictly-safe form of DelegationDetail
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the DelegationDetailLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ErgoDelegationDetail_2 = DelegationDetail_3;
 
 /**
  * An ergonomic, though less strictly-safe form of DelegationDetail
@@ -14525,7 +14416,7 @@ declare type ErgoDelegationDetail_5 = DelegationDetail_6;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type Ergodgd_DataSrc = IntersectedEnum<{
+declare type Ergodgd_DataSrc = IntersectedEnum<{
     Unk: tagOnly;
 } | {
     Input: TxInput;
@@ -14553,22 +14444,6 @@ declare type Ergodgd_DataSrc_2 = IntersectedEnum<{
 }>;
 
 /**
- * An ergonomic, though less strictly-safe form of DgDataDetails
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DgDataDetailsLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-export declare type ErgoDgDataDetails = {
-    dataSrc: Ergodgd_DataSrc;
-    id: number[];
-    type: string;
-    mph: MintingPolicyHash;
-};
-
-/**
  * ergonomic type enabling easy access to values converted from the on-chain form
  * @remarks
  * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
@@ -14593,7 +14468,7 @@ declare type ErgoFeeSource_2 = IntersectedEnum<FeeSource_2/*like canon enum*/>
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type ErgoManifestActivity = IntersectedEnum<{
+declare type ErgoManifestActivity = IntersectedEnum<{
     retiringEntry: string;
 } | {
     updatingEntry: ManifestActivity$Ergo$updatingEntry;
@@ -14622,25 +14497,6 @@ declare type ErgoManifestActivity_2 = IntersectedEnum<{
     forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_2;
 } | {
     burningThreadToken: ManifestActivity$Ergo$burningThreadToken_2;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoManifestActivity_2_2 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$Ergo$updatingEntry_2_2;
-} | {
-    addingEntry: ManifestActivity$Ergo$addingEntry_2_2;
-} | {
-    forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_2_2;
-} | {
-    burningThreadToken: ManifestActivity$Ergo$burningThreadToken_2_2;
 }>;
 
 /**
@@ -14726,7 +14582,45 @@ declare type ErgoManifestActivity_6 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type ErgoManifestEntryType = IntersectedEnum<{
+declare type ErgoManifestActivity_7 = IntersectedEnum<{
+    retiringEntry: string;
+} | {
+    updatingEntry: ManifestActivity$Ergo$updatingEntry_7;
+} | {
+    addingEntry: ManifestActivity$Ergo$addingEntry_7;
+} | {
+    forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_7;
+} | {
+    burningThreadToken: ManifestActivity$Ergo$burningThreadToken_7;
+}>;
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoManifestActivity_8 = IntersectedEnum<{
+    retiringEntry: string;
+} | {
+    updatingEntry: ManifestActivity$Ergo$updatingEntry_8;
+} | {
+    addingEntry: ManifestActivity$Ergo$addingEntry_8;
+} | {
+    forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_8;
+} | {
+    burningThreadToken: ManifestActivity$Ergo$burningThreadToken_8;
+}>;
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoManifestEntryType = IntersectedEnum<{
     NamedTokenRef: tagOnly;
 } | {
     DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy;
@@ -14751,25 +14645,6 @@ declare type ErgoManifestEntryType_2 = IntersectedEnum<{
     DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_2;
 } | {
     DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_2;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoManifestEntryType_2_2 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_2_2;
-} | {
-    DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_2_2;
 } | {
     MerkleMembership: tagOnly;
 } | {
@@ -14859,6 +14734,44 @@ declare type ErgoManifestEntryType_6 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
+declare type ErgoManifestEntryType_7 = IntersectedEnum<{
+    NamedTokenRef: tagOnly;
+} | {
+    DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_7;
+} | {
+    DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_7;
+} | {
+    MerkleMembership: tagOnly;
+} | {
+    MerkleStateRoot: tagOnly;
+}>;
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoManifestEntryType_8 = IntersectedEnum<{
+    NamedTokenRef: tagOnly;
+} | {
+    DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_8;
+} | {
+    DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_8;
+} | {
+    MerkleMembership: tagOnly;
+} | {
+    MerkleStateRoot: tagOnly;
+}>;
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
 declare type ErgoMinterActivity = IntersectedEnum<{
     mintingCharter: Address;
 } | {
@@ -14880,7 +14793,7 @@ declare type ErgoMinterActivity = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type ErgoMintingActivity = IntersectedEnum<MintingActivity>;
+declare type ErgoMintingActivity = IntersectedEnum<MintingActivity>;
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -14976,18 +14889,7 @@ declare type ErgoNeighborhoodSettings = NeighborhoodSettings;
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ErgoNodeOperatorSettings = NodeOperatorSettings;
-
-/**
- * An ergonomic, though less strictly-safe form of NodeOperatorSettings
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeOperatorSettingsLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoNodeOperatorSettings_2 = NodeOperatorSettings_2;
+declare type ErgoNodeOperatorSettings = NodeOperatorSettings;
 
 /**
  * An ergonomic, though less strictly-safe form of NodeOpsInfo
@@ -15020,7 +14922,7 @@ declare type ErgoNodeOpsInfo_2 = NodeOpsInfo_2
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ErgoNodeRegistrationData = NodeRegistrationData;
+declare type ErgoNodeRegistrationData = NodeRegistrationData;
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -15029,7 +14931,7 @@ export declare type ErgoNodeRegistrationData = NodeRegistrationData;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type ErgoPendingCharterChange = IntersectedEnum<{
+declare type ErgoPendingCharterChange = IntersectedEnum<{
     delegateChange: ErgoPendingDelegateChange;
 } | {
     otherManifestChange: PendingCharterChange$Ergo$otherManifestChange;
@@ -15046,19 +14948,6 @@ declare type ErgoPendingCharterChange_2 = IntersectedEnum<{
     delegateChange: ErgoPendingDelegateChange_2;
 } | {
     otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_2;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoPendingCharterChange_2_2 = IntersectedEnum<{
-    delegateChange: ErgoPendingDelegateChange_2_2;
-} | {
-    otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_2_2;
 }>;
 
 /**
@@ -15120,7 +15009,33 @@ declare type ErgoPendingCharterChange_6 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type ErgoPendingDelegateAction = IntersectedEnum<{
+declare type ErgoPendingCharterChange_7 = IntersectedEnum<{
+    delegateChange: ErgoPendingDelegateChange_8;
+} | {
+    otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_8;
+}>;
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoPendingCharterChange_8 = IntersectedEnum<{
+    delegateChange: ErgoPendingDelegateChange_9;
+} | {
+    otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_9;
+}>;
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoPendingDelegateAction = IntersectedEnum<{
     Add: PendingDelegateAction$Ergo$Add;
 } | {
     Remove: tagOnly;
@@ -15141,21 +15056,6 @@ declare type ErgoPendingDelegateAction_2 = IntersectedEnum<{
     Remove: tagOnly;
 } | {
     Replace: PendingDelegateAction$Ergo$Replace_2;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoPendingDelegateAction_2_2 = IntersectedEnum<{
-    Add: PendingDelegateAction$Ergo$Add_2_2;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Ergo$Replace_2_2;
 }>;
 
 /**
@@ -15219,6 +15119,36 @@ declare type ErgoPendingDelegateAction_6 = IntersectedEnum<{
 }>;
 
 /**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoPendingDelegateAction_7 = IntersectedEnum<{
+    Add: PendingDelegateAction$Ergo$Add_7;
+} | {
+    Remove: tagOnly;
+} | {
+    Replace: PendingDelegateAction$Ergo$Replace_7;
+}>;
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoPendingDelegateAction_8 = IntersectedEnum<{
+    Add: PendingDelegateAction$Ergo$Add_8;
+} | {
+    Remove: tagOnly;
+} | {
+    Replace: PendingDelegateAction$Ergo$Replace_8;
+}>;
+
+/**
  * An ergonomic, though less strictly-safe form of PendingDelegateChange
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -15227,7 +15157,7 @@ declare type ErgoPendingDelegateAction_6 = IntersectedEnum<{
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ErgoPendingDelegateChange = {
+declare type ErgoPendingDelegateChange = {
     action: ErgoPendingDelegateAction;
     role: ErgoDelegateRole;
     dgtLink: /*minStructField*/ ErgoRelativeDelegateLink | undefined;
@@ -15246,21 +15176,6 @@ declare type ErgoPendingDelegateChange_2 = {
     action: ErgoPendingDelegateAction_2;
     role: ErgoDelegateRole_2;
     dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_2 | undefined;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of PendingDelegateChange
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingDelegateChangeLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoPendingDelegateChange_2_2 = {
-    action: ErgoPendingDelegateAction_2_2;
-    role: ErgoDelegateRole_2_2;
-    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_2_2 | undefined;
 };
 
 /**
@@ -15324,6 +15239,36 @@ declare type ErgoPendingDelegateChange_7 = {
 };
 
 /**
+ * An ergonomic, though less strictly-safe form of PendingDelegateChange
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the PendingDelegateChangeLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ErgoPendingDelegateChange_8 = {
+    action: ErgoPendingDelegateAction_7;
+    role: ErgoDelegateRole_7;
+    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_7 | undefined;
+};
+
+/**
+ * An ergonomic, though less strictly-safe form of PendingDelegateChange
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the PendingDelegateChangeLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ErgoPendingDelegateChange_9 = {
+    action: ErgoPendingDelegateAction_8;
+    role: ErgoDelegateRole_8;
+    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_8 | undefined;
+};
+
+/**
  * An ergonomic, though less strictly-safe form of ProtocolSettings
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -15332,10 +15277,10 @@ declare type ErgoPendingDelegateChange_7 = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ErgoProtocolSettings = {
+declare type ErgoProtocolSettings = {
     id: number[];
     type: string;
-    nodeOpSettings: ErgoNodeOperatorSettings_2;
+    nodeOpSettings: ErgoNodeOperatorSettings;
     nbhSettings: ErgoNeighborhoodSettings;
 };
 
@@ -15348,7 +15293,7 @@ export declare type ErgoProtocolSettings = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ErgoRelativeDelegateLink = RelativeDelegateLink;
+declare type ErgoRelativeDelegateLink = RelativeDelegateLink;
 
 /**
  * An ergonomic, though less strictly-safe form of RelativeDelegateLink
@@ -15359,18 +15304,7 @@ export declare type ErgoRelativeDelegateLink = RelativeDelegateLink;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoRelativeDelegateLink_2 = RelativeDelegateLink_2;
-
-/**
- * An ergonomic, though less strictly-safe form of RelativeDelegateLink
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the RelativeDelegateLinkLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoRelativeDelegateLink_2_2 = RelativeDelegateLink_3;
+declare type ErgoRelativeDelegateLink_2 = RelativeDelegateLink_3;
 
 /**
  * An ergonomic, though less strictly-safe form of RelativeDelegateLink
@@ -15417,6 +15351,28 @@ declare type ErgoRelativeDelegateLink_5 = RelativeDelegateLink_6;
 declare type ErgoRelativeDelegateLink_6 = RelativeDelegateLink_7;
 
 /**
+ * An ergonomic, though less strictly-safe form of RelativeDelegateLink
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the RelativeDelegateLinkLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ErgoRelativeDelegateLink_7 = RelativeDelegateLink_8;
+
+/**
+ * An ergonomic, though less strictly-safe form of RelativeDelegateLink
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the RelativeDelegateLinkLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ErgoRelativeDelegateLink_8 = RelativeDelegateLink_9;
+
+/**
  * ergonomic type enabling easy access to values converted from the on-chain form
  * @remarks
  * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
@@ -15449,7 +15405,7 @@ declare type ErgoRevenueModel_2 = IntersectedEnum<
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export declare type ErgoSpendingActivity = IntersectedEnum<SpendingActivity>;
+declare type ErgoSpendingActivity = IntersectedEnum<SpendingActivity>;
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -15666,12 +15622,21 @@ declare type GenericDelegateBridgeClass = AbstractNew<GenericDelegateBridge>;
 /**
  * @public
  */
-declare type GenericDelegateDatum = Pick<ErgoDelegateDatum_2, "Cip68RefToken" | "IsDelegation"> & {
+declare type GenericDelegateDatum = Pick<ErgoDelegateDatum, "Cip68RefToken" | "IsDelegation"> & {
     capoStoredData?: {
         data: AnyDataTemplate<any, any>;
         version: bigint;
         otherDetails: unknown;
     };
+};
+
+/**
+ * @public
+ */
+declare type GenericTokenomicsFeatureFlags = {
+    mktSale: boolean;
+    fundedPurpose: boolean;
+    vesting: boolean;
 };
 
 /**
@@ -15738,8 +15703,15 @@ declare type hasGovAuthority = StellarTxnContext<anyState & {
 /**
  * @public
  */
+declare type hasMemberToken = StellarTxnContext<anyState & {
+    memberToken: UutName;
+}>;
+
+/**
+ * @public
+ */
 declare type hasNamedDelegate<DT extends StellarDelegate, N extends string, PREFIX extends string = "namedDelegate"> = StellarTxnContext<anyState & {
-    [k in dgtStateKey<N, PREFIX>]: ConfiguredDelegate<DT> & ErgoRelativeDelegateLink_2;
+    [k in dgtStateKey<N, PREFIX>]: ConfiguredDelegate<DT> & ErgoRelativeDelegateLink;
 }>;
 
 declare type hasRecId = string | number[] | UutName;
@@ -15932,7 +15904,7 @@ declare abstract class HeliosScriptBundle {
      * A list of modules always available for import to Capo-hosted policy scripts
      * @public
      */
-    protected implicitIncludedCapoModules(): string[];
+    implicitIncludedCapoModules(): string[];
     /**
      * specifies a list module names to be included in the compilation of this script
      * @remarks
@@ -16036,6 +16008,7 @@ declare abstract class HeliosScriptBundle {
     effectiveDatumTypeName(): string;
     locateDatumType(): DataType | undefined;
     locateRedeemerType(): DataType;
+    get includeEnums(): string[];
     getTopLevelTypes(): HeliosBundleTypes;
     paramsToUplc<ConfigType extends configBase>(params: Record<string, any>): UplcRecord_2<ConfigType>;
     typeToUplc(type: DataType, data: any, path?: string): UplcData;
@@ -16065,10 +16038,10 @@ declare type InlineDatum = InlineTxOutputDatum;
 
 declare type _inspectableUnionFuncs<U> = U extends any ? (k: U) => void : never;
 
-declare type InstallPolicyDgtOptions<CAPO extends Capo<any>, RoLabel extends string & keyof CAPO["delegateRoles"]> = {
-    policyName: RoLabel;
+declare type InstallPolicyDgtOptions<CAPO extends Capo<any>, TypeName extends string & keyof CAPO["delegateRoles"]> = {
+    typeName: TypeName;
     idPrefix: string;
-    charterData: CapoDatum$Ergo$CharterData_2;
+    charterData: CapoDatum$Ergo$CharterData;
 };
 
 declare type intersectedElements<T extends any[]> = T extends [infer A, ...infer B] ? A & intersectedElements<B> : {};
@@ -16124,7 +16097,7 @@ declare type JustAnEnum_3 = typeof JustAnEnum_2;
  * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$addingEntry instead.
  * @public
  */
-export declare interface ManifestActivity$addingEntry {
+declare interface ManifestActivity$addingEntry {
     key: string;
     tokenName: number[];
 }
@@ -16138,19 +16111,6 @@ export declare interface ManifestActivity$addingEntry {
  * @public
  */
 declare interface ManifestActivity$addingEntry_2 {
-    key: string;
-    tokenName: number[];
-}
-
-/**
- * A strong type for the canonical form of ManifestActivity$addingEntry
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$addingEntry instead.
- * @public
- */
-declare interface ManifestActivity$addingEntry_2_2 {
     key: string;
     tokenName: number[];
 }
@@ -16208,12 +16168,38 @@ declare interface ManifestActivity$addingEntry_6 {
 }
 
 /**
+ * A strong type for the canonical form of ManifestActivity$addingEntry
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$addingEntry instead.
+ * @public
+ */
+declare interface ManifestActivity$addingEntry_7 {
+    key: string;
+    tokenName: number[];
+}
+
+/**
+ * A strong type for the canonical form of ManifestActivity$addingEntry
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$addingEntry instead.
+ * @public
+ */
+declare interface ManifestActivity$addingEntry_8 {
+    key: string;
+    tokenName: number[];
+}
+
+/**
  * A strong type for the permissive form of ManifestActivity$addingEntry
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface ManifestActivity$addingEntryLike {
+declare interface ManifestActivity$addingEntryLike {
     key: string;
     tokenName: number[];
 }
@@ -16225,17 +16211,6 @@ export declare interface ManifestActivity$addingEntryLike {
  * @public
  */
 declare interface ManifestActivity$addingEntryLike_2 {
-    key: string;
-    tokenName: number[];
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$addingEntry
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$addingEntryLike_2_2 {
     key: string;
     tokenName: number[];
 }
@@ -16274,6 +16249,17 @@ declare interface ManifestActivity$addingEntryLike_5 {
 }
 
 /**
+ * A strong type for the permissive form of ManifestActivity$addingEntry
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface ManifestActivity$addingEntryLike_6 {
+    key: string;
+    tokenName: number[];
+}
+
+/**
  * A strong type for the canonical form of ManifestActivity$burningThreadToken
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -16281,7 +16267,7 @@ declare interface ManifestActivity$addingEntryLike_5 {
  * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$burningThreadToken instead.
  * @public
  */
-export declare interface ManifestActivity$burningThreadToken {
+declare interface ManifestActivity$burningThreadToken {
     key: string;
     burnedThreadCount: bigint;
 }
@@ -16295,19 +16281,6 @@ export declare interface ManifestActivity$burningThreadToken {
  * @public
  */
 declare interface ManifestActivity$burningThreadToken_2 {
-    key: string;
-    burnedThreadCount: bigint;
-}
-
-/**
- * A strong type for the canonical form of ManifestActivity$burningThreadToken
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$burningThreadToken instead.
- * @public
- */
-declare interface ManifestActivity$burningThreadToken_2_2 {
     key: string;
     burnedThreadCount: bigint;
 }
@@ -16365,12 +16338,38 @@ declare interface ManifestActivity$burningThreadToken_6 {
 }
 
 /**
+ * A strong type for the canonical form of ManifestActivity$burningThreadToken
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$burningThreadToken instead.
+ * @public
+ */
+declare interface ManifestActivity$burningThreadToken_7 {
+    key: string;
+    burnedThreadCount: bigint;
+}
+
+/**
+ * A strong type for the canonical form of ManifestActivity$burningThreadToken
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$burningThreadToken instead.
+ * @public
+ */
+declare interface ManifestActivity$burningThreadToken_8 {
+    key: string;
+    burnedThreadCount: bigint;
+}
+
+/**
  * A strong type for the permissive form of ManifestActivity$burningThreadToken
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface ManifestActivity$burningThreadTokenLike {
+declare interface ManifestActivity$burningThreadTokenLike {
     key: string;
     burnedThreadCount: IntLike;
 }
@@ -16382,17 +16381,6 @@ export declare interface ManifestActivity$burningThreadTokenLike {
  * @public
  */
 declare interface ManifestActivity$burningThreadTokenLike_2 {
-    key: string;
-    burnedThreadCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$burningThreadToken
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$burningThreadTokenLike_2_2 {
     key: string;
     burnedThreadCount: IntLike;
 }
@@ -16431,6 +16419,17 @@ declare interface ManifestActivity$burningThreadTokenLike_5 {
 }
 
 /**
+ * A strong type for the permissive form of ManifestActivity$burningThreadToken
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface ManifestActivity$burningThreadTokenLike_6 {
+    key: string;
+    burnedThreadCount: IntLike;
+}
+
+/**
  * An ergonomic, though less strictly-safe form of ManifestActivity$addingEntry
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -16439,7 +16438,7 @@ declare interface ManifestActivity$burningThreadTokenLike_5 {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ManifestActivity$Ergo$addingEntry = ManifestActivity$addingEntry;
+declare type ManifestActivity$Ergo$addingEntry = ManifestActivity$addingEntry;
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$addingEntry
@@ -16451,17 +16450,6 @@ export declare type ManifestActivity$Ergo$addingEntry = ManifestActivity$addingE
  * @public
  */
 declare type ManifestActivity$Ergo$addingEntry_2 = ManifestActivity$addingEntry_2;
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestActivity$addingEntry
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$addingEntryLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$addingEntry_2_2 = ManifestActivity$addingEntry_2_2;
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$addingEntry
@@ -16508,6 +16496,28 @@ declare type ManifestActivity$Ergo$addingEntry_5 = ManifestActivity$addingEntry_
 declare type ManifestActivity$Ergo$addingEntry_6 = ManifestActivity$addingEntry_6;
 
 /**
+ * An ergonomic, though less strictly-safe form of ManifestActivity$addingEntry
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the ManifestActivity$addingEntryLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ManifestActivity$Ergo$addingEntry_7 = ManifestActivity$addingEntry_7;
+
+/**
+ * An ergonomic, though less strictly-safe form of ManifestActivity$addingEntry
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the ManifestActivity$addingEntryLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ManifestActivity$Ergo$addingEntry_8 = ManifestActivity$addingEntry_8;
+
+/**
  * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -16516,7 +16526,7 @@ declare type ManifestActivity$Ergo$addingEntry_6 = ManifestActivity$addingEntry_
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ManifestActivity$Ergo$burningThreadToken = ManifestActivity$burningThreadToken;
+declare type ManifestActivity$Ergo$burningThreadToken = ManifestActivity$burningThreadToken;
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
@@ -16528,17 +16538,6 @@ export declare type ManifestActivity$Ergo$burningThreadToken = ManifestActivity$
  * @public
  */
 declare type ManifestActivity$Ergo$burningThreadToken_2 = ManifestActivity$burningThreadToken_2;
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$burningThreadTokenLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$burningThreadToken_2_2 = ManifestActivity$burningThreadToken_2_2;
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
@@ -16585,6 +16584,28 @@ declare type ManifestActivity$Ergo$burningThreadToken_5 = ManifestActivity$burni
 declare type ManifestActivity$Ergo$burningThreadToken_6 = ManifestActivity$burningThreadToken_6;
 
 /**
+ * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the ManifestActivity$burningThreadTokenLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ManifestActivity$Ergo$burningThreadToken_7 = ManifestActivity$burningThreadToken_7;
+
+/**
+ * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the ManifestActivity$burningThreadTokenLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ManifestActivity$Ergo$burningThreadToken_8 = ManifestActivity$burningThreadToken_8;
+
+/**
  * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -16593,7 +16614,7 @@ declare type ManifestActivity$Ergo$burningThreadToken_6 = ManifestActivity$burni
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ManifestActivity$Ergo$forkingThreadToken = ManifestActivity$forkingThreadToken;
+declare type ManifestActivity$Ergo$forkingThreadToken = ManifestActivity$forkingThreadToken;
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
@@ -16605,17 +16626,6 @@ export declare type ManifestActivity$Ergo$forkingThreadToken = ManifestActivity$
  * @public
  */
 declare type ManifestActivity$Ergo$forkingThreadToken_2 = ManifestActivity$forkingThreadToken_2;
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$forkingThreadTokenLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$forkingThreadToken_2_2 = ManifestActivity$forkingThreadToken_2_2;
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
@@ -16662,6 +16672,28 @@ declare type ManifestActivity$Ergo$forkingThreadToken_5 = ManifestActivity$forki
 declare type ManifestActivity$Ergo$forkingThreadToken_6 = ManifestActivity$forkingThreadToken_6;
 
 /**
+ * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the ManifestActivity$forkingThreadTokenLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ManifestActivity$Ergo$forkingThreadToken_7 = ManifestActivity$forkingThreadToken_7;
+
+/**
+ * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the ManifestActivity$forkingThreadTokenLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ManifestActivity$Ergo$forkingThreadToken_8 = ManifestActivity$forkingThreadToken_8;
+
+/**
  * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -16670,7 +16702,7 @@ declare type ManifestActivity$Ergo$forkingThreadToken_6 = ManifestActivity$forki
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ManifestActivity$Ergo$updatingEntry = ManifestActivity$updatingEntry;
+declare type ManifestActivity$Ergo$updatingEntry = ManifestActivity$updatingEntry;
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
@@ -16682,17 +16714,6 @@ export declare type ManifestActivity$Ergo$updatingEntry = ManifestActivity$updat
  * @public
  */
 declare type ManifestActivity$Ergo$updatingEntry_2 = ManifestActivity$updatingEntry_2;
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$updatingEntryLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$updatingEntry_2_2 = ManifestActivity$updatingEntry_2_2;
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
@@ -16739,6 +16760,28 @@ declare type ManifestActivity$Ergo$updatingEntry_5 = ManifestActivity$updatingEn
 declare type ManifestActivity$Ergo$updatingEntry_6 = ManifestActivity$updatingEntry_6;
 
 /**
+ * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the ManifestActivity$updatingEntryLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ManifestActivity$Ergo$updatingEntry_7 = ManifestActivity$updatingEntry_7;
+
+/**
+ * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the ManifestActivity$updatingEntryLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ManifestActivity$Ergo$updatingEntry_8 = ManifestActivity$updatingEntry_8;
+
+/**
  * A strong type for the canonical form of ManifestActivity$forkingThreadToken
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -16746,7 +16789,7 @@ declare type ManifestActivity$Ergo$updatingEntry_6 = ManifestActivity$updatingEn
  * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$forkingThreadToken instead.
  * @public
  */
-export declare interface ManifestActivity$forkingThreadToken {
+declare interface ManifestActivity$forkingThreadToken {
     key: string;
     newThreadCount: bigint;
 }
@@ -16760,19 +16803,6 @@ export declare interface ManifestActivity$forkingThreadToken {
  * @public
  */
 declare interface ManifestActivity$forkingThreadToken_2 {
-    key: string;
-    newThreadCount: bigint;
-}
-
-/**
- * A strong type for the canonical form of ManifestActivity$forkingThreadToken
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$forkingThreadToken instead.
- * @public
- */
-declare interface ManifestActivity$forkingThreadToken_2_2 {
     key: string;
     newThreadCount: bigint;
 }
@@ -16830,12 +16860,38 @@ declare interface ManifestActivity$forkingThreadToken_6 {
 }
 
 /**
+ * A strong type for the canonical form of ManifestActivity$forkingThreadToken
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$forkingThreadToken instead.
+ * @public
+ */
+declare interface ManifestActivity$forkingThreadToken_7 {
+    key: string;
+    newThreadCount: bigint;
+}
+
+/**
+ * A strong type for the canonical form of ManifestActivity$forkingThreadToken
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$forkingThreadToken instead.
+ * @public
+ */
+declare interface ManifestActivity$forkingThreadToken_8 {
+    key: string;
+    newThreadCount: bigint;
+}
+
+/**
  * A strong type for the permissive form of ManifestActivity$forkingThreadToken
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface ManifestActivity$forkingThreadTokenLike {
+declare interface ManifestActivity$forkingThreadTokenLike {
     key: string;
     newThreadCount: IntLike;
 }
@@ -16847,17 +16903,6 @@ export declare interface ManifestActivity$forkingThreadTokenLike {
  * @public
  */
 declare interface ManifestActivity$forkingThreadTokenLike_2 {
-    key: string;
-    newThreadCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$forkingThreadToken
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$forkingThreadTokenLike_2_2 {
     key: string;
     newThreadCount: IntLike;
 }
@@ -16896,6 +16941,17 @@ declare interface ManifestActivity$forkingThreadTokenLike_5 {
 }
 
 /**
+ * A strong type for the permissive form of ManifestActivity$forkingThreadToken
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface ManifestActivity$forkingThreadTokenLike_6 {
+    key: string;
+    newThreadCount: IntLike;
+}
+
+/**
  * A strong type for the canonical form of ManifestActivity$updatingEntry
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -16903,7 +16959,7 @@ declare interface ManifestActivity$forkingThreadTokenLike_5 {
  * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$updatingEntry instead.
  * @public
  */
-export declare interface ManifestActivity$updatingEntry {
+declare interface ManifestActivity$updatingEntry {
     key: string;
     tokenName: number[];
 }
@@ -16917,19 +16973,6 @@ export declare interface ManifestActivity$updatingEntry {
  * @public
  */
 declare interface ManifestActivity$updatingEntry_2 {
-    key: string;
-    tokenName: number[];
-}
-
-/**
- * A strong type for the canonical form of ManifestActivity$updatingEntry
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$updatingEntry instead.
- * @public
- */
-declare interface ManifestActivity$updatingEntry_2_2 {
     key: string;
     tokenName: number[];
 }
@@ -16987,12 +17030,38 @@ declare interface ManifestActivity$updatingEntry_6 {
 }
 
 /**
+ * A strong type for the canonical form of ManifestActivity$updatingEntry
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$updatingEntry instead.
+ * @public
+ */
+declare interface ManifestActivity$updatingEntry_7 {
+    key: string;
+    tokenName: number[];
+}
+
+/**
+ * A strong type for the canonical form of ManifestActivity$updatingEntry
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$updatingEntry instead.
+ * @public
+ */
+declare interface ManifestActivity$updatingEntry_8 {
+    key: string;
+    tokenName: number[];
+}
+
+/**
  * A strong type for the permissive form of ManifestActivity$updatingEntry
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface ManifestActivity$updatingEntryLike {
+declare interface ManifestActivity$updatingEntryLike {
     key: string;
     tokenName: number[];
 }
@@ -17004,17 +17073,6 @@ export declare interface ManifestActivity$updatingEntryLike {
  * @public
  */
 declare interface ManifestActivity$updatingEntryLike_2 {
-    key: string;
-    tokenName: number[];
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$updatingEntry
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$updatingEntryLike_2_2 {
     key: string;
     tokenName: number[];
 }
@@ -17053,6 +17111,17 @@ declare interface ManifestActivity$updatingEntryLike_5 {
 }
 
 /**
+ * A strong type for the permissive form of ManifestActivity$updatingEntry
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface ManifestActivity$updatingEntryLike_6 {
+    key: string;
+    tokenName: number[];
+}
+
+/**
  * ManifestActivity enum variants
  *
  * @remarks - expresses the essential raw data structures
@@ -17062,7 +17131,7 @@ declare interface ManifestActivity$updatingEntryLike_5 {
  *     for generating UPLC data for this enum type
  * @public
  */
-export declare type ManifestActivity = {
+declare type ManifestActivity = {
     retiringEntry: string;
 } | {
     updatingEntry: ManifestActivity$updatingEntry;
@@ -17106,51 +17175,7 @@ declare type ManifestActivity_2 = {
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type ManifestActivity_2_2 = {
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntry_2_2;
-} | {
-    addingEntry: ManifestActivity$addingEntry_2_2;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadToken_2_2;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadToken_2_2;
-};
-
-/**
- * ManifestActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **5 variant(s)** of the ManifestActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
 declare type ManifestActivity_3 = {
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntry_4;
-} | {
-    addingEntry: ManifestActivity$addingEntry_4;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadToken_4;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadToken_4;
-};
-
-/**
- * ManifestActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **5 variant(s)** of the ManifestActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type ManifestActivity_4 = {
     retiringEntry: string;
 } | {
     updatingEntry: ManifestActivity$updatingEntry_5;
@@ -17172,7 +17197,7 @@ declare type ManifestActivity_4 = {
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type ManifestActivity_5 = {
+declare type ManifestActivity_4 = {
     retiringEntry: string;
 } | {
     updatingEntry: ManifestActivity$updatingEntry_6;
@@ -17185,11 +17210,109 @@ declare type ManifestActivity_5 = {
 };
 
 /**
+ * ManifestActivity enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **5 variant(s)** of the ManifestActivity enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type ManifestActivity_5 = {
+    retiringEntry: string;
+} | {
+    updatingEntry: ManifestActivity$updatingEntry_7;
+} | {
+    addingEntry: ManifestActivity$addingEntry_7;
+} | {
+    forkingThreadToken: ManifestActivity$forkingThreadToken_7;
+} | {
+    burningThreadToken: ManifestActivity$burningThreadToken_7;
+};
+
+/**
+ * ManifestActivity enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **5 variant(s)** of the ManifestActivity enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type ManifestActivity_6 = {
+    retiringEntry: string;
+} | {
+    updatingEntry: ManifestActivity$updatingEntry_8;
+} | {
+    addingEntry: ManifestActivity$addingEntry_8;
+} | {
+    forkingThreadToken: ManifestActivity$forkingThreadToken_8;
+} | {
+    burningThreadToken: ManifestActivity$burningThreadToken_8;
+};
+
+/**
  * Helper class for generating UplcData for variants of the ***ManifestActivity*** enum type.
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 declare class ManifestActivityHelper extends EnumBridge<JustAnEnum> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<ManifestActivity, Partial<{
+        retiringEntry: string;
+        updatingEntry: ManifestActivity$updatingEntryLike;
+        addingEntry: ManifestActivity$addingEntryLike;
+        forkingThreadToken: ManifestActivity$forkingThreadTokenLike;
+        burningThreadToken: ManifestActivity$burningThreadTokenLike;
+    }>>;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
+     */
+    retiringEntry(key: string): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
+     * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
+     */
+    updatingEntry(fields: ManifestActivity$updatingEntryLike | {
+        key: string;
+        tokenName: number[];
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
+     * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
+     */
+    addingEntry(fields: ManifestActivity$addingEntryLike | {
+        key: string;
+        tokenName: number[];
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
+     * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
+     */
+    forkingThreadToken(fields: ManifestActivity$forkingThreadTokenLike | {
+        key: string;
+        newThreadCount: IntLike;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
+     * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
+     */
+    burningThreadToken(fields: ManifestActivity$burningThreadTokenLike | {
+        key: string;
+        burnedThreadCount: IntLike;
+    }): UplcData;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***ManifestActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class ManifestActivityHelper_2 extends EnumBridge<JustAnEnum> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -17233,60 +17356,6 @@ declare class ManifestActivityHelper extends EnumBridge<JustAnEnum> {
      * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
      */
     burningThreadToken(fields: ManifestActivity$burningThreadTokenLike_2 | {
-        key: string;
-        burnedThreadCount: IntLike;
-    }): UplcData;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***ManifestActivity*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class ManifestActivityHelper_2 extends EnumBridge<JustAnEnum> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<ManifestActivity_2_2, Partial<{
-        retiringEntry: string;
-        updatingEntry: ManifestActivity$updatingEntryLike_2_2;
-        addingEntry: ManifestActivity$addingEntryLike_2_2;
-        forkingThreadToken: ManifestActivity$forkingThreadTokenLike_2_2;
-        burningThreadToken: ManifestActivity$burningThreadTokenLike_2_2;
-    }>>;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
-     */
-    retiringEntry(key: string): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
-     * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
-     */
-    updatingEntry(fields: ManifestActivity$updatingEntryLike_2_2 | {
-        key: string;
-        tokenName: number[];
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
-     * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
-     */
-    addingEntry(fields: ManifestActivity$addingEntryLike_2_2 | {
-        key: string;
-        tokenName: number[];
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
-     * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
-     */
-    forkingThreadToken(fields: ManifestActivity$forkingThreadTokenLike_2_2 | {
-        key: string;
-        newThreadCount: IntLike;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
-     * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
-     */
-    burningThreadToken(fields: ManifestActivity$burningThreadTokenLike_2_2 | {
         key: string;
         burnedThreadCount: IntLike;
     }): UplcData;
@@ -17355,60 +17424,6 @@ declare class ManifestActivityHelper_4 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<ManifestActivity, Partial<{
-        retiringEntry: string;
-        updatingEntry: ManifestActivity$updatingEntryLike;
-        addingEntry: ManifestActivity$addingEntryLike;
-        forkingThreadToken: ManifestActivity$forkingThreadTokenLike;
-        burningThreadToken: ManifestActivity$burningThreadTokenLike;
-    }>>;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
-     */
-    retiringEntry(key: string): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
-     * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
-     */
-    updatingEntry(fields: ManifestActivity$updatingEntryLike | {
-        key: string;
-        tokenName: number[];
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
-     * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
-     */
-    addingEntry(fields: ManifestActivity$addingEntryLike | {
-        key: string;
-        tokenName: number[];
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
-     * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
-     */
-    forkingThreadToken(fields: ManifestActivity$forkingThreadTokenLike | {
-        key: string;
-        newThreadCount: IntLike;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
-     * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
-     */
-    burningThreadToken(fields: ManifestActivity$burningThreadTokenLike | {
-        key: string;
-        burnedThreadCount: IntLike;
-    }): UplcData;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***ManifestActivity*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class ManifestActivityHelper_5 extends EnumBridge<JustAnEnum_3> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<ManifestActivity_4, Partial<{
         retiringEntry: string;
         updatingEntry: ManifestActivity$updatingEntryLike_4;
@@ -17459,7 +17474,7 @@ declare class ManifestActivityHelper_5 extends EnumBridge<JustAnEnum_3> {
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class ManifestActivityHelper_6 extends EnumBridge<JustAnEnum_3> {
+declare class ManifestActivityHelper_5 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -17513,7 +17528,136 @@ declare class ManifestActivityHelper_6 extends EnumBridge<JustAnEnum_3> {
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class ManifestActivityHelper_6 extends EnumBridge<JustAnEnum_3> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<ManifestActivity_6, Partial<{
+        retiringEntry: string;
+        updatingEntry: ManifestActivity$updatingEntryLike_6;
+        addingEntry: ManifestActivity$addingEntryLike_6;
+        forkingThreadToken: ManifestActivity$forkingThreadTokenLike_6;
+        burningThreadToken: ManifestActivity$burningThreadTokenLike_6;
+    }>>;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
+     */
+    retiringEntry(key: string): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
+     * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
+     */
+    updatingEntry(fields: ManifestActivity$updatingEntryLike_6 | {
+        key: string;
+        tokenName: number[];
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
+     * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
+     */
+    addingEntry(fields: ManifestActivity$addingEntryLike_6 | {
+        key: string;
+        tokenName: number[];
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
+     * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
+     */
+    forkingThreadToken(fields: ManifestActivity$forkingThreadTokenLike_6 | {
+        key: string;
+        newThreadCount: IntLike;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
+     * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
+     */
+    burningThreadToken(fields: ManifestActivity$burningThreadTokenLike_6 | {
+        key: string;
+        burnedThreadCount: IntLike;
+    }): UplcData;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***ManifestActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 declare class ManifestActivityHelperNested extends EnumBridge<isActivity> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<ManifestActivity, Partial<{
+        retiringEntry: string;
+        updatingEntry: ManifestActivity$updatingEntryLike;
+        addingEntry: ManifestActivity$addingEntryLike;
+        forkingThreadToken: ManifestActivity$forkingThreadTokenLike;
+        burningThreadToken: ManifestActivity$burningThreadTokenLike;
+    }>>;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
+     * @remarks
+     * #### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    retiringEntry(key: string): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
+     * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    updatingEntry(fields: ManifestActivity$updatingEntryLike | {
+        key: string;
+        tokenName: number[];
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
+     * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    addingEntry(fields: ManifestActivity$addingEntryLike | {
+        key: string;
+        tokenName: number[];
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
+     * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    forkingThreadToken(fields: ManifestActivity$forkingThreadTokenLike | {
+        key: string;
+        newThreadCount: IntLike;
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
+     * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    burningThreadToken(fields: ManifestActivity$burningThreadTokenLike | {
+        key: string;
+        burnedThreadCount: IntLike;
+    }): isActivity;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***ManifestActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class ManifestActivityHelperNested_2 extends EnumBridge<isActivity> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -17578,81 +17722,6 @@ declare class ManifestActivityHelperNested extends EnumBridge<isActivity> {
      * a complete wrapper for this inner activity detail.
      */
     burningThreadToken(fields: ManifestActivity$burningThreadTokenLike_2 | {
-        key: string;
-        burnedThreadCount: IntLike;
-    }): isActivity;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***ManifestActivity*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class ManifestActivityHelperNested_2 extends EnumBridge<isActivity> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<ManifestActivity_2_2, Partial<{
-        retiringEntry: string;
-        updatingEntry: ManifestActivity$updatingEntryLike_2_2;
-        addingEntry: ManifestActivity$addingEntryLike_2_2;
-        forkingThreadToken: ManifestActivity$forkingThreadTokenLike_2_2;
-        burningThreadToken: ManifestActivity$burningThreadTokenLike_2_2;
-    }>>;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    retiringEntry(key: string): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
-     * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    updatingEntry(fields: ManifestActivity$updatingEntryLike_2_2 | {
-        key: string;
-        tokenName: number[];
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
-     * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    addingEntry(fields: ManifestActivity$addingEntryLike_2_2 | {
-        key: string;
-        tokenName: number[];
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
-     * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    forkingThreadToken(fields: ManifestActivity$forkingThreadTokenLike_2_2 | {
-        key: string;
-        newThreadCount: IntLike;
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
-     * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    burningThreadToken(fields: ManifestActivity$burningThreadTokenLike_2_2 | {
         key: string;
         burnedThreadCount: IntLike;
     }): isActivity;
@@ -17742,81 +17811,6 @@ declare class ManifestActivityHelperNested_4 extends EnumBridge<isActivity> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<ManifestActivity, Partial<{
-        retiringEntry: string;
-        updatingEntry: ManifestActivity$updatingEntryLike;
-        addingEntry: ManifestActivity$addingEntryLike;
-        forkingThreadToken: ManifestActivity$forkingThreadTokenLike;
-        burningThreadToken: ManifestActivity$burningThreadTokenLike;
-    }>>;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    retiringEntry(key: string): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
-     * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    updatingEntry(fields: ManifestActivity$updatingEntryLike | {
-        key: string;
-        tokenName: number[];
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
-     * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    addingEntry(fields: ManifestActivity$addingEntryLike | {
-        key: string;
-        tokenName: number[];
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
-     * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    forkingThreadToken(fields: ManifestActivity$forkingThreadTokenLike | {
-        key: string;
-        newThreadCount: IntLike;
-    }): isActivity;
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
-     * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
-     * ##### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    burningThreadToken(fields: ManifestActivity$burningThreadTokenLike | {
-        key: string;
-        burnedThreadCount: IntLike;
-    }): isActivity;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***ManifestActivity*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class ManifestActivityHelperNested_5 extends EnumBridge<isActivity> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<ManifestActivity_4, Partial<{
         retiringEntry: string;
         updatingEntry: ManifestActivity$updatingEntryLike_4;
@@ -17888,7 +17882,7 @@ declare class ManifestActivityHelperNested_5 extends EnumBridge<isActivity> {
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class ManifestActivityHelperNested_6 extends EnumBridge<isActivity> {
+declare class ManifestActivityHelperNested_5 extends EnumBridge<isActivity> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -17959,6 +17953,81 @@ declare class ManifestActivityHelperNested_6 extends EnumBridge<isActivity> {
 }
 
 /**
+ * Helper class for generating UplcData for variants of the ***ManifestActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class ManifestActivityHelperNested_6 extends EnumBridge<isActivity> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<ManifestActivity_6, Partial<{
+        retiringEntry: string;
+        updatingEntry: ManifestActivity$updatingEntryLike_6;
+        addingEntry: ManifestActivity$addingEntryLike_6;
+        forkingThreadToken: ManifestActivity$forkingThreadTokenLike_6;
+        burningThreadToken: ManifestActivity$burningThreadTokenLike_6;
+    }>>;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
+     * @remarks
+     * #### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    retiringEntry(key: string): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
+     * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    updatingEntry(fields: ManifestActivity$updatingEntryLike_6 | {
+        key: string;
+        tokenName: number[];
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
+     * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    addingEntry(fields: ManifestActivity$addingEntryLike_6 | {
+        key: string;
+        tokenName: number[];
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
+     * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    forkingThreadToken(fields: ManifestActivity$forkingThreadTokenLike_6 | {
+        key: string;
+        newThreadCount: IntLike;
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
+     * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    burningThreadToken(fields: ManifestActivity$burningThreadTokenLike_6 | {
+        key: string;
+        burnedThreadCount: IntLike;
+    }): isActivity;
+}
+
+/**
  * ManifestActivity enum variants (permissive)
  *
  * @remarks - expresses the allowable data structure
@@ -17972,7 +18041,7 @@ declare class ManifestActivityHelperNested_6 extends EnumBridge<isActivity> {
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-export declare type ManifestActivityLike = IntersectedEnum<{
+declare type ManifestActivityLike = IntersectedEnum<{
     retiringEntry: string;
 } | {
     updatingEntry: ManifestActivity$updatingEntryLike;
@@ -18008,32 +18077,6 @@ declare type ManifestActivityLike_2 = IntersectedEnum<{
     forkingThreadToken: ManifestActivity$forkingThreadTokenLike_2;
 } | {
     burningThreadToken: ManifestActivity$burningThreadTokenLike_2;
-}>;
-
-/**
- * ManifestActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **5 variant(s)** of the ManifestActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type ManifestActivityLike_2_2 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntryLike_2_2;
-} | {
-    addingEntry: ManifestActivity$addingEntryLike_2_2;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadTokenLike_2_2;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadTokenLike_2_2;
 }>;
 
 /**
@@ -18115,24 +18158,36 @@ declare type ManifestActivityLike_5 = IntersectedEnum<{
 }>;
 
 /**
- * @internal
+ * ManifestActivity enum variants (permissive)
+ *
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **5 variant(s)** of the ManifestActivity enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
  */
-export declare type ManifestActivityMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "ManifestActivity";
-}, {
-    retiringEntry: singleEnumVariantMeta<ManifestActivityMeta, "retiringEntry", "Constr#0", "singletonField", /* implied wrapper { key: ... } for singleVariantField */ string, "noSpecialFlags">;
-    updatingEntry: singleEnumVariantMeta<ManifestActivityMeta, "updatingEntry", "Constr#1", "fields", ManifestActivity$updatingEntry, "noSpecialFlags">;
-    addingEntry: singleEnumVariantMeta<ManifestActivityMeta, "addingEntry", "Constr#2", "fields", ManifestActivity$addingEntry, "noSpecialFlags">;
-    forkingThreadToken: singleEnumVariantMeta<ManifestActivityMeta, "forkingThreadToken", "Constr#3", "fields", ManifestActivity$forkingThreadToken, "noSpecialFlags">;
-    burningThreadToken: singleEnumVariantMeta<ManifestActivityMeta, "burningThreadToken", "Constr#4", "fields", ManifestActivity$burningThreadToken, "noSpecialFlags">;
+declare type ManifestActivityLike_6 = IntersectedEnum<{
+    retiringEntry: string;
+} | {
+    updatingEntry: ManifestActivity$updatingEntryLike_6;
+} | {
+    addingEntry: ManifestActivity$addingEntryLike_6;
+} | {
+    forkingThreadToken: ManifestActivity$forkingThreadTokenLike_6;
+} | {
+    burningThreadToken: ManifestActivity$burningThreadTokenLike_6;
 }>;
 
 /**
  * @public
  */
-declare type ManifestEntryTokenRef = Omit<CapoManifestEntryLike_2, "entryType"> & {
-    entryType: Pick<CapoManifestEntryLike_2["entryType"], "NamedTokenRef">;
+declare type ManifestEntryTokenRef = Omit<CapoManifestEntryLike, "entryType"> & {
+    entryType: Pick<CapoManifestEntryLike["entryType"], "NamedTokenRef">;
 };
 
 /**
@@ -18143,7 +18198,7 @@ declare type ManifestEntryTokenRef = Omit<CapoManifestEntryLike_2, "entryType"> 
  * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DelegateThreads instead.
  * @public
  */
-export declare interface ManifestEntryType$DelegateThreads {
+declare interface ManifestEntryType$DelegateThreads {
     role: DelegateRole;
     refCount: bigint;
 }
@@ -18169,33 +18224,7 @@ declare interface ManifestEntryType$DelegateThreads_2 {
  * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DelegateThreads instead.
  * @public
  */
-declare interface ManifestEntryType$DelegateThreads_2_2 {
-    role: DelegateRole_2_2;
-    refCount: bigint;
-}
-
-/**
- * A strong type for the canonical form of ManifestEntryType$DelegateThreads
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DelegateThreads instead.
- * @public
- */
 declare interface ManifestEntryType$DelegateThreads_3 {
-    role: DelegateRole_4;
-    refCount: bigint;
-}
-
-/**
- * A strong type for the canonical form of ManifestEntryType$DelegateThreads
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DelegateThreads instead.
- * @public
- */
-declare interface ManifestEntryType$DelegateThreads_4 {
     role: DelegateRole_5;
     refCount: bigint;
 }
@@ -18208,8 +18237,34 @@ declare interface ManifestEntryType$DelegateThreads_4 {
  * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DelegateThreads instead.
  * @public
  */
-declare interface ManifestEntryType$DelegateThreads_5 {
+declare interface ManifestEntryType$DelegateThreads_4 {
     role: DelegateRole_6;
+    refCount: bigint;
+}
+
+/**
+ * A strong type for the canonical form of ManifestEntryType$DelegateThreads
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DelegateThreads instead.
+ * @public
+ */
+declare interface ManifestEntryType$DelegateThreads_5 {
+    role: DelegateRole_7;
+    refCount: bigint;
+}
+
+/**
+ * A strong type for the canonical form of ManifestEntryType$DelegateThreads
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DelegateThreads instead.
+ * @public
+ */
+declare interface ManifestEntryType$DelegateThreads_6 {
+    role: DelegateRole_8;
     refCount: bigint;
 }
 
@@ -18219,7 +18274,7 @@ declare interface ManifestEntryType$DelegateThreads_5 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface ManifestEntryType$DelegateThreadsLike {
+declare interface ManifestEntryType$DelegateThreadsLike {
     role: DelegateRoleLike;
     refCount: IntLike;
 }
@@ -18232,17 +18287,6 @@ export declare interface ManifestEntryType$DelegateThreadsLike {
  */
 declare interface ManifestEntryType$DelegateThreadsLike_2 {
     role: DelegateRoleLike_2;
-    refCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestEntryType$DelegateThreads
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestEntryType$DelegateThreadsLike_2_2 {
-    role: DelegateRoleLike_2_2;
     refCount: IntLike;
 }
 
@@ -18280,6 +18324,17 @@ declare interface ManifestEntryType$DelegateThreadsLike_5 {
 }
 
 /**
+ * A strong type for the permissive form of ManifestEntryType$DelegateThreads
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface ManifestEntryType$DelegateThreadsLike_6 {
+    role: DelegateRoleLike_6;
+    refCount: IntLike;
+}
+
+/**
  * A strong type for the canonical form of ManifestEntryType$DgDataPolicy
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -18287,7 +18342,7 @@ declare interface ManifestEntryType$DelegateThreadsLike_5 {
  * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DgDataPolicy instead.
  * @public
  */
-export declare interface ManifestEntryType$DgDataPolicy {
+declare interface ManifestEntryType$DgDataPolicy {
     policyLink: RelativeDelegateLink;
     idPrefix: string;
     refCount: bigint;
@@ -18302,20 +18357,6 @@ export declare interface ManifestEntryType$DgDataPolicy {
  * @public
  */
 declare interface ManifestEntryType$DgDataPolicy_2 {
-    policyLink: RelativeDelegateLink_2;
-    idPrefix: string;
-    refCount: bigint;
-}
-
-/**
- * A strong type for the canonical form of ManifestEntryType$DgDataPolicy
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DgDataPolicy instead.
- * @public
- */
-declare interface ManifestEntryType$DgDataPolicy_2_2 {
     policyLink: RelativeDelegateLink_3;
     idPrefix: string;
     refCount: bigint;
@@ -18330,20 +18371,6 @@ declare interface ManifestEntryType$DgDataPolicy_2_2 {
  * @public
  */
 declare interface ManifestEntryType$DgDataPolicy_3 {
-    policyLink: RelativeDelegateLink_5;
-    idPrefix: string;
-    refCount: bigint;
-}
-
-/**
- * A strong type for the canonical form of ManifestEntryType$DgDataPolicy
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DgDataPolicy instead.
- * @public
- */
-declare interface ManifestEntryType$DgDataPolicy_4 {
     policyLink: RelativeDelegateLink_6;
     idPrefix: string;
     refCount: bigint;
@@ -18357,8 +18384,36 @@ declare interface ManifestEntryType$DgDataPolicy_4 {
  * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DgDataPolicy instead.
  * @public
  */
-declare interface ManifestEntryType$DgDataPolicy_5 {
+declare interface ManifestEntryType$DgDataPolicy_4 {
     policyLink: RelativeDelegateLink_7;
+    idPrefix: string;
+    refCount: bigint;
+}
+
+/**
+ * A strong type for the canonical form of ManifestEntryType$DgDataPolicy
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DgDataPolicy instead.
+ * @public
+ */
+declare interface ManifestEntryType$DgDataPolicy_5 {
+    policyLink: RelativeDelegateLink_8;
+    idPrefix: string;
+    refCount: bigint;
+}
+
+/**
+ * A strong type for the canonical form of ManifestEntryType$DgDataPolicy
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DgDataPolicy instead.
+ * @public
+ */
+declare interface ManifestEntryType$DgDataPolicy_6 {
+    policyLink: RelativeDelegateLink_9;
     idPrefix: string;
     refCount: bigint;
 }
@@ -18369,7 +18424,7 @@ declare interface ManifestEntryType$DgDataPolicy_5 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface ManifestEntryType$DgDataPolicyLike {
+declare interface ManifestEntryType$DgDataPolicyLike {
     policyLink: RelativeDelegateLinkLike;
     idPrefix: string;
     refCount: IntLike;
@@ -18382,18 +18437,6 @@ export declare interface ManifestEntryType$DgDataPolicyLike {
  * @public
  */
 declare interface ManifestEntryType$DgDataPolicyLike_2 {
-    policyLink: RelativeDelegateLinkLike_2;
-    idPrefix: string;
-    refCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestEntryType$DgDataPolicy
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestEntryType$DgDataPolicyLike_2_2 {
     policyLink: RelativeDelegateLinkLike_3;
     idPrefix: string;
     refCount: IntLike;
@@ -18436,6 +18479,18 @@ declare interface ManifestEntryType$DgDataPolicyLike_5 {
 }
 
 /**
+ * A strong type for the permissive form of ManifestEntryType$DgDataPolicy
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface ManifestEntryType$DgDataPolicyLike_6 {
+    policyLink: RelativeDelegateLinkLike_7;
+    idPrefix: string;
+    refCount: IntLike;
+}
+
+/**
  * An ergonomic, though less strictly-safe form of ManifestEntryType$DelegateThreads
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -18444,7 +18499,7 @@ declare interface ManifestEntryType$DgDataPolicyLike_5 {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ManifestEntryType$Ergo$DelegateThreads = {
+declare type ManifestEntryType$Ergo$DelegateThreads = {
     role: ErgoDelegateRole;
     refCount: bigint;
 };
@@ -18460,20 +18515,6 @@ export declare type ManifestEntryType$Ergo$DelegateThreads = {
  */
 declare type ManifestEntryType$Ergo$DelegateThreads_2 = {
     role: ErgoDelegateRole_2;
-    refCount: bigint;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestEntryType$DelegateThreads
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestEntryType$DelegateThreadsLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestEntryType$Ergo$DelegateThreads_2_2 = {
-    role: ErgoDelegateRole_2_2;
     refCount: bigint;
 };
 
@@ -18534,6 +18575,34 @@ declare type ManifestEntryType$Ergo$DelegateThreads_6 = {
 };
 
 /**
+ * An ergonomic, though less strictly-safe form of ManifestEntryType$DelegateThreads
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the ManifestEntryType$DelegateThreadsLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ManifestEntryType$Ergo$DelegateThreads_7 = {
+    role: ErgoDelegateRole_7;
+    refCount: bigint;
+};
+
+/**
+ * An ergonomic, though less strictly-safe form of ManifestEntryType$DelegateThreads
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the ManifestEntryType$DelegateThreadsLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ManifestEntryType$Ergo$DelegateThreads_8 = {
+    role: ErgoDelegateRole_8;
+    refCount: bigint;
+};
+
+/**
  * An ergonomic, though less strictly-safe form of ManifestEntryType$DgDataPolicy
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -18542,7 +18611,7 @@ declare type ManifestEntryType$Ergo$DelegateThreads_6 = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ManifestEntryType$Ergo$DgDataPolicy = {
+declare type ManifestEntryType$Ergo$DgDataPolicy = {
     policyLink: ErgoRelativeDelegateLink;
     idPrefix: string;
     refCount: bigint;
@@ -18559,21 +18628,6 @@ export declare type ManifestEntryType$Ergo$DgDataPolicy = {
  */
 declare type ManifestEntryType$Ergo$DgDataPolicy_2 = {
     policyLink: ErgoRelativeDelegateLink_2;
-    idPrefix: string;
-    refCount: bigint;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestEntryType$DgDataPolicy
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestEntryType$DgDataPolicyLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestEntryType$Ergo$DgDataPolicy_2_2 = {
-    policyLink: ErgoRelativeDelegateLink_2_2;
     idPrefix: string;
     refCount: bigint;
 };
@@ -18639,6 +18693,36 @@ declare type ManifestEntryType$Ergo$DgDataPolicy_6 = {
 };
 
 /**
+ * An ergonomic, though less strictly-safe form of ManifestEntryType$DgDataPolicy
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the ManifestEntryType$DgDataPolicyLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ManifestEntryType$Ergo$DgDataPolicy_7 = {
+    policyLink: ErgoRelativeDelegateLink_7;
+    idPrefix: string;
+    refCount: bigint;
+};
+
+/**
+ * An ergonomic, though less strictly-safe form of ManifestEntryType$DgDataPolicy
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the ManifestEntryType$DgDataPolicyLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ManifestEntryType$Ergo$DgDataPolicy_8 = {
+    policyLink: ErgoRelativeDelegateLink_8;
+    idPrefix: string;
+    refCount: bigint;
+};
+
+/**
  * ManifestEntryType enum variants
  *
  * @remarks - expresses the essential raw data structures
@@ -18648,7 +18732,7 @@ declare type ManifestEntryType$Ergo$DgDataPolicy_6 = {
  *     for generating UPLC data for this enum type
  * @public
  */
-export declare type ManifestEntryType = {
+declare type ManifestEntryType = {
     NamedTokenRef: tagOnly;
 } | {
     DgDataPolicy: ManifestEntryType$DgDataPolicy;
@@ -18676,28 +18760,6 @@ declare type ManifestEntryType_2 = {
     DgDataPolicy: ManifestEntryType$DgDataPolicy_2;
 } | {
     DelegateThreads: ManifestEntryType$DelegateThreads_2;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-};
-
-/**
- * ManifestEntryType enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **5 variant(s)** of the ManifestEntryType enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type ManifestEntryType_2_2 = {
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicy_2_2;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreads_2_2;
 } | {
     MerkleMembership: tagOnly;
 } | {
@@ -18771,6 +18833,28 @@ declare type ManifestEntryType_5 = {
 };
 
 /**
+ * ManifestEntryType enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **5 variant(s)** of the ManifestEntryType enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type ManifestEntryType_6 = {
+    NamedTokenRef: tagOnly;
+} | {
+    DgDataPolicy: ManifestEntryType$DgDataPolicy_6;
+} | {
+    DelegateThreads: ManifestEntryType$DelegateThreads_6;
+} | {
+    MerkleMembership: tagOnly;
+} | {
+    MerkleStateRoot: tagOnly;
+};
+
+/**
  * Helper class for generating UplcData for variants of the ***ManifestEntryType*** enum type.
  * @public
  * @remarks
@@ -18779,10 +18863,10 @@ declare class ManifestEntryTypeHelper extends EnumBridge<JustAnEnum> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<ManifestEntryType_2, Partial<{
+    ᱺᱺcast: Cast<ManifestEntryType, Partial<{
         NamedTokenRef: tagOnly;
-        DgDataPolicy: ManifestEntryType$DgDataPolicyLike_2;
-        DelegateThreads: ManifestEntryType$DelegateThreadsLike_2;
+        DgDataPolicy: ManifestEntryType$DgDataPolicyLike;
+        DelegateThreads: ManifestEntryType$DelegateThreadsLike;
         MerkleMembership: tagOnly;
         MerkleStateRoot: tagOnly;
     }>>;
@@ -18795,8 +18879,8 @@ declare class ManifestEntryTypeHelper extends EnumBridge<JustAnEnum> {
      * generates  UplcData for ***"CapoHelpers::ManifestEntryType.DgDataPolicy"***
      * @remarks - ***ManifestEntryType$DgDataPolicyLike*** is the same as the expanded field-types.
      */
-    DgDataPolicy(fields: ManifestEntryType$DgDataPolicyLike_2 | {
-        policyLink: RelativeDelegateLinkLike_2;
+    DgDataPolicy(fields: ManifestEntryType$DgDataPolicyLike | {
+        policyLink: RelativeDelegateLinkLike;
         idPrefix: string;
         refCount: IntLike;
     }): UplcData;
@@ -18804,8 +18888,8 @@ declare class ManifestEntryTypeHelper extends EnumBridge<JustAnEnum> {
      * generates  UplcData for ***"CapoHelpers::ManifestEntryType.DelegateThreads"***
      * @remarks - ***ManifestEntryType$DelegateThreadsLike*** is the same as the expanded field-types.
      */
-    DelegateThreads(fields: ManifestEntryType$DelegateThreadsLike_2 | {
-        role: DelegateRoleLike_2;
+    DelegateThreads(fields: ManifestEntryType$DelegateThreadsLike | {
+        role: DelegateRoleLike;
         refCount: IntLike;
     }): UplcData;
     /**
@@ -18829,10 +18913,10 @@ declare class ManifestEntryTypeHelper_2 extends EnumBridge<JustAnEnum> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<ManifestEntryType_2_2, Partial<{
+    ᱺᱺcast: Cast<ManifestEntryType_2, Partial<{
         NamedTokenRef: tagOnly;
-        DgDataPolicy: ManifestEntryType$DgDataPolicyLike_2_2;
-        DelegateThreads: ManifestEntryType$DelegateThreadsLike_2_2;
+        DgDataPolicy: ManifestEntryType$DgDataPolicyLike_2;
+        DelegateThreads: ManifestEntryType$DelegateThreadsLike_2;
         MerkleMembership: tagOnly;
         MerkleStateRoot: tagOnly;
     }>>;
@@ -18845,7 +18929,7 @@ declare class ManifestEntryTypeHelper_2 extends EnumBridge<JustAnEnum> {
      * generates  UplcData for ***"CapoHelpers::ManifestEntryType.DgDataPolicy"***
      * @remarks - ***ManifestEntryType$DgDataPolicyLike*** is the same as the expanded field-types.
      */
-    DgDataPolicy(fields: ManifestEntryType$DgDataPolicyLike_2_2 | {
+    DgDataPolicy(fields: ManifestEntryType$DgDataPolicyLike_2 | {
         policyLink: RelativeDelegateLinkLike_3;
         idPrefix: string;
         refCount: IntLike;
@@ -18854,8 +18938,8 @@ declare class ManifestEntryTypeHelper_2 extends EnumBridge<JustAnEnum> {
      * generates  UplcData for ***"CapoHelpers::ManifestEntryType.DelegateThreads"***
      * @remarks - ***ManifestEntryType$DelegateThreadsLike*** is the same as the expanded field-types.
      */
-    DelegateThreads(fields: ManifestEntryType$DelegateThreadsLike_2_2 | {
-        role: DelegateRoleLike_2_2;
+    DelegateThreads(fields: ManifestEntryType$DelegateThreadsLike_2 | {
+        role: DelegateRoleLike_2;
         refCount: IntLike;
     }): UplcData;
     /**
@@ -18929,56 +19013,6 @@ declare class ManifestEntryTypeHelper_4 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<ManifestEntryType, Partial<{
-        NamedTokenRef: tagOnly;
-        DgDataPolicy: ManifestEntryType$DgDataPolicyLike;
-        DelegateThreads: ManifestEntryType$DelegateThreadsLike;
-        MerkleMembership: tagOnly;
-        MerkleStateRoot: tagOnly;
-    }>>;
-    /**
-     * (property getter): UplcData for ***"CapoHelpers::ManifestEntryType.NamedTokenRef"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-     */
-    get NamedTokenRef(): UplcData;
-    /**
-     * generates  UplcData for ***"CapoHelpers::ManifestEntryType.DgDataPolicy"***
-     * @remarks - ***ManifestEntryType$DgDataPolicyLike*** is the same as the expanded field-types.
-     */
-    DgDataPolicy(fields: ManifestEntryType$DgDataPolicyLike | {
-        policyLink: RelativeDelegateLinkLike;
-        idPrefix: string;
-        refCount: IntLike;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoHelpers::ManifestEntryType.DelegateThreads"***
-     * @remarks - ***ManifestEntryType$DelegateThreadsLike*** is the same as the expanded field-types.
-     */
-    DelegateThreads(fields: ManifestEntryType$DelegateThreadsLike | {
-        role: DelegateRoleLike;
-        refCount: IntLike;
-    }): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoHelpers::ManifestEntryType.MerkleMembership"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get MerkleMembership(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoHelpers::ManifestEntryType.MerkleStateRoot"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4***
-     */
-    get MerkleStateRoot(): UplcData;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***ManifestEntryType*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class ManifestEntryTypeHelper_5 extends EnumBridge<JustAnEnum_3> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<ManifestEntryType_4, Partial<{
         NamedTokenRef: tagOnly;
         DgDataPolicy: ManifestEntryType$DgDataPolicyLike_4;
@@ -19025,7 +19059,7 @@ declare class ManifestEntryTypeHelper_5 extends EnumBridge<JustAnEnum_3> {
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class ManifestEntryTypeHelper_6 extends EnumBridge<JustAnEnum_3> {
+declare class ManifestEntryTypeHelper_5 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -19071,6 +19105,56 @@ declare class ManifestEntryTypeHelper_6 extends EnumBridge<JustAnEnum_3> {
 }
 
 /**
+ * Helper class for generating UplcData for variants of the ***ManifestEntryType*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class ManifestEntryTypeHelper_6 extends EnumBridge<JustAnEnum_3> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<ManifestEntryType_6, Partial<{
+        NamedTokenRef: tagOnly;
+        DgDataPolicy: ManifestEntryType$DgDataPolicyLike_6;
+        DelegateThreads: ManifestEntryType$DelegateThreadsLike_6;
+        MerkleMembership: tagOnly;
+        MerkleStateRoot: tagOnly;
+    }>>;
+    /**
+     * (property getter): UplcData for ***"CapoHelpers::ManifestEntryType.NamedTokenRef"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+     */
+    get NamedTokenRef(): UplcData;
+    /**
+     * generates  UplcData for ***"CapoHelpers::ManifestEntryType.DgDataPolicy"***
+     * @remarks - ***ManifestEntryType$DgDataPolicyLike*** is the same as the expanded field-types.
+     */
+    DgDataPolicy(fields: ManifestEntryType$DgDataPolicyLike_6 | {
+        policyLink: RelativeDelegateLinkLike_7;
+        idPrefix: string;
+        refCount: IntLike;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoHelpers::ManifestEntryType.DelegateThreads"***
+     * @remarks - ***ManifestEntryType$DelegateThreadsLike*** is the same as the expanded field-types.
+     */
+    DelegateThreads(fields: ManifestEntryType$DelegateThreadsLike_6 | {
+        role: DelegateRoleLike_6;
+        refCount: IntLike;
+    }): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoHelpers::ManifestEntryType.MerkleMembership"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+     */
+    get MerkleMembership(): UplcData;
+    /**
+     * (property getter): UplcData for ***"CapoHelpers::ManifestEntryType.MerkleStateRoot"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4***
+     */
+    get MerkleStateRoot(): UplcData;
+}
+
+/**
  * ManifestEntryType enum variants (permissive)
  *
  * @remarks - expresses the allowable data structure
@@ -19084,7 +19168,7 @@ declare class ManifestEntryTypeHelper_6 extends EnumBridge<JustAnEnum_3> {
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-export declare type ManifestEntryTypeLike = IntersectedEnum<{
+declare type ManifestEntryTypeLike = IntersectedEnum<{
     NamedTokenRef: tagOnly;
 } | {
     DgDataPolicy: ManifestEntryType$DgDataPolicyLike;
@@ -19116,32 +19200,6 @@ declare type ManifestEntryTypeLike_2 = IntersectedEnum<{
     DgDataPolicy: ManifestEntryType$DgDataPolicyLike_2;
 } | {
     DelegateThreads: ManifestEntryType$DelegateThreadsLike_2;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
-
-/**
- * ManifestEntryType enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **5 variant(s)** of the ManifestEntryType enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type ManifestEntryTypeLike_2_2 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicyLike_2_2;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreadsLike_2_2;
 } | {
     MerkleMembership: tagOnly;
 } | {
@@ -19227,24 +19285,30 @@ declare type ManifestEntryTypeLike_5 = IntersectedEnum<{
 }>;
 
 /**
- * @internal
- */
-export declare type ManifestEntryTypeMeta = EnumTypeMeta<{
-    module: "CapoHelpers";
-    enumName: "ManifestEntryType";
-}, {
-    NamedTokenRef: singleEnumVariantMeta<ManifestEntryTypeMeta, "NamedTokenRef", "Constr#0", "tagOnly", tagOnly, "noSpecialFlags">;
-    DgDataPolicy: singleEnumVariantMeta<ManifestEntryTypeMeta, "DgDataPolicy", "Constr#1", "fields", ManifestEntryType$DgDataPolicy, "noSpecialFlags">;
-    DelegateThreads: singleEnumVariantMeta<ManifestEntryTypeMeta, "DelegateThreads", "Constr#2", "fields", ManifestEntryType$DelegateThreads, "noSpecialFlags">;
-    MerkleMembership: singleEnumVariantMeta<ManifestEntryTypeMeta, "MerkleMembership", "Constr#3", "tagOnly", tagOnly, "noSpecialFlags">;
-    MerkleStateRoot: singleEnumVariantMeta<ManifestEntryTypeMeta, "MerkleStateRoot", "Constr#4", "tagOnly", tagOnly, "noSpecialFlags">;
-}>;
-
-/**
- * expresses the essential fields needed for initiating creation of a AnyData
+ * ManifestEntryType enum variants (permissive)
+ *
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **5 variant(s)** of the ManifestEntryType enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are
+ * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-export declare type minimalAnyData = minimalData<AnyDataLike>;
+declare type ManifestEntryTypeLike_6 = IntersectedEnum<{
+    NamedTokenRef: tagOnly;
+} | {
+    DgDataPolicy: ManifestEntryType$DgDataPolicyLike_6;
+} | {
+    DelegateThreads: ManifestEntryType$DelegateThreadsLike_6;
+} | {
+    MerkleMembership: tagOnly;
+} | {
+    MerkleStateRoot: tagOnly;
+}>;
 
 /**
  * Schema for initial setup of Charter Datum - state stored in the Leader contract
@@ -19294,21 +19358,13 @@ declare type MinimalDelegateUpdateLink = Omit<OffchainPartialDelegateLink, "uutN
     forcedUpdate?: true;
 };
 
-/**
- * expresses the essential fields needed for initiating creation of a DgDataDetails
- * @public
- */
-export declare type minimalDgDataDetails = minimalData<DgDataDetailsLike>;
-
 declare type minimalNeighborhoodData = minimalData<ErgoNeighborhoodData>;
 
 /**
  * expresses the essential fields needed for initiating creation of a NodeRegistrationData
  * @public
  */
-export declare type minimalNodeRegistrationData = minimalData<NodeRegistrationDataLike>;
-
-declare type minimalNodeRegistrationData_2 = minimalData<ErgoNodeRegistrationData>;
+declare type minimalNodeRegistrationData = minimalData<NodeRegistrationDataLike>;
 
 /**
  * expresses the essential fields needed for initiating creation of a ProtocolSettings
@@ -19560,21 +19616,7 @@ declare interface MinterBaseMethods {
  *     for generating UPLC data for this enum type
  * @public
  */
-export declare type MintingActivity = {
-    CreatingRecord: TxOutputId;
-};
-
-/**
- * MintingActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the MintingActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type MintingActivity_2 = {
+declare type MintingActivity = {
     _placeholder1MA: TxOutputId;
 };
 
@@ -19588,10 +19630,24 @@ declare type MintingActivity_2 = {
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type MintingActivity_3 = {
-    SampleMintingActivity: tagOnly;
+declare type MintingActivity_2 = {
+    MintingParticipantToken: TxOutputId;
 } | {
     MintingFungibleTokens: number[];
+};
+
+/**
+ * MintingActivity enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the MintingActivity enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type MintingActivity_3 = {
+    CreatingRecord: TxOutputId;
 };
 
 /**
@@ -19676,17 +19732,41 @@ declare class MintingActivityHelper_2 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<MintingActivity_3, Partial<{
-        SampleMintingActivity: tagOnly;
+    ᱺᱺcast: Cast<MintingActivity_2, Partial<{
+        MintingParticipantToken: TxOutputId | string;
         MintingFungibleTokens: number[];
     }>>;
     /**
-     * (property getter): UplcData for ***"MyMintSpendDelegate::MintingActivity.SampleMintingActivity"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+     * generates  UplcData for ***"STokMintDelegate::MintingActivity.MintingParticipantToken"***,
+     * given a transaction-context (or direct arg) with a ***seed utxo***
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     *  - to get a transaction context having the seed needed for this argument,
+     *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
+     * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+     *  - in a context providing an implicit seed utxo, use
+     *    the `$seeded$MintingParticipantToken}` variant of this activity instead
+     *
      */
-    get SampleMintingActivity(): UplcData;
+    MintingParticipantToken(thingWithSeed: hasSeed | TxOutputId | string): UplcData;
     /**
-     * generates  UplcData for ***"MyMintSpendDelegate::MintingActivity.MintingFungibleTokens"***
+     * generates  UplcData for ***"STokMintDelegate::MintingActivity.MintingParticipantToken"***
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     * #### Usage
+     * Access the activity-creator as a getter: `$seeded$MintingParticipantToken`
+     *
+     * Use the resulting activity-creator in a seed-providing context, such as the delegated-data-controller's
+     * `mkTxnCreateRecord({activity, ...})` method.
+     */
+    get $seeded$MintingParticipantToken(): SeedActivity_2<(thingWithSeed: hasSeed | TxOutputId | string) => UplcData>;
+    /**
+     * generates  UplcData for ***"STokMintDelegate::MintingActivity.MintingFungibleTokens"***
      */
     MintingFungibleTokens(tokenName: number[]): UplcData;
 }
@@ -19888,19 +19968,49 @@ declare class MintingActivityHelperNested_2 extends EnumBridge<isActivity> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<MintingActivity_3, Partial<{
-        SampleMintingActivity: tagOnly;
+    ᱺᱺcast: Cast<MintingActivity_2, Partial<{
+        MintingParticipantToken: TxOutputId | string;
         MintingFungibleTokens: number[];
     }>>;
     /**
-     * (property getter): UplcData for ***"MyMintSpendDelegate::MintingActivity.SampleMintingActivity"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::MintingActivity.MintingParticipantToken"***,
+     * given a transaction-context (or direct arg) with a ***seed utxo***
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     *  - to get a transaction context having the seed needed for this argument,
+     *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
+     * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+     *  - in a context providing an implicit seed utxo, use
+     *    the `$seeded$MintingParticipantToken}` variant of this activity instead
+     *
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
      */
-    get SampleMintingActivity(): {
-        redeemer: UplcData;
-    };
+    MintingParticipantToken(thingWithSeed: hasSeed | TxOutputId | string): isActivity;
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::MintingActivity.MintingFungibleTokens"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::MintingActivity.MintingParticipantToken"***
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     * #### Usage
+     * Access the activity-creator as a getter: `$seeded$MintingParticipantToken`
+     *
+     * Use the resulting activity-creator in a seed-providing context, such as the delegated-data-controller's
+     * `mkTxnCreateRecord({activity, ...})` method.
+     * #### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    get $seeded$MintingParticipantToken(): SeedActivity_2<(thingWithSeed: hasSeed | TxOutputId | string) => isActivity>;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::MintingActivity.MintingFungibleTokens"***
      * @remarks
      * #### Nested activity:
      * this is connected to a nested-activity wrapper, so the details are piped through
@@ -20083,25 +20193,7 @@ declare class MintingActivityHelperNested_5 extends EnumBridge<isActivity> {
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-export declare type MintingActivityLike = IntersectedEnum<{
-    CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId | string;
-}>;
-
-/**
- * MintingActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the MintingActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type MintingActivityLike_2 = IntersectedEnum<{
+declare type MintingActivityLike = IntersectedEnum<{
     _placeholder1MA: /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId | string;
 }>;
 
@@ -20119,10 +20211,28 @@ declare type MintingActivityLike_2 = IntersectedEnum<{
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type MintingActivityLike_3 = IntersectedEnum<{
-    SampleMintingActivity: tagOnly;
+declare type MintingActivityLike_2 = IntersectedEnum<{
+    MintingParticipantToken: /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId | string;
 } | {
     MintingFungibleTokens: number[];
+}>;
+
+/**
+ * MintingActivity enum variants (permissive)
+ *
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the MintingActivity enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+declare type MintingActivityLike_3 = IntersectedEnum<{
+    CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId | string;
 }>;
 
 /**
@@ -20159,16 +20269,6 @@ declare type MintingActivityLike_4 = IntersectedEnum<{
  */
 declare type MintingActivityLike_5 = IntersectedEnum<{
     CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId | string;
-}>;
-
-/**
- * @internal
- */
-export declare type MintingActivityMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "MintingActivity";
-}, {
-    CreatingRecord: singleEnumVariantMeta<MintingActivityMeta, "CreatingRecord", "Constr#0", "singletonField", /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId, "isSeededActivity">;
 }>;
 
 declare type MintTokensParams = [
@@ -20216,14 +20316,14 @@ declare type mustFindDatumType<T extends canHaveDataBridge, CBT extends someCont
  */
 declare type mustFindReadDatumType<T extends canHaveDataBridge, CBT extends someContractBridgeType = mustFindConcreteContractBridgeType<T>> = undefined extends CBT["datum"] ? never : undefined extends CBT["readDatum"] ? never : CBT["readDatum"];
 
-export declare class MyMintSpendDelegate extends BasicMintDelegate {
+export declare class MyMintSpendDelegate extends STokMintDelegate {
     get delegateName(): string;
     dataBridgeClass: typeof MyMintSpendDelegateDataBridge;
     scriptBundle(): CapoDelegateBundle;
 }
 
 /**
- * GENERATED data bridge for **BasicDelegate** script (defined in class ***MyMintSpendDelegateBundle***)
+ * GENERATED data bridge for **BasicDelegate** script (defined in class ***DredMintSpendDelegateBundle***)
  * main: **src/delegation/BasicDelegate.hl**, project: **stellar-contracts**
  * @remarks
  * This class doesn't need to be used directly.  Its methods are available through the ***contract's methods***:
@@ -20251,7 +20351,7 @@ declare class MyMintSpendDelegateDataBridge extends ContractDataBridge {
      * this is the specific type of datum for the `BasicDelegate` script
      */
     DelegateDatum: DelegateDatumHelper_2;
-    readDatum: (d: UplcData) => ErgoDelegateDatum_3;
+    readDatum: (d: UplcData) => ErgoDelegateDatum_2;
     /**
      * generates UplcData for the activity type (***DelegateActivity***) for the `BasicDelegate` script
      */
@@ -20325,7 +20425,7 @@ declare class MyMintSpendDelegateDataBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***DelegationDetail*** for the `BasicDelegate` script
          */
-        DelegationDetail: (fields: DelegationDetailLike_3 | {
+        DelegationDetail: (fields: DelegationDetailLike_2 | {
             capoAddr: /*minStructField*/ Address | string;
             mph: /*minStructField*/ MintingPolicyHash | string | number[];
             tn: number[];
@@ -20357,9 +20457,9 @@ declare class MyMintSpendDelegateDataBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***CapoCtx*** for the `BasicDelegate` script
          */
-        CapoCtx: (fields: CapoCtxLike_3 | {
+        CapoCtx: (fields: CapoCtxLike_2 | {
             mph: /*minStructField*/ MintingPolicyHash | string | number[];
-            charter: cctx_CharterInputTypeLike_3;
+            charter: cctx_CharterInputTypeLike_2;
         }) => UplcData;
     };
     /**
@@ -20367,10 +20467,10 @@ declare class MyMintSpendDelegateDataBridge extends ContractDataBridge {
     ᱺᱺAnyDataCast: Cast<AnyData_3, AnyDataLike_3>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺDelegationDetailCast: Cast<DelegationDetail_4, DelegationDetailLike_3>;
+    ᱺᱺDelegationDetailCast: Cast<DelegationDetail_3, DelegationDetailLike_2>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink_5, RelativeDelegateLinkLike_4>;
+    ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink_6, RelativeDelegateLinkLike_4>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺPendingDelegateChangeCast: Cast<PendingDelegateChange_3, PendingDelegateChangeLike_3>;
@@ -20379,16 +20479,16 @@ declare class MyMintSpendDelegateDataBridge extends ContractDataBridge {
     ᱺᱺCapoManifestEntryCast: Cast<CapoManifestEntry_3, CapoManifestEntryLike_3>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺCapoCtxCast: Cast<CapoCtx_3, CapoCtxLike_3>;
+    ᱺᱺCapoCtxCast: Cast<CapoCtx_2, CapoCtxLike_2>;
 }
 
 declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass {
     bridge: MyMintSpendDelegateDataBridge;
     constructor(bridge: MyMintSpendDelegateDataBridge, isMainnet: boolean);
     datum: (d: UplcData) => Partial<{
-        Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_3;
-        IsDelegation: ErgoDelegationDetail_3;
-        capoStoredData: DelegateDatum$Ergo$capoStoredData_3;
+        Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_2;
+        IsDelegation: ErgoDelegationDetail_2;
+        capoStoredData: DelegateDatum$Ergo$capoStoredData_2;
     }>;
     /**
      * reads UplcData *known to fit the **DelegateDatum*** enum type,
@@ -20404,7 +20504,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateDatum(d: UplcData): ErgoDelegateDatum_3;
+    DelegateDatum(d: UplcData): ErgoDelegateDatum_2;
     /**
      * reads UplcData *known to fit the **DelegateRole*** enum type,
      * for the BasicDelegate script.
@@ -20419,7 +20519,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateRole(d: UplcData): ErgoDelegateRole_4;
+    DelegateRole(d: UplcData): ErgoDelegateRole_5;
     /**
      * reads UplcData *known to fit the **ManifestActivity*** enum type,
      * for the BasicDelegate script.
@@ -20434,7 +20534,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    ManifestActivity(d: UplcData): ErgoManifestActivity_4;
+    ManifestActivity(d: UplcData): ErgoManifestActivity_5;
     /**
      * reads UplcData *known to fit the **CapoLifecycleActivity*** enum type,
      * for the BasicDelegate script.
@@ -20464,7 +20564,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateLifecycleActivity(d: UplcData): ErgoDelegateLifecycleActivity_3;
+    DelegateLifecycleActivity(d: UplcData): ErgoDelegateLifecycleActivity_2;
     /**
      * reads UplcData *known to fit the **SpendingActivity*** enum type,
      * for the BasicDelegate script.
@@ -20479,7 +20579,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    SpendingActivity(d: UplcData): ErgoSpendingActivity_3;
+    SpendingActivity(d: UplcData): ErgoSpendingActivity_2;
     /**
      * reads UplcData *known to fit the **MintingActivity*** enum type,
      * for the BasicDelegate script.
@@ -20494,7 +20594,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    MintingActivity(d: UplcData): ErgoMintingActivity_3;
+    MintingActivity(d: UplcData): ErgoMintingActivity_2;
     /**
      * reads UplcData *known to fit the **BurningActivity*** enum type,
      * for the BasicDelegate script.
@@ -20509,7 +20609,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    BurningActivity(d: UplcData): ErgoBurningActivity_3;
+    BurningActivity(d: UplcData): ErgoBurningActivity_2;
     /**
      * reads UplcData *known to fit the **DelegateActivity*** enum type,
      * for the BasicDelegate script.
@@ -20524,7 +20624,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateActivity(d: UplcData): ErgoDelegateActivity_3;
+    DelegateActivity(d: UplcData): ErgoDelegateActivity_2;
     /**
      * reads UplcData *known to fit the **PendingDelegateAction*** enum type,
      * for the BasicDelegate script.
@@ -20539,7 +20639,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingDelegateAction(d: UplcData): ErgoPendingDelegateAction_4;
+    PendingDelegateAction(d: UplcData): ErgoPendingDelegateAction_5;
     /**
      * reads UplcData *known to fit the **ManifestEntryType*** enum type,
      * for the BasicDelegate script.
@@ -20554,7 +20654,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    ManifestEntryType(d: UplcData): ErgoManifestEntryType_4;
+    ManifestEntryType(d: UplcData): ErgoManifestEntryType_5;
     /**
      * reads UplcData *known to fit the **PendingCharterChange*** enum type,
      * for the BasicDelegate script.
@@ -20569,7 +20669,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingCharterChange(d: UplcData): ErgoPendingCharterChange_4;
+    PendingCharterChange(d: UplcData): ErgoPendingCharterChange_5;
     /**
      * reads UplcData *known to fit the **cctx_CharterInputType*** enum type,
      * for the BasicDelegate script.
@@ -20584,7 +20684,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    cctx_CharterInputType(d: UplcData): Ergocctx_CharterInputType_3;
+    cctx_CharterInputType(d: UplcData): Ergocctx_CharterInputType_2;
     /**
      * reads UplcData *known to fit the **AnyData*** struct type,
      * for the BasicDelegate script.
@@ -20614,7 +20714,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegationDetail(d: UplcData): DelegationDetail_4;
+    DelegationDetail(d: UplcData): DelegationDetail_3;
     /**
      * reads UplcData *known to fit the **RelativeDelegateLink*** struct type,
      * for the BasicDelegate script.
@@ -20629,7 +20729,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    RelativeDelegateLink(d: UplcData): RelativeDelegateLink_5;
+    RelativeDelegateLink(d: UplcData): RelativeDelegateLink_6;
     /**
      * reads UplcData *known to fit the **PendingDelegateChange*** struct type,
      * for the BasicDelegate script.
@@ -20674,7 +20774,7 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    CapoCtx(d: UplcData): CapoCtx_3;
+    CapoCtx(d: UplcData): CapoCtx_2;
 }
 
 /**
@@ -20850,7 +20950,7 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***AnyData*** for the `BasicDelegate` script
          */
-        AnyData: (fields: AnyDataLike_4 | {
+        AnyData: (fields: AnyDataLike_5 | {
             id: number[];
             type: string;
         }) => UplcData;
@@ -20899,7 +20999,7 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***RelativeDelegateLink*** for the `BasicDelegate` script
          */
-        RelativeDelegateLink: (fields: RelativeDelegateLinkLike_5 | {
+        RelativeDelegateLink: (fields: RelativeDelegateLinkLike_6 | {
             uutName: string;
             delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
             config: number[];
@@ -20907,16 +21007,16 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***PendingDelegateChange*** for the `BasicDelegate` script
          */
-        PendingDelegateChange: (fields: PendingDelegateChangeLike_4 | {
-            action: PendingDelegateActionLike_4;
-            role: DelegateRoleLike_4;
-            dgtLink: /*minStructField*/ RelativeDelegateLinkLike_5 | undefined;
+        PendingDelegateChange: (fields: PendingDelegateChangeLike_5 | {
+            action: PendingDelegateActionLike_5;
+            role: DelegateRoleLike_5;
+            dgtLink: /*minStructField*/ RelativeDelegateLinkLike_6 | undefined;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***CapoManifestEntry*** for the `BasicDelegate` script
          */
-        CapoManifestEntry: (fields: CapoManifestEntryLike_4 | {
-            entryType: ManifestEntryTypeLike_4;
+        CapoManifestEntry: (fields: CapoManifestEntryLike_5 | {
+            entryType: ManifestEntryTypeLike_5;
             tokenName: number[];
             mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
         }) => UplcData;
@@ -20931,7 +21031,13 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
          * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
          */
         NeighborhoodSettings: (fields: NeighborhoodSettingsLike | {
-            minRegistrationFee: IntLike;
+            minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+                mph: MintingPolicyHash | string | number[];
+                tokens: {
+                    name: number[] | string;
+                    qty: IntLike;
+                }[];
+            }[];
             minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
                 mph: MintingPolicyHash | string | number[];
                 tokens: {
@@ -20958,7 +21064,7 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     };
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺAnyDataCast: Cast<AnyData_4, AnyDataLike_4>;
+    ᱺᱺAnyDataCast: Cast<AnyData_5, AnyDataLike_5>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺDelegationDetailCast: Cast<DelegationDetail_5, DelegationDetailLike_4>;
@@ -20973,13 +21079,13 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     ᱺᱺNeighborhoodDataCast: Cast<NeighborhoodData, NeighborhoodDataLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink_6, RelativeDelegateLinkLike_5>;
+    ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink_8, RelativeDelegateLinkLike_6>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺPendingDelegateChangeCast: Cast<PendingDelegateChange_4, PendingDelegateChangeLike_4>;
+    ᱺᱺPendingDelegateChangeCast: Cast<PendingDelegateChange_5, PendingDelegateChangeLike_5>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺCapoManifestEntryCast: Cast<CapoManifestEntry_4, CapoManifestEntryLike_4>;
+    ᱺᱺCapoManifestEntryCast: Cast<CapoManifestEntry_5, CapoManifestEntryLike_5>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺCapoCtxCast: Cast<CapoCtx_4, CapoCtxLike_4>;
@@ -21076,7 +21182,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateRole(d: UplcData): ErgoDelegateRole_5;
+    DelegateRole(d: UplcData): ErgoDelegateRole_7;
     /**
      * reads UplcData *known to fit the **ManifestActivity*** enum type,
      * for the BasicDelegate script.
@@ -21091,7 +21197,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    ManifestActivity(d: UplcData): ErgoManifestActivity_5;
+    ManifestActivity(d: UplcData): ErgoManifestActivity_7;
     /**
      * reads UplcData *known to fit the **CapoLifecycleActivity*** enum type,
      * for the BasicDelegate script.
@@ -21106,7 +21212,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    CapoLifecycleActivity(d: UplcData): ErgoCapoLifecycleActivity_4;
+    CapoLifecycleActivity(d: UplcData): ErgoCapoLifecycleActivity_5;
     /**
      * reads UplcData *known to fit the **DelegateLifecycleActivity*** enum type,
      * for the BasicDelegate script.
@@ -21196,7 +21302,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingDelegateAction(d: UplcData): ErgoPendingDelegateAction_5;
+    PendingDelegateAction(d: UplcData): ErgoPendingDelegateAction_7;
     /**
      * reads UplcData *known to fit the **ManifestEntryType*** enum type,
      * for the BasicDelegate script.
@@ -21211,7 +21317,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    ManifestEntryType(d: UplcData): ErgoManifestEntryType_5;
+    ManifestEntryType(d: UplcData): ErgoManifestEntryType_7;
     /**
      * reads UplcData *known to fit the **PendingCharterChange*** enum type,
      * for the BasicDelegate script.
@@ -21226,7 +21332,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingCharterChange(d: UplcData): ErgoPendingCharterChange_5;
+    PendingCharterChange(d: UplcData): ErgoPendingCharterChange_7;
     /**
      * reads UplcData *known to fit the **cctx_CharterInputType*** enum type,
      * for the BasicDelegate script.
@@ -21271,7 +21377,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    AnyData(d: UplcData): AnyData_4;
+    AnyData(d: UplcData): AnyData_5;
     /**
      * reads UplcData *known to fit the **DelegationDetail*** struct type,
      * for the BasicDelegate script.
@@ -21346,7 +21452,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    RelativeDelegateLink(d: UplcData): RelativeDelegateLink_6;
+    RelativeDelegateLink(d: UplcData): RelativeDelegateLink_8;
     /**
      * reads UplcData *known to fit the **PendingDelegateChange*** struct type,
      * for the BasicDelegate script.
@@ -21361,7 +21467,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingDelegateChange(d: UplcData): PendingDelegateChange_4;
+    PendingDelegateChange(d: UplcData): PendingDelegateChange_5;
     /**
      * reads UplcData *known to fit the **CapoManifestEntry*** struct type,
      * for the BasicDelegate script.
@@ -21376,7 +21482,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    CapoManifestEntry(d: UplcData): CapoManifestEntry_4;
+    CapoManifestEntry(d: UplcData): CapoManifestEntry_5;
     /**
      * reads UplcData *known to fit the **CapoCtx*** struct type,
      * for the BasicDelegate script.
@@ -21448,7 +21554,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
  * @public
  */
 declare interface NeighborhoodSettings {
-    minRegistrationFee: bigint;
+    minRegistrationFee: Value;
     minNbhStake: Value;
 }
 
@@ -21461,7 +21567,7 @@ declare interface NeighborhoodSettings {
  * @public
  */
 declare interface NeighborhoodSettings_2 {
-    minRegistrationFee: bigint;
+    minRegistrationFee: Value;
     minNbhStake: Value;
 }
 
@@ -21472,7 +21578,13 @@ declare interface NeighborhoodSettings_2 {
  * @public
  */
 declare interface NeighborhoodSettingsLike {
-    minRegistrationFee: IntLike;
+    minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+        mph: MintingPolicyHash | string | number[];
+        tokens: {
+            name: number[] | string;
+            qty: IntLike;
+        }[];
+    }[];
     minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
         mph: MintingPolicyHash | string | number[];
         tokens: {
@@ -21489,7 +21601,13 @@ declare interface NeighborhoodSettingsLike {
  * @public
  */
 declare interface NeighborhoodSettingsLike_2 {
-    minRegistrationFee: IntLike;
+    minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+        mph: MintingPolicyHash | string | number[];
+        tokens: {
+            name: number[] | string;
+            qty: IntLike;
+        }[];
+    }[];
     minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
         mph: MintingPolicyHash | string | number[];
         tokens: {
@@ -21509,10 +21627,10 @@ declare type NetworkName = "testnet" | "mainnet";
  * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOperatorSettings instead.
  * @public
  */
-export declare interface NodeOperatorSettings {
+declare interface NodeOperatorSettings {
     expectedHeartbeatInterval: bigint;
-    requiredNodeUptime: bigint;
-    minNodeRegistrationFee: bigint;
+    requiredNodeUptime: number;
+    minNodeRegistrationFee: Value;
     minNodeOperatorStake: Value;
 }
 
@@ -21526,8 +21644,8 @@ export declare interface NodeOperatorSettings {
  */
 declare interface NodeOperatorSettings_2 {
     expectedHeartbeatInterval: bigint;
-    requiredNodeUptime: bigint;
-    minNodeRegistrationFee: bigint;
+    requiredNodeUptime: number;
+    minNodeRegistrationFee: Value;
     minNodeOperatorStake: Value;
 }
 
@@ -21537,10 +21655,16 @@ declare interface NodeOperatorSettings_2 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface NodeOperatorSettingsLike {
+declare interface NodeOperatorSettingsLike {
     expectedHeartbeatInterval: IntLike;
-    requiredNodeUptime: IntLike;
-    minNodeRegistrationFee: IntLike;
+    requiredNodeUptime: number;
+    minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+        mph: MintingPolicyHash | string | number[];
+        tokens: {
+            name: number[] | string;
+            qty: IntLike;
+        }[];
+    }[];
     minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
         mph: MintingPolicyHash | string | number[];
         tokens: {
@@ -21558,8 +21682,14 @@ export declare interface NodeOperatorSettingsLike {
  */
 declare interface NodeOperatorSettingsLike_2 {
     expectedHeartbeatInterval: IntLike;
-    requiredNodeUptime: IntLike;
-    minNodeRegistrationFee: IntLike;
+    requiredNodeUptime: number;
+    minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+        mph: MintingPolicyHash | string | number[];
+        tokens: {
+            name: number[] | string;
+            qty: IntLike;
+        }[];
+    }[];
     minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
         mph: MintingPolicyHash | string | number[];
         tokens: {
@@ -21626,13 +21756,13 @@ declare interface NodeOpsInfoLike {
  * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeRegistrationData instead.
  * @public
  */
-export declare interface NodeRegistrationData {
+declare interface NodeRegistrationData {
     id: number[];
     type: string;
     memberToken: string;
     nodeAddress: string;
     nodePort: bigint;
-    nodePublicKey: number[];
+    nodePublicKey: PubKey;
     lastHeartbeat: number;
 }
 
@@ -21650,7 +21780,7 @@ declare interface NodeRegistrationData_2 {
     memberToken: /*minStructField*/ string
     nodeAddress: /*minStructField*/ string
     nodePort: /*minStructField*/ bigint
-    nodePublicKey: /*minStructField*/ number[]
+    nodePublicKey: /*minStructField*/ PubKey
     lastHeartbeat: /*minStructField*/ number
 }
 
@@ -21660,13 +21790,13 @@ declare interface NodeRegistrationData_2 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface NodeRegistrationDataLike {
+declare interface NodeRegistrationDataLike {
     id: number[];
     type: string;
     memberToken: string;
     nodeAddress: string;
     nodePort: IntLike;
-    nodePublicKey: number[];
+    nodePublicKey: /*minStructField*/ PubKey | string | number[];
     lastHeartbeat: TimeLike;
 }
 
@@ -21676,10 +21806,10 @@ export declare class NodeRegistryController extends DelegatedDataContract<ErgoNo
     idPrefix: string;
     get delegateName(): string;
     get recordTypeName(): string;
-    exampleData(): minimalNodeRegistrationData_2;
+    exampleData(): minimalNodeRegistrationData;
     get capo(): DredCapo;
-    mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData_2): Promise<hasUutContext_2<string> & StellarTxnContext<anyState> & hasCharterRef_2 & hasSeedUtxo_2 & hasUutContext_2<"recordId" | "‹idPrefix (hint: declare with 'idPrefix = \"...\" as const')›">>;
-    mkTxnUpdatingNodeRegistration(txnName: string, item: FoundDatumUtxo<NodeRegistrationData, any>, options: DgDataUpdateOptions<NodeRegistrationDataLike>, tcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
+    mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData, initialTcx?: StellarTxnContext): Promise<hasUutContext_2<string> & StellarTxnContext<anyState> & hasMemberToken_2 & hasSeedUtxo_2 & hasSettingsRef<any, any> & hasCharterRef_2 & hasUutContext_2<"recordId" | "‹idPrefix (hint: declare with 'idPrefix = \"...\" as const')›">>;
+    mkTxnUpdatingNodeRegistration(txnName: string, item: FoundDatumUtxo<NodeRegistrationData, any>, options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity">, initialTcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
     requirements(): ReqtsMap_4<never, never>;
 }
 
@@ -21737,7 +21867,7 @@ declare type PartialReader = Pick<UnspecializedDelegateBridgeReader, "DelegateRo
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type PendingCharterChange$Ergo$otherManifestChange = {
+declare type PendingCharterChange$Ergo$otherManifestChange = {
     activity: ErgoManifestActivity;
     remainingDelegateValidations: Array<ErgoDelegateRole>;
 };
@@ -21754,20 +21884,6 @@ export declare type PendingCharterChange$Ergo$otherManifestChange = {
 declare type PendingCharterChange$Ergo$otherManifestChange_2 = {
     activity: ErgoManifestActivity_2;
     remainingDelegateValidations: Array<ErgoDelegateRole_2>;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of PendingCharterChange$otherManifestChange
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingCharterChange$otherManifestChangeLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type PendingCharterChange$Ergo$otherManifestChange_2_2 = {
-    activity: ErgoManifestActivity_2_2;
-    remainingDelegateValidations: Array<ErgoDelegateRole_2_2>;
 };
 
 /**
@@ -21827,6 +21943,34 @@ declare type PendingCharterChange$Ergo$otherManifestChange_7 = {
 };
 
 /**
+ * An ergonomic, though less strictly-safe form of PendingCharterChange$otherManifestChange
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the PendingCharterChange$otherManifestChangeLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type PendingCharterChange$Ergo$otherManifestChange_8 = {
+    activity: ErgoManifestActivity_7;
+    remainingDelegateValidations: Array<ErgoDelegateRole_7>;
+};
+
+/**
+ * An ergonomic, though less strictly-safe form of PendingCharterChange$otherManifestChange
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the PendingCharterChange$otherManifestChangeLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type PendingCharterChange$Ergo$otherManifestChange_9 = {
+    activity: ErgoManifestActivity_8;
+    remainingDelegateValidations: Array<ErgoDelegateRole_8>;
+};
+
+/**
  * A strong type for the canonical form of PendingCharterChange$otherManifestChange
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -21834,7 +21978,7 @@ declare type PendingCharterChange$Ergo$otherManifestChange_7 = {
  * For a more ergonomic, though less strictly-safe form of this type, see PendingCharterChange$Ergo$otherManifestChange instead.
  * @public
  */
-export declare interface PendingCharterChange$otherManifestChange {
+declare interface PendingCharterChange$otherManifestChange {
     activity: ManifestActivity;
     remainingDelegateValidations: Array<DelegateRole>;
 }
@@ -21860,22 +22004,9 @@ declare interface PendingCharterChange$otherManifestChange_2 {
  * For a more ergonomic, though less strictly-safe form of this type, see PendingCharterChange$Ergo$otherManifestChange instead.
  * @public
  */
-declare interface PendingCharterChange$otherManifestChange_2_2 {
-    activity: ManifestActivity_2_2;
-    remainingDelegateValidations: Array<DelegateRole_2_2>;
-}
-
-/**
- * A strong type for the canonical form of PendingCharterChange$otherManifestChange
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see PendingCharterChange$Ergo$otherManifestChange instead.
- * @public
- */
 declare interface PendingCharterChange$otherManifestChange_3 {
     activity: ManifestActivity_3;
-    remainingDelegateValidations: Array<DelegateRole_4>;
+    remainingDelegateValidations: Array<DelegateRole_5>;
 }
 
 /**
@@ -21888,7 +22019,7 @@ declare interface PendingCharterChange$otherManifestChange_3 {
  */
 declare interface PendingCharterChange$otherManifestChange_4 {
     activity: ManifestActivity_4;
-    remainingDelegateValidations: Array<DelegateRole_5>;
+    remainingDelegateValidations: Array<DelegateRole_6>;
 }
 
 /**
@@ -21901,7 +22032,20 @@ declare interface PendingCharterChange$otherManifestChange_4 {
  */
 declare interface PendingCharterChange$otherManifestChange_5 {
     activity: ManifestActivity_5;
-    remainingDelegateValidations: Array<DelegateRole_6>;
+    remainingDelegateValidations: Array<DelegateRole_7>;
+}
+
+/**
+ * A strong type for the canonical form of PendingCharterChange$otherManifestChange
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see PendingCharterChange$Ergo$otherManifestChange instead.
+ * @public
+ */
+declare interface PendingCharterChange$otherManifestChange_6 {
+    activity: ManifestActivity_6;
+    remainingDelegateValidations: Array<DelegateRole_8>;
 }
 
 /**
@@ -21910,7 +22054,7 @@ declare interface PendingCharterChange$otherManifestChange_5 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface PendingCharterChange$otherManifestChangeLike {
+declare interface PendingCharterChange$otherManifestChangeLike {
     activity: ManifestActivityLike;
     remainingDelegateValidations: Array<DelegateRoleLike>;
 }
@@ -21924,17 +22068,6 @@ export declare interface PendingCharterChange$otherManifestChangeLike {
 declare interface PendingCharterChange$otherManifestChangeLike_2 {
     activity: ManifestActivityLike_2;
     remainingDelegateValidations: Array<DelegateRoleLike_2>;
-}
-
-/**
- * A strong type for the permissive form of PendingCharterChange$otherManifestChange
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingCharterChange$otherManifestChangeLike_2_2 {
-    activity: ManifestActivityLike_2_2;
-    remainingDelegateValidations: Array<DelegateRoleLike_2_2>;
 }
 
 /**
@@ -21971,6 +22104,17 @@ declare interface PendingCharterChange$otherManifestChangeLike_5 {
 }
 
 /**
+ * A strong type for the permissive form of PendingCharterChange$otherManifestChange
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface PendingCharterChange$otherManifestChangeLike_6 {
+    activity: ManifestActivityLike_6;
+    remainingDelegateValidations: Array<DelegateRoleLike_6>;
+}
+
+/**
  * PendingCharterChange enum variants
  *
  * @remarks - expresses the essential raw data structures
@@ -21980,7 +22124,7 @@ declare interface PendingCharterChange$otherManifestChangeLike_5 {
  *     for generating UPLC data for this enum type
  * @public
  */
-export declare type PendingCharterChange = {
+declare type PendingCharterChange = {
     delegateChange: PendingDelegateChange;
 } | {
     otherManifestChange: PendingCharterChange$otherManifestChange;
@@ -22000,22 +22144,6 @@ declare type PendingCharterChange_2 = {
     delegateChange: PendingDelegateChange_2;
 } | {
     otherManifestChange: PendingCharterChange$otherManifestChange_2;
-};
-
-/**
- * PendingCharterChange enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **2 variant(s)** of the PendingCharterChange enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type PendingCharterChange_2_2 = {
-    delegateChange: PendingDelegateChange_2_2;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChange_2_2;
 };
 
 /**
@@ -22067,11 +22195,59 @@ declare type PendingCharterChange_5 = {
 };
 
 /**
+ * PendingCharterChange enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **2 variant(s)** of the PendingCharterChange enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type PendingCharterChange_6 = {
+    delegateChange: PendingDelegateChange_6;
+} | {
+    otherManifestChange: PendingCharterChange$otherManifestChange_6;
+};
+
+/**
  * Helper class for generating UplcData for variants of the ***PendingCharterChange*** enum type.
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 declare class PendingCharterChangeHelper extends EnumBridge<JustAnEnum> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<PendingCharterChange, Partial<{
+        delegateChange: PendingDelegateChangeLike;
+        otherManifestChange: PendingCharterChange$otherManifestChangeLike;
+    }>>;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingCharterChange.delegateChange"***
+     * @remarks - ***PendingDelegateChangeLike*** is the same as the expanded field-type.
+     */
+    delegateChange(change: PendingDelegateChangeLike | {
+        action: PendingDelegateActionLike;
+        role: DelegateRoleLike;
+        dgtLink: /*minStructField*/ RelativeDelegateLinkLike | undefined;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingCharterChange.otherManifestChange"***
+     * @remarks - ***PendingCharterChange$otherManifestChangeLike*** is the same as the expanded field-types.
+     */
+    otherManifestChange(fields: PendingCharterChange$otherManifestChangeLike | {
+        activity: ManifestActivityLike;
+        remainingDelegateValidations: Array<DelegateRoleLike>;
+    }): UplcData;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***PendingCharterChange*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class PendingCharterChangeHelper_2 extends EnumBridge<JustAnEnum> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -22086,7 +22262,7 @@ declare class PendingCharterChangeHelper extends EnumBridge<JustAnEnum> {
     delegateChange(change: PendingDelegateChangeLike_2 | {
         action: PendingDelegateActionLike_2;
         role: DelegateRoleLike_2;
-        dgtLink: /*minStructField*/ RelativeDelegateLinkLike_2 | undefined;
+        dgtLink: /*minStructField*/ RelativeDelegateLinkLike_3 | undefined;
     }): UplcData;
     /**
      * generates  UplcData for ***"CapoDelegateHelpers::PendingCharterChange.otherManifestChange"***
@@ -22095,38 +22271,6 @@ declare class PendingCharterChangeHelper extends EnumBridge<JustAnEnum> {
     otherManifestChange(fields: PendingCharterChange$otherManifestChangeLike_2 | {
         activity: ManifestActivityLike_2;
         remainingDelegateValidations: Array<DelegateRoleLike_2>;
-    }): UplcData;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***PendingCharterChange*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class PendingCharterChangeHelper_2 extends EnumBridge<JustAnEnum> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<PendingCharterChange_2_2, Partial<{
-        delegateChange: PendingDelegateChangeLike_2_2;
-        otherManifestChange: PendingCharterChange$otherManifestChangeLike_2_2;
-    }>>;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingCharterChange.delegateChange"***
-     * @remarks - ***PendingDelegateChangeLike*** is the same as the expanded field-type.
-     */
-    delegateChange(change: PendingDelegateChangeLike_2_2 | {
-        action: PendingDelegateActionLike_2_2;
-        role: DelegateRoleLike_2_2;
-        dgtLink: /*minStructField*/ RelativeDelegateLinkLike_3 | undefined;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingCharterChange.otherManifestChange"***
-     * @remarks - ***PendingCharterChange$otherManifestChangeLike*** is the same as the expanded field-types.
-     */
-    otherManifestChange(fields: PendingCharterChange$otherManifestChangeLike_2_2 | {
-        activity: ManifestActivityLike_2_2;
-        remainingDelegateValidations: Array<DelegateRoleLike_2_2>;
     }): UplcData;
 }
 
@@ -22171,38 +22315,6 @@ declare class PendingCharterChangeHelper_4 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<PendingCharterChange, Partial<{
-        delegateChange: PendingDelegateChangeLike;
-        otherManifestChange: PendingCharterChange$otherManifestChangeLike;
-    }>>;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingCharterChange.delegateChange"***
-     * @remarks - ***PendingDelegateChangeLike*** is the same as the expanded field-type.
-     */
-    delegateChange(change: PendingDelegateChangeLike | {
-        action: PendingDelegateActionLike;
-        role: DelegateRoleLike;
-        dgtLink: /*minStructField*/ RelativeDelegateLinkLike | undefined;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingCharterChange.otherManifestChange"***
-     * @remarks - ***PendingCharterChange$otherManifestChangeLike*** is the same as the expanded field-types.
-     */
-    otherManifestChange(fields: PendingCharterChange$otherManifestChangeLike | {
-        activity: ManifestActivityLike;
-        remainingDelegateValidations: Array<DelegateRoleLike>;
-    }): UplcData;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***PendingCharterChange*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class PendingCharterChangeHelper_5 extends EnumBridge<JustAnEnum_3> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<PendingCharterChange_4, Partial<{
         delegateChange: PendingDelegateChangeLike_4;
         otherManifestChange: PendingCharterChange$otherManifestChangeLike_4;
@@ -22231,7 +22343,7 @@ declare class PendingCharterChangeHelper_5 extends EnumBridge<JustAnEnum_3> {
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class PendingCharterChangeHelper_6 extends EnumBridge<JustAnEnum_3> {
+declare class PendingCharterChangeHelper_5 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -22259,6 +22371,38 @@ declare class PendingCharterChangeHelper_6 extends EnumBridge<JustAnEnum_3> {
 }
 
 /**
+ * Helper class for generating UplcData for variants of the ***PendingCharterChange*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class PendingCharterChangeHelper_6 extends EnumBridge<JustAnEnum_3> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<PendingCharterChange_6, Partial<{
+        delegateChange: PendingDelegateChangeLike_6;
+        otherManifestChange: PendingCharterChange$otherManifestChangeLike_6;
+    }>>;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingCharterChange.delegateChange"***
+     * @remarks - ***PendingDelegateChangeLike*** is the same as the expanded field-type.
+     */
+    delegateChange(change: PendingDelegateChangeLike_6 | {
+        action: PendingDelegateActionLike_6;
+        role: DelegateRoleLike_6;
+        dgtLink: /*minStructField*/ RelativeDelegateLinkLike_7 | undefined;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingCharterChange.otherManifestChange"***
+     * @remarks - ***PendingCharterChange$otherManifestChangeLike*** is the same as the expanded field-types.
+     */
+    otherManifestChange(fields: PendingCharterChange$otherManifestChangeLike_6 | {
+        activity: ManifestActivityLike_6;
+        remainingDelegateValidations: Array<DelegateRoleLike_6>;
+    }): UplcData;
+}
+
+/**
  * PendingCharterChange enum variants (permissive)
  *
  * @remarks - expresses the allowable data structure
@@ -22272,7 +22416,7 @@ declare class PendingCharterChangeHelper_6 extends EnumBridge<JustAnEnum_3> {
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-export declare type PendingCharterChangeLike = IntersectedEnum<{
+declare type PendingCharterChangeLike = IntersectedEnum<{
     delegateChange: PendingDelegateChangeLike;
 } | {
     otherManifestChange: PendingCharterChange$otherManifestChangeLike;
@@ -22296,26 +22440,6 @@ declare type PendingCharterChangeLike_2 = IntersectedEnum<{
     delegateChange: PendingDelegateChangeLike_2;
 } | {
     otherManifestChange: PendingCharterChange$otherManifestChangeLike_2;
-}>;
-
-/**
- * PendingCharterChange enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **2 variant(s)** of the PendingCharterChange enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type PendingCharterChangeLike_2_2 = IntersectedEnum<{
-    delegateChange: PendingDelegateChangeLike_2_2;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChangeLike_2_2;
 }>;
 
 /**
@@ -22379,14 +22503,23 @@ declare type PendingCharterChangeLike_5 = IntersectedEnum<{
 }>;
 
 /**
- * @internal
+ * PendingCharterChange enum variants (permissive)
+ *
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **2 variant(s)** of the PendingCharterChange enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
  */
-export declare type PendingCharterChangeMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "PendingCharterChange";
-}, {
-    delegateChange: singleEnumVariantMeta<PendingCharterChangeMeta, "delegateChange", "Constr#0", "singletonField", /* implied wrapper { change: ... } for singleVariantField */ PendingDelegateChange, "noSpecialFlags">;
-    otherManifestChange: singleEnumVariantMeta<PendingCharterChangeMeta, "otherManifestChange", "Constr#1", "fields", PendingCharterChange$otherManifestChange, "noSpecialFlags">;
+declare type PendingCharterChangeLike_6 = IntersectedEnum<{
+    delegateChange: PendingDelegateChangeLike_6;
+} | {
+    otherManifestChange: PendingCharterChange$otherManifestChangeLike_6;
 }>;
 
 /**
@@ -22397,7 +22530,7 @@ export declare type PendingCharterChangeMeta = EnumTypeMeta<{
  * For a more ergonomic, though less strictly-safe form of this type, see PendingDelegateAction$Ergo$Add instead.
  * @public
  */
-export declare interface PendingDelegateAction$Add {
+declare interface PendingDelegateAction$Add {
     seed: TxOutputId;
     purpose: string;
     idPrefix: string;
@@ -22412,20 +22545,6 @@ export declare interface PendingDelegateAction$Add {
  * @public
  */
 declare interface PendingDelegateAction$Add_2 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
-}
-
-/**
- * A strong type for the canonical form of PendingDelegateAction$Add
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see PendingDelegateAction$Ergo$Add instead.
- * @public
- */
-declare interface PendingDelegateAction$Add_2_2 {
     seed: TxOutputId;
     purpose: string;
     idPrefix: string;
@@ -22488,12 +22607,40 @@ declare interface PendingDelegateAction$Add_6 {
 }
 
 /**
+ * A strong type for the canonical form of PendingDelegateAction$Add
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see PendingDelegateAction$Ergo$Add instead.
+ * @public
+ */
+declare interface PendingDelegateAction$Add_7 {
+    seed: TxOutputId;
+    purpose: string;
+    idPrefix: string;
+}
+
+/**
+ * A strong type for the canonical form of PendingDelegateAction$Add
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see PendingDelegateAction$Ergo$Add instead.
+ * @public
+ */
+declare interface PendingDelegateAction$Add_8 {
+    seed: TxOutputId;
+    purpose: string;
+    idPrefix: string;
+}
+
+/**
  * A strong type for the permissive form of PendingDelegateAction$Add
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface PendingDelegateAction$AddLike {
+declare interface PendingDelegateAction$AddLike {
     seed: TxOutputId | string;
     purpose: string;
     idPrefix: string;
@@ -22506,18 +22653,6 @@ export declare interface PendingDelegateAction$AddLike {
  * @public
  */
 declare interface PendingDelegateAction$AddLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
-}
-
-/**
- * A strong type for the permissive form of PendingDelegateAction$Add
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingDelegateAction$AddLike_2_2 {
     seed: TxOutputId | string;
     purpose: string;
     idPrefix: string;
@@ -22560,6 +22695,18 @@ declare interface PendingDelegateAction$AddLike_5 {
 }
 
 /**
+ * A strong type for the permissive form of PendingDelegateAction$Add
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface PendingDelegateAction$AddLike_6 {
+    seed: TxOutputId | string;
+    purpose: string;
+    idPrefix: string;
+}
+
+/**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Add
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -22568,7 +22715,7 @@ declare interface PendingDelegateAction$AddLike_5 {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type PendingDelegateAction$Ergo$Add = PendingDelegateAction$Add;
+declare type PendingDelegateAction$Ergo$Add = PendingDelegateAction$Add;
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Add
@@ -22580,17 +22727,6 @@ export declare type PendingDelegateAction$Ergo$Add = PendingDelegateAction$Add;
  * @public
  */
 declare type PendingDelegateAction$Ergo$Add_2 = PendingDelegateAction$Add_2;
-
-/**
- * An ergonomic, though less strictly-safe form of PendingDelegateAction$Add
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingDelegateAction$AddLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type PendingDelegateAction$Ergo$Add_2_2 = PendingDelegateAction$Add_2_2;
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Add
@@ -22637,6 +22773,28 @@ declare type PendingDelegateAction$Ergo$Add_5 = PendingDelegateAction$Add_5;
 declare type PendingDelegateAction$Ergo$Add_6 = PendingDelegateAction$Add_6;
 
 /**
+ * An ergonomic, though less strictly-safe form of PendingDelegateAction$Add
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the PendingDelegateAction$AddLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type PendingDelegateAction$Ergo$Add_7 = PendingDelegateAction$Add_7;
+
+/**
+ * An ergonomic, though less strictly-safe form of PendingDelegateAction$Add
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the PendingDelegateAction$AddLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type PendingDelegateAction$Ergo$Add_8 = PendingDelegateAction$Add_8;
+
+/**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -22645,7 +22803,7 @@ declare type PendingDelegateAction$Ergo$Add_6 = PendingDelegateAction$Add_6;
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type PendingDelegateAction$Ergo$Replace = PendingDelegateAction$Replace;
+declare type PendingDelegateAction$Ergo$Replace = PendingDelegateAction$Replace;
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
@@ -22657,17 +22815,6 @@ export declare type PendingDelegateAction$Ergo$Replace = PendingDelegateAction$R
  * @public
  */
 declare type PendingDelegateAction$Ergo$Replace_2 = PendingDelegateAction$Replace_2;
-
-/**
- * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingDelegateAction$ReplaceLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type PendingDelegateAction$Ergo$Replace_2_2 = PendingDelegateAction$Replace_2_2;
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
@@ -22714,6 +22861,28 @@ declare type PendingDelegateAction$Ergo$Replace_5 = PendingDelegateAction$Replac
 declare type PendingDelegateAction$Ergo$Replace_6 = PendingDelegateAction$Replace_6;
 
 /**
+ * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the PendingDelegateAction$ReplaceLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type PendingDelegateAction$Ergo$Replace_7 = PendingDelegateAction$Replace_7;
+
+/**
+ * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the PendingDelegateAction$ReplaceLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type PendingDelegateAction$Ergo$Replace_8 = PendingDelegateAction$Replace_8;
+
+/**
  * A strong type for the canonical form of PendingDelegateAction$Replace
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -22721,7 +22890,7 @@ declare type PendingDelegateAction$Ergo$Replace_6 = PendingDelegateAction$Replac
  * For a more ergonomic, though less strictly-safe form of this type, see PendingDelegateAction$Ergo$Replace instead.
  * @public
  */
-export declare interface PendingDelegateAction$Replace {
+declare interface PendingDelegateAction$Replace {
     seed: TxOutputId;
     purpose: string;
     idPrefix: string;
@@ -22737,21 +22906,6 @@ export declare interface PendingDelegateAction$Replace {
  * @public
  */
 declare interface PendingDelegateAction$Replace_2 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass;
-}
-
-/**
- * A strong type for the canonical form of PendingDelegateAction$Replace
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see PendingDelegateAction$Ergo$Replace instead.
- * @public
- */
-declare interface PendingDelegateAction$Replace_2_2 {
     seed: TxOutputId;
     purpose: string;
     idPrefix: string;
@@ -22819,12 +22973,42 @@ declare interface PendingDelegateAction$Replace_6 {
 }
 
 /**
+ * A strong type for the canonical form of PendingDelegateAction$Replace
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see PendingDelegateAction$Ergo$Replace instead.
+ * @public
+ */
+declare interface PendingDelegateAction$Replace_7 {
+    seed: TxOutputId;
+    purpose: string;
+    idPrefix: string;
+    replacesDgt: AssetClass;
+}
+
+/**
+ * A strong type for the canonical form of PendingDelegateAction$Replace
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see PendingDelegateAction$Ergo$Replace instead.
+ * @public
+ */
+declare interface PendingDelegateAction$Replace_8 {
+    seed: TxOutputId;
+    purpose: string;
+    idPrefix: string;
+    replacesDgt: AssetClass;
+}
+
+/**
  * A strong type for the permissive form of PendingDelegateAction$Replace
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface PendingDelegateAction$ReplaceLike {
+declare interface PendingDelegateAction$ReplaceLike {
     seed: TxOutputId | string;
     purpose: string;
     idPrefix: string;
@@ -22841,22 +23025,6 @@ export declare interface PendingDelegateAction$ReplaceLike {
  * @public
  */
 declare interface PendingDelegateAction$ReplaceLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-        mph: MintingPolicyHash | string | number[];
-        tokenName: string | number[];
-    };
-}
-
-/**
- * A strong type for the permissive form of PendingDelegateAction$Replace
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingDelegateAction$ReplaceLike_2_2 {
     seed: TxOutputId | string;
     purpose: string;
     idPrefix: string;
@@ -22915,6 +23083,22 @@ declare interface PendingDelegateAction$ReplaceLike_5 {
 }
 
 /**
+ * A strong type for the permissive form of PendingDelegateAction$Replace
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface PendingDelegateAction$ReplaceLike_6 {
+    seed: TxOutputId | string;
+    purpose: string;
+    idPrefix: string;
+    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
+        mph: MintingPolicyHash | string | number[];
+        tokenName: string | number[];
+    };
+}
+
+/**
  * PendingDelegateAction enum variants
  *
  * @remarks - expresses the essential raw data structures
@@ -22924,7 +23108,7 @@ declare interface PendingDelegateAction$ReplaceLike_5 {
  *     for generating UPLC data for this enum type
  * @public
  */
-export declare type PendingDelegateAction = {
+declare type PendingDelegateAction = {
     Add: PendingDelegateAction$Add;
 } | {
     Remove: tagOnly;
@@ -22960,43 +23144,7 @@ declare type PendingDelegateAction_2 = {
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type PendingDelegateAction_2_2 = {
-    Add: PendingDelegateAction$Add_2_2;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Replace_2_2;
-};
-
-/**
- * PendingDelegateAction enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the PendingDelegateAction enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
 declare type PendingDelegateAction_3 = {
-    Add: PendingDelegateAction$Add_4;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Replace_4;
-};
-
-/**
- * PendingDelegateAction enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the PendingDelegateAction enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type PendingDelegateAction_4 = {
     Add: PendingDelegateAction$Add_5;
 } | {
     Remove: tagOnly;
@@ -23014,7 +23162,7 @@ declare type PendingDelegateAction_4 = {
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type PendingDelegateAction_5 = {
+declare type PendingDelegateAction_4 = {
     Add: PendingDelegateAction$Add_6;
 } | {
     Remove: tagOnly;
@@ -23023,11 +23171,174 @@ declare type PendingDelegateAction_5 = {
 };
 
 /**
+ * PendingDelegateAction enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **3 variant(s)** of the PendingDelegateAction enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type PendingDelegateAction_5 = {
+    Add: PendingDelegateAction$Add_7;
+} | {
+    Remove: tagOnly;
+} | {
+    Replace: PendingDelegateAction$Replace_7;
+};
+
+/**
+ * PendingDelegateAction enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **3 variant(s)** of the PendingDelegateAction enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type PendingDelegateAction_6 = {
+    Add: PendingDelegateAction$Add_8;
+} | {
+    Remove: tagOnly;
+} | {
+    Replace: PendingDelegateAction$Replace_8;
+};
+
+/**
  * Helper class for generating UplcData for variants of the ***PendingDelegateAction*** enum type.
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
 declare class PendingDelegateActionHelper extends EnumBridge<JustAnEnum> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<PendingDelegateAction, Partial<{
+        Add: PendingDelegateAction$AddLike;
+        Remove: tagOnly;
+        Replace: PendingDelegateAction$ReplaceLike;
+    }>>;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Add"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$Add}` for use in a context
+     * providing an implicit seed utxo.
+     */
+    Add(value: hasSeed, fields: {
+        purpose: string;
+        idPrefix: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Add"***
+     * with raw seed details included in fields.
+     */
+    Add(fields: PendingDelegateAction$AddLike | {
+        seed: TxOutputId | string;
+        purpose: string;
+        idPrefix: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Add"***,
+     * @param fields - \{ purpose: string, idPrefix: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$Add({ purpose, idPrefix })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     */
+    $seeded$Add: (fields: {
+        purpose: string;
+        idPrefix: string;
+    }) => SeedActivity<(value: hasSeed, fields: {
+        purpose: string;
+        idPrefix: string;
+    }) => UplcData>;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Remove"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+     */
+    get Remove(): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Replace"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$Replace}` for use in a context
+     * providing an implicit seed utxo.
+     */
+    Replace(value: hasSeed, fields: {
+        purpose: string;
+        idPrefix: string;
+        replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
+            mph: MintingPolicyHash | string | number[];
+            tokenName: string | number[];
+        };
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Replace"***
+     * with raw seed details included in fields.
+     */
+    Replace(fields: PendingDelegateAction$ReplaceLike | {
+        seed: TxOutputId | string;
+        purpose: string;
+        idPrefix: string;
+        replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
+            mph: MintingPolicyHash | string | number[];
+            tokenName: string | number[];
+        };
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Replace"***,
+     * @param fields - \{ purpose: string, idPrefix: string, replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | \{mph: MintingPolicyHash | string | number[], tokenName: string | number[]\} \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$Replace({ purpose, idPrefix, replacesDgt })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     */
+    $seeded$Replace: (fields: {
+        purpose: string;
+        idPrefix: string;
+        replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
+            mph: MintingPolicyHash | string | number[];
+            tokenName: string | number[];
+        };
+    }) => SeedActivity<(value: hasSeed, fields: {
+        purpose: string;
+        idPrefix: string;
+        replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
+            mph: MintingPolicyHash | string | number[];
+            tokenName: string | number[];
+        };
+    }) => UplcData>;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***PendingDelegateAction*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class PendingDelegateActionHelper_2 extends EnumBridge<JustAnEnum> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -23108,133 +23419,6 @@ declare class PendingDelegateActionHelper extends EnumBridge<JustAnEnum> {
      * with raw seed details included in fields.
      */
     Replace(fields: PendingDelegateAction$ReplaceLike_2 | {
-        seed: TxOutputId | string;
-        purpose: string;
-        idPrefix: string;
-        replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-            mph: MintingPolicyHash | string | number[];
-            tokenName: string | number[];
-        };
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Replace"***,
-     * @param fields - \{ purpose: string, idPrefix: string, replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | \{mph: MintingPolicyHash | string | number[], tokenName: string | number[]\} \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$Replace({ purpose, idPrefix, replacesDgt })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     */
-    $seeded$Replace: (fields: {
-        purpose: string;
-        idPrefix: string;
-        replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-            mph: MintingPolicyHash | string | number[];
-            tokenName: string | number[];
-        };
-    }) => SeedActivity<(value: hasSeed, fields: {
-        purpose: string;
-        idPrefix: string;
-        replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-            mph: MintingPolicyHash | string | number[];
-            tokenName: string | number[];
-        };
-    }) => UplcData>;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***PendingDelegateAction*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class PendingDelegateActionHelper_2 extends EnumBridge<JustAnEnum> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<PendingDelegateAction_2_2, Partial<{
-        Add: PendingDelegateAction$AddLike_2_2;
-        Remove: tagOnly;
-        Replace: PendingDelegateAction$ReplaceLike_2_2;
-    }>>;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Add"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$Add}` for use in a context
-     * providing an implicit seed utxo.
-     */
-    Add(value: hasSeed, fields: {
-        purpose: string;
-        idPrefix: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Add"***
-     * with raw seed details included in fields.
-     */
-    Add(fields: PendingDelegateAction$AddLike_2_2 | {
-        seed: TxOutputId | string;
-        purpose: string;
-        idPrefix: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Add"***,
-     * @param fields - \{ purpose: string, idPrefix: string \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$Add({ purpose, idPrefix })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     */
-    $seeded$Add: (fields: {
-        purpose: string;
-        idPrefix: string;
-    }) => SeedActivity<(value: hasSeed, fields: {
-        purpose: string;
-        idPrefix: string;
-    }) => UplcData>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Remove"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get Remove(): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Replace"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$Replace}` for use in a context
-     * providing an implicit seed utxo.
-     */
-    Replace(value: hasSeed, fields: {
-        purpose: string;
-        idPrefix: string;
-        replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-            mph: MintingPolicyHash | string | number[];
-            tokenName: string | number[];
-        };
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Replace"***
-     * with raw seed details included in fields.
-     */
-    Replace(fields: PendingDelegateAction$ReplaceLike_2_2 | {
         seed: TxOutputId | string;
         purpose: string;
         idPrefix: string;
@@ -23412,133 +23596,6 @@ declare class PendingDelegateActionHelper_4 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<PendingDelegateAction, Partial<{
-        Add: PendingDelegateAction$AddLike;
-        Remove: tagOnly;
-        Replace: PendingDelegateAction$ReplaceLike;
-    }>>;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Add"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$Add}` for use in a context
-     * providing an implicit seed utxo.
-     */
-    Add(value: hasSeed, fields: {
-        purpose: string;
-        idPrefix: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Add"***
-     * with raw seed details included in fields.
-     */
-    Add(fields: PendingDelegateAction$AddLike | {
-        seed: TxOutputId | string;
-        purpose: string;
-        idPrefix: string;
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Add"***,
-     * @param fields - \{ purpose: string, idPrefix: string \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$Add({ purpose, idPrefix })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     */
-    $seeded$Add: (fields: {
-        purpose: string;
-        idPrefix: string;
-    }) => SeedActivity_2<(value: hasSeed, fields: {
-    purpose: string;
-    idPrefix: string;
-    }) => UplcData>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Remove"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get Remove(): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Replace"***,
-     * given a transaction-context ***with a seed utxo*** and other field details
-     * @remarks
-     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
-     * to create a context satisfying `hasSeed`.
-     * See `$seeded$Replace}` for use in a context
-     * providing an implicit seed utxo.
-     */
-    Replace(value: hasSeed, fields: {
-        purpose: string;
-        idPrefix: string;
-        replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-            mph: MintingPolicyHash | string | number[];
-            tokenName: string | number[];
-        };
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Replace"***
-     * with raw seed details included in fields.
-     */
-    Replace(fields: PendingDelegateAction$ReplaceLike | {
-        seed: TxOutputId | string;
-        purpose: string;
-        idPrefix: string;
-        replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-            mph: MintingPolicyHash | string | number[];
-            tokenName: string | number[];
-        };
-    }): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Replace"***,
-     * @param fields - \{ purpose: string, idPrefix: string, replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | \{mph: MintingPolicyHash | string | number[], tokenName: string | number[]\} \}
-     * @remarks
-     * ##### Seeded activity
-     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-     * ##### Activity contains implied seed
-     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
-     * provided implicitly by a SeedActivity-supporting library function.
-     *
-     * #### Usage
-     *   1. Call the `$seeded$Replace({ purpose, idPrefix, replacesDgt })`
-     *       method with the indicated (non-seed) details.
-     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-     *       `mkTxnCreateRecord({activity})` method.
-     */
-    $seeded$Replace: (fields: {
-        purpose: string;
-        idPrefix: string;
-        replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-            mph: MintingPolicyHash | string | number[];
-            tokenName: string | number[];
-        };
-    }) => SeedActivity_2<(value: hasSeed, fields: {
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-    mph: MintingPolicyHash | string | number[];
-    tokenName: string | number[];
-    };
-    }) => UplcData>;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***PendingDelegateAction*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class PendingDelegateActionHelper_5 extends EnumBridge<JustAnEnum_3> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<PendingDelegateAction_4, Partial<{
         Add: PendingDelegateAction$AddLike_4;
         Remove: tagOnly;
@@ -23662,7 +23719,7 @@ declare class PendingDelegateActionHelper_5 extends EnumBridge<JustAnEnum_3> {
  * @public
  * @remarks
  * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class PendingDelegateActionHelper_6 extends EnumBridge<JustAnEnum_3> {
+declare class PendingDelegateActionHelper_5 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
@@ -23785,6 +23842,133 @@ declare class PendingDelegateActionHelper_6 extends EnumBridge<JustAnEnum_3> {
 }
 
 /**
+ * Helper class for generating UplcData for variants of the ***PendingDelegateAction*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class PendingDelegateActionHelper_6 extends EnumBridge<JustAnEnum_3> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<PendingDelegateAction_6, Partial<{
+        Add: PendingDelegateAction$AddLike_6;
+        Remove: tagOnly;
+        Replace: PendingDelegateAction$ReplaceLike_6;
+    }>>;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Add"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$Add}` for use in a context
+     * providing an implicit seed utxo.
+     */
+    Add(value: hasSeed, fields: {
+        purpose: string;
+        idPrefix: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Add"***
+     * with raw seed details included in fields.
+     */
+    Add(fields: PendingDelegateAction$AddLike_6 | {
+        seed: TxOutputId | string;
+        purpose: string;
+        idPrefix: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Add"***,
+     * @param fields - \{ purpose: string, idPrefix: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$Add({ purpose, idPrefix })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     */
+    $seeded$Add: (fields: {
+        purpose: string;
+        idPrefix: string;
+    }) => SeedActivity_2<(value: hasSeed, fields: {
+    purpose: string;
+    idPrefix: string;
+    }) => UplcData>;
+    /**
+     * (property getter): UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Remove"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+     */
+    get Remove(): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Replace"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$Replace}` for use in a context
+     * providing an implicit seed utxo.
+     */
+    Replace(value: hasSeed, fields: {
+        purpose: string;
+        idPrefix: string;
+        replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
+            mph: MintingPolicyHash | string | number[];
+            tokenName: string | number[];
+        };
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Replace"***
+     * with raw seed details included in fields.
+     */
+    Replace(fields: PendingDelegateAction$ReplaceLike_6 | {
+        seed: TxOutputId | string;
+        purpose: string;
+        idPrefix: string;
+        replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
+            mph: MintingPolicyHash | string | number[];
+            tokenName: string | number[];
+        };
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::PendingDelegateAction.Replace"***,
+     * @param fields - \{ purpose: string, idPrefix: string, replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | \{mph: MintingPolicyHash | string | number[], tokenName: string | number[]\} \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$Replace({ purpose, idPrefix, replacesDgt })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     */
+    $seeded$Replace: (fields: {
+        purpose: string;
+        idPrefix: string;
+        replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
+            mph: MintingPolicyHash | string | number[];
+            tokenName: string | number[];
+        };
+    }) => SeedActivity_2<(value: hasSeed, fields: {
+    purpose: string;
+    idPrefix: string;
+    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
+    mph: MintingPolicyHash | string | number[];
+    tokenName: string | number[];
+    };
+    }) => UplcData>;
+}
+
+/**
  * PendingDelegateAction enum variants (permissive)
  *
  * @remarks - expresses the allowable data structure
@@ -23798,7 +23982,7 @@ declare class PendingDelegateActionHelper_6 extends EnumBridge<JustAnEnum_3> {
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-export declare type PendingDelegateActionLike = IntersectedEnum<{
+declare type PendingDelegateActionLike = IntersectedEnum<{
     Add: PendingDelegateAction$AddLike;
 } | {
     Remove: tagOnly;
@@ -23826,28 +24010,6 @@ declare type PendingDelegateActionLike_2 = IntersectedEnum<{
     Remove: tagOnly;
 } | {
     Replace: PendingDelegateAction$ReplaceLike_2;
-}>;
-
-/**
- * PendingDelegateAction enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **3 variant(s)** of the PendingDelegateAction enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type PendingDelegateActionLike_2_2 = IntersectedEnum<{
-    Add: PendingDelegateAction$AddLike_2_2;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$ReplaceLike_2_2;
 }>;
 
 /**
@@ -23917,15 +24079,25 @@ declare type PendingDelegateActionLike_5 = IntersectedEnum<{
 }>;
 
 /**
- * @internal
+ * PendingDelegateAction enum variants (permissive)
+ *
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **3 variant(s)** of the PendingDelegateAction enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
  */
-export declare type PendingDelegateActionMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "PendingDelegateAction";
-}, {
-    Add: singleEnumVariantMeta<PendingDelegateActionMeta, "Add", "Constr#0", "fields", PendingDelegateAction$Add, "isSeededActivity">;
-    Remove: singleEnumVariantMeta<PendingDelegateActionMeta, "Remove", "Constr#1", "tagOnly", tagOnly, "noSpecialFlags">;
-    Replace: singleEnumVariantMeta<PendingDelegateActionMeta, "Replace", "Constr#2", "fields", PendingDelegateAction$Replace, "isSeededActivity">;
+declare type PendingDelegateActionLike_6 = IntersectedEnum<{
+    Add: PendingDelegateAction$AddLike_6;
+} | {
+    Remove: tagOnly;
+} | {
+    Replace: PendingDelegateAction$ReplaceLike_6;
 }>;
 
 /**
@@ -23936,7 +24108,7 @@ export declare type PendingDelegateActionMeta = EnumTypeMeta<{
  * For a more ergonomic, though less strictly-safe form of this type, see ErgoPendingDelegateChange instead.
  * @public
  */
-export declare interface PendingDelegateChange {
+declare interface PendingDelegateChange {
     action: PendingDelegateAction;
     role: DelegateRole;
     dgtLink: /*minStructField*/ RelativeDelegateLink | undefined;
@@ -23953,20 +24125,6 @@ export declare interface PendingDelegateChange {
 declare interface PendingDelegateChange_2 {
     action: PendingDelegateAction_2;
     role: DelegateRole_2;
-    dgtLink: /*minStructField*/ RelativeDelegateLink_2 | undefined;
-}
-
-/**
- * A strong type for the canonical form of PendingDelegateChange
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoPendingDelegateChange instead.
- * @public
- */
-declare interface PendingDelegateChange_2_2 {
-    action: PendingDelegateAction_2_2;
-    role: DelegateRole_2_2;
     dgtLink: /*minStructField*/ RelativeDelegateLink_3 | undefined;
 }
 
@@ -23980,20 +24138,6 @@ declare interface PendingDelegateChange_2_2 {
  */
 declare interface PendingDelegateChange_3 {
     action: PendingDelegateAction_3;
-    role: DelegateRole_4;
-    dgtLink: /*minStructField*/ RelativeDelegateLink_5 | undefined;
-}
-
-/**
- * A strong type for the canonical form of PendingDelegateChange
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoPendingDelegateChange instead.
- * @public
- */
-declare interface PendingDelegateChange_4 {
-    action: PendingDelegateAction_4;
     role: DelegateRole_5;
     dgtLink: /*minStructField*/ RelativeDelegateLink_6 | undefined;
 }
@@ -24006,10 +24150,38 @@ declare interface PendingDelegateChange_4 {
  * For a more ergonomic, though less strictly-safe form of this type, see ErgoPendingDelegateChange instead.
  * @public
  */
-declare interface PendingDelegateChange_5 {
-    action: PendingDelegateAction_5;
+declare interface PendingDelegateChange_4 {
+    action: PendingDelegateAction_4;
     role: DelegateRole_6;
     dgtLink: /*minStructField*/ RelativeDelegateLink_7 | undefined;
+}
+
+/**
+ * A strong type for the canonical form of PendingDelegateChange
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoPendingDelegateChange instead.
+ * @public
+ */
+declare interface PendingDelegateChange_5 {
+    action: PendingDelegateAction_5;
+    role: DelegateRole_7;
+    dgtLink: /*minStructField*/ RelativeDelegateLink_8 | undefined;
+}
+
+/**
+ * A strong type for the canonical form of PendingDelegateChange
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoPendingDelegateChange instead.
+ * @public
+ */
+declare interface PendingDelegateChange_6 {
+    action: PendingDelegateAction_6;
+    role: DelegateRole_8;
+    dgtLink: /*minStructField*/ RelativeDelegateLink_9 | undefined;
 }
 
 /**
@@ -24018,7 +24190,7 @@ declare interface PendingDelegateChange_5 {
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface PendingDelegateChangeLike {
+declare interface PendingDelegateChangeLike {
     action: PendingDelegateActionLike;
     role: DelegateRoleLike;
     dgtLink: /*minStructField*/ RelativeDelegateLinkLike | undefined;
@@ -24033,18 +24205,6 @@ export declare interface PendingDelegateChangeLike {
 declare interface PendingDelegateChangeLike_2 {
     action: PendingDelegateActionLike_2;
     role: DelegateRoleLike_2;
-    dgtLink: /*minStructField*/ RelativeDelegateLinkLike_2 | undefined;
-}
-
-/**
- * A strong type for the permissive form of PendingDelegateChange
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingDelegateChangeLike_2_2 {
-    action: PendingDelegateActionLike_2_2;
-    role: DelegateRoleLike_2_2;
     dgtLink: /*minStructField*/ RelativeDelegateLinkLike_3 | undefined;
 }
 
@@ -24084,6 +24244,18 @@ declare interface PendingDelegateChangeLike_5 {
     dgtLink: /*minStructField*/ RelativeDelegateLinkLike_6 | undefined;
 }
 
+/**
+ * A strong type for the permissive form of PendingDelegateChange
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface PendingDelegateChangeLike_6 {
+    action: PendingDelegateActionLike_6;
+    role: DelegateRoleLike_6;
+    dgtLink: /*minStructField*/ RelativeDelegateLinkLike_7 | undefined;
+}
+
 declare type PolicyCreationOptions = MinimalDelegateLink & {
     /**
      * details for creating the delegate
@@ -24119,10 +24291,10 @@ declare type PreconfiguredDelegate<T extends StellarDelegate> = Omit<ConfiguredD
  * For a more ergonomic, though less strictly-safe form of this type, see ErgoProtocolSettings instead.
  * @public
  */
-export declare interface ProtocolSettings {
+declare interface ProtocolSettings {
     id: number[];
     type: string;
-    nodeOpSettings: NodeOperatorSettings_2;
+    nodeOpSettings: NodeOperatorSettings;
     nbhSettings: NeighborhoodSettings;
 }
 
@@ -24147,7 +24319,7 @@ export declare class ProtocolSettingsController extends DelegatedDataContract<Pr
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface ProtocolSettingsLike {
+declare interface ProtocolSettingsLike {
     id: number[];
     type: string;
     nodeOpSettings: NodeOperatorSettingsLike_2;
@@ -24250,7 +24422,7 @@ declare class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***AnyData*** for the `BasicDelegate` script
          */
-        AnyData: (fields: AnyDataLike_5 | {
+        AnyData: (fields: AnyDataLike_6 | {
             id: number[];
             type: string;
         }) => UplcData;
@@ -24267,8 +24439,14 @@ declare class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
          */
         NodeOperatorSettings: (fields: NodeOperatorSettingsLike_2 | {
             expectedHeartbeatInterval: IntLike;
-            requiredNodeUptime: IntLike;
-            minNodeRegistrationFee: IntLike;
+            requiredNodeUptime: number;
+            minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+                mph: MintingPolicyHash | string | number[];
+                tokens: {
+                    name: number[] | string;
+                    qty: IntLike;
+                }[];
+            }[];
             minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
                 mph: MintingPolicyHash | string | number[];
                 tokens: {
@@ -24281,7 +24459,13 @@ declare class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
          * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
          */
         NeighborhoodSettings: (fields: NeighborhoodSettingsLike_2 | {
-            minRegistrationFee: IntLike;
+            minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+                mph: MintingPolicyHash | string | number[];
+                tokens: {
+                    name: number[] | string;
+                    qty: IntLike;
+                }[];
+            }[];
             minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
                 mph: MintingPolicyHash | string | number[];
                 tokens: {
@@ -24302,7 +24486,7 @@ declare class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***RelativeDelegateLink*** for the `BasicDelegate` script
          */
-        RelativeDelegateLink: (fields: RelativeDelegateLinkLike_6 | {
+        RelativeDelegateLink: (fields: RelativeDelegateLinkLike_7 | {
             uutName: string;
             delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
             config: number[];
@@ -24310,16 +24494,16 @@ declare class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***PendingDelegateChange*** for the `BasicDelegate` script
          */
-        PendingDelegateChange: (fields: PendingDelegateChangeLike_5 | {
-            action: PendingDelegateActionLike_5;
-            role: DelegateRoleLike_5;
-            dgtLink: /*minStructField*/ RelativeDelegateLinkLike_6 | undefined;
+        PendingDelegateChange: (fields: PendingDelegateChangeLike_6 | {
+            action: PendingDelegateActionLike_6;
+            role: DelegateRoleLike_6;
+            dgtLink: /*minStructField*/ RelativeDelegateLinkLike_7 | undefined;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***CapoManifestEntry*** for the `BasicDelegate` script
          */
-        CapoManifestEntry: (fields: CapoManifestEntryLike_5 | {
-            entryType: ManifestEntryTypeLike_5;
+        CapoManifestEntry: (fields: CapoManifestEntryLike_6 | {
+            entryType: ManifestEntryTypeLike_6;
             tokenName: number[];
             mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
         }) => UplcData;
@@ -24333,13 +24517,13 @@ declare class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
     };
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺAnyDataCast: Cast<AnyData_5, AnyDataLike_5>;
+    ᱺᱺAnyDataCast: Cast<AnyData_6, AnyDataLike_6>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺDelegationDetailCast: Cast<DelegationDetail_6, DelegationDetailLike_5>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNodeOperatorSettingsCast: Cast<NodeOperatorSettings_2, NodeOperatorSettingsLike_2>;
+    ᱺᱺNodeOperatorSettingsCast: Cast<NodeOperatorSettings, NodeOperatorSettingsLike_2>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺNeighborhoodSettingsCast: Cast<NeighborhoodSettings, NeighborhoodSettingsLike_2>;
@@ -24348,13 +24532,13 @@ declare class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
     ᱺᱺProtocolSettingsCast: Cast<ProtocolSettings, ProtocolSettingsLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink_7, RelativeDelegateLinkLike_6>;
+    ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink_9, RelativeDelegateLinkLike_7>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺPendingDelegateChangeCast: Cast<PendingDelegateChange_5, PendingDelegateChangeLike_5>;
+    ᱺᱺPendingDelegateChangeCast: Cast<PendingDelegateChange_6, PendingDelegateChangeLike_6>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺCapoManifestEntryCast: Cast<CapoManifestEntry_5, CapoManifestEntryLike_5>;
+    ᱺᱺCapoManifestEntryCast: Cast<CapoManifestEntry_6, CapoManifestEntryLike_6>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺCapoCtxCast: Cast<CapoCtx_5, CapoCtxLike_5>;
@@ -24397,7 +24581,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateRole(d: UplcData): ErgoDelegateRole_6;
+    DelegateRole(d: UplcData): ErgoDelegateRole_8;
     /**
      * reads UplcData *known to fit the **ManifestActivity*** enum type,
      * for the BasicDelegate script.
@@ -24412,7 +24596,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    ManifestActivity(d: UplcData): ErgoManifestActivity_6;
+    ManifestActivity(d: UplcData): ErgoManifestActivity_8;
     /**
      * reads UplcData *known to fit the **CapoLifecycleActivity*** enum type,
      * for the BasicDelegate script.
@@ -24427,7 +24611,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    CapoLifecycleActivity(d: UplcData): ErgoCapoLifecycleActivity_5;
+    CapoLifecycleActivity(d: UplcData): ErgoCapoLifecycleActivity_6;
     /**
      * reads UplcData *known to fit the **DelegateLifecycleActivity*** enum type,
      * for the BasicDelegate script.
@@ -24517,7 +24701,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingDelegateAction(d: UplcData): ErgoPendingDelegateAction_6;
+    PendingDelegateAction(d: UplcData): ErgoPendingDelegateAction_8;
     /**
      * reads UplcData *known to fit the **ManifestEntryType*** enum type,
      * for the BasicDelegate script.
@@ -24532,7 +24716,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    ManifestEntryType(d: UplcData): ErgoManifestEntryType_6;
+    ManifestEntryType(d: UplcData): ErgoManifestEntryType_8;
     /**
      * reads UplcData *known to fit the **PendingCharterChange*** enum type,
      * for the BasicDelegate script.
@@ -24547,7 +24731,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingCharterChange(d: UplcData): ErgoPendingCharterChange_6;
+    PendingCharterChange(d: UplcData): ErgoPendingCharterChange_8;
     /**
      * reads UplcData *known to fit the **cctx_CharterInputType*** enum type,
      * for the BasicDelegate script.
@@ -24577,7 +24761,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    AnyData(d: UplcData): AnyData_5;
+    AnyData(d: UplcData): AnyData_6;
     /**
      * reads UplcData *known to fit the **DelegationDetail*** struct type,
      * for the BasicDelegate script.
@@ -24607,7 +24791,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NodeOperatorSettings(d: UplcData): NodeOperatorSettings_2;
+    NodeOperatorSettings(d: UplcData): NodeOperatorSettings;
     /**
      * reads UplcData *known to fit the **NeighborhoodSettings*** struct type,
      * for the BasicDelegate script.
@@ -24652,7 +24836,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    RelativeDelegateLink(d: UplcData): RelativeDelegateLink_7;
+    RelativeDelegateLink(d: UplcData): RelativeDelegateLink_9;
     /**
      * reads UplcData *known to fit the **PendingDelegateChange*** struct type,
      * for the BasicDelegate script.
@@ -24667,7 +24851,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingDelegateChange(d: UplcData): PendingDelegateChange_5;
+    PendingDelegateChange(d: UplcData): PendingDelegateChange_6;
     /**
      * reads UplcData *known to fit the **CapoManifestEntry*** struct type,
      * for the BasicDelegate script.
@@ -24682,7 +24866,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    CapoManifestEntry(d: UplcData): CapoManifestEntry_5;
+    CapoManifestEntry(d: UplcData): CapoManifestEntry_6;
     /**
      * reads UplcData *known to fit the **CapoCtx*** struct type,
      * for the BasicDelegate script.
@@ -24715,7 +24899,7 @@ declare type readsUplcTo<T> = (d: UplcData) => T;
  * For a more ergonomic, though less strictly-safe form of this type, see ErgoRelativeDelegateLink instead.
  * @public
  */
-export declare interface RelativeDelegateLink {
+declare interface RelativeDelegateLink {
     uutName: string;
     delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined;
     config: number[];
@@ -24730,20 +24914,6 @@ export declare interface RelativeDelegateLink {
  * @public
  */
 declare interface RelativeDelegateLink_2 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined;
-    config: number[];
-}
-
-/**
- * A strong type for the canonical form of RelativeDelegateLink
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoRelativeDelegateLink instead.
- * @public
- */
-declare interface RelativeDelegateLink_2_2 {
     uutName: string;
     delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined;
     config: number[];
@@ -24820,12 +24990,40 @@ declare interface RelativeDelegateLink_7 {
 }
 
 /**
+ * A strong type for the canonical form of RelativeDelegateLink
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoRelativeDelegateLink instead.
+ * @public
+ */
+declare interface RelativeDelegateLink_8 {
+    uutName: string;
+    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined;
+    config: number[];
+}
+
+/**
+ * A strong type for the canonical form of RelativeDelegateLink
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoRelativeDelegateLink instead.
+ * @public
+ */
+declare interface RelativeDelegateLink_9 {
+    uutName: string;
+    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined;
+    config: number[];
+}
+
+/**
  * A strong type for the permissive form of RelativeDelegateLink
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export declare interface RelativeDelegateLinkLike {
+declare interface RelativeDelegateLinkLike {
     uutName: string;
     delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
     config: number[];
@@ -24838,18 +25036,6 @@ export declare interface RelativeDelegateLinkLike {
  * @public
  */
 declare interface RelativeDelegateLinkLike_2 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
-    config: number[];
-}
-
-/**
- * A strong type for the permissive form of RelativeDelegateLink
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface RelativeDelegateLinkLike_2_2 {
     uutName: string;
     delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
     config: number[];
@@ -24904,6 +25090,18 @@ declare interface RelativeDelegateLinkLike_6 {
 }
 
 /**
+ * A strong type for the permissive form of RelativeDelegateLink
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface RelativeDelegateLinkLike_7 {
+    uutName: string;
+    delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
+    config: number[];
+}
+
+/**
  * Describes the requirements for a unit of software
  * @remarks
  *
@@ -24930,6 +25128,7 @@ declare type ReqtsMap_2<validReqts extends string, inheritedNames extends string
 declare type RequiredDeployedScriptDetails<CT extends configBase, form extends "json" | "native" = "native"> = {
     config: form extends "json" ? any : CT;
     programBundle: DeployedProgramBundle;
+    scriptHash?: string;
 };
 
 /**
@@ -25228,25 +25427,6 @@ declare type SetupOrMainnetSignalForBundle = Partial<Omit<SetupInfo, "isMainnet"
 };
 
 /**
- * ### Don't use this type directly.
- *
- * This type is used as an intermediate representation of an enum variant,
- * for generating the types of utilities that read and write the enum data.
- * See the mkEnum<EnumType> factory function, the ‹tbd› reader function
- * and the ‹tbd› readable type
- * @public
- */
-declare type singleEnumVariantMeta<ET extends EnumTypeMeta<any, any>, VNAME extends keyof ET["variants"], variantConstr extends `Constr#${string}`, FLAVOR extends VariantFlavor, variantArgs extends FLAVOR extends "tagOnly" ? tagOnly : any, specialFlags extends SpecialActivityFlags, EID extends EnumId = ET["enumId"]> = {
-    kind: "variant";
-    enumId: EID;
-    variantName: VNAME;
-    variantKind: FLAVOR;
-    constr: variantConstr;
-    data: variantArgs;
-    uplcData: UplcData;
-};
-
-/**
  * @public
  */
 declare type someContractBridgeClass = AbstractNew<ContractDataBridge>;
@@ -25295,8 +25475,6 @@ declare type SomeDgtDatumHelper<T extends AnyDataTemplate<any, any>> = EnumBridg
     }): InlineTxOutputDatum;
 };
 
-declare type SpecialActivityFlags = "isSeededActivity" | "noSpecialFlags";
-
 /**
  * SpendingActivity enum variants
  *
@@ -25307,8 +25485,8 @@ declare type SpecialActivityFlags = "isSeededActivity" | "noSpecialFlags";
  *     for generating UPLC data for this enum type
  * @public
  */
-export declare type SpendingActivity = {
-    UpdatingRecord: number[];
+declare type SpendingActivity = {
+    _placeholder1SA: number[];
 };
 
 /**
@@ -25336,7 +25514,7 @@ declare type SpendingActivity_2 = {
  * @public
  */
 declare type SpendingActivity_3 = {
-    SampleSpendingActivity: number[];
+    UpdatingRecord: number[];
 };
 
 /**
@@ -25397,14 +25575,14 @@ declare class SpendingActivityHelper_2 extends EnumBridge<JustAnEnum_3> {
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
-        SampleSpendingActivity: number[];
+        _placeholder1SA: number[];
     }, Partial<{
-        SampleSpendingActivity: number[];
+        _placeholder1SA: number[];
     }>>;
     /**
-     * generates  UplcData for ***"MyMintSpendDelegate::SpendingActivity.SampleSpendingActivity"***
+     * generates  UplcData for ***"STokMintDelegate::SpendingActivity._placeholder1SA"***
      */
-    SampleSpendingActivity(recId: number[]): UplcData;
+    _placeholder1SA(recId: number[]): UplcData;
 }
 
 /**
@@ -25502,19 +25680,19 @@ declare class SpendingActivityHelperNested_2 extends EnumBridge<isActivity> {
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
-        SampleSpendingActivity: number[];
+        _placeholder1SA: number[];
     }, Partial<{
-        SampleSpendingActivity: number[];
+        _placeholder1SA: number[];
     }>>;
     /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"MyMintSpendDelegate::SpendingActivity.SampleSpendingActivity"***
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::SpendingActivity._placeholder1SA"***
      * @remarks
      * #### Nested activity:
      * this is connected to a nested-activity wrapper, so the details are piped through
      * the parent's uplc-encoder, producing a single uplc object with
      * a complete wrapper for this inner activity detail.
      */
-    SampleSpendingActivity(recId: number[]): isActivity;
+    _placeholder1SA(recId: number[]): isActivity;
 }
 
 /**
@@ -25606,8 +25784,8 @@ declare class SpendingActivityHelperNested_5 extends EnumBridge<isActivity> {
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-export declare type SpendingActivityLike = IntersectedEnum<{
-    UpdatingRecord: number[];
+declare type SpendingActivityLike = IntersectedEnum<{
+    _placeholder1SA: number[];
 }>;
 
 /**
@@ -25643,7 +25821,7 @@ declare type SpendingActivityLike_2 = IntersectedEnum<{
  * @public
  */
 declare type SpendingActivityLike_3 = IntersectedEnum<{
-    SampleSpendingActivity: number[];
+    UpdatingRecord: number[];
 }>;
 
 /**
@@ -25680,16 +25858,6 @@ declare type SpendingActivityLike_4 = IntersectedEnum<{
  */
 declare type SpendingActivityLike_5 = IntersectedEnum<{
     UpdatingRecord: number[];
-}>;
-
-/**
- * @internal
- */
-export declare type SpendingActivityMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "SpendingActivity";
-}, {
-    UpdatingRecord: singleEnumVariantMeta<SpendingActivityMeta, "UpdatingRecord", "Constr#0", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ number[], "noSpecialFlags">;
 }>;
 
 declare abstract class StateMachine<STATES extends string, TRANSITIONS extends string> {
@@ -25843,6 +26011,7 @@ declare type StateTransitionTable<S extends string, T extends string> = {
 
 declare type StellarBundleSetupDetails<CT extends configBase> = {
     setup: SetupOrMainnetSignalForBundle;
+    placeholderAt?: string;
     previousOnchainScript?: {
         validatorHash: number[];
         uplcProgram: anyUplcProgram;
@@ -26411,6 +26580,39 @@ declare type stellarSubclass<S extends StellarContract<any>> = (new (setup: Setu
 };
 
 /**
+ * @public
+ */
+declare abstract class StellarTokenomicsCapo<SELF extends StellarTokenomicsCapo<any, any>, //= StellarTokenomics<any>
+F extends CapoFeatureFlags = GenericTokenomicsFeatureFlags> extends Capo<SELF, F> {
+    static get defaultParams(): {
+        rev: bigint;
+    };
+    getMintDelegate(charterData?: CapoDatum$Ergo$CharterData_3): Promise<STokMintDelegate>;
+    mkUutName(purpose: string, txin: TxInput): UutName;
+    /**
+     * Finds the user's member token and adds it to the transaction context
+     * @remarks
+     * Includes a seed-utxo in the transaction context for use in any aspect
+     * of the transaction that may need it (i.e. minting a discount token or ?)
+     */
+    mkTxnWithMemberInfo<TCX extends StellarTxnContext = StellarTxnContext>(skipReturningToken?: "skipTokenReturn", tcx?: TCX): Promise<TCX & hasMemberToken & hasSeedUtxo>;
+    mustFindMemberInfo(): Promise<FoundUut>;
+    findMemberInfo(): Promise<FoundUut | undefined>;
+    txnAddMemberToken<TCX extends StellarTxnContext>(tcx: TCX, memberInfo?: FoundUut, skipReturningToken?: "skipTokenReturn"): Promise<TCX & hasMemberToken & hasSeedUtxo>;
+    /**
+     * Creates a transaction minting a collaborator token
+     * @remarks
+     *
+     * Sends the collaborator token to the provided address
+     * @param address - recipient of the collaborator token
+     * @public
+     **/
+    mkTxnMintParticipantToken(addr: Address): Promise<hasUutContext<"member"> & StellarTxnContext<anyState> & hasSeedUtxo>;
+    txnMintingFungibleTokens<TCX extends StellarTxnContext>(tcx: TCX, tokenName: string | number[], tokenCount: bigint): Promise<TCX & hasCharterRef & hasGovAuthority>;
+    requirements(): ReqtsMap_2<"Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants", never>;
+}
+
+/**
  * Transaction-building context for Stellar Contract transactions
  * @remarks
  *
@@ -26661,6 +26863,16 @@ declare class StellarTxnContext<S extends anyState = anyState> {
     submitTxnChain(options?: {
         txns?: TxDescription<any, "buildLater!">[];
     } & TxPipelineOptions): Promise<any[] | undefined>;
+}
+
+/**
+ * Base class for mint/spend delegates
+ * @public
+ */
+declare class STokMintDelegate extends BasicMintDelegate {
+    get delegateName(): string;
+    constructor(...args: any[]);
+    scriptBundle(): any;
 }
 
 declare type SubmissionsStates = "registered" | "building" | "nested batch" | "not needed" | "built" | "signingSingle" | "submitting" | "confirming" | "confirmed" | "failed" | "mostly confirmed";
@@ -27245,7 +27457,7 @@ declare class UnspecializedDelegateBridge extends ContractDataBridge {
      * this is the specific type of datum for the `BasicDelegate` script
      */
     DelegateDatum: DelegateDatumHelper;
-    readDatum: (d: UplcData) => ErgoDelegateDatum_2;
+    readDatum: (d: UplcData) => ErgoDelegateDatum;
     /**
      * generates UplcData for the activity type (***DelegateActivity***) for the `BasicDelegate` script
      */
@@ -27312,14 +27524,14 @@ declare class UnspecializedDelegateBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***AnyData*** for the `BasicDelegate` script
          */
-        AnyData: (fields: AnyDataLike_2_2 | {
+        AnyData: (fields: AnyDataLike_2 | {
             id: number[];
             type: string;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***DelegationDetail*** for the `BasicDelegate` script
          */
-        DelegationDetail: (fields: DelegationDetailLike_2 | {
+        DelegationDetail: (fields: DelegationDetailLike | {
             capoAddr: /*minStructField*/ Address | string;
             mph: /*minStructField*/ MintingPolicyHash | string | number[];
             tn: number[];
@@ -27335,54 +27547,54 @@ declare class UnspecializedDelegateBridge extends ContractDataBridge {
         /**
          * generates UplcData for the enum type ***PendingDelegateChange*** for the `BasicDelegate` script
          */
-        PendingDelegateChange: (fields: PendingDelegateChangeLike_2_2 | {
-            action: PendingDelegateActionLike_2_2;
-            role: DelegateRoleLike_2_2;
+        PendingDelegateChange: (fields: PendingDelegateChangeLike_2 | {
+            action: PendingDelegateActionLike_2;
+            role: DelegateRoleLike_2;
             dgtLink: /*minStructField*/ RelativeDelegateLinkLike_3 | undefined;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***CapoManifestEntry*** for the `BasicDelegate` script
          */
-        CapoManifestEntry: (fields: CapoManifestEntryLike_2_2 | {
-            entryType: ManifestEntryTypeLike_2_2;
+        CapoManifestEntry: (fields: CapoManifestEntryLike_2 | {
+            entryType: ManifestEntryTypeLike_2;
             tokenName: number[];
             mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***CapoCtx*** for the `BasicDelegate` script
          */
-        CapoCtx: (fields: CapoCtxLike_2 | {
+        CapoCtx: (fields: CapoCtxLike | {
             mph: /*minStructField*/ MintingPolicyHash | string | number[];
-            charter: cctx_CharterInputTypeLike_2;
+            charter: cctx_CharterInputTypeLike;
         }) => UplcData;
     };
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺAnyDataCast: Cast<AnyData_2_2, AnyDataLike_2_2>;
+    ᱺᱺAnyDataCast: Cast<AnyData_2, AnyDataLike_2>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺDelegationDetailCast: Cast<DelegationDetail_2, DelegationDetailLike_2>;
+    ᱺᱺDelegationDetailCast: Cast<DelegationDetail_2, DelegationDetailLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink_3, RelativeDelegateLinkLike_3>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺPendingDelegateChangeCast: Cast<PendingDelegateChange_2_2, PendingDelegateChangeLike_2_2>;
+    ᱺᱺPendingDelegateChangeCast: Cast<PendingDelegateChange_2, PendingDelegateChangeLike_2>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺCapoManifestEntryCast: Cast<CapoManifestEntry_2_2, CapoManifestEntryLike_2_2>;
+    ᱺᱺCapoManifestEntryCast: Cast<CapoManifestEntry_2, CapoManifestEntryLike_2>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺCapoCtxCast: Cast<CapoCtx_2, CapoCtxLike_2>;
+    ᱺᱺCapoCtxCast: Cast<CapoCtx, CapoCtxLike>;
 }
 
 declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
     bridge: UnspecializedDelegateBridge;
     constructor(bridge: UnspecializedDelegateBridge, isMainnet: boolean);
     datum: (d: UplcData) => Partial<{
-        Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_2;
-        IsDelegation: ErgoDelegationDetail_2;
-        capoStoredData: DelegateDatum$Ergo$capoStoredData_2;
+        Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken;
+        IsDelegation: ErgoDelegationDetail;
+        capoStoredData: DelegateDatum$Ergo$capoStoredData;
     }>;
     /**
      * reads UplcData *known to fit the **DelegateDatum*** enum type,
@@ -27398,7 +27610,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateDatum(d: UplcData): ErgoDelegateDatum_2;
+    DelegateDatum(d: UplcData): ErgoDelegateDatum;
     /**
      * reads UplcData *known to fit the **DelegateRole*** enum type,
      * for the BasicDelegate script.
@@ -27413,7 +27625,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateRole(d: UplcData): ErgoDelegateRole_2_2;
+    DelegateRole(d: UplcData): ErgoDelegateRole_2;
     /**
      * reads UplcData *known to fit the **ManifestActivity*** enum type,
      * for the BasicDelegate script.
@@ -27428,7 +27640,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    ManifestActivity(d: UplcData): ErgoManifestActivity_2_2;
+    ManifestActivity(d: UplcData): ErgoManifestActivity_2;
     /**
      * reads UplcData *known to fit the **CapoLifecycleActivity*** enum type,
      * for the BasicDelegate script.
@@ -27443,7 +27655,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    CapoLifecycleActivity(d: UplcData): ErgoCapoLifecycleActivity_2_2;
+    CapoLifecycleActivity(d: UplcData): ErgoCapoLifecycleActivity_2;
     /**
      * reads UplcData *known to fit the **DelegateLifecycleActivity*** enum type,
      * for the BasicDelegate script.
@@ -27458,7 +27670,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateLifecycleActivity(d: UplcData): ErgoDelegateLifecycleActivity_2;
+    DelegateLifecycleActivity(d: UplcData): ErgoDelegateLifecycleActivity;
     /**
      * reads UplcData *known to fit the **SpendingActivity*** enum type,
      * for the BasicDelegate script.
@@ -27473,7 +27685,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    SpendingActivity(d: UplcData): ErgoSpendingActivity_2;
+    SpendingActivity(d: UplcData): ErgoSpendingActivity;
     /**
      * reads UplcData *known to fit the **MintingActivity*** enum type,
      * for the BasicDelegate script.
@@ -27488,7 +27700,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    MintingActivity(d: UplcData): ErgoMintingActivity_2;
+    MintingActivity(d: UplcData): ErgoMintingActivity;
     /**
      * reads UplcData *known to fit the **BurningActivity*** enum type,
      * for the BasicDelegate script.
@@ -27503,7 +27715,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    BurningActivity(d: UplcData): ErgoBurningActivity_2;
+    BurningActivity(d: UplcData): ErgoBurningActivity;
     /**
      * reads UplcData *known to fit the **DelegateActivity*** enum type,
      * for the BasicDelegate script.
@@ -27518,7 +27730,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    DelegateActivity(d: UplcData): ErgoDelegateActivity_2;
+    DelegateActivity(d: UplcData): ErgoDelegateActivity;
     /**
      * reads UplcData *known to fit the **PendingDelegateAction*** enum type,
      * for the BasicDelegate script.
@@ -27533,7 +27745,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingDelegateAction(d: UplcData): ErgoPendingDelegateAction_2_2;
+    PendingDelegateAction(d: UplcData): ErgoPendingDelegateAction_2;
     /**
      * reads UplcData *known to fit the **ManifestEntryType*** enum type,
      * for the BasicDelegate script.
@@ -27548,7 +27760,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    ManifestEntryType(d: UplcData): ErgoManifestEntryType_2_2;
+    ManifestEntryType(d: UplcData): ErgoManifestEntryType_2;
     /**
      * reads UplcData *known to fit the **PendingCharterChange*** enum type,
      * for the BasicDelegate script.
@@ -27563,7 +27775,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingCharterChange(d: UplcData): ErgoPendingCharterChange_2_2;
+    PendingCharterChange(d: UplcData): ErgoPendingCharterChange_2;
     /**
      * reads UplcData *known to fit the **cctx_CharterInputType*** enum type,
      * for the BasicDelegate script.
@@ -27578,7 +27790,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    cctx_CharterInputType(d: UplcData): Ergocctx_CharterInputType_2;
+    cctx_CharterInputType(d: UplcData): Ergocctx_CharterInputType;
     /**
      * reads UplcData *known to fit the **AnyData*** struct type,
      * for the BasicDelegate script.
@@ -27593,7 +27805,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    AnyData(d: UplcData): AnyData_2_2;
+    AnyData(d: UplcData): AnyData_2;
     /**
      * reads UplcData *known to fit the **DelegationDetail*** struct type,
      * for the BasicDelegate script.
@@ -27638,7 +27850,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    PendingDelegateChange(d: UplcData): PendingDelegateChange_2_2;
+    PendingDelegateChange(d: UplcData): PendingDelegateChange_2;
     /**
      * reads UplcData *known to fit the **CapoManifestEntry*** struct type,
      * for the BasicDelegate script.
@@ -27653,7 +27865,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    CapoManifestEntry(d: UplcData): CapoManifestEntry_2_2;
+    CapoManifestEntry(d: UplcData): CapoManifestEntry_2;
     /**
      * reads UplcData *known to fit the **CapoCtx*** struct type,
      * for the BasicDelegate script.
@@ -27668,7 +27880,7 @@ declare class UnspecializedDelegateBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    CapoCtx(d: UplcData): CapoCtx_2;
+    CapoCtx(d: UplcData): CapoCtx;
 }
 
 /**
@@ -27690,10 +27902,7 @@ declare class UnspecializedDgtBundle extends UnspecializedDgtBundle_base {
     get bridgeClassName(): string;
 }
 
-declare const UnspecializedDgtBundle_base: typeof CapoDelegateBundle & Constructor_2<CapoDelegateBundle> & EmptyConstructor_2<CapoDelegateBundle> & {
-    capoBundle: CapoHeliosBundle;
-    isConcrete: true;
-};
+declare const UnspecializedDgtBundle_base: ConcreteCapoDelegateBundle_2;
 
 declare class UpdateActivity<FactoryFunc extends updateActivityFunc<any>, ARGS extends [...any] = FactoryFunc extends updateActivityFunc<infer ARGS> ? ARGS : never> {
     args: ARGS;
@@ -28020,12 +28229,6 @@ declare type uutPurposeMap<unionPurpose extends string> = {
  * @public
  **/
 declare type valuesEntry = [number[], bigint];
-
-declare type VariantFlavor = "tagOnly" | "fields" | "singletonField";
-
-declare type VariantMap = {
-    [variantName: string]: singleEnumVariantMeta<any, any, any, any, any, any>;
-};
 
 declare abstract class WalletSigningStrategy {
     abstract canBatch: boolean;

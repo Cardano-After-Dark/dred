@@ -19,9 +19,17 @@ import {
 } from "@donecollectively/stellar-contracts";
 
 import { DredCapo } from "./DredCapo.js";
-import type { ErgoProtocolSettings, minimalNodeRegistrationData, NodeRegistrationData, NodeRegistrationDataLike } from "dred-network-registry";
+
 import { vi } from "vitest";
 import type { hasMemberToken } from "stellar-tokenomics";
+import type { 
+    minimalNodeRegistrationData, 
+    NodeRegistrationData, 
+    NodeRegistrationDataLike 
+} from "./nodeRegistry/NodeRegistry.typeInfo.js";
+import type { 
+    ErgoProtocolSettings    
+ } from "./settings/ProtocolSettings.typeInfo.js";
 
 export let helperState: TestHelperState<DredCapo> = {
     snapshots: {},

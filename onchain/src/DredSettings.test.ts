@@ -12,7 +12,7 @@ import {
     type StellarTestContext,
     type TestHelperState,
 } from "@donecollectively/stellar-contracts/testing";
-import { DredCapo } from "./DredCapo.js";
+
 import { DredCapoTestHelper, type DredCapo_TC, helperState } from "./DredCapoTestHelper.js";
 import { minimalData } from "@donecollectively/stellar-contracts";
 import { ErgoProtocolSettings } from "./settings/ProtocolSettings.typeInfo.js";
