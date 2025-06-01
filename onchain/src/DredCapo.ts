@@ -55,7 +55,6 @@ import type {
     NodeRegistrationData,
 } from "src/nodeRegistry/NodeRegistry.typeInfo.js";
 import type { ErgoNeighborhoodData } from "src/DredNeighborhood/Neighborhood.typeInfo.js";
-import { ADA } from "@donecollectively/stellar-contracts/testing";
 /* Add imports for each model-specific controller class here */
 
 const useAll = {
@@ -177,13 +176,13 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
         return {
             nodeOpSettings: {
                 expectedHeartbeatInterval: BigInt(72 * 60 * 60 * 1000),
-                minNodeOperatorStake: makeValue(200n * ADA),
-                minNodeRegistrationFee: makeValue(50n * ADA),
+                minNodeOperatorStake: makeValue(this.ADA(200n)),
+                minNodeRegistrationFee: makeValue(this.ADA(50n)),
                 requiredNodeUptime: 0.95,
             },
             nbhSettings: {
-                minNbhStake: makeValue(5_000n * ADA),
-                minRegistrationFee: makeValue(4_000n * ADA),
+                minNbhStake: makeValue(this.ADA(5_000n)),
+                minRegistrationFee: makeValue(this.ADA(4_000n)),
             },
         };
     }

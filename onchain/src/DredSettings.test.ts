@@ -6,17 +6,17 @@ import {
     vi
 } from "vitest";
 
+import { makeValue } from "@helios-lang/ledger";
 import {
     ADA,
     addTestContext,
     type StellarTestContext,
     type TestHelperState,
 } from "@donecollectively/stellar-contracts/testing";
+import type { minimalData } from "@donecollectively/stellar-contracts";
 
 import { DredCapoTestHelper, type DredCapo_TC, helperState } from "./DredCapoTestHelper.js";
-import { minimalData } from "@donecollectively/stellar-contracts";
-import { ErgoProtocolSettings } from "./settings/ProtocolSettings.typeInfo.js";
-import { makeValue } from "@helios-lang/ledger";
+import type { ErgoProtocolSettings } from "./settings/ProtocolSettings.typeInfo.js";
 
 const it = itWithContext<DredCapo_TC>;
 const fit = it.only;
