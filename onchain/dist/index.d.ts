@@ -14840,7 +14840,7 @@ declare type ErgoMintingActivity_5 = IntersectedEnum<MintingActivity_5>;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoNeighborhoodData = {
+export declare type ErgoNeighborhoodData = {
     id: number[];
     type: string;
     memberToken: string;
@@ -14922,7 +14922,7 @@ declare type ErgoNodeOpsInfo_2 = NodeOpsInfo_2
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoNodeRegistrationData = NodeRegistrationData;
+export declare type ErgoNodeRegistrationData = NodeRegistrationData;
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -15277,7 +15277,7 @@ declare type ErgoPendingDelegateChange_9 = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoProtocolSettings = {
+export declare type ErgoProtocolSettings = {
     id: number[];
     type: string;
     nodeOpSettings: ErgoNodeOperatorSettings;

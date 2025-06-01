@@ -122,6 +122,28 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
     txnMintingFungibleTokens<TCX extends StellarTxnContext>(tcx: TCX, tokenName: string | number[], tokenCount: bigint): Promise<TCX & hasCharterRef_2 & hasGovAuthority_2>;
 }
 
+// @public
+export type ErgoNeighborhoodData = {
+    id: number[];
+    type: string;
+    memberToken: string;
+    name: string;
+    description: string;
+    appInfo: ErgoAppInfo;
+    opsInfo: ErgoNodeOpsInfo;
+};
+
+// @public
+export type ErgoNodeRegistrationData = NodeRegistrationData;
+
+// @public
+export type ErgoProtocolSettings = {
+    id: number[];
+    type: string;
+    nodeOpSettings: ErgoNodeOperatorSettings;
+    nbhSettings: ErgoNeighborhoodSettings;
+};
+
 // Warning: (ae-forgotten-export) The symbol "STokMintDelegate" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
@@ -841,7 +863,6 @@ export class ProtocolSettingsController extends DelegatedDataContract<ProtocolSe
 // src/DredNeighborhood/Neighborhood.typeInfo.ts:556:5 - (ae-forgotten-export) The symbol "AppInfoLike" needs to be exported by the entry point index.d.ts
 // src/DredNeighborhood/Neighborhood.typeInfo.ts:557:5 - (ae-forgotten-export) The symbol "NodeOpsInfoLike" needs to be exported by the entry point index.d.ts
 // src/DredNeighborhood/Neighborhood.typeInfo.ts:576:5 - (ae-forgotten-export) The symbol "NeighborhoodData" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/Neighborhood.typeInfo.ts:592:5 - (ae-forgotten-export) The symbol "ErgoNeighborhoodData" needs to be exported by the entry point index.d.ts
 // src/DredNeighborhood/Neighborhood.typeInfo.ts:605:5 - (ae-forgotten-export) The symbol "NeighborhoodDataLike" needs to be exported by the entry point index.d.ts
 // src/DredNeighborhood/Neighborhood.typeInfo.ts:645:13 - (ae-forgotten-export) The symbol "DelegateDatum$Cip68RefToken_4" needs to be exported by the entry point index.d.ts
 // src/DredNeighborhood/Neighborhood.typeInfo.ts:646:13 - (ae-forgotten-export) The symbol "DelegationDetail_5" needs to be exported by the entry point index.d.ts
@@ -1151,7 +1172,6 @@ export class ProtocolSettingsController extends DelegatedDataContract<ProtocolSe
 // src/nodeRegistry/NodeRegistry.typeInfo.ts:130:5 - (ae-forgotten-export) The symbol "AnyDataLike_4" needs to be exported by the entry point index.d.ts
 // src/nodeRegistry/NodeRegistry.typeInfo.ts:220:5 - (ae-forgotten-export) The symbol "TimeLike" needs to be exported by the entry point index.d.ts
 // src/nodeRegistry/NodeRegistry.typeInfo.ts:239:5 - (ae-forgotten-export) The symbol "NodeRegistrationData" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:255:5 - (ae-forgotten-export) The symbol "ErgoNodeRegistrationData" needs to be exported by the entry point index.d.ts
 // src/nodeRegistry/NodeRegistry.typeInfo.ts:268:5 - (ae-forgotten-export) The symbol "NodeRegistrationDataLike" needs to be exported by the entry point index.d.ts
 // src/nodeRegistry/NodeRegistry.typeInfo.ts:308:13 - (ae-forgotten-export) The symbol "DelegateDatum$Cip68RefToken_3" needs to be exported by the entry point index.d.ts
 // src/nodeRegistry/NodeRegistry.typeInfo.ts:309:13 - (ae-forgotten-export) The symbol "DelegationDetail_4" needs to be exported by the entry point index.d.ts
@@ -1291,7 +1311,6 @@ export class ProtocolSettingsController extends DelegatedDataContract<ProtocolSe
 // src/settings/ProtocolSettings.typeInfo.ts:299:5 - (ae-forgotten-export) The symbol "NodeOperatorSettingsLike_2" needs to be exported by the entry point index.d.ts
 // src/settings/ProtocolSettings.typeInfo.ts:300:5 - (ae-forgotten-export) The symbol "NeighborhoodSettingsLike_2" needs to be exported by the entry point index.d.ts
 // src/settings/ProtocolSettings.typeInfo.ts:319:5 - (ae-forgotten-export) The symbol "ProtocolSettings" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:335:5 - (ae-forgotten-export) The symbol "ErgoProtocolSettings" needs to be exported by the entry point index.d.ts
 // src/settings/ProtocolSettings.typeInfo.ts:348:5 - (ae-forgotten-export) The symbol "ProtocolSettingsLike" needs to be exported by the entry point index.d.ts
 // src/settings/ProtocolSettings.typeInfo.ts:388:13 - (ae-forgotten-export) The symbol "DelegateDatum$Cip68RefToken_5" needs to be exported by the entry point index.d.ts
 // src/settings/ProtocolSettings.typeInfo.ts:389:13 - (ae-forgotten-export) The symbol "DelegationDetail_6" needs to be exported by the entry point index.d.ts

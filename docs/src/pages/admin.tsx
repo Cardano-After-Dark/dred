@@ -7,9 +7,9 @@ import type {
     FoundDatumUtxo, AnyDataTemplate, CharterData 
 } from "@donecollectively/stellar-contracts";
 import type { TxInput } from "@helios-lang/ledger";
-import type { NodeRegistrationData, ErgoProtocolSettings } from "dred-network-registry";
 // import { CharterStatus } from "@/components/ui/CharterStatus.tsx";
 import { CharterStatus } from "@donecollectively/stellar-contracts/ui";
+import { ErgoNodeRegistrationData, ErgoProtocolSettings } from "dred-network-registry";
 
 // Helper function to check if a node is active based on its last heartbeat
 const isNodeActive = (lastHeartbeat: number, heartbeatInterval: bigint): boolean => {
@@ -27,7 +27,7 @@ export const getStaticProps = async () => {
 
 export function AdminPage() {
     const lastUpdate = useSignal<Date>(new Date());
-    const nodeRegistryData = useSignal<NodeRegistrationData[]>([]);
+    const nodeRegistryData = useSignal<ErgoNodeRegistrationData[]>([]);
     const settingsDetail = useSignal<ErgoProtocolSettings | undefined>(undefined);
 
     // Effect to fetch node registry data when provider changes

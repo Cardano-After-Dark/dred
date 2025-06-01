@@ -60059,7 +60059,7 @@
             {
               "kind": "Reference",
               "text": "ErgoNodeRegistrationData",
-              "canonicalReference": "dred-network-registry!~ErgoNodeRegistrationData:type"
+              "canonicalReference": "dred-network-registry!ErgoNodeRegistrationData:type"
             },
             {
               "kind": "Content",
@@ -60103,7 +60103,7 @@
             {
               "kind": "Reference",
               "text": "ErgoNeighborhoodData",
-              "canonicalReference": "dred-network-registry!~ErgoNeighborhoodData:type"
+              "canonicalReference": "dred-network-registry!ErgoNeighborhoodData:type"
             },
             {
               "kind": "Content",
@@ -60147,7 +60147,7 @@
             {
               "kind": "Reference",
               "text": "ErgoProtocolSettings",
-              "canonicalReference": "dred-network-registry!~ErgoProtocolSettings:type"
+              "canonicalReference": "dred-network-registry!ErgoProtocolSettings:type"
             },
             {
               "kind": "Content",
@@ -77030,7 +77030,7 @@
                 {
                   "kind": "Reference",
                   "text": "ErgoProtocolSettings",
-                  "canonicalReference": "dred-network-registry!~ErgoProtocolSettings:type"
+                  "canonicalReference": "dred-network-registry!ErgoProtocolSettings:type"
                 },
                 {
                   "kind": "Content",
@@ -85922,7 +85922,7 @@
         },
         {
           "kind": "TypeAlias",
-          "canonicalReference": "dred-network-registry!~ErgoNeighborhoodData:type",
+          "canonicalReference": "dred-network-registry!ErgoNeighborhoodData:type",
           "docComment": "/**\n * An ergonomic, though less strictly-safe form of NeighborhoodData\n *\n * @remarks\n *\n * This type can use enums expressed as merged unions of the enum variants. You might think of this type as being \"read-only\", in that it's possible to create data with this type that would not be suitable for conversion to on-chain use. For creating such data, use the NeighborhoodDataLike type, or the on-chain data-building helpers instead.\n *\n * @public\n */\n",
           "excerptTokens": [
             {
@@ -86070,7 +86070,7 @@
         },
         {
           "kind": "TypeAlias",
-          "canonicalReference": "dred-network-registry!~ErgoNodeRegistrationData:type",
+          "canonicalReference": "dred-network-registry!ErgoNodeRegistrationData:type",
           "docComment": "/**\n * An ergonomic, though less strictly-safe form of NodeRegistrationData\n *\n * @remarks\n *\n * This type can use enums expressed as merged unions of the enum variants. You might think of this type as being \"read-only\", in that it's possible to create data with this type that would not be suitable for conversion to on-chain use. For creating such data, use the NodeRegistrationDataLike type, or the on-chain data-building helpers instead.\n *\n * @public\n */\n",
           "excerptTokens": [
             {
@@ -87377,7 +87377,7 @@
         },
         {
           "kind": "TypeAlias",
-          "canonicalReference": "dred-network-registry!~ErgoProtocolSettings:type",
+          "canonicalReference": "dred-network-registry!ErgoProtocolSettings:type",
           "docComment": "/**\n * An ergonomic, though less strictly-safe form of ProtocolSettings\n *\n * @remarks\n *\n * This type can use enums expressed as merged unions of the enum variants. You might think of this type as being \"read-only\", in that it's possible to create data with this type that would not be suitable for conversion to on-chain use. For creating such data, use the ProtocolSettingsLike type, or the on-chain data-building helpers instead.\n *\n * @public\n */\n",
           "excerptTokens": [
             {
@@ -108859,7 +108859,7 @@
             {
               "kind": "Reference",
               "text": "ErgoNeighborhoodData",
-              "canonicalReference": "dred-network-registry!~ErgoNeighborhoodData:type"
+              "canonicalReference": "dred-network-registry!ErgoNeighborhoodData:type"
             },
             {
               "kind": "Content",
@@ -115494,7 +115494,7 @@
             {
               "kind": "Reference",
               "text": "ErgoNeighborhoodData",
-              "canonicalReference": "dred-network-registry!~ErgoNeighborhoodData:type"
+              "canonicalReference": "dred-network-registry!ErgoNeighborhoodData:type"
             },
             {
               "kind": "Content",
@@ -121794,7 +121794,7 @@
             {
               "kind": "Reference",
               "text": "ErgoNodeRegistrationData",
-              "canonicalReference": "dred-network-registry!~ErgoNodeRegistrationData:type"
+              "canonicalReference": "dred-network-registry!ErgoNodeRegistrationData:type"
             },
             {
               "kind": "Content",
