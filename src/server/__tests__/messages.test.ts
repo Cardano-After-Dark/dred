@@ -1,4 +1,4 @@
-import { beforeAll, describe, it, vi, expect } from "vitest";
+import { beforeAll, afterAll, describe, it, vi, expect } from "vitest";
 import request, { SuperTestWithHost, Test } from "supertest";
 import { Express } from "express";
 
@@ -13,9 +13,14 @@ describe("channel messages", () => {
     let agent: SuperTestWithHost<Test>;
     let server: DredServer;
     let client: DredClient;
+
     beforeAll(async () => {
         const test = await testSetup();
         ({ agent, server, client } = test);
+    });
+
+    afterAll(async () => {
+        await asyncDelay(100);
     });
 
     it("does not post messages to a non-existing channel", async () => {

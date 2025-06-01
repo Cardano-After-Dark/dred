@@ -1,0 +1,8 @@
+# exclude all except for .md files and files in the track folder
+# (meaningful logs should be recorded in .md files)
+*
+!log/*.md
+!log/track/
+
+# of course, we need to keep the .gitignore file
+!.gitignore
