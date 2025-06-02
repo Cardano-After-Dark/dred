@@ -29,6 +29,10 @@ describe("minimal replication setup", () => {
         let c1: DredClient;
         let c2: DredClient;
 
+        // Simple message collectors
+        let c1Messages: any[];
+        let c2Messages: any[];
+
         // Neighborhood for connecting clients
         const neighborhoodId = "test-neighborhood";
 
@@ -59,7 +63,7 @@ describe("minimal replication setup", () => {
             dred1 = test.servers[0];
             dred2 = test.servers[1];
         });
-
+        
         beforeEach(async () => {
             await asyncDelay(100);
             logStep("beforeEach: resetting redis and channels");
@@ -87,15 +91,24 @@ describe("minimal replication setup", () => {
             c1.channels = await c1.connManager.getChannelList();
             c2.channels = await c2.connManager.getChannelList();
 
+            c1Messages = [];
+            c2Messages = [];
+            
             // Subscribe clients to the created channel - using the working pattern
             logStep(`Subscribing clients to ${channelName}...`);
             
             // Use the subscription map pattern from messages.test.ts
             await c1.subscribeToChannels({
-                [channelName]: (msg) => { console.log("c1 received:", msg); }
+                [channelName]: (msg) => { 
+                    console.log("c1 received:", msg); 
+                    c1Messages.push(msg);
+                }
             });
             await c2.subscribeToChannels({
-                [channelName]: (msg) => { console.log("c2 received:", msg); }
+                [channelName]: (msg) => { 
+                    console.log("c2 received:", msg); 
+                    c2Messages.push(msg);
+                }
             });
             
             // Add delay to allow subscriptions to settle
@@ -136,7 +149,27 @@ describe("minimal replication setup", () => {
             // channels should contain "test-channel", "news", "discussion"
             expect(c1.channels).toContainEqual(channelName);
             expect(c2.channels).toContainEqual(channelName);
+
+            // post message directly to server
+            const testMessage = {
+                msg: "Hello from test!",
+                type: "greeting",
+                ocid: "test-001"
+            };
+            
+            const response = await test.agent
+                .post(`/channel/${channelName}/message`)
+                .send(testMessage)
+                .expect(200);
+
+            logStep(`Message posted, response: ${JSON.stringify(response.body)}`);
+            
+            
     
             await asyncDelay(500);
+
+            logStep(`c1Messages count: ${c1Messages.length}`);
+            logStep(`c2Messages count: ${c2Messages.length}`);
+
         });
 });
