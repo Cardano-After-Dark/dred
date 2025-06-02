@@ -31,7 +31,7 @@ pnpm test replication | pnpm exec pino-pretty
 
 ```bash
 # Enable application logging
-LOGGING=1 pnpm test replication
+LOGGING=1 pnpm test replication | pnpm exec pino-pretty
 ```
 
 ### Logging comparison

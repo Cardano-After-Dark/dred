@@ -26,7 +26,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import compression from "compression";
 
-//@ts-ignore
+//@ts-expect-error
 import { RedisChannels } from "../redis/streams";
 
 import { DredClient, DredClientArgs } from "../client/DredClient.js";
@@ -51,6 +51,7 @@ import {
 import { autobind } from "@poshplum/utils";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import { zonedLogger } from "@poshplum/utils";
+import { ReplicationClient } from "./ReplicationClient.js";
 
 const logging = parseInt(process.env.LOGGING || "0");
 export interface ExpressWithRedis extends express.Application {
@@ -139,6 +140,7 @@ export class DredServer {
     serverId: string;
     myServerInfo?: DredHostDetails;
     logger: ReturnType<typeof zonedLogger>;
+    replicationClient?: ReplicationClient;
 
     resetting = false;
     get nbh() {
@@ -217,9 +219,6 @@ export class DredServer {
         this.subscribers = new Map();
         this.redisDb = redisDb || 0;
         this.setupRedis(redisUrl);
-
-        // setup message replication for the redis instance
-        this.setupReplication();
 
         // this.channelConn._log.error = console.error.bind(console);
         this.clientArgs = args;
@@ -324,6 +323,9 @@ export class DredServer {
     async listen() {
         await this.setupPending;
 
+        // Setup replication after all basic server setup is complete
+        // await this.setupReplication();
+
         const myInfo = (this.myServerInfo =
             this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));
         if (!myInfo) throw new Error(`can't identify my own info`);
@@ -336,8 +338,43 @@ export class DredServer {
         //       listen(port: number, hostname: string, callback?: () => void): http.Server;
     }
 
+    async setupReplication() {
+        try {
+            const hosts = await this.discovery.getHostList();
+            const otherHosts = hosts.filter(host => host.serverId !== this.serverId);
+            
+            if (otherHosts.length === 0) {
+                this.log("No other hosts found for replication");
+                return;
+            }
+
+            this.replicationClient = new ReplicationClient(this);
+            await this.replicationClient.initialize(otherHosts);
+            
+            this.log(`Replication setup complete with ${otherHosts.length} peer servers`);
+        } catch (error) {
+            this.warn(`Failed to setup replication: ${error}`);
+        }
+    }
+
+    async cleanupReplication(): Promise<void> {
+        if (this.replicationClient) {
+            try {
+                await this.replicationClient.cleanup();
+                this.replicationClient = undefined;
+                this.log("Replication client cleanup complete");
+            } catch (error) {
+                this.warn(`Error cleaning up replication client: ${error}`);
+            }
+        }
+    }
+
     async reset(reconnect?: boolean, finalCleanup?: (r?: Redis) => any) {
         this.log("server: reset()");
+        
+        // Cleanup replication client first
+        await this.cleanupReplication();
+
         await this.channelConn.cleanup().catch(warning.bind(this, "channelConn.cleanup()"));
         // await this.channelConn.this?.redis?.quit().catch(warning.bind(this,"channelConn.redis.quit()"));
         // this.channelConn?.redis?.disconnect();
@@ -363,6 +400,10 @@ export class DredServer {
 
     async close() {
         this.cancelSubscribers();
+        
+        // Cleanup replication client
+        await this.cleanupReplication();
+        
         this.reset(false);
         this.listener?.close();
     }
@@ -381,6 +422,15 @@ export class DredServer {
         return addr;
     }
 
+    // create client and wait for key generation.
+    async mkClientAndGenerateKey(serverSelection: string, clientArgs: Partial<DredClientArgs> = {}): Promise<DredClient> {
+        const client = this.mkClient(serverSelection, clientArgs);
+        await client.generateKey();
+        return client;
+    }
+
+    // consider automatically generating a key
+    // we could add this to everything calling here. 
     mkClient(serverSelection: string, clientArgs: Partial<DredClientArgs> = {}): DredClient {
         const discovery: Discovery = clientArgs.discovery ?? this.clientArgs.discovery;
         if (!discovery) throw new Error("discovery is required");
@@ -423,6 +473,7 @@ export class DredServer {
         // Get available channels (async)
         let channelsList = "none";
         try {
+            // get channel names directly from redis?
             const channels = await this.channelList.keys() as string[];
             const publicChannels = channels.filter(ch => ch[0] !== '_');
             channelsList = publicChannels.join(", ") || "none";
@@ -566,6 +617,11 @@ export class DredServer {
             channel,
             options: JSON.stringify(options),
         });
+
+        // Notify replication client about new channel
+        if (this.replicationClient) {
+            await this.replicationClient.onChannelCreated(channel);
+        }
     }
 
     async getChanOptions(channelName: string): Promise<ChannelOptions> {
@@ -918,15 +974,6 @@ export class DredServer {
         } catch (consumeError) {
             notifyConsumerError(sub.channel, consumeError as Error);
         }
-    }
-    
-    setupReplication() {
-        //  message replication for the redis instance
-        if (!this.redis) {
-            this.warn(" >>>> Cannot setup replication: Redis not initialized");
-            return;
-        }
-        this.log(` >>>> Setting up message replication for server ${this.serverId}`);
     }
 
 }

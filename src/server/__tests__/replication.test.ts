@@ -69,13 +69,9 @@ describe("minimal replication setup", () => {
             logStep("beforeEach: resetting redis and channels");
             
             logStep(`Adding one client per dred server...`);
-            c1 = dred1.mkClient("first");
-            c2 = dred2.mkClient("second");
-            
-            // CRITICAL: Generate keys for both clients
-            logStep(`Generating keys for both clients...`);
-            await c1.generateKey();
-            await c2.generateKey();
+            c1 = await dred1.mkClientAndGenerateKey("first");
+            c2 = await dred2.mkClientAndGenerateKey("second");
+
             
             logStep(`Setting neighborhood ${neighborhoodId} for both clients...`);
             c1.setNeighborhood(neighborhoodId);
@@ -176,6 +172,7 @@ describe("minimal replication setup", () => {
             logStep(`c2Messages count: ${c2Messages.length}`);
 
             expect(c1Messages.length).toBe(1);
+            expect(c1Messages[0].type).toBe("greeting");
             expect(c2Messages.length).toBe(0); // c2 should not receive the message since it's on a different server
 
         });
