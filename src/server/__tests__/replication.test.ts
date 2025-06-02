@@ -39,6 +39,20 @@ describe("minimal replication setup", () => {
             console.log(message);
         };
 
+        const logInfo = async () => {
+            logStep(" == Logging server info ==");
+            
+            for (const server of [dred1, dred2]) {
+                logStep(await server.logInfo());
+            }
+
+            logStep(" ==Logging client info == ");
+
+            for (const client of [c1, c2]) {
+                logStep(client.logInfo());
+            }
+        }
+
         beforeAll(async () => {
             logStep("beforeAll: setting up test environment");
             test = await testSetup();
@@ -49,31 +63,34 @@ describe("minimal replication setup", () => {
         beforeEach(async () => {
             await asyncDelay(100);
             logStep("beforeEach: resetting redis and channels");
-
-            for (const server of [dred1, dred2]) {
-                console.log(await server.logInfo());
-            }
-
-
+            
             logStep(`Adding one client per dred server...`);
             c1 = dred1.mkClient("first");
             c2 = dred2.mkClient("second");
-
+            
             logStep(`Setting neighborhood ${neighborhoodId} for both clients...`);
             c1.setNeighborhood(neighborhoodId);
             c2.setNeighborhood(neighborhoodId);
-
+            
             logStep(`Creating channel ${channelName} on both servers...`);
             await c1.createChannel(channelName);//c1 is connected to dred1
-
-            // this will result in error 
             await c2.createChannel(channelName);//c2 is connected to dred2
 
-            for (const client of [c1, c2]) {
-                console.log(client.logInfo());
-            }
-        });
+            // Subscribe clients to the created channel
+            logStep(`Subscribing clients to ${channelName}...`);
+            
+            // Set up message handlers first (required for subscribeToChannels)
+            c1.messageHandler = (msg) => { console.log("c1 received:", msg); };
+            c2.messageHandler = (msg) => { console.log("c2 received:", msg); };
+            
+            // Subscribe to the test channel
+            await c1.subscribeToChannels([channelName]);
+            await c2.subscribeToChannels([channelName]);
 
+            await logInfo();
+
+        });
+        
         afterEach(async () => {
             logStep("afterEach: cleaning up clients");
         });

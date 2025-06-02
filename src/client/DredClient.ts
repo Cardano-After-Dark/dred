@@ -268,14 +268,13 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         }
 
         const logMessage = [
-            `DredClient Info:`,
-            `  - Name: ${clientName}`,
-            `  - Status: ${status}`,
-            `  - Current Neighborhood: ${neighborhood}`,
-            `  - Available Neighborhoods: [${availableNeighborhoods}]`,
-            `  - Connected Channels: [${channels}]`,
-            `  - Connected Hosts: ${hostInfo}`,
-            `  - Subscriptions Count: ${Object.keys(this.subscriptions).length}`
+            `DredClient - Name, Status   : ${clientName}, ${status}`,
+            `  - Current Neighborhood    : ${neighborhood}`,
+            `  - Available Neighborhoods : [${availableNeighborhoods}]`,
+            `  - Connected Channels      : [${channels}]`,
+            `  - Connected Hosts         : ${hostInfo}`,
+            `  - Subscriptions Count     : ${Object.keys(this.subscriptions).length}`,
+            ``
         ].join('\n');
 
         return logMessage;

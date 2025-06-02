@@ -438,16 +438,14 @@ export class DredServer {
         }
 
         const logMessage = [
-            `DredServer Info:`,
-            `  - Server ID: ${serverId}`,
-            `  - Neighborhood: ${neighborhood}`,
-            `  - Server Address: ${serverAddress}:${serverPort}`,
-            `  - Redis URL: ${this.redisUrl}`,
-            `  - Redis DB: ${this.redisDb}`,
-            `  - Available Channels: [${channelsList}]`,
-            `  - Discovery Hosts: ${discoveryHosts}`,
-            `  - Active Subscribers: ${this.subscribers.size}`,
-            `  - Running: ${this.listener ? 'Yes' : 'No'}`
+            `DredServer - ID, Status : ${serverId}, ${this.listener ? 'running' : 'stopped'} `, 
+            `  - Server Address:Port : ${serverAddress}:${serverPort}`, 
+            `  - Redis URL, DB       : ${this.redisUrl}, ${this.redisDb}`,
+            `  - Discovery Hosts     : [${discoveryHosts}]`,
+            `  - Neighborhood        : ${neighborhood}`,
+            `  - Available Channels  : [${channelsList}]`,
+            `  - Active Subscribers  : ${this.subscribers.size}`,
+            ``
         ].join('\n');
 
         return logMessage;
