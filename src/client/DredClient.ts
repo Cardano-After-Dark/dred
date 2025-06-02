@@ -252,6 +252,35 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     warn(a1: string, ...args: any[]) {
         this.logger.warn(a1, ...args);
     }
+
+    logInfo(): string {
+        const clientName = this.args.name || "unnamed";
+        const neighborhood = this.neighborhoodId;
+        const availableNeighborhoods = this.availableNeighborhoods.join(", ") || "none";
+        const channels = this.channels.join(", ") || "none";
+        const status = this._status || "unknown";
+        
+        // Get connected hosts information
+        let hostInfo = "unknown";
+        if (this.discovery && this.discovery.hosts) {
+            const hosts = this.discovery.hosts.map(h => `${h.address}:${h.port} (${h.serverId})`);
+            hostInfo = hosts.join(", ");
+        }
+
+        const logMessage = [
+            `DredClient Info:`,
+            `  - Name: ${clientName}`,
+            `  - Status: ${status}`,
+            `  - Current Neighborhood: ${neighborhood}`,
+            `  - Available Neighborhoods: [${availableNeighborhoods}]`,
+            `  - Connected Channels: [${channels}]`,
+            `  - Connected Hosts: ${hostInfo}`,
+            `  - Subscriptions Count: ${Object.keys(this.subscriptions).length}`
+        ].join('\n');
+
+        return logMessage;
+    }
+
     setNeighborhood(n: NbhId) {
         this.neighborhoodId = n;
         asyncDelay(1).then(this.mkTransition("nbhSelected"));

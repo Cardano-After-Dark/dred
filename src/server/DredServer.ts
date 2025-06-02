@@ -287,6 +287,7 @@ export class DredServer {
             await this.doChannelSetup("_auth");
             await this.doChannelSetup("news");
             await this.doChannelSetup("discussion");
+            
             this.setupPending = undefined;
             res(true);
         }));
@@ -402,11 +403,54 @@ export class DredServer {
 
     log(a1: string, ...args: any[]) {
         this.logger.info(a1, ...args);
-        // logging && console.log(...args);
     }
     warn(a1: string, ...args: any[]) {
         this.logger.warn(a1, ...args);
-        // logging && console.warn(...args);
+    }
+
+    async logInfo(): Promise<string> {
+        const serverId = this.serverId;
+        const neighborhood = this.nbh;
+        
+        // Get server address and port info
+        let serverAddress = "unknown";
+        let serverPort = "unknown";
+        if (this.myServerInfo) {
+            serverAddress = this.myServerInfo.address;
+            serverPort = this.myServerInfo.port;
+        }
+
+        // Get available channels (async)
+        let channelsList = "none";
+        try {
+            const channels = await this.channelList.keys() as string[];
+            const publicChannels = channels.filter(ch => ch[0] !== '_');
+            channelsList = publicChannels.join(", ") || "none";
+        } catch (error) {
+            channelsList = "error retrieving channels";
+        }
+
+        // Get discovery hosts info
+        let discoveryHosts = "unknown";
+        if (this.discovery && this.discovery.hosts) {
+            const hosts = this.discovery.hosts.map(h => `${h.serverId}@${h.address}:${h.port}`);
+            discoveryHosts = hosts.join(", ");
+        }
+
+        const logMessage = [
+            `DredServer Info:`,
+            `  - Server ID: ${serverId}`,
+            `  - Neighborhood: ${neighborhood}`,
+            `  - Server Address: ${serverAddress}:${serverPort}`,
+            `  - Redis URL: ${this.redisUrl}`,
+            `  - Redis DB: ${this.redisDb}`,
+            `  - Available Channels: [${channelsList}]`,
+            `  - Discovery Hosts: ${discoveryHosts}`,
+            `  - Active Subscribers: ${this.subscribers.size}`,
+            `  - Running: ${this.listener ? 'Yes' : 'No'}`
+        ].join('\n');
+
+        return logMessage;
     }
 
     resultLogger: express.RequestHandler = (req, res, next) => {
