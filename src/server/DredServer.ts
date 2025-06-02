@@ -217,6 +217,10 @@ export class DredServer {
         this.subscribers = new Map();
         this.redisDb = redisDb || 0;
         this.setupRedis(redisUrl);
+
+        // setup message replication for the redis instance
+        this.setupReplication();
+
         // this.channelConn._log.error = console.error.bind(console);
         this.clientArgs = args;
 
@@ -873,6 +877,16 @@ export class DredServer {
             notifyConsumerError(sub.channel, consumeError as Error);
         }
     }
+    
+    setupReplication() {
+        //  message replication for the redis instance
+        if (!this.redis) {
+            this.warn(" >>>> Cannot setup replication: Redis not initialized");
+            return;
+        }
+        this.log(` >>>> Setting up message replication for server ${this.serverId}`);
+    }
+
 }
 
 export async function createServer(options: DredServerArgs, serverId: string, serverDb: number) {

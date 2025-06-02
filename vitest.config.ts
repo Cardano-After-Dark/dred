@@ -11,6 +11,7 @@ export default defineConfig({
     exclude: ['**/node_modules/**', 'dist/**', 'src/redis/streams/**'],
     mockReset: true,
     restoreMocks: true,
+    // change timeouts based on test needs
     testTimeout: 100000, // Equivalent to JEST_TIMEOUT
     hookTimeout: 50000,
     coverage: {

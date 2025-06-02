@@ -9,7 +9,7 @@ var uuid = require('uuid');
 var abstractLoggingInterface = require('abstract-logging');
 var fetch$1 = require('cross-fetch');
 var nanoid$1 = require('nanoid');
-require('tweetnacl');
+var nacl = require('tweetnacl');
 var util = require('tweetnacl-util');
 var EventEmitter = require('eventemitter3');
 var utils = require('@poshplum/utils');
@@ -37,7 +37,7 @@ function _interopNamespaceDefault(e) {
 var abstractLoggingInterface__namespace = /*#__PURE__*/_interopNamespaceDefault(abstractLoggingInterface);
 
 let p = process || {}, argv = p.argv || [], env = p.env || {};
-let isColorSupported$2 = !(!!env.NO_COLOR || argv.includes("--no-color")) && (!!env.FORCE_COLOR || argv.includes("--color") || p.platform === "win32" || true);
+let isColorSupported = !(!!env.NO_COLOR || argv.includes("--no-color")) && (!!env.FORCE_COLOR || argv.includes("--color") || p.platform === "win32" || true);
 let formatter = (open, close, replace = open) => {
   const f = (input) => {
     let string = "" + input, index = string.indexOf(close, open.length);
@@ -56,7 +56,7 @@ let replaceClose = (string, close, replace, index) => {
   } while (~index);
   return result + string.substring(cursor);
 };
-let createColors = (enabled = isColorSupported$2) => {
+let createColors = (enabled = isColorSupported) => {
   let f = enabled ? formatter : () => String;
   return {
     isColorSupported: enabled,
@@ -290,6 +290,7 @@ class RedisChannels {
     channels = channels || {};
     this._nonBlockRedisClient = this._createRedisClient(redis);
     this._consumers = {};
+    this.closing = false;
     this._workInTeam = false;
     this._consumerIsGennerated = true;
     if (typeof channels[opt.LOG] === "undefined") {
@@ -539,6 +540,10 @@ class RedisChannels {
       ]);
     } catch (error) {
       this._log.error("Unsubscribe error: %o", error);
+      if (this.closing) {
+        this._log.error(" ... ^^ after channels shutdown");
+        return;
+      }
       if (error instanceof RedisChannelsError) {
         throw error;
       }
@@ -588,6 +593,11 @@ class RedisChannels {
       return id;
     } catch (error) {
       this._log.error("Produce error:", error.stack || error.message || JSON.stringify(error));
+      this._log.error(" ... while sending message", message);
+      if (this.closing) {
+        this._log.error(" ... ^^ after channels shutdown");
+        return;
+      }
       debugger;
       throw new RedisChannelsError(
         "Can not produce in the tunnel: " + tunnel,
@@ -721,12 +731,9 @@ class RedisChannels {
               ...appAttrs
             } = fields;
             const unsubscribe = "unsubscribe" === _action;
-            if (_action && !unsubscribe)
-              throw new Error(`bad _action value in message`);
-            if (_team && !unsubscribe)
-              throw new Error(`_team is only valid for _action=unsubscribe messages`);
-            if (_consumer && !unsubscribe)
-              throw new Error(`_consumer is only valid for _action=unsubscribe messages`);
+            if (_action && !unsubscribe) throw new Error(`bad _action value in message`);
+            if (_team && !unsubscribe) throw new Error(`_team is only valid for _action=unsubscribe messages`);
+            if (_consumer && !unsubscribe) throw new Error(`_consumer is only valid for _action=unsubscribe messages`);
             if (this._workInTeam === false) {
               currentId = id;
             }
@@ -764,6 +771,9 @@ class RedisChannels {
         yield result;
       }
     } catch (error) {
+      if (this.closing) {
+        return;
+      }
       this._log.error("Consume error: %o", error);
       throw new RedisChannelsError(
         "Can not consume from the tunnel: " + tunnel[tun.KEY] + " " + tunnel[tun.CONSUMER],
@@ -790,13 +800,16 @@ class RedisChannels {
    */
   // --------------------------------------------------------------------------|
   async cleanup() {
+    this.closing = true;
     for (const i in this._consumers) {
-      await this._deleteRedisConsumerAndGroup(this._consumers[i], true);
-      await this._consumers[i][tun.CONNECTION].quit();
+      if (this._workInTeam) {
+        await this._deleteRedisConsumerAndGroup(this._consumers[i], true);
+      }
+      await this._consumers[i][tun.CONNECTION].disconnect();
       this._consumers[i][tun.CONNECTION].removeAllListeners();
       delete this._consumers[i];
     }
-    await this._nonBlockRedisClient.quit();
+    await this._nonBlockRedisClient.disconnect(true);
     this._nonBlockRedisClient.removeAllListeners();
   }
   /*
@@ -895,30 +908,24 @@ function nodeToWebStream(nodeStream) {
     listeners["end"] = onDestroy;
     listeners["close"] = onDestroy;
     listeners["error"] = onDestroy;
-    for (var name in listeners)
-      nodeStream.on(name, listeners[name]);
+    for (var name in listeners) nodeStream.on(name, listeners[name]);
     nodeStream.pause();
     function onData(chunk) {
-      if (destroyed)
-        return;
+      if (destroyed) return;
       controller.enqueue(chunk);
       nodeStream.pause();
     }
     function onDestroy(err) {
-      if (destroyed)
-        return;
+      if (destroyed) return;
       destroyed = true;
       for (var name2 in listeners)
         nodeStream.removeListener(name2, listeners[name2]);
-      if (err)
-        controller.error(err);
-      else
-        controller.close();
+      if (err) controller.error(err);
+      else controller.close();
     }
   }
   function pull() {
-    if (destroyed)
-      return;
+    if (destroyed) return;
     nodeStream.resume();
   }
   function cancel() {
@@ -927,10 +934,8 @@ function nodeToWebStream(nodeStream) {
       nodeStream.removeListener(name, listeners[name]);
     nodeStream.push(null);
     nodeStream.pause();
-    if (nodeStream.destroy)
-      nodeStream.destroy();
-    else if (nodeStream.close)
-      nodeStream.close();
+    if (nodeStream.destroy) nodeStream.destroy();
+    else if (nodeStream.close) nodeStream.close();
   }
   return new web.ReadableStream({ start, pull, cancel });
 }
@@ -938,8 +943,7 @@ function nodeToWebStream(nodeStream) {
 //! purpose: allows server-side code to handle fetch() responses with a streaming
 const ReadableStream = web.ReadableStream;
 function fromPlatformFetchBody(b) {
-  if (b instanceof node_stream.Readable)
-    return nodeToWebStream(b);
+  if (b instanceof node_stream.Readable) return nodeToWebStream(b);
   return b;
 }
 
@@ -1006,18 +1010,14 @@ var __defProp$a = Object.defineProperty;
 var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
 var __defNormalProp$a = (obj, key, value) => key in obj ? __defProp$a(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __decorateClass$2 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$2(target, key) : target;
+  var result = __getOwnPropDesc$2(target, key) ;
   for (var i = decorators.length - 1, decorator; i >= 0; i--)
     if (decorator = decorators[i])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result)
-    __defProp$a(target, key, result);
+      result = (decorator(target, key, result) ) || result;
+  if (result) __defProp$a(target, key, result);
   return result;
 };
-var __publicField$a = (obj, key, value) => {
-  __defNormalProp$a(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
+var __publicField$a = (obj, key, value) => __defNormalProp$a(obj, typeof key !== "symbol" ? key + "" : key, value);
 const connectionStates = {
   logLevel: "info",
   connecting: {
@@ -1043,8 +1043,7 @@ const connectionStates = {
     abort: "aborted",
     async onEntry() {
       this.attempts += 1;
-      if (this.attempts > this.settings.maxRetries)
-        return this.transition("failed");
+      if (this.attempts > this.settings.maxRetries) return this.transition("failed");
       this.retryLater();
     }
   },
@@ -1121,7 +1120,7 @@ const connectionEvents = {
   disconnected: "disconnected due to network error or missed heartbeats.",
   aborted: "connection aborted normally by controlling signal"
 };
-const _HostConnection = class extends utils.StateMachine.withDefinition(
+const _HostConnection = class _HostConnection extends utils.StateMachine.withDefinition(
   connectionStates,
   "connection-manager"
 ) {
@@ -1148,10 +1147,6 @@ const _HostConnection = class extends utils.StateMachine.withDefinition(
     __publicField$a(this, "lastHeartbeat", (/* @__PURE__ */ new Date()).getTime());
     __publicField$a(this, "heartbeatTimer");
     ({
-      retryBaseIntervalMs: 1e3,
-      retryMaxIntervalMs: 3e4,
-      maxRetries: Infinity,
-      connectionWaitTimeMs: 7e3,
       ...settings
     });
     this.settings = _HostConnection.settingsWithDefaults(settings);
@@ -1219,13 +1214,11 @@ const _HostConnection = class extends utils.StateMachine.withDefinition(
   }
   disconnect(reason) {
     //!!! todo: cancel any pending stream with ReadableStream.cancel()
-    if (this.abortController)
-      this.abortController.abort(`disconnect(): ${reason}`);
+    if (this.abortController) this.abortController.abort(`disconnect(): ${reason}`);
     this.stopRetries();
   }
   stopRetries() {
-    if (this.scheduledRetry)
-      clearTimeout(this.scheduledRetry);
+    if (this.scheduledRetry) clearTimeout(this.scheduledRetry);
     this.scheduledRetry = void 0;
   }
   async replacedBy(otherConnection) {
@@ -1264,13 +1257,10 @@ const _HostConnection = class extends utils.StateMachine.withDefinition(
         signal,
         headers: { "content-type": "application/json" }
       }).then((response) => {
-        if (aborted)
-          return false;
-        if (this.abortController?.signal.aborted)
-          return false;
+        if (aborted) return false;
+        if (this.abortController?.signal.aborted) return false;
         //!!! todo: check to see if we shoudl reject with an empty / non-existent response here
-        if (!response)
-          return false;
+        if (!response) return false;
         res(true);
       }).catch((e) => {
         debugger;
@@ -1314,8 +1304,7 @@ const _HostConnection = class extends utils.StateMachine.withDefinition(
   }
   //! it implements a streaming listener for changes
   async fetch(path, { debug = false, ...options }) {
-    if (path[0] !== "/")
-      path = `/${path}`;
+    if (path[0] !== "/") path = `/${path}`;
     const { host } = this;
     const proto = host.insecure ? "http" : "https";
     const shortServer = `${host.address}:${host.port}`;
@@ -1323,8 +1312,7 @@ const _HostConnection = class extends utils.StateMachine.withDefinition(
     options.mode = "cors";
     //!!! todo: it includes cryptographic credentials in the connection for the server
     const result = await fetch(url, options);
-    if (debug)
-      debugger;
+    if (debug) debugger;
     //! successful requests are directly resolved to the parsed json ...
     if (result.ok) {
       this.monitorSubscriptions(result);
@@ -1338,8 +1326,7 @@ const _HostConnection = class extends utils.StateMachine.withDefinition(
     return Promise.reject(reason);
   }
   async monitorSubscriptions(response) {
-    if (!response.ok)
-      throw new Error(`failure in listen...`);
+    if (!response.ok) throw new Error(`failure in listen...`);
     const compatResponse = fromPlatformFetchBody(response.body);
     this.stream = ndjsonStream(compatResponse);
     const reader = this.stream.getReader();
@@ -1370,10 +1357,8 @@ const _HostConnection = class extends utils.StateMachine.withDefinition(
     };
     while (connected) {
       event = await reader.read().catch(detectReadError);
-      if (!event)
-        break;
-      if (!connected)
-        break;
+      if (!event) break;
+      if (!connected) break;
       const ts = /* @__PURE__ */ new Date();
       const { value, done } = event;
       if (done) {
@@ -1428,8 +1413,7 @@ const _HostConnection = class extends utils.StateMachine.withDefinition(
   heartbeatReceived() {
     const now = (/* @__PURE__ */ new Date()).getTime();
     this.lastHeartbeat = now;
-    if (this.heartbeatTimer)
-      clearTimeout(this.heartbeatTimer);
+    if (this.heartbeatTimer) clearTimeout(this.heartbeatTimer);
     this.heartbeatTimer = setTimeout(this.watchdog, 3 * this.heartbeatInterval);
     this.heartbeatTimer.unref && this.heartbeatTimer.unref();
   }
@@ -1444,11 +1428,11 @@ const _HostConnection = class extends utils.StateMachine.withDefinition(
     }
   }
 };
-let HostConnection = _HostConnection;
-__publicField$a(HostConnection, "emitterHelp", connectionEvents);
+__publicField$a(_HostConnection, "emitterHelp", connectionEvents);
 __decorateClass$2([
   utils.autobind
-], HostConnection.prototype, "watchdog", 1);
+], _HostConnection.prototype, "watchdog");
+let HostConnection = _HostConnection;
 
 async function asyncDelay(wait) {
   return new Promise((resolve) => {
@@ -1458,18 +1442,15 @@ async function asyncDelay(wait) {
 
 async function fetcher(path, options) {
   const { host, debug = false, parse = true, ...reqInit } = options;
-  if (path[0] !== "/")
-    path = `/${path}`;
+  if (path[0] !== "/") path = `/${path}`;
   const proto = host.insecure ? "http" : "https";
   const shortServer = `${host.address}:${host.port}`;
   const url = `${proto}://${shortServer}${path}`;
   const result = await fetch$1(url, reqInit);
-  if (debug)
-    debugger;
+  if (debug) debugger;
   //! successful requests are directly resolved to the parsed json ...
   if (result.ok) {
-    if (!parse)
-      return result;
+    if (!parse) return result;
     return result.json();
   }
   //! failed requests @request or parsing level cause a rejection.
@@ -1488,21 +1469,17 @@ var __defProp$9 = Object.defineProperty;
 var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
 var __defNormalProp$9 = (obj, key, value) => key in obj ? __defProp$9(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __decorateClass$1 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$1(target, key) : target;
+  var result = __getOwnPropDesc$1(target, key) ;
   for (var i = decorators.length - 1, decorator; i >= 0; i--)
     if (decorator = decorators[i])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result)
-    __defProp$9(target, key, result);
+      result = (decorator(target, key, result) ) || result;
+  if (result) __defProp$9(target, key, result);
   return result;
 };
-var __publicField$9 = (obj, key, value) => {
-  __defNormalProp$9(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
+var __publicField$9 = (obj, key, value) => __defNormalProp$9(obj, typeof key !== "symbol" ? key + "" : key, value);
 //!!! todo zw3w737: it has a way of posting the same unique message to multiple servers,
 const connectionManagerStates = {
-  logLevel: "info",
+  // logLevel: "info",
   discoveringNbh: {
     default: true,
     async onEntry() {
@@ -1585,8 +1562,7 @@ const connectionManagerStates = {
   },
   healthy: {
     onEntry() {
-      if (this.previousState)
-        throw new Error("hurray, we can change this next line");
+      if (this.previousState) throw new Error("hurray, we can change this next line");
       const previousState = this.currentState;
       //! it notifies interested clients when the connection count has become sufficient.
       if (["disconnected", "degraded"].includes(previousState)) {
@@ -1780,8 +1756,7 @@ class ConnectionManager extends utils.StateMachine.withDefinition(
     this.transition("disconnected");
   }
   async setSubscriptions(subs) {
-    if (this.channelSubs)
-      return this.replaceSubscriptions(subs);
+    if (this.channelSubs) return this.replaceSubscriptions(subs);
     this.channelSubs = subs;
     if (!this.hosts) {
       if (this.discovery.hosts?.length) {
@@ -1903,8 +1878,7 @@ class ConnectionManager extends utils.StateMachine.withDefinition(
   }
   connected(connection, event) {
     const status = this.connStatus.get(connection);
-    if (status == "obsolete")
-      return;
+    if (status == "obsolete") return;
     this.moveConnTo(connection, "active");
     const obsoleteConn = this.hostToConn.get(connection.host);
     if (obsoleteConn) {
@@ -1915,8 +1889,7 @@ class ConnectionManager extends utils.StateMachine.withDefinition(
   //! it sets the status of a connection to a target state, only if the current state matches the indicated "from" state.
   moveConnFromTo(connection, from, target) {
     const current = this.connStatus.get(connection);
-    if (from === current)
-      this.connStatus.set(connection, target);
+    if (from === current) this.connStatus.set(connection, target);
   }
   //! it moves the connection to a target state
   moveConnTo(connection, state) {
@@ -1926,8 +1899,7 @@ class ConnectionManager extends utils.StateMachine.withDefinition(
   //  partially-connected after other connections have had their chance
   //  and it didn't make it to a well-connected state.
   async emitPartialConnectEventIfNeeded() {
-    if (this.partialConnectNotification)
-      return;
+    if (this.partialConnectNotification) return;
     const unhappy = ["degraded", "minimally connected"];
     const pcn = this.partialConnectNotification = asyncDelay(
       this.connectionSettings.connectionWaitTimeMs
@@ -1954,10 +1926,8 @@ class ConnectionManager extends utils.StateMachine.withDefinition(
     const thresholds = await this.getThresholds();
     let healthyConnectionCount = 0;
     for (const [conn, status] of this.connStatus.entries()) {
-      if (this.graveyard.has(conn))
-        continue;
-      if (status === "active")
-        healthyConnectionCount += 1;
+      if (this.graveyard.has(conn)) continue;
+      if (status === "active") healthyConnectionCount += 1;
     }
     if (healthyConnectionCount >= thresholds.healthy) {
       return this.transition("sufficient");
@@ -2133,24 +2103,21 @@ class ConnectionManager extends utils.StateMachine.withDefinition(
 }
 __decorateClass$1([
   utils.autobind
-], ConnectionManager.prototype, "setHostList", 1);
+], ConnectionManager.prototype, "setHostList");
 __decorateClass$1([
   utils.autobind
-], ConnectionManager.prototype, "healthyConnection", 1);
+], ConnectionManager.prototype, "healthyConnection");
 __decorateClass$1([
   utils.autobind
-], ConnectionManager.prototype, "cleanupConnection", 1);
+], ConnectionManager.prototype, "cleanupConnection");
 __decorateClass$1([
   utils.autobind
-], ConnectionManager.prototype, "notifySubscribers", 1);
+], ConnectionManager.prototype, "notifySubscribers");
 
 var __defProp$8 = Object.defineProperty;
 var __defNormalProp$8 = (obj, key, value) => key in obj ? __defProp$8(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$8 = (obj, key, value) => {
-  __defNormalProp$8(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-const { encodeUTF8: encodeUTF8$1, decodeUTF8: decodeUTF8$1, encodeBase64: encodeBase64$1, decodeBase64: decodeBase64$1 } = util;
+var __publicField$8 = (obj, key, value) => __defNormalProp$8(obj, typeof key !== "symbol" ? key + "" : key, value);
+const { encodeUTF8: encodeUTF8$2, decodeUTF8: decodeUTF8$2, encodeBase64: encodeBase64$2, decodeBase64: decodeBase64$2 } = util;
 class StringNacl {
   constructor(keyPair, logger = console) {
     __publicField$8(this, "identity");
@@ -2161,27 +2128,27 @@ class StringNacl {
   async sign(s) {
     if (!this.identity)
       throw new Error(`StringNacl: missing keyPair for signing`);
-    const buf = decodeUTF8$1(s);
+    const buf = decodeUTF8$2(s);
     const sigBuf = await watsign.sign(buf, this.identity.secretKey);
-    const sigStr = encodeBase64$1(sigBuf);
+    const sigStr = encodeBase64$2(sigBuf);
     return sigStr;
   }
   async verifySig(s, sigBase64, keyBase64) {
     let strBuf, sigBuf, keyBuf;
     try {
-      strBuf = decodeUTF8$1(s);
+      strBuf = decodeUTF8$2(s);
     } catch (e) {
       this.logger.warn("failure to decode string:", e.message);
       return false;
     }
     try {
-      sigBuf = decodeBase64$1(sigBase64);
+      sigBuf = decodeBase64$2(sigBase64);
     } catch (e) {
       this.logger.warn("failure to decode signature:", e.message);
       return false;
     }
     try {
-      keyBuf = decodeBase64$1(keyBase64);
+      keyBuf = decodeBase64$2(keyBase64);
     } catch (e) {
       this.logger.warn("failure to decode pubkey:", e.message);
       return false;
@@ -2193,10 +2160,7 @@ __publicField$8(StringNacl, "newKeyPair", watsign.newKeyPair);
 
 var __defProp$7 = Object.defineProperty;
 var __defNormalProp$7 = (obj, key, value) => key in obj ? __defProp$7(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$7 = (obj, key, value) => {
-  __defNormalProp$7(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
+var __publicField$7 = (obj, key, value) => __defNormalProp$7(obj, typeof key !== "symbol" ? key + "" : key, value);
 class Discovery {
   constructor(options) {
     __publicField$7(this, "nbh");
@@ -2204,8 +2168,7 @@ class Discovery {
     __publicField$7(this, "hosts");
     __publicField$7(this, "events", new EventEmitter.EventEmitter());
     const { neighborhood } = options;
-    if (neighborhood)
-      this.setNeighborhood(neighborhood);
+    if (neighborhood) this.setNeighborhood(neighborhood);
     //! it prevents subclasses from overriding restartHostDiscovery() logic; see initHostDiscovery() instead.
     if (this.restartHostDiscovery !== Discovery.prototype.restartHostDiscovery) {
       throw new Error(`restartHostDiscovery must not be overridden by Discovery subclass ` + this.constructor.name);
@@ -2223,8 +2186,7 @@ class Discovery {
   async initHostDiscovery() {
   }
   async restartHostDiscovery() {
-    if (!this.nbh)
-      throw new Error(`can't start host discovery without nbh`);
+    if (!this.nbh) throw new Error(`can't start host discovery without nbh`);
     //!!! todo: it emits a host-discovery-timeout event if hosts can't be discovered promptly.
     await this.initHostDiscovery();
     this.events.emit("hosts:discovering", {
@@ -2262,17 +2224,13 @@ class Discovery {
 
 var __defProp$6 = Object.defineProperty;
 var __defNormalProp$6 = (obj, key, value) => key in obj ? __defProp$6(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$6 = (obj, key, value) => {
-  __defNormalProp$6(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
+var __publicField$6 = (obj, key, value) => __defNormalProp$6(obj, key + "" , value);
 class NeighborhoodDiscovery extends Discovery {
   constructor(options) {
     const { neighborhood } = options;
     super(options);
     __publicField$6(this, "neighborhood");
-    if (neighborhood)
-      this.neighborhood = neighborhood;
+    if (neighborhood) this.neighborhood = neighborhood;
   }
   static forNeighborhood(n) {
     return new this({ neighborhood: n });
@@ -2339,10 +2297,7 @@ class NeighborhoodDiscovery extends Discovery {
 
 var __defProp$5 = Object.defineProperty;
 var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$5 = (obj, key, value) => {
-  __defNormalProp$5(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
+var __publicField$5 = (obj, key, value) => __defNormalProp$5(obj, typeof key !== "symbol" ? key + "" : key, value);
 //! represents a configuration for monitoring a specific channel
 //! it includes alt-values for optional attributes for developers to easily see 
 class ChannelSubscriptionListener {
@@ -2371,34 +2326,20 @@ var __defProp$4 = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __decorateClass = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+  var result = __getOwnPropDesc(target, key) ;
   for (var i = decorators.length - 1, decorator; i >= 0; i--)
     if (decorator = decorators[i])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result)
-    __defProp$4(target, key, result);
+      result = (decorator(target, key, result) ) || result;
+  if (result) __defProp$4(target, key, result);
   return result;
 };
-var __publicField$4 = (obj, key, value) => {
-  __defNormalProp$4(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
+var __publicField$4 = (obj, key, value) => __defNormalProp$4(obj, typeof key !== "symbol" ? key + "" : key, value);
+const { sign } = nacl;
 const nanoid = nanoid$1.customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
 const {
-  bgBlackBright: bgBlackBright$1,
-  blue: blue$1,
-  blueBright: blueBright$1,
-  green: green$1,
-  greenBright: greenBright$1,
-  red: red$1,
-  redBright: redBright$1,
-  yellow: yellow$1,
-  yellowBright: yellowBright$1,
-  isColorSupported: isColorSupported$1,
-  bgBlack: bgBlack$1,
   magenta
 } = colors;
-const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
+const { encodeUTF8: encodeUTF8$1, decodeUTF8: decodeUTF8$1, encodeBase64: encodeBase64$1, decodeBase64: decodeBase64$1 } = util;
 const nbhChannelList = "_chans";
 const nbhAuthInfo = "_auth";
 const logging$1 = parseInt(process.env.LOGGING || "");
@@ -2408,8 +2349,7 @@ const clientStates = {
   default: {
     //! it automatically advances to next states, when it can make progress
     async onEntry() {
-      if (this.args.neighborhood)
-        return this.transition("nbhSelected");
+      if (this.args.neighborhood) return this.transition("nbhSelected");
       return this.transition("findNbhs");
     },
     findNbhs: "findingNbhs",
@@ -2552,10 +2492,8 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
     //! tbd if we need to use this hook, perhaps for persisting the bookmark state of channels
   }
   static resolveDiscovery({ neighborhood, discovery }) {
-    if (neighborhood)
-      discovery = new NeighborhoodDiscovery({ neighborhood });
-    if (!discovery)
-      throw new Error(`required: 'discovery' object or 'neighborhood' name`);
+    if (neighborhood) discovery = new NeighborhoodDiscovery({ neighborhood });
+    if (!discovery) throw new Error(`required: 'discovery' object or 'neighborhood' name`);
     return discovery;
   }
   //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
@@ -2615,14 +2553,12 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
     this._subscriptions = replacement;
   }
   get subscriptions() {
-    if (!this._subscriptions)
-      return {};
+    if (!this._subscriptions) return {};
     return this._subscriptions;
   }
   getChannelSub(channel, listener) {
     const found = this.subscriptions[channel];
-    if (found)
-      return found;
+    if (found) return found;
     return this.mkChannelSub(channel, listener);
   }
   //! it creates new subscriptions and wires them up for notification to client application
@@ -2645,18 +2581,15 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
   async fetch(path, { parse = true, debug = false, ...options }) {
     //!! todo: it logs the pending request to an observable queue of
     //!! todo: it exposes the progress info in a way that is easily consumed
-    if (path[0] !== "/")
-      path = `/${path}`;
+    if (path[0] !== "/") path = `/${path}`;
     let host = (await this.discovery.getHostList())[0];
     const proto = host.insecure ? "http" : "https";
     const shortServer = `${host.address}:${host.port}`;
     const url = `${proto}://${shortServer}${path}`;
     const result = await fetch$1(url, options);
-    if (debug)
-      debugger;
+    if (debug) debugger;
     if (result.ok) {
-      if (!parse)
-        return result;
+      if (!parse) return result;
       return result.json();
     }
     debugger;
@@ -2682,7 +2615,7 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
       return;
     }
     const key = this.identity = await StringNacl.newKeyPair();
-    this.pubKeyString = encodeBase64(key.publicKey);
+    this.pubKeyString = encodeBase64$1(key.publicKey);
     this.signer = new StringNacl(this.identity, this);
   }
   async signString(s) {
@@ -2827,20 +2760,17 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
 }
 __decorateClass([
   utils.autobind
-], DredClient.prototype, "emitState", 1);
+], DredClient.prototype, "emitState");
 __decorateClass([
   utils.autobind
-], DredClient.prototype, "processChannelsMsg", 1);
+], DredClient.prototype, "processChannelsMsg");
 __decorateClass([
   utils.autobind
-], DredClient.prototype, "processAuthMsg", 1);
+], DredClient.prototype, "processAuthMsg");
 
 var __defProp$3 = Object.defineProperty;
 var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$3 = (obj, key, value) => {
-  __defNormalProp$3(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
+var __publicField$3 = (obj, key, value) => __defNormalProp$3(obj, typeof key !== "symbol" ? key + "" : key, value);
 class RedisSet {
   constructor(redis, key = "_abstract") {
     __publicField$3(this, "redis");
@@ -2869,10 +2799,7 @@ class RedisSet {
 
 var __defProp$2 = Object.defineProperty;
 var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$2 = (obj, key, value) => {
-  __defNormalProp$2(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
+var __publicField$2 = (obj, key, value) => __defNormalProp$2(obj, typeof key !== "symbol" ? key + "" : key, value);
 const StringValueAdapter = {
   toRedis(v) {
     return v;
@@ -2940,10 +2867,8 @@ class RedisHash {
 
 var __defProp$1 = Object.defineProperty;
 var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$1 = (obj, key, value) => {
-  __defNormalProp$1(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
+var __publicField$1 = (obj, key, value) => __defNormalProp$1(obj, key + "" , value);
+const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 const localNbh = "localhost-nbh";
 class StaticHostDiscovery extends Discovery {
   constructor(options) {
@@ -2951,8 +2876,7 @@ class StaticHostDiscovery extends Discovery {
       neighborhood,
       hosts
     } = options;
-    if (neighborhood)
-      throw new Error(`DevEnvLocalDiscovery always uses ` + localNbh);
+    if (neighborhood) throw new Error(`DevEnvLocalDiscovery always uses ` + localNbh);
     super({ neighborhood: localNbh });
     __publicField$1(this, "hosts");
     this.hosts = hosts || StaticHostDiscovery.defaultHosts();
@@ -3001,8 +2925,7 @@ class StaticHostDiscovery extends Discovery {
     return { localDevHosts: this.hosts };
   }
   async getHostList() {
-    if (!this.hosts)
-      throw new Error(`call setupDefaultHosts()`);
+    if (!this.hosts) throw new Error(`call setupDefaultHosts()`);
     await utils.asyncDelay(1);
     return this.hosts;
   }
@@ -3022,22 +2945,8 @@ class StaticHostDiscovery extends Discovery {
 
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 const {
-  bgBlackBright,
-  blue,
-  blueBright,
-  green,
-  greenBright,
-  red,
-  redBright,
-  yellow,
-  yellowBright,
-  isColorSupported,
-  bgBlack,
   bgBlueBright,
   bold,
   black
@@ -3045,8 +2954,7 @@ const {
 const logging = parseInt(process.env.LOGGING || "0");
 const optionsSerializer = {
   toRedis(v) {
-    if ("member" !== v.approveJoins && "open" !== v.approveJoins)
-      v.approveJoins = "owner";
+    if ("member" !== v.approveJoins && "open" !== v.approveJoins) v.approveJoins = "owner";
     return JSONValueAdapter.toRedis(v);
   },
   fromRedis(v) {
@@ -3250,8 +3158,7 @@ class DredServer {
         });
         return next();
       }
-      if (opts.members.includes(member))
-        overMemberLimit = false;
+      if (opts.members.includes(member)) overMemberLimit = false;
       if (overMemberLimit) {
         this.warn(`Join failed: Channel ${channelId} is full`);
         res.status(403).json({
@@ -3262,8 +3169,7 @@ class DredServer {
       let verified, error;
       try {
         verified = await this.verifier.verifySig(member, signature, approvedVerifier);
-        if (!verified)
-          error = "verify failed";
+        if (!verified) error = "verify failed";
       } catch (e) {
         error = e.message;
       }
@@ -3397,8 +3303,7 @@ class DredServer {
         }
         const subscriber = await this.listenOneChannel(sub, sendUpdate, notifyConsumeError);
         myStreamListeners.push({ channel, stream: subscriber });
-        if (subscriber)
-          anySuccesses += 1;
+        if (subscriber) anySuccesses += 1;
       }
       if (!anySuccesses) {
         res.status(404).json({ error: "no valid subscriptions in request" });
@@ -3408,7 +3313,6 @@ class DredServer {
       }
     });
     this.args = args;
-    debugger;
     const loggerName = `dred\u2039${serverId}\u203A`;
     this.logger = utils.zonedLogger(loggerName, {
       serverId,
@@ -3470,8 +3374,7 @@ class DredServer {
     this.api.use(this.resultLogger);
   }
   setupRedis(url) {
-    if (this.redis)
-      throw new Error(`redis connection is already set up`);
+    if (this.redis) throw new Error(`redis connection is already set up`);
     //!!! todo: use configured Redis connection details
     this.log(`Setting up Redis connection: ${url || "default"}, db: ${this.redisDb}`);
     const options = {
@@ -3495,7 +3398,8 @@ class DredServer {
       redis: {
         url,
         db: this.redisDb
-      }
+      },
+      channels: { log: this.logger }
     });
     this.channelConn._log = this.logger;
     this.ensureDefaultChannels();
@@ -3509,8 +3413,7 @@ class DredServer {
   }
   //!!! todo: once for each nbh
   ensureDefaultChannels() {
-    if (this.setupPending)
-      return this.setupPending;
+    if (this.setupPending) return this.setupPending;
     return this.setupPending = new Promise(async (res) => {
       await this.doChannelSetup("_chans");
       await this.doChannelSetup("_auth");
@@ -3548,14 +3451,14 @@ class DredServer {
   async listen() {
     await this.setupPending;
     const myInfo = this.myServerInfo = this.myServerInfo || await this.discovery.myServerInfo(this.serverId);
-    if (!myInfo)
-      throw new Error(`can't identify my own info`);
+    if (!myInfo) throw new Error(`can't identify my own info`);
     const { port, address } = myInfo;
     this.listener = this.api.listen(port, address);
     this.log(`server '${this.serverId}' listening at ${address}:${port}`);
     return this.listener;
   }
   async reset(reconnect, finalCleanup) {
+    this.log("server: reset()");
     await this.channelConn.cleanup().catch(warning.bind(this, "channelConn.cleanup()"));
     finalCleanup?.(this.redis);
     this.resetting = true;
@@ -3585,15 +3488,13 @@ class DredServer {
   }
   get address() {
     const { listener } = this;
-    if (!listener)
-      throw new Error(`not yet listening`);
+    if (!listener) throw new Error(`not yet listening`);
     listener.address();
     throw new Error(`is this needed?`);
   }
   mkClient(serverSelection, clientArgs = {}) {
     const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
-    if (!discovery)
-      throw new Error("discovery is required");
+    if (!discovery) throw new Error("discovery is required");
     const oneHost = discovery.hosts.find((h) => h.serverId === serverSelection);
     if (!oneHost) {
       this.logger.error(`server ${serverSelection} not found in discovery`, discovery);

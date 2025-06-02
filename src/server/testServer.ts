@@ -52,8 +52,10 @@ if (!monitor) {
 }
 zonedLogger("root");
 
-let logger = zonedLogger("redis", {color: blue.start+bgBlack.start});
-let testLogger = zonedLogger("test", {color: yellow.start, levels: {default: "info"}});
+// export loggers for use in tests
+export const logger = zonedLogger("redis", {color: blue.start+bgBlack.start});
+export const testLogger = zonedLogger("test", {color: yellow.start, levels: {default: "info"}});
+
 beforeAll(async () => {
     const startTime = Math.round(Date.now() / 1000);
     console.log("isColorSupported", isColorSupported);

@@ -318,6 +318,7 @@ export class HostConnection extends StateMachine.withDefinition(
                     res(true);
                 })
                 .catch((e) => {
+                    // enable/disable
                     debugger;
                     if (this.isAbortError(e)) {
                         // this.log("abort happened before fetch response headers");
