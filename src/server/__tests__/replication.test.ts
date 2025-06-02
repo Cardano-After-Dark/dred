@@ -68,6 +68,11 @@ describe("minimal replication setup", () => {
             c1 = dred1.mkClient("first");
             c2 = dred2.mkClient("second");
             
+            // CRITICAL: Generate keys for both clients
+            logStep(`Generating keys for both clients...`);
+            await c1.generateKey();
+            await c2.generateKey();
+            
             logStep(`Setting neighborhood ${neighborhoodId} for both clients...`);
             c1.setNeighborhood(neighborhoodId);
             c2.setNeighborhood(neighborhoodId);
@@ -76,16 +81,25 @@ describe("minimal replication setup", () => {
             await c1.createChannel(channelName);//c1 is connected to dred1
             await c2.createChannel(channelName);//c2 is connected to dred2
 
-            // Subscribe clients to the created channel
+            // CRITICAL: Refresh channel lists after creating new channels - Should this be done in the createChannel() method?
+            // Refresh channel lists after creating new channels
+            logStep(`Refreshing channel lists to include ${channelName}...`);
+            c1.channels = await c1.connManager.getChannelList();
+            c2.channels = await c2.connManager.getChannelList();
+
+            // Subscribe clients to the created channel - using the working pattern
             logStep(`Subscribing clients to ${channelName}...`);
             
-            // Set up message handlers first (required for subscribeToChannels)
-            c1.messageHandler = (msg) => { console.log("c1 received:", msg); };
-            c2.messageHandler = (msg) => { console.log("c2 received:", msg); };
+            // Use the subscription map pattern from messages.test.ts
+            await c1.subscribeToChannels({
+                [channelName]: (msg) => { console.log("c1 received:", msg); }
+            });
+            await c2.subscribeToChannels({
+                [channelName]: (msg) => { console.log("c2 received:", msg); }
+            });
             
-            // Subscribe to the test channel
-            await c1.subscribeToChannels([channelName]);
-            await c2.subscribeToChannels([channelName]);
+            // Add delay to allow subscriptions to settle
+            await asyncDelay(100);
 
             await logInfo();
 
@@ -120,8 +134,8 @@ describe("minimal replication setup", () => {
             expect(c2.neighborhoodId).toBe(neighborhoodId);
     
             // channels should contain "test-channel", "news", "discussion"
-            // expect(c1.channels).toContainEqual([channelName]);
-            // expect(c2.channels).toContainEqual([channelName]);
+            expect(c1.channels).toContainEqual(channelName);
+            expect(c2.channels).toContainEqual(channelName);
     
             await asyncDelay(500);
         });
