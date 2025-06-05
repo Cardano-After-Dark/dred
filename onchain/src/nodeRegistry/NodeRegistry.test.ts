@@ -95,6 +95,53 @@ describe("Dred NodeRegistry", async () => {
             const registering = h.createNode(controller.exampleData())
             await expect(registering).rejects.toThrow(/script validation .* missing member token/);
         });
+
+        it("is created in Validating state", async (context: DredCapo_TC) => {
+            const {
+                h,
+                h: { network, actors, delay, state },
+            } = context;
+           
+            await h.reusableBootstrap();
+            await h.participantSelfRegisters();
+
+            const controller = await h.registryDgt();
+
+            await h.createNode(controller.exampleData())
+
+            const newNode = await h.findFirstNode();
+            // expect(newNode?.state).toEqual({DredNodeState: {Validating: []}});
+        });
+    });
+
+    describe("Validating the node's registration details", () => {
+        it("an operator can't validate their own node", async (context: DredCapo_TC) => {
+            const {
+                h,
+                h: { network, actors, delay, state },
+            } = context;
+            
+        });
+
+        it("an operator can't validate a node that's not in NeedsValidation state", async (context: DredCapo_TC) => {
+            const {
+                h,
+                h: { network, actors, delay, state },
+            } = context;
+            
+        });
+
+        it("requires a Validating operator to update the record for a NeedsValidation node", async (context: DredCapo_TC) => {
+            const {
+                h,
+                h: { network, actors, delay, state },
+            } = context;
+            
+        });
+
+        it.todo("FUT: can be done for a valid combination of Validating-Operator + Validated-Node + nbh Membership for both", async (context: DredCapo_TC) => {
+        });
+
     });
 
     describe("Activity:UpdatingRecord allows a node operator to update their registration details", () => {

@@ -1,10 +1,23 @@
 module NodeRegistrationData
 
-
+// enum DredNodeState {
+//     NeedsValidation {
+//         datumHash: ByteArray
+//         signatories: []PubKey
+//     }
+//     Active
+//     NeedsHeartbeats {
+//         datumHash: ByteArray
+//         signatories: []PubKey
+//     }
+//     Inactive
+// }
+ 
 struct NodeRegistrationData {
     id : ByteArray "@id" // = "dredNode-XXXXyyyyZZZZ"
     type : String "tpe" // = "dredNode"
 
+    // state: DredNodeState "state"
     memberToken: String "mt"
     nodeAddress: String "addr"
     nodePort: Int "port"
