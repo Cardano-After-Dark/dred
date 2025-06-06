@@ -88,7 +88,7 @@ beforeEach(async () => {
         await server.redis?.flushdb();
         await server.reset();
         // testLogger.debug("beforeEach: establishing default channels");
-        server.ensureDefaultChannels();
+        await server.ensureDefaultChannels();
         // server.listen();
     }
     testLogger.info("  ---- did reset redis with default channels in beforeEach");
