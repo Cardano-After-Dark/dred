@@ -1,5 +1,5 @@
-import { EncryptedMessage } from "./EncryptedMessage";
-import { JsonMessagePayload } from "./JsonMessagePayload";
+import { EncryptedMessage } from "./EncryptedMessage.js";
+import { JsonMessagePayload } from "./JsonMessagePayload.js";
 
 
 //! it represents raw messages passed through Dred servers.

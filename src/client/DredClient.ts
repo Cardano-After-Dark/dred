@@ -22,18 +22,18 @@ const {
     magenta
 } = colors;
 
-import EventEmitter from "eventemitter3";
+import { EventEmitter } from "eventemitter3";
 import { asyncDelay, autobind, StateMachine, zonedLogger } from "@poshplum/utils";
 
 import { ConnectionManager } from "./ConnectionManager";
 
-import { ChannelOptions } from "../types/ChannelOptions";
-import { Subscriber } from "../Subscriber";
-import { StringNacl } from "../util/StringNacl";
-import { connnectionSettings, DredHostDetails } from "../types/DredHosts";
-import { ConnectionThresholds, Discovery } from "../types/Discovery";
-import { NeighborhoodDiscovery } from "../peers/NeighborhoodDiscovery";
-import { HostConnection } from "./HostConnection";
+import { ChannelOptions } from "../types/ChannelOptions.js";
+import { Subscriber } from "../Subscriber.js";
+import { StringNacl } from "../util/StringNacl.js";
+import { connnectionSettings, DredHostDetails } from "../types/DredHosts.js";
+import { ConnectionThresholds, Discovery } from "../types/Discovery.js";
+import { NeighborhoodDiscovery } from "../peers/NeighborhoodDiscovery.js";
+import { HostConnection } from "./HostConnection.js";
 import {
     ChanId,
     SubscriptionListenerMap,
@@ -41,7 +41,7 @@ import {
     NbhId,
     DredChannelMessage,
 } from "../types/ChannelSubscriptions";
-import { devMessage, DredError, DredEvent } from "../types/DredEvents";
+import { devMessage, DredError, DredEvent } from "../types/DredEvents.js";
 
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
@@ -84,12 +84,14 @@ export type eventChannelInfo = DredEvent & {
     channel: ChanId;
 };
 
-// eventemitter3 has a bit of an odd approach on event types, with a wrapping array type needed 
-// for each event, probably because the array is used as the expected type of the args-list for the handler.
+// eventemitter3 has a bit of an odd approach on event types,
+// with a wrapping tuple type needed for each event.
+// The tuple type is the type of the args-list for the event,
+// which is typically just one arg, but CAN have multiple args instead.
 export interface ClientEvents {
-    needsNeighborhood: [ DredEvent & { nbhs: NbhId[] } ];
-    hasChannels: [ eventHasChannels ];
-    needsAuth: [ DredEvent & { tbd: any } ];
+    needsNeighborhood: [DredEvent & { nbhs: NbhId[] }];
+    hasChannels: [eventHasChannels];
+    needsAuth: [DredEvent & { tbd: any }];
     "channel:created": [eventChannelInfo];
     "channel:removed": [eventChannelInfo];
     "state:changed": [DredEvent & ClientState];
@@ -195,7 +197,7 @@ const clientStates = {
  */
 export class DredClient extends StateMachine.withDefinition(clientStates, "client") {
     args: DredClientArgs;
-    events: EventEmitter<ClientEvents> = this.ensureEmitterExists();
+    events: EventEmitter<ClientEvents, any> = this.ensureEmitterExists();
     connManager: ConnectionManager;
     channels: ChanId[] = [];
     neighborhoodId: string = "cardano-after-dark";
@@ -480,6 +482,27 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
                 devMsg || "Developers should check whether the request is properly formed",
         });
         throw new Error(error || message || reason)
+    }
+    
+    /**
+     * Promise-based wrapper for waiting for an event to occur
+     * @remarks
+     * The promise resolves with the event arguments.
+     */
+    async once<E extends string & keyof ClientEvents>(
+        eventName: E,
+    ): Promise<
+    ClientEvents[E] extends [infer O1, ...infer more]
+    ? ClientEvents[E] extends [infer SINGLE]
+        ? SINGLE
+        : ClientEvents[E]
+    : void
+    > {
+        return new Promise<any>((resolve) => {
+            this.events.once(eventName, (...args) => {
+                resolve(args);
+            });
+        });
     }
 
     async getNeighborhoods() {

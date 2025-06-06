@@ -1,3 +1,3 @@
-import { PubKey } from "./PubKey";
+import { PubKey } from "./PubKey.js";
 
 export type ChannelMember = PubKey;
