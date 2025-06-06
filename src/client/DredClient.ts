@@ -6,7 +6,7 @@ import util from "tweetnacl-util";
 import type { Response } from "cross-fetch";
 
 const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
-import {colors} from "../picocolors/picocolors.js";
+import { colors } from "../picocolors/picocolors.js";
 const {
     bgBlackBright,
     blue,
@@ -19,7 +19,7 @@ const {
     yellowBright,
     isColorSupported,
     bgBlack,
-    magenta
+    magenta,
 } = colors;
 
 import { EventEmitter } from "eventemitter3";
@@ -119,7 +119,6 @@ type dred = DredClient;
 //    of the machine's context-object, which is a DredClient.
 const clientStates = {
     logLevel: "warn",
-    // logLevel: "info",
     default: {
         //! it automatically advances to next states, when it can make progress
         async onEntry(this: dred) {
@@ -141,7 +140,8 @@ const clientStates = {
         async onEntry(this: dred) {
             this.events.emit("needsNeighborhood", {
                 message: "select a neighborhood",
-                [devMessage]: "Developers: offer these nbhs to a user or pick one by policy.  Call client.setNeighborhood(nbhId) to proceed.",
+                [devMessage]:
+                    "Developers: offer these nbhs to a user or pick one by policy.  Call client.setNeighborhood(nbhId) to proceed.",
                 nbhs: this.availableNeighborhoods,
             });
         },
@@ -187,10 +187,10 @@ const clientStates = {
 /**
  * Creates a new client instance for interacting with a Dred neighborhood.
  * @remarks
- * the client can be initiated with a single message-handler, 
+ * the client can be initiated with a single message-handler,
  * which is called for all messages received from any channel.
  * set client.messageHandler = ... to use this approach.
- * 
+ *
  * Alternatively, the client can provide per-channel message-handlers,
  * which are called for messages received from specific channels.
  * Use client.subscribeToChannels({[chanId]: handler}) to set up per-channel handlers.
@@ -207,7 +207,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     identity?: nacl.SignKeyPair;
     signer?: StringNacl;
     pubKeyString?: string;
-    logger: ReturnType<typeof zonedLogger>
+    logger: ReturnType<typeof zonedLogger>;
     insecure?: boolean;
     _subscriptions?: SubscriptionListenerMap;
     subscribers: subscriberMap = new Map();
@@ -219,15 +219,18 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         super({
             contextLabel: args.name || "dred-client",
             currentState: "default",
-            logFacility: "dred-client:state",
+            logFacility: `dred-client:state-${args.name}`,
             contextObject: null,
         });
         this.events = this.ensureEmitterExists();
-        let {name: clientName} = args;
+        let { name: clientName } = args;
         clientName = clientName ? `client-‹${clientName}›` : "dred-client";
         this.logger = zonedLogger(clientName, {
             color: magenta.start,
-            levels: { [clientName]: logging ? "info" : "warn", _message: `(env LOGGING=${logging})`},
+            levels: {
+                [clientName]: logging ? "info" : "warn",
+                _message: `(env LOGGING=${logging})`,
+            },
         });
 
         //@ts-expect-error used before assignment (assigned by state-machine)
@@ -262,11 +265,11 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         const availableNeighborhoods = this.availableNeighborhoods.join(", ") || "none";
         const channels = this.channels.join(", ") || "none";
         const status = this._status || "unknown";
-        
+
         // Get connected hosts information
         let hostInfo = "unknown";
         if (this.discovery && this.discovery.hosts) {
-            const hosts = this.discovery.hosts.map(h => `${h.address}:${h.port} (${h.serverId})`);
+            const hosts = this.discovery.hosts.map((h) => `${h.address}:${h.port} (${h.serverId})`);
             hostInfo = hosts.join(", ");
         }
 
@@ -277,8 +280,8 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             `  - Connected Channels      : [${channels}]`,
             `  - Connected Hosts         : ${hostInfo}`,
             `  - Subscriptions Count     : ${Object.keys(this.subscriptions).length}`,
-            ``
-        ].join('\n');
+            ``,
+        ].join("\n");
 
         return logMessage;
     }
@@ -291,11 +294,11 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     /**
      * modifies the client's list of channel subscriptions
      * @remarks
-     * For a client using a single message-handler, call this method with a single channel-id 
+     * For a client using a single message-handler, call this method with a single channel-id
      * or a list of channel-ids to subscribe to messages from specific channels.  Throws
      * a runtime error if there is no message-handler set.
-     * 
-     * To use per-channel message-handlers, call this method with a map of channel-ids to 
+     *
+     * To use per-channel message-handlers, call this method with a map of channel-ids to
      * listener functions.  In this case, any assigned messageHandler is not used.
      */
     async subscribeToChannels(channels: ChanId[]): Promise<void>;
@@ -306,7 +309,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         if (Array.isArray(arg)) {
             if (!this.messageHandler) {
                 throw new Error(
-                    `to use subscribeToChannels with an implicit subscriber, set client's messageHandler first`
+                    `to use subscribeToChannels with an implicit subscriber, set client's messageHandler first`,
                 );
             }
             smap = {};
@@ -316,7 +319,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         } else if ("string" === typeof arg) {
             if (!this.messageHandler) {
                 throw new Error(
-                    `to use subscribeToChannels with an implicit subscriber, set client's messageHandler first`
+                    `to use subscribeToChannels with an implicit subscriber, set client's messageHandler first`,
                 );
             }
             smap = { [arg]: this.messageHandler };
@@ -331,7 +334,10 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         // debugger
     }
 
-    static resolveDiscovery({ neighborhood, discovery }: Pick<DredClientArgs, "neighborhood" | "discovery">): Discovery {
+    static resolveDiscovery({
+        neighborhood,
+        discovery,
+    }: Pick<DredClientArgs, "neighborhood" | "discovery">): Discovery {
         if (neighborhood) discovery = new NeighborhoodDiscovery({ neighborhood });
         if (!discovery) throw new Error(`required: 'discovery' object or 'neighborhood' name`);
 
@@ -368,11 +374,11 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         const subs: SubscriptionListenerMap = {};
         subs[nbhChannelList] = this.channelSub = this.getChannelSub(
             nbhChannelList,
-            this.processChannelsMsg  //! it watches for events relating to channel lifecycle
+            this.processChannelsMsg, //! it watches for events relating to channel lifecycle
         );
         subs[nbhAuthInfo] = this.authSub = this.getChannelSub(
-            nbhAuthInfo, 
-            this.processAuthMsg //! it watches for events relating to authentication lifecycle
+            nbhAuthInfo,
+            this.processAuthMsg, //! it watches for events relating to authentication lifecycle
         );
         for (const [chan, listener] of Object.entries(smap)) {
             subs[chan] = this.getChannelSub(chan, listener);
@@ -388,16 +394,12 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
     @autobind
     processAuthMsg(m: DredChannelMessage) {
-        //!!! todo: ??? it notifies listeners when authentication is required by one or more neighborhood hosts 
+        //!!! todo: ??? it notifies listeners when authentication is required by one or more neighborhood hosts
         //     more use-case analysis needed for this.
-
         //!!! todo: it notifies listeners when a requested channel requires authentication not yet established
         //     (possibly this would be a responsibility served in a way more aligned with individual channels instead)
-
         //!!! todo: notifies listening application of new identities joining the neighborhood {type: "newId", pubKey, handle, certificates}
-
         //!!! todo: notifies listening application of any certifications added by an identity's owner or neighborhood trustees
-
         //!!! todo: notifies listening application of any key revocations or decertifications from owner or trustees
     }
 
@@ -410,6 +412,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         this._subscriptions = replacement;
     }
 
+    // TODO: replace this with a direct `subscriptions` property
     get subscriptions() {
         if (!this._subscriptions) return {}; // it creates an empty subscriptions object if not already set
         return this._subscriptions;
@@ -417,7 +420,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
     private getChannelSub(
         channel: string,
-        listener: DredMessageListener
+        listener: DredMessageListener,
     ): ChannelSubscriptionListener {
         const found = this.subscriptions[channel];
         if (found) return found;
@@ -444,7 +447,6 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     //    (see also todo zw3w737)
 
     async fetch(path: string, { parse = true, debug = false, ...options }) {
-
         //!! todo: it logs the pending request to an observable queue of
         //    requests and keeps it updated with progress.
         //!! todo: it exposes the progress info in a way that is easily consumed
@@ -465,7 +467,6 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
             return result.json();
         }
-        debugger
         const err = await result
             .json()
             .catch(() => new Error(`${result.status} ${result.statusText} for ${path}`));
@@ -481,9 +482,9 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             [devMessage]:
                 devMsg || "Developers should check whether the request is properly formed",
         });
-        throw new Error(error || message || reason)
+        throw new Error(error || message || reason);
     }
-    
+
     /**
      * Promise-based wrapper for waiting for an event to occur
      * @remarks
@@ -539,7 +540,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         channelName: string,
         options: Partial<Omit<ChannelOptions, "channelId">> = {
             encrypted: false,
-        }
+        },
     ) {
         //!!! todo: it delegates channel-creation to connection manager (see also todo zw3w737)
 
@@ -555,21 +556,19 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         if (encrypted) {
             if (!this.identity || !this.signer) {
                 throw new Error(
-                    `createChannel: encrypted channel requires a prior call to generateKey()`
+                    `createChannel: encrypted channel requires a prior call to generateKey()`,
                 );
             }
             if (!allowJoining && !members.length) {
                 throw new Error(
-                    `createChannel (encrypted: true): must specify member list and/or allowJoining: true`
+                    `createChannel (encrypted: true): must specify member list and/or allowJoining: true`,
                 );
             }
             const signature = await this.signString(channelName);
             options.owner = this.pubKeyString;
             options.signature = signature;
         }
-        const {
-            ... otherBodyAttrs
-        } = options;
+        const { ...otherBodyAttrs } = options;
         const body = JSON.stringify(otherBodyAttrs);
         try {
             return this.fetch(`/channel/${channelName}`, {
@@ -580,16 +579,16 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
                     accept: "application/json",
                 },
             }).then((r) => {
-                const {
-                    id, status
-                } = r
+                const { id, status } = r;
                 if (status === "created") {
                     if (id !== channelName) {
                         throw new Error(`requested channel ${channelName} but got id ${id}`);
                     }
                     this.logger.info(`created channel ${channelName}`, r);
                     this.channels.push(channelName);
-                    this.logger.warn("todo: consider waiting for a second confirmation of channel creation, if appropriate, from a second server (only if there are multiple servers and active channel subscriptions)")
+                    this.logger.warn(
+                        "todo: consider waiting for a second confirmation of channel creation, if appropriate, from a second server (only if there are multiple servers and active channel subscriptions)",
+                    );
                 } else {
                     throw new Error(`expected status "created". Response: `, r);
                 }
@@ -652,7 +651,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     async postMessage(channelName: string, oMsg: DredMessage) {
         const sub = this.subscriptions[channelName];
 
-        const message = { ... oMsg };
+        const message = { ...oMsg };
         this.logger.info("posting message ", message);
         let { type, ocid, msg } = message;
 
@@ -666,12 +665,12 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         }
         // console.log({ ocid });
         if (sub) {
-            sub.recentMsgs.add(ocid!);            
+            sub.recentMsgs.add(ocid!);
         }
 
         //! it guards usage for non-typescript users
         if (!(type && msg)) {
-            debugger
+            debugger;
             throw new Error(`missing required 'type' and/or 'message'`);
         }
 

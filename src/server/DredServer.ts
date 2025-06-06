@@ -958,7 +958,7 @@ export class DredServer {
                         e.data.length,
                         "bytes"
                     );
-                    debugger;
+                    // debugger;
                     // const parsed = JSON.parse(data);
                     //!!! todo: apply filters from the subscription
                     sendUpdate({
