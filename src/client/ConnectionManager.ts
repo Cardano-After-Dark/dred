@@ -1,4 +1,4 @@
-import { autobind, StateMachine } from "@poshplum/utils";
+import { autobind, StateMachine, zonedLogger } from "@poshplum/utils";
 import { EventEmitter } from "eventemitter3";
 
 import { 
@@ -78,7 +78,7 @@ const connectionManagerStates = {
     pendingSetup: {
         async onEntry(this: cm) {
             if (!this.channelSubs?.size) {
-                console.log("    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set");
+                this.logger.warn("    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set");
                 return
             }
             const hosts = this.discovery.hosts;
@@ -278,6 +278,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
         // //@ts-expect-error used before assignment (assigned by state-machine)
         // this._status = this._status || "";
 
+        this.logger = zonedLogger("connection-manager");
         this.connectionSettings = HostConnection.settingsWithDefaults(options.connectionSettings);
         this.discovery = options.discovery;
         this.discovery.events.on("hosts:updated", this.setHostList);
