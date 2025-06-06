@@ -48,7 +48,7 @@ import {
     NbhId,
     ChannelSubOptions,
 } from "../types/ChannelSubscriptions.js";
-import { autobind } from "@poshplum/utils";
+import { asyncDelay, autobind } from "@poshplum/utils";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import { zonedLogger } from "@poshplum/utils";
 import { ReplicationClient } from "./ReplicationClient.js";
@@ -324,7 +324,7 @@ export class DredServer {
         await this.setupPending;
 
         // Setup replication after all basic server setup is complete
-        // await this.setupReplication();
+        this.setupReplication();
 
         const myInfo = (this.myServerInfo =
             this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));
@@ -340,6 +340,7 @@ export class DredServer {
 
     async setupReplication() {
         try {
+            await asyncDelay(1000);
             const hosts = await this.discovery.getHostList();
             const otherHosts = hosts.filter(host => host.serverId !== this.serverId);
             
@@ -352,8 +353,8 @@ export class DredServer {
             await this.replicationClient.initialize(otherHosts);
             
             this.log(`Replication setup complete with ${otherHosts.length} peer servers`);
-        } catch (error) {
-            this.warn(`Failed to setup replication: ${error}`);
+        } catch (error: any) {
+            this.warn(`Failed to setup replication`, error.stack);
         }
     }
 
