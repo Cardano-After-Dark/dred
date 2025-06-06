@@ -116,6 +116,7 @@ type dred = DredClient;
 //! it runs onEntry() and predicate() hooks always in context
 //    of the machine's context-object, which is a DredClient.
 const clientStates = {
+    logLevel: "warn",
     // logLevel: "info",
     default: {
         //! it automatically advances to next states, when it can make progress
@@ -548,13 +549,28 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         } = options;
         const body = JSON.stringify(otherBodyAttrs);
         try {
-            return await this.fetch(`/channel/${channelName}`, {
+            return this.fetch(`/channel/${channelName}`, {
                 method: "POST",
                 body,
                 headers: {
                     "content-type": "application/json",
                     accept: "application/json",
                 },
+            }).then((r) => {
+                const {
+                    id, status
+                } = r
+                if (status === "created") {
+                    if (id !== channelName) {
+                        throw new Error(`requested channel ${channelName} but got id ${id}`);
+                    }
+                    this.logger.info(`created channel ${channelName}`, r);
+                    this.channels.push(channelName);
+                    this.logger.warn("todo: consider waiting for a second confirmation of channel creation, if appropriate, from a second server (only if there are multiple servers and active channel subscriptions)")
+                } else {
+                    throw new Error(`expected status "created". Response: `, r);
+                }
+                return r;
             });
         } catch (err: any) {
             let e: Error;

@@ -35,6 +35,12 @@ describe("Dred client", () => {
                 expect(serverMethod).toHaveBeenCalled();
             });
 
+            it("client channels list is updated when a channel is created", async () => {
+                const chanName = "createChannelToUpdateList";
+                await client.createChannel(chanName);
+                expect(client.channels.includes(chanName)).toBeTruthy();
+            });
+
             it("throws any error json returned in a server error", async () => {
                 const serverMethod = vi
                     .spyOn(server, "createChannel")

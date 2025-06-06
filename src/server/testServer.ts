@@ -30,6 +30,7 @@ import { DredClient } from "../client/DredClient.js";
 import { asyncDelay } from "../util/asyncDelay.js";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import { DredHostDetails } from "../types/DredHosts.js";
+import { once } from "events";
 
 if (process.env.VITEST_TIMEOUT) {
     console.log("using vitest timeout override", process.env.VITEST_TIMEOUT);
@@ -92,6 +93,7 @@ beforeEach(async () => {
         // server.listen();
     }
     testLogger.info("  ---- did reset redis with default channels in beforeEach");
+    testLogger.info("  -------------------      -----------------    --------------------")
 });
 
 afterEach(async () => {
