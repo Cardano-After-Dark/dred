@@ -3,7 +3,7 @@ import esbuild from "rollup-plugin-esbuild";
 import externals from "rollup-plugin-node-externals";
 import resolve from "@rollup/plugin-node-resolve";
 import alias from "@rollup/plugin-alias";
-import packageJson from "./package.json" assert { type: "json" };
+import packageJson from "./package.json" with { type: "json" };
 const name = packageJson.main.replace(/\.js$/, "");
 
 const serverBundledModules = [
