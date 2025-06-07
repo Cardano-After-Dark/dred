@@ -274,11 +274,16 @@ export class ConnectionManager extends StateMachine.withDefinition(
             currentState: "discoveringNbh",
             logFacility: "connection-manager:state",
             contextObject: null,
+            logProperties: {
+                loggerId: options.clientId,
+            }
         });
         // //@ts-expect-error used before assignment (assigned by state-machine)
         // this._status = this._status || "";
 
-        this.logger = zonedLogger("connection-manager");
+        this.logger = zonedLogger("connection-manager", {
+            loggerId: options.clientId,
+        });
         this.connectionSettings = HostConnection.settingsWithDefaults(options.connectionSettings);
         this.discovery = options.discovery;
         this.discovery.events.on("hosts:updated", this.setHostList);

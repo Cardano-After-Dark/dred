@@ -122,6 +122,7 @@ const clientStates = {
     default: {
         //! it automatically advances to next states, when it can make progress
         async onEntry(this: dred) {
+            if (!this.args) debugger
             if (this.args.neighborhood) return this.transition("nbhSelected");
             return this.transition("findNbhs");
         },
@@ -184,6 +185,8 @@ const clientStates = {
     },
 };
 
+let instanceCount = 0;
+
 /**
  * Creates a new client instance for interacting with a Dred neighborhood.
  * @remarks
@@ -214,35 +217,43 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     channelSub?: ChannelSubscriptionListener;
     authSub?: ChannelSubscriptionListener;
     messageHandler?: DredMessageListener;
+    instanceNumber = ++instanceCount
 
     constructor(args: DredClientArgs) {
         super({
             contextLabel: args.name || "dred-client",
             currentState: "default",
-            logFacility: `dred-client:state-${args.name}`,
+            logFacility: `dred-client:state`,
             contextObject: null,
+            logProperties: {
+                loggerId: args.name,
+            },
         });
+        this.args = {...args};
         this.events = this.ensureEmitterExists();
         let { name: clientName } = args;
-        clientName = clientName ? `client-‹${clientName}›` : "dred-client";
-        this.logger = zonedLogger(clientName, {
+
+        // clientName = clientName ? `client-‹${clientName}›` : "dred-client";
+        const clientId = clientName || `#${instanceCount}`;
+        this.logger = zonedLogger(`dred-client`, {
             color: magenta.start,
-            levels: {
-                [clientName]: logging ? "info" : "warn",
-                _message: `(env LOGGING=${logging})`,
-            },
+            loggerId: clientId,
+            // levels: {
+            //     // [clientName]: logging ? "info" : "warn",
+            //     _message: `(env LOGGING=${logging})`,
+            // },
         });
 
         //@ts-expect-error used before assignment (assigned by state-machine)
         this._status = this._status || "default";
 
-        this.args = args;
         const discovery = (this.constructor as typeof DredClient).resolveDiscovery(args);
         this.discovery = discovery;
         this.connManager = new ConnectionManager({
             discovery,
             waitFor: this.args.waitFor,
             connectionSettings: this.args.connectionSettings || {},
+            clientId,
         });
         this.transition("default");
         //!!! make this test-only

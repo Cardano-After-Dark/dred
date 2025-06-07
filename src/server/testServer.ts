@@ -54,7 +54,10 @@ if (!monitor) {
 zonedLogger("root");
 
 // export loggers for use in tests
-export const logger = zonedLogger("redis", {color: blue.start+bgBlack.start});
+export const logger = zonedLogger("redis", {
+    color: blue.start+bgBlack.start,
+    loggerId: "monitor",
+});
 export const testLogger = zonedLogger("test", {color: yellow.start, levels: {default: "info"}});
 
 beforeAll(async () => {

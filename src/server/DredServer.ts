@@ -195,13 +195,14 @@ export class DredServer {
 
     constructor(args: DredServerArgs, serverId: string, redisDb: number) {
         this.args = args;
-        const loggerName = `dred‹${serverId}›`;
+        const loggerName = `dred`;
         this.logger = zonedLogger(loggerName, {
             serverId,
-            levels: {
-                [loggerName]: logging ? "info" : "warn",
-                _message: `(env LOGGING=${logging})`,
-            },
+            loggerId: serverId,
+            // levels: {
+            //     [loggerName]: logging ? "info" : "warn",
+            //     _message: `(env LOGGING=${logging})`,
+            // },
         });
 
         this.serverId = serverId;
@@ -433,8 +434,9 @@ export class DredServer {
     // consider automatically generating a key
     // we could add this to everything calling here. 
     mkClient(serverSelection: string, clientArgs: Partial<DredClientArgs> = {}): DredClient {
-        const discovery: Discovery = clientArgs.discovery ?? this.clientArgs.discovery;
+        const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
         if (!discovery) throw new Error("discovery is required");
+
         const oneHost = discovery.hosts!.find((h) => h.serverId === serverSelection);
         if (!oneHost) {
             this.logger.error(`server ${serverSelection} not found in discovery`, discovery);
@@ -445,7 +447,7 @@ export class DredServer {
         });
 
         return new DredClient({
-            name: `${serverSelection || ""}-${clientIndex++}`,
+            // name: `${serverSelection || ""}-${clientIndex++}`,
             ...this.clientArgs,
             ...clientArgs,
             discovery: singleDiscovery,
