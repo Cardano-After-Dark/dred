@@ -178,7 +178,7 @@ describe("minimal replication setup", () => {
         });
 
 
-        it("replication setup", async () => {
+        fit("replication setup", async () => {
             logStep("check replication setup");
 
             // Send a second message through c1 client
@@ -192,15 +192,13 @@ describe("minimal replication setup", () => {
             const clientResponse = await c1.postMessage(channelName, clientMessage);
             logStep(`Client message posted, response: ${JSON.stringify(clientResponse)}`);
 
-            await asyncDelay(500);
+            await asyncDelay(1100);
 
             logStep(`After client message - c1Messages count: ${c1Messages.length}`);
             logStep(`After client message - c2Messages count: ${c2Messages.length}`);
 
             // Verify c1 received the message it sent (since it's subscribed to the channel)
             expect(c1Messages.length).toBe(0); // Should have 0 messages
-            // ENABLE THIS WHEN REPLICATION IS IMPLEMENTED
-            // expect(c2Messages.length).toBe(1); // c2 should receive the message in case of replication
-
+            expect(c2Messages.length).toBe(1); // c2 should receive the message in case of replication
         });
 });

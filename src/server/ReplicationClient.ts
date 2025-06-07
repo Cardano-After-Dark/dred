@@ -153,8 +153,12 @@ class PeerReplicationHandler {
         if (this.isInitialized) return;
 
         // Create client connection to peer server
-        this.peerClient = this.homeServer.mkClient(this.peerHost.serverId);
+        this.peerClient = this.homeServer.mkClient(this.peerHost.serverId, {
+            name: `from-${this.homeServer.serverId}-to-${this.peerHost.serverId}`
+        });
+        
         await this.peerClient.generateKey();
+        await this.peerClient.once("hasChannels");
 
         // Discover and subscribe to existing channels
         await this.discoverAndSubscribeToChannels();
