@@ -52,6 +52,7 @@ import { asyncDelay, autobind } from "@poshplum/utils";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import { zonedLogger } from "@poshplum/utils";
 import { ReplicationClient } from "./ReplicationClient.js";
+import { DredReplicator } from "./DredReplicator.js";
 
 const logging = parseInt(process.env.LOGGING || "0");
 export interface ExpressWithRedis extends express.Application {
@@ -140,7 +141,10 @@ export class DredServer {
     serverId: string;
     myServerInfo?: DredHostDetails;
     logger: ReturnType<typeof zonedLogger>;
-    replicationClient?: ReplicationClient;
+    // replicationClient?: ReplicationClient;
+
+    // Optional replicator, to be initialized only when replication is enabled
+    replicator?: DredReplicator;
 
     resetting = false;
     get nbh() {
@@ -220,6 +224,9 @@ export class DredServer {
         this.subscribers = new Map();
         this.redisDb = redisDb || 0;
         this.setupRedis(redisUrl);
+
+        // to be initialized only when replication is enabled
+        // this.replicator = new DredReplicator(this, this.discovery);
 
         // this.channelConn._log.error = console.error.bind(console);
         this.clientArgs = args;
@@ -325,6 +332,10 @@ export class DredServer {
         await this.setupPending;
 
         // Setup replication after all basic server setup is complete
+        // at this point, "_chans" and "_auth" channels are already created
+        // TODO we should restore this at some point
+        // see https://discord.com/channels/891363866775261275/913447653826773012/1380756651166011443
+        //  await this.setupReplication();
         this.setupReplication();
 
         const myInfo = (this.myServerInfo =
@@ -340,34 +351,57 @@ export class DredServer {
     }
 
     async setupReplication() {
+        if(this.replicator) {
+            this.warn("Replication already setup");
+            return;// Idempotent - safe to call multiple times
+        }
         try {
             await asyncDelay(1000);
-            const hosts = await this.discovery.getHostList();
-            const otherHosts = hosts.filter(host => host.serverId !== this.serverId);
-            
-            if (otherHosts.length === 0) {
-                this.log("No other hosts found for replication");
-                return;
-            }
+            this.replicator = new DredReplicator(this, this.discovery);
+            await this.replicator.initialize();
+            this.log(`Replication setup complete`);
 
-            this.replicationClient = new ReplicationClient(this);
-            await this.replicationClient.initialize(otherHosts);
+            // const hosts = await this.discovery.getHostList();
+            // const otherHosts = hosts.filter(host => host.serverId !== this.serverId);
             
-            this.log(`Replication setup complete with ${otherHosts.length} peer servers`);
+            // if (otherHosts.length === 0) {
+            //     this.log("No other hosts found for replication");
+            //     return;
+            // }
+
+            // for (const host of otherHosts) {
+            //     const replicant = new Replicant(this, host);
+            //     await replicant.initialize();
+            // }
+
+            // this.replicationClient = new ReplicationClient(this);
+            // await this.replicationClient.initialize(otherHosts);
+            // this.log(`Replication setup complete with ${otherHosts.length} peer servers`);
         } catch (error: any) {
+            // Cleanup on failure
+            this.replicator = undefined;
+            this.warn(`Failed to setup replication: ${error}`);
             this.warn(`Failed to setup replication`, error.stack);
+            throw error; // Re-throw if caller needs to handle
         }
     }
 
     async cleanupReplication(): Promise<void> {
-        if (this.replicationClient) {
-            try {
-                await this.replicationClient.cleanup();
-                this.replicationClient = undefined;
-                this.log("Replication client cleanup complete");
-            } catch (error) {
-                this.warn(`Error cleaning up replication client: ${error}`);
-            }
+        if(!this.replicator) {
+            this.warn("Replication not setup");
+            return; // Idempotent - safe to call multiple times
+        }
+        try {
+            await this.replicator.cleanup();
+            this.log("Replication client cleanup complete");
+    
+            // await this.replicationClient.cleanup();
+            // this.replicationClient = undefined;
+        } catch (error) {
+            this.warn(`Error during replication cleanup: ${error}`);
+            // Continue cleanup even if error occurs
+        } finally {
+            this.replicator = undefined; // Always nullify, even on error
         }
     }
 
