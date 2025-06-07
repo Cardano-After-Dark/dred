@@ -33,10 +33,10 @@ if [ "$COMMAND" = "run" ]; then
     
     if [ "$TEST_NAME" = "all" ]; then
         # Show colored output in console, save cleaned output to file
-        pnpm test | pnpm exec pino-pretty | tee >(sed 's/\x1b\[[0-9;]*m//g' | sed -E 's/\[[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]+\]//g' > "$LOG_DIR/output.log")
+        LOGGING=1 pnpm test | pnpm exec pino-pretty | tee >(sed 's/\x1b\[[0-9;]*m//g' | sed -E 's/\[[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]+\]//g' > "$LOG_DIR/output.log")
     else
         # Show colored output in console, save cleaned output to file
-        pnpm test "$TEST_NAME" | pnpm exec pino-pretty | tee >(sed 's/\x1b\[[0-9;]*m//g' | sed -E 's/\[[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]+\]//g' > "$LOG_DIR/output.log")
+        LOGGING=1 pnpm test "$TEST_NAME" | pnpm exec pino-pretty | tee >(sed 's/\x1b\[[0-9;]*m//g' | sed -E 's/\[[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]+\]//g' > "$LOG_DIR/output.log")
     fi
     
     echo "----------------------------------------"
