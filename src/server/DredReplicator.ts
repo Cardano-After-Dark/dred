@@ -131,12 +131,13 @@ export class Replicant{
         this.repClient = this.homeServer.mkClient(this.targetHost.serverId);
         await this.repClient.generateKey();
 
-        this.log(`${this.name} client created, setting neighborhood to: '${this.homeServer.nbh}'`);
-        
+        /** FIXME: we cannot set the neighborhood here, yet
+         * TODO: when neighborhood fixed, fix this
+        // this.log(`${this.name} client created, setting neighborhood to: '${this.homeServer.nbh}'`);
         // Set the same neighborhood as the home server
         //this.repClient.setNeighborhood(this.homeServer.nbh);
-
-        this.log(`${this.name} neighborhood set, client state: '${this.repClient.currentState}'`);
+        // this.log(`${this.name} neighborhood set, client state: '${this.repClient.currentState}'`);
+        */
 
         // Wait for client to reach ready state and discover channels
         // do not enable this otherwise we will wait forever

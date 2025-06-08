@@ -34,7 +34,7 @@ describe("minimal replication setup", () => {
         let c2Messages: any[];
 
         // Neighborhood for connecting clients
-        const neighborhoodId = "test-neighborhood";
+        const neighborhoodId = "cardano-after-dark";
 
         // channel for testing
         const channelName = "test-channel";
@@ -59,7 +59,8 @@ describe("minimal replication setup", () => {
 
         beforeAll(async () => {
             logStep("beforeAll: setting up test environment");
-            test = await testSetup();//neighborhoodId);
+            // FIXME: we cannot set the neighborhood here, yet TODO: when neighborhood fixed, fix this
+            test = await testSetup();
             dred1 = test.servers[0];
             dred2 = test.servers[1];
         });
@@ -210,8 +211,8 @@ describe("minimal replication setup", () => {
 
             // I should see the following on the LOGs:
             // 1. 1st message arrive to 1st server
-            // 2. 2nd server repAgent should be listening to 1st server 
-            // 3. first message arrives to 2nd Agent 
+            // 2. 2nd server Replicant (Agent) should be listening to 1st server 
+            // 3. first message arrives to 2nd Replicant (Agent) 
             // 4. first message arrives to 2nd Server
             // 5. 2nd client receives the message 
 

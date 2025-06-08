@@ -499,7 +499,15 @@ export class DredServer {
 
     async logInfo(): Promise<string> {
         const serverId = this.serverId;
-        const neighborhood = this.nbh;
+
+        /** 
+         * FIXME: we cannot get the neighborhood here, 
+         * because the neighborhood is set statically, 
+         * and it does not respond to change. 
+         * 
+         * NOTE: we should get correct neighborhood to have proper logInfo
+         */
+        const neighborhood = this.nbh || "cardano-after-dark";
         
         // Get server address and port info
         let serverAddress = "unknown";
