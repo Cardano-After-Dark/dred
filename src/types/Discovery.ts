@@ -2,6 +2,8 @@ import { EventEmitter } from "eventemitter3";
 import { NbhId } from "./ChannelSubscriptions.js";
 import { devMessage, DredEvent } from "./DredEvents.js";
 import { DredHostDetails } from "./DredHosts.js";
+import { connnectionSettings } from "./DredHosts.js";
+import { contextLogger } from "@poshplum/utils";
 
 export interface discovery {
     getHostList(): Promise<DredHostDetails[]>;
@@ -30,7 +32,7 @@ export abstract class Discovery implements discovery {
         throw new Error(`this discovery protocol doesn't implement getNeighborhoods().  instantiate it with a predefined neighborhood name instead.`)
     };
     abstract getConnectionThresholds(): Promise<ConnectionThresholds>;
-
+    logger = contextLogger("discovery")
     constructor(options : GenericDiscoveryOptions) {
         const {neighborhood} = options
         if (neighborhood) this.setNeighborhood(neighborhood);
@@ -54,6 +56,8 @@ export abstract class Discovery implements discovery {
 
         //!!! todo: it emits a host-discovery-timeout event if hosts can't be discovered promptly.
 
+        this.logger.info(`restarting host discovery for neighborhood ${this.nbh}`);
+
         await this.initHostDiscovery();
         this.events.emit("hosts:discovering", {
             message: "discovering neighborhood hosts...",
@@ -75,6 +79,7 @@ export abstract class Discovery implements discovery {
     }
     setNeighborhood(nbh : NbhId) {
         this.nbh = nbh;
+        this.logger.info(`setting neighborhood ${nbh} - `+new Error("called by...").stack);
         this.restartHostDiscovery();
         return this;
     }
@@ -88,9 +93,6 @@ export abstract class Discovery implements discovery {
     }    
 }
 
-
-
-import { connnectionSettings } from "./DredHosts.js";
 
 export type ConnectionManagerOptions = {
     discovery: Discovery;
