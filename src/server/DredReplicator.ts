@@ -174,31 +174,30 @@ export class Replicant{
     }
 
     private async subscribeToCommonChannels(channels: string[]): Promise<void> {
-        // Create subscription map with replication handlers
-        // Add debug logging to see the neighborhood context
-        this.log(`Replication client neighborhood: '${this.repClient!.neighborhoodId}'`);
-        this.log(`Replication client current state: '${this.repClient!.currentState}'`);
+        // CRITICAL DEBUG: Check connection state
+        this.log(`🔍 RepClient state: '${this.repClient!.currentState}'`);
+        this.log(`🔍 ConnManager state: '${this.repClient!.connManager.currentState}'`);
         
-        // eslint-disable-next-line no-debugger
-        debugger
-        // Use EXACTLY the same pattern as the working test
+        // Wait for connection to be ready
+        this.log(`🔍 Waiting for connection to be ready...`);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        this.log(`🔍 After wait - RepClient: '${this.repClient!.currentState}', ConnManager: '${this.repClient!.connManager.currentState}'`);
+        
+        // Create subscription map with replication handlers
         const subscriptionMap: Record<string, (msg: any) => void> = {};
         
         for (const channel of channels) {
-            subscriptionMap[channel] = async (message) => {
-                this.log(`Received message from ${this.targetHost.serverId} in channel ${channel}: ${message.mid || 'no-mid'}`);
-                console.log(`[REPL] ${this.targetHost.serverId} -> ${this.homeServer.serverId}:`, message);
-                // Handle async processing without blocking - same as working test
-                await this.handleIncomingMessage(channel, message).catch(error => {
+            subscriptionMap[channel] = (message) => {
+                console.log(`🎯 REPL MESSAGE from ${this.targetHost.serverId}:`, message);
+                this.handleIncomingMessage(channel, message).catch(error => {
                     this.warn(`Error handling message: ${error}`);
                 });
             };
         }
         
-        this.log(`About to subscribe to channels: [${channels.join(', ')}]`);
-        
-        // Use the exact same call pattern as working clients
+        console.log(`🔍 CALLING subscribeToChannels for ${this.targetHost.serverId}`);
         await this.repClient!.subscribeToChannels(subscriptionMap);
+        console.log(`🔍 COMPLETED subscribeToChannels for ${this.targetHost.serverId}`);
         
         this.log(`Successfully subscribed to ${channels.length} channels on target server ${this.targetHost.serverId}`);
     }

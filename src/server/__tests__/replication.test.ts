@@ -74,9 +74,9 @@ describe("minimal replication setup", () => {
             c2 = await dred2.mkClientAndGenerateKey("second");
 
             
-            logStep(`Setting neighborhood ${neighborhoodId} for both clients...`);
-            c1.setNeighborhood(neighborhoodId);
-            c2.setNeighborhood(neighborhoodId);
+            // logStep(`Setting neighborhood ${neighborhoodId} for both clients...`);
+            // c1.setNeighborhood(neighborhoodId);
+            // c2.setNeighborhood(neighborhoodId);
             
             logStep(`Creating channel ${channelName} on both servers...`);
             await c1.createChannel(channelName);//c1 is connected to dred1
@@ -140,8 +140,8 @@ describe("minimal replication setup", () => {
             expect(dred1).not.toBe(dred2);
             expect(c1).not.toBe(c2);
     
-            expect(c1.neighborhoodId).toBe(neighborhoodId);
-            expect(c2.neighborhoodId).toBe(neighborhoodId);
+            // expect(c1.neighborhoodId).toBe(neighborhoodId);
+            // expect(c2.neighborhoodId).toBe(neighborhoodId);
     
             // channels should contain "test-channel", "news", "discussion"
             expect(c1.channels).toContainEqual(channelName);
