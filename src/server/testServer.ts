@@ -130,7 +130,7 @@ afterAll(async () => {
     }
 });
 
-export async function testSetup() {
+export async function testSetup(neighborhood?: string) {
     const hosts: DredHostDetails[] = [
         { serverId: "first", address: "localhost", port: "53032", insecure: true },
         { serverId: "second", address: "localhost", port: "53033", insecure: true },
@@ -147,10 +147,16 @@ export async function testSetup() {
             {
                 discovery,
                 waitFor: "minimal",
+                // Always preserve StaticHostDiscovery, set neighborhood separately if needed
             },
             server.serverId,
             i
         );
+        
+        // Only set neighborhood if parameter was provided (optional behavior)
+        if (neighborhood) {
+            s.args.neighborhood = neighborhood;
+        }
  
         await s.listen();
         servers.push(s);

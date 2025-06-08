@@ -119,16 +119,24 @@ export class Replicant{
     }
 
     async initialize() {
+        this.log(`${this.name} initializing`);
         if(this.repClient !== null) {
             this.warn(`${this.name} already initialized`);
             return;
         }
+        
+        this.log(`${this.name} starting initialization`);
+        
         // creates a new DredClient
         this.repClient = this.homeServer.mkClient(this.targetHost.serverId);
         await this.repClient.generateKey();
 
+        this.log(`${this.name} client created, setting neighborhood to: '${this.homeServer.nbh}'`);
+        
         // Set the same neighborhood as the home server
-        this.repClient.setNeighborhood(this.homeServer.nbh);
+        //this.repClient.setNeighborhood(this.homeServer.nbh);
+
+        this.log(`${this.name} neighborhood set, client state: '${this.repClient.currentState}'`);
 
         // Wait for client to reach ready state and discover channels
         // do not enable this otherwise we will wait forever
@@ -140,6 +148,9 @@ export class Replicant{
         const commonChannels = await this.findCommonChannels();
 
         this.log(`${this.name} common channels: ${commonChannels.join(', ')}`);
+
+        // eslint-disable-next-line no-debugger
+        //debugger
 
         // Subscribe to common channels with replication handlers
         await this.subscribeToCommonChannels(commonChannels);
@@ -163,22 +174,40 @@ export class Replicant{
 
     private async subscribeToCommonChannels(channels: string[]): Promise<void> {
         // Create subscription map with replication handlers
+        // Add debug logging to see the neighborhood context
+        this.log(`Replication client neighborhood: '${this.repClient!.neighborhoodId}'`);
+        this.log(`Replication client current state: '${this.repClient!.currentState}'`);
+        
+        // eslint-disable-next-line no-debugger
+        debugger
+        // Use EXACTLY the same pattern as the working test
         const subscriptionMap: Record<string, (msg: any) => void> = {};
         
         for (const channel of channels) {
             subscriptionMap[channel] = async (message) => {
-                await this.handleIncomingMessage(channel, message);
+                this.log(`Received message from ${this.targetHost.serverId} in channel ${channel}: ${message.mid || 'no-mid'}`);
+                console.log(`[REPL] ${this.targetHost.serverId} -> ${this.homeServer.serverId}:`, message);
+                // Handle async processing without blocking - same as working test
+                await this.handleIncomingMessage(channel, message).catch(error => {
+                    this.warn(`Error handling message: ${error}`);
+                });
             };
         }
         
-        // Subscribe to all common channels at once
+        this.log(`About to subscribe to channels: [${channels.join(', ')}]`);
+        
+        // Use the exact same call pattern as working clients
         await this.repClient!.subscribeToChannels(subscriptionMap);
         
-        this.log(`Subscribed to ${channels.length} channels on target server ${this.targetHost.serverId}`);
+        this.log(`Successfully subscribed to ${channels.length} channels on target server ${this.targetHost.serverId}`);
     }
 
     private async handleIncomingMessage(channelId: string, message: any): Promise<void> {
         try {
+            // eslint-disable-next-line no-debugger
+            debugger
+            // this debug statement is triggered when the message is received from the target server
+
             this.log(`Received message from ${this.targetHost.serverId} in channel ${channelId}: ${message.mid || 'no-mid'}`);
             
             // Extract message details for replication
@@ -248,20 +277,21 @@ export class Replicant{
         }
     }
 
-    private async waitForClientReady(): Promise<void> {
-        return new Promise((resolve) => {
-            if (this.repClient!.currentState === 'ready') {
-                resolve();
-                return;
-            }
+    // Unused, not needed but let's keep it here for now
+    // private async waitForClientReady(): Promise<void> {
+    //     return new Promise((resolve) => {
+    //         if (this.repClient!.currentState === 'ready') {
+    //             resolve();
+    //             return;
+    //         }
             
-            this.repClient!.events.once('state:changed', (event) => {
-                if (event.status === 'ready') {
-                    resolve();
-                }
-            });
-        });
-    }
+    //         this.repClient!.events.once('state:changed', (event) => {
+    //             if (event.status === 'ready') {
+    //                 resolve();
+    //             }
+    //         });
+    //     });
+    // }
 
     private async findCommonChannels(): Promise<string[]> {
         // Trigger channel discovery if not already done
