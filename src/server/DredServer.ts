@@ -349,7 +349,10 @@ export class DredServer {
         const stream = await streams.use(channel);
 
         //!!! revisit this with a more specific plan : )
-        await streams.produce(stream, "first event in this channel", { type: "channel:genesis" });
+        await streams.produce(stream, "first event in this channel", { 
+            type: "channel:genesis",
+            ocid: `${channel}:genesis`
+        });
         const o = { channelId: channel, ...options };
         this.channelCreated(channel, o);
     }
