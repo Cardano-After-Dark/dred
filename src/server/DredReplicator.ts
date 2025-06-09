@@ -55,6 +55,9 @@ export class DredReplicator{
         console.log(`constructor: [${this.name}]`);
         this.homeServer = homeServer;
         this.discovery = discovery;
+
+        // this could be an alternative to the map
+        //this.homeServer.redis?.duplicate()
     }
 
     async initialize() {
@@ -71,7 +74,7 @@ export class DredReplicator{
         const otherHosts = hosts.filter((host) => host.serverId !== this.homeServer.serverId);
         for (const host of otherHosts) {
             // handle replication from a single target server to the home server
-            const repClient = new Replicant(this.homeServer, host);
+            const repClient = new Replicant(this, this.homeServer, host);
             await repClient.initialize();
         }
 
@@ -85,6 +88,20 @@ export class DredReplicator{
         }
         this.log(`Cleaning up ${this.name}`);
     }
+
+    // true when message with this ocid was already processed for this channel
+    public hasProcessedMessage(channelId: string, messageId: string): boolean {
+        const channelMessages = this.mapChOcid.get(channelId);
+        return channelMessages ? channelMessages.has(messageId) : false;
+    }
+
+    // mark message with this ocid as processed for this channel
+    public markMessageAsProcessed(channelId: string, messageId: string): void {
+        if (!this.mapChOcid.has(channelId)) {
+            this.mapChOcid.set(channelId, new Set<string>());
+        }
+        this.mapChOcid.get(channelId)!.add(messageId);
+    }
 }
 
 /**
@@ -97,6 +114,7 @@ export class DredReplicator{
 export class Replicant{
 
     private static _logHeader = "[REPLicant]";
+    private replicator: DredReplicator;
     private homeServer: DredServer;
     private targetHost: DredHostDetails;
     private name: string;
@@ -110,7 +128,8 @@ export class Replicant{
         this.homeServer.warn(`${Replicant._logHeader} ${message}`, ...args);
     }
 
-    constructor(homeServer: DredServer, targetHost: DredHostDetails) {
+    constructor(replicator: DredReplicator, homeServer: DredServer, targetHost: DredHostDetails) {
+        this.replicator = replicator;
         this.homeServer = homeServer;
         this.targetHost = targetHost;
         this.name = `Replicant-[${homeServer.serverId}]-[${targetHost.serverId}]`;
@@ -174,13 +193,14 @@ export class Replicant{
     }
 
     private async subscribeToCommonChannels(channels: string[]): Promise<void> {
+
         // CRITICAL DEBUG: Check connection state
         this.log(`🔍 RepClient state: '${this.repClient!.currentState}'`);
         this.log(`🔍 ConnManager state: '${this.repClient!.connManager.currentState}'`);
         
         // Wait for connection to be ready
         this.log(`🔍 Waiting for connection to be ready...`);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 100));
         this.log(`🔍 After wait - RepClient: '${this.repClient!.currentState}', ConnManager: '${this.repClient!.connManager.currentState}'`);
         
         // Create subscription map with replication handlers
@@ -188,16 +208,16 @@ export class Replicant{
         
         for (const channel of channels) {
             subscriptionMap[channel] = (message) => {
-                console.log(`🎯 REPL MESSAGE from ${this.targetHost.serverId}:`, message);
-                this.handleIncomingMessage(channel, message).catch(error => {
-                    this.warn(`Error handling message: ${error}`);
-                });
+                this.warn(` ######  about to handleIncomingMessage: ${channel} ${message.mid}`);
+                const{connection, ...core}=message;
+                // this.log(`🎯 REPL MESSAGE from ${this.targetHost.serverId}:`, core);
+                this.handleIncomingMessage(channel, message);
             };
         }
         
-        console.log(`🔍 CALLING subscribeToChannels for ${this.targetHost.serverId}`);
+        this.warn(`🔍 CALLING subscribeToChannels for ${this.targetHost.serverId}`);
         await this.repClient!.subscribeToChannels(subscriptionMap);
-        console.log(`🔍 COMPLETED subscribeToChannels for ${this.targetHost.serverId}`);
+        this.warn(`🔍 COMPLETED subscribeToChannels for ${this.targetHost.serverId}`);
         
         this.log(`Successfully subscribed to ${channels.length} channels on target server ${this.targetHost.serverId}`);
     }
@@ -214,17 +234,21 @@ export class Replicant{
             const messageId = message.mid || message.id || `${Date.now()}-${Math.random()}`;
             const ocid = message.ocid || `repl-${messageId}`;
             
-            // Prevent replication loops
-            if (message.replicatedFrom === this.homeServer.serverId) {
-                this.log(`Skipping message: originated from home server`);
-                return;
-            }
+            // // Prevent replication loops
+            // if (message.replicatedFrom === this.homeServer.serverId) {
+            //     this.log(`Skipping message: originated from home server`);
+            //     return;
+            // }
             
             // Check if we should replicate this message
+            this.log(` >>>>>>>>>>  about to call shouldReplicateMessage: ${channelId} ${messageId}`);
             if (!await this.shouldReplicateMessage(channelId, messageId)) {
+                this.log(` >>>>>>>>>>  shouldReplicateMessage returned false`);
                 return;
             }
-            
+
+            this.log(` >>>>>>>>>>  shouldReplicateMessage returned true`);
+
             // Prepare replicated message
             const replicatedMessage = {
                 msg: message.msg || message.data,
@@ -242,12 +266,17 @@ export class Replicant{
             
         } catch (error) {
             this.warn(`Error handling message from ${this.targetHost.serverId} in channel ${channelId}: ${error}`);
+            throw error;
         }
     }
 
     private async shouldReplicateMessage(channelId: string, messageId: string): Promise<boolean> {
+        this.log(` >>>>>>>>>>  shouldReplicateMessage: ${channelId} ${messageId}`);
+        
         // Check if channel still exists on home server
         const channelExists = await this.homeServer.channelList.has(channelId);
+
+        this.log(` >>>>>>>>>>  channelExists: ${channelExists} }`);
 
         // NOTE: we might have issues here, as we probably need to trigger the getChannelList() 
         // if, so, it is better to have a cache of channels and subscribe to the _chans channel
@@ -258,8 +287,15 @@ export class Replicant{
             return false;
         }
         
-        // TODO: Add deduplication logic here
-        // You might want to track recent message IDs to prevent duplicates
+        // Check if message already processed
+        if (this.replicator.hasProcessedMessage(channelId, messageId)) {
+            this.log(`Message ${messageId} already processed for channel ${channelId}, skipping replication`);
+            return false;
+        } else {
+            // Mark message as processed
+            this.replicator.markMessageAsProcessed(channelId, messageId);
+            this.log(`Tracking new message ${messageId} for channel ${channelId}`);
+        }
         
         return true;
     }
