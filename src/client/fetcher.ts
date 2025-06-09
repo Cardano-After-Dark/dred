@@ -5,6 +5,7 @@ export interface fetchOptions extends RequestInit {
     host: DredHostDetails;
     parse?: boolean;
     debug?: boolean;
+    headers?: Record<string, string>;
 }
 
 export async function fetcher(path: string, options: fetchOptions) {

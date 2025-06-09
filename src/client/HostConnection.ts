@@ -1,4 +1,4 @@
-import { autobind, StateMachine } from "@poshplum/utils";
+import { autobind, contextLogger, StateMachine, zonedLogger } from "@poshplum/utils";
 import { EventEmitter } from "eventemitter3";
 import { fromPlatformFetchBody } from "@platform/ReadableStream";
 
@@ -16,6 +16,8 @@ import { asyncDelay } from "../util/asyncDelay.js";
 import { SubscriptionListenerMap, DredChannelMessage, SubscriptionList } from "../types/ChannelSubscriptions";
 import { ndjsonStream } from "./betterJsonStream.js";
 import { DredMessage } from "./DredClient.js";
+import { Logger } from "../types/Logger.js";
+import { nanoid } from "nanoid";
 
 type conn = HostConnection;
 export interface ConnectionEvent extends DredEvent {
@@ -166,10 +168,11 @@ export class HostConnection extends StateMachine.withDefinition(
     lastError?: any;
     channelSubs: SubscriptionList;
     private stream?: ReturnType<typeof ndjsonStream>;
+    private clientid: string;
 
     private startTime = new Date().getTime();
     private scheduledRetry?: ReturnType<typeof setTimeout>;
-
+    private logger: Logger;
     private _status!: string; // assigned by state-machine
     //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
     set currentState(v: string) {
@@ -270,13 +273,18 @@ export class HostConnection extends StateMachine.withDefinition(
     constructor(
         host: DredHostDetails,
         subscriptions: SubscriptionList,
-        settings: Partial<connnectionSettings>
+        settings: Partial<connnectionSettings>,
+        clientid: string
     ) {
         super({
             contextLabel: `connection:${host.serverId}`,
             currentState: "default",
             logFacility: "connection:state",
             contextObject: null,
+        });
+        this.logger = contextLogger("hostconn", {
+            clientid,  
+            loggerId: nanoid(3),
         });
         const settingsWithDefaults: connnectionSettings = {
             retryBaseIntervalMs: 1000,
@@ -290,6 +298,7 @@ export class HostConnection extends StateMachine.withDefinition(
         this.events.on("replacedBy", ({}) => {});
         this.host = host;
         this.channelSubs = subscriptions;
+        this.clientid = clientid;
         this.connecting = this.connect();
     }
 
@@ -302,19 +311,26 @@ export class HostConnection extends StateMachine.withDefinition(
         const myself = (this.connecting = new Promise((res, rej) => {
             let aborted = false;
             const channelSubs = {};
+            this.logger.info(`connecting to server ${this.host.serverId}`)
+
             this.fetch(`/channels/listen`, {
                 body: JSON.stringify(this.channelSubs, null, 2),
                 method: "POST",
                 signal,
-                headers: { "content-type": "application/json" },
+                headers: { 
+                    "content-type": "application/json",
+                    clientid: this.clientid,
+                },
             })
                 .then((response: Response) => {
                     if (aborted) return false;
                     if (this.abortController?.signal.aborted) return false;
 
-                    //!!! todo: check to see if we shoudl reject with an empty / non-existent response here
                     if (!response) return false;
+                    // note: this callback happens only after all events seen in the stream
+                    // are processed - which may be a LONG time after the connection is established.
 
+                    //!!! todo: check to see if we should reject with an empty / non-existent response here
                     res(true);
                 })
                 .catch((e) => {
@@ -378,7 +394,15 @@ export class HostConnection extends StateMachine.withDefinition(
         //!!! todo: it includes cryptographic credentials in the connection for the server
         //    to validate.  See also todo 61pk3h0 in server
         // options.credentials = "include"; 
-        const result = await fetch(url, options);
+        const result = await fetch(url, {
+            ...options,
+            headers: {
+                ...options.headers,
+                "content-type": "application/json",
+                accept: "application/json",
+                clientid: this.clientid,
+            },
+        });
         if (debug) debugger;
 
         //! successful requests are directly resolved to the parsed json ...

@@ -1,33 +1,49 @@
 //@ts-check
-
-import { colors } from "../picocolors/picocolors.js";
-const {
-    bgBlackBright,
-    blue,
-    blueBright,
-    green,
-    greenBright,
-    red,
-    redBright,
-    yellow,
-    yellowBright,
-    isColorSupported,
-    bgBlack,
-    bgBlueBright,
-    bold,
-    black,
-} = colors;
-
-import { Redis, RedisOptions } from "ioredis";
 import { get, Server } from "http";
 import express from "express";
-import type { Application } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import compression from "compression";
 
+import { Redis, RedisOptions } from "ioredis";
+import { nanoid } from "nanoid";
+import type { Application } from "express";
+
 //@ts-expect-error
 import { RedisChannels } from "../redis/streams";
+
+
+import { colors } from "../picocolors/picocolors.js";
+const {
+    bgBlack,
+    bgBlackBright,
+    bgBlue,
+    bgBlueBright,
+    bgCyanBright,
+    bgGreen,
+    bgGreenBright,
+    bgRed,
+    bgRedBright,
+    bgYellow,
+    bgYellowBright,
+    bold,
+    dim,
+    black,
+    blackBright,
+    blueBright,
+    cyanBright,
+    gray,
+    greenBright,
+    green,
+    blue,
+    redBright,
+    red,
+    yellowBright,
+    yellow,
+    whiteBright,
+    white,
+    isColorSupported,
+} = colors;
 
 import { DredClient, DredClientArgs } from "../client/DredClient.js";
 import { RedisSet } from "../redis/RedisSet.js";
@@ -66,7 +82,7 @@ export type ChannelSubscriber = {
     stream: streamHandle;
 };
 type changeFeedUpdater = (...messages: rStreamMsg[]) => void;
-type consumerErrorNotifier = (channel: ChanId, e: Error) => void;
+type consumerErrorNotifier = (res: express.Response, channel: ChanId, e: Error) => void;
 type rChannelError = {
     channel: string;
     type: "error";
@@ -154,9 +170,12 @@ export class DredServer {
     setupExpressHandlers() {
         this.api.use(compression());
         this.api.use((req, res, next) => {
+            if (res.locals?.id) throw new Error("duplicate req processing detected");
+            const { clientid = `‹gen›` } = req.headers;
+            res.locals.clientid = `${clientid}-${nanoid(4)}`;
             res.locals.startTime = new Date().getTime();
-
-            this.log(`-> ${req.method} ${req.originalUrl}`);
+            res.locals.id = nanoid(4);
+            this.reqLogger(res).info(`-> ${req.method} ${req.originalUrl} `);
             next();
         });
 
@@ -553,8 +572,17 @@ export class DredServer {
         const now = new Date().getTime();
         const elapsed = now - res.locals.startTime;
 
-        this.log(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url} ${elapsed}ms`);
+        this.reqLogger(res).info(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url} ${elapsed}ms`);
     };
+
+    reqLogger(res: express.Response) {
+        return this.logger.child({
+            reqId: res.locals.id,
+            clientid: res.locals.clientid,
+            color: bgGreenBright.start + black.start
+        });
+    }
+
     getChannels: express.RequestHandler = async (req, res, next) => {
         const found: string[] = (await this.channelList.keys()) as string[];
         const channels = found.filter((x) => x[0] !== "_");
@@ -920,7 +948,7 @@ export class DredServer {
             next();
         };
 
-        const notifyConsumeError: consumerErrorNotifier = (channel, consumeError) => {
+        const notifyConsumeError: consumerErrorNotifier = (res, channel, consumeError) => {
             if (!cancelled) {
                 sendUpdate({
                     channel,
@@ -928,7 +956,10 @@ export class DredServer {
                     message: "internal stream consumer failed",
                     reason: consumeError.message,
                 });
-                this.logger.error(`${channel} consume error; TODO: reconnect/retry`, consumeError);
+                this.reqLogger(res).error(
+                    `${channel} consume error; TODO: reconnect/retry`,
+                    consumeError.stack || consumeError.message || consumeError,
+                );
                 cleanup();
                 next();
             }
@@ -949,7 +980,13 @@ export class DredServer {
                 });
             }
 
-            const subscriber = await this.listenOneChannel(sub, sendUpdate, notifyConsumeError);
+            this.logger.debug("  -- listening one: ", sub.channel);
+            const subscriber = await this.listenOneChannel(
+                res,
+                sub,
+                sendUpdate,
+                notifyConsumeError,
+            );
             myStreamListeners.push({ channel, stream: subscriber });
             if (subscriber) anySuccesses += 1;
         }
@@ -971,6 +1008,7 @@ export class DredServer {
     }
 
     async listenOneChannel(
+        res: express.Response,
         sub: ChannelSubOptions,
         sendUpdate: changeFeedUpdater,
         notifyConsumerError: consumerErrorNotifier
@@ -980,11 +1018,12 @@ export class DredServer {
         await this.channelConn.subscribe(channelStream);
 
         //! it spawns asynchronous monitoring in each channel
-        this.monitorChannelChanges(channelStream, sub, sendUpdate, notifyConsumerError);
+        this.monitorChannelChanges(res, channelStream, sub, sendUpdate, notifyConsumerError);
         return channelStream;
     }
 
     private async monitorChannelChanges(
+        res: express.Response,
         channelStream: streamHandle,
         sub: ChannelSubOptions,
         sendUpdate: changeFeedUpdater,
@@ -999,10 +1038,10 @@ export class DredServer {
             )) {
                 for (const e of events) {
                     const { id: mid, ocid, type, data, ...meta } = e;
-                    this.log(
+                    this.reqLogger(res).info(
                         bgBlueBright(black(bold(`    <- ocid ${ocid} in ${sub.channel}: `))),
                         e.data.length,
-                        "bytes"
+                        "bytes",
                     );
                     // eslint-disable-next-line no-debugger
                     // debugger;
@@ -1020,7 +1059,7 @@ export class DredServer {
                 }
             }
         } catch (consumeError) {
-            notifyConsumerError(sub.channel, consumeError as Error);
+            notifyConsumerError(res, sub.channel, consumeError as Error);
         }
     }
 

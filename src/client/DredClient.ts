@@ -185,7 +185,7 @@ const clientStates = {
     },
 };
 
-let instanceCount = 0;
+let instanceCount = 1;
 
 /**
  * Creates a new client instance for interacting with a Dred neighborhood.
@@ -217,27 +217,26 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     channelSub?: ChannelSubscriptionListener;
     authSub?: ChannelSubscriptionListener;
     messageHandler?: DredMessageListener;
-    instanceNumber = ++instanceCount
-
+    instanceNumber = instanceCount++
+    clientid: string;
     constructor(args: DredClientArgs) {
+        let { name: clientName } = args;
+        const clientid = (clientName || `#${instanceCount}`)+`-${nanoid(5)}`;
         super({
-            contextLabel: args.name || "dred-client",
+            contextLabel: clientName || "dred-client",
             currentState: "default",
             logFacility: `dred-client:state`,
             contextObject: null,
             logProperties: {
-                loggerId: args.name,
+                loggerId: clientid,
             },
         });
         this.args = {...args};
         this.events = this.ensureEmitterExists();
-        let { name: clientName } = args;
-
-        // clientName = clientName ? `client-‹${clientName}›` : "dred-client";
-        const clientId = clientName || `#${instanceCount}`;
+        this.clientid = clientid;
         this.logger = zonedLogger(`dred-client`, {
             color: magenta.start,
-            loggerId: clientId,
+            loggerId: clientid,
             // levels: {
             //     // [clientName]: logging ? "info" : "warn",
             //     _message: `(env LOGGING=${logging})`,
@@ -253,7 +252,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             discovery,
             waitFor: this.args.waitFor,
             connectionSettings: this.args.connectionSettings || {},
-            clientId,
+            clientid,
         });
         this.transition("default");
         //!!! make this test-only
@@ -471,7 +470,15 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         const url = `${proto}://${shortServer}${path}`;
         // console.warn(`+fetch`, options.method, shortServer, path)
 
-        const result = await fetch(url, options);
+        const result = await fetch(url, {
+            ...options,
+            headers: {
+                ...options.headers,
+                "content-type": "application/json",
+                accept: "application/json",
+                clientid: this.clientid,
+            },
+        });
         if (debug) debugger;
         if (result.ok) {
             if (!parse) return result;
@@ -588,6 +595,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
                 headers: {
                     "content-type": "application/json",
                     accept: "application/json",
+                    clientid: this.clientid,
                 },
             }).then((r) => {
                 const { id, status } = r;
@@ -637,6 +645,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
                 headers: {
                     "content-type": "application/json",
                     accept: "application/json",
+                    clientid: this.clientid,
                 },
                 body: JSON.stringify({
                     myId: this.pubKeyString,
@@ -691,6 +700,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             headers: {
                 "content-type": "application/json",
                 accept: "application/json",
+                clientid: this.clientid,
             },
         });
         if (sub) {

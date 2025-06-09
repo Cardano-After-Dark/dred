@@ -1,10 +1,7 @@
 import { autobind, StateMachine, zonedLogger } from "@poshplum/utils";
 import { EventEmitter } from "eventemitter3";
 
-import { 
-    Discovery,
-    ConnectionThresholds,
- } from "../types/Discovery.js";
+import { Discovery, ConnectionThresholds } from "../types/Discovery.js";
 import {
     ChanId,
     SubscriptionListenerMap,
@@ -17,7 +14,11 @@ import { DredHostDetails, connnectionSettings } from "../types/DredHosts.js";
 import { devMessage, DredError, DredEvent } from "../types/DredEvents.js";
 
 import { ConnectionEvent, HostConnection } from "./HostConnection.js";
-
+import { colors } from "../picocolors/picocolors.js";
+const {
+    cyan,
+    dim,
+} = colors;
 import {
     ConnectionState,
     ConnectionManagerOptions,
@@ -224,7 +225,7 @@ const connectionManagerStates = {
 
 export class ConnectionManager extends StateMachine.withDefinition(
     connectionManagerStates,
-    "connection-manager"
+    "connMgr",
 ) {
     state: ConnectionState = "pending";
     discovery: Discovery;
@@ -267,7 +268,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
         return this._status || this.defaultState;
     }
     channels?: ChanId[];
-
+    clientid: string;
     constructor(options: ConnectionManagerOptions) {
         super({
             contextLabel: "connection-manager",
@@ -275,14 +276,18 @@ export class ConnectionManager extends StateMachine.withDefinition(
             logFacility: "connection-manager:state",
             contextObject: null,
             logProperties: {
-                loggerId: options.clientId,
-            }
+                loggerId: options.clientid,
+                color: cyan.start + dim.start
+            },
         });
+        this.clientid = options.clientid;
         // //@ts-expect-error used before assignment (assigned by state-machine)
         // this._status = this._status || "";
 
-        this.logger = zonedLogger("connection-manager", {
-            loggerId: options.clientId,
+        this.logger = zonedLogger("connMgr", {
+            loggerId: options.clientid,
+            color: cyan.start + dim.start
+
         });
         this.connectionSettings = HostConnection.settingsWithDefaults(options.connectionSettings);
         this.discovery = options.discovery;
@@ -324,14 +329,19 @@ export class ConnectionManager extends StateMachine.withDefinition(
         let hostNumber = 1;
         let responses = 0;
         let completed = false;
-        let errors : Error[] = [];
+        let errors: Error[] = [];
         for (const host of this.hosts as DredHostDetails[]) {
             if (hostNumber > 2) await asyncDelay(100 * Math.pow(1.27, hostNumber));
 
             try {
-                const {channels:foundChans} = await fetcher("/channels", {
+                const { channels: foundChans } = await fetcher("/channels", {
                     host,
-                })
+                    headers: {
+                        "content-type": "application/json",
+                        accept: "application/json",
+                        clientid: this.clientid,
+                    },
+                });
                 for (const chan of foundChans) {
                     if (!channels.has(chan)) {
                         this.events.emit("channel:added", {
@@ -346,11 +356,11 @@ export class ConnectionManager extends StateMachine.withDefinition(
                     channels.add(chan);
                 }
                 return (this.channels = [...channels]);
-            } catch(e) {
-                console.warn(`host ${host.address}:${host.port}: fetching /channels failed: `, e)
+            } catch (e) {
+                console.warn(`host ${host.address}:${host.port}: fetching /channels failed: `, e);
             }
         }
-        return []
+        return [];
     }
 
     // async getPeers(): PromisedPeers<T> {
@@ -373,13 +383,15 @@ export class ConnectionManager extends StateMachine.withDefinition(
     async setSubscriptions(subs: SubscriptionListenerMap) {
         if (this.channelSubs) return this.replaceSubscriptions(subs);
 
+        this.logger.info("setSubscriptions: setting first channel subscriptions", Object.keys(subs));
         this.channelSubs = subs;
         if (!this.hosts) {
             if (this.discovery.hosts?.length) {
                 this.hosts = this.discovery.hosts;
             } else {
-                console.log("setSubscriptions: waiting for hosts:ready from discovery");
+                this.logger.info("setSubscriptions: waiting for hosts:ready from discovery");
                 await new Promise((resolve) => this.discovery.events.once("hosts:ready", resolve));
+                this.logger.info("setSubscriptions: discovery: hosts:ready - excellent!");
             }
         }
         this.connectToHosts();
@@ -387,6 +399,10 @@ export class ConnectionManager extends StateMachine.withDefinition(
     }
 
     async replaceSubscriptions(subs: SubscriptionListenerMap) {
+        const chans = Object.keys(subs)
+        this.logger.debug("replaceSubscriptions: replacing host connections with %d new subscriptions", chans.length);
+        this.logger.trace("new subscriptions:", chans);
+
         this.lastChannelSubs = this.channelSubs;
         this.channelSubs = subs;
 
@@ -435,7 +451,8 @@ export class ConnectionManager extends StateMachine.withDefinition(
         for (const sub of Object.values(this.channelSubs)) {
             subscriptions.push(sub.options)
         }
-        const conn = new HostConnection(host, subscriptions, this.connectionSettings);
+        if (!this.clientid) throw new Error("missing clientid");
+        const conn = new HostConnection(host, subscriptions, this.connectionSettings, this.clientid);
         conn.events.on("connected", this.healthyConnection);
 
         conn.events.on("disconnected", this.cleanupConnection);

@@ -27,7 +27,7 @@ import { ConnectionThresholds, Discovery } from "./Discovery.js";
 // }
 
 export type ConnectionManagerOptions = {
-    clientId: string;
+    clientid: string;
     discovery: Discovery;
     waitFor: ThresholdChoice,
     connectionSettings: Partial<connnectionSettings>
