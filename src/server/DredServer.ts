@@ -129,6 +129,7 @@ const optionsSerializer: ValueAdapter<ChannelOptions> = {
 };
 
 type DredServerArgs = DredClientArgs & {
+    neighborhood: string;
     api?: express.Application;
     serverDb?: number;
 };
@@ -513,6 +514,7 @@ export class DredServer {
             // name: `${serverSelection || ""}-${clientIndex++}`,
             ...this.clientArgs,
             ...clientArgs,
+            neighborhood: this.nbh,
             discovery: singleDiscovery,
         });
     }

@@ -35,6 +35,7 @@ export abstract class Discovery implements discovery {
     logger = contextLogger("discovery")
     constructor(options : GenericDiscoveryOptions) {
         const {neighborhood} = options
+        this.nbh = "";
         if (neighborhood) this.setNeighborhood(neighborhood);
 
         //! it prevents subclasses from overriding restartHostDiscovery() logic; see initHostDiscovery() instead.
@@ -79,7 +80,7 @@ export abstract class Discovery implements discovery {
     }
     setNeighborhood(nbh : NbhId) {
         this.nbh = nbh;
-        this.logger.info(`setting neighborhood ${nbh} - `+new Error("called by...").stack);
+        this.logger.info(`setting neighborhood ${nbh} - no `+new Error("called by...").stack);
         this.restartHostDiscovery();
         return this;
     }

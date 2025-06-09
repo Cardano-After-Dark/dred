@@ -154,34 +154,32 @@ afterAll(async () => {
     }
 });
 
-export async function testSetup(neighborhood?: string) {
+export async function testSetup() {
     const hosts: DredHostDetails[] = [
         { serverId: "first", address: "localhost", port: "53032", insecure: true },
         { serverId: "second", address: "localhost", port: "53033", insecure: true },
         { serverId: "third", address: "localhost", port: "53034", insecure: true },
     ];
     let i = 0;
+    const neighborhood = "dredTestNbh";
     for (const server of hosts) {
         //! creates a separate discovery agent for each server; each one uses the same full list of hosts.
         const discovery = new StaticHostDiscovery({
             hosts,
+            neighborhood,
         }).reset(hosts);
         i++;
         const s = await createServer(
             {
                 discovery,
                 waitFor: "minimal",
+                neighborhood: neighborhood,
                 // Always preserve StaticHostDiscovery, set neighborhood separately if needed
             },
             server.serverId,
             i
         );
-        
-        // Only set neighborhood if parameter was provided (optional behavior)
-        if (neighborhood) {
-            s.args.neighborhood = neighborhood;
-        }
- 
+         
         await s.listen();
         servers.push(s);
     }

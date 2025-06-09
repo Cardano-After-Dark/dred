@@ -21,7 +21,10 @@ describe("Dred client", () => {
     describe("discovery", () => {
         it("can resolveDiscovery", async () => {
             const result = await DredClient.resolveDiscovery({
-                discovery: new StaticHostDiscovery({})
+                discovery: new StaticHostDiscovery({
+                    neighborhood: server.nbh,
+                }),
+                neighborhood: server.nbh
             });
         });
     });

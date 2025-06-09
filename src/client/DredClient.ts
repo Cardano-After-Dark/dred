@@ -100,9 +100,9 @@ export interface ClientEvents {
 }
 
 export interface DredClientArgs {
-    neighborhood?: NbhId;
-    discovery?: Discovery;
     waitFor: keyof ConnectionThresholds;
+    neighborhood: NbhId;
+    discovery?: Discovery;
     name?: string;
     connectionSettings?: Partial<connnectionSettings>;
 }
@@ -122,7 +122,6 @@ const clientStates = {
     default: {
         //! it automatically advances to next states, when it can make progress
         async onEntry(this: dred) {
-            if (!this.args) debugger
             if (this.args.neighborhood) return this.transition("nbhSelected");
             return this.transition("findNbhs");
         },
@@ -167,7 +166,7 @@ const clientStates = {
             this.channels = chans;
             await this.transition("hasChannels");
             this.events.emit("hasChannels", {
-                nbh: this.neighborhoodId,
+                nbh: this.neighborhood,
                 message: "found channel list",
                 channels: chans,
                 [devMessage]: [
@@ -203,7 +202,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     events: EventEmitter<ClientEvents, any> = this.ensureEmitterExists();
     connManager: ConnectionManager;
     channels: ChanId[] = [];
-    neighborhoodId: string = "cardano-after-dark";
+    neighborhood: string // = "cardano-after-dark";
     availableNeighborhoods: string[] = [];
     // neighborhoodContractAddress = "9bef...";
     discovery: Discovery;
@@ -220,7 +219,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     instanceNumber = instanceCount++
     clientid: string;
     constructor(args: DredClientArgs) {
-        let { name: clientName } = args;
+        let { name: clientName, neighborhood } = args;
         const clientid = (clientName || `#${instanceCount}`)+`-${nanoid(5)}`;
         super({
             contextLabel: clientName || "dred-client",
@@ -231,6 +230,8 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
                 loggerId: clientid,
             },
         });
+        if (!neighborhood) throw new Error("neighborhood is required");
+        this.neighborhood = neighborhood 
         this.args = {...args};
         this.events = this.ensureEmitterExists();
         this.clientid = clientid;
@@ -271,7 +272,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
     logInfo(): string {
         const clientName = this.args.name || "unnamed";
-        const neighborhood = this.neighborhoodId;
+        const neighborhood = this.neighborhood;
         const availableNeighborhoods = this.availableNeighborhoods.join(", ") || "none";
         const channels = this.channels.join(", ") || "none";
         const status = this._status || "unknown";
@@ -297,7 +298,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     }
 
     setNeighborhood(n: NbhId) {
-        this.neighborhoodId = n;
+        this.neighborhood = n;
         asyncDelay(1).then(this.mkTransition("nbhSelected"));
     }
 
@@ -348,6 +349,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         neighborhood,
         discovery,
     }: Pick<DredClientArgs, "neighborhood" | "discovery">): Discovery {
+        if (discovery) return discovery;
         if (neighborhood) discovery = new NeighborhoodDiscovery({ neighborhood });
         if (!discovery) throw new Error(`required: 'discovery' object or 'neighborhood' name`);
 
@@ -372,7 +374,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             message: "client state updated",
             [devMessage]:
                 "no need to show this message onscreen; just update channel-list or status as needed",
-            nbh: this.neighborhoodId,
+            nbh: this.neighborhood,
             status: this._status,
             channels: this.channels,
         });
@@ -441,7 +443,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     //! it doesn't require client applications to guard for memory / event-listener leakage
     mkChannelSub(channel: string, listener: DredMessageListener): ChannelSubscriptionListener {
         const sub = new ChannelSubscriptionListener({
-            neighborhood: this.neighborhoodId,
+            neighborhood: this.neighborhood,
             channel,
             listener,
         });

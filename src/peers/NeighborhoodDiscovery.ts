@@ -15,8 +15,7 @@ export class NeighborhoodDiscovery extends Discovery {
         return ["cardano-after-dark"]; //!!! todo: use discovery service to find registered neighborhoods
     }
     async getHostList(): findingDredHosts {
-        console.warn(`Discovery in neighborhood has no impl yet.  Try DevEnvLocalDiscovery for now`);
-        return [];
+        throw new Error(`Discovery in neighborhood has no impl yet.  Try StaticHostDiscovery for now`);
     }
 
     async getConnectionThresholds() : promisedConnectionThresholds {

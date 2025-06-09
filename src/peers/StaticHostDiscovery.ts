@@ -19,7 +19,15 @@ export class StaticHostDiscovery extends Discovery {
     hosts: DredHostDetails[];
     async getNeighborhoods() {
         await asyncDelay(1);
-        return [ localNbh ];
+        return [localNbh, this.nbh].filter(Boolean);
+    }
+
+    /**
+     * overrides the base class to prevent triggering unneeded re-discovery of static hosts
+     */
+    setNeighborhood(nbh: NbhId) {
+        this.nbh = nbh;
+        return this;
     }
 
     // getPubKeyFromFs(port:number): string { //Uint8Array
@@ -56,13 +64,10 @@ export class StaticHostDiscovery extends Discovery {
     setupDefaultHosts() {
         return this.reset((this.constructor as typeof StaticHostDiscovery).defaultHosts());
     }
-    constructor(options : DevDiscoveryOptions) {
-    const {
-        neighborhood, hosts
-    } = options;
-        if (neighborhood) throw new Error(`DevEnvLocalDiscovery always uses `+localNbh)
+    constructor(options: DevDiscoveryOptions) {
+        const { neighborhood, hosts } = options;
         super({ neighborhood: localNbh });
-        this.hosts = hosts || (StaticHostDiscovery.defaultHosts())
+        this.hosts = hosts || StaticHostDiscovery.defaultHosts();
     }
     async initHostDiscovery() {
         this.setupDefaultHosts();
@@ -72,7 +77,8 @@ export class StaticHostDiscovery extends Discovery {
         return { localDevHosts: this.hosts };
     }
     async getHostList() {
-        if (!this.hosts) throw new Error(`call setupDefaultHosts()`);
+        if (!this.hosts)
+            throw new Error(`call setupDefaultHosts() or provide hosts in constructor`);
         await asyncDelay(1);
         return this.hosts;
     }
