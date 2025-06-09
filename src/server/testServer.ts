@@ -14,9 +14,11 @@ const {
     redBright,
     yellow,
     yellowBright,
+
     isColorSupported,
     bgBlack,
     magenta,
+    magentaBright
 } = colors;
 
 import { Express } from "express";
@@ -47,16 +49,24 @@ let servers: DredServer[] = [];
 let server: DredServer; // a single server that tests can push stuff through by default
 let clientCleanupList: Array<DredClient> = [];
 
+const rootLogger = zonedLogger("root");
 const monitor = process.env.REDIS_MONITOR ? new Redis(6379, "localhost", { db: 9 }) : undefined;
 if (!monitor) {
     console.log("NOTE: to enable granular monitoring of redis activity, set REDIS_MONITOR=1");
 }
-zonedLogger("root");
 
 // export loggers for use in tests
-export const logger = zonedLogger("redis", {
-    color: blue.start+bgBlack.start,
-    loggerId: "monitor",
+export const redisLogger1 = zonedLogger("redis", {
+    color: blueBright.start+bgBlack.start,
+    loggerId: "mon1",
+});
+export const redisLogger2 = zonedLogger("redis", {
+    color: greenBright.start+bgBlack.start,
+    loggerId: "mon2",
+});
+export const redisLogger3 = zonedLogger("redis", {
+    color: magentaBright.start+bgBlack.start,
+    loggerId: "mon3",
 });
 export const testLogger = zonedLogger("test", {color: yellow.start, levels: {default: "info"}});
 
@@ -65,9 +75,14 @@ beforeAll(async () => {
     console.log("isColorSupported", isColorSupported);
     await monitor?.monitor((err, monitor) => {
         monitor!.on("monitor", (time, args, source, database) => {
-            const offset = (time - startTime).toFixed(5);
+            const now = Date.now()
+            const [s, ms6] = time.split(".")
+            const ms3 = Math.round(parseInt(ms6.slice(0, 4))/10)
+            const didHappenAt = parseInt(s)*1000 + ms3
+            const offset = (didHappenAt - now)
+            const offsetStr = offset < 0 ? redBright(`${offset}ms `): ""
             const [ip, port] = source.split(":");
-            let argsDisplay = "";
+            let argsDisplay = ""
             // process args two at a time, adding blue(keys) and green(values) with strings quoted
             for (let i = 0; i < args.length; i += 2) {
                 const value =
@@ -78,9 +93,13 @@ beforeAll(async () => {
                         : greenBright(args[i + 1]);
                 argsDisplay += ` ${`${args[i]}`} ${value}`;
             }
-            logger.warn(
-                `      ` +
-                    ` @t=${offset} :${port} -> REDIS #${database}> ${argsDisplay}`
+            const logger = {
+                1: redisLogger1,
+                2: redisLogger2,
+                3: redisLogger3,
+            }[parseInt(database)]!.child({time: didHappenAt});
+            logger.trace(
+                `${offsetStr} :${port}>${argsDisplay}`
             );
         });
     });

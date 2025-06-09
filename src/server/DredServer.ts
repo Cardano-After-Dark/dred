@@ -281,6 +281,13 @@ export class DredServer {
         );
         this.channelOptions = new RedisHash(this.redis, "channelOptions", optionsSerializer);
 
+        const log = zonedLogger("dred-stream", {
+            loggerId: this.serverId,
+            // color: black.start +bgCyanBright.start// green.start
+            // color: green.start
+            color: bgBlack.start + white.start
+        });
+
         //!!! todo: allows the application name to override 'dred' setting in channel names created in Redis
         this.channelConn = new RedisChannels({
             application: `${this.nbh}::`,
@@ -290,7 +297,6 @@ export class DredServer {
             },
             channels: { log: this.logger },
         });
-        this.channelConn._log = this.logger;
         this.ensureDefaultChannels();
     }
 

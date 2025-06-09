@@ -53,7 +53,7 @@ import {
     defaultOriginType,
 } from "./constants.js";
 
-import  { RedisChannelsError }  from "./errors";
+import  { RedisChannelsError }  from "./errors.js";
 
 function redisFieldsToHash(a) {
     //! converts a flat list of keys into a hash of the keys & primitive values.
@@ -113,9 +113,9 @@ export class RedisChannels {
         this._consumerIsGennerated = true;
 
         if (typeof channels[opt.LOG] === "undefined") {
-            this._log = { ...abstractLoggingInterface }
+            this.logger = { ...abstractLoggingInterface }
         } else {
-            this._log = channels[opt.LOG];
+            this.logger = channels[opt.LOG];
         }
 
         if (
@@ -182,6 +182,12 @@ export class RedisChannels {
                 0 +
                 sep.CLOSE;
         }
+        this.logger.debug("created dred streamer", {
+            sharded: this._sharded,
+            overflow: this._overflow,
+            slots: this._slots,
+            prefix: this._prefix
+        })
     }
 
     /*
@@ -266,7 +272,7 @@ export class RedisChannels {
 
             return {[tun.KEY]: keyStream };
         } catch (error) {
-            this._log.error("Use error: %o", error);
+            this.logger.error("Use error: %o", error);
             throw new RedisChannelsError(
                 "Can not call use for a group : " +
                     group +
@@ -286,6 +292,10 @@ export class RedisChannels {
     async delete(group) {
         try {
             let keyStream = this._prefix + sep.STREAM + group;
+            this.logger.debug("deleting group", {
+                group,
+                keyStream
+            })
             if (this._sharded === false) {
                 // Unsubscribe all related consumers
                 for (const i in this._consumers) {
@@ -316,7 +326,7 @@ export class RedisChannels {
             await this._nonBlockRedisClient.hdel([this._keyHash, group]);
             await this._nonBlockRedisClient.zincrby([this._keyZset, -1, slot]);
         } catch (error) {
-            this._log.error("Delete error: %o", error);
+            this.logger.error("Delete error: %o", error);
             throw new RedisChannelsError(
                 "Can not delete  a group : " +
                     group +
@@ -350,6 +360,11 @@ export class RedisChannels {
     // --------------------------------------------------------------------------|
     async subscribe(tunnel, team, consumer) {
         try {
+            this.logger.debug(" -- subscribing", {
+                tunnel,
+                team,
+                consumer
+            })
             if (
                 typeof tunnel === "undefined" ||
                 typeof tunnel[tun.KEY] === "undefined"
@@ -373,16 +388,19 @@ export class RedisChannels {
                 this._workInTeam = true;
             }
 
+            const consumerGroup = tunnel[tun.TEAM]
             // Tries to create a consumer group and a stream if not exists.
             try {
                 // We need to create a stream even we do not need a group.
+                this.logger.debug(" -- ensuring stream exists", tunnel[tun.KEY]);
                 await this._nonBlockRedisClient.xgroup([
                     "CREATE",
                     tunnel[tun.KEY],
-                    tunnel[tun.TEAM],
+                    consumerGroup,
                     "$",
                     "MKSTREAM",
                 ]);
+                this.logger.debug(`  -- dropping temp group for ${consumerGroup} `)
                 await this._deleteRedisConsumerAndGroup(tunnel);
             } catch {}
 
@@ -392,7 +410,7 @@ export class RedisChannels {
                 this._consumers[tunnel[tun.CONSUMER]] = tunnel;
             }
         } catch (error) {
-            this._log.error("Subscribe error: %o", error);
+            this.logger.error("Subscribe error: %o", error);
             throw error;
         }
     }
@@ -405,6 +423,13 @@ export class RedisChannels {
     // --------------------------------------------------------------------------|
     async unsubscribe(tunnel) {
         try {
+            this.logger.debug(" -- unsubscribing", {
+                tunnel: {
+                    key: tunnel[tun.KEY],
+                    team: tunnel[tun.TEAM],
+                    consumer: tunnel[tun.CONSUMER]
+                }
+            })
             if (
                 typeof tunnel === "undefined" ||
                 typeof tunnel[tun.TEAM] === "undefined" ||
@@ -425,6 +450,12 @@ export class RedisChannels {
                 _consumer: consumer,
             };
             const f = hashToRedisFields(fields)
+            this.logger.debug(" -- adding redundant unsubscribe message", {
+                key: tunnel[tun.KEY],
+                team,
+                consumer,
+                fields
+            })
             await this._nonBlockRedisClient.xadd([
                 tunnel[tun.KEY],
                 "MAXLEN",
@@ -434,9 +465,9 @@ export class RedisChannels {
                 ...f
             ]);
         } catch (error) {
-            this._log.error("Unsubscribe error: %o", error);
+            this.logger.error("Unsubscribe error: %o", error);
             if (this.closing) {
-                this._log.error(" ... ^^ after channels shutdown");
+                this.logger.error(" ... ^^ after channels shutdown");
                 return
             }
             if (error instanceof RedisChannelsError) {
@@ -493,10 +524,10 @@ export class RedisChannels {
             ]);
             return id;
         } catch (error) {
-            this._log.error("Produce error:", error.stack || error.message || JSON.stringify(error));
-            this._log.error(" ... while sending message", message);
+            this.logger.error("Produce error:", error.stack || error.message || JSON.stringify(error));
+            this.logger.error(" ... while sending message", message);
             if (this.closing) {
-                this._log.error(" ... ^^ after channels shutdown");
+                this.logger.error(" ... ^^ after channels shutdown");
                 return
             }
             debugger
@@ -582,6 +613,18 @@ export class RedisChannels {
         messageOnTimeOut = false
     ) {
         try {
+            this.logger.debug(" -- consuming", {
+                tunnel: {
+                    key: tunnel[tun.KEY],
+                    team: tunnel[tun.TEAM],
+                    consumer: tunnel[tun.CONSUMER]
+                },
+                targetType,
+                count,
+                timeout,
+                fromId,
+                messageOnTimeOut
+            })
             let unsubscribing = false;
             let currentId = fromId;
             let lastId;
@@ -727,7 +770,7 @@ export class RedisChannels {
             if (this.closing) {
                 return
             }
-            this._log.error("Consume error: %o", error);
+            this.logger.error("Consume error: %o", error);
             throw new RedisChannelsError(
                 "Can not consume from the tunnel: " +
                     tunnel[tun.KEY] +
@@ -760,9 +803,13 @@ export class RedisChannels {
     // --------------------------------------------------------------------------|
     async cleanup() {
         this.closing = true
+        this.logger.debug(" -- cleaning up", {
+            workInTeam: this._workInTeam,
+            consumers: Object.keys(this._consumers).length
+        })
         for (const i in this._consumers) {
             if (this._workInTeam) {
-            await this._deleteRedisConsumerAndGroup(this._consumers[i], true);
+                await this._deleteRedisConsumerAndGroup(this._consumers[i], true);
             }
             // shutdown shouldn't need to do any special connection cleanup like quit()
             // so it's okay to just disconnect.
@@ -787,6 +834,12 @@ export class RedisChannels {
         try {
             // Deletes a consumer and a consumer group
             if (this._workInTeam === false || force) {
+                this.logger.debug(" -- deleting consumer and group", {
+                    key: tunnel[tun.KEY],
+                    team: tunnel[tun.TEAM],
+                    consumer: tunnel[tun.CONSUMER],
+                    force,
+                })
                 // this stuff is all extraneous unless there is "team" behavior happening.
                 await this._nonBlockRedisClient.xgroup([
                     "DELCONSUMER",
@@ -831,11 +884,15 @@ export class RedisChannels {
     // --------------------------------------------------------------------------|
     async _initShardScores() {
         try {
+            this.logger.warn(" -- initializing shard scores shouldn't be needed for Dred use-cases", {
+                keyZset: this._keyZset,
+                slots: this._slots
+            })
             for (let i = 0; i < this._slots; i++) {
                 await this._nonBlockRedisClient.zincrby([this._keyZset, 0, i]);
             }
         } catch (error) {
-            this._log.error("_initShardScores error: %o", error);
+            this.logger.error("_initShardScores error: %o", error);
             throw new RedisChannelsError(
                 "Can not initialize shards score for the channels",
                 error
@@ -868,6 +925,7 @@ export class RedisChannels {
 
     // --------------------------------------------------------------------------|
     _duplicateRedisClient() {
+        this.logger.debug("   -- duplicating redis client");
         const redis = this._nonBlockRedisClient.duplicate();
         redis.addListener("error", () => {
             // Disable all errors.
