@@ -165,15 +165,7 @@ const clientStates = {
             const chans = await this.connManager.getChannelList();
             this.channels = chans;
             await this.transition("hasChannels");
-            this.events.emit("hasChannels", {
-                nbh: this.neighborhood,
-                message: "found channel list",
-                channels: chans,
-                [devMessage]: [
-                    `The list of channels is ready to present to users, or has been refreshed.`,
-                    `You should reconcile any application-side list of subscribed channels`,
-                ],
-            });
+            this.emitHasChannels()
         },
         hasChannels: "ready",
     },
@@ -345,6 +337,18 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         // debugger
     }
 
+    emitHasChannels() {
+        this.events.emit("hasChannels", {
+            nbh: this.neighborhood,
+            message: "found channel list",
+            channels: this.channels,
+            [devMessage]: [
+                `The list of channels is ready to present to users, or has been refreshed.`,
+                `You should reconcile any application-side list of subscribed channels`,
+            ],
+        });
+    }
+    
     static resolveDiscovery({
         neighborhood,
         discovery,
