@@ -12,7 +12,6 @@ import type { Application } from "express";
 //@ts-expect-error
 import { RedisChannels } from "../redis/streams";
 
-
 import { colors } from "../picocolors/picocolors.js";
 const {
     bgBlack,
@@ -278,7 +277,7 @@ export class DredServer {
         this.channelList = new RedisHash<string, string>(
             this.redis,
             "channels",
-            StringValueAdapter
+            StringValueAdapter,
         );
         this.channelOptions = new RedisHash(this.redis, "channelOptions", optionsSerializer);
 
@@ -289,7 +288,7 @@ export class DredServer {
                 url: url,
                 db: this.redisDb,
             },
-            channels: {log: this.logger }
+            channels: { log: this.logger },
         });
         this.channelConn._log = this.logger;
         this.ensureDefaultChannels();
@@ -313,7 +312,7 @@ export class DredServer {
             await this.doChannelSetup("_auth");
             await this.doChannelSetup("news");
             await this.doChannelSetup("discussion");
-            
+
             this.setupPending = undefined;
             res(true);
         }));
@@ -328,12 +327,14 @@ export class DredServer {
         const streams = this.channelConn;
         if (!streams) {
             if (this.resetting) {
-                this.logger.warn("ignoring continuing channel setup for %s while racing with a subsequent reset!")
-                return 
+                this.logger.warn(
+                    "ignoring continuing channel setup for %s while racing with a subsequent reset!",
+                );
+                return;
             } else {
                 this.logger.error(
                     "??? how can this happen?? streams undefined, can't use(%s) for producing",
-                    channel
+                    channel,
                 );
                 throw new Error(`streams undefined, can't use(${channel}) for producing`);
             }
@@ -357,8 +358,6 @@ export class DredServer {
         //  await this.setupReplication();
         // this.setupReplication();
 
-        
-
         const myInfo = (this.myServerInfo =
             this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));
         if (!myInfo) throw new Error(`can't identify my own info`);
@@ -372,9 +371,9 @@ export class DredServer {
     }
 
     async setupReplication() {
-        if(this.replicator) {
+        if (this.replicator) {
             this.warn("Replication already setup");
-            return;// Idempotent - safe to call multiple times
+            return; // Idempotent - safe to call multiple times
         }
         try {
             await asyncDelay(1000);
@@ -384,7 +383,7 @@ export class DredServer {
 
             // const hosts = await this.discovery.getHostList();
             // const otherHosts = hosts.filter(host => host.serverId !== this.serverId);
-            
+
             // if (otherHosts.length === 0) {
             //     this.log("No other hosts found for replication");
             //     return;
@@ -408,14 +407,14 @@ export class DredServer {
     }
 
     async cleanupReplication(): Promise<void> {
-        if(!this.replicator) {
+        if (!this.replicator) {
             this.warn("Replication not setup");
             return; // Idempotent - safe to call multiple times
         }
         try {
             await this.replicator.cleanup();
             this.log("Replication client cleanup complete");
-    
+
             // await this.replicationClient.cleanup();
             // this.replicationClient = undefined;
         } catch (error) {
@@ -428,7 +427,7 @@ export class DredServer {
 
     async reset(reconnect?: boolean, finalCleanup?: (r?: Redis) => any) {
         this.log("server: reset()");
-        
+
         // Cleanup replication client first
         await this.cleanupReplication();
 
@@ -445,8 +444,8 @@ export class DredServer {
         const doReconnect = reconnect ?? true;
         if (doReconnect) {
             this.setupRedis(this.redisUrl);
-            this.resetting = false;                
-            return this.setupPending
+            this.resetting = false;
+            return this.setupPending;
         }
         function warning(this: DredServer, activityName) {
             return (e) => {
@@ -457,10 +456,10 @@ export class DredServer {
 
     async close() {
         this.cancelSubscribers();
-        
+
         // Cleanup replication client
         await this.cleanupReplication();
-        
+
         this.reset(false);
         this.listener?.close();
     }
@@ -480,14 +479,17 @@ export class DredServer {
     }
 
     // create client and wait for key generation.
-    async mkClientAndGenerateKey(serverSelection: string, clientArgs: Partial<DredClientArgs> = {}): Promise<DredClient> {
+    async mkClientAndGenerateKey(
+        serverSelection: string,
+        clientArgs: Partial<DredClientArgs> = {},
+    ): Promise<DredClient> {
         const client = this.mkClient(serverSelection, clientArgs);
         await client.generateKey();
         return client;
     }
 
     // consider automatically generating a key
-    // we could add this to everything calling here. 
+    // we could add this to everything calling here.
     mkClient(serverSelection: string, clientArgs: Partial<DredClientArgs> = {}): DredClient {
         const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
         if (!discovery) throw new Error("discovery is required");
@@ -519,15 +521,15 @@ export class DredServer {
     async logInfo(): Promise<string> {
         const serverId = this.serverId;
 
-        /** 
-         * FIXME: we cannot get the neighborhood here, 
-         * because the neighborhood is set statically, 
-         * and it does not respond to change. 
-         * 
+        /**
+         * FIXME: we cannot get the neighborhood here,
+         * because the neighborhood is set statically,
+         * and it does not respond to change.
+         *
          * NOTE: we should get correct neighborhood to have proper logInfo
          */
         const neighborhood = this.nbh || "cardano-after-dark";
-        
+
         // Get server address and port info
         let serverAddress = "unknown";
         let serverPort = "unknown";
@@ -540,8 +542,8 @@ export class DredServer {
         let channelsList = "none";
         try {
             // get channel names directly from redis?
-            const channels = await this.channelList.keys() as string[];
-            const publicChannels = channels.filter(ch => ch[0] !== '_');
+            const channels = (await this.channelList.keys()) as string[];
+            const publicChannels = channels.filter((ch) => ch[0] !== "_");
             channelsList = publicChannels.join(", ") || "none";
         } catch (error) {
             channelsList = "error retrieving channels";
@@ -550,20 +552,20 @@ export class DredServer {
         // Get discovery hosts info
         let discoveryHosts = "unknown";
         if (this.discovery && this.discovery.hosts) {
-            const hosts = this.discovery.hosts.map(h => `${h.serverId}@${h.address}:${h.port}`);
+            const hosts = this.discovery.hosts.map((h) => `${h.serverId}@${h.address}:${h.port}`);
             discoveryHosts = hosts.join(", ");
         }
 
         const logMessage = [
-            `DredServer - ID, Status : ${serverId}, ${this.listener ? 'running' : 'stopped'} `, 
-            `  - Server Address:Port : ${serverAddress}:${serverPort}`, 
+            `DredServer - ID, Status : ${serverId}, ${this.listener ? "running" : "stopped"} `,
+            `  - Server Address:Port : ${serverAddress}:${serverPort}`,
             `  - Redis URL, DB       : ${this.redisUrl}, ${this.redisDb}`,
             `  - Discovery Hosts     : [${discoveryHosts}]`,
             `  - Neighborhood        : ${neighborhood}`,
             `  - Available Channels  : [${channelsList}]`,
             `  - Active Subscribers  : ${this.subscribers.size}`,
-            ``
-        ].join('\n');
+            ``,
+        ].join("\n");
 
         return logMessage;
     }
@@ -572,14 +574,16 @@ export class DredServer {
         const now = new Date().getTime();
         const elapsed = now - res.locals.startTime;
 
-        this.reqLogger(res).info(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url} ${elapsed}ms`);
+        this.reqLogger(res).info(
+            `<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url} ${elapsed}ms`,
+        );
     };
 
     reqLogger(res: express.Response) {
         return this.logger.child({
             reqId: res.locals.id,
             clientid: res.locals.clientid,
-            color: bgGreenBright.start + black.start
+            color: bgGreenBright.start + black.start,
         });
     }
 
@@ -694,9 +698,9 @@ export class DredServer {
         });
 
         // Notify replication client about new channel
-        if (this.replicationClient) {
-            await this.replicationClient.onChannelCreated(channel);
-        }
+        // if (this.replicationClient) {
+        //     await this.replicationClient.onChannelCreated(channel);
+        // }
     }
 
     async getChanOptions(channelName: string): Promise<ChannelOptions> {
@@ -726,7 +730,7 @@ export class DredServer {
         if (opts.expiresAt && now > opts.expiresAt) {
             this.warn(`Join failed: Channel ${channelId} is expired`);
             this.log(
-                `expiration '${opts.expiresAt.getTime() % 100000}, now '${now.getTime() % 100000}`
+                `expiration '${opts.expiresAt.getTime() % 100000}, now '${now.getTime() % 100000}`,
             );
             res.status(422).json({
                 error: "this channel's expiresAt is already past",
@@ -1011,7 +1015,7 @@ export class DredServer {
         res: express.Response,
         sub: ChannelSubOptions,
         sendUpdate: changeFeedUpdater,
-        notifyConsumerError: consumerErrorNotifier
+        notifyConsumerError: consumerErrorNotifier,
     ) {
         //! it leverages the redis-streams module's cache of per-channel connections
         const channelStream = await this.channelConn.use(sub.channel);
@@ -1027,14 +1031,14 @@ export class DredServer {
         channelStream: streamHandle,
         sub: ChannelSubOptions,
         sendUpdate: changeFeedUpdater,
-        notifyConsumerError: consumerErrorNotifier
+        notifyConsumerError: consumerErrorNotifier,
     ) {
         try {
             for await (const events of this.channelConn.consume(
                 channelStream,
                 "all",
                 10,
-                this.subscribeTimeout
+                this.subscribeTimeout,
             )) {
                 for (const e of events) {
                     const { id: mid, ocid, type, data, ...meta } = e;
@@ -1062,7 +1066,6 @@ export class DredServer {
             notifyConsumerError(res, sub.channel, consumeError as Error);
         }
     }
-
 }
 
 export async function createServer(options: DredServerArgs, serverId: string, serverDb: number) {
