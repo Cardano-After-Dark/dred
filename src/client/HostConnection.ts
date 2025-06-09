@@ -13,7 +13,11 @@ import {
     devMessage,
 } from "../types/DredEvents.js";
 import { asyncDelay } from "../util/asyncDelay.js";
-import { SubscriptionListenerMap, DredChannelMessage, SubscriptionList } from "../types/ChannelSubscriptions";
+import {
+    SubscriptionListenerMap,
+    DredChannelMessage,
+    SubscriptionList,
+} from "../types/ChannelSubscriptions";
 import { ndjsonStream } from "./betterJsonStream.js";
 import { DredMessage } from "./DredClient.js";
 import { Logger } from "../types/Logger.js";
@@ -62,6 +66,7 @@ const connectionStates = {
         reconnect: {
             nextState: "connecting",
             effect(this: conn) {
+                this.connecting = undefined;
                 this.connect();
             },
         },
@@ -157,7 +162,7 @@ const connectionEvents = {
 };
 export class HostConnection extends StateMachine.withDefinition(
     connectionStates,
-    "connection-manager"
+    "hostconn",
 ) {
     static emitterHelp = connectionEvents;
     events = new EventEmitter<HostConnectionEventTypes, any>();
@@ -258,7 +263,7 @@ export class HostConnection extends StateMachine.withDefinition(
             ],
         });
     }
-    connecting: Promise<any | never>;
+    connecting: Promise<any | never> | undefined;
     static settingsWithDefaults(
         partialSettings: Partial<connnectionSettings>
     ): connnectionSettings {
@@ -303,6 +308,8 @@ export class HostConnection extends StateMachine.withDefinition(
     }
 
     async connect(): Promise<any | never> {
+        if (this.connecting) return this.connecting;
+
         this.abortController = new AbortController();
         const { signal } = this.abortController;
         signal.addEventListener("abort", () => {
@@ -346,6 +353,7 @@ export class HostConnection extends StateMachine.withDefinition(
                     }
                 });
         }));
+        return myself;
     }
 
     mkEvent<T extends Pick<DredError, "message" | typeof devMessage> & Record<any, any>>(
@@ -487,12 +495,12 @@ export class HostConnection extends StateMachine.withDefinition(
                 const { heartbeatInterval } = value;
                 this.heartbeatInterval = heartbeatInterval;
                 continue;
-            }        
+            }
             if ("warning" == value?.type) {
                 //!!! todo: consider how & whether integrate this so that the warning becomes actionable
                 //     to ConnectionManager or beyond.  See todo c1hxed4 in ConnectionManager around that too.
-                console.log("warning from host", this.host.serverId, ":", value)
-                debugger
+                console.log("warning from host", this.host.serverId, ":", value);
+                debugger;
                 continue;
             }
             
