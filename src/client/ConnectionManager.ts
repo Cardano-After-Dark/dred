@@ -406,8 +406,13 @@ export class ConnectionManager extends StateMachine.withDefinition(
                 this.logger.info("setSubscriptions: discovery: hosts:ready - excellent!");
             }
         }
-        this.connectToHosts();
-        return subs
+        if (this.currentState == "pendingSetup") {
+            this.logger.debug("setSubscriptions: releasing pendingSetup state");
+            this.transition("readyToConnect");
+        }
+
+        // this.connectToHosts();
+        return subs;
     }
 
     async replaceSubscriptions(subs: SubscriptionListenerMap) {
