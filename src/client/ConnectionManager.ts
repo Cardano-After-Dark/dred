@@ -474,11 +474,11 @@ export class ConnectionManager extends StateMachine.withDefinition(
         }
         if (!this.clientid) throw new Error("missing clientid");
         const conn = new HostConnection(host, subscriptions, this.connectionSettings, this.clientid);
-        conn.events.on("connected", this.healthyConnection);
+        conn.events.once("connected", this.healthyConnection);
 
-        conn.events.on("disconnected", this.cleanupConnection);
-        conn.events.on("replacedBy", this.cleanupConnection);
-        conn.events.on("failed", this.cleanupConnection);
+        conn.events.once("disconnected", this.cleanupConnection);
+        conn.events.once("replacedBy", this.cleanupConnection);
+        conn.events.once("failed", this.cleanupConnection);
 
         conn.events.on("message", this.notifySubscribers);
 
