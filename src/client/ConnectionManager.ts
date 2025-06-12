@@ -79,17 +79,29 @@ const connectionManagerStates = {
     pendingSetup: {
         async onEntry(this: cm) {
             if (!this.channelSubs?.size) {
-                this.logger.warn("    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set");
-                return
+                //     this.logger.warn("    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set");
+                //     return
+                this.channelSubs = {
+                    _chans: new ChannelSubscriptionListener({
+                        neighborhood: this.discovery.nbh,
+                        channel: "_chans",
+                        listener: ({
+                            channel, mid, ocid, message, details, neighborhood, connection,
+                        }) => {
+                            this.logger.info("    🐞  _chans: ", {
+                                channel, mid, ocid, message, details, neighborhood, //connection,
+                            });
+                        },
+                    }),
+                };
             }
             const hosts = this.discovery.hosts;
             if (hosts?.length && !this.hosts) {
                 this.hosts = hosts;
             }
 
-            if (this.hosts?.length)
-                return this.transition("readyToConnect");
-            
+            if (this.hosts?.length) return this.transition("readyToConnect");
+
             console.log("    🐞  pendingSetup: waiting for host discovery");
         },
         updatedHostList: { nextState: "pendingSetup", reEntry: true },
