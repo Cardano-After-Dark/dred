@@ -428,6 +428,10 @@ export class ConnectionManager extends StateMachine.withDefinition(
         Promise.all(promises).then( () => {
             this.lastChannelSubs = undefined;
         })
+        if (this.currentState == "pendingSetup") {
+            this.transition("readyToConnect");
+        }
+
         return subs;
     }
 
