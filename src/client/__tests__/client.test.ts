@@ -28,6 +28,19 @@ describe("Dred client", () => {
             });
         });
     });
+
+    // describe("state machine", () => {
+    //     it("goes to ready in basic case of static host discovery", async () => {
+    //         const client = new DredClient({
+    //             discovery: new StaticHostDiscovery({}),
+    //             neighborhood: "test",
+    //             waitFor: "minimal"
+    //         });
+    //         await client.connect();
+    //         expect(client.state).toBe("ready");
+    //     })
+    // })
+
     describe("unencrypted chan:", () => {
         describe("createChannel", () => {
             it("does createChannel() on server", async () => {
