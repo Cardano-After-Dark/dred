@@ -3,16 +3,18 @@ import util from "tweetnacl-util";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
 import { DredHostDetails } from "../types/DredHosts.js";
-import { Discovery, GenericDiscoveryOptions, promisedConnectionThresholds } from "../types/Discovery.js";
+import {
+    Discovery,
+    GenericDiscoveryOptions,
+    promisedConnectionThresholds,
+} from "../types/Discovery.js";
 import { StringNacl } from "../util/StringNacl.js";
 import { NbhId } from "../types/ChannelSubscriptions.js";
 import { asyncDelay } from "@poshplum/utils";
 
-
-
 const localNbh = "localhost-nbh";
 interface DevDiscoveryOptions extends GenericDiscoveryOptions {
-    hosts?: DredHostDetails[], 
+    hosts?: DredHostDetails[];
 }
 
 export class StaticHostDiscovery extends Discovery {
@@ -52,14 +54,16 @@ export class StaticHostDiscovery extends Discovery {
     //         return "no pubkey"
     //     }
     // }
-    static defaultHosts() : DredHostDetails[] {
-        return [{
-            serverId: "singleton",
-            address: "127.0.0.1",
-            port: 3029,
-            insecure: true,            
-            // publicKey: this.getPubKeyFromFs(3029),
-        }]
+    static defaultHosts(): DredHostDetails[] {
+        return [
+            {
+                serverId: "singleton",
+                address: "127.0.0.1",
+                port: 3029,
+                insecure: true,
+                // publicKey: this.getPubKeyFromFs(3029),
+            },
+        ];
     }
     setupDefaultHosts() {
         return this.reset((this.constructor as typeof StaticHostDiscovery).defaultHosts());
@@ -82,15 +86,17 @@ export class StaticHostDiscovery extends Discovery {
         await asyncDelay(1);
         return this.hosts;
     }
-    async getConnectionThresholds() : promisedConnectionThresholds {
-        if (!this.hosts) { throw new Error(`no this.hosts`) }
+    async getConnectionThresholds(): promisedConnectionThresholds {
+        if (!this.hosts) {
+            throw new Error(`no this.hosts`);
+        }
 
         if (this.hosts.length > 2) {
-            return {minimal:2, healthy: 3}
+            return { minimal: 2, healthy: 3 };
         }
         if (this.hosts.length > 1) {
-            return {minimal:1, healthy: 2}
+            return { minimal: 1, healthy: 2 };
         }
-        return {minimal: 1, healthy: 1}
+        return { minimal: 1, healthy: 1 };
     }
 }
