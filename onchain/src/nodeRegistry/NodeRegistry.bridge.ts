@@ -56,6 +56,8 @@ import type {
     AnyData, ErgoAnyData, AnyDataLike,
     DelegateDatum$Cip68RefToken, DelegateDatum$Ergo$Cip68RefToken, DelegateDatum$Cip68RefTokenLike,
     DelegationDetail, ErgoDelegationDetail, DelegationDetailLike,
+    DredNodeState, ErgoDredNodeState, DredNodeStateLike,
+    NodeDetails, ErgoNodeDetails, NodeDetailsLike,
     NodeRegistrationData, ErgoNodeRegistrationData, NodeRegistrationDataLike,
     DelegateDatum$capoStoredData, DelegateDatum$Ergo$capoStoredData, DelegateDatum$capoStoredDataLike,
     DelegateDatum, ErgoDelegateDatum, DelegateDatumLike,
@@ -71,6 +73,7 @@ import type {
     CapoLifecycleActivity, ErgoCapoLifecycleActivity, CapoLifecycleActivityLike,
     DelegateLifecycleActivity$ReplacingMe, DelegateLifecycleActivity$Ergo$ReplacingMe, DelegateLifecycleActivity$ReplacingMeLike,
     DelegateLifecycleActivity, ErgoDelegateLifecycleActivity, DelegateLifecycleActivityLike,
+    SpendingActivity$ValidatingNode, SpendingActivity$Ergo$ValidatingNode, SpendingActivity$ValidatingNodeLike,
     SpendingActivity, ErgoSpendingActivity, SpendingActivityLike,
     MintingActivity, ErgoMintingActivity, MintingActivityLike,
     BurningActivity, ErgoBurningActivity, BurningActivityLike,
@@ -157,6 +160,10 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
      */
     types = {
       /**
+       * generates UplcData for the enum type ***DredNodeState*** for the `BasicDelegate` script
+       */
+        DredNodeState: new DredNodeStateHelper({isMainnet: this.isMainnet}),
+      /**
        * generates UplcData for the enum type ***DelegateDatum*** for the `BasicDelegate` script
        */
         DelegateDatum: new DelegateDatumHelper({isMainnet: this.isMainnet}),
@@ -235,16 +242,26 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
         return this.ᱺᱺDelegationDetailCast.toUplcData(fields);
     },
       /**
+       * generates UplcData for the enum type ***NodeDetails*** for the `BasicDelegate` script
+       */
+        NodeDetails: (fields: NodeDetailsLike | {
+    address: /*minStructField*/ string
+    port: /*minStructField*/ IntLike
+    pubKey: /*minStructField*/ PubKey | string | number[]
+    pubKeyHash: /*minStructField*/ PubKeyHash | string | number[]
+}
+) => {
+        return this.ᱺᱺNodeDetailsCast.toUplcData(fields);
+    },
+      /**
        * generates UplcData for the enum type ***NodeRegistrationData*** for the `BasicDelegate` script
        */
         NodeRegistrationData: (fields: NodeRegistrationDataLike | {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
-    nodeAddress: /*minStructField*/ string
-    nodePort: /*minStructField*/ IntLike
-    nodePublicKey: /*minStructField*/ PubKey | string | number[]
-    lastHeartbeat: /*minStructField*/ TimeLike
+    state: /*minStructField*/ DredNodeStateLike
+    nodeDetails: /*minStructField*/ NodeDetailsLike
 }
 ) => {
         return this.ᱺᱺNodeRegistrationDataCast.toUplcData(fields);
@@ -340,6 +357,12 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
     );
     /**
                 * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺNodeDetailsCast = makeCast<NodeDetails, NodeDetailsLike>(
+        NodeDetailsSchema,
+        { isMainnet: true, unwrapSingleFieldEnumVariants: true }
+    );
+    /**
+                * uses unicode U+1c7a - sorts to the end */
     ᱺᱺNodeRegistrationDataCast = makeCast<NodeRegistrationData, NodeRegistrationDataLike>(
         NodeRegistrationDataSchema,
         { isMainnet: true, unwrapSingleFieldEnumVariants: true }
@@ -398,6 +421,27 @@ export class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderClas
     constructor(public bridge: DredNodeRegistryPolicyDataBridge, isMainnet: boolean) {
         super();
     }
+    /**
+        * reads UplcData *known to fit the **DredNodeState*** enum type,
+        * for the BasicDelegate script.
+        * #### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the enum type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    DredNodeState(d : UplcData) { 
+        const typeHelper = this.bridge.types.DredNodeState;
+        const cast = typeHelper.ᱺᱺcast;  
+
+        return cast.fromUplcData(d) as ErgoDredNodeState;        
+    } /* enumReader helper */
+
 datum = (d: UplcData) => { return this.DelegateDatum(d) }
     /**
         * reads UplcData *known to fit the **DelegateDatum*** enum type,
@@ -732,6 +776,25 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
     } /* structReader helper */
 
     /**
+        * reads UplcData *known to fit the **NodeDetails*** struct type,
+        * for the BasicDelegate script.
+        * #### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    NodeDetails(d: UplcData) {
+        const cast = this.bridge.ᱺᱺNodeDetailsCast;
+        return cast.fromUplcData(d) //??? as ErgoNodeDetails;
+    } /* structReader helper */
+
+    /**
         * reads UplcData *known to fit the **NodeRegistrationData*** struct type,
         * for the BasicDelegate script.
         * #### Standard WARNING
@@ -932,6 +995,95 @@ export class DelegationDetailHelper extends DataBridge {
     //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
     //
     // DelegationDetail(fields: DelegationDetailLike) {
+    //    return this.ᱺᱺcast.toUplcData(fields);
+    //}
+} //mkStructHelperClass 
+
+
+/**
+ * Helper class for generating UplcData for variants of the ***DredNodeState*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+export class DredNodeStateHelper extends EnumBridge<JustAnEnum> {
+    /*mkEnumHelperClass*/
+    /**
+            * @internal
+            *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<DredNodeState, DredNodeStateLike>(
+        DredNodeStateSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    /**
+     * generates  UplcData for ***"NodeRegistrationData::DredNodeState.NeedsValidation"***
+     */
+    NeedsValidation(
+        signatories: Array<PubKeyHash | string | number[]>
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           NeedsValidation: signatories
+        }, "NodeRegistrationData::DredNodeState.NeedsValidation"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"NodeRegistrationData::DredNodeState.Active"***
+     */
+    Active(
+        lastHeartbeat: TimeLike
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           Active: lastHeartbeat
+        }, "NodeRegistrationData::DredNodeState.Active"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"NodeRegistrationData::DredNodeState.NeedsHeartbeats"***
+     */
+    NeedsHeartbeats(
+        signatories: Array<PubKey | string | number[]>
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           NeedsHeartbeats: signatories
+        }, "NodeRegistrationData::DredNodeState.NeedsHeartbeats"); /*singleField enum variant*/
+       return uplc;
+    }
+
+/**
+ * (property getter): UplcData for ***"NodeRegistrationData::DredNodeState.Inactive"***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+ */
+    get Inactive() {
+        const uplc = this.mkUplcData({ Inactive: {} }, 
+            "NodeRegistrationData::DredNodeState.Inactive");
+        return uplc;
+    } /* tagOnly variant accessor */
+}/*mkEnumHelperClass*/
+
+
+/**
+ * Helper class for generating UplcData for the struct ***NodeDetails*** type.
+ * @public
+ */
+export class NodeDetailsHelper extends DataBridge {
+    isCallable = true
+   /**
+            * @internal
+            * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<NodeDetails, NodeDetailsLike>(
+        NodeDetailsSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    // You might expect a function as follows.  We provide this interface and result, 
+    // using a proxy in the inheritance chain.
+    // see the callableDataBridge type on the 'datum' property in the contract bridge.
+    //
+    //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
+    //
+    // NodeDetails(fields: NodeDetailsLike) {
     //    return this.ᱺᱺcast.toUplcData(fields);
     //}
 } //mkStructHelperClass 
@@ -1818,6 +1970,20 @@ export class SpendingActivityHelper extends EnumBridge<JustAnEnum> {
         }, "DredNodeRegistryPolicy::SpendingActivity.UpdatingRecord"); /*singleField enum variant*/
        return uplc;
     }
+
+    /**
+     * generates  UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ValidatingNode"***
+     * @remarks - ***SpendingActivity$ValidatingNodeLike*** is the same as the expanded field-types.
+     */
+    ValidatingNode(fields: SpendingActivity$ValidatingNodeLike | { 
+        id: number[],
+        validatorPkh: PubKeyHash | string | number[]
+    }) : UplcData {
+        const uplc = this.mkUplcData({
+            ValidatingNode: fields 
+        }, "DredNodeRegistryPolicy::SpendingActivity.ValidatingNode");
+       return uplc;
+    } /*multiFieldVariant enum accessor*/
 }/*mkEnumHelperClass*/
 
 
@@ -2444,6 +2610,24 @@ export class SpendingActivityHelperNested extends EnumBridge<isActivity> {
         }, "DredNodeRegistryPolicy::SpendingActivity.UpdatingRecord"); /*singleField enum variant*/
        return uplc;
     }
+
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ValidatingNode"***
+     * @remarks - ***SpendingActivity$ValidatingNodeLike*** is the same as the expanded field-types.
+    * ##### Nested activity: 
+    * this is connected to a nested-activity wrapper, so the details are piped through 
+    * the parent's uplc-encoder, producing a single uplc object with 
+    * a complete wrapper for this inner activity detail.
+     */
+    ValidatingNode(fields: SpendingActivity$ValidatingNodeLike | { 
+        id: number[],
+        validatorPkh: PubKeyHash | string | number[]
+    }) : isActivity {
+        const uplc = this.mkUplcData({
+            ValidatingNode: fields 
+        }, "DredNodeRegistryPolicy::SpendingActivity.ValidatingNode");
+       return uplc;
+    } /*multiFieldVariant enum accessor*/
 }/*mkEnumHelperClass*/
 
 
@@ -3398,6 +3582,109 @@ export const DelegationDetailSchema : StructTypeSchema = {
     ]
 };
 
+export const DredNodeStateSchema : EnumTypeSchema = {
+    "kind": "enum",
+    "name": "DredNodeState",
+    "id": "__module__NodeRegistrationData__DredNodeState[]",
+    "variantTypes": [
+        {
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__NodeRegistrationData__DredNodeState[]__NeedsValidation",
+            "name": "NeedsValidation",
+            "fieldTypes": [
+                {
+                    "name": "signatories",
+                    "type": {
+                        "kind": "list",
+                        "itemType": {
+                            "kind": "internal",
+                            "name": "PubKeyHash"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 1,
+            "id": "__module__NodeRegistrationData__DredNodeState[]__Active",
+            "name": "Active",
+            "fieldTypes": [
+                {
+                    "name": "lastHeartbeat",
+                    "type": {
+                        "kind": "internal",
+                        "name": "Time"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 2,
+            "id": "__module__NodeRegistrationData__DredNodeState[]__NeedsHeartbeats",
+            "name": "NeedsHeartbeats",
+            "fieldTypes": [
+                {
+                    "name": "signatories",
+                    "type": {
+                        "kind": "list",
+                        "itemType": {
+                            "kind": "internal",
+                            "name": "PubKey"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 3,
+            "id": "__module__NodeRegistrationData__DredNodeState[]__Inactive",
+            "name": "Inactive",
+            "fieldTypes": []
+        }
+    ]
+};
+
+export const NodeDetailsSchema : StructTypeSchema = {
+    "kind": "struct",
+    "format": "list",
+    "id": "__module__NodeRegistrationData__NodeDetails[]",
+    "name": "NodeDetails",
+    "fieldTypes": [
+        {
+            "name": "address",
+            "type": {
+                "kind": "internal",
+                "name": "String"
+            }
+        },
+        {
+            "name": "port",
+            "type": {
+                "kind": "internal",
+                "name": "Int"
+            }
+        },
+        {
+            "name": "pubKey",
+            "type": {
+                "kind": "internal",
+                "name": "PubKey"
+            }
+        },
+        {
+            "name": "pubKeyHash",
+            "type": {
+                "kind": "internal",
+                "name": "PubKeyHash"
+            }
+        }
+    ]
+};
+
 export const NodeRegistrationDataSchema : StructTypeSchema = {
     "kind": "struct",
     "format": "map",
@@ -3429,36 +3716,113 @@ export const NodeRegistrationDataSchema : StructTypeSchema = {
             "key": "mt"
         },
         {
-            "name": "nodeAddress",
+            "name": "state",
             "type": {
-                "kind": "internal",
-                "name": "String"
+                "kind": "enum",
+                "name": "DredNodeState",
+                "id": "__module__NodeRegistrationData__DredNodeState[]",
+                "variantTypes": [
+                    {
+                        "kind": "variant",
+                        "tag": 0,
+                        "id": "__module__NodeRegistrationData__DredNodeState[]__NeedsValidation",
+                        "name": "NeedsValidation",
+                        "fieldTypes": [
+                            {
+                                "name": "signatories",
+                                "type": {
+                                    "kind": "list",
+                                    "itemType": {
+                                        "kind": "internal",
+                                        "name": "PubKeyHash"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "kind": "variant",
+                        "tag": 1,
+                        "id": "__module__NodeRegistrationData__DredNodeState[]__Active",
+                        "name": "Active",
+                        "fieldTypes": [
+                            {
+                                "name": "lastHeartbeat",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "Time"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "kind": "variant",
+                        "tag": 2,
+                        "id": "__module__NodeRegistrationData__DredNodeState[]__NeedsHeartbeats",
+                        "name": "NeedsHeartbeats",
+                        "fieldTypes": [
+                            {
+                                "name": "signatories",
+                                "type": {
+                                    "kind": "list",
+                                    "itemType": {
+                                        "kind": "internal",
+                                        "name": "PubKey"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "kind": "variant",
+                        "tag": 3,
+                        "id": "__module__NodeRegistrationData__DredNodeState[]__Inactive",
+                        "name": "Inactive",
+                        "fieldTypes": []
+                    }
+                ]
             },
-            "key": "addr"
+            "key": "state"
         },
         {
-            "name": "nodePort",
+            "name": "nodeDetails",
             "type": {
-                "kind": "internal",
-                "name": "Int"
+                "kind": "struct",
+                "format": "list",
+                "id": "__module__NodeRegistrationData__NodeDetails[]",
+                "name": "NodeDetails",
+                "fieldTypes": [
+                    {
+                        "name": "address",
+                        "type": {
+                            "kind": "internal",
+                            "name": "String"
+                        }
+                    },
+                    {
+                        "name": "port",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Int"
+                        }
+                    },
+                    {
+                        "name": "pubKey",
+                        "type": {
+                            "kind": "internal",
+                            "name": "PubKey"
+                        }
+                    },
+                    {
+                        "name": "pubKeyHash",
+                        "type": {
+                            "kind": "internal",
+                            "name": "PubKeyHash"
+                        }
+                    }
+                ]
             },
-            "key": "port"
-        },
-        {
-            "name": "nodePublicKey",
-            "type": {
-                "kind": "internal",
-                "name": "PubKey"
-            },
-            "key": "pubk"
-        },
-        {
-            "name": "lastHeartbeat",
-            "type": {
-                "kind": "internal",
-                "name": "Time"
-            },
-            "key": "lhb"
+            "key": "nd"
         }
     ]
 };
@@ -3596,36 +3960,113 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                 "key": "mt"
                             },
                             {
-                                "name": "nodeAddress",
+                                "name": "state",
                                 "type": {
-                                    "kind": "internal",
-                                    "name": "String"
+                                    "kind": "enum",
+                                    "name": "DredNodeState",
+                                    "id": "__module__NodeRegistrationData__DredNodeState[]",
+                                    "variantTypes": [
+                                        {
+                                            "kind": "variant",
+                                            "tag": 0,
+                                            "id": "__module__NodeRegistrationData__DredNodeState[]__NeedsValidation",
+                                            "name": "NeedsValidation",
+                                            "fieldTypes": [
+                                                {
+                                                    "name": "signatories",
+                                                    "type": {
+                                                        "kind": "list",
+                                                        "itemType": {
+                                                            "kind": "internal",
+                                                            "name": "PubKeyHash"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "kind": "variant",
+                                            "tag": 1,
+                                            "id": "__module__NodeRegistrationData__DredNodeState[]__Active",
+                                            "name": "Active",
+                                            "fieldTypes": [
+                                                {
+                                                    "name": "lastHeartbeat",
+                                                    "type": {
+                                                        "kind": "internal",
+                                                        "name": "Time"
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "kind": "variant",
+                                            "tag": 2,
+                                            "id": "__module__NodeRegistrationData__DredNodeState[]__NeedsHeartbeats",
+                                            "name": "NeedsHeartbeats",
+                                            "fieldTypes": [
+                                                {
+                                                    "name": "signatories",
+                                                    "type": {
+                                                        "kind": "list",
+                                                        "itemType": {
+                                                            "kind": "internal",
+                                                            "name": "PubKey"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "kind": "variant",
+                                            "tag": 3,
+                                            "id": "__module__NodeRegistrationData__DredNodeState[]__Inactive",
+                                            "name": "Inactive",
+                                            "fieldTypes": []
+                                        }
+                                    ]
                                 },
-                                "key": "addr"
+                                "key": "state"
                             },
                             {
-                                "name": "nodePort",
+                                "name": "nodeDetails",
                                 "type": {
-                                    "kind": "internal",
-                                    "name": "Int"
+                                    "kind": "struct",
+                                    "format": "list",
+                                    "id": "__module__NodeRegistrationData__NodeDetails[]",
+                                    "name": "NodeDetails",
+                                    "fieldTypes": [
+                                        {
+                                            "name": "address",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "String"
+                                            }
+                                        },
+                                        {
+                                            "name": "port",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Int"
+                                            }
+                                        },
+                                        {
+                                            "name": "pubKey",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "PubKey"
+                                            }
+                                        },
+                                        {
+                                            "name": "pubKeyHash",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "PubKeyHash"
+                                            }
+                                        }
+                                    ]
                                 },
-                                "key": "port"
-                            },
-                            {
-                                "name": "nodePublicKey",
-                                "type": {
-                                    "kind": "internal",
-                                    "name": "PubKey"
-                                },
-                                "key": "pubk"
-                            },
-                            {
-                                "name": "lastHeartbeat",
-                                "type": {
-                                    "kind": "internal",
-                                    "name": "Time"
-                                },
-                                "key": "lhb"
+                                "key": "nd"
                             }
                         ]
                     }
@@ -4202,6 +4643,28 @@ export const SpendingActivitySchema : EnumTypeSchema = {
                     }
                 }
             ]
+        },
+        {
+            "kind": "variant",
+            "tag": 1,
+            "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__ValidatingNode",
+            "name": "ValidatingNode",
+            "fieldTypes": [
+                {
+                    "name": "id",
+                    "type": {
+                        "kind": "internal",
+                        "name": "ByteArray"
+                    }
+                },
+                {
+                    "name": "validatorPkh",
+                    "type": {
+                        "kind": "internal",
+                        "name": "PubKeyHash"
+                    }
+                }
+            ]
         }
     ]
 };
@@ -4644,6 +5107,28 @@ export const DelegateActivitySchema : EnumTypeSchema = {
                                         "type": {
                                             "kind": "internal",
                                             "name": "ByteArray"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 1,
+                                "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__ValidatingNode",
+                                "name": "ValidatingNode",
+                                "fieldTypes": [
+                                    {
+                                        "name": "id",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "ByteArray"
+                                        }
+                                    },
+                                    {
+                                        "name": "validatorPkh",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "PubKeyHash"
                                         }
                                     }
                                 ]

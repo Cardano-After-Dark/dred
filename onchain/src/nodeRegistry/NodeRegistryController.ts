@@ -1,4 +1,4 @@
-import { makeDummyPubKey, makePubKey, makeTxOutput, makeValue, type Value } from "@helios-lang/ledger";
+import { makeDummyPubKey, makePubKey, makeTxOutput, makeValue, type PubKeyHash, type Value } from "@helios-lang/ledger";
 import {
     Activity,
     DelegatedDataContract,
@@ -54,19 +54,21 @@ export class NodeRegistryController extends DelegatedDataContract<
     }
 
     exampleData(): minimalNodeRegistrationData {
+        const nodePublicKey = makeDummyPubKey();
+        const pubKeyHash = nodePublicKey.hash();
+
         return {       
             // id: textToBytes("dredNode-1234"),
             // type: "dredNode",
 
-            // status: "active",
-            lastHeartbeat: 0,
             memberToken: "member-1234",
-            nodeAddress: "1.2.4.3.example.com",
-            nodePort: 13337n,
-
-            // bad data, but good enough for being a lame example.  
-            // It should be a valid Ed25519 public key, expressed as a numeric array
-            nodePublicKey: makeDummyPubKey()
+            nodeDetails: {
+                address: "1.2.4.3.example.com",
+                port: 13337n,
+                pubKey: nodePublicKey,
+                pubKeyHash
+            },
+            state: { NeedsValidation: [] },
         };
     }
 
@@ -116,10 +118,12 @@ export class NodeRegistryController extends DelegatedDataContract<
 
     async mkTxnUpdatingNodeRegistration( 
         txnName: string, 
-        item: FoundDatumUtxo<NodeRegistrationData, any>, 
+        item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, 
         options: Omit<DgDataUpdateOptions<
             NodeRegistrationDataLike
-        >, "activity">, 
+        >, "activity"> & {
+            activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"]
+        }, 
         initialTcx?: StellarTxnContext<anyState> | undefined
     ): Promise<StellarTxnContext<anyState>> {
         const tcx0 = initialTcx || this.mkTcx(
@@ -135,10 +139,45 @@ export class NodeRegistryController extends DelegatedDataContract<
             }),
         })
 
+        debugger
         return super.mkTxnUpdateRecord(txnName, item, {
-            ...options,
+            // default activity
             activity: this.activity.SpendingActivities.UpdatingRecord(item.data!.id),
+            // ..., can be overridden by options
+            ...options,
         }, tcx2)
+    }
+
+    async mkTxnValidatingNode(
+        txnName: string,
+        item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>,
+        options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity" | "updatedFields"> & {
+            validatorPkh: PubKeyHash
+        },
+        initialTcx?: StellarTxnContext<anyState> | undefined
+    ): Promise<StellarTxnContext<anyState>> {
+        const { validatorPkh } = options;
+        const tcx0 = initialTcx || this.mkTcx(
+            "validating dred node"
+        );
+        const existingNeedsValidation = (item.data?.state as any).NeedsValidation;
+        if (!existingNeedsValidation) throw new Error("node is not in need of validation");
+
+        const tcx1 = await this.mkTxnUpdatingNodeRegistration(txnName, item, {
+            ...options,
+            updatedFields: {
+                state: {
+                    NeedsValidation: [validatorPkh, ...existingNeedsValidation],
+                },
+            },
+            activity: this.activity.SpendingActivities.ValidatingNode({
+                id: item.data!.id,
+                validatorPkh,
+            }),
+        }, tcx0);
+        tcx1.addSigners(validatorPkh);
+
+        return tcx1;
     }
 
     requirements() {

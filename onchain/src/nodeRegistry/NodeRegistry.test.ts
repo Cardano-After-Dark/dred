@@ -9,16 +9,14 @@ import {
     beforeAll,
 } from "vitest";
 
-import {
-    addTestContext,
-    type TestHelperState,
-} from "@donecollectively/stellar-contracts/testing";
+import { addTestContext, type TestHelperState } from "@donecollectively/stellar-contracts/testing";
 
 import { dumpAny, StellarTxnContext, textToBytes } from "@donecollectively/stellar-contracts";
 import { makeValue, makeAssetClass } from "@helios-lang/ledger";
 import type { ErgoNodeRegistrationData } from "./NodeRegistry.typeInfo.js";
 import { DredCapo } from "../DredCapo.js";
 import { DredCapoTestHelper, type DredCapo_TC, helperState } from "../DredCapoTestHelper.js";
+import { expectArray } from "@helios-lang/type-utils";
 
 const it = itWithContext<DredCapo_TC>;
 const fit = it.only;
@@ -36,12 +34,7 @@ describe("Dred NodeRegistry", async () => {
     beforeEach<DredCapo_TC>(async (context) => {
         await new Promise((res) => setTimeout(res, 10));
         console.log("\n\n\n\n   ==================== ======================");
-        await addTestContext(
-            context,
-            DredCapoTestHelper,
-            undefined,
-            helperState
-        );
+        await addTestContext(context, DredCapoTestHelper, undefined, helperState);
     });
 
     describe("It's created with the key details for registering a node", () => {
@@ -63,20 +56,20 @@ describe("Dred NodeRegistry", async () => {
             expect(dredNode).toBeDefined();
             if (!dredNode) throw new Error("for TS");
 
-            expect(dredNode.nodeAddress).toEqual(exampleData.nodeAddress);
-            expect(dredNode.nodePort).toEqual(exampleData.nodePort);
-            expect(dredNode.nodePublicKey).toEqual(exampleData.nodePublicKey);
+            expect(dredNode.nodeDetails.address).toEqual(exampleData.nodeDetails.address);
+            expect(dredNode.nodeDetails.port).toEqual(exampleData.nodeDetails.port);
+            expect(dredNode.nodeDetails.pubKey).toEqual(h.actors.node1.pubKey);
+            expect(dredNode.nodeDetails.pubKeyHash).toEqual(h.actors.node1.pubKey.hash());
 
-            const {memberToken} = dredNode;
+            const { memberToken } = dredNode;
             const tokenMatcher = capo.uh.mkTokenPredicate(memberToken);
             const tokenUtxo = await capo.uh.findActorUtxo("memberToken", tokenMatcher);
             expect(tokenUtxo).toBeDefined();
             expect(
                 tokenUtxo!.value.assets.getAssetClassQuantity(
-                    makeAssetClass(capo.mph, textToBytes(memberToken))
-                )
+                    makeAssetClass(capo.mph, textToBytes(memberToken)),
+                ),
             ).toEqual(1n);
-
         });
 
         it("requires a memberToken to register the node", async (context: DredCapo_TC) => {
@@ -92,7 +85,7 @@ describe("Dred NodeRegistry", async () => {
             const controller = await h.registryDgt();
             await h.mockMemberToken();
 
-            const registering = h.createNode(controller.exampleData())
+            const registering = h.createNode(controller.exampleData());
             await expect(registering).rejects.toThrow(/script validation .* missing member token/);
         });
 
@@ -101,75 +94,129 @@ describe("Dred NodeRegistry", async () => {
                 h,
                 h: { network, actors, delay, state },
             } = context;
-           
+
             await h.reusableBootstrap();
             await h.participantSelfRegisters();
 
             const controller = await h.registryDgt();
 
-            await h.createNode(controller.exampleData())
+            await expect(
+                h.createNode({
+                    ...controller.exampleData(),
+                    state: { Active: 0 },
+                }),
+            ).rejects.toThrow(/state must be NeedsValidation/);
+
+            await h.snapToFirstRegisteredNode();
 
             const newNode = await h.findFirstNode();
-            // expect(newNode?.state).toEqual({DredNodeState: {Validating: []}});
+            if (!newNode?.data) throw new Error("no node found");
+
+            expect(newNode.data.state).toEqual({
+                NeedsValidation: [],
+            });
         });
     });
 
     describe("Validating the node's registration details", () => {
+        it("can be done by another operator", async (context: DredCapo_TC) => {
+            const {
+                h,
+                h: { network, actors, delay, state },
+            } = context;
+
+            await h.snapToFirstRegisteredNode();
+            const node1 = await h.findFirstNode();
+            if (!node1?.data) throw new Error("no node found");
+            const controller = await h.registryDgt();
+
+            h.setActor("nellie");
+            await h.participantSelfRegisters();
+            const n2tcx = await h.createNode({
+                ...controller.exampleData(),
+            });
+
+            debugger;
+            const node2 = await controller.findRecords({
+                id: n2tcx.state.uuts.recordId,
+            });
+            if (!node2?.data) throw new Error("no node found");
+
+            await h.validateNode(node1, {
+                txnName: "node2 operator validates node1",
+            });
+        });
+
         it("an operator can't validate their own node", async (context: DredCapo_TC) => {
             const {
                 h,
                 h: { network, actors, delay, state },
             } = context;
-            
+
+            await h.snapToFirstRegisteredNode();
+            const controller = await h.registryDgt();
+            const node = await h.findFirstNode();
+            if (!node?.data) throw new Error("no node found");
+
+            const submitting = h.validateNode(node, {
+                txnName: "validate own node",
+                validatorPkh: h.actors.node1.pubKey.hash(),
+                expectError: true,
+            });
+
+            await expect(submitting).rejects.toThrow(
+                /script validation .* can't validate own node/,
+            );
         });
 
-        it("an operator can't validate a node that's not in NeedsValidation state", async (context: DredCapo_TC) => {
+        it.todo("an operator can't validate a node that's not in NeedsValidation state", async (context: DredCapo_TC) => {
             const {
                 h,
                 h: { network, actors, delay, state },
             } = context;
-            
         });
 
-        it("requires a Validating operator to update the record for a NeedsValidation node", async (context: DredCapo_TC) => {
+        it.todo("requires a Validating operator to update only the signatories for a NeedsValidation node", async (context: DredCapo_TC) => {
             const {
                 h,
                 h: { network, actors, delay, state },
             } = context;
-            
         });
 
-        it.todo("FUT: can be done for a valid combination of Validating-Operator + Validated-Node + nbh Membership for both", async (context: DredCapo_TC) => {
-        });
-
+        it.todo(
+            "FUT: can be done for a valid combination of Validating-Operator + Validated-Node + nbh Membership for both",
+            async (context: DredCapo_TC) => {},
+        );
     });
 
     describe("Activity:UpdatingRecord allows a node operator to update their registration details", () => {
-        it( "can't UpdateRecord without their memberToken", async (context: DredCapo_TC) => {
-                const {
-                    h,
-                    h: { network, actors, delay, state },
-                } = context;
+        it("can't UpdateRecord without their memberToken", async (context: DredCapo_TC) => {
+            const {
+                h,
+                h: { network, actors, delay, state },
+            } = context;
 
-                await h.reusableBootstrap();
-                await h.snapToFirstRegisteredNode();
-                const dredNode = await h.findFirstNode();
-                const capo = h.capo;
-                const controller = await h.registryDgt();
-                h.mockMemberToken();
+            await h.reusableBootstrap();
+            await h.snapToFirstRegisteredNode();
+            const dredNode = await h.findFirstNode();
+            const capo = h.capo;
+            const controller = await h.registryDgt();
+            h.mockMemberToken();
 
-                const updating  = h.updateNode(dredNode, {
-                    txnName: "needs member token",
-                    updatedFields: {
-                        nodeAddress: "new-address",
-                        nodePort: 1234,
-                    }
-                });
+            const updating = h.updateNode(dredNode, {
+                txnName: "needs member token",
+                updatedFields: {
+                    nodeDetails: {
+                        ...dredNode.data!.nodeDetails,
+                        address: "new-address",
+                        port: 1234,
+                    },
+                },
+            });
 
-                expect(updating).rejects.toThrow(/script validation .* missing member token/);
-            }
-        );
-    })
+            expect(updating).rejects.toThrow(/script validation .* missing member token/);
+        });
+    });
 
     it("Updates the node's registration details with their memberToken", async (context: DredCapo_TC) => {
         const {
@@ -186,14 +233,18 @@ describe("Dred NodeRegistry", async () => {
         const tcx = await h.updateNode(dredNode, {
             txnName: "update node",
             updatedFields: {
-                nodeAddress: "new-address",
-                nodePort: 4321,
-            }
+                nodeDetails: {
+                    ...dredNode.data!.nodeDetails,
+                    address: "new-address",
+                    port: 4321,
+                },
+            },
         });
 
         const updated = await h.findFirstNode();
         const { data: updatedData } = updated || {};
-        expect(updatedData?.nodeAddress).toEqual("new-address");
-        expect(updatedData?.nodePort).toEqual(4321n);
+        // TODO: the new details are stored in nextNodeDetails instead.
+        expect(updatedData?.nodeDetails.address).toEqual("new-address");
+        expect(updatedData?.nodeDetails.port).toEqual(4321n);
     });
 });

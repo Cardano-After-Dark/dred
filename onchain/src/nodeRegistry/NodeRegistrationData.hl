@@ -1,35 +1,112 @@
 module NodeRegistrationData
 
-// enum DredNodeState {
-//     NeedsValidation {
-//         datumHash: ByteArray
-//         signatories: []PubKey
-//     }
-//     Active
-//     NeedsHeartbeats {
-//         datumHash: ByteArray
-//         signatories: []PubKey
-//     }
-//     Inactive
-// }
- 
+import {
+    TODO,
+    REQT,
+    bREQT
+} from StellarHeliosHelpers
+
+enum DredNodeState {
+    NeedsValidation {
+        // datumHash: ByteArray
+        // to validate, a signatory should sign the current datum hash.
+        // the contract ensures that the signature applies to the previous datum hash,
+        // and the record's next datum hash is modified when the new signatory is included
+        signatories: []PubKeyHash
+    }
+    Active {
+        lastHeartbeat: Time
+    }
+    NeedsHeartbeats {
+        // datumHash: ByteArray
+        signatories: []PubKey
+    }
+    Inactive
+}
+
+struct NodeDetails {
+    address: String
+    port: Int
+    pubKey: PubKey
+    pubKeyHash: PubKeyHash
+}
+
 struct NodeRegistrationData {
     id : ByteArray "@id" // = "dredNode-XXXXyyyyZZZZ"
     type : String "tpe" // = "dredNode"
 
-    // state: DredNodeState "state"
     memberToken: String "mt"
-    nodeAddress: String "addr"
-    nodePort: Int "port"
-
-    // needs typeSchema support in Helios - use ByteArray encoding
-    nodePublicKey: PubKey "pubk" // actually a PubKey
-
-    lastHeartbeat: Time   "lhb"
+    state: DredNodeState "state"
+    nodeDetails: NodeDetails "nd"
+    // todo
+    // nextNodeDetails: NodeDetails "nd'"
 
     func validate(self) -> Bool {
         assert(true || /*never executed*/ self == self, "no way");
         // assert(self.memberToken != null, "memberToken is null");
+        true
+    }
+
+    func validateCreation(self) -> Bool {
+        print("  -- validating creation details ...");
+        // assert(
+        //     (self.nodeStatus.lastHeartbeat == Time::new(0)).trace("  -- heartbeat non-zero? "),
+        //     "lastHeartbeat must be 0 during creation");
+        REQT("state must be NeedsValidation during creation");
+        self.state.switch {
+            NeedsValidation{signatories} => {
+                REQT("signatories must be empty during creation");
+                assert(
+                    (signatories.length ==0).trace("  -- signatories empty? "),
+                    "non-zero signatories list"
+                )
+                true
+            },
+            _ => error("state must be NeedsValidation during creation")
+        } &&
+
+        self.validate()
+    }
+    
+    func validateUpdate(self, _nextData: NodeRegistrationData) -> Bool {
+        // TODO("the lastHeartbeat must be extended by settings.expectedHeartbeatInterval");
+        assert(true || /*never executed*/ self == self, "no way");
+        // assert(false, "validateUpdate() not implemented yet");
+        true
+    }
+
+    func checkValidationActivity(self, 
+        nextData: NodeRegistrationData, 
+        validatorPkh: PubKeyHash
+    ) -> Bool {
+        REQT("can't validate own node");
+        assert(validatorPkh != self.nodeDetails.pubKeyHash, "can't validate own node");
+        REQT("rejects unless in NeedsValidation state");
+        oldSignatories = self.state.switch {
+            NeedsValidation{signatories} => signatories,
+            _ => error("node is not in need of validation")
+        };
+        print( "   -- NeedsValidation ok");
+        nextData.state.switch {
+            NeedsValidation{signatories} => {
+                REQT("rejects unless the new validator's pkh is at head of the new signatories list");
+                assert(
+                    (signatories.head == validatorPkh).trace("  -- new pkh at head? "), 
+                    "expected validator not heading the new signatories list "
+                )
+                REQT("rejects unless the update retains the previous signatories verbatim");
+                assert(
+                    (signatories.tail == oldSignatories).trace("  -- tail unchanged? "),
+                    "creator polluted the tail of signatories"
+                )
+            },
+            _ => error("node is not in need of validation")
+        }
+        REQT("rejects if nodeDetails are modified");
+        assert(
+            (self.nodeDetails == nextData.nodeDetails).trace("  -- node details unchanged? "),
+            "nodeDetails modified"
+        );
         true
     }
 }

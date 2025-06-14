@@ -156,6 +156,10 @@ enum SpendingActivity {
     UpdatingRecord {
         id: ByteArray
     }
+    ValidatingNode {
+        id: ByteArray
+        validatorPkh: PubKeyHash
+    }
 }
 
 func ensureConstrainedTxValidity() -> () {
@@ -327,12 +331,6 @@ enum DelegateActivity {
                     newRec: NodeRegistrationData = NodeRegistrationData::from_data(
                         newRecDetails.outputData()
                     );
-                    REQT("the lastHeartbeat must be 0 during creation");
-                    assert(
-                        (newRec.lastHeartbeat == Time::new(0)).trace("heartbeat 0? "),
-                        "must not have a lastHeartbeat during creation"
-                    );
-
                     assert(
                         tx.time_range.end - tx.time_range.start 
                             <= Duration::HOUR,
@@ -360,7 +358,7 @@ enum DelegateActivity {
                         Some => true
                     }.trace("member token found? ") &&
                     bREQT("the registration data must be valid") &&
-                    (newRec.validate()).trace("  -- validate() ok ?") &&
+                    newRec.validateCreation() && //<-- throws if error
                     mintingOk
                 }
             },
@@ -400,14 +398,32 @@ enum DelegateActivity {
                             Some => true
                         }.trace("member token found? ")
                     
-                        // possibly move this to a separate SpendingActivity
-                        TODO("the lastHeartbeat must be extended by settings.expectedHeartbeatInterval");
-                            // _freshExpiry : TimeRange = daysInFuture(settings.artistVaultSettings.albumCommissionDiscountDays.trunc());
 
                         REQT("the updated data must be valid");
 
                         hasMemberToken &&
-                        updatedData.validate() // throws if invalid 
+                        inputData.validateUpdate(updatedData) // throws if invalid 
+                    },
+                    ValidatingNode{recId, validatorPkh} => {
+                        print("validating a registered node...");
+                        updateDetails = cctx.updatingDgData(recIdBytes: recId)
+
+                        inputData = NodeRegistrationData::from_data(
+                            updateDetails.inputData()
+                        );
+                        updatedData = NodeRegistrationData::from_data(
+                            updateDetails.outputData()
+                        );
+                        assert(
+                            validatorPkh != inputData.nodeDetails.pubKeyHash, 
+                            "can't validate own node"
+                        );
+                        assert(
+                            tx.is_signed_by(validatorPkh), 
+                            "txn not signed by validator"
+                        );
+                        inputData.checkValidationActivity(updatedData, validatorPkh) &&
+                        true
                     }
                 }
             },

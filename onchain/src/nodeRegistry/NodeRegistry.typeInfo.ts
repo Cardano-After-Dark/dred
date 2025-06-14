@@ -174,6 +174,125 @@ export interface DelegationDetailLike {
 
 
 
+
+            /**
+            * @internal
+            */
+            export type DredNodeStateMeta = EnumTypeMeta<
+    {module: "NodeRegistrationData", enumName: "DredNodeState"}, {
+        NeedsValidation: singleEnumVariantMeta<DredNodeStateMeta, "NeedsValidation",
+            "Constr#0", "singletonField", /* implied wrapper { signatories: ... } for singleVariantField */ 
+			Array<PubKeyHash>   , "noSpecialFlags"
+        >,
+        Active: singleEnumVariantMeta<DredNodeStateMeta, "Active",
+            "Constr#1", "singletonField", /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ 
+			number   , "noSpecialFlags"
+        >,
+        NeedsHeartbeats: singleEnumVariantMeta<DredNodeStateMeta, "NeedsHeartbeats",
+            "Constr#2", "singletonField", /* implied wrapper { signatories: ... } for singleVariantField */ 
+			Array<PubKey>   , "noSpecialFlags"
+        >,
+        Inactive: singleEnumVariantMeta<DredNodeStateMeta, "Inactive",
+            "Constr#3", "tagOnly", tagOnly, "noSpecialFlags"
+        >
+    }
+>;
+
+
+/**
+ * DredNodeState enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **4 variant(s)** of the DredNodeState enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `DredNodeStateHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+export type DredNodeState = 
+        | { NeedsValidation: /* implied wrapper { signatories: ... } for singleVariantField */ 
+			Array<PubKeyHash>    /*minEnumVariant*/ }
+        | { Active: /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ 
+			number    /*minEnumVariant*/ }
+        | { NeedsHeartbeats: /* implied wrapper { signatories: ... } for singleVariantField */ 
+			Array<PubKey>    /*minEnumVariant*/ }
+        | { Inactive: tagOnly /*minEnumVariant*/ }
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+export type ErgoDredNodeState = IntersectedEnum<DredNodeState/*like canon enum*/>
+
+/**
+ * DredNodeState enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **4 variant(s)** of the DredNodeState enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `DredNodeStateHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+export type DredNodeStateLike = IntersectedEnum<
+        | { NeedsValidation: /* implied wrapper { signatories: ... } for singleVariantField */ 
+			Array<PubKeyHash | string | number[]>    /*minEnumVariant*/ }
+        | { Active: /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ 
+			TimeLike    /*minEnumVariant*/ }
+        | { NeedsHeartbeats: /* implied wrapper { signatories: ... } for singleVariantField */ 
+			Array<PubKey | string | number[]>    /*minEnumVariant*/ }
+        | { Inactive: tagOnly /*minEnumVariant*/ }
+>
+
+/**
+ * A strong type for the canonical form of NodeDetails
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeDetails instead.
+ * @public
+ */
+export interface NodeDetails {
+    address: /*minStructField*/ string
+    port: /*minStructField*/ bigint
+    pubKey: /*minStructField*/ PubKey
+    pubKeyHash: /*minStructField*/ PubKeyHash
+}
+
+
+/**
+ * An ergonomic, though less strictly-safe form of NodeDetails
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the NodeDetailsLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+export type ErgoNodeDetails = NodeDetails/*like canon-other*/
+
+/**
+ * A strong type for the permissive form of NodeDetails
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+export interface NodeDetailsLike {
+    address: /*minStructField*/ string
+    port: /*minStructField*/ IntLike
+    pubKey: /*minStructField*/ PubKey | string | number[]
+    pubKeyHash: /*minStructField*/ PubKeyHash | string | number[]
+}
+
+
+
 /**
  * A strong type for the canonical form of NodeRegistrationData
  * @remarks
@@ -186,10 +305,8 @@ export interface NodeRegistrationData {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
-    nodeAddress: /*minStructField*/ string
-    nodePort: /*minStructField*/ bigint
-    nodePublicKey: /*minStructField*/ PubKey
-    lastHeartbeat: /*minStructField*/ number
+    state: /*minStructField*/ DredNodeState
+    nodeDetails: /*minStructField*/ NodeDetails
 }
 
 
@@ -202,7 +319,14 @@ export interface NodeRegistrationData {
  * or the on-chain data-building helpers instead.
  * @public
  */
-export type ErgoNodeRegistrationData = NodeRegistrationData/*like canon-other*/
+export type ErgoNodeRegistrationData = {
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    memberToken: /*minStructField*/ string
+    state: /*minStructField*/ ErgoDredNodeState
+    nodeDetails: /*minStructField*/ ErgoNodeDetails
+}
+
 
 /**
  * A strong type for the permissive form of NodeRegistrationData
@@ -214,10 +338,8 @@ export interface NodeRegistrationDataLike {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
-    nodeAddress: /*minStructField*/ string
-    nodePort: /*minStructField*/ IntLike
-    nodePublicKey: /*minStructField*/ PubKey | string | number[]
-    lastHeartbeat: /*minStructField*/ TimeLike
+    state: /*minStructField*/ DredNodeStateLike
+    nodeDetails: /*minStructField*/ NodeDetailsLike
 }
 
 
@@ -1000,6 +1122,44 @@ export type DelegateLifecycleActivityLike = IntersectedEnum<
         | { ValidatingSettings: tagOnly /*minEnumVariant*/ }
 >
 
+/**
+ * A strong type for the canonical form of SpendingActivity$ValidatingNode
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see SpendingActivity$Ergo$ValidatingNode instead.
+ * @public
+ */
+export interface SpendingActivity$ValidatingNode {
+    id: number[]  /*minVariantField*/ ,
+    validatorPkh: PubKeyHash  /*minVariantField*/ 
+}
+
+
+/**
+ * An ergonomic, though less strictly-safe form of SpendingActivity$ValidatingNode
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the SpendingActivity$ValidatingNodeLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+export type SpendingActivity$Ergo$ValidatingNode = SpendingActivity$ValidatingNode  /*ergo like-canonical-this-variant*/
+
+/**
+ * A strong type for the permissive form of SpendingActivity$ValidatingNode
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+export interface SpendingActivity$ValidatingNodeLike {
+    id: number[]  /*minVariantField*/ ,
+    validatorPkh: PubKeyHash | string | number[]  /*minVariantField*/ 
+}
+
+
+
 
             /**
             * @internal
@@ -1009,6 +1169,10 @@ export type DelegateLifecycleActivityLike = IntersectedEnum<
         UpdatingRecord: singleEnumVariantMeta<SpendingActivityMeta, "UpdatingRecord",
             "Constr#0", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
 			number[]   , "noSpecialFlags"
+        >,
+        ValidatingNode: singleEnumVariantMeta<SpendingActivityMeta, "ValidatingNode",
+            "Constr#1", 
+            "fields", SpendingActivity$ValidatingNode, "noSpecialFlags"
         >
     }
 >;
@@ -1018,7 +1182,7 @@ export type DelegateLifecycleActivityLike = IntersectedEnum<
  * SpendingActivity enum variants
  * 
  * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the SpendingActivity enum type
+ * supporting the **2 variant(s)** of the SpendingActivity enum type
  * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -1027,6 +1191,7 @@ export type DelegateLifecycleActivityLike = IntersectedEnum<
 export type SpendingActivity = 
         | { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
 			number[]    /*minEnumVariant*/ }
+        | { ValidatingNode: SpendingActivity$ValidatingNode /*minEnumVariant*/ }
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -1035,13 +1200,17 @@ export type SpendingActivity =
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export type ErgoSpendingActivity = IntersectedEnum<SpendingActivity/*like canon enum*/>
+export type ErgoSpendingActivity = IntersectedEnum<
+        | { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { ValidatingNode: SpendingActivity$Ergo$ValidatingNode /*minEnumVariant*/ }
+>
 
 /**
  * SpendingActivity enum variants (permissive)
  * 
  * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the SpendingActivity enum type
+ * for creating any of the **2 variant(s)** of the SpendingActivity enum type
  * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -1054,6 +1223,7 @@ export type ErgoSpendingActivity = IntersectedEnum<SpendingActivity/*like canon 
 export type SpendingActivityLike = IntersectedEnum<
         | { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
 			number[]    /*minEnumVariant*/ }
+        | { ValidatingNode: SpendingActivity$ValidatingNodeLike /*minEnumVariant*/ }
 >
 
 
