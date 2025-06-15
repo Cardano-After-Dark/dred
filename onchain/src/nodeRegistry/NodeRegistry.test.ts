@@ -187,6 +187,15 @@ describe("Dred NodeRegistry", async () => {
             "FUT: can be done for a valid combination of Validating-Operator + Validated-Node + nbh Membership for both",
             async (context: DredCapo_TC) => {},
         );
+
+        it.todo("can't validate without a refInput pointing to the validator's node", async (context: DredCapo_TC) => {
+            const {
+                h,
+                h: { network, actors, delay, state },
+            } = context;
+           
+            // should fail if the pubKeyHash isn't found in one of the dredNode-* records in refInputs.
+        });
     });
 
     describe("Activity:UpdatingRecord allows a node operator to update their registration details", () => {
