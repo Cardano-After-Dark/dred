@@ -116,20 +116,50 @@ export class NodeRegistryController extends DelegatedDataContract<
         ).then((tcx) => tcx)
     }
 
+    async mkTxnActivatingNode(
+        item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>,
+        options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
+            activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"]
+        }={updatedFields: {}},
+        initialTcx?: StellarTxnContext<anyState> | undefined
+    ) {
+        const tcx0 = initialTcx || this.mkTcx(
+            "activating dred node"
+        );
+        tcx0.addSigners(this.actorContext.wallet.pubKey.hash());
+
+        if (!item.data) {
+            debugger
+            throw new Error("node not found");
+        }
+        return this.mkTxnUpdatingNodeRegistration("activating dred node", item, {
+            ...options,
+            withMemberToken: false,
+            activity: this.activity.SpendingActivities.ActivatingNode(item.data!.id),
+            updatedFields: {
+                state: { Active: tcx0.txnTime.getTime() } ,
+                ...options.updatedFields,
+            }
+        }, tcx0)
+    }
+
     async mkTxnUpdatingNodeRegistration( 
         txnName: string, 
         item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, 
         options: Omit<DgDataUpdateOptions<
             NodeRegistrationDataLike
         >, "activity"> & {
-            activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"]
+            activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"],
+            withMemberToken?: boolean,
         }, 
         initialTcx?: StellarTxnContext<anyState> | undefined
     ): Promise<StellarTxnContext<anyState>> {
         const tcx0 = initialTcx || this.mkTcx(
             "registering dred node"
         );
-        const tcx1 = await this.capo.mkTxnWithMemberInfo(undefined, tcx0);
+        const withMemberToken = options.withMemberToken ?? true;
+        const tcx1 = withMemberToken ? await this.capo.mkTxnWithMemberInfo(undefined, tcx0) : tcx0;
+
         const capoUtxos = await this.capo.findCapoUtxos();
         const tcx2 = await this.capo.tcxWithSettingsRef(tcx1, {
             capoUtxos: capoUtxos,
@@ -139,7 +169,6 @@ export class NodeRegistryController extends DelegatedDataContract<
             }),
         })
 
-        debugger
         return super.mkTxnUpdateRecord(txnName, item, {
             // default activity
             activity: this.activity.SpendingActivities.UpdatingRecord(item.data!.id),
@@ -165,6 +194,7 @@ export class NodeRegistryController extends DelegatedDataContract<
 
         const tcx1 = await this.mkTxnUpdatingNodeRegistration(txnName, item, {
             ...options,
+            withMemberToken: false,
             updatedFields: {
                 state: {
                     NeedsValidation: [validatorPkh, ...existingNeedsValidation],

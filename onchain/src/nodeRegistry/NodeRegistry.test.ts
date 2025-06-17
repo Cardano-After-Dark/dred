@@ -36,7 +36,16 @@ describe("Dred NodeRegistry", async () => {
         console.log("\n\n\n\n   ==================== ======================");
         await addTestContext(context, DredCapoTestHelper, undefined, helperState);
     });
+    it("does initial setup", async (context: DredCapo_TC) => {
+        const {
+            h,
+            h: { network, actors, delay, state },
+        } = context;
+        h.ts("start");
+        await h.reusableBootstrap();
+        h.ts("ok bootstrapped");
 
+    });
     describe("It's created with the key details for registering a node", () => {
         it("has expected hostname & other high-level details", async (context: DredCapo_TC) => {
             const {
@@ -147,6 +156,27 @@ describe("Dred NodeRegistry", async () => {
             });
         });
 
+        it.todo(
+            "can't be done a second time by the same validating operator, even after pubkey change",
+            async (context: DredCapo_TC) => {
+                const {
+                    h,
+                    h: { network, actors, delay, state },
+                } = context;
+
+                await h.snapToFirstValidatedNode();
+                const controller = await h.registryDgt();
+                const node = await h.findFirstNode();
+                if (!node?.data) throw new Error("no node found");
+
+                await expect(
+                    h.validateNode(node, {
+                        txnName: "node2 operator validates node1",
+                    }),
+                ).rejects.toThrow(/duplicate validation attempt/);
+            },
+        );
+
         it("an operator can't validate their own node", async (context: DredCapo_TC) => {
             const {
                 h,
@@ -169,18 +199,100 @@ describe("Dred NodeRegistry", async () => {
             );
         });
 
-        it.todo("an operator can't validate a node that's not in NeedsValidation state", async (context: DredCapo_TC) => {
+        it("an operator can't validate a node that's not in NeedsValidation state", async (context: DredCapo_TC) => {
             const {
                 h,
                 h: { network, actors, delay, state },
             } = context;
+
+            await h.snapToFirstActivatedNode();
+            await h.setActor("natalia");
+
+            const controller = await h.registryDgt();
+            const node = await h.findFirstNode();
+            await h.setActor("node2");
+
+            const validating = h.validateNode(node, { submit: true });
+
+            await expect(validating).rejects.toThrow(/node is not in need of validation/);
         });
 
-        it.todo("requires a Validating operator to update only the signatories for a NeedsValidation node", async (context: DredCapo_TC) => {
-            const {
-                h,
-                h: { network, actors, delay, state },
-            } = context;
+        describe("doesn't allow Validation to modify anything but the signatories", () => {
+            it("rejects if nodeDetails are modified", async (context: DredCapo_TC) => {
+                const {
+                    h,
+                    h: { network, actors, delay, state },
+                } = context;
+
+                await h.snapToFirstRegisteredNode();
+                const controller = await h.registryDgt();
+                const node = await h.findFirstNode();
+                if (!node?.data) throw new Error("no node found");
+
+                const realUpdate = controller.mkTxnUpdatingNodeRegistration.bind(controller);
+                const mock = vi
+                    .spyOn(controller, "mkTxnUpdatingNodeRegistration")
+                    .mockImplementation((txnName, item, options, initialTcx) => {
+                        const { updatedFields } = options;
+                        return realUpdate(
+                            txnName,
+                            item,
+                            {
+                                ...options,
+                                updatedFields: {
+                                    ...updatedFields,
+                                    nodeDetails: {
+                                        ...item.data!.nodeDetails,
+                                        ...updatedFields.nodeDetails,
+                                        port: 666,
+                                    },
+                                },
+                            },
+                            initialTcx,
+                        );
+                    });
+
+                const validating = h.validateNode(node, { submit: true, expectError: true });
+
+                await expect(validating).rejects.toThrow(
+                    /nodeDetails modified/,
+                );
+            });
+
+            it("rejects if the memberToken is modified", async (context: DredCapo_TC) => {
+                const {
+                    h,
+                    h: { network, actors, delay, state },
+                } = context;
+
+                await h.snapToFirstRegisteredNode();
+                const controller = await h.registryDgt();
+                const node = await h.findFirstNode();
+                if (!node?.data) throw new Error("no node found");
+
+                const realUpdate = controller.mkTxnUpdatingNodeRegistration.bind(controller);
+                const mock = vi
+                    .spyOn(controller, "mkTxnUpdatingNodeRegistration")
+                    .mockImplementation((txnName, item, options, initialTcx) => {
+                        const { updatedFields } = options;
+                        return realUpdate(
+                            txnName,
+                            item,
+                            {
+                                ...options,
+                                updatedFields: {
+                                    ...updatedFields,
+                                    memberToken: "new-member-token",
+                                },
+                            },
+                            initialTcx,
+                        );
+                    });
+
+                await expect(h.validateNode(node, { submit: true })).rejects.toThrow(
+                    /memberToken modified/,
+                );
+            });
         });
 
         it.todo(
@@ -188,13 +300,109 @@ describe("Dred NodeRegistry", async () => {
             async (context: DredCapo_TC) => {},
         );
 
-        it.todo("can't validate without a refInput pointing to the validator's node", async (context: DredCapo_TC) => {
+        it.todo(
+            "can't validate without a refInput pointing to the validator's node",
+            async (context: DredCapo_TC) => {
+                const {
+                    h,
+                    h: { network, actors, delay, state },
+                } = context;
+
+                // should fail if the pubKeyHash isn't found in one of the dredNode-* records in refInputs.
+            },
+        );
+    });
+    describe("Activating a node", () => {
+        it("with minValidations=1, a node can be activated (only) with its NODE pubkey", async (context: DredCapo_TC) => {
             const {
                 h,
                 h: { network, actors, delay, state },
             } = context;
-           
-            // should fail if the pubKeyHash isn't found in one of the dredNode-* records in refInputs.
+
+            await h.snapToFirstValidatedNode();
+            await h.setActor("nellie");
+
+            const controller = await h.registryDgt();
+            const node = await h.findFirstNode();
+            const wrongActorActivating = h.activateNode(node, { submit: true, expectError: true });
+            await expect(wrongActorActivating).rejects.toThrow(/node must activate itself/);
+
+            await h.setActor("ned");
+            const wrongWalletActivating = h.activateNode(node, { submit: true, expectError: true });
+            await expect(wrongWalletActivating).rejects.toThrow(/node must activate itself/);
+
+            await h.setActor("node1");
+            return h.activateNode(node, { submit: true });
+        });
+        it("fails if it doesn't move to Active state", async (context: DredCapo_TC) => {
+            const {
+                h,
+                h: { network, actors, delay, state },
+            } = context;
+
+            await h.snapToFirstValidatedNode();
+            await h.setActor("nellie");
+
+            const controller = await h.registryDgt();
+            const node = await h.findFirstNode();
+            if (!node?.data) throw new Error("no node found");
+
+            await h.setActor("node1");
+            const realActivate = controller.mkTxnActivatingNode.bind(controller);
+            const mock = vi
+                .spyOn(controller, "mkTxnActivatingNode")
+                .mockImplementation((item, options = { updatedFields: {} }, initialTcx) => {
+                    return realActivate(
+                        item,
+                        {
+                            ...options,
+                            updatedFields: {
+                                ...options.updatedFields,
+                                state: { Inactive: {} },
+                            },
+                        },
+                        initialTcx,
+                    );
+                });
+
+            const activating = h.activateNode(node, { submit: true });
+
+            await expect(activating).rejects.toThrow(/node must switch to Active state/);
+        });
+        it("fails if its lastHeartbeat is outside the txn's time range", async (context: DredCapo_TC) => {
+            const {
+                h,
+                h: { network, actors, delay, state },
+            } = context;
+
+            await h.snapToFirstValidatedNode();
+            await h.setActor("nellie");
+
+            const controller = await h.registryDgt();
+            const node = await h.findFirstNode();
+            if (!node?.data) throw new Error("no node found");
+
+            await h.setActor("node1");
+            const realActivate = controller.mkTxnActivatingNode.bind(controller);
+            const mock = vi
+                .spyOn(controller, "mkTxnActivatingNode")
+                .mockImplementation((item, options = { updatedFields: {} }, initialTcx) => {
+                    return realActivate(
+                        item,
+                        {
+                            ...options,
+                            updatedFields: {
+                                ...options.updatedFields,
+                                state: { Active: Date.now() - 4_200_000 } // more than 1h ago
+                            },
+                        },
+                        initialTcx,
+                    );
+                });
+
+            const activating = h.activateNode(node, { submit: true });
+
+            await expect(activating).rejects.toThrow(/wrong heartbeat time/);
         });
     });
 

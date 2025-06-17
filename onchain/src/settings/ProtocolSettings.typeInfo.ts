@@ -185,6 +185,7 @@ export interface DelegationDetailLike {
 export interface NodeOperatorSettings {
     expectedHeartbeatInterval: /*minStructField*/ bigint
     requiredNodeUptime: /*minStructField*/ number
+    minValidations: /*minStructField*/ bigint
     minNodeRegistrationFee: /*minStructField*/ Value
     minNodeOperatorStake: /*minStructField*/ Value
 }
@@ -210,6 +211,7 @@ export type ErgoNodeOperatorSettings = NodeOperatorSettings/*like canon-other*/
 export interface NodeOperatorSettingsLike {
     expectedHeartbeatInterval: /*minStructField*/ IntLike
     requiredNodeUptime: /*minStructField*/ number
+    minValidations: /*minStructField*/ IntLike
     minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
     minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }

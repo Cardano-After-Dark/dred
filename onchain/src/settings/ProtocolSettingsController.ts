@@ -63,7 +63,8 @@ export class ProtocolSettingsController extends DelegatedDataContract<
                 expectedHeartbeatInterval: 7 * 24 * 60 * 60 * 1000,
                 minNodeOperatorStake: makeValue(this.ADA(200n)),
                 minNodeRegistrationFee: makeValue(this.ADA(50n)),
-                requiredNodeUptime: 0.95
+                requiredNodeUptime: 0.95,
+                minValidations: 1,
             },
             nbhSettings: {
                 minNbhStake: makeValue(this.ADA(5_000n)),

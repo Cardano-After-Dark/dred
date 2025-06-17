@@ -1173,6 +1173,18 @@ export interface SpendingActivity$ValidatingNodeLike {
         ValidatingNode: singleEnumVariantMeta<SpendingActivityMeta, "ValidatingNode",
             "Constr#1", 
             "fields", SpendingActivity$ValidatingNode, "noSpecialFlags"
+        >,
+        ActivatingNode: singleEnumVariantMeta<SpendingActivityMeta, "ActivatingNode",
+            "Constr#2", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]   , "noSpecialFlags"
+        >,
+        ReportingInactiveNode: singleEnumVariantMeta<SpendingActivityMeta, "ReportingInactiveNode",
+            "Constr#3", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]   , "noSpecialFlags"
+        >,
+        RefutingInactivity: singleEnumVariantMeta<SpendingActivityMeta, "RefutingInactivity",
+            "Constr#4", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]   , "noSpecialFlags"
         >
     }
 >;
@@ -1182,7 +1194,7 @@ export interface SpendingActivity$ValidatingNodeLike {
  * SpendingActivity enum variants
  * 
  * @remarks - expresses the essential raw data structures
- * supporting the **2 variant(s)** of the SpendingActivity enum type
+ * supporting the **5 variant(s)** of the SpendingActivity enum type
  * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -1192,6 +1204,12 @@ export type SpendingActivity =
         | { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
 			number[]    /*minEnumVariant*/ }
         | { ValidatingNode: SpendingActivity$ValidatingNode /*minEnumVariant*/ }
+        | { ActivatingNode: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { ReportingInactiveNode: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { RefutingInactivity: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -1204,13 +1222,19 @@ export type ErgoSpendingActivity = IntersectedEnum<
         | { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
 			number[]    /*minEnumVariant*/ }
         | { ValidatingNode: SpendingActivity$Ergo$ValidatingNode /*minEnumVariant*/ }
+        | { ActivatingNode: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { ReportingInactiveNode: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { RefutingInactivity: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
 >
 
 /**
  * SpendingActivity enum variants (permissive)
  * 
  * @remarks - expresses the allowable data structure
- * for creating any of the **2 variant(s)** of the SpendingActivity enum type
+ * for creating any of the **5 variant(s)** of the SpendingActivity enum type
  * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -1224,6 +1248,12 @@ export type SpendingActivityLike = IntersectedEnum<
         | { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
 			number[]    /*minEnumVariant*/ }
         | { ValidatingNode: SpendingActivity$ValidatingNodeLike /*minEnumVariant*/ }
+        | { ActivatingNode: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { ReportingInactiveNode: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { RefutingInactivity: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
 >
 
 
@@ -2405,6 +2435,7 @@ export interface CapoCtxLike {
 export interface NodeOperatorSettings {
     expectedHeartbeatInterval: /*minStructField*/ bigint
     requiredNodeUptime: /*minStructField*/ number
+    minValidations: /*minStructField*/ bigint
     minNodeRegistrationFee: /*minStructField*/ Value
     minNodeOperatorStake: /*minStructField*/ Value
 }
@@ -2430,6 +2461,7 @@ export type ErgoNodeOperatorSettings = NodeOperatorSettings/*like canon-other*/
 export interface NodeOperatorSettingsLike {
     expectedHeartbeatInterval: /*minStructField*/ IntLike
     requiredNodeUptime: /*minStructField*/ number
+    minValidations: /*minStructField*/ IntLike
     minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
     minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }

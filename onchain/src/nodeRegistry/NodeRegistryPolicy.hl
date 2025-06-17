@@ -160,6 +160,15 @@ enum SpendingActivity {
         id: ByteArray
         validatorPkh: PubKeyHash
     }
+    ActivatingNode {
+        id: ByteArray
+    }
+    ReportingInactiveNode {
+        id: ByteArray
+    }
+    RefutingInactivity {
+        id: ByteArray
+    }
 }
 
 func ensureConstrainedTxValidity() -> () {
@@ -424,6 +433,30 @@ enum DelegateActivity {
                         );
                         inputData.checkValidationActivity(updatedData, validatorPkh) &&
                         true
+                    },
+                    ActivatingNode{recId} => {
+                        print("activating a registered node...");
+                        settings = ProtocolSettings::from_data(
+                            cctx.getManifestedData("currentSettings")
+                        );                
+                        updateDetails = cctx.updatingDgData(recIdBytes: recId)
+                        inputData = NodeRegistrationData::from_data(
+                            updateDetails.inputData()
+                        );
+                        updatedData = NodeRegistrationData::from_data(
+                            updateDetails.outputData()
+                        );
+                        inputData.checkActivation(
+                            updatedData, settings.nodeOpSettings
+                        ).trace("  -- activation check passed? ")
+                    },
+                    ReportingInactiveNode{_recId} => {
+                        print("reporting an inactive node...");
+                        error("todo: reporting inactivity")
+                    },
+                    RefutingInactivity{_recId} => {
+                        print("refuting inactivity for a registered node...");
+                        error("todo: refuting inactivity")
                     }
                 }
             },

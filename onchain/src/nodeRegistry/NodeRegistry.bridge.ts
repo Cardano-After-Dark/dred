@@ -315,6 +315,7 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
         NodeOperatorSettings: (fields: NodeOperatorSettingsLike | {
     expectedHeartbeatInterval: /*minStructField*/ IntLike
     requiredNodeUptime: /*minStructField*/ number
+    minValidations: /*minStructField*/ IntLike
     minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
     minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
@@ -1984,6 +1985,42 @@ export class SpendingActivityHelper extends EnumBridge<JustAnEnum> {
         }, "DredNodeRegistryPolicy::SpendingActivity.ValidatingNode");
        return uplc;
     } /*multiFieldVariant enum accessor*/
+
+    /**
+     * generates  UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ActivatingNode"***
+     */
+    ActivatingNode(
+        id: number[]
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           ActivatingNode: id
+        }, "DredNodeRegistryPolicy::SpendingActivity.ActivatingNode"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ReportingInactiveNode"***
+     */
+    ReportingInactiveNode(
+        id: number[]
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           ReportingInactiveNode: id
+        }, "DredNodeRegistryPolicy::SpendingActivity.ReportingInactiveNode"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.RefutingInactivity"***
+     */
+    RefutingInactivity(
+        id: number[]
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           RefutingInactivity: id
+        }, "DredNodeRegistryPolicy::SpendingActivity.RefutingInactivity"); /*singleField enum variant*/
+       return uplc;
+    }
 }/*mkEnumHelperClass*/
 
 
@@ -2628,6 +2665,57 @@ export class SpendingActivityHelperNested extends EnumBridge<isActivity> {
         }, "DredNodeRegistryPolicy::SpendingActivity.ValidatingNode");
        return uplc;
     } /*multiFieldVariant enum accessor*/
+
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ActivatingNode"***
+    * @remarks
+    * #### Nested activity: 
+    * this is connected to a nested-activity wrapper, so the details are piped through 
+    * the parent's uplc-encoder, producing a single uplc object with 
+    * a complete wrapper for this inner activity detail.
+     */
+    ActivatingNode(
+        id: number[]
+    ) : isActivity {
+        const uplc = this.mkUplcData({ 
+           ActivatingNode: id
+        }, "DredNodeRegistryPolicy::SpendingActivity.ActivatingNode"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ReportingInactiveNode"***
+    * @remarks
+    * #### Nested activity: 
+    * this is connected to a nested-activity wrapper, so the details are piped through 
+    * the parent's uplc-encoder, producing a single uplc object with 
+    * a complete wrapper for this inner activity detail.
+     */
+    ReportingInactiveNode(
+        id: number[]
+    ) : isActivity {
+        const uplc = this.mkUplcData({ 
+           ReportingInactiveNode: id
+        }, "DredNodeRegistryPolicy::SpendingActivity.ReportingInactiveNode"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.RefutingInactivity"***
+    * @remarks
+    * #### Nested activity: 
+    * this is connected to a nested-activity wrapper, so the details are piped through 
+    * the parent's uplc-encoder, producing a single uplc object with 
+    * a complete wrapper for this inner activity detail.
+     */
+    RefutingInactivity(
+        id: number[]
+    ) : isActivity {
+        const uplc = this.mkUplcData({ 
+           RefutingInactivity: id
+        }, "DredNodeRegistryPolicy::SpendingActivity.RefutingInactivity"); /*singleField enum variant*/
+       return uplc;
+    }
 }/*mkEnumHelperClass*/
 
 
@@ -4665,6 +4753,51 @@ export const SpendingActivitySchema : EnumTypeSchema = {
                     }
                 }
             ]
+        },
+        {
+            "kind": "variant",
+            "tag": 2,
+            "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__ActivatingNode",
+            "name": "ActivatingNode",
+            "fieldTypes": [
+                {
+                    "name": "id",
+                    "type": {
+                        "kind": "internal",
+                        "name": "ByteArray"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 3,
+            "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__ReportingInactiveNode",
+            "name": "ReportingInactiveNode",
+            "fieldTypes": [
+                {
+                    "name": "id",
+                    "type": {
+                        "kind": "internal",
+                        "name": "ByteArray"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 4,
+            "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__RefutingInactivity",
+            "name": "RefutingInactivity",
+            "fieldTypes": [
+                {
+                    "name": "id",
+                    "type": {
+                        "kind": "internal",
+                        "name": "ByteArray"
+                    }
+                }
+            ]
         }
     ]
 };
@@ -5129,6 +5262,51 @@ export const DelegateActivitySchema : EnumTypeSchema = {
                                         "type": {
                                             "kind": "internal",
                                             "name": "PubKeyHash"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 2,
+                                "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__ActivatingNode",
+                                "name": "ActivatingNode",
+                                "fieldTypes": [
+                                    {
+                                        "name": "id",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "ByteArray"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 3,
+                                "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__ReportingInactiveNode",
+                                "name": "ReportingInactiveNode",
+                                "fieldTypes": [
+                                    {
+                                        "name": "id",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "ByteArray"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 4,
+                                "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__RefutingInactivity",
+                                "name": "RefutingInactivity",
+                                "fieldTypes": [
+                                    {
+                                        "name": "id",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "ByteArray"
                                         }
                                     }
                                 ]
@@ -10161,6 +10339,14 @@ export const NodeOperatorSettingsSchema : StructTypeSchema = {
             "key": "ndUpt"
         },
         {
+            "name": "minValidations",
+            "type": {
+                "kind": "internal",
+                "name": "Int"
+            },
+            "key": "minVals"
+        },
+        {
             "name": "minNodeRegistrationFee",
             "type": {
                 "kind": "internal",
@@ -10208,6 +10394,14 @@ export const AbstractSettingsForNodeOperatorSchema : StructTypeSchema = {
                             "name": "Real"
                         },
                         "key": "ndUpt"
+                    },
+                    {
+                        "name": "minValidations",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Int"
+                        },
+                        "key": "minVals"
                     },
                     {
                         "name": "minNodeRegistrationFee",

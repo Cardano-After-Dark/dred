@@ -233,6 +233,7 @@ export class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
         NodeOperatorSettings: (fields: NodeOperatorSettingsLike | {
     expectedHeartbeatInterval: /*minStructField*/ IntLike
     requiredNodeUptime: /*minStructField*/ number
+    minValidations: /*minStructField*/ IntLike
     minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
     minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
@@ -3263,6 +3264,14 @@ export const NodeOperatorSettingsSchema : StructTypeSchema = {
             "key": "ndUpt"
         },
         {
+            "name": "minValidations",
+            "type": {
+                "kind": "internal",
+                "name": "Int"
+            },
+            "key": "minVals"
+        },
+        {
             "name": "minNodeRegistrationFee",
             "type": {
                 "kind": "internal",
@@ -3351,6 +3360,14 @@ export const ProtocolSettingsSchema : StructTypeSchema = {
                             "name": "Real"
                         },
                         "key": "ndUpt"
+                    },
+                    {
+                        "name": "minValidations",
+                        "type": {
+                            "kind": "internal",
+                            "name": "Int"
+                        },
+                        "key": "minVals"
                     },
                     {
                         "name": "minNodeRegistrationFee",
@@ -3550,6 +3567,14 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                                 "name": "Real"
                                             },
                                             "key": "ndUpt"
+                                        },
+                                        {
+                                            "name": "minValidations",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Int"
+                                            },
+                                            "key": "minVals"
                                         },
                                         {
                                             "name": "minNodeRegistrationFee",

@@ -6,6 +6,17 @@ import {
     bREQT
 } from StellarHeliosHelpers
 
+import {
+    tx, 
+    get_current_input,
+    get_current_validator_hash,
+    get_cont_outputs
+} from ScriptContext
+
+import {
+    NodeOperatorSettings
+} from NodeOperatorSettings
+
 enum DredNodeState {
     NeedsValidation {
         // datumHash: ByteArray
@@ -67,6 +78,22 @@ struct NodeRegistrationData {
 
         self.validate()
     }
+    func unmodifedEssentials(self, nextData: NodeRegistrationData) -> Bool {
+        REQT("The essential node details must be unmodified");
+        REQT("rejects if nodeDetails are modified")
+        assert(
+            (self.nodeDetails == nextData.nodeDetails).trace("  -- node details unchanged? "),
+            "nodeDetails modified"
+        )
+
+        REQT("rejects if memberToken is modified")
+        assert(
+            (self.memberToken == nextData.memberToken).trace("  -- memberToken unchanged? "),
+            "memberToken modified"
+        )
+
+        true
+    }
     
     func validateUpdate(self, _nextData: NodeRegistrationData) -> Bool {
         // TODO("the lastHeartbeat must be extended by settings.expectedHeartbeatInterval");
@@ -102,12 +129,48 @@ struct NodeRegistrationData {
             },
             _ => error("node is not in need of validation")
         }
-        REQT("rejects if nodeDetails are modified");
-        assert(
-            (self.nodeDetails == nextData.nodeDetails).trace("  -- node details unchanged? "),
-            "nodeDetails modified"
-        );
-        true
+
+        self.unmodifedEssentials(nextData)
+    }
+
+    func checkActivation(self, nextData: NodeRegistrationData, settings: NodeOperatorSettings) -> Bool {
+        REQT("rejects unless in NeedsValidation state");
+        self.state.switch {
+            NeedsValidation{signatories} => {
+                // check mark emoji: ✅
+                print("  ✅ NeedsValidation: ok");
+                needValidations = settings.minValidations;
+                validationCount = signatories.length;
+                REQT("rejects when validations are insufficient");
+                print("  -- have "+ validationCount.show() + " validations, need "+ needValidations.show())
+                assert(
+                    validationCount >= needValidations,
+                    "not enough validations to activate the node"
+                )
+                REQT("rejects activation if txn is not signed by the node operator");
+                nodePkh = self.nodeDetails.pubKeyHash;
+                print("  -- expecting sig from: "+ nodePkh.show());
+                assert(
+                    tx.is_signed_by(nodePkh).trace("  -- txn signed by node operator? "),
+                    "node must activate itself"
+                )
+            },
+            _ => error("node is not in need of validation")
+        }
+        REQT("rejects if the node doesn't move to Active state");
+        nextData.state.switch {
+            Active{lastHeartbeat} => {
+                print("  -- state is Active: ok");
+                REQT("rejects if the lastHeartbeat is not updated");
+                print("  -- lastHeartbeat: "+ lastHeartbeat.show() + " txn time: "+ tx.time_range.show());
+                assert(
+                    tx.time_range.contains(lastHeartbeat),
+                    "wrong heartbeat time"
+                )
+            },
+            _ => error("node must switch to Active state")
+        }
+        self.unmodifedEssentials(nextData)
     }
 }
 

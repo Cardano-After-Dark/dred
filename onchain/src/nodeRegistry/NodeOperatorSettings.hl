@@ -9,6 +9,7 @@ import {
 struct NodeOperatorSettings {
     expectedHeartbeatInterval: Duration "ndHbi"
     requiredNodeUptime: Real "ndUpt" // percentage
+    minValidations: Int "minVals"
 
     minNodeRegistrationFee: Value "minFee"
     minNodeOperatorStake: Value "minStk"

@@ -54,6 +54,7 @@ describe("DRED Settings", () => {
             expect(nodeOpSettings.expectedHeartbeatInterval).toBeGreaterThan(300_000);
             expect(nodeOpSettings.minNodeOperatorStake.lovelace).toBeGreaterThan(40n * ADA);
             expect(nodeOpSettings.requiredNodeUptime).toBe(0.95);
+            expect(nodeOpSettings.minValidations).toBe(1);
             expect(nodeOpSettings.minNodeRegistrationFee.lovelace).toBeGreaterThan(0n);
         });
 
@@ -94,12 +95,14 @@ describe("DRED Settings", () => {
             const settings = await capo.findSettingsInfo({
                 charterData,
             });
+            
             const updatedFields : Partial<minimalData<ErgoProtocolSettings>> = {
                 nodeOpSettings: {
                     expectedHeartbeatInterval: 42000n,
                     minNodeOperatorStake: makeValue(10_000n),
                     minNodeRegistrationFee: makeValue(10_000n),
                     requiredNodeUptime: 0.95,
+                    minValidations: 1n,
                 },
                 nbhSettings: {
                     minNbhStake: makeValue(10_000n * ADA),
@@ -146,6 +149,7 @@ describe("DRED Settings", () => {
                     minNodeOperatorStake: makeValue(10_000n),
                     minNodeRegistrationFee: makeValue(10_000n),
                     requiredNodeUptime: 0.95,
+                    minValidations: 1,
                 },
                 nbhSettings: {
                     minNbhStake: makeValue(10_000n * ADA),

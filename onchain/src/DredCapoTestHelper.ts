@@ -130,7 +130,7 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
         return this.submitTxnWithBlock(tcx);
     }
 
-    @CapoTestHelper.hasNamedSnapshot("firstNode", "ned")
+    @CapoTestHelper.hasNamedSnapshot("firstNodeRegistered", "ned")
     async snapToFirstRegisteredNode() {
         throw new Error("never called");
         this.firstRegisteredNode();
@@ -142,6 +142,28 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
         const controller = await this.registryDgt();
         const node = controller.exampleData();
         return this.createNode(node);
+    }
+
+    @CapoTestHelper.hasNamedSnapshot("firstValidatedNode", "ned")
+    async snapToFirstValidatedNode() {
+        throw new Error("never called");
+        this.firstValidatedNode();
+    }
+    
+    async firstValidatedNode() {
+        await this.bootstrap();
+        await this.snapToFirstRegisteredNode();
+
+        await this.setActor("nellie");
+        const controller = await this.registryDgt();
+        const firstNode = await this.findFirstNode();
+        await this.participantSelfRegisters();
+
+        return this.validateNode(firstNode, { submit: true }).then((tcx) => {
+            // restore the first actor so the snapshot-checker is happy
+            this.setActor("ned");
+            return tcx;
+        });
     }
 
     async createNode(
@@ -219,7 +241,7 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
             expectError,
             activity = registryDgt.activity.SpendingActivities.UpdatingRecord(node.data!.id),
         } = options;
-        
+
         const tcx = await registryDgt.mkTxnUpdatingNodeRegistration(txnName, node, {
             activity,
             updatedFields: {
@@ -256,6 +278,40 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
         if (!submit) return tcx;
         return this.submitTxnWithBlock(tcx, { expectError });
     }
+
+    @CapoTestHelper.hasNamedSnapshot("firstActivatedNode", "ned")
+    async snapToFirstActivatedNode() {
+        throw new Error("never called");
+        this.firstActivatedNode();
+    }   
+    
+
+    async firstActivatedNode() {
+        await this.bootstrap();
+        await this.snapToFirstValidatedNode();
+        await this.setActor("node1");
+        const controller = await this.registryDgt();
+        const firstNode = await this.findFirstNode();
+
+        return this.activateNode(firstNode, { submit: true }).then(async (tcx) => {
+            await this.setActor("ned");
+            return tcx;
+        });
+    }
+
+    async activateNode(
+        node: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, 
+        options: { submit?: boolean, expectError?: true } = {},
+    ) {
+        const { submit = true, expectError } = options;
+        const controller = await this.registryDgt();
+        const tcx = await controller.mkTxnActivatingNode(node);
+        return this.submitTxnWithBlock(tcx, {
+            expectError,
+        });
+    }
+
+
 
     async updateSettings(
         settings: FoundDatumUtxo<ErgoProtocolSettings, any>,
