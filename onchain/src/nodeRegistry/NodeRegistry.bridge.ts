@@ -1020,10 +1020,10 @@ export class DredNodeStateHelper extends EnumBridge<JustAnEnum> {
      * generates  UplcData for ***"NodeRegistrationData::DredNodeState.NeedsValidation"***
      */
     NeedsValidation(
-        signatories: Array<PubKeyHash | string | number[]>
+        validators: Array<number[]>
     ) : UplcData {
         const uplc = this.mkUplcData({ 
-           NeedsValidation: signatories
+           NeedsValidation: validators
         }, "NodeRegistrationData::DredNodeState.NeedsValidation"); /*singleField enum variant*/
        return uplc;
     }
@@ -1044,10 +1044,10 @@ export class DredNodeStateHelper extends EnumBridge<JustAnEnum> {
      * generates  UplcData for ***"NodeRegistrationData::DredNodeState.NeedsHeartbeats"***
      */
     NeedsHeartbeats(
-        signatories: Array<PubKey | string | number[]>
+        validators: Array<number[]>
     ) : UplcData {
         const uplc = this.mkUplcData({ 
-           NeedsHeartbeats: signatories
+           NeedsHeartbeats: validators
         }, "NodeRegistrationData::DredNodeState.NeedsHeartbeats"); /*singleField enum variant*/
        return uplc;
     }
@@ -1978,7 +1978,7 @@ export class SpendingActivityHelper extends EnumBridge<JustAnEnum> {
      */
     ValidatingNode(fields: SpendingActivity$ValidatingNodeLike | { 
         id: number[],
-        validatorPkh: PubKeyHash | string | number[]
+        validatorId: number[]
     }) : UplcData {
         const uplc = this.mkUplcData({
             ValidatingNode: fields 
@@ -2658,7 +2658,7 @@ export class SpendingActivityHelperNested extends EnumBridge<isActivity> {
      */
     ValidatingNode(fields: SpendingActivity$ValidatingNodeLike | { 
         id: number[],
-        validatorPkh: PubKeyHash | string | number[]
+        validatorId: number[]
     }) : isActivity {
         const uplc = this.mkUplcData({
             ValidatingNode: fields 
@@ -3682,12 +3682,12 @@ export const DredNodeStateSchema : EnumTypeSchema = {
             "name": "NeedsValidation",
             "fieldTypes": [
                 {
-                    "name": "signatories",
+                    "name": "validators",
                     "type": {
                         "kind": "list",
                         "itemType": {
                             "kind": "internal",
-                            "name": "PubKeyHash"
+                            "name": "ByteArray"
                         }
                     }
                 }
@@ -3715,12 +3715,12 @@ export const DredNodeStateSchema : EnumTypeSchema = {
             "name": "NeedsHeartbeats",
             "fieldTypes": [
                 {
-                    "name": "signatories",
+                    "name": "validators",
                     "type": {
                         "kind": "list",
                         "itemType": {
                             "kind": "internal",
-                            "name": "PubKey"
+                            "name": "ByteArray"
                         }
                     }
                 }
@@ -3817,12 +3817,12 @@ export const NodeRegistrationDataSchema : StructTypeSchema = {
                         "name": "NeedsValidation",
                         "fieldTypes": [
                             {
-                                "name": "signatories",
+                                "name": "validators",
                                 "type": {
                                     "kind": "list",
                                     "itemType": {
                                         "kind": "internal",
-                                        "name": "PubKeyHash"
+                                        "name": "ByteArray"
                                     }
                                 }
                             }
@@ -3850,12 +3850,12 @@ export const NodeRegistrationDataSchema : StructTypeSchema = {
                         "name": "NeedsHeartbeats",
                         "fieldTypes": [
                             {
-                                "name": "signatories",
+                                "name": "validators",
                                 "type": {
                                     "kind": "list",
                                     "itemType": {
                                         "kind": "internal",
-                                        "name": "PubKey"
+                                        "name": "ByteArray"
                                     }
                                 }
                             }
@@ -4061,12 +4061,12 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                             "name": "NeedsValidation",
                                             "fieldTypes": [
                                                 {
-                                                    "name": "signatories",
+                                                    "name": "validators",
                                                     "type": {
                                                         "kind": "list",
                                                         "itemType": {
                                                             "kind": "internal",
-                                                            "name": "PubKeyHash"
+                                                            "name": "ByteArray"
                                                         }
                                                     }
                                                 }
@@ -4094,12 +4094,12 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                             "name": "NeedsHeartbeats",
                                             "fieldTypes": [
                                                 {
-                                                    "name": "signatories",
+                                                    "name": "validators",
                                                     "type": {
                                                         "kind": "list",
                                                         "itemType": {
                                                             "kind": "internal",
-                                                            "name": "PubKey"
+                                                            "name": "ByteArray"
                                                         }
                                                     }
                                                 }
@@ -4746,10 +4746,10 @@ export const SpendingActivitySchema : EnumTypeSchema = {
                     }
                 },
                 {
-                    "name": "validatorPkh",
+                    "name": "validatorId",
                     "type": {
                         "kind": "internal",
-                        "name": "PubKeyHash"
+                        "name": "ByteArray"
                     }
                 }
             ]
@@ -5258,10 +5258,10 @@ export const DelegateActivitySchema : EnumTypeSchema = {
                                         }
                                     },
                                     {
-                                        "name": "validatorPkh",
+                                        "name": "validatorId",
                                         "type": {
                                             "kind": "internal",
-                                            "name": "PubKeyHash"
+                                            "name": "ByteArray"
                                         }
                                     }
                                 ]

@@ -158,7 +158,7 @@ enum SpendingActivity {
     }
     ValidatingNode {
         id: ByteArray
-        validatorPkh: PubKeyHash
+        validatorId: ByteArray
     }
     ActivatingNode {
         id: ByteArray
@@ -413,9 +413,16 @@ enum DelegateActivity {
                         hasMemberToken &&
                         inputData.validateUpdate(updatedData) // throws if invalid 
                     },
-                    ValidatingNode{recId, validatorPkh} => {
+                    ValidatingNode{recId, validatorId} => {
                         print("validating a registered node...");
                         updateDetails = cctx.updatingDgData(recIdBytes: recId)
+
+                        REQT("rejects without a refInput pointing at the validator's registration record");
+                        validatorRef = cctx.referencingDgData(recIdBytes:validatorId);
+                        validatorData : NodeRegistrationData = NodeRegistrationData::from_data(
+                            validatorRef.inputData()
+                        );
+                        validatorPkh = validatorData.nodeDetails.pubKeyHash;
 
                         inputData = NodeRegistrationData::from_data(
                             updateDetails.inputData()
@@ -431,7 +438,7 @@ enum DelegateActivity {
                             tx.is_signed_by(validatorPkh), 
                             "txn not signed by validator"
                         );
-                        inputData.checkValidationActivity(updatedData, validatorPkh) &&
+                        inputData.checkValidationActivity(updatedData, validatorData) &&
                         true
                     },
                     ActivatingNode{recId} => {

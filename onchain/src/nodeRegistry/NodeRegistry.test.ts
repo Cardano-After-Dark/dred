@@ -89,6 +89,7 @@ describe("Dred NodeRegistry", async () => {
 
             await h.reusableBootstrap();
             const capo = h.capo;
+            await h.setActor("ned");
             await h.participantSelfRegisters();
 
             const controller = await h.registryDgt();
@@ -105,10 +106,10 @@ describe("Dred NodeRegistry", async () => {
             } = context;
 
             await h.reusableBootstrap();
+            await h.setActor("ned");
             await h.participantSelfRegisters();
 
             const controller = await h.registryDgt();
-
             await expect(
                 h.createNode({
                     ...controller.exampleData(),
@@ -134,30 +135,23 @@ describe("Dred NodeRegistry", async () => {
                 h: { network, actors, delay, state },
             } = context;
 
-            await h.snapToFirstRegisteredNode();
+            await h.snapToSecondRegisteredNode();
             const node1 = await h.findFirstNode();
-            if (!node1?.data) throw new Error("no node found");
+
             const controller = await h.registryDgt();
 
             h.setActor("nellie");
-            await h.participantSelfRegisters();
-            const n2tcx = await h.createNode({
-                ...controller.exampleData(),
-            });
-
-            debugger;
-            const node2 = await controller.findRecords({
-                id: n2tcx.state.uuts.recordId,
-            });
+            const node2 = await h.findSecondNode();
             if (!node2?.data) throw new Error("no node found");
 
             await h.validateNode(node1, {
                 txnName: "node2 operator validates node1",
+                validatorReg: node2,
             });
         });
 
-        it.todo(
-            "can't be done a second time by the same validating operator, even after pubkey change",
+        it(
+            "can't be done a second time by the same validating operator",
             async (context: DredCapo_TC) => {
                 const {
                     h,
@@ -166,12 +160,16 @@ describe("Dred NodeRegistry", async () => {
 
                 await h.snapToFirstValidatedNode();
                 const controller = await h.registryDgt();
-                const node = await h.findFirstNode();
-                if (!node?.data) throw new Error("no node found");
+                const node1 = await h.findFirstNode();
+                const node2 = await h.findSecondNode();
+                if (!node1?.data) throw new Error("no node found");
+
+                await h.setActor("nellie");
 
                 await expect(
-                    h.validateNode(node, {
-                        txnName: "node2 operator validates node1",
+                    h.validateNode(node1, {
+                        txnName: "node2 operator validates node1 AGAIN",
+                        validatorReg: node2,
                     }),
                 ).rejects.toThrow(/duplicate validation attempt/);
             },
@@ -183,14 +181,19 @@ describe("Dred NodeRegistry", async () => {
                 h: { network, actors, delay, state },
             } = context;
 
-            await h.snapToFirstRegisteredNode();
+            await h.snapToSecondRegisteredNode();
             const controller = await h.registryDgt();
-            const node = await h.findFirstNode();
-            if (!node?.data) throw new Error("no node found");
+            const node1 = await h.findFirstNode();
+            if (!node1?.data) throw new Error("no node found");
 
-            const submitting = h.validateNode(node, {
+            // const node2 = await h.findSecondNode();
+            // if (!node2?.data) throw new Error("no node found");
+
+            await h.setActor("ned");
+
+            const submitting = h.validateNode(node1, {
                 txnName: "validate own node",
-                validatorPkh: h.actors.node1.pubKey.hash(),
+                validatorReg: node1,
                 expectError: true,
             });
 
@@ -209,10 +212,14 @@ describe("Dred NodeRegistry", async () => {
             await h.setActor("natalia");
 
             const controller = await h.registryDgt();
-            const node = await h.findFirstNode();
-            await h.setActor("node2");
+            const node1 = await h.findFirstNode();
+            if (!node1?.data) throw new Error("no node found");
 
-            const validating = h.validateNode(node, { submit: true });
+            await h.setActor("nellie");
+            const node2 = await h.findSecondNode();
+            if (!node2?.data) throw new Error("no node found");
+
+            const validating = h.validateNode(node1, { submit: true, validatorReg: node2 });
 
             await expect(validating).rejects.toThrow(/node is not in need of validation/);
         });
@@ -224,10 +231,13 @@ describe("Dred NodeRegistry", async () => {
                     h: { network, actors, delay, state },
                 } = context;
 
-                await h.snapToFirstRegisteredNode();
+                await h.snapToSecondRegisteredNode();
                 const controller = await h.registryDgt();
-                const node = await h.findFirstNode();
-                if (!node?.data) throw new Error("no node found");
+                const node1 = await h.findFirstNode();
+                if (!node1?.data) throw new Error("no node found");
+
+                const node2 = await h.findSecondNode();
+                if (!node2?.data) throw new Error("no node found");
 
                 const realUpdate = controller.mkTxnUpdatingNodeRegistration.bind(controller);
                 const mock = vi
@@ -252,7 +262,11 @@ describe("Dred NodeRegistry", async () => {
                         );
                     });
 
-                const validating = h.validateNode(node, { submit: true, expectError: true });
+                const validating = h.validateNode(node1, { 
+                    validatorReg: node2,
+                    submit: true, 
+                    expectError: true 
+                });
 
                 await expect(validating).rejects.toThrow(
                     /nodeDetails modified/,
@@ -265,10 +279,13 @@ describe("Dred NodeRegistry", async () => {
                     h: { network, actors, delay, state },
                 } = context;
 
-                await h.snapToFirstRegisteredNode();
+                await h.snapToSecondRegisteredNode();
                 const controller = await h.registryDgt();
-                const node = await h.findFirstNode();
-                if (!node?.data) throw new Error("no node found");
+                const node1 = await h.findFirstNode();
+                if (!node1?.data) throw new Error("no node found");
+
+                const node2 = await h.findSecondNode();
+                if (!node2?.data) throw new Error("no node found");
 
                 const realUpdate = controller.mkTxnUpdatingNodeRegistration.bind(controller);
                 const mock = vi
@@ -289,7 +306,10 @@ describe("Dred NodeRegistry", async () => {
                         );
                     });
 
-                await expect(h.validateNode(node, { submit: true })).rejects.toThrow(
+                await expect(h.validateNode(node1, { 
+                    submit: true,
+                    validatorReg: node2,
+                })).rejects.toThrow(
                     /memberToken modified/,
                 );
             });
@@ -300,7 +320,7 @@ describe("Dred NodeRegistry", async () => {
             async (context: DredCapo_TC) => {},
         );
 
-        it.todo(
+        it(
             "can't validate without a refInput pointing to the validator's node",
             async (context: DredCapo_TC) => {
                 const {
@@ -308,10 +328,28 @@ describe("Dred NodeRegistry", async () => {
                     h: { network, actors, delay, state },
                 } = context;
 
+                await h.snapToSecondRegisteredNode();
+                const controller = await h.registryDgt();
+                const node = await h.findFirstNode();
+                if (!node?.data) throw new Error("no node found");
+
+                const validatorReg = await h.findSecondNode();
+                if (!validatorReg) throw new Error("validator's node-reg record not found");
+
+                vi.spyOn(controller, "addValidatorRef").mockImplementation((tcx, validatorReg) => tcx)
+
+                const validating = h.validateNode(node, { 
+                    validatorReg: validatorReg,
+                    submit: true, 
+                    expectError: true,
+                });
+
                 // should fail if the pubKeyHash isn't found in one of the dredNode-* records in refInputs.
+                await expect(validating).rejects.toThrow(/refDD: not found/);
             },
         );
     });
+
     describe("Activating a node", () => {
         it("with minValidations=1, a node can be activated (only) with its NODE pubkey", async (context: DredCapo_TC) => {
             const {
@@ -334,6 +372,7 @@ describe("Dred NodeRegistry", async () => {
             await h.setActor("node1");
             return h.activateNode(node, { submit: true });
         });
+
         it("fails if it doesn't move to Active state", async (context: DredCapo_TC) => {
             const {
                 h,

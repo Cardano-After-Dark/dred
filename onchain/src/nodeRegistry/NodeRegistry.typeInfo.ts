@@ -181,16 +181,16 @@ export interface DelegationDetailLike {
             export type DredNodeStateMeta = EnumTypeMeta<
     {module: "NodeRegistrationData", enumName: "DredNodeState"}, {
         NeedsValidation: singleEnumVariantMeta<DredNodeStateMeta, "NeedsValidation",
-            "Constr#0", "singletonField", /* implied wrapper { signatories: ... } for singleVariantField */ 
-			Array<PubKeyHash>   , "noSpecialFlags"
+            "Constr#0", "singletonField", /* implied wrapper { validators: ... } for singleVariantField */ 
+			Array<number[]>   , "noSpecialFlags"
         >,
         Active: singleEnumVariantMeta<DredNodeStateMeta, "Active",
             "Constr#1", "singletonField", /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ 
 			number   , "noSpecialFlags"
         >,
         NeedsHeartbeats: singleEnumVariantMeta<DredNodeStateMeta, "NeedsHeartbeats",
-            "Constr#2", "singletonField", /* implied wrapper { signatories: ... } for singleVariantField */ 
-			Array<PubKey>   , "noSpecialFlags"
+            "Constr#2", "singletonField", /* implied wrapper { validators: ... } for singleVariantField */ 
+			Array<number[]>   , "noSpecialFlags"
         >,
         Inactive: singleEnumVariantMeta<DredNodeStateMeta, "Inactive",
             "Constr#3", "tagOnly", tagOnly, "noSpecialFlags"
@@ -210,12 +210,12 @@ export interface DelegationDetailLike {
  * @public
  */
 export type DredNodeState = 
-        | { NeedsValidation: /* implied wrapper { signatories: ... } for singleVariantField */ 
-			Array<PubKeyHash>    /*minEnumVariant*/ }
+        | { NeedsValidation: /* implied wrapper { validators: ... } for singleVariantField */ 
+			Array<number[]>    /*minEnumVariant*/ }
         | { Active: /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ 
 			number    /*minEnumVariant*/ }
-        | { NeedsHeartbeats: /* implied wrapper { signatories: ... } for singleVariantField */ 
-			Array<PubKey>    /*minEnumVariant*/ }
+        | { NeedsHeartbeats: /* implied wrapper { validators: ... } for singleVariantField */ 
+			Array<number[]>    /*minEnumVariant*/ }
         | { Inactive: tagOnly /*minEnumVariant*/ }
 
 /**
@@ -242,12 +242,12 @@ export type ErgoDredNodeState = IntersectedEnum<DredNodeState/*like canon enum*/
  * @public
  */
 export type DredNodeStateLike = IntersectedEnum<
-        | { NeedsValidation: /* implied wrapper { signatories: ... } for singleVariantField */ 
-			Array<PubKeyHash | string | number[]>    /*minEnumVariant*/ }
+        | { NeedsValidation: /* implied wrapper { validators: ... } for singleVariantField */ 
+			Array<number[]>    /*minEnumVariant*/ }
         | { Active: /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ 
 			TimeLike    /*minEnumVariant*/ }
-        | { NeedsHeartbeats: /* implied wrapper { signatories: ... } for singleVariantField */ 
-			Array<PubKey | string | number[]>    /*minEnumVariant*/ }
+        | { NeedsHeartbeats: /* implied wrapper { validators: ... } for singleVariantField */ 
+			Array<number[]>    /*minEnumVariant*/ }
         | { Inactive: tagOnly /*minEnumVariant*/ }
 >
 
@@ -1132,7 +1132,7 @@ export type DelegateLifecycleActivityLike = IntersectedEnum<
  */
 export interface SpendingActivity$ValidatingNode {
     id: number[]  /*minVariantField*/ ,
-    validatorPkh: PubKeyHash  /*minVariantField*/ 
+    validatorId: number[]  /*minVariantField*/ 
 }
 
 
@@ -1155,7 +1155,7 @@ export type SpendingActivity$Ergo$ValidatingNode = SpendingActivity$ValidatingNo
  */
 export interface SpendingActivity$ValidatingNodeLike {
     id: number[]  /*minVariantField*/ ,
-    validatorPkh: PubKeyHash | string | number[]  /*minVariantField*/ 
+    validatorId: number[]  /*minVariantField*/ 
 }
 
 

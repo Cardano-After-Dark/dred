@@ -20,17 +20,16 @@ import {
 enum DredNodeState {
     NeedsValidation {
         // datumHash: ByteArray
-        // to validate, a signatory should sign the current datum hash.
-        // the contract ensures that the signature applies to the previous datum hash,
-        // and the record's next datum hash is modified when the new signatory is included
-        signatories: []PubKeyHash
+        // to validate, a validator should post a Validating txn
+        // ... and add themselves to this list, using their own node-reg record id.
+        validators: []ByteArray
     }
     Active {
         lastHeartbeat: Time
     }
     NeedsHeartbeats {
         // datumHash: ByteArray
-        signatories: []PubKey
+        validators: []ByteArray
     }
     Inactive
 }
@@ -65,11 +64,11 @@ struct NodeRegistrationData {
         //     "lastHeartbeat must be 0 during creation");
         REQT("state must be NeedsValidation during creation");
         self.state.switch {
-            NeedsValidation{signatories} => {
-                REQT("signatories must be empty during creation");
+            NeedsValidation{validators} => {
+                REQT("validators must be empty during creation");
                 assert(
-                    (signatories.length ==0).trace("  -- signatories empty? "),
-                    "non-zero signatories list"
+                    (validators.length ==0).trace("  -- validators empty? "),
+                    "non-zero validators list"
                 )
                 true
             },
@@ -104,27 +103,38 @@ struct NodeRegistrationData {
 
     func checkValidationActivity(self, 
         nextData: NodeRegistrationData, 
-        validatorPkh: PubKeyHash
+        validatorRec: NodeRegistrationData
     ) -> Bool {
         REQT("can't validate own node");
+        validatorPkh = validatorRec.nodeDetails.pubKeyHash;
         assert(validatorPkh != self.nodeDetails.pubKeyHash, "can't validate own node");
         REQT("rejects unless in NeedsValidation state");
-        oldSignatories = self.state.switch {
-            NeedsValidation{signatories} => signatories,
+        oldValidators = self.state.switch {
+            NeedsValidation{validators} => {
+                print( "   -- NeedsValidation ok");
+                validators
+            },
             _ => error("node is not in need of validation")
         };
-        print( "   -- NeedsValidation ok");
+        REQT("rejects if the validator's id is already in the list");
+        oldValidators.find_safe(
+            (v: ByteArray) -> Bool {  v == validatorRec.id }
+        ).switch {
+            Some => error("duplicate validation attempt"),
+            None => print("  -- ok, additional validation from "+ validatorRec.id.show())
+        }
+        
         nextData.state.switch {
-            NeedsValidation{signatories} => {
-                REQT("rejects unless the new validator's pkh is at head of the new signatories list");
+            NeedsValidation{validators} => {
+                REQT("rejects unless the new validator's dredNode-* id is at the head of the new validators list");
                 assert(
-                    (signatories.head == validatorPkh).trace("  -- new pkh at head? "), 
-                    "expected validator not heading the new signatories list "
+                    (validators.head == validatorRec.id).trace("  -- new validator's id at head? "), 
+                    "expected validator not heading the new validators list "
                 )
-                REQT("rejects unless the update retains the previous signatories verbatim");
+                REQT("rejects unless the update retains the previous validators verbatim");
                 assert(
-                    (signatories.tail == oldSignatories).trace("  -- tail unchanged? "),
-                    "creator polluted the tail of signatories"
+                    (validators.tail == oldValidators).trace("  -- tail unchanged? "),
+                    "creator polluted the tail of validators"
                 )
             },
             _ => error("node is not in need of validation")
@@ -136,11 +146,11 @@ struct NodeRegistrationData {
     func checkActivation(self, nextData: NodeRegistrationData, settings: NodeOperatorSettings) -> Bool {
         REQT("rejects unless in NeedsValidation state");
         self.state.switch {
-            NeedsValidation{signatories} => {
+            NeedsValidation{validators} => {
                 // check mark emoji: ✅
                 print("  ✅ NeedsValidation: ok");
                 needValidations = settings.minValidations;
-                validationCount = signatories.length;
+                validationCount = validators.length;
                 REQT("rejects when validations are insufficient");
                 print("  -- have "+ validationCount.show() + " validations, need "+ needValidations.show())
                 assert(

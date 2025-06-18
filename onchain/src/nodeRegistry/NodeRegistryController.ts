@@ -181,33 +181,53 @@ export class NodeRegistryController extends DelegatedDataContract<
         txnName: string,
         item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>,
         options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity" | "updatedFields"> & {
-            validatorPkh: PubKeyHash
+            validatorReg: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>
         },
         initialTcx?: StellarTxnContext<anyState> | undefined
     ): Promise<StellarTxnContext<anyState>> {
-        const { validatorPkh } = options;
+        // const { validatorPkh } = options;
+
         const tcx0 = initialTcx || this.mkTcx(
             "validating dred node"
         );
         const existingNeedsValidation = (item.data?.state as any).NeedsValidation;
         if (!existingNeedsValidation) throw new Error("node is not in need of validation");
 
-        const tcx1 = await this.mkTxnUpdatingNodeRegistration(txnName, item, {
+        const { validatorReg } = options;        
+
+        const tcx1 = await this.addValidatorRef(tcx0, validatorReg);
+
+        const tcx2 = await this.mkTxnUpdatingNodeRegistration(txnName, item, {
             ...options,
             withMemberToken: false,
             updatedFields: {
                 state: {
-                    NeedsValidation: [validatorPkh, ...existingNeedsValidation],
+                    NeedsValidation: [validatorReg.data!.id, ...existingNeedsValidation],
                 },
             },
             activity: this.activity.SpendingActivities.ValidatingNode({
                 id: item.data!.id,
-                validatorPkh,
+                validatorId: validatorReg.data!.id,
             }),
-        }, tcx0);
-        tcx1.addSigners(validatorPkh);
+        }, tcx1);
+        tcx2.addSigners(validatorReg.data!.nodeDetails.pubKeyHash);
 
-        return tcx1;
+        return tcx2;
+    }
+
+    addValidatorRef(tcx: StellarTxnContext<anyState>, validatorReg: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>) {
+        const foundPkh = validatorReg.data!.nodeDetails.pubKeyHash;
+        if (!foundPkh) throw new Error("validator's node-reg record has no pubKeyHash");
+
+        const actorPkh: PubKeyHash = this.wallet.pubKey.hash();
+        if (!foundPkh.isEqual(actorPkh)) {
+            console.log("validator's node-reg record has a different pubKeyHash");
+            console.log("validator's registration -> pkh: ", foundPkh.toString());
+            console.log("actorPkh: ", actorPkh.toString());
+            throw new Error("validator's node-reg record has a different pubKeyHash");
+        }
+
+        return tcx.addRefInput(validatorReg.utxo)
     }
 
     requirements() {

@@ -95,7 +95,7 @@ describe("DRED Settings", () => {
             const settings = await capo.findSettingsInfo({
                 charterData,
             });
-            
+
             const updatedFields : Partial<minimalData<ErgoProtocolSettings>> = {
                 nodeOpSettings: {
                     expectedHeartbeatInterval: 42000n,
@@ -149,7 +149,7 @@ describe("DRED Settings", () => {
                     minNodeOperatorStake: makeValue(10_000n),
                     minNodeRegistrationFee: makeValue(10_000n),
                     requiredNodeUptime: 0.95,
-                    minValidations: 1,
+                    minValidations: 1n,
                 },
                 nbhSettings: {
                     minNbhStake: makeValue(10_000n * ADA),

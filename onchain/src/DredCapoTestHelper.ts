@@ -33,8 +33,19 @@ import type {
 import type { ErgoProtocolSettings } from "./settings/ProtocolSettings.typeInfo.js";
 import type { PubKeyHash } from "@helios-lang/ledger";
 
-export let helperState: TestHelperState<DredCapo> = {
+type addlState = {
+    nodesInSnapshot: {
+        firstNodeId: string,
+        secondNodeId: string,
+    }
+}
+
+export let helperState: TestHelperState<DredCapo, addlState> = {
     snapshots: {},
+    nodesInSnapshot: {
+        firstNodeId: "",
+        secondNodeId: "",
+    }
 } as any;
 
 export type DredCapo_TC = StellarTestContext<DredCapoTestHelper> & {
@@ -44,7 +55,7 @@ export type DredCapo_TC = StellarTestContext<DredCapoTestHelper> & {
     reusableBootstrap(this: DredCapo_TC): Promise<DredCapo>;
 };
 
-export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredCapo) {
+export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredCapo, {} as any as addlState) {
     get stellarClass() {
         return DredCapo;
     }
@@ -141,8 +152,39 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
         await this.snapToFirstMember();
         const controller = await this.registryDgt();
         const node = controller.exampleData();
-        return this.createNode(node);
+        return this.createNode(node).then((tcx) => {
+            this.helperState!.nodesInSnapshot.firstNodeId = tcx.state.uuts.recordId.toString()
+            return tcx;
+        });
     }
+
+    @CapoTestHelper.hasNamedSnapshot("secondRegisteredNode", "nellie")
+    async snapToSecondRegisteredNode() {
+        throw new Error("never called");
+        this.secondRegisteredNode();
+    }
+    get firstNodeId() {
+        return this.helperState!.nodesInSnapshot.firstNodeId;
+    }
+    get secondNodeId() {
+        return this.helperState!.nodesInSnapshot.secondNodeId;
+    }
+
+    async secondRegisteredNode() {
+        await this.bootstrap();
+        await this.setActor("ned");
+        await this.snapToFirstRegisteredNode();
+        await this.setActor("nellie");
+        await this.participantSelfRegisters();
+        const controller = await this.registryDgt();
+        const node = controller.exampleData();
+
+        return this.createNode(node).then((tcx) => {
+            this.helperState!.nodesInSnapshot.secondNodeId = tcx.state.uuts.recordId.toString()
+            return tcx;
+        });
+    }
+
 
     @CapoTestHelper.hasNamedSnapshot("firstValidatedNode", "ned")
     async snapToFirstValidatedNode() {
@@ -152,18 +194,21 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
     
     async firstValidatedNode() {
         await this.bootstrap();
-        await this.snapToFirstRegisteredNode();
+        await this.snapToSecondRegisteredNode();
+        const firstNode = await this.findFirstNode();
 
         await this.setActor("nellie");
         const controller = await this.registryDgt();
-        const firstNode = await this.findFirstNode();
-        await this.participantSelfRegisters();
+        const secondNode = await this.findSecondNode();
 
-        return this.validateNode(firstNode, { submit: true }).then((tcx) => {
+        await this.validateNode(firstNode, { 
+            submit: true,
+            validatorReg: secondNode,
+        }).then((tcx) => {
             // restore the first actor so the snapshot-checker is happy
             this.setActor("ned");
             return tcx;
-        });
+        }).then(/** retain async stack trace entry*/ x => x);
     }
 
     async createNode(
@@ -189,12 +234,14 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
         }
 
         const registryDgt = await this.registryDgt();
+        const pubKey = this.actors[this.nodeActor()].pubKey;
+        const pkh = pubKey.hash();
         const tcx = await registryDgt.mkTxnRegisteringNode({
             ...node,
             nodeDetails: {
                 ...node.nodeDetails,
-                pubKey: this.actors.node1.pubKey,
-                pubKeyHash: this.actors.node1.pubKey.hash(),
+                pubKey,
+                pubKeyHash: pkh,
             },
         });
         // activity: mktSaleDgt.activity.MintingActivities.$seeded$CreatingRecord
@@ -202,6 +249,18 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
 
         if (!submit) return tcx;
         return this.submitTxnWithBlock(tcx);
+    }
+
+    nodeActor() : string {
+        const actorToNode = {
+            "ned": "node1",
+            "nellie": "node2",
+            "natalia": "node3",
+        }
+
+        const nodeActor = actorToNode[this.actorName];
+        if (!nodeActor) throw new Error(`no node actor found for actor ${this.actorName}`);
+        return nodeActor;
     }
 
     async findNodes(x: string | UutName) {
@@ -216,11 +275,14 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
 
     async findFirstNode() {
         const registryDgt = await this.registryDgt();
-        const nodes = await registryDgt.findRecords();
-        if (nodes.length > 1) {
-            throw new Error("expected only one node");
-        }
-        return nodes[0];
+        return registryDgt.findRecords({id: this.firstNodeId});
+    }
+
+    async findSecondNode() {
+        const registryDgt = await this.registryDgt();
+        return registryDgt.findRecords({
+            id: this.secondNodeId
+        });
     }
 
     async updateNode(
@@ -258,21 +320,23 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
             submit?: boolean;
             expectError?: true;
             txnName?: string;
-            validatorPkh?: PubKeyHash;
+            validatorReg: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>;
         },
     ) {
         const {
             submit = true,
             expectError,
             txnName = "node validation",
-            validatorPkh = this.wallet.pubKey.hash(),
+            validatorReg,
         } = options;
         const registryDgt = await this.registryDgt();
         const existingNeedsValidation = (node.data?.state as any).NeedsValidation;
         if (!existingNeedsValidation) throw new Error("node is not in need of validation");
 
+        const nodeActor = this.nodeActor();
+        await this.setActor(nodeActor);
         const tcx = await registryDgt.mkTxnValidatingNode(txnName, node, {
-            validatorPkh,
+            validatorReg,
         });
 
         if (!submit) return tcx;

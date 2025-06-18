@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@donecollectively/stellar-contracts': github:donecollectively/stellar-contracts#semver:0.9.1-beta.4
+  '@donecollectively/stellar-contracts': github:donecollectively/stellar-contracts#semver:0.9.1-beta.6
   react: 18.3.1
   react-dom: 18.3.1
 
@@ -14,8 +14,8 @@ importers:
   .:
     dependencies:
       '@donecollectively/stellar-contracts':
-        specifier: github:donecollectively/stellar-contracts#semver:0.9.1-beta.4
-        version: https://codeload.github.com/donecollectively/stellar-contracts/tar.gz/e0021a9008e30473222b1f5d5022fa969686c83b(@cardano-ogmios/client@6.12.0)(@helios-lang/codec-utils@0.3.4)(@helios-lang/compiler-utils@0.5.15)(@helios-lang/compiler@0.17.22)(@helios-lang/contract-utils@0.3.21(@helios-lang/compiler@0.17.22))(@helios-lang/crypto@0.2.3)(@helios-lang/ir@0.3.9)(@helios-lang/ledger@0.7.11)(@helios-lang/tx-utils@0.6.14)(@helios-lang/type-utils@0.3.0)(@helios-lang/uplc@0.7.17)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup-plugin-esbuild@6.2.1(esbuild@0.25.5)(rollup@4.42.0))
+        specifier: github:donecollectively/stellar-contracts#semver:0.9.1-beta.6
+        version: https://codeload.github.com/donecollectively/stellar-contracts/tar.gz/14500f0a216ef9cbcf1574e497b8d77a2fa0d902(@cardano-ogmios/client@6.12.0)(@helios-lang/codec-utils@0.3.4)(@helios-lang/compiler-utils@0.5.15)(@helios-lang/compiler@0.17.22)(@helios-lang/contract-utils@0.3.21(@helios-lang/compiler@0.17.22))(@helios-lang/crypto@0.2.3)(@helios-lang/ir@0.3.9)(@helios-lang/ledger@0.7.11)(@helios-lang/tx-utils@0.6.14)(@helios-lang/type-utils@0.3.0)(@helios-lang/uplc@0.7.17)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup-plugin-esbuild@6.2.1(esbuild@0.25.5)(rollup@4.42.0))
       '@poshplum/poshplum':
         specifier: ^0.8.9
         version: 0.8.9(@types/react@19.1.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -66,7 +66,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       stellar-tokenomics:
         specifier: github:donecollectively/stellar-tokenomics-next#semver:0.7.0-beta.2
-        version: https://codeload.github.com/donecollectively/stellar-tokenomics-next/tar.gz/3694c1c57b0d7b01471c81abc7e0796109a481e3(1960bcf053eb83559e18b4b76782833d)
+        version: https://codeload.github.com/donecollectively/stellar-tokenomics-next/tar.gz/3694c1c57b0d7b01471c81abc7e0796109a481e3(5a959e1509c7f766b93a634e93c35636)
       ts-essentials:
         specifier: ^9.3.0
         version: 9.4.2(typescript@5.8.3)
@@ -1378,9 +1378,9 @@ packages:
       search-insights:
         optional: true
 
-  '@donecollectively/stellar-contracts@https://codeload.github.com/donecollectively/stellar-contracts/tar.gz/e0021a9008e30473222b1f5d5022fa969686c83b':
-    resolution: {tarball: https://codeload.github.com/donecollectively/stellar-contracts/tar.gz/e0021a9008e30473222b1f5d5022fa969686c83b}
-    version: 0.9.1-beta.4
+  '@donecollectively/stellar-contracts@https://codeload.github.com/donecollectively/stellar-contracts/tar.gz/14500f0a216ef9cbcf1574e497b8d77a2fa0d902':
+    resolution: {tarball: https://codeload.github.com/donecollectively/stellar-contracts/tar.gz/14500f0a216ef9cbcf1574e497b8d77a2fa0d902}
+    version: 0.9.1-beta.6
     engines: {node: '>=20'}
     hasBin: true
     peerDependencies:
@@ -1392,7 +1392,7 @@ packages:
       '@helios-lang/crypto': ^0.2.3
       '@helios-lang/ir': ^0.3.9
       '@helios-lang/ledger': ^0.7.11
-      '@helios-lang/tx-utils': ^0.6.13
+      '@helios-lang/tx-utils': ^0.6.15
       '@helios-lang/type-utils': ^0.3.0
       '@helios-lang/uplc': ^0.7.17
       react: 18.3.1
@@ -8454,7 +8454,7 @@ snapshots:
     transitivePeerDependencies:
       - '@algolia/client-search'
 
-  '@donecollectively/stellar-contracts@https://codeload.github.com/donecollectively/stellar-contracts/tar.gz/e0021a9008e30473222b1f5d5022fa969686c83b(@cardano-ogmios/client@6.12.0)(@helios-lang/codec-utils@0.3.4)(@helios-lang/compiler-utils@0.5.15)(@helios-lang/compiler@0.17.22)(@helios-lang/contract-utils@0.3.21(@helios-lang/compiler@0.17.22))(@helios-lang/crypto@0.2.3)(@helios-lang/ir@0.3.9)(@helios-lang/ledger@0.7.11)(@helios-lang/tx-utils@0.6.14)(@helios-lang/type-utils@0.3.0)(@helios-lang/uplc@0.7.17)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup-plugin-esbuild@6.2.1(esbuild@0.25.5)(rollup@4.42.0))':
+  '@donecollectively/stellar-contracts@https://codeload.github.com/donecollectively/stellar-contracts/tar.gz/14500f0a216ef9cbcf1574e497b8d77a2fa0d902(@cardano-ogmios/client@6.12.0)(@helios-lang/codec-utils@0.3.4)(@helios-lang/compiler-utils@0.5.15)(@helios-lang/compiler@0.17.22)(@helios-lang/contract-utils@0.3.21(@helios-lang/compiler@0.17.22))(@helios-lang/crypto@0.2.3)(@helios-lang/ir@0.3.9)(@helios-lang/ledger@0.7.11)(@helios-lang/tx-utils@0.6.14)(@helios-lang/type-utils@0.3.0)(@helios-lang/uplc@0.7.17)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup-plugin-esbuild@6.2.1(esbuild@0.25.5)(rollup@4.42.0))':
     dependencies:
       '@cardano-ogmios/client': 6.12.0
       '@helios-lang/codec-utils': 0.3.4
@@ -14528,10 +14528,10 @@ snapshots:
 
   std-env@3.9.0: {}
 
-  stellar-tokenomics@https://codeload.github.com/donecollectively/stellar-tokenomics-next/tar.gz/3694c1c57b0d7b01471c81abc7e0796109a481e3(1960bcf053eb83559e18b4b76782833d):
+  stellar-tokenomics@https://codeload.github.com/donecollectively/stellar-tokenomics-next/tar.gz/3694c1c57b0d7b01471c81abc7e0796109a481e3(5a959e1509c7f766b93a634e93c35636):
     dependencies:
       '@cardano-ogmios/client': 6.12.0
-      '@donecollectively/stellar-contracts': https://codeload.github.com/donecollectively/stellar-contracts/tar.gz/e0021a9008e30473222b1f5d5022fa969686c83b(@cardano-ogmios/client@6.12.0)(@helios-lang/codec-utils@0.3.4)(@helios-lang/compiler-utils@0.5.15)(@helios-lang/compiler@0.17.22)(@helios-lang/contract-utils@0.3.21(@helios-lang/compiler@0.17.22))(@helios-lang/crypto@0.2.3)(@helios-lang/ir@0.3.9)(@helios-lang/ledger@0.7.11)(@helios-lang/tx-utils@0.6.14)(@helios-lang/type-utils@0.3.0)(@helios-lang/uplc@0.7.17)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup-plugin-esbuild@6.2.1(esbuild@0.25.5)(rollup@4.42.0))
+      '@donecollectively/stellar-contracts': https://codeload.github.com/donecollectively/stellar-contracts/tar.gz/14500f0a216ef9cbcf1574e497b8d77a2fa0d902(@cardano-ogmios/client@6.12.0)(@helios-lang/codec-utils@0.3.4)(@helios-lang/compiler-utils@0.5.15)(@helios-lang/compiler@0.17.22)(@helios-lang/contract-utils@0.3.21(@helios-lang/compiler@0.17.22))(@helios-lang/crypto@0.2.3)(@helios-lang/ir@0.3.9)(@helios-lang/ledger@0.7.11)(@helios-lang/tx-utils@0.6.14)(@helios-lang/type-utils@0.3.0)(@helios-lang/uplc@0.7.17)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup-plugin-esbuild@6.2.1(esbuild@0.25.5)(rollup@4.42.0))
       '@helios-lang/cbor': 0.3.1
       '@helios-lang/codec-utils': 0.3.4
       '@helios-lang/compiler': 0.17.22

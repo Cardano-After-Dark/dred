@@ -52,7 +52,7 @@
         "run": "NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' node dist/dredServer.mjs"
     },
     "dependencies": {
-        "@donecollectively/stellar-contracts": "github:donecollectively/stellar-contracts#semver:0.9.1-beta.4",
+        "@donecollectively/stellar-contracts": "github:donecollectively/stellar-contracts#semver:0.9.1-beta.6",
         "@poshplum/poshplum": "^0.8.9",
         "@poshplum/utils": "^0.8.2",
         "abstract-logging": "^2.0.1",
