@@ -6,8 +6,12 @@ import { testSetup } from "../testServer.js";
 import { DredClient } from "../../client/DredClient.js";
 import { DredServer } from "../DredServer.js";
 import { asyncDelay } from "../../util/asyncDelay.js";
+import { zonedLogger } from "@poshplum/utils";
+import { colors } from "../../picocolors/picocolors.js";
 
 import { inspect } from 'util';
+
+const { yellow, magenta } = colors;
 
 const fit = it.only;
 
@@ -39,6 +43,12 @@ describe("minimal replication setup", () => {
 
         // channel for testing
         const channelName = "test-channel";
+
+        // Test-specific logger for client actions
+        const testLogger = zonedLogger("test", {
+            loggerId: "t-rep",
+            color: magenta.start,
+        });
 
         const logStep = (message: string) => {
             console.log(message);
@@ -98,13 +108,13 @@ describe("minimal replication setup", () => {
             // Use the subscription map pattern from messages.test.ts
             await c1.subscribeToChannels({
                 [channelName]: (msg) => { 
-                    console.log(`📨 CLIENT c1 received: ${msg.msg} (${msg.ocid}) ${msg.details?.replicatedFrom ? `[REPLICATED from ${msg.details.replicatedFrom}]` : '[ORIGINAL]'}`); 
+                    testLogger.warn(`📨 CLIENT c1 received: ${msg.msg} (${msg.ocid}) ${msg.details?.replicatedFrom ? `[REPLICATED from ${msg.details.replicatedFrom}]` : '[ORIGINAL]'}`); 
                     c1Messages.push(msg);
                 }
             });
             await c2.subscribeToChannels({
                 [channelName]: (msg) => { 
-                    console.log(`📨 CLIENT c2 received: ${msg.msg} (${msg.ocid}) ${msg.details?.replicatedFrom ? `[REPLICATED from ${msg.details.replicatedFrom}]` : '[ORIGINAL]'}`); 
+                    testLogger.warn(`📨 CLIENT c2 received: ${msg.msg} (${msg.ocid}) ${msg.details?.replicatedFrom ? `[REPLICATED from ${msg.details.replicatedFrom}]` : '[ORIGINAL]'}`); 
                     c2Messages.push(msg);
                 }
             });
@@ -206,7 +216,7 @@ describe("minimal replication setup", () => {
             // and all the channels exist on both servers
 
             const clientResponse = await c1.postMessage(channelName, clientMessage);
-            logStep(`📤 CLIENT c1 sent: ${clientMessage.msg} -> response: ${JSON.stringify(clientResponse)}`);
+            testLogger.warn(`📤 CLIENT c1 sent: ${clientMessage.msg} -> response: ${JSON.stringify(clientResponse)}`);
 
             await asyncDelay(2000);
 
