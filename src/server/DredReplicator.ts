@@ -233,18 +233,18 @@ export class Replicant{
         
         for (const channel of channels) {
             subscriptionMap[channel] = (message) => {
-                this.warn(` ######  about to handleIncomingMessage: ${channel} ${message.mid}`);
+                this.warn(`📥 REPLICATION: Message detected from ${this.targetHost.serverId} in channel '${channel}' (${message.mid})`);
                 const{connection, ...core}=message;
                 this.log(`🎯 REPL MESSAGE from ${this.targetHost.serverId}:`, core);
                 this.handleIncomingMessage(channel, message);
             };
         }
         
-        this.warn(`- Subscribing to ${channels.length} channels on target server ${this.targetHost.serverId}...`);
+        this.warn(`🔔 REPLICATION: Subscribing to ${channels.length} channels on target server ${this.targetHost.serverId}...`);
 
         await this.repClient!.subscribeToChannels(subscriptionMap);
 
-        this.log(`✅ Successfully subscribed to ${channels.length} channels on target server ${this.targetHost.serverId}`);
+        this.warn(`✅ Successfully subscribed to ${channels.length} channels on target server ${this.targetHost.serverId}`);
     }
 
     /**
@@ -261,7 +261,7 @@ export class Replicant{
             const sourceId = this.targetHost.serverId;
             
             // Message received from target server 
-            this.log(`Received message from ${sourceId} in channel ${channelId}: ${message}`);
+            this.warn(`📥 REPLICATION: Received message from ${this.targetHost.serverId} -> ${this.homeServer.serverId} in channel '${channelId}' (${message.mid})`);
             
             // Extract message details for replication
             const messageId = message.mid || message.id || `${Date.now()}-${Math.random()}`;
@@ -345,6 +345,8 @@ export class Replicant{
 
     private async replicateToHomeServer(channelId: string, messageDetails: any): Promise<void> {
         try {
+            this.warn(`📤 REPLICATION: Publishing to home server '${this.homeServer.serverId}' in channel '${channelId}' (ocid: ${messageDetails.ocid})`);
+            
             // Use the DredServer's deduplication system to prevent duplicate messages
             const result = await this.homeServer.ensureMessageProcessedOnce(
                 channelId,

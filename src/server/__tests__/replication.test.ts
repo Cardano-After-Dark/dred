@@ -98,13 +98,13 @@ describe("minimal replication setup", () => {
             // Use the subscription map pattern from messages.test.ts
             await c1.subscribeToChannels({
                 [channelName]: (msg) => { 
-                    console.log("c1 received:", msg); 
+                    console.log(`📨 CLIENT c1 received: ${msg.msg} (${msg.ocid}) ${msg.details?.replicatedFrom ? `[REPLICATED from ${msg.details.replicatedFrom}]` : '[ORIGINAL]'}`); 
                     c1Messages.push(msg);
                 }
             });
             await c2.subscribeToChannels({
                 [channelName]: (msg) => { 
-                    console.log("c2 received:", msg); 
+                    console.log(`📨 CLIENT c2 received: ${msg.msg} (${msg.ocid}) ${msg.details?.replicatedFrom ? `[REPLICATED from ${msg.details.replicatedFrom}]` : '[ORIGINAL]'}`); 
                     c2Messages.push(msg);
                 }
             });
@@ -206,7 +206,7 @@ describe("minimal replication setup", () => {
             // and all the channels exist on both servers
 
             const clientResponse = await c1.postMessage(channelName, clientMessage);
-            logStep(` >>>>>>>>>>> Client message posted, response: ${JSON.stringify(clientResponse)}`);
+            logStep(`📤 CLIENT c1 sent: ${clientMessage.msg} -> response: ${JSON.stringify(clientResponse)}`);
 
             await asyncDelay(2000);
 
