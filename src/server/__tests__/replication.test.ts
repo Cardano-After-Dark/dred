@@ -7,6 +7,7 @@ import { DredClient } from "../../client/DredClient.js";
 import { DredServer } from "../DredServer.js";
 import { asyncDelay } from "../../util/asyncDelay.js";
 
+import { inspect } from 'util';
 
 const fit = it.only;
 
@@ -218,6 +219,9 @@ describe("minimal replication setup", () => {
 
             // THIS SUCCEEDS WHEN REPLICATION IS IMPLEMENTED
             expect(c2Messages.length).toBe(1); // c2 should receive the message in case of replication
+            // logStep(` >>>>>>>>>>> c2Messages: ${JSON.stringify(c2Messages)}`);
+            logStep(` >>>>>>>>>>> c2Messages: ${inspect(c2Messages, { depth: 2, colors: false })}`);
+
 
             // Future tests can check more cases, e.g.
             // - non existing ch on server2 -> replicated from server1 to server2

@@ -385,7 +385,19 @@ export class DredServer {
     // Solution to avoid duplicate messages (replication)
     // ------------------------------------------------------------
 
-    knownMessages = new RedisSet(this.redis!.duplicate());
+    // knownMessages = new RedisSet(this.redis!.duplicate()); // removed in favor of lazy initialization
+    
+    /**
+     * Known message set. Lazily initialized to avoid undefined errors.
+    */
+   get knownMessages(): RedisSet {
+       if (!this._knownMessages) {
+           // Use a specific key name for the deduplication set instead of abstract
+           this._knownMessages = new RedisSet(this.redis!.duplicate(), `${this.nbh}::knownMessages`);
+        }
+        return this._knownMessages;
+    }
+    private _knownMessages?: RedisSet;
 
     /**
      * Ensure a message is processed only once. Use it to avoid duplicate messages.
