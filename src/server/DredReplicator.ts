@@ -37,6 +37,7 @@ export class DredReplicator{
     private readonly discovery: Discovery;
     // private mapChOcid: Map<string, Set<string>> = new Map(); // channelId -> Set<ocid>
     private initialized: boolean = false;
+    private replicants: Replicant[] = []; // Store replicants for cleanup
 
     isInitialized(): boolean {
         return this.initialized;
@@ -76,6 +77,7 @@ export class DredReplicator{
             // handle replication from a single target server to the home server
             const repClient = new Replicant(this, this.homeServer, host);
             await repClient.initialize();
+            this.replicants.push(repClient); // Store for cleanup
         }
 
         this.log(`${this.name} initialized`);
@@ -87,6 +89,22 @@ export class DredReplicator{
             return;
         }
         this.log(`Cleaning up ${this.name}`);
+        
+        // Clean up all replicants - wait for all but continue on errors
+        const results = await Promise.allSettled(
+            this.replicants.map(replicant => replicant.cleanup())
+        );
+        
+        // Log any failures but don't throw
+        results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+                this.warn(`Error cleaning up replicant ${index}: ${result.reason}`);
+            }
+        });
+        
+        this.replicants = [];
+        this.initialized = false;
+        this.log(`${this.name} cleanup complete`);
     }
 
     // // true when message with this ocid was already processed for this channel
@@ -146,8 +164,8 @@ export class Replicant{
         
         this.log(`${this.name} starting initialization`);
         
-        // creates a new DredClient
-        this.repClient = this.homeServer.mkClient(this.targetHost.serverId);
+        // creates a new DredClient - not server managed since replication handles its own cleanup
+        this.repClient = this.homeServer.mkClient(this.targetHost.serverId, {}, false);
         await this.repClient.generateKey();
 
         /** FIXME: we cannot set the neighborhood here, yet
@@ -383,9 +401,40 @@ export class Replicant{
     //     });
     // }
 
-
-
-
-
-    
+    async cleanup(): Promise<void> {
+        this.log(`${this.name} cleanup starting`);
+        
+        if (this.repClient) {
+            try {
+                // Add delay to let any pending operations complete
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                // // Check if client is already disconnected
+                // if (this.repClient.currentState === 'disconnected') {
+                //     this.log(`${this.name} client already disconnected`);
+                //     this.repClient = null;
+                //     this.log(`${this.name} cleanup complete`);
+                //     return;
+                // }
+                
+                // Properly disconnect the client with error handling
+                this.log(`${this.name} disconnecting replication client (current state: ${this.repClient.currentState})`);
+                await Promise.race([
+                    this.repClient.disconnect(),
+                    new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error("Client disconnect timeout")), 3000)
+                    )
+                ]);
+                
+                this.repClient = null;
+                this.log(`${this.name} replication client disconnected and cleaned up`);
+            } catch (error: any) {
+                // Log but don't throw - we want cleanup to always succeed
+                this.warn(`${this.name} cleanup error (continuing): ${error.message || error}`);
+                this.repClient = null; // Always nullify even on error
+            }
+        }
+        
+        this.log(`${this.name} cleanup complete`);
+    }
 }

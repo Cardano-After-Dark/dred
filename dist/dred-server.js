@@ -1,109 +1,40 @@
 'use strict';
 
-var Redis = require('ioredis');
 var express = require('express');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 var compression = require('compression');
+var Redis = require('ioredis');
+var nanoid$1 = require('nanoid');
 var uuid = require('uuid');
 var abstractLoggingInterface = require('abstract-logging');
 var fetch$1 = require('cross-fetch');
-var nanoid$1 = require('nanoid');
 var nacl = require('tweetnacl');
 var util = require('tweetnacl-util');
-var EventEmitter = require('eventemitter3');
+var eventemitter3 = require('eventemitter3');
 var utils = require('@poshplum/utils');
 var web = require('node:stream/web');
 var node_stream = require('node:stream');
 var watsign = require('watsign');
 
 function _interopNamespaceDefault(e) {
-	var n = Object.create(null);
-	if (e) {
-		Object.keys(e).forEach(function (k) {
-			if (k !== 'default') {
-				var d = Object.getOwnPropertyDescriptor(e, k);
-				Object.defineProperty(n, k, d.get ? d : {
-					enumerable: true,
-					get: function () { return e[k]; }
-				});
-			}
-		});
-	}
-	n.default = e;
-	return Object.freeze(n);
+  var n = Object.create(null);
+  if (e) {
+    Object.keys(e).forEach(function (k) {
+      if (k !== 'default') {
+        var d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: function () { return e[k]; }
+        });
+      }
+    });
+  }
+  n.default = e;
+  return Object.freeze(n);
 }
 
 var abstractLoggingInterface__namespace = /*#__PURE__*/_interopNamespaceDefault(abstractLoggingInterface);
-
-let p = process || {}, argv = p.argv || [], env = p.env || {};
-let isColorSupported = !(!!env.NO_COLOR || argv.includes("--no-color")) && (!!env.FORCE_COLOR || argv.includes("--color") || p.platform === "win32" || true);
-let formatter = (open, close, replace = open) => {
-  const f = (input) => {
-    let string = "" + input, index = string.indexOf(close, open.length);
-    return ~index ? open + replaceClose(string, close, replace, index) + close : open + string + close;
-  };
-  f.start = open;
-  f.close = close;
-  return f;
-};
-let replaceClose = (string, close, replace, index) => {
-  let result = "", cursor = 0;
-  do {
-    result += string.substring(cursor, index) + replace;
-    cursor = index + close.length;
-    index = string.indexOf(close, cursor);
-  } while (~index);
-  return result + string.substring(cursor);
-};
-let createColors = (enabled = isColorSupported) => {
-  let f = enabled ? formatter : () => String;
-  return {
-    isColorSupported: enabled,
-    reset: f("\x1B[0m", "\x1B[0m"),
-    bold: f("\x1B[1m", "\x1B[22m", "\x1B[22m\x1B[1m"),
-    dim: f("\x1B[2m", "\x1B[22m", "\x1B[22m\x1B[2m"),
-    italic: f("\x1B[3m", "\x1B[23m"),
-    underline: f("\x1B[4m", "\x1B[24m"),
-    inverse: f("\x1B[7m", "\x1B[27m"),
-    hidden: f("\x1B[8m", "\x1B[28m"),
-    strikethrough: f("\x1B[9m", "\x1B[29m"),
-    black: f("\x1B[30m", "\x1B[39m"),
-    red: f("\x1B[31m", "\x1B[39m"),
-    green: f("\x1B[32m", "\x1B[39m"),
-    yellow: f("\x1B[33m", "\x1B[39m"),
-    blue: f("\x1B[34m", "\x1B[39m"),
-    magenta: f("\x1B[35m", "\x1B[39m"),
-    cyan: f("\x1B[36m", "\x1B[39m"),
-    white: f("\x1B[37m", "\x1B[39m"),
-    gray: f("\x1B[90m", "\x1B[39m"),
-    bgBlack: f("\x1B[40m", "\x1B[49m"),
-    bgRed: f("\x1B[41m", "\x1B[49m"),
-    bgGreen: f("\x1B[42m", "\x1B[49m"),
-    bgYellow: f("\x1B[43m", "\x1B[49m"),
-    bgBlue: f("\x1B[44m", "\x1B[49m"),
-    bgMagenta: f("\x1B[45m", "\x1B[49m"),
-    bgCyan: f("\x1B[46m", "\x1B[49m"),
-    bgWhite: f("\x1B[47m", "\x1B[49m"),
-    blackBright: f("\x1B[90m", "\x1B[39m"),
-    redBright: f("\x1B[91m", "\x1B[39m"),
-    greenBright: f("\x1B[92m", "\x1B[39m"),
-    yellowBright: f("\x1B[93m", "\x1B[39m"),
-    blueBright: f("\x1B[94m", "\x1B[39m"),
-    magentaBright: f("\x1B[95m", "\x1B[39m"),
-    cyanBright: f("\x1B[96m", "\x1B[39m"),
-    whiteBright: f("\x1B[97m", "\x1B[39m"),
-    bgBlackBright: f("\x1B[100m", "\x1B[49m"),
-    bgRedBright: f("\x1B[101m", "\x1B[49m"),
-    bgGreenBright: f("\x1B[102m", "\x1B[49m"),
-    bgYellowBright: f("\x1B[103m", "\x1B[49m"),
-    bgBlueBright: f("\x1B[104m", "\x1B[49m"),
-    bgMagentaBright: f("\x1B[105m", "\x1B[49m"),
-    bgCyanBright: f("\x1B[106m", "\x1B[49m"),
-    bgWhiteBright: f("\x1B[107m", "\x1B[49m")
-  };
-};
-const colors = createColors();
 
 const sep = {
   HASH: "#",
@@ -294,9 +225,9 @@ class RedisChannels {
     this._workInTeam = false;
     this._consumerIsGennerated = true;
     if (typeof channels[opt.LOG] === "undefined") {
-      this._log = { ...abstractLoggingInterface__namespace };
+      this.logger = { ...abstractLoggingInterface__namespace };
     } else {
-      this._log = channels[opt.LOG];
+      this.logger = channels[opt.LOG];
     }
     if (typeof channels[opt.OVERFLOW] === "undefined" || Number.isInteger(channels[opt.OVERFLOW]) === false) {
       this._overflow = overflowStreamElemNumber;
@@ -335,6 +266,12 @@ class RedisChannels {
       this._keyHash = this._prefix + sep.HASH + pre.KEYS + shards[this._slots][0] + sep.OPEN + 0 + sep.CLOSE;
       this._keyZset = this._prefix + sep.INDEX + pre.SHARDS + shards[this._slots][0] + sep.OPEN + 0 + sep.CLOSE;
     }
+    this.logger.debug("created dred streamer", {
+      sharded: this._sharded,
+      overflow: this._overflow,
+      slots: this._slots,
+      prefix: this._prefix
+    });
   }
   /*
    * Returns a tunnel object to access the channel for a particular group.
@@ -400,7 +337,7 @@ class RedisChannels {
       await this._nonBlockRedisClient.zincrby([this._keyZset, 1, set]);
       return { [tun.KEY]: keyStream };
     } catch (error) {
-      this._log.error("Use error: %o", error);
+      this.logger.error("Use error: %o", error);
       throw new RedisChannelsError(
         "Can not call use for a group : " + group + " with sharded mode = " + this._sharded,
         error
@@ -416,6 +353,10 @@ class RedisChannels {
   async delete(group) {
     try {
       let keyStream = this._prefix + sep.STREAM + group;
+      this.logger.debug("deleting group", {
+        group,
+        keyStream
+      });
       if (this._sharded === false) {
         for (const i in this._consumers) {
           if (this._consumers[i][tun.KEY] === keyStream) {
@@ -441,7 +382,7 @@ class RedisChannels {
       await this._nonBlockRedisClient.hdel([this._keyHash, group]);
       await this._nonBlockRedisClient.zincrby([this._keyZset, -1, slot]);
     } catch (error) {
-      this._log.error("Delete error: %o", error);
+      this.logger.error("Delete error: %o", error);
       throw new RedisChannelsError(
         "Can not delete  a group : " + group + " with sharded mode = " + this._sharded,
         error
@@ -471,6 +412,11 @@ class RedisChannels {
   // --------------------------------------------------------------------------|
   async subscribe(tunnel, team, consumer) {
     try {
+      this.logger.debug(" -- subscribing", {
+        tunnel,
+        team,
+        consumer
+      });
       if (typeof tunnel === "undefined" || typeof tunnel[tun.KEY] === "undefined") {
         throw new RedisChannelsError(
           "Can not subscribe, no valid tunnel object"
@@ -490,14 +436,17 @@ class RedisChannels {
         tunnel[tun.TEAM] = team;
         this._workInTeam = true;
       }
+      const consumerGroup = tunnel[tun.TEAM];
       try {
+        this.logger.debug(" -- ensuring stream exists", tunnel[tun.KEY]);
         await this._nonBlockRedisClient.xgroup([
           "CREATE",
           tunnel[tun.KEY],
-          tunnel[tun.TEAM],
+          consumerGroup,
           "$",
           "MKSTREAM"
         ]);
+        this.logger.debug(`  -- dropping temp group for ${consumerGroup} `);
         await this._deleteRedisConsumerAndGroup(tunnel);
       } catch {
       }
@@ -506,7 +455,7 @@ class RedisChannels {
         this._consumers[tunnel[tun.CONSUMER]] = tunnel;
       }
     } catch (error) {
-      this._log.error("Subscribe error: %o", error);
+      this.logger.error("Subscribe error: %o", error);
       throw error;
     }
   }
@@ -518,6 +467,13 @@ class RedisChannels {
   // --------------------------------------------------------------------------|
   async unsubscribe(tunnel) {
     try {
+      this.logger.debug(" -- unsubscribing", {
+        tunnel: {
+          key: tunnel[tun.KEY],
+          team: tunnel[tun.TEAM],
+          consumer: tunnel[tun.CONSUMER]
+        }
+      });
       if (typeof tunnel === "undefined" || typeof tunnel[tun.TEAM] === "undefined" || typeof tunnel[tun.CONSUMER] === "undefined") {
         throw new RedisChannelsError(
           "Can not unsubscribe, no valid tunnel object"
@@ -530,6 +486,12 @@ class RedisChannels {
         _consumer: consumer
       };
       const f = hashToRedisFields(fields);
+      this.logger.debug(" -- adding redundant unsubscribe message", {
+        key: tunnel[tun.KEY],
+        team,
+        consumer,
+        fields
+      });
       await this._nonBlockRedisClient.xadd([
         tunnel[tun.KEY],
         "MAXLEN",
@@ -539,9 +501,9 @@ class RedisChannels {
         ...f
       ]);
     } catch (error) {
-      this._log.error("Unsubscribe error: %o", error);
+      this.logger.error("Unsubscribe error: %o", error);
       if (this.closing) {
-        this._log.error(" ... ^^ after channels shutdown");
+        this.logger.error(" ... ^^ after channels shutdown");
         return;
       }
       if (error instanceof RedisChannelsError) {
@@ -592,10 +554,10 @@ class RedisChannels {
       ]);
       return id;
     } catch (error) {
-      this._log.error("Produce error:", error.stack || error.message || JSON.stringify(error));
-      this._log.error(" ... while sending message", message);
+      this.logger.error("Produce error:", error.stack || error.message || JSON.stringify(error));
+      this.logger.error(" ... while sending message", message);
       if (this.closing) {
-        this._log.error(" ... ^^ after channels shutdown");
+        this.logger.error(" ... ^^ after channels shutdown");
         return;
       }
       debugger;
@@ -672,6 +634,18 @@ class RedisChannels {
   // --------------------------------------------------------------------------|
   async *consume(tunnel, targetType = defaultOriginType, count = maxMessageStreamConsumePerRun, timeout = blockStreamConsumerTimeOutMs, fromId = ">", messageOnTimeOut = false) {
     try {
+      this.logger.debug(" -- consuming", {
+        tunnel: {
+          key: tunnel[tun.KEY],
+          team: tunnel[tun.TEAM],
+          consumer: tunnel[tun.CONSUMER]
+        },
+        targetType,
+        count,
+        timeout,
+        fromId,
+        messageOnTimeOut
+      });
       let unsubscribing = false;
       let currentId = fromId;
       let lastId;
@@ -774,7 +748,7 @@ class RedisChannels {
       if (this.closing) {
         return;
       }
-      this._log.error("Consume error: %o", error);
+      this.logger.error("Consume error: %o", error);
       throw new RedisChannelsError(
         "Can not consume from the tunnel: " + tunnel[tun.KEY] + " " + tunnel[tun.CONSUMER],
         error
@@ -801,6 +775,10 @@ class RedisChannels {
   // --------------------------------------------------------------------------|
   async cleanup() {
     this.closing = true;
+    this.logger.debug(" -- cleaning up", {
+      workInTeam: this._workInTeam,
+      consumers: Object.keys(this._consumers).length
+    });
     for (const i in this._consumers) {
       if (this._workInTeam) {
         await this._deleteRedisConsumerAndGroup(this._consumers[i], true);
@@ -819,6 +797,12 @@ class RedisChannels {
   async _deleteRedisConsumerAndGroup(tunnel, force = false) {
     try {
       if (this._workInTeam === false || force) {
+        this.logger.debug(" -- deleting consumer and group", {
+          key: tunnel[tun.KEY],
+          team: tunnel[tun.TEAM],
+          consumer: tunnel[tun.CONSUMER],
+          force
+        });
         await this._nonBlockRedisClient.xgroup([
           "DELCONSUMER",
           tunnel[tun.KEY],
@@ -858,11 +842,15 @@ class RedisChannels {
   // --------------------------------------------------------------------------|
   async _initShardScores() {
     try {
+      this.logger.warn(" -- initializing shard scores shouldn't be needed for Dred use-cases", {
+        keyZset: this._keyZset,
+        slots: this._slots
+      });
       for (let i = 0; i < this._slots; i++) {
         await this._nonBlockRedisClient.zincrby([this._keyZset, 0, i]);
       }
     } catch (error) {
-      this._log.error("_initShardScores error: %o", error);
+      this.logger.error("_initShardScores error: %o", error);
       throw new RedisChannelsError(
         "Can not initialize shards score for the channels",
         error
@@ -888,12 +876,82 @@ class RedisChannels {
   }
   // --------------------------------------------------------------------------|
   _duplicateRedisClient() {
+    this.logger.debug("   -- duplicating redis client");
     const redis = this._nonBlockRedisClient.duplicate();
     redis.addListener("error", () => {
     });
     return redis;
   }
 }
+
+let p = process || {}, argv = p.argv || [], env = p.env || {};
+let isColorSupported = !(!!env.NO_COLOR || argv.includes("--no-color")) && (!!env.FORCE_COLOR || argv.includes("--color") || p.platform === "win32" || true);
+let formatter = (open, close, replace = open) => {
+  const f = (input) => {
+    let string = "" + input, index = string.indexOf(close, open.length);
+    return ~index ? open + replaceClose(string, close, replace, index) + close : open + string + close;
+  };
+  f.start = open;
+  f.close = close;
+  return f;
+};
+let replaceClose = (string, close, replace, index) => {
+  let result = "", cursor = 0;
+  do {
+    result += string.substring(cursor, index) + replace;
+    cursor = index + close.length;
+    index = string.indexOf(close, cursor);
+  } while (~index);
+  return result + string.substring(cursor);
+};
+let createColors = (enabled = isColorSupported) => {
+  let f = enabled ? formatter : () => String;
+  return {
+    isColorSupported: enabled,
+    reset: f("\x1B[0m", "\x1B[0m"),
+    bold: f("\x1B[1m", "\x1B[22m", "\x1B[22m\x1B[1m"),
+    dim: f("\x1B[2m", "\x1B[22m", "\x1B[22m\x1B[2m"),
+    italic: f("\x1B[3m", "\x1B[23m"),
+    underline: f("\x1B[4m", "\x1B[24m"),
+    inverse: f("\x1B[7m", "\x1B[27m"),
+    hidden: f("\x1B[8m", "\x1B[28m"),
+    strikethrough: f("\x1B[9m", "\x1B[29m"),
+    black: f("\x1B[30m", "\x1B[39m"),
+    red: f("\x1B[31m", "\x1B[39m"),
+    green: f("\x1B[32m", "\x1B[39m"),
+    yellow: f("\x1B[33m", "\x1B[39m"),
+    blue: f("\x1B[34m", "\x1B[39m"),
+    magenta: f("\x1B[35m", "\x1B[39m"),
+    cyan: f("\x1B[36m", "\x1B[39m"),
+    white: f("\x1B[37m", "\x1B[39m"),
+    gray: f("\x1B[90m", "\x1B[39m"),
+    bgBlack: f("\x1B[40m", "\x1B[49m"),
+    bgRed: f("\x1B[41m", "\x1B[49m"),
+    bgGreen: f("\x1B[42m", "\x1B[49m"),
+    bgYellow: f("\x1B[43m", "\x1B[49m"),
+    bgBlue: f("\x1B[44m", "\x1B[49m"),
+    bgMagenta: f("\x1B[45m", "\x1B[49m"),
+    bgCyan: f("\x1B[46m", "\x1B[49m"),
+    bgWhite: f("\x1B[47m", "\x1B[49m"),
+    blackBright: f("\x1B[90m", "\x1B[39m"),
+    redBright: f("\x1B[91m", "\x1B[39m"),
+    greenBright: f("\x1B[92m", "\x1B[39m"),
+    yellowBright: f("\x1B[93m", "\x1B[39m"),
+    blueBright: f("\x1B[94m", "\x1B[39m"),
+    magentaBright: f("\x1B[95m", "\x1B[39m"),
+    cyanBright: f("\x1B[96m", "\x1B[39m"),
+    whiteBright: f("\x1B[97m", "\x1B[39m"),
+    bgBlackBright: f("\x1B[100m", "\x1B[49m"),
+    bgRedBright: f("\x1B[101m", "\x1B[49m"),
+    bgGreenBright: f("\x1B[102m", "\x1B[49m"),
+    bgYellowBright: f("\x1B[103m", "\x1B[49m"),
+    bgBlueBright: f("\x1B[104m", "\x1B[49m"),
+    bgMagentaBright: f("\x1B[105m", "\x1B[49m"),
+    bgCyanBright: f("\x1B[106m", "\x1B[49m"),
+    bgWhiteBright: f("\x1B[107m", "\x1B[49m")
+  };
+};
+const colors = createColors();
 
 const devMessage = Symbol("?developer?");
 //! it provides a type facade to describe available events
@@ -1006,18 +1064,18 @@ function ndjsonStream(responseBody) {
   });
 }
 
-var __defProp$a = Object.defineProperty;
+var __defProp$b = Object.defineProperty;
 var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
-var __defNormalProp$a = (obj, key, value) => key in obj ? __defProp$a(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp$b = (obj, key, value) => key in obj ? __defProp$b(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __decorateClass$2 = (decorators, target, key, kind) => {
   var result = __getOwnPropDesc$2(target, key) ;
   for (var i = decorators.length - 1, decorator; i >= 0; i--)
     if (decorator = decorators[i])
       result = (decorator(target, key, result) ) || result;
-  if (result) __defProp$a(target, key, result);
+  if (result) __defProp$b(target, key, result);
   return result;
 };
-var __publicField$a = (obj, key, value) => __defNormalProp$a(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __publicField$b = (obj, key, value) => __defNormalProp$b(obj, typeof key !== "symbol" ? key + "" : key, value);
 const connectionStates = {
   logLevel: "info",
   connecting: {
@@ -1037,6 +1095,7 @@ const connectionStates = {
     reconnect: {
       nextState: "connecting",
       effect() {
+        this.connecting = void 0;
         this.connect();
       }
     },
@@ -1122,30 +1181,36 @@ const connectionEvents = {
 };
 const _HostConnection = class _HostConnection extends utils.StateMachine.withDefinition(
   connectionStates,
-  "connection-manager"
+  "hostconn"
 ) {
-  constructor(host, subscriptions, settings) {
+  constructor(host, subscriptions, settings, clientid) {
     super({
       contextLabel: `connection:${host.serverId}`,
       currentState: "default",
       logFacility: "connection:state",
       contextObject: null
     });
-    __publicField$a(this, "events", new EventEmitter.EventEmitter());
-    __publicField$a(this, "abortController");
-    __publicField$a(this, "host");
-    __publicField$a(this, "settings");
-    __publicField$a(this, "attempts", 0);
-    __publicField$a(this, "lastError");
-    __publicField$a(this, "channelSubs");
-    __publicField$a(this, "stream");
-    __publicField$a(this, "startTime", (/* @__PURE__ */ new Date()).getTime());
-    __publicField$a(this, "scheduledRetry");
-    __publicField$a(this, "_status");
-    __publicField$a(this, "connecting");
-    __publicField$a(this, "heartbeatInterval", 1e4);
-    __publicField$a(this, "lastHeartbeat", (/* @__PURE__ */ new Date()).getTime());
-    __publicField$a(this, "heartbeatTimer");
+    __publicField$b(this, "events", new eventemitter3.EventEmitter());
+    __publicField$b(this, "abortController");
+    __publicField$b(this, "host");
+    __publicField$b(this, "settings");
+    __publicField$b(this, "attempts", 0);
+    __publicField$b(this, "lastError");
+    __publicField$b(this, "channelSubs");
+    __publicField$b(this, "stream");
+    __publicField$b(this, "clientid");
+    __publicField$b(this, "startTime", (/* @__PURE__ */ new Date()).getTime());
+    __publicField$b(this, "scheduledRetry");
+    __publicField$b(this, "logger");
+    __publicField$b(this, "_status");
+    __publicField$b(this, "connecting");
+    __publicField$b(this, "heartbeatInterval", 1e4);
+    __publicField$b(this, "lastHeartbeat", (/* @__PURE__ */ new Date()).getTime());
+    __publicField$b(this, "heartbeatTimer");
+    this.logger = utils.contextLogger("hostconn", {
+      clientid,
+      loggerId: nanoid$1.nanoid(3)
+    });
     ({
       ...settings
     });
@@ -1154,6 +1219,7 @@ const _HostConnection = class _HostConnection extends utils.StateMachine.withDef
     });
     this.host = host;
     this.channelSubs = subscriptions;
+    this.clientid = clientid;
     this.connecting = this.connect();
   }
   // assigned by state-machine
@@ -1244,23 +1310,28 @@ const _HostConnection = class _HostConnection extends utils.StateMachine.withDef
     };
   }
   async connect() {
+    if (this.connecting) return this.connecting;
     this.abortController = new AbortController();
     const { signal } = this.abortController;
     signal.addEventListener("abort", () => {
       this.transition("abort");
     });
-    this.connecting = new Promise((res, rej) => {
+    const myself = this.connecting = new Promise((res, rej) => {
       let aborted = false;
+      this.logger.info(`connecting to server ${this.host.serverId}`);
       this.fetch(`/channels/listen`, {
         body: JSON.stringify(this.channelSubs, null, 2),
         method: "POST",
         signal,
-        headers: { "content-type": "application/json" }
+        headers: {
+          "content-type": "application/json",
+          clientid: this.clientid
+        }
       }).then((response) => {
         if (aborted) return false;
         if (this.abortController?.signal.aborted) return false;
-        //!!! todo: check to see if we shoudl reject with an empty / non-existent response here
         if (!response) return false;
+        //!!! todo: check to see if we should reject with an empty / non-existent response here
         res(true);
       }).catch((e) => {
         debugger;
@@ -1273,6 +1344,7 @@ const _HostConnection = class _HostConnection extends utils.StateMachine.withDef
         }
       });
     });
+    return myself;
   }
   mkEvent(args) {
     const { [devMessage]: dm, message, ...moreArgs } = args;
@@ -1311,7 +1383,15 @@ const _HostConnection = class _HostConnection extends utils.StateMachine.withDef
     const url = `${proto}://${shortServer}${path}`;
     options.mode = "cors";
     //!!! todo: it includes cryptographic credentials in the connection for the server
-    const result = await fetch(url, options);
+    const result = await fetch(url, {
+      ...options,
+      headers: {
+        ...options.headers,
+        "content-type": "application/json",
+        accept: "application/json",
+        clientid: this.clientid
+      }
+    });
     if (debug) debugger;
     //! successful requests are directly resolved to the parsed json ...
     if (result.ok) {
@@ -1428,7 +1508,7 @@ const _HostConnection = class _HostConnection extends utils.StateMachine.withDef
     }
   }
 };
-__publicField$a(_HostConnection, "emitterHelp", connectionEvents);
+__publicField$b(_HostConnection, "emitterHelp", connectionEvents);
 __decorateClass$2([
   utils.autobind
 ], _HostConnection.prototype, "watchdog");
@@ -1465,18 +1545,22 @@ async function fetcher(path, options) {
   throw reason;
 }
 
-var __defProp$9 = Object.defineProperty;
+var __defProp$a = Object.defineProperty;
 var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
-var __defNormalProp$9 = (obj, key, value) => key in obj ? __defProp$9(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp$a = (obj, key, value) => key in obj ? __defProp$a(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __decorateClass$1 = (decorators, target, key, kind) => {
   var result = __getOwnPropDesc$1(target, key) ;
   for (var i = decorators.length - 1, decorator; i >= 0; i--)
     if (decorator = decorators[i])
       result = (decorator(target, key, result) ) || result;
-  if (result) __defProp$9(target, key, result);
+  if (result) __defProp$a(target, key, result);
   return result;
 };
-var __publicField$9 = (obj, key, value) => __defNormalProp$9(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __publicField$a = (obj, key, value) => __defNormalProp$a(obj, typeof key !== "symbol" ? key + "" : key, value);
+const {
+  cyan,
+  dim
+} = colors;
 //!!! todo zw3w737: it has a way of posting the same unique message to multiple servers,
 const connectionManagerStates = {
   // logLevel: "info",
@@ -1505,7 +1589,7 @@ const connectionManagerStates = {
   pendingSetup: {
     async onEntry() {
       if (!this.channelSubs?.size) {
-        console.log("    \u{1F41E} ConnectionManager: pendingSetup: deferred until channel subscriptions are set");
+        this.logger.warn("    \u{1F41E} ConnectionManager: pendingSetup: deferred until channel subscriptions are set");
         return;
       }
       const hosts = this.discovery.hosts;
@@ -1643,38 +1727,48 @@ const connectionManagerStates = {
 };
 class ConnectionManager extends utils.StateMachine.withDefinition(
   connectionManagerStates,
-  "connection-manager"
+  "connMgr"
 ) {
   constructor(options) {
     super({
       contextLabel: "connection-manager",
       currentState: "discoveringNbh",
       logFacility: "connection-manager:state",
-      contextObject: null
+      contextObject: null,
+      logProperties: {
+        loggerId: options.clientid,
+        color: cyan.start + dim.start
+      }
     });
-    __publicField$9(this, "state", "pending");
-    __publicField$9(this, "discovery");
-    __publicField$9(this, "hosts");
-    __publicField$9(this, "events", new EventEmitter.EventEmitter());
-    __publicField$9(this, "waitFor");
+    __publicField$a(this, "state", "pending");
+    __publicField$a(this, "discovery");
+    __publicField$a(this, "hosts");
+    __publicField$a(this, "events", new eventemitter3.EventEmitter());
+    __publicField$a(this, "waitFor");
     //! it keeps a current list of target event-subscriptions
-    __publicField$9(this, "channelSubs");
+    __publicField$a(this, "channelSubs");
     //! it remembers the last set of subscriptions, while the next set is being established.
-    __publicField$9(this, "lastChannelSubs");
+    __publicField$a(this, "lastChannelSubs");
     //! it is initialized with connection settings used for tuning behavior of outgoing connections
-    __publicField$9(this, "connectionSettings");
+    __publicField$a(this, "connectionSettings");
     //! it can map from the host object to a best-known Connection object for that host.
-    __publicField$9(this, "hostToConn", /* @__PURE__ */ new Map());
+    __publicField$a(this, "hostToConn", /* @__PURE__ */ new Map());
     //! it keeps notes on the status of every connection it knows about, and can count the connections in each state
-    __publicField$9(this, "connStatus", /* @__PURE__ */ new Map());
+    __publicField$a(this, "connStatus", /* @__PURE__ */ new Map());
     //! it keeps a graveyard of connections that can drop out of the set anytime they're garbage-collected,
     //  for connections that are known to be obsolete / replaced by newer versions, but which might still get / emit
     //  some events while they wrap up their operations.
-    __publicField$9(this, "graveyard", /* @__PURE__ */ new WeakSet());
-    __publicField$9(this, "partialConnectNotification");
-    __publicField$9(this, "_status");
-    __publicField$9(this, "channels");
-    __publicField$9(this, "logger");
+    __publicField$a(this, "graveyard", /* @__PURE__ */ new WeakSet());
+    __publicField$a(this, "partialConnectNotification");
+    __publicField$a(this, "_status");
+    __publicField$a(this, "channels");
+    __publicField$a(this, "clientid");
+    __publicField$a(this, "logger");
+    this.clientid = options.clientid;
+    this.logger = utils.zonedLogger("connMgr", {
+      loggerId: options.clientid,
+      color: cyan.start + dim.start
+    });
     this.connectionSettings = HostConnection.settingsWithDefaults(options.connectionSettings);
     this.discovery = options.discovery;
     this.discovery.events.on("hosts:updated", this.setHostList);
@@ -1717,7 +1811,12 @@ class ConnectionManager extends utils.StateMachine.withDefinition(
     for (const host of this.hosts) {
       try {
         const { channels: foundChans } = await fetcher("/channels", {
-          host
+          host,
+          headers: {
+            "content-type": "application/json",
+            accept: "application/json",
+            clientid: this.clientid
+          }
         });
         for (const chan of foundChans) {
           if (!channels.has(chan)) {
@@ -1757,19 +1856,24 @@ class ConnectionManager extends utils.StateMachine.withDefinition(
   }
   async setSubscriptions(subs) {
     if (this.channelSubs) return this.replaceSubscriptions(subs);
+    this.logger.info("setSubscriptions: setting first channel subscriptions", Object.keys(subs));
     this.channelSubs = subs;
     if (!this.hosts) {
       if (this.discovery.hosts?.length) {
         this.hosts = this.discovery.hosts;
       } else {
-        console.log("setSubscriptions: waiting for hosts:ready from discovery");
+        this.logger.info("setSubscriptions: waiting for hosts:ready from discovery");
         await new Promise((resolve) => this.discovery.events.once("hosts:ready", resolve));
+        this.logger.info("setSubscriptions: discovery: hosts:ready - excellent!");
       }
     }
     this.connectToHosts();
     return subs;
   }
   async replaceSubscriptions(subs) {
+    const chans = Object.keys(subs);
+    this.logger.debug("replaceSubscriptions: replacing host connections with %d new subscriptions", chans.length);
+    this.logger.trace("new subscriptions:", chans);
     this.lastChannelSubs = this.channelSubs;
     this.channelSubs = subs;
     const promises = [];
@@ -1810,7 +1914,8 @@ class ConnectionManager extends utils.StateMachine.withDefinition(
     for (const sub of Object.values(this.channelSubs)) {
       subscriptions.push(sub.options);
     }
-    const conn = new HostConnection(host, subscriptions, this.connectionSettings);
+    if (!this.clientid) throw new Error("missing clientid");
+    const conn = new HostConnection(host, subscriptions, this.connectionSettings, this.clientid);
     conn.events.on("connected", this.healthyConnection);
     conn.events.on("disconnected", this.cleanupConnection);
     conn.events.on("replacedBy", this.cleanupConnection);
@@ -2114,14 +2219,14 @@ __decorateClass$1([
   utils.autobind
 ], ConnectionManager.prototype, "notifySubscribers");
 
-var __defProp$8 = Object.defineProperty;
-var __defNormalProp$8 = (obj, key, value) => key in obj ? __defProp$8(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$8 = (obj, key, value) => __defNormalProp$8(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$9 = Object.defineProperty;
+var __defNormalProp$9 = (obj, key, value) => key in obj ? __defProp$9(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$9 = (obj, key, value) => __defNormalProp$9(obj, typeof key !== "symbol" ? key + "" : key, value);
 const { encodeUTF8: encodeUTF8$2, decodeUTF8: decodeUTF8$2, encodeBase64: encodeBase64$2, decodeBase64: decodeBase64$2 } = util;
 class StringNacl {
   constructor(keyPair, logger = console) {
-    __publicField$8(this, "identity");
-    __publicField$8(this, "logger");
+    __publicField$9(this, "identity");
+    __publicField$9(this, "logger");
     this.identity = keyPair;
     this.logger = logger;
   }
@@ -2156,18 +2261,20 @@ class StringNacl {
     return watsign.verify(strBuf, sigBuf, keyBuf);
   }
 }
-__publicField$8(StringNacl, "newKeyPair", watsign.newKeyPair);
+__publicField$9(StringNacl, "newKeyPair", watsign.newKeyPair);
 
-var __defProp$7 = Object.defineProperty;
-var __defNormalProp$7 = (obj, key, value) => key in obj ? __defProp$7(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$7 = (obj, key, value) => __defNormalProp$7(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$8 = Object.defineProperty;
+var __defNormalProp$8 = (obj, key, value) => key in obj ? __defProp$8(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$8 = (obj, key, value) => __defNormalProp$8(obj, typeof key !== "symbol" ? key + "" : key, value);
 class Discovery {
   constructor(options) {
-    __publicField$7(this, "nbh");
+    __publicField$8(this, "nbh");
     // neighborhood
-    __publicField$7(this, "hosts");
-    __publicField$7(this, "events", new EventEmitter.EventEmitter());
+    __publicField$8(this, "hosts");
+    __publicField$8(this, "events", new eventemitter3.EventEmitter());
+    __publicField$8(this, "logger", utils.contextLogger("discovery"));
     const { neighborhood } = options;
+    this.nbh = "";
     if (neighborhood) this.setNeighborhood(neighborhood);
     //! it prevents subclasses from overriding restartHostDiscovery() logic; see initHostDiscovery() instead.
     if (this.restartHostDiscovery !== Discovery.prototype.restartHostDiscovery) {
@@ -2188,6 +2295,7 @@ class Discovery {
   async restartHostDiscovery() {
     if (!this.nbh) throw new Error(`can't start host discovery without nbh`);
     //!!! todo: it emits a host-discovery-timeout event if hosts can't be discovered promptly.
+    this.logger.info(`restarting host discovery for neighborhood ${this.nbh}`);
     await this.initHostDiscovery();
     this.events.emit("hosts:discovering", {
       message: "discovering neighborhood hosts...",
@@ -2209,6 +2317,7 @@ class Discovery {
   }
   setNeighborhood(nbh) {
     this.nbh = nbh;
+    this.logger.info(`setting neighborhood ${nbh} - no ` + new Error("called by...").stack);
     this.restartHostDiscovery();
     return this;
   }
@@ -2222,14 +2331,14 @@ class Discovery {
   }
 }
 
-var __defProp$6 = Object.defineProperty;
-var __defNormalProp$6 = (obj, key, value) => key in obj ? __defProp$6(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$6 = (obj, key, value) => __defNormalProp$6(obj, key + "" , value);
+var __defProp$7 = Object.defineProperty;
+var __defNormalProp$7 = (obj, key, value) => key in obj ? __defProp$7(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$7 = (obj, key, value) => __defNormalProp$7(obj, key + "" , value);
 class NeighborhoodDiscovery extends Discovery {
   constructor(options) {
     const { neighborhood } = options;
     super(options);
-    __publicField$6(this, "neighborhood");
+    __publicField$7(this, "neighborhood");
     if (neighborhood) this.neighborhood = neighborhood;
   }
   static forNeighborhood(n) {
@@ -2240,8 +2349,7 @@ class NeighborhoodDiscovery extends Discovery {
     //!!! todo: use discovery service to find registered neighborhoods
   }
   async getHostList() {
-    console.warn(`Discovery in neighborhood has no impl yet.  Try DevEnvLocalDiscovery for now`);
-    return [];
+    throw new Error(`Discovery in neighborhood has no impl yet.  Try StaticHostDiscovery for now`);
   }
   async getConnectionThresholds() {
     //!!! todo: revisit this, perhaps with neighborhood-specific preferences found in discovery,
@@ -2295,17 +2403,17 @@ class NeighborhoodDiscovery extends Discovery {
   }
 }
 
-var __defProp$5 = Object.defineProperty;
-var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$5 = (obj, key, value) => __defNormalProp$5(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$6 = Object.defineProperty;
+var __defNormalProp$6 = (obj, key, value) => key in obj ? __defProp$6(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$6 = (obj, key, value) => __defNormalProp$6(obj, typeof key !== "symbol" ? key + "" : key, value);
 //! represents a configuration for monitoring a specific channel
 //! it includes alt-values for optional attributes for developers to easily see 
 class ChannelSubscriptionListener {
   // XXevents: EventEmitter<ChannelSubEvents>;
   constructor(options) {
-    __publicField$5(this, "options");
-    __publicField$5(this, "recentMsgs");
-    __publicField$5(this, "listener");
+    __publicField$6(this, "options");
+    __publicField$6(this, "recentMsgs");
+    __publicField$6(this, "listener");
     const { listener, ...rest } = options;
     this.options = rest;
     //! it has a recent-messages map, not included in a JSON representation of the subscription
@@ -2322,18 +2430,18 @@ class ChannelSubscriptionListener {
   }
 }
 
-var __defProp$4 = Object.defineProperty;
+var __defProp$5 = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __decorateClass = (decorators, target, key, kind) => {
   var result = __getOwnPropDesc(target, key) ;
   for (var i = decorators.length - 1, decorator; i >= 0; i--)
     if (decorator = decorators[i])
       result = (decorator(target, key, result) ) || result;
-  if (result) __defProp$4(target, key, result);
+  if (result) __defProp$5(target, key, result);
   return result;
 };
-var __publicField$4 = (obj, key, value) => __defNormalProp$4(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __publicField$5 = (obj, key, value) => __defNormalProp$5(obj, typeof key !== "symbol" ? key + "" : key, value);
 const { sign } = nacl;
 const nanoid = nanoid$1.customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
 const {
@@ -2342,10 +2450,10 @@ const {
 const { encodeUTF8: encodeUTF8$1, decodeUTF8: decodeUTF8$1, encodeBase64: encodeBase64$1, decodeBase64: decodeBase64$1 } = util;
 const nbhChannelList = "_chans";
 const nbhAuthInfo = "_auth";
-const logging$1 = parseInt(process.env.LOGGING || "");
+parseInt(process.env.LOGGING || "");
 //! it runs onEntry() and predicate() hooks always in context
 const clientStates = {
-  // logLevel: "info",
+  logLevel: "warn",
   default: {
     //! it automatically advances to next states, when it can make progress
     async onEntry() {
@@ -2388,15 +2496,7 @@ const clientStates = {
       const chans = await this.connManager.getChannelList();
       this.channels = chans;
       await this.transition("hasChannels");
-      this.events.emit("hasChannels", {
-        nbh: this.neighborhoodId,
-        message: "found channel list",
-        channels: chans,
-        [devMessage]: [
-          `The list of channels is ready to present to users, or has been refreshed.`,
-          `You should reconcile any application-side list of subscribed channels`
-        ]
-      });
+      this.emitHasChannels();
     },
     hasChannels: "ready"
   },
@@ -2405,54 +2505,69 @@ const clientStates = {
     }
   }
 };
+let instanceCount = 1;
 class DredClient extends utils.StateMachine.withDefinition(clientStates, "client") {
   constructor(args) {
+    let { name: clientName, neighborhood } = args;
+    const clientid = (clientName || `#${instanceCount}`) + `-${nanoid(5)}`;
     super({
-      contextLabel: args.name || "dred-client",
+      contextLabel: clientName || "dred-client",
       currentState: "default",
-      logFacility: "dred-client:state",
-      contextObject: null
+      logFacility: `dred-client:state`,
+      contextObject: null,
+      logProperties: {
+        loggerId: clientid
+      }
     });
-    __publicField$4(this, "args");
-    __publicField$4(this, "events", this.ensureEmitterExists());
-    __publicField$4(this, "connManager");
-    __publicField$4(this, "channels", []);
-    __publicField$4(this, "neighborhoodId", "cardano-after-dark");
-    __publicField$4(this, "availableNeighborhoods", []);
+    __publicField$5(this, "args");
+    __publicField$5(this, "events", this.ensureEmitterExists());
+    __publicField$5(this, "connManager");
+    __publicField$5(this, "channels", []);
+    __publicField$5(this, "neighborhood");
+    // = "cardano-after-dark";
+    __publicField$5(this, "availableNeighborhoods", []);
     // neighborhoodContractAddress = "9bef...";
-    __publicField$4(this, "discovery");
-    __publicField$4(this, "identity");
-    __publicField$4(this, "signer");
-    __publicField$4(this, "pubKeyString");
-    __publicField$4(this, "logger");
-    __publicField$4(this, "insecure");
-    __publicField$4(this, "_subscriptions");
-    __publicField$4(this, "subscribers", /* @__PURE__ */ new Map());
-    __publicField$4(this, "channelSub");
-    __publicField$4(this, "authSub");
-    __publicField$4(this, "messageHandler");
-    __publicField$4(this, "_status");
+    __publicField$5(this, "discovery");
+    __publicField$5(this, "identity");
+    __publicField$5(this, "signer");
+    __publicField$5(this, "pubKeyString");
+    __publicField$5(this, "logger");
+    __publicField$5(this, "insecure");
+    __publicField$5(this, "_subscriptions");
+    __publicField$5(this, "subscribers", /* @__PURE__ */ new Map());
+    __publicField$5(this, "channelSub");
+    __publicField$5(this, "authSub");
+    __publicField$5(this, "messageHandler");
+    __publicField$5(this, "instanceNumber", instanceCount++);
+    __publicField$5(this, "clientid");
+    __publicField$5(this, "_status");
+    if (!neighborhood) throw new Error("neighborhood is required");
+    this.neighborhood = neighborhood;
+    this.args = { ...args };
     this.events = this.ensureEmitterExists();
-    let { name: clientName } = args;
-    clientName = clientName ? `client-\u2039${clientName}\u203A` : "dred-client";
-    this.logger = utils.zonedLogger(clientName, {
+    this.clientid = clientid;
+    this.logger = utils.zonedLogger(`dred-client`, {
       color: magenta.start,
-      levels: { [clientName]: logging$1 ? "info" : "warn", _message: `(env LOGGING=${logging$1})` }
+      loggerId: clientid
+      // levels: {
+      //     // [clientName]: logging ? "info" : "warn",
+      //     _message: `(env LOGGING=${logging})`,
+      // },
     });
     this._status = this._status || "default";
-    this.args = args;
     const discovery = this.constructor.resolveDiscovery(args);
     this.discovery = discovery;
     this.connManager = new ConnectionManager({
       discovery,
       waitFor: this.args.waitFor,
-      connectionSettings: this.args.connectionSettings || {}
+      connectionSettings: this.args.connectionSettings || {},
+      clientid
     });
     this.transition("default");
     //!!! make this test-only
   }
   ensureEmitterExists() {
-    return this.events = this.events || new EventEmitter();
+    return this.events = this.events || new eventemitter3.EventEmitter();
   }
   log(a1, ...args) {
     this.logger.info(a1, ...args);
@@ -2460,8 +2575,29 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
   warn(a1, ...args) {
     this.logger.warn(a1, ...args);
   }
+  logInfo() {
+    const neighborhood = this.neighborhood;
+    const availableNeighborhoods = this.availableNeighborhoods.join(", ") || "none";
+    const channels = this.channels.join(", ") || "none";
+    const status = this._status || "unknown";
+    let hostInfo = "unknown";
+    if (this.discovery && this.discovery.hosts) {
+      const hosts = this.discovery.hosts.map((h) => `${h.address}:${h.port} (${h.serverId})`);
+      hostInfo = hosts.join(", ");
+    }
+    const logMessage = [
+      `DredClient ${this.clientid}: ${status}`,
+      `  - Current Neighborhood    : ${neighborhood}`,
+      `  - Available Neighborhoods : [${availableNeighborhoods}]`,
+      `  - Connected Channels      : [${channels}]`,
+      `  - Connected Hosts         : ${hostInfo}`,
+      `  - Subscriptions Count     : ${Object.keys(this.subscriptions).length}`,
+      ``
+    ].join("\n");
+    return logMessage;
+  }
   setNeighborhood(n) {
-    this.neighborhoodId = n;
+    this.neighborhood = n;
     utils.asyncDelay(1).then(this.mkTransition("nbhSelected"));
   }
   async subscribeToChannels(arg) {
@@ -2491,7 +2627,22 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
   onTransition() {
     //! tbd if we need to use this hook, perhaps for persisting the bookmark state of channels
   }
-  static resolveDiscovery({ neighborhood, discovery }) {
+  emitHasChannels() {
+    this.events.emit("hasChannels", {
+      nbh: this.neighborhood,
+      message: "found channel list",
+      channels: this.channels,
+      [devMessage]: [
+        `The list of channels is ready to present to users, or has been refreshed.`,
+        `You should reconcile any application-side list of subscribed channels`
+      ]
+    });
+  }
+  static resolveDiscovery({
+    neighborhood,
+    discovery
+  }) {
+    if (discovery) return discovery;
     if (neighborhood) discovery = new NeighborhoodDiscovery({ neighborhood });
     if (!discovery) throw new Error(`required: 'discovery' object or 'neighborhood' name`);
     return discovery;
@@ -2510,7 +2661,7 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
     this.events.emit("state:changed", {
       message: "client state updated",
       [devMessage]: "no need to show this message onscreen; just update channel-list or status as needed",
-      nbh: this.neighborhoodId,
+      nbh: this.neighborhood,
       status: this._status,
       channels: this.channels
     });
@@ -2539,7 +2690,7 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
     //!!! todo: it emits the generic state-updated event with updated channel list
   }
   processAuthMsg(m) {
-    //!!! todo: ??? it notifies listeners when authentication is required by one or more neighborhood hosts 
+    //!!! todo: ??? it notifies listeners when authentication is required by one or more neighborhood hosts
     //!!! todo: it notifies listeners when a requested channel requires authentication not yet established
     //!!! todo: notifies listening application of new identities joining the neighborhood {type: "newId", pubKey, handle, certificates}
     //!!! todo: notifies listening application of any certifications added by an identity's owner or neighborhood trustees
@@ -2552,6 +2703,7 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
     }
     this._subscriptions = replacement;
   }
+  // TODO: replace this with a direct `subscriptions` property
   get subscriptions() {
     if (!this._subscriptions) return {};
     return this._subscriptions;
@@ -2565,7 +2717,7 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
   //! it doesn't require client applications to guard for memory / event-listener leakage
   mkChannelSub(channel, listener) {
     const sub = new ChannelSubscriptionListener({
-      neighborhood: this.neighborhoodId,
+      neighborhood: this.neighborhood,
       channel,
       listener
     });
@@ -2586,13 +2738,20 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
     const proto = host.insecure ? "http" : "https";
     const shortServer = `${host.address}:${host.port}`;
     const url = `${proto}://${shortServer}${path}`;
-    const result = await fetch$1(url, options);
+    const result = await fetch$1(url, {
+      ...options,
+      headers: {
+        ...options.headers,
+        "content-type": "application/json",
+        accept: "application/json",
+        clientid: this.clientid
+      }
+    });
     if (debug) debugger;
     if (result.ok) {
       if (!parse) return result;
       return result.json();
     }
-    debugger;
     const err = await result.json().catch(() => new Error(`${result.status} ${result.statusText} for ${path}`));
     //!!! if one of the requests fails, it notifies the PeerConnectionManager
     const { error, message, reason, recommendation, "?developer?": devMsg } = err;
@@ -2604,6 +2763,18 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
       [devMessage]: devMsg || "Developers should check whether the request is properly formed"
     });
     throw new Error(error || message || reason);
+  }
+  /**
+   * Promise-based wrapper for waiting for an event to occur
+   * @remarks
+   * The promise resolves with the event arguments.
+   */
+  async once(eventName) {
+    return new Promise((resolve) => {
+      this.events.once(eventName, (...args) => {
+        resolve(args);
+      });
+    });
   }
   async getNeighborhoods() {
     const n = await this.discovery.getNeighborhoods();
@@ -2656,18 +2827,32 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
       options.owner = this.pubKeyString;
       options.signature = signature;
     }
-    const {
-      ...otherBodyAttrs
-    } = options;
+    const { ...otherBodyAttrs } = options;
     const body = JSON.stringify(otherBodyAttrs);
     try {
-      return await this.fetch(`/channel/${channelName}`, {
+      return this.fetch(`/channel/${channelName}`, {
         method: "POST",
         body,
         headers: {
           "content-type": "application/json",
-          accept: "application/json"
+          accept: "application/json",
+          clientid: this.clientid
         }
+      }).then((r) => {
+        const { id, status } = r;
+        if (status === "created") {
+          if (id !== channelName) {
+            throw new Error(`requested channel ${channelName} but got id ${id}`);
+          }
+          this.logger.info(`created channel ${channelName}`, r);
+          this.channels.push(channelName);
+          this.logger.warn(
+            "todo: consider waiting for a second confirmation of channel creation, if appropriate, from a second server (only if there are multiple servers and active channel subscriptions)"
+          );
+        } else {
+          throw new Error(`expected status "created". Response: `, r);
+        }
+        return r;
       });
     } catch (err) {
       let e;
@@ -2698,7 +2883,8 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
         // debug: true,
         headers: {
           "content-type": "application/json",
-          accept: "application/json"
+          accept: "application/json",
+          clientid: this.clientid
         },
         body: JSON.stringify({
           myId: this.pubKeyString,
@@ -2743,7 +2929,8 @@ class DredClient extends utils.StateMachine.withDefinition(clientStates, "client
       body: JSON.stringify(message),
       headers: {
         "content-type": "application/json",
-        accept: "application/json"
+        accept: "application/json",
+        clientid: this.clientid
       }
     });
     if (sub) {
@@ -2768,14 +2955,14 @@ __decorateClass([
   utils.autobind
 ], DredClient.prototype, "processAuthMsg");
 
-var __defProp$3 = Object.defineProperty;
-var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$3 = (obj, key, value) => __defNormalProp$3(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$4 = Object.defineProperty;
+var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$4 = (obj, key, value) => __defNormalProp$4(obj, typeof key !== "symbol" ? key + "" : key, value);
 class RedisSet {
   constructor(redis, key = "_abstract") {
-    __publicField$3(this, "redis");
-    __publicField$3(this, "key");
-    __publicField$3(this, "abstract");
+    __publicField$4(this, "redis");
+    __publicField$4(this, "key");
+    __publicField$4(this, "abstract");
     this.redis = redis;
     this.key = key;
     this.abstract = !!(key === "_abstract");
@@ -2788,18 +2975,18 @@ class RedisSet {
   async add(key, setName) {
     if (this.abstract && !setName)
       throw new Error(`abstract RedisSet requires setName in arg2`);
-    return this.redis.call("SADD", this.key, key);
+    return this.redis.call("SADD", setName || this.key, key);
   }
   async delete(key, setName) {
     if (this.abstract && !setName)
       throw new Error(`abstract RedisSet requires setName in arg2`);
-    return this.redis.call("SREM", this.key, key);
+    return this.redis.call("SREM", setName || this.key, key);
   }
 }
 
-var __defProp$2 = Object.defineProperty;
-var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$2 = (obj, key, value) => __defNormalProp$2(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$3 = Object.defineProperty;
+var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$3 = (obj, key, value) => __defNormalProp$3(obj, typeof key !== "symbol" ? key + "" : key, value);
 const StringValueAdapter = {
   toRedis(v) {
     return v;
@@ -2818,10 +3005,10 @@ const JSONValueAdapter = {
 };
 class RedisHash {
   constructor(redis, hashName, adapter) {
-    __publicField$2(this, "redis");
-    __publicField$2(this, "hashName");
-    __publicField$2(this, "abstract");
-    __publicField$2(this, "adapter");
+    __publicField$3(this, "redis");
+    __publicField$3(this, "hashName");
+    __publicField$3(this, "abstract");
+    __publicField$3(this, "adapter");
     this.redis = redis;
     this.hashName = hashName;
     this.adapter = adapter;
@@ -2865,25 +3052,28 @@ class RedisHash {
   }
 }
 
-var __defProp$1 = Object.defineProperty;
-var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$1 = (obj, key, value) => __defNormalProp$1(obj, key + "" , value);
+var __defProp$2 = Object.defineProperty;
+var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$2 = (obj, key, value) => __defNormalProp$2(obj, key + "" , value);
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 const localNbh = "localhost-nbh";
 class StaticHostDiscovery extends Discovery {
   constructor(options) {
-    const {
-      neighborhood,
-      hosts
-    } = options;
-    if (neighborhood) throw new Error(`DevEnvLocalDiscovery always uses ` + localNbh);
+    const { neighborhood, hosts } = options;
     super({ neighborhood: localNbh });
-    __publicField$1(this, "hosts");
+    __publicField$2(this, "hosts");
     this.hosts = hosts || StaticHostDiscovery.defaultHosts();
   }
   async getNeighborhoods() {
     await utils.asyncDelay(1);
-    return [localNbh];
+    return [localNbh, this.nbh].filter(Boolean);
+  }
+  /**
+   * overrides the base class to prevent triggering unneeded re-discovery of static hosts
+   */
+  setNeighborhood(nbh) {
+    this.nbh = nbh;
+    return this;
   }
   // getPubKeyFromFs(port:number): string { //Uint8Array
   //     const pubKeyFile = `config/keys/server.port-${port}.pub`;
@@ -2925,7 +3115,8 @@ class StaticHostDiscovery extends Discovery {
     return { localDevHosts: this.hosts };
   }
   async getHostList() {
-    if (!this.hosts) throw new Error(`call setupDefaultHosts()`);
+    if (!this.hosts)
+      throw new Error(`call setupDefaultHosts() or provide hosts in constructor`);
     await utils.asyncDelay(1);
     return this.hosts;
   }
@@ -2943,15 +3134,281 @@ class StaticHostDiscovery extends Discovery {
   }
 }
 
+var __defProp$1 = Object.defineProperty;
+var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$1 = (obj, key, value) => __defNormalProp$1(obj, typeof key !== "symbol" ? key + "" : key, value);
+const _DredReplicator = class _DredReplicator {
+  constructor(homeServer, discovery) {
+    __publicField$1(this, "name");
+    __publicField$1(this, "homeServer");
+    __publicField$1(this, "discovery");
+    // private mapChOcid: Map<string, Set<string>> = new Map(); // channelId -> Set<ocid>
+    __publicField$1(this, "initialized", false);
+    __publicField$1(this, "replicants", []);
+    this.name = `DredReplicator-[${homeServer.serverId}]`;
+    console.log(`constructor: [${this.name}]`);
+    this.homeServer = homeServer;
+    this.discovery = discovery;
+  }
+  // Store replicants for cleanup
+  isInitialized() {
+    return this.initialized;
+  }
+  log(message, ...args) {
+    this.homeServer.log(`${_DredReplicator._logHeader} ${message}`, ...args);
+  }
+  warn(message, ...args) {
+    this.homeServer.warn(`${_DredReplicator._logHeader} ${message}`, ...args);
+  }
+  async initialize() {
+    if (this.initialized) {
+      this.warn(`${this.name} already initialized`);
+      return;
+    }
+    this.initialized = true;
+    this.log(`${this.name} initializing`);
+    const hosts = await this.discovery.getHostList();
+    const otherHosts = hosts.filter((host) => host.serverId !== this.homeServer.serverId);
+    for (const host of otherHosts) {
+      const repClient = new Replicant(this, this.homeServer, host);
+      await repClient.initialize();
+      this.replicants.push(repClient);
+    }
+    this.log(`${this.name} initialized`);
+  }
+  async cleanup() {
+    if (!this.initialized) {
+      this.warn(`${this.name} not initialized`);
+      return;
+    }
+    this.log(`Cleaning up ${this.name}`);
+    const results = await Promise.allSettled(
+      this.replicants.map((replicant) => replicant.cleanup())
+    );
+    results.forEach((result, index) => {
+      if (result.status === "rejected") {
+        this.warn(`Error cleaning up replicant ${index}: ${result.reason}`);
+      }
+    });
+    this.replicants = [];
+    this.initialized = false;
+    this.log(`${this.name} cleanup complete`);
+  }
+  // // true when message with this ocid was already processed for this channel
+  // public hasProcessedMessage(channelId: string, messageId: string): boolean {
+  //     const channelMessages = this.mapChOcid.get(channelId);
+  //     return channelMessages ? channelMessages.has(messageId) : false;
+  // }
+  // // mark message with this ocid as processed for this channel
+  // public markMessageAsProcessed(channelId: string, messageId: string): void {
+  //     if (!this.mapChOcid.has(channelId)) {
+  //         this.mapChOcid.set(channelId, new Set<string>());
+  //     }
+  //     this.mapChOcid.get(channelId)!.add(messageId);
+  // }
+};
+__publicField$1(_DredReplicator, "_logHeader", "[REPLicator]");
+let DredReplicator = _DredReplicator;
+const _Replicant = class _Replicant {
+  constructor(replicator, homeServer, targetHost) {
+    __publicField$1(this, "replicator");
+    __publicField$1(this, "homeServer");
+    __publicField$1(this, "targetHost");
+    __publicField$1(this, "name");
+    __publicField$1(this, "repClient");
+    this.replicator = replicator;
+    this.homeServer = homeServer;
+    this.targetHost = targetHost;
+    this.name = `Replicant-[${homeServer.serverId}]-[${targetHost.serverId}]`;
+    this.repClient = null;
+    this.log(`constructor: ${this.name}`);
+  }
+  log(message, ...args) {
+    this.homeServer.log(`${_Replicant._logHeader} ${message}`, ...args);
+  }
+  warn(message, ...args) {
+    this.homeServer.warn(`${_Replicant._logHeader} ${message}`, ...args);
+  }
+  async initialize() {
+    this.log(`${this.name} initializing`);
+    if (this.repClient !== null) {
+      this.warn(`${this.name} already initialized`);
+      return;
+    }
+    this.log(`${this.name} starting initialization`);
+    this.repClient = this.homeServer.mkClient(this.targetHost.serverId, {}, false);
+    await this.repClient.generateKey();
+    this.log(`${this.name} client ready (I guess)`);
+    const commonChannels = await this.findCommonChannels();
+    this.log(`${this.name} common channels: ${commonChannels.join(", ")}`);
+    await this.subscribeToCommonChannels(commonChannels);
+    this.log(`${this.name} initialization complete`);
+  }
+  async findCommonChannels() {
+    if (!this.repClient.channels || this.repClient.channels.length === 0) {
+      this.log(`Triggering channel discovery for ${this.targetHost.serverId}`);
+      this.repClient.channels = await this.repClient.connManager.getChannelList();
+    }
+    const targetChannels = this.repClient.channels;
+    this.log(`Target server ${this.targetHost.serverId} has channels: [${targetChannels.join(", ")}]`);
+    const homeChannels = await this.homeServer.channelList.keys();
+    this.log(`Home server has channels: [${homeChannels.join(", ")}]`);
+    const commonChannels = targetChannels.filter(
+      (channel) => homeChannels.includes(channel) && !channel.startsWith("_")
+      // Skip meta channels for now
+    );
+    return commonChannels;
+  }
+  async subscribeToCommonChannels(channels) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    this.log(`Connection states:
+          - RepClient: ${this.repClient.currentState}
+          - ConnManager: ${this.repClient.connManager.currentState}
+          - Waiting for connection...
+          - After wait - RepClient: ${this.repClient.currentState}, ConnManager: ${this.repClient.connManager.currentState}`);
+    const subscriptionMap = {};
+    for (const channel of channels) {
+      subscriptionMap[channel] = (message) => {
+        this.warn(`\u{1F4E5} REPLICATION: Message detected from ${this.targetHost.serverId} in channel '${channel}' (${message.mid})`);
+        const { connection, ...core } = message;
+        this.log(`\u{1F3AF} REPL MESSAGE from ${this.targetHost.serverId}:`, core);
+        this.handleIncomingMessage(channel, message);
+      };
+    }
+    this.warn(`\u{1F514} REPLICATION: Subscribing to ${channels.length} channels on target server ${this.targetHost.serverId}...`);
+    await this.repClient.subscribeToChannels(subscriptionMap);
+    this.warn(`\u2705 Successfully subscribed to ${channels.length} channels on target server ${this.targetHost.serverId}`);
+  }
+  /**
+   * Handle incoming message from target server to this client attached to the home server
+   * @param channelId 
+   * @param message 
+   * @returns 
+   */
+  async handleIncomingMessage(channelId, message) {
+    try {
+      debugger;
+      const sourceId = this.targetHost.serverId;
+      this.warn(`\u{1F4E5} REPLICATION: Received message from ${this.targetHost.serverId} -> ${this.homeServer.serverId} in channel '${channelId}' (${message.mid})`);
+      const messageId = message.mid || message.id || `${Date.now()}-${Math.random()}`;
+      const ocid = message.ocid || `repl-${messageId}`;
+      if (message.replicatedFrom && message.replicatedFrom !== void 0) {
+        this.log(`Skipping message: already replicated (from ${message.replicatedFrom})`);
+        return;
+      }
+      if (message.originalServerId === this.homeServer.serverId) {
+        this.log(`Skipping message: originated from home server ${this.homeServer.serverId}`);
+        return;
+      }
+      this.log(` >>>>>>>>>>  about to call shouldReplicateMessage: ${channelId} ${messageId}`);
+      if (!await this.shouldReplicateMessage(channelId, messageId)) {
+        this.log(` >>>>>>>>>>  shouldReplicateMessage returned false`);
+        return;
+      }
+      this.log(` >>>>>>>>>>  shouldReplicateMessage returned true`);
+      const replicatedMessage = {
+        msg: message.msg || message.data,
+        type: message.type || "replicated",
+        ocid,
+        replicatedFrom: this.targetHost.serverId,
+        replicatedAt: (/* @__PURE__ */ new Date()).toISOString(),
+        originalMessageId: messageId,
+        originalServerId: this.targetHost.serverId
+      };
+      await this.replicateToHomeServer(channelId, replicatedMessage);
+      this.log(`Successfully replicated message from ${this.targetHost.serverId} to home server in channel ${channelId}`);
+    } catch (error) {
+      this.warn(`Error handling message from ${this.targetHost.serverId} in channel ${channelId}: ${error}`);
+      throw error;
+    }
+  }
+  /**
+   * Check if the message should be replicated to the home server
+   * 
+   * 
+   * @param channelId 
+   * @param messageId 
+   * @returns 
+   */
+  async shouldReplicateMessage(channelId, messageId) {
+    this.log(` >>>>>>>>>>  shouldReplicateMessage: ${channelId} ${messageId}`);
+    const channelExists = await this.homeServer.channelList.has(channelId);
+    this.log(` >>>>>>>>>>  channelExists: ${channelExists} }`);
+    if (!channelExists) {
+      this.log(`Channel ${channelId} no longer exists on home server, skipping replication`);
+      return false;
+    }
+    return true;
+  }
+  async replicateToHomeServer(channelId, messageDetails) {
+    try {
+      this.warn(`\u{1F4E4} REPLICATION: Publishing to home server '${this.homeServer.serverId}' in channel '${channelId}' (ocid: ${messageDetails.ocid})`);
+      const result = await this.homeServer.ensureMessageProcessedOnce(
+        channelId,
+        messageDetails.ocid,
+        messageDetails.msg,
+        messageDetails
+      );
+      if (result) {
+        this.log(`Message successfully replicated to home server: ${result}`);
+      } else {
+        this.log(`Message was a duplicate, not replicated: ${messageDetails.ocid}`);
+      }
+    } catch (error) {
+      this.warn(`Failed to replicate message to home server channel ${channelId}: ${error}`);
+      throw error;
+    }
+  }
+  // Unused, not needed but let's keep it here for now
+  // private async waitForClientReady(): Promise<void> {
+  //     return new Promise((resolve) => {
+  //         if (this.repClient!.currentState === 'ready') {
+  //             resolve();
+  //             return;
+  //         }
+  //         this.repClient!.events.once('state:changed', (event) => {
+  //             if (event.status === 'ready') {
+  //                 resolve();
+  //             }
+  //         });
+  //     });
+  // }
+  async cleanup() {
+    this.log(`${this.name} cleanup starting`);
+    if (this.repClient) {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        this.log(`${this.name} disconnecting replication client (current state: ${this.repClient.currentState})`);
+        await Promise.race([
+          this.repClient.disconnect(),
+          new Promise(
+            (_, reject) => setTimeout(() => reject(new Error("Client disconnect timeout")), 3e3)
+          )
+        ]);
+        this.repClient = null;
+        this.log(`${this.name} replication client disconnected and cleaned up`);
+      } catch (error) {
+        this.warn(`${this.name} cleanup error (continuing): ${error.message || error}`);
+        this.repClient = null;
+      }
+    }
+    this.log(`${this.name} cleanup complete`);
+  }
+};
+__publicField$1(_Replicant, "_logHeader", "[REPLicant]");
+let Replicant = _Replicant;
+
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 const {
+  bgBlack,
   bgBlueBright,
+  bgGreenBright,
   bold,
-  black
-} = colors;
-const logging = parseInt(process.env.LOGGING || "0");
+  black,
+  white} = colors;
+parseInt(process.env.LOGGING || "0");
 const optionsSerializer = {
   toRedis(v) {
     if ("member" !== v.approveJoins && "open" !== v.approveJoins) v.approveJoins = "owner";
@@ -2965,8 +3422,6 @@ const optionsSerializer = {
     return opts;
   }
 };
-//!!! todo: augment to support a list of nbh's, with req details for nbh selection
-let clientIndex = 1;
 class DredServer {
   constructor(args, serverId, redisDb) {
     __publicField(this, "api");
@@ -2987,12 +3442,18 @@ class DredServer {
     __publicField(this, "serverId");
     __publicField(this, "myServerInfo");
     __publicField(this, "logger");
+    // replicationClient?: ReplicationClient;
+    // Optional replicator, to be initialized only when replication is enabled
+    __publicField(this, "replicator");
     __publicField(this, "resetting", false);
     __publicField(this, "setupPending");
+    __publicField(this, "_knownMessages");
     __publicField(this, "resultLogger", (req, res, next) => {
       const now = (/* @__PURE__ */ new Date()).getTime();
       const elapsed = now - res.locals.startTime;
-      this.log(`<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url} ${elapsed}ms`);
+      this.reqLogger(res).info(
+        `<- ${res.statusCode} ${req.method} ${req.originalUrl || req.url} ${elapsed}ms`
+      );
     });
     __publicField(this, "getChannels", async (req, res, next) => {
       const found = await this.channelList.keys();
@@ -3274,7 +3735,7 @@ class DredServer {
         cleanup();
         next();
       };
-      const notifyConsumeError = (channel, consumeError) => {
+      const notifyConsumeError = (res2, channel, consumeError) => {
         if (!cancelled) {
           sendUpdate({
             channel,
@@ -3282,7 +3743,10 @@ class DredServer {
             message: "internal stream consumer failed",
             reason: consumeError.message
           });
-          this.logger.error(`${channel} consume error; TODO: reconnect/retry`, consumeError);
+          this.reqLogger(res2).error(
+            `${channel} consume error; TODO: reconnect/retry`,
+            consumeError.stack || consumeError.message || consumeError
+          );
           cleanup();
           next();
         }
@@ -3301,7 +3765,13 @@ class DredServer {
             message: "invalid or expired channel"
           });
         }
-        const subscriber = await this.listenOneChannel(sub, sendUpdate, notifyConsumeError);
+        this.logger.debug("  -- listening one: ", sub.channel);
+        const subscriber = await this.listenOneChannel(
+          res,
+          sub,
+          sendUpdate,
+          notifyConsumeError
+        );
         myStreamListeners.push({ channel, stream: subscriber });
         if (subscriber) anySuccesses += 1;
       }
@@ -3313,13 +3783,14 @@ class DredServer {
       }
     });
     this.args = args;
-    const loggerName = `dred\u2039${serverId}\u203A`;
+    const loggerName = `dred`;
     this.logger = utils.zonedLogger(loggerName, {
       serverId,
-      levels: {
-        [loggerName]: logging ? "info" : "warn",
-        _message: `(env LOGGING=${logging})`
-      }
+      loggerId: serverId
+      // levels: {
+      //     [loggerName]: logging ? "info" : "warn",
+      //     _message: `(env LOGGING=${logging})`,
+      // },
     });
     this.serverId = serverId;
     this.discovery = DredClient.resolveDiscovery(args);
@@ -3341,8 +3812,12 @@ class DredServer {
   setupExpressHandlers() {
     this.api.use(compression());
     this.api.use((req, res, next) => {
+      if (res.locals?.id) throw new Error("duplicate req processing detected");
+      const { clientid = `\u2039gen\u203A` } = req.headers;
+      res.locals.clientid = `${clientid}-${nanoid$1.nanoid(4)}`;
       res.locals.startTime = (/* @__PURE__ */ new Date()).getTime();
-      this.log(`-> ${req.method} ${req.originalUrl}`);
+      res.locals.id = nanoid$1.nanoid(4);
+      this.reqLogger(res).info(`-> ${req.method} ${req.originalUrl} `);
       next();
     });
     //!!! todo: 61pk3h0 it applies a more explicit Access-Control-Allow-Origin policy,
@@ -3392,6 +3867,12 @@ class DredServer {
       StringValueAdapter
     );
     this.channelOptions = new RedisHash(this.redis, "channelOptions", optionsSerializer);
+    utils.zonedLogger("dred-stream", {
+      loggerId: this.serverId,
+      // color: black.start +bgCyanBright.start// green.start
+      // color: green.start
+      color: bgBlack.start + white.start
+    });
     //!!! todo: allows the application name to override 'dred' setting in channel names created in Redis
     this.channelConn = new RedisChannels({
       application: `${this.nbh}::`,
@@ -3401,7 +3882,6 @@ class DredServer {
       },
       channels: { log: this.logger }
     });
-    this.channelConn._log = this.logger;
     this.ensureDefaultChannels();
   }
   //! it has a mockable function for starting the express server
@@ -3431,7 +3911,9 @@ class DredServer {
     const streams = this.channelConn;
     if (!streams) {
       if (this.resetting) {
-        this.logger.warn("ignoring continuing channel setup for %s while racing with a subsequent reset!");
+        this.logger.warn(
+          "ignoring continuing channel setup for %s while racing with a subsequent reset!"
+        );
         return;
       } else {
         this.logger.error(
@@ -3443,7 +3925,10 @@ class DredServer {
     }
     const stream = await streams.use(channel);
     //!!! revisit this with a more specific plan : )
-    await streams.produce(stream, "first event in this channel", { type: "channel:genesis" });
+    await streams.produce(stream, "first event in this channel", {
+      type: "channel:genesis",
+      ocid: `${channel}:genesis`
+    });
     const o = { channelId: channel, ...options };
     this.channelCreated(channel, o);
   }
@@ -3457,8 +3942,123 @@ class DredServer {
     this.log(`server '${this.serverId}' listening at ${address}:${port}`);
     return this.listener;
   }
+  // ------------------------------------------------------------
+  // Solution to avoid duplicate messages (replication)
+  // ------------------------------------------------------------
+  // knownMessages = new RedisSet(this.redis!.duplicate()); // removed in favor of lazy initialization
+  /**
+   * Known message set. Lazily initialized to avoid undefined errors.
+  */
+  get knownMessages() {
+    if (!this._knownMessages) {
+      this._knownMessages = new RedisSet(this.redis.duplicate(), `${this.nbh}::knownMessages`);
+    }
+    return this._knownMessages;
+  }
+  /**
+   * Ensure a message is processed only once. Use it to avoid duplicate messages.
+   * 
+   * Always await this method to prevent race conditions and blockings. 
+   * 
+   * 
+   * @param channel channel name
+   * @param msgId ocid
+   * @param msg message content
+   * @param messageDetails optional
+   * @returns message id if published, undefined if duplicate
+   */
+  async ensureMessageProcessedOnce(channel, msgId, msg, messageDetails) {
+    try {
+      const deduplicationKey = `${channel}:::${msgId}`;
+      const alreadyProcessed = await this.knownMessages.has(deduplicationKey);
+      if (alreadyProcessed) {
+        this.log(`Duplicate message detected, skipping: ${deduplicationKey}`);
+        return void 0;
+      }
+      await this.knownMessages.add(deduplicationKey);
+      const publishedMessageId = await this.publishMessageToChannel(channel, msg, messageDetails);
+      this.log(`Message successfully deduplicated and posted: ${deduplicationKey} -> ${publishedMessageId}`);
+      return publishedMessageId;
+    } catch (error) {
+      this.warn(`Error in message deduplication for ${channel}:::${msgId}:`, error);
+      throw error;
+    }
+  }
+  /**
+   * Publish a message directly without dedup. 
+   * Always await this method to prevent blocking caller and ensure message is published.
+   * 
+   * @returns id of the published message
+   */
+  async publishMessageToChannel(channelId, msg, messageDetails = {}) {
+    try {
+      const producer = await this.mkChannelProducer(channelId);
+      const publishedMessageId = await this.channelConn.produce(producer, msg, messageDetails);
+      this.log(`Message published to channel ${channelId}: ${publishedMessageId}`);
+      return publishedMessageId;
+    } catch (error) {
+      this.warn(`Failed to publish message to channel ${channelId}:`, error);
+      throw error;
+    }
+  }
+  async clearMessageDeduplicationCache(olderThanMs) {
+  }
+  // async ensureMessageProcessedOnce(channel: string, msgId, msg: string) {
+  //     // create composite key to avoid duplicates
+  //     const key = `${channel}:::${msgId}`;
+  //     if (await this.knownMessages.has(key)) {
+  //         return;
+  //     }
+  //     this.knownMessages.add(key)
+  //     this.actuallyPost(channel, msg)
+  // }
+  // async actuallyPost(channelId: string,msg: string, messageDetails: any) {
+  //     // Get channel producer for home server
+  //     const producer = await this.mkChannelProducer(channelId);
+  //     // Produce the replicated message on the home server
+  //     const id = await this.channelConn.produce(producer, msg, messageDetails);
+  //     return id;
+  // }
+  // ------------------------------------------------------------
+  async setupReplication() {
+    if (this.replicator) {
+      this.warn("Replication already setup");
+      return;
+    }
+    try {
+      await utils.asyncDelay(1e3);
+      this.replicator = new DredReplicator(this, this.discovery);
+      await this.replicator.initialize();
+      this.log(`Replication setup complete`);
+    } catch (error) {
+      this.replicator = void 0;
+      this.warn(`Failed to setup replication: ${error}`);
+      this.warn(`Failed to setup replication`, error.stack);
+      throw error;
+    }
+  }
+  async cleanupReplication() {
+    if (!this.replicator) {
+      this.warn("Replication not setup");
+      return;
+    }
+    try {
+      await Promise.race([
+        this.replicator.cleanup(),
+        new Promise(
+          (_, reject) => setTimeout(() => reject(new Error("Replication cleanup timeout")), 5e3)
+        )
+      ]);
+      this.log("Replication client cleanup complete");
+    } catch (error) {
+      this.warn(`Error during replication cleanup: ${error}`);
+    } finally {
+      this.replicator = void 0;
+    }
+  }
   async reset(reconnect, finalCleanup) {
     this.log("server: reset()");
+    await this.cleanupReplication();
     await this.channelConn.cleanup().catch(warning.bind(this, "channelConn.cleanup()"));
     finalCleanup?.(this.redis);
     this.resetting = true;
@@ -3481,6 +4081,7 @@ class DredServer {
   }
   async close() {
     this.cancelSubscribers();
+    await this.cleanupReplication();
     this.reset(false);
     this.listener?.close();
   }
@@ -3492,7 +4093,15 @@ class DredServer {
     listener.address();
     throw new Error(`is this needed?`);
   }
-  mkClient(serverSelection, clientArgs = {}) {
+  // create client and wait for key generation.
+  async mkClientAndGenerateKey(serverSelection, clientArgs = {}) {
+    const client = this.mkClient(serverSelection, clientArgs);
+    await client.generateKey();
+    return client;
+  }
+  // consider automatically generating a key
+  // we could add this to everything calling here.
+  mkClient(serverSelection, clientArgs = {}, serverManaged = true) {
     const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
     if (!discovery) throw new Error("discovery is required");
     const oneHost = discovery.hosts.find((h) => h.serverId === serverSelection);
@@ -3504,9 +4113,10 @@ class DredServer {
       hosts: [oneHost]
     });
     return new DredClient({
-      name: `${serverSelection || ""}-${clientIndex++}`,
+      // name: `${serverSelection || ""}-${clientIndex++}`,
       ...this.clientArgs,
       ...clientArgs,
+      neighborhood: this.nbh,
       discovery: singleDiscovery
     });
   }
@@ -3515,6 +4125,47 @@ class DredServer {
   }
   warn(a1, ...args) {
     this.logger.warn(a1, ...args);
+  }
+  async logInfo() {
+    const serverId = this.serverId;
+    const neighborhood = this.nbh || "cardano-after-dark";
+    let serverAddress = "unknown";
+    let serverPort = "unknown";
+    if (this.myServerInfo) {
+      serverAddress = this.myServerInfo.address;
+      serverPort = this.myServerInfo.port;
+    }
+    let channelsList = "none";
+    try {
+      const channels = await this.channelList.keys();
+      const publicChannels = channels.filter((ch) => ch[0] !== "_");
+      channelsList = publicChannels.join(", ") || "none";
+    } catch (error) {
+      channelsList = "error retrieving channels";
+    }
+    let discoveryHosts = "unknown";
+    if (this.discovery && this.discovery.hosts) {
+      const hosts = this.discovery.hosts.map((h) => `${h.serverId}@${h.address}:${h.port}`);
+      discoveryHosts = hosts.join(", ");
+    }
+    const logMessage = [
+      `DredServer - ID, Status : ${serverId}, ${this.listener ? "running" : "stopped"} `,
+      `  - Server Address:Port : ${serverAddress}:${serverPort}`,
+      `  - Redis URL, DB       : ${this.redisUrl}, ${this.redisDb}`,
+      `  - Discovery Hosts     : [${discoveryHosts}]`,
+      `  - Neighborhood        : ${neighborhood}`,
+      `  - Available Channels  : [${channelsList}]`,
+      `  - Active Subscribers  : ${this.subscribers.size}`,
+      ``
+    ].join("\n");
+    return logMessage;
+  }
+  reqLogger(res) {
+    return this.logger.child({
+      reqId: res.locals.id,
+      clientid: res.locals.clientid,
+      color: bgGreenBright.start + black.start
+    });
   }
   async channelCreated(channel, options) {
     //! it allows specific subclass of dred server to be notified of channel-creation
@@ -3556,15 +4207,15 @@ class DredServer {
     //!!! todo: it subscribes to all channels in the neighborhood
     //!!! todo: it keeps a recency list of messages seen from other servers,
   }
-  async listenOneChannel(sub, sendUpdate, notifyConsumerError) {
+  async listenOneChannel(res, sub, sendUpdate, notifyConsumerError) {
     //! it leverages the redis-streams module's cache of per-channel connections
     const channelStream = await this.channelConn.use(sub.channel);
     await this.channelConn.subscribe(channelStream);
     //! it spawns asynchronous monitoring in each channel
-    this.monitorChannelChanges(channelStream, sub, sendUpdate, notifyConsumerError);
+    this.monitorChannelChanges(res, channelStream, sub, sendUpdate, notifyConsumerError);
     return channelStream;
   }
-  async monitorChannelChanges(channelStream, sub, sendUpdate, notifyConsumerError) {
+  async monitorChannelChanges(res, channelStream, sub, sendUpdate, notifyConsumerError) {
     try {
       for await (const events of this.channelConn.consume(
         channelStream,
@@ -3574,12 +4225,11 @@ class DredServer {
       )) {
         for (const e of events) {
           const { id: mid, ocid, type, data, ...meta } = e;
-          this.log(
+          this.reqLogger(res).info(
             bgBlueBright(black(bold(`    <- ocid ${ocid} in ${sub.channel}: `))),
             e.data.length,
             "bytes"
           );
-          debugger;
           //!!! todo: apply filters from the subscription
           sendUpdate({
             mid,
@@ -3593,7 +4243,7 @@ class DredServer {
         }
       }
     } catch (consumeError) {
-      notifyConsumerError(sub.channel, consumeError);
+      notifyConsumerError(res, sub.channel, consumeError);
     }
   }
 }

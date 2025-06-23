@@ -45,7 +45,7 @@ if (process.env.VITEST_TIMEOUT) {
 
 let app: Express;
 let listener: Server; // http.Server from node interfaces
-let servers: DredServer[] = [];
+const servers: DredServer[] = [];
 let server: DredServer; // a single server that tests can push stuff through by default
 let clientCleanupList: Array<DredClient> = [];
 
@@ -121,7 +121,12 @@ beforeEach(async () => {
 afterEach(async () => {
     testLogger.debug("afterEach: cleaning up clients");
     for (const client of clientCleanupList) {
-        client.disconnect();
+        try {
+            client.disconnect();
+        } catch (error: any) {
+            // Log but don't fail - client might already be disconnected
+            testLogger.debug(`Client cleanup error (continuing): ${error.message || error}`);
+        }
     }
     clientCleanupList = [];
     for (const server of servers) {
@@ -188,12 +193,22 @@ export async function testSetup() {
     // server = server || (await createServer({ insecure: true }));
     // app = app || server.api;
 
-    const realMkClient = server.mkClient.bind(server);
-    vi.spyOn(server, "mkClient").mockImplementation(function (...args) {
-        const client = realMkClient(...args);
-        clientCleanupList.push(client);
-        return client;
-    });
+    // CRITICAL: Set up mkClient spy on ALL servers, not just the first one
+    // This ensures replication clients created on any server are tracked for cleanup
+    for (const s of servers) {
+        const realMkClient = s.mkClient.bind(s);
+        vi.spyOn(s, "mkClient").mockImplementation(function (...args) {
+            const client = realMkClient(...args);
+            
+            // Only add server-managed clients to cleanup list
+            const isServerManaged = args[2] !== false; // undefined or true means server managed
+            if (isServerManaged) {
+                clientCleanupList.push(client);
+            }
+            
+            return client;
+        });
+    }
 
     const info = server.myServerInfo;
     if (info === null) throw new Error(`server is not listening`);
