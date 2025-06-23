@@ -80,9 +80,13 @@ describe("minimal replication setup", () => {
             await asyncDelay(100);
             logStep("beforeEach: resetting redis and channels");
             
-            logStep(`Adding one client per dred server...`);
-            c1 = await dred1.mkClientAndGenerateKey("first");
-            c2 = await dred2.mkClientAndGenerateKey("second");
+            logStep(`Adding one test client per dred server...`);
+
+            c1 = dred1.mkClient("first");
+            await c1.generateKey();
+
+            c2 = dred2.mkClient("second");
+            await c2.generateKey();
 
             
             // logStep(`Setting neighborhood ${neighborhoodId} for both clients...`);

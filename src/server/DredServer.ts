@@ -505,11 +505,14 @@ export class DredServer {
             this.warn("Replication already setup");
             return; // Idempotent - safe to call multiple times
         }
+        this.warn(`${this.serverId} Starting replication setup...`);
         try {
             await asyncDelay(1000);
+            this.warn(`${this.serverId} Creating replicator...`);
             this.replicator = new DredReplicator(this, this.discovery);
+            this.warn(`${this.serverId} Initializing replicator...`);
             await this.replicator.initialize();
-            this.log(`Replication setup complete`);
+            this.warn(`${this.serverId} Replication setup complete - replicator exists: ${!!this.replicator}`);
 
             // const hosts = await this.discovery.getHostList();
             // const otherHosts = hosts.filter(host => host.serverId !== this.serverId);
@@ -529,9 +532,10 @@ export class DredServer {
             // this.log(`Replication setup complete with ${otherHosts.length} peer servers`);
         } catch (error: any) {
             // Cleanup on failure
+            this.warn(`${this.serverId} ERROR during replication setup: ${error}`);
+            this.warn(`${this.serverId} ERROR stack:`, error.stack);
             this.replicator = undefined;
-            this.warn(`Failed to setup replication: ${error}`);
-            this.warn(`Failed to setup replication`, error.stack);
+            this.warn(`${this.serverId} Failed to setup replication - nullified replicator`);
             throw error; // Re-throw if caller needs to handle
         }
     }
@@ -541,16 +545,21 @@ export class DredServer {
             this.warn("Replication not setup");
             return; // Idempotent - safe to call multiple times
         }
+        this.warn(`${this.serverId} Starting replication cleanup...`);
         try {
-            await this.replicator.cleanup();
-            this.log("Replication client cleanup complete");
-
-            // await this.replicationClient.cleanup();
-            // this.replicationClient = undefined;
+            // Add timeout to prevent hanging during cleanup
+            await Promise.race([
+                this.replicator.cleanup(),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error("Replication cleanup timeout")), 5000)
+                )
+            ]);
+            this.warn(`${this.serverId} Replication cleanup complete`);
         } catch (error) {
-            this.warn(`Error during replication cleanup: ${error}`);
+            this.warn(`${this.serverId} Error during replication cleanup: ${error}`);
             // Continue cleanup even if error occurs
         } finally {
+            this.warn(`${this.serverId} Nullifying replicator reference`);
             this.replicator = undefined; // Always nullify, even on error
         }
     }
@@ -608,19 +617,20 @@ export class DredServer {
         return addr;
     }
 
-    // create client and wait for key generation.
-    async mkClientAndGenerateKey(
-        serverSelection: string,
-        clientArgs: Partial<DredClientArgs> = {},
-    ): Promise<DredClient> {
-        const client = this.mkClient(serverSelection, clientArgs);
-        await client.generateKey();
-        return client;
-    }
-
-    // consider automatically generating a key
-    // we could add this to everything calling here.
-    mkClient(serverSelection: string, clientArgs: Partial<DredClientArgs> = {}): DredClient {
+    /**
+     * Create a DredClient instance, but does not generate a key. 
+     * Note: The caller should call generateKey() after creating the client.
+     * 
+     * @param serverSelection - The server ID to connect to.
+     * @param clientArgs - Additional client configuration options.
+     * @param serverManaged - Whether the client is managed by the server (affects cleanup).
+     * @returns A DredClient instance.
+     */
+    mkClient(
+            serverSelection: string, 
+            clientArgs: Partial<DredClientArgs> = {}, 
+            serverManaged: boolean = true
+    ): DredClient {
         const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
         if (!discovery) throw new Error("discovery is required");
 
@@ -633,13 +643,18 @@ export class DredServer {
             hosts: [oneHost],
         });
 
-        return new DredClient({
+        const client = new DredClient({
             // name: `${serverSelection || ""}-${clientIndex++}`,
             ...this.clientArgs,
             ...clientArgs,
             neighborhood: this.nbh,
             discovery: singleDiscovery,
         });
+
+        // Mark client ownership for cleanup tracking
+        (client as any)._serverManaged = serverManaged;
+        
+        return client;
     }
 
     log(a1: string, ...args: any[]) {

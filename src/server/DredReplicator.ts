@@ -35,7 +35,8 @@ export class DredReplicator{
     private name: string;
     private readonly homeServer: DredServer;
     private readonly discovery: Discovery;
-    // private mapChOcid: Map<string, Set<string>> = new Map(); // channelId -> Set<ocid>
+    // Track replicants for cleanup
+    private replicants: Replicant[] = [];
     private initialized: boolean = false;
 
     isInitialized(): boolean {
@@ -76,6 +77,8 @@ export class DredReplicator{
             // handle replication from a single target server to the home server
             const repClient = new Replicant(this, this.homeServer, host);
             await repClient.initialize();
+            // Store replicant for cleanup
+            this.replicants.push(repClient);
         }
 
         this.log(`${this.name} initialized`);
@@ -86,7 +89,29 @@ export class DredReplicator{
             this.warn(`${this.name} not initialized`);
             return;
         }
-        this.log(`Cleaning up ${this.name}`);
+        
+        this.warn(`Cleaning up ${this.name} with ${this.replicants.length} replicants`);
+        
+        // Clean up all replicants - wait for all but continue on errors
+        const results = await Promise.allSettled(
+            this.replicants.map((replicant, index) => {
+                this.warn(`${this.name} cleaning up replicant ${index}`);
+                return replicant.cleanup();
+            })
+        );
+        
+        // Log any failures but don't throw
+        results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+                this.warn(`${this.name} Error cleaning up replicant ${index}: ${result.reason}`);
+            } else {
+                this.warn(`${this.name} Successfully cleaned up replicant ${index}`);
+            }
+        });
+        
+        this.replicants = [];
+        this.initialized = false;
+        this.warn(`${this.name} cleanup complete`);
     }
 
     // // true when message with this ocid was already processed for this channel
@@ -147,7 +172,7 @@ export class Replicant{
         this.log(`${this.name} starting initialization`);
         
         // creates a new DredClient
-        this.repClient = this.homeServer.mkClient(this.targetHost.serverId);
+        this.repClient = this.homeServer.mkClient(this.targetHost.serverId, {}, false); // false = not server managed
         await this.repClient.generateKey();
 
         /** FIXME: we cannot set the neighborhood here, yet
@@ -383,9 +408,21 @@ export class Replicant{
     //     });
     // }
 
-
-
-
-
-    
+    /**
+     * Clean up replicant resources following ownership pattern.
+     * TestServer owns client lifecycle, so we just nullify our reference.
+     */
+    async cleanup(): Promise<void> {
+        this.warn(`${this.name} cleaning up`);
+        
+        if (this.repClient) {
+            this.warn(`${this.name} nullifying client reference (testServer will handle disconnect)`);
+            // Don't try to clear subscriptions - DredClient subscription setter is incomplete
+            // Just nullify our reference and let testServer handle full client disconnect
+            this.repClient = null;
+            this.warn(`${this.name} client reference nullified`);
+        }
+        
+        this.warn(`${this.name} cleanup complete`);
+    }
 }
