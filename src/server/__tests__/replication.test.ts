@@ -236,6 +236,8 @@ describe("minimal replication setup", () => {
             // logStep(` >>>>>>>>>>> c2Messages: ${JSON.stringify(c2Messages)}`);
             logStep(` >>>>>>>>>>> c2Messages: ${inspect(c2Messages, { depth: 2, colors: false })}`);
 
+            // Avoid replication of a message (server / channel / ocid) in the same realm where it was originated
+
             expect(c1Messages.length).toBe(0); // c1 should not receive the message because he is the originator 
             // logStep(` >>>>>>>>>>> c2Messages: ${JSON.stringify(c2Messages)}`);
             logStep(` >>>>>>>>>>> c1Messages: ${inspect(c1Messages, { depth: 2, colors: false })}`);
