@@ -104,6 +104,16 @@ npm test -- src/server/__tests__/replication.test.ts --run --reporter=verbose
 
 # build and log pretty
 pnpm build && LOGGING=1 pnpm test replication | pnpm exec pino-pretty  
+
+
+# show warn level
+LOGGING=1 pnpm test replication | pnpm exec pino-pretty --level info
+
+
+NODE_OPTIONS="--inspect-brk" LOGGING=1 pnpm test replication | pnpm exec pino-pretty
+
+LOGGING=dred-client:state:warn,default:debug pnpm test replication | pnpm exec pino-pretty
+
 ```
 
 ## issues

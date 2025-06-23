@@ -209,7 +209,7 @@ describe("minimal replication setup", () => {
             logStep("check replication setup");
 
             // Send a second message through c1 client
-            logStep("Sending second message through c1 client...");
+            logStep("Sending  message through c1 client...");
             const clientMessage = {
                 msg: "Hello from c1 client!",
                 type: "client-greeting"
@@ -236,6 +236,9 @@ describe("minimal replication setup", () => {
             // logStep(` >>>>>>>>>>> c2Messages: ${JSON.stringify(c2Messages)}`);
             logStep(` >>>>>>>>>>> c2Messages: ${inspect(c2Messages, { depth: 2, colors: false })}`);
 
+            expect(c1Messages.length).toBe(0); // c1 should not receive the message because he is the originator 
+            // logStep(` >>>>>>>>>>> c2Messages: ${JSON.stringify(c2Messages)}`);
+            logStep(` >>>>>>>>>>> c1Messages: ${inspect(c1Messages, { depth: 2, colors: false })}`);
 
             // Future tests can check more cases, e.g.
             // - non existing ch on server2 -> replicated from server1 to server2

@@ -3274,7 +3274,11 @@ const _Replicant = class _Replicant {
       const sourceId = this.targetHost.serverId;
       this.warn(`\u{1F4E5} REPLICATION: Received message from ${this.targetHost.serverId} -> ${this.homeServer.serverId} in channel '${channelId}' (${message.mid})`);
       const messageId = message.mid || message.id || `${Date.now()}-${Math.random()}`;
-      const ocid = message.ocid || `repl-${messageId}`;
+      const ocid = message.ocid;
+      if (!ocid) {
+        this.log(`Skipping message without ocid from ${this.targetHost.serverId} (messageId: ${messageId})`);
+        return;
+      }
       if (message.replicatedFrom && message.replicatedFrom !== void 0) {
         this.log(`Skipping message: already replicated (from ${message.replicatedFrom})`);
         return;

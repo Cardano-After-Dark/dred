@@ -421,20 +421,27 @@ export class DredServer {
             // composite key to ensure uniqueness across channels
             const deduplicationKey = `${channel}:::${msgId}`;
             
+            // DEBUG: Add detailed logging
+            this.warn(`🔍 DEDUP CHECK [${this.serverId}] checking: ${deduplicationKey}`);
+            
             // Check if we've already processed this exact message
             const alreadyProcessed = await this.knownMessages.has(deduplicationKey);
+            
+            this.warn(`🔍 DEDUP RESULT [${this.serverId}] ${deduplicationKey} -> already processed: ${alreadyProcessed}`);
+            
             if (alreadyProcessed) {
-                this.log(`Duplicate message detected, skipping: ${deduplicationKey}`);
+                this.warn(`❌ DEDUP SKIP [${this.serverId}] Duplicate message detected, skipping: ${deduplicationKey}`);
                 return undefined; // Signal that message was not posted (duplicate)
             }
             
             // Mark message as being processed (BEFORE actually posting to prevent race conditions)
             await this.knownMessages.add(deduplicationKey);
+            this.warn(`✅ DEDUP ADD [${this.serverId}] Added to known messages: ${deduplicationKey}`);
             
             // Actually post the message to the channel
             const publishedMessageId = await this.publishMessageToChannel(channel, msg, messageDetails);
             
-            this.log(`Message successfully deduplicated and posted: ${deduplicationKey} -> ${publishedMessageId}`);
+            this.warn(`✅ DEDUP PUBLISH [${this.serverId}] Message successfully deduplicated and posted: ${deduplicationKey} -> ${publishedMessageId}`);
             return publishedMessageId;
             
         } catch (error) {
@@ -1029,8 +1036,14 @@ export class DredServer {
                 error: "missing required 'type' attribute for posting message in channel",
             });
         } else {
-            const id = await this.channelConn.produce(tunnelProducer, msg, moreDetails);
-            res.json({ id, status: "created" });
+            // Use deduplication system to prevent replication loops
+            const id = await this.ensureMessageProcessedOnce(channelId, moreDetails.ocid, msg, moreDetails);
+            if (id) {
+                res.json({ id, status: "created", ocid: moreDetails.ocid });
+            } else {
+                // Message was a duplicate (shouldn't happen for original messages, but defensive)
+                res.status(409).json({ error: "duplicate message", ocid: moreDetails.ocid });
+            }
         }
         next();
     };

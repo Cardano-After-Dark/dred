@@ -290,7 +290,13 @@ export class Replicant{
             
             // Extract message details for replication
             const messageId = message.mid || message.id || `${Date.now()}-${Math.random()}`;
-            const ocid = message.ocid || `repl-${messageId}`;
+            const ocid = message.ocid;
+            
+            // Skip messages without ocid - they can't be properly deduplicated
+            if (!ocid) {
+                this.log(`Skipping message without ocid from ${this.targetHost.serverId} (messageId: ${messageId})`);
+                return;
+            }
 
             
             
