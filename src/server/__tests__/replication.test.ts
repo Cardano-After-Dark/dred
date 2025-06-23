@@ -128,65 +128,6 @@ describe("minimal replication setup", () => {
         
         afterEach(async () => {
             logStep("afterEach: cleaning up clients");
-            
-            // CRITICAL: Clean up replication first - this is the missing piece
-            try {
-                logStep("Cleaning up replication on all servers...");
-                for (const server of [dred1, dred2]) {
-                    if (server && server.replicator) {
-                        logStep(`Cleaning up replication on server ${server.serverId}...`);
-                        await server.cleanupReplication();
-                        logStep(`✅ Replication cleaned up on server ${server.serverId}`);
-                    }
-                }
-            } catch (error: any) {
-                logStep(`⚠️ Replication cleanup error (continuing): ${error.message || error}`);
-            }
-            
-            // Add delay to let replication cleanup settle
-            await asyncDelay(500);
-            
-            // Clean up test clients in specific order
-            try {
-                logStep("Disconnecting test clients...");
-                
-                // Disconnect clients with longer timeout and error handling
-                const clientDisconnectPromises: Promise<void>[] = [];
-                if (c1) {
-                    clientDisconnectPromises.push(
-                        Promise.race([
-                            c1.disconnect(),
-                            new Promise<void>((_, reject) => 
-                                setTimeout(() => reject(new Error("c1 disconnect timeout")), 2000)
-                            )
-                        ]).then(() => logStep("✅ c1 disconnected"))
-                        .catch(err => logStep(`⚠️ c1 disconnect error: ${err.message}`))
-                    );
-                }
-                if (c2) {
-                    clientDisconnectPromises.push(
-                        Promise.race([
-                            c2.disconnect(),
-                            new Promise<void>((_, reject) => 
-                                setTimeout(() => reject(new Error("c2 disconnect timeout")), 2000)
-                            )
-                        ]).then(() => logStep("✅ c2 disconnected"))
-                        .catch(err => logStep(`⚠️ c2 disconnect error: ${err.message}`))
-                    );
-                }
-                
-                await Promise.allSettled(clientDisconnectPromises);
-                
-            } catch (error: any) {
-                logStep(`⚠️ Client cleanup error (continuing): ${error.message || error}`);
-            }
-            
-            // Reset message collectors
-            c1Messages = [];
-            c2Messages = [];
-            
-            // Add longer delay to let all connections fully settle
-            await asyncDelay(500);
         });
 
         afterAll(async () => {

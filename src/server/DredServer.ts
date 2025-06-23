@@ -542,13 +542,7 @@ export class DredServer {
             return; // Idempotent - safe to call multiple times
         }
         try {
-            // Add timeout to prevent hanging during cleanup
-            await Promise.race([
-                this.replicator.cleanup(),
-                new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error("Replication cleanup timeout")), 5000)
-                )
-            ]);
+            await this.replicator.cleanup();
             this.log("Replication client cleanup complete");
 
             // await this.replicationClient.cleanup();
@@ -626,11 +620,7 @@ export class DredServer {
 
     // consider automatically generating a key
     // we could add this to everything calling here.
-    mkClient(
-        serverSelection: string, 
-        clientArgs: Partial<DredClientArgs> = {}, 
-        serverManaged: boolean = true
-    ): DredClient {
+    mkClient(serverSelection: string, clientArgs: Partial<DredClientArgs> = {}): DredClient {
         const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
         if (!discovery) throw new Error("discovery is required");
 
