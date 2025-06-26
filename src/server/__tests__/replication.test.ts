@@ -26,6 +26,7 @@ interface TestMessage {
     };
 }
 
+// Encapsulates the message collection and handling for a single client
 class MessageCollector {
     private messages: TestMessage[] = [];
 
@@ -192,6 +193,24 @@ describe("Message Replication", () => {
             expect(c1Messages.latest.type).toBe("greeting");
             expect(c2Messages.count).toBe(0); // Different server, no replication yet
             expect(c3Messages.count).toBe(0); // Different server, no replication yet
+        });
+    });
+
+    describe("Redis Integration", () => {
+        it("should have working Redis connections for replication", async () => {
+            // Verify Redis connections exist
+            expect(dred1.redis).toBeDefined();
+            expect(dred2.redis).toBeDefined();
+            expect(dred3.redis).toBeDefined();
+            
+            // Simple Redis connectivity test
+            const testKey = "replication-redis-test";
+            await dred1.redis!.call("SET", testKey, "test-value");
+            const result = await dred1.redis!.call("GET", testKey);
+            expect(result).toBe("test-value");
+            
+            // Clean up
+            await dred1.redis!.call("DEL", testKey);
         });
     });
 
