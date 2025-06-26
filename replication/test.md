@@ -455,3 +455,51 @@ The "Connection is closed" error is a **cosmetic issue** caused by incomplete su
 **Changes to Consider Removing**:
 - Complex cleanup sequencing (may not be necessary)
 - Timeout protection (probably not needed)
+
+----
+
+## Test Suite Cleanup & Enhancement (Dec 2024)
+
+### Replication Test Improvements (`src/server/__tests__/replication.test.ts`)
+
+**Key Changes:**
+- Removed `fit` (focused test) - tests now run normally
+- Eliminated excessive logging (~100 lines of debug output)
+- Replaced hard delays with smart `waitForMessages()` helper
+- Extended to 3-server mesh replication testing
+- Added `MessageCollector` class for type-safe message handling
+- Better test organization with clear describe blocks
+
+### New Dedicated Redis Test (`src/server/__tests__/redis.test.ts`)
+
+**Created comprehensive Redis functionality testing:**
+- **Basic Operations**: Raw Redis SET commands (SADD, SREM, SISMEMBER)
+- **Class Wrapper**: RedisSet TypeScript wrapper validation
+- **Message Deduplication**: Core duplicate prevention using `ensureMessageProcessedOnce()`
+- **Server Isolation**: Separate Redis namespaces per server
+
+**Fixed Redis expectations**: Tests now expect integers (0/1) not booleans (false/true)
+
+### Test Separation Strategy
+
+**Clear hierarchy established:**
+```
+replication.test.ts → Smoke test (Redis connectivity check)
+         ↓
+redis.test.ts → Comprehensive (detailed Redis functionality)  
+         ↓
+replication.test.ts → Integration (end-to-end message flow)
+```
+
+**Benefits:**
+- **Maintainability**: Clear separation of Redis logic vs replication workflow
+- **Reliability**: Smart waiting eliminates race conditions, type safety prevents bugs
+- **Developer Experience**: Comments explain what each test validates, cross-references guide between files
+
+**File Structure:**
+```
+src/server/__tests__/
+├── redis.test.ts          # Redis functionality (NEW)
+├── replication.test.ts    # 3-server replication (ENHANCED)  
+└── messages.test.ts       # Basic messaging (existing)
+```
