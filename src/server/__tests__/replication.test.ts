@@ -197,6 +197,8 @@ describe("Message Replication", () => {
     });
 
     describe("Redis Integration", () => {
+        // Smoke test: Quick Redis connectivity check to ensure Redis is available before replication tests.
+        // For detailed Redis functionality testing, see redis.test.ts
         it("should have working Redis connections for replication", async () => {
             // Verify Redis connections exist
             expect(dred1.redis).toBeDefined();
