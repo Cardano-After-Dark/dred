@@ -1,0 +1,105 @@
+version: "3.8"
+
+services:
+  # DRED Server 1 - Container 1
+  dred-server-1:
+    build: 
+      context: ../
+      dockerfile: Dockerfile
+    container_name: dred-server-1
+    environment:
+      - REDIS_URL=redis://redis-1:6379
+      - SERVER_ID=dred1
+      - DRED_NEIGHBORHOOD=dred-test-network
+      - DRED_PORT=3029
+      - NODE_ENV=development
+      - LOGGING=1
+    ports:
+      - "4001:3029"  # External port 4001 maps to internal port 3029
+    volumes:
+      - ./configs/server1-discovery.json:/app/config/discovery.json:ro
+    depends_on:
+      - redis-1
+    networks:
+      - dred-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3029/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # DRED Server 2 - Container 2  
+  dred-server-2:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    container_name: dred-server-2
+    environment:
+      - REDIS_URL=redis://redis-2:6379
+      - SERVER_ID=dred2
+      - DRED_NEIGHBORHOOD=dred-test-network
+      - DRED_PORT=3029
+      - NODE_ENV=development
+      - LOGGING=1
+    ports:
+      - "4002:3029"  # External port 4002 maps to internal port 3029
+    volumes:
+      - ./configs/server2-discovery.json:/app/config/discovery.json:ro
+    depends_on:
+      - redis-2
+    networks:
+      - dred-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3029/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Redis instance for Server 1
+  redis-1:
+    image: redis:7-alpine
+    container_name: redis-1
+    command: redis-server --bind 0.0.0.0 --port 6379 --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6001:6379"  # External port 6001 for debugging/monitoring
+    networks:
+      - dred-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis instance for Server 2
+  redis-2:
+    image: redis:7-alpine
+    container_name: redis-2
+    command: redis-server --bind 0.0.0.0 --port 6379 --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6002:6379"  # External port 6002 for debugging/monitoring
+    networks:
+      - dred-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  dred-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
+    driver_opts:
+      com.docker.network.bridge.name: dred-br0
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.host_binding_ipv4: "0.0.0.0" 

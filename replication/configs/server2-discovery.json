@@ -1,0 +1,21 @@
+{
+  "hosts": [
+    {
+      "serverId": "dred1",
+      "address": "dred-server-1",
+      "port": "3029",
+      "insecure": true
+    },
+    {
+      "serverId": "dred2",
+      "address": "dred-server-2",
+      "port": "3029", 
+      "insecure": true
+    }
+  ],
+  "neighborhood": "dred-test-network",
+  "connectionThresholds": {
+    "minimal": 1,
+    "healthy": 2
+  }
+} 
