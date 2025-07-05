@@ -53,10 +53,14 @@ export class StaticHostDiscovery extends Discovery {
     //     }
     // }
     static defaultHosts() : DredHostDetails[] {
+        // Read host and port from environment variables for production deployment
+        const host = process.env.DRED_HOST || "127.0.0.1";
+        const port = parseInt(process.env.DRED_PORT || "3029");
+        
         return [{
             serverId: "singleton",
-            address: "127.0.0.1",
-            port: 3029,
+            address: host,
+            port: port,
             insecure: true,            
             // publicKey: this.getPubKeyFromFs(3029),
         }]
