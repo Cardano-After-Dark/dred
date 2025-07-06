@@ -341,11 +341,17 @@ enum DelegateActivity {
                         priorMddd.dd.mph, memberToken.encode_utf8()
                     );
 
-                    // has the member-token in the txn
+                    REQT("only allows creation with state Preproduction");
+                    reg.state.switch {
+                        Preproduction => print("  -- state Preproduction: ok!"),
+                        _ => error("state must be Preproduction during creation")
+                    };
+
+                    REQT("fails without the matching member-token in the txn");
                     tx.inputs.find_safe((i: TxInput) -> Bool {
                         i.value.get_safe(memberTokenAc) == 1
                     }).switch {
-                        None => error("missing member token"),
+                        None => error("missing member token " + memberTokenAc.show()),
                         Some => true
                     } &&
                     reg.validate() &&

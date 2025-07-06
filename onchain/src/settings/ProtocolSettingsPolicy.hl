@@ -233,9 +233,9 @@ enum DelegateActivity {
 
                 VSA.switch {
                     UpdatingRecord{recId} => {
-                        hasDD : (TxInput) -> Bool = cctx.mkDelegatedDataPredicate("set", recId);
+                        hasDD : (TxInput) -> Bool = cctx.mkDelegatedDataPredicate("settings", recId);
                         // settings: ProtocolSettings = cctx.getManifestDatum[ProtocolSettings]("settings");
-                        hasDDOutput : (TxOutput) -> Bool = cctx.mkDelegatedDataOutputPredicate("set", recId);
+                        hasDDOutput : (TxOutput) -> Bool = cctx.mkDelegatedDataOutputPredicate("settings", recId);
     
                         tx.inputs.filter(hasDD).for_each( (_utxo : TxInput) -> () {
                             // they're all settings records, because of the above filter

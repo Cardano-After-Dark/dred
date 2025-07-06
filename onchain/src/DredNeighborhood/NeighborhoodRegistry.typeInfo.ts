@@ -178,6 +178,84 @@ export interface DelegationDetailLike {
             /**
             * @internal
             */
+            export type NeighborhoodStateMeta = EnumTypeMeta<
+    {module: "NeighborhoodData", enumName: "NeighborhoodState"}, {
+        Preproduction: singleEnumVariantMeta<NeighborhoodStateMeta, "Preproduction",
+            "Constr#0", "tagOnly", tagOnly, "noSpecialFlags"
+        >,
+        Beta: singleEnumVariantMeta<NeighborhoodStateMeta, "Beta",
+            "Constr#1", "tagOnly", tagOnly, "noSpecialFlags"
+        >,
+        Active: singleEnumVariantMeta<NeighborhoodStateMeta, "Active",
+            "Constr#2", "tagOnly", tagOnly, "noSpecialFlags"
+        >,
+        UpdatePending: singleEnumVariantMeta<NeighborhoodStateMeta, "UpdatePending",
+            "Constr#3", "tagOnly", tagOnly, "noSpecialFlags"
+        >,
+        UpdateDisputed: singleEnumVariantMeta<NeighborhoodStateMeta, "UpdateDisputed",
+            "Constr#4", "tagOnly", tagOnly, "noSpecialFlags"
+        >,
+        Retired: singleEnumVariantMeta<NeighborhoodStateMeta, "Retired",
+            "Constr#5", "tagOnly", tagOnly, "noSpecialFlags"
+        >
+    }
+>;
+
+
+/**
+ * NeighborhoodState enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **6 variant(s)** of the NeighborhoodState enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodStateHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+export type NeighborhoodState = 
+        | { Preproduction: tagOnly /*minEnumVariant*/ }
+        | { Beta: tagOnly /*minEnumVariant*/ }
+        | { Active: tagOnly /*minEnumVariant*/ }
+        | { UpdatePending: tagOnly /*minEnumVariant*/ }
+        | { UpdateDisputed: tagOnly /*minEnumVariant*/ }
+        | { Retired: tagOnly /*minEnumVariant*/ }
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+export type ErgoNeighborhoodState = IntersectedEnum<NeighborhoodState/*like canon enum*/>
+
+/**
+ * NeighborhoodState enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **6 variant(s)** of the NeighborhoodState enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodStateHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+export type NeighborhoodStateLike = IntersectedEnum<
+        | { Preproduction: tagOnly /*minEnumVariant*/ }
+        | { Beta: tagOnly /*minEnumVariant*/ }
+        | { Active: tagOnly /*minEnumVariant*/ }
+        | { UpdatePending: tagOnly /*minEnumVariant*/ }
+        | { UpdateDisputed: tagOnly /*minEnumVariant*/ }
+        | { Retired: tagOnly /*minEnumVariant*/ }
+>
+
+
+            /**
+            * @internal
+            */
             export type FeeSourceMeta = EnumTypeMeta<
     {module: "NeighborhoodData", enumName: "FeeSource"}, {
         EndUser: singleEnumVariantMeta<FeeSourceMeta, "EndUser",
@@ -429,6 +507,8 @@ export type RevenueModelLike = IntersectedEnum<
 export interface AppInfo {
     url: /*minStructField*/ string
     revenueModel: /*minStructField*/ Array<RevenueModel>
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
 }
 
 
@@ -444,6 +524,8 @@ export interface AppInfo {
 export type ErgoAppInfo = {
     url: /*minStructField*/ string
     revenueModel: /*minStructField*/ Array<ErgoRevenueModel>
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
 }
 
 
@@ -456,6 +538,8 @@ export type ErgoAppInfo = {
 export interface AppInfoLike {
     url: /*minStructField*/ string
     revenueModel: /*minStructField*/ Array<RevenueModelLike>
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
 }
 
 
@@ -503,6 +587,46 @@ export interface NodeOpsInfoLike {
 
 
 /**
+ * A strong type for the canonical form of UpdateInfo
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoUpdateInfo instead.
+ * @public
+ */
+export interface UpdateInfo {
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
+    url: /*minStructField*/ string
+}
+
+
+/**
+ * An ergonomic, though less strictly-safe form of UpdateInfo
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the UpdateInfoLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+export type ErgoUpdateInfo = UpdateInfo/*like canon-other*/
+
+/**
+ * A strong type for the permissive form of UpdateInfo
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+export interface UpdateInfoLike {
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
+    url: /*minStructField*/ string
+}
+
+
+
+/**
  * A strong type for the canonical form of NeighborhoodData
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -514,10 +638,10 @@ export interface NeighborhoodData {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
-    name: /*minStructField*/ string
-    description: /*minStructField*/ string
+    state: /*minStructField*/ NeighborhoodState
     appInfo: /*minStructField*/ AppInfo
     opsInfo: /*minStructField*/ NodeOpsInfo
+    updateInfo: /*minStructField*/ UpdateInfo | undefined
 }
 
 
@@ -534,10 +658,10 @@ export type ErgoNeighborhoodData = {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
-    name: /*minStructField*/ string
-    description: /*minStructField*/ string
+    state: /*minStructField*/ ErgoNeighborhoodState
     appInfo: /*minStructField*/ ErgoAppInfo
     opsInfo: /*minStructField*/ ErgoNodeOpsInfo
+    updateInfo: /*minStructField*/ ErgoUpdateInfo | undefined
 }
 
 
@@ -551,10 +675,10 @@ export interface NeighborhoodDataLike {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
-    name: /*minStructField*/ string
-    description: /*minStructField*/ string
+    state: /*minStructField*/ NeighborhoodStateLike
     appInfo: /*minStructField*/ AppInfoLike
     opsInfo: /*minStructField*/ NodeOpsInfoLike
+    updateInfo: /*minStructField*/ UpdateInfoLike | undefined
 }
 
 

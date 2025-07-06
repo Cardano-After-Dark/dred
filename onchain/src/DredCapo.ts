@@ -78,7 +78,7 @@ export type Expand<T> = T extends (...args: infer A) => infer R
 type DredCapoFeatures = {
     settings?: boolean;
     DredNode?: boolean;
-    DredNeighborhood?: boolean;
+    DredNbh?: boolean;
     // s3domain?: boolean;
     /* Add other feature-flag definitions here */
 };
@@ -94,7 +94,7 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
         return {
             settings: true,
             DredNode: true,
-            DredNeighborhood: true,
+            DredNbh: true,
             /* Add other feature-flag defaults here */
         };
     }
@@ -152,7 +152,7 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
         if (!charterData) {
             charterData = await this.findCharterData();
         }
-        return this.getDgDataController("nbhRegistry", {
+        return this.getDgDataController("DredNbh", {
             charterData: charterData as CapoDatum$Ergo$CharterData,
         }) as Promise<NeighborhoodController>;
     }
@@ -225,7 +225,7 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
             govAuthority,
             settings: defineRole("dgDataPolicy", ProtocolSettingsController, {}),
             DredNode: defineRole("dgDataPolicy", NodeRegistryController, {}),
-            // nbhRegistry: defineRole("dgDataPolicy", NeighborhoodController, {}),
+            DredNbh: defineRole("dgDataPolicy", NeighborhoodController, {}),
             /* Add other delegate roles here */
 
             // optional tokenomics features:

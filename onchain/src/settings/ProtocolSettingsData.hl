@@ -14,10 +14,11 @@ import {NeighborhoodSettings} from NeighborhoodSettings
 
 struct ProtocolSettings {
     id: ByteArray "@id"
-    type: String "tpe" // "set"
+    type: String "tpe" // "settings"
 
     nodeOpSettings: NodeOperatorSettings "nOp"
     nbhSettings: NeighborhoodSettings "nbh"
+
     /* Add other settings here */
     // from Stellar Tokenomics Engine
     // fundedPurposeSettings: FPSettings "fPurp"

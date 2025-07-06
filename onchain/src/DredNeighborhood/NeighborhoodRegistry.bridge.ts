@@ -56,12 +56,14 @@ import type {
     AnyData, ErgoAnyData, AnyDataLike,
     DelegateDatum$Cip68RefToken, DelegateDatum$Ergo$Cip68RefToken, DelegateDatum$Cip68RefTokenLike,
     DelegationDetail, ErgoDelegationDetail, DelegationDetailLike,
+    NeighborhoodState, ErgoNeighborhoodState, NeighborhoodStateLike,
     FeeSource, ErgoFeeSource, FeeSourceLike,
     RevenueModel$TransactionBased, RevenueModel$Ergo$TransactionBased, RevenueModel$TransactionBasedLike,
     SubscriptionFeeFrequency, ErgoSubscriptionFeeFrequency, SubscriptionFeeFrequencyLike,
     RevenueModel, ErgoRevenueModel, RevenueModelLike,
     AppInfo, ErgoAppInfo, AppInfoLike,
     NodeOpsInfo, ErgoNodeOpsInfo, NodeOpsInfoLike,
+    UpdateInfo, ErgoUpdateInfo, UpdateInfoLike,
     NeighborhoodData, ErgoNeighborhoodData, NeighborhoodDataLike,
     DelegateDatum$capoStoredData, DelegateDatum$Ergo$capoStoredData, DelegateDatum$capoStoredDataLike,
     DelegateDatum, ErgoDelegateDatum, DelegateDatumLike,
@@ -105,15 +107,15 @@ import type {
     dgd_DataSrc$Both, dgd_DataSrc$Ergo$Both, dgd_DataSrc$BothLike,
     dgd_DataSrc, Ergodgd_DataSrc, dgd_DataSrcLike,
     DgDataDetails, ErgoDgDataDetails, DgDataDetailsLike
-} from "./Neighborhood.typeInfo.js";
+} from "./NeighborhoodRegistry.typeInfo.js";
 
-export type * as types from "./Neighborhood.typeInfo.js";
-import type * as types from "./Neighborhood.typeInfo.js";
+export type * as types from "./NeighborhoodRegistry.typeInfo.js";
+import type * as types from "./NeighborhoodRegistry.typeInfo.js";
 
 
 
 /**
- * GENERATED data bridge for **BasicDelegate** script (defined in class ***NeighborhoodBundle***)
+ * GENERATED data bridge for **BasicDelegate** script (defined in class ***NeighborhoodRegistryBundle***)
  * main: **src/delegation/BasicDelegate.hl**, project: **stellar-contracts**
  * @remarks
 * This class doesn't need to be used directly.  Its methods are available through the ***contract's methods***:
@@ -162,6 +164,10 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
      * @remarks - these accessors are used to generate UplcData for each type
      */
     types = {
+      /**
+       * generates UplcData for the enum type ***NeighborhoodState*** for the `BasicDelegate` script
+       */
+        NeighborhoodState: new NeighborhoodStateHelper({isMainnet: this.isMainnet}),
       /**
        * generates UplcData for the enum type ***FeeSource*** for the `BasicDelegate` script
        */
@@ -258,6 +264,8 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
         AppInfo: (fields: AppInfoLike | {
     url: /*minStructField*/ string
     revenueModel: /*minStructField*/ Array<RevenueModelLike>
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
 }
 ) => {
         return this.ᱺᱺAppInfoCast.toUplcData(fields);
@@ -275,16 +283,27 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
         return this.ᱺᱺNodeOpsInfoCast.toUplcData(fields);
     },
       /**
+       * generates UplcData for the enum type ***UpdateInfo*** for the `BasicDelegate` script
+       */
+        UpdateInfo: (fields: UpdateInfoLike | {
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
+    url: /*minStructField*/ string
+}
+) => {
+        return this.ᱺᱺUpdateInfoCast.toUplcData(fields);
+    },
+      /**
        * generates UplcData for the enum type ***NeighborhoodData*** for the `BasicDelegate` script
        */
         NeighborhoodData: (fields: NeighborhoodDataLike | {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
-    name: /*minStructField*/ string
-    description: /*minStructField*/ string
+    state: /*minStructField*/ NeighborhoodStateLike
     appInfo: /*minStructField*/ AppInfoLike
     opsInfo: /*minStructField*/ NodeOpsInfoLike
+    updateInfo: /*minStructField*/ UpdateInfoLike | undefined
 }
 ) => {
         return this.ᱺᱺNeighborhoodDataCast.toUplcData(fields);
@@ -390,6 +409,12 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     );
     /**
                 * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺUpdateInfoCast = makeCast<UpdateInfo, UpdateInfoLike>(
+        UpdateInfoSchema,
+        { isMainnet: true, unwrapSingleFieldEnumVariants: true }
+    );
+    /**
+                * uses unicode U+1c7a - sorts to the end */
     ᱺᱺNeighborhoodDataCast = makeCast<NeighborhoodData, NeighborhoodDataLike>(
         NeighborhoodDataSchema,
         { isMainnet: true, unwrapSingleFieldEnumVariants: true }
@@ -448,6 +473,27 @@ export class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
     constructor(public bridge: NeighborhoodPolicyDataBridge, isMainnet: boolean) {
         super();
     }
+    /**
+        * reads UplcData *known to fit the **NeighborhoodState*** enum type,
+        * for the BasicDelegate script.
+        * #### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the enum type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    NeighborhoodState(d : UplcData) { 
+        const typeHelper = this.bridge.types.NeighborhoodState;
+        const cast = typeHelper.ᱺᱺcast;  
+
+        return cast.fromUplcData(d) as ErgoNeighborhoodState;        
+    } /* enumReader helper */
+
     /**
         * reads UplcData *known to fit the **FeeSource*** enum type,
         * for the BasicDelegate script.
@@ -883,6 +929,25 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
     } /* structReader helper */
 
     /**
+        * reads UplcData *known to fit the **UpdateInfo*** struct type,
+        * for the BasicDelegate script.
+        * #### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    UpdateInfo(d: UplcData) {
+        const cast = this.bridge.ᱺᱺUpdateInfoCast;
+        return cast.fromUplcData(d) //??? as ErgoUpdateInfo;
+    } /* structReader helper */
+
+    /**
         * reads UplcData *known to fit the **NeighborhoodData*** struct type,
         * for the BasicDelegate script.
         * #### Standard WARNING
@@ -1089,6 +1154,83 @@ export class DelegationDetailHelper extends DataBridge {
 
 
 /**
+ * Helper class for generating UplcData for variants of the ***NeighborhoodState*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+export class NeighborhoodStateHelper extends EnumBridge<JustAnEnum> {
+    /*mkEnumHelperClass*/
+    /**
+            * @internal
+            *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<NeighborhoodState, NeighborhoodStateLike>(
+        NeighborhoodStateSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+/**
+ * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Preproduction"***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+ */
+    get Preproduction() {
+        const uplc = this.mkUplcData({ Preproduction: {} }, 
+            "NeighborhoodData::NeighborhoodState.Preproduction");
+        return uplc;
+    } /* tagOnly variant accessor */
+
+/**
+ * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Beta"***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+ */
+    get Beta() {
+        const uplc = this.mkUplcData({ Beta: {} }, 
+            "NeighborhoodData::NeighborhoodState.Beta");
+        return uplc;
+    } /* tagOnly variant accessor */
+
+/**
+ * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Active"***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+ */
+    get Active() {
+        const uplc = this.mkUplcData({ Active: {} }, 
+            "NeighborhoodData::NeighborhoodState.Active");
+        return uplc;
+    } /* tagOnly variant accessor */
+
+/**
+ * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.UpdatePending"***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+ */
+    get UpdatePending() {
+        const uplc = this.mkUplcData({ UpdatePending: {} }, 
+            "NeighborhoodData::NeighborhoodState.UpdatePending");
+        return uplc;
+    } /* tagOnly variant accessor */
+
+/**
+ * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.UpdateDisputed"***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4***
+ */
+    get UpdateDisputed() {
+        const uplc = this.mkUplcData({ UpdateDisputed: {} }, 
+            "NeighborhoodData::NeighborhoodState.UpdateDisputed");
+        return uplc;
+    } /* tagOnly variant accessor */
+
+/**
+ * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Retired"***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#5***
+ */
+    get Retired() {
+        const uplc = this.mkUplcData({ Retired: {} }, 
+            "NeighborhoodData::NeighborhoodState.Retired");
+        return uplc;
+    } /* tagOnly variant accessor */
+}/*mkEnumHelperClass*/
+
+
+/**
  * Helper class for generating UplcData for variants of the ***FeeSource*** enum type.
  * @public
  * @remarks
@@ -1271,6 +1413,32 @@ export class NodeOpsInfoHelper extends DataBridge {
     //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
     //
     // NodeOpsInfo(fields: NodeOpsInfoLike) {
+    //    return this.ᱺᱺcast.toUplcData(fields);
+    //}
+} //mkStructHelperClass 
+
+
+/**
+ * Helper class for generating UplcData for the struct ***UpdateInfo*** type.
+ * @public
+ */
+export class UpdateInfoHelper extends DataBridge {
+    isCallable = true
+   /**
+            * @internal
+            * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<UpdateInfo, UpdateInfoLike>(
+        UpdateInfoSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    // You might expect a function as follows.  We provide this interface and result, 
+    // using a proxy in the inheritance chain.
+    // see the callableDataBridge type on the 'datum' property in the contract bridge.
+    //
+    //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
+    //
+    // UpdateInfo(fields: UpdateInfoLike) {
     //    return this.ᱺᱺcast.toUplcData(fields);
     //}
 } //mkStructHelperClass 
@@ -3737,6 +3905,56 @@ export const DelegationDetailSchema : StructTypeSchema = {
     ]
 };
 
+export const NeighborhoodStateSchema : EnumTypeSchema = {
+    "kind": "enum",
+    "name": "NeighborhoodState",
+    "id": "__module__NeighborhoodData__NeighborhoodState[]",
+    "variantTypes": [
+        {
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
+            "name": "Preproduction",
+            "fieldTypes": []
+        },
+        {
+            "kind": "variant",
+            "tag": 1,
+            "id": "__module__NeighborhoodData__NeighborhoodState[]__Beta",
+            "name": "Beta",
+            "fieldTypes": []
+        },
+        {
+            "kind": "variant",
+            "tag": 2,
+            "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
+            "name": "Active",
+            "fieldTypes": []
+        },
+        {
+            "kind": "variant",
+            "tag": 3,
+            "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
+            "name": "UpdatePending",
+            "fieldTypes": []
+        },
+        {
+            "kind": "variant",
+            "tag": 4,
+            "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
+            "name": "UpdateDisputed",
+            "fieldTypes": []
+        },
+        {
+            "kind": "variant",
+            "tag": 5,
+            "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
+            "name": "Retired",
+            "fieldTypes": []
+        }
+    ]
+};
+
 export const FeeSourceSchema : EnumTypeSchema = {
     "kind": "enum",
     "name": "FeeSource",
@@ -3953,7 +4171,7 @@ export const RevenueModelSchema : EnumTypeSchema = {
 
 export const AppInfoSchema : StructTypeSchema = {
     "kind": "struct",
-    "format": "map",
+    "format": "list",
     "id": "__module__NeighborhoodData__AppInfo[]",
     "name": "AppInfo",
     "fieldTypes": [
@@ -3962,8 +4180,7 @@ export const AppInfoSchema : StructTypeSchema = {
             "type": {
                 "kind": "internal",
                 "name": "String"
-            },
-            "key": "url"
+            }
         },
         {
             "name": "revenueModel",
@@ -4099,8 +4316,21 @@ export const AppInfoSchema : StructTypeSchema = {
                         }
                     ]
                 }
-            },
-            "key": "revMdl"
+            }
+        },
+        {
+            "name": "name",
+            "type": {
+                "kind": "internal",
+                "name": "String"
+            }
+        },
+        {
+            "name": "description",
+            "type": {
+                "kind": "internal",
+                "name": "String"
+            }
         }
     ]
 };
@@ -4146,6 +4376,39 @@ export const NodeOpsInfoSchema : StructTypeSchema = {
     ]
 };
 
+export const UpdateInfoSchema : StructTypeSchema = {
+    "kind": "struct",
+    "format": "map",
+    "id": "__module__NeighborhoodData__UpdateInfo[]",
+    "name": "UpdateInfo",
+    "fieldTypes": [
+        {
+            "name": "name",
+            "type": {
+                "kind": "internal",
+                "name": "String"
+            },
+            "key": "nm"
+        },
+        {
+            "name": "description",
+            "type": {
+                "kind": "internal",
+                "name": "String"
+            },
+            "key": "dsc"
+        },
+        {
+            "name": "url",
+            "type": {
+                "kind": "internal",
+                "name": "String"
+            },
+            "key": "url"
+        }
+    ]
+};
+
 export const NeighborhoodDataSchema : StructTypeSchema = {
     "kind": "struct",
     "format": "map",
@@ -4177,26 +4440,63 @@ export const NeighborhoodDataSchema : StructTypeSchema = {
             "key": "mt"
         },
         {
-            "name": "name",
+            "name": "state",
             "type": {
-                "kind": "internal",
-                "name": "String"
+                "kind": "enum",
+                "name": "NeighborhoodState",
+                "id": "__module__NeighborhoodData__NeighborhoodState[]",
+                "variantTypes": [
+                    {
+                        "kind": "variant",
+                        "tag": 0,
+                        "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
+                        "name": "Preproduction",
+                        "fieldTypes": []
+                    },
+                    {
+                        "kind": "variant",
+                        "tag": 1,
+                        "id": "__module__NeighborhoodData__NeighborhoodState[]__Beta",
+                        "name": "Beta",
+                        "fieldTypes": []
+                    },
+                    {
+                        "kind": "variant",
+                        "tag": 2,
+                        "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
+                        "name": "Active",
+                        "fieldTypes": []
+                    },
+                    {
+                        "kind": "variant",
+                        "tag": 3,
+                        "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
+                        "name": "UpdatePending",
+                        "fieldTypes": []
+                    },
+                    {
+                        "kind": "variant",
+                        "tag": 4,
+                        "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
+                        "name": "UpdateDisputed",
+                        "fieldTypes": []
+                    },
+                    {
+                        "kind": "variant",
+                        "tag": 5,
+                        "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
+                        "name": "Retired",
+                        "fieldTypes": []
+                    }
+                ]
             },
-            "key": "nm"
-        },
-        {
-            "name": "description",
-            "type": {
-                "kind": "internal",
-                "name": "String"
-            },
-            "key": "dsc"
+            "key": "st"
         },
         {
             "name": "appInfo",
             "type": {
                 "kind": "struct",
-                "format": "map",
+                "format": "list",
                 "id": "__module__NeighborhoodData__AppInfo[]",
                 "name": "AppInfo",
                 "fieldTypes": [
@@ -4205,8 +4505,7 @@ export const NeighborhoodDataSchema : StructTypeSchema = {
                         "type": {
                             "kind": "internal",
                             "name": "String"
-                        },
-                        "key": "url"
+                        }
                     },
                     {
                         "name": "revenueModel",
@@ -4342,8 +4641,21 @@ export const NeighborhoodDataSchema : StructTypeSchema = {
                                     }
                                 ]
                             }
-                        },
-                        "key": "revMdl"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "type": {
+                            "kind": "internal",
+                            "name": "String"
+                        }
+                    },
+                    {
+                        "name": "description",
+                        "type": {
+                            "kind": "internal",
+                            "name": "String"
+                        }
                     }
                 ]
             },
@@ -4392,6 +4704,45 @@ export const NeighborhoodDataSchema : StructTypeSchema = {
                 ]
             },
             "key": "ops"
+        },
+        {
+            "name": "updateInfo",
+            "type": {
+                "kind": "option",
+                "someType": {
+                    "kind": "struct",
+                    "format": "map",
+                    "id": "__module__NeighborhoodData__UpdateInfo[]",
+                    "name": "UpdateInfo",
+                    "fieldTypes": [
+                        {
+                            "name": "name",
+                            "type": {
+                                "kind": "internal",
+                                "name": "String"
+                            },
+                            "key": "nm"
+                        },
+                        {
+                            "name": "description",
+                            "type": {
+                                "kind": "internal",
+                                "name": "String"
+                            },
+                            "key": "dsc"
+                        },
+                        {
+                            "name": "url",
+                            "type": {
+                                "kind": "internal",
+                                "name": "String"
+                            },
+                            "key": "url"
+                        }
+                    ]
+                }
+            },
+            "key": "upd"
         }
     ]
 };
@@ -4529,26 +4880,63 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                 "key": "mt"
                             },
                             {
-                                "name": "name",
+                                "name": "state",
                                 "type": {
-                                    "kind": "internal",
-                                    "name": "String"
+                                    "kind": "enum",
+                                    "name": "NeighborhoodState",
+                                    "id": "__module__NeighborhoodData__NeighborhoodState[]",
+                                    "variantTypes": [
+                                        {
+                                            "kind": "variant",
+                                            "tag": 0,
+                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
+                                            "name": "Preproduction",
+                                            "fieldTypes": []
+                                        },
+                                        {
+                                            "kind": "variant",
+                                            "tag": 1,
+                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__Beta",
+                                            "name": "Beta",
+                                            "fieldTypes": []
+                                        },
+                                        {
+                                            "kind": "variant",
+                                            "tag": 2,
+                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
+                                            "name": "Active",
+                                            "fieldTypes": []
+                                        },
+                                        {
+                                            "kind": "variant",
+                                            "tag": 3,
+                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
+                                            "name": "UpdatePending",
+                                            "fieldTypes": []
+                                        },
+                                        {
+                                            "kind": "variant",
+                                            "tag": 4,
+                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
+                                            "name": "UpdateDisputed",
+                                            "fieldTypes": []
+                                        },
+                                        {
+                                            "kind": "variant",
+                                            "tag": 5,
+                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
+                                            "name": "Retired",
+                                            "fieldTypes": []
+                                        }
+                                    ]
                                 },
-                                "key": "nm"
-                            },
-                            {
-                                "name": "description",
-                                "type": {
-                                    "kind": "internal",
-                                    "name": "String"
-                                },
-                                "key": "dsc"
+                                "key": "st"
                             },
                             {
                                 "name": "appInfo",
                                 "type": {
                                     "kind": "struct",
-                                    "format": "map",
+                                    "format": "list",
                                     "id": "__module__NeighborhoodData__AppInfo[]",
                                     "name": "AppInfo",
                                     "fieldTypes": [
@@ -4557,8 +4945,7 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                             "type": {
                                                 "kind": "internal",
                                                 "name": "String"
-                                            },
-                                            "key": "url"
+                                            }
                                         },
                                         {
                                             "name": "revenueModel",
@@ -4694,8 +5081,21 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                                         }
                                                     ]
                                                 }
-                                            },
-                                            "key": "revMdl"
+                                            }
+                                        },
+                                        {
+                                            "name": "name",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "String"
+                                            }
+                                        },
+                                        {
+                                            "name": "description",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "String"
+                                            }
                                         }
                                     ]
                                 },
@@ -4744,6 +5144,45 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                     ]
                                 },
                                 "key": "ops"
+                            },
+                            {
+                                "name": "updateInfo",
+                                "type": {
+                                    "kind": "option",
+                                    "someType": {
+                                        "kind": "struct",
+                                        "format": "map",
+                                        "id": "__module__NeighborhoodData__UpdateInfo[]",
+                                        "name": "UpdateInfo",
+                                        "fieldTypes": [
+                                            {
+                                                "name": "name",
+                                                "type": {
+                                                    "kind": "internal",
+                                                    "name": "String"
+                                                },
+                                                "key": "nm"
+                                            },
+                                            {
+                                                "name": "description",
+                                                "type": {
+                                                    "kind": "internal",
+                                                    "name": "String"
+                                                },
+                                                "key": "dsc"
+                                            },
+                                            {
+                                                "name": "url",
+                                                "type": {
+                                                    "kind": "internal",
+                                                    "name": "String"
+                                                },
+                                                "key": "url"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "key": "upd"
                             }
                         ]
                     }

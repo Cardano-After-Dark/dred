@@ -54,7 +54,7 @@ describe("DRED Settings", () => {
             expect(nodeOpSettings.expectedHeartbeatInterval).toBeGreaterThan(300_000);
             expect(nodeOpSettings.minNodeOperatorStake.lovelace).toBeGreaterThan(40n * ADA);
             expect(nodeOpSettings.requiredNodeUptime).toBe(0.95);
-            expect(nodeOpSettings.minValidations).toBe(1);
+            expect(nodeOpSettings.minValidations).toBe(1n);
             expect(nodeOpSettings.minNodeRegistrationFee.lovelace).toBeGreaterThan(0n);
         });
 

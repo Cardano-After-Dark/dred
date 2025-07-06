@@ -363,7 +363,7 @@ enum DelegateActivity {
                     tx.inputs.find_safe((i: TxInput) -> Bool {
                         i.value.get_safe(memberTokenAc) == 1
                     }).switch {
-                        None => error("missing member token"),
+                        None => error("missing member token id: "+ memberToken),
                         Some => true
                     }.trace("member token found? ") &&
                     bREQT("the registration data must be valid") &&

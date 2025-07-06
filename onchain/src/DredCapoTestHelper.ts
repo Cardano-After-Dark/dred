@@ -32,11 +32,15 @@ import type {
 } from "./nodeRegistry/NodeRegistry.typeInfo.js";
 import type { ErgoProtocolSettings } from "./settings/ProtocolSettings.typeInfo.js";
 import type { PubKeyHash } from "@helios-lang/ledger";
+import type { ErgoNeighborhoodData, minimalNeighborhoodData, NeighborhoodData } from "./DredNeighborhood/NeighborhoodRegistry.typeInfo.js";
 
 type addlState = {
     nodesInSnapshot: {
         firstNodeId: string,
         secondNodeId: string,
+    }
+    nbhsInSnapshot: {
+        firstNeighborhoodId: string,
     }
 }
 
@@ -45,6 +49,9 @@ export let helperState: TestHelperState<DredCapo, addlState> = {
     nodesInSnapshot: {
         firstNodeId: "",
         secondNodeId: "",
+    },
+    nbhsInSnapshot: {
+        firstNeighborhoodId: "",
     }
 } as any;
 
@@ -78,6 +85,11 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
         this.addActor("node2", 500n * ADA);
         this.addActor("node3", 500n * ADA);
 
+        this.addActor("nbhOwner", 
+            200n * ADA,
+            10_000n * ADA
+        );
+
         // Add admin actors
         this.addActor("admin1", 20_000n * ADA);
         this.addActor("admin2", 20_000n * ADA);
@@ -87,7 +99,7 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
         return this.capo.getNodeRegistryController();
     }
 
-    async nbhDgt() {
+    async nbhRegistryDgt() {
         return this.capo.getNbhRegistryController();
     }
 
@@ -168,6 +180,9 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
     }
     get secondNodeId() {
         return this.helperState!.nodesInSnapshot.secondNodeId;
+    }
+    get firstNeighborhoodId() {
+        return this.helperState!.nbhsInSnapshot.firstNeighborhoodId;
     }
 
     async secondRegisteredNode() {
@@ -376,6 +391,61 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
     }
 
 
+    async findFirstNeighborhood() {
+        const registryDgt = await this.nbhRegistryDgt();
+        return registryDgt.findRecords({id: this.firstNeighborhoodId});
+    }
+    
+    @CapoTestHelper.hasNamedSnapshot("firstRegisteredNeighborhood", "nbhOwner")
+    async snapToFirstRegisteredNeighborhood() {
+        throw new Error("never called");
+        this.firstRegisteredNeighborhood();
+    }
+
+    async firstRegisteredNeighborhood() {
+        await this.bootstrap();
+        await this.setActor("nbhOwner");
+        const tcx = await this.capo.mkTxnMintParticipantToken(this.wallet.address);
+        await this.submitTxnWithBlock(tcx);
+
+        const controller = await this.nbhRegistryDgt();
+        const neighborhood = controller.exampleData();
+        return this.registerNeighborhood(neighborhood).then((tcx) => {
+            if (!this.helperState!.nbhsInSnapshot.firstNeighborhoodId) {
+                this.helperState!.nbhsInSnapshot.firstNeighborhoodId = tcx.state.uuts.recordId.toString()
+            }
+            return tcx;
+        });
+    }
+
+    async registerNeighborhood(
+        neighborhood: minimalNeighborhoodData,
+        options: { 
+            submit?: boolean, 
+            expectError?: true,
+            mockMemberToken?: string,
+        } = {},
+    ) {
+        const { submit = true, expectError, mockMemberToken } = options;
+
+        if (mockMemberToken) {
+            const { capo } = this;
+            vi.spyOn(capo, "mkTxnWithMemberInfo").mockImplementation(
+                async (skipReturn: any, tcx?: StellarTxnContext<anyState>) => {
+                    const tcx2: hasMemberToken & hasSeedUtxo =
+                        (tcx as any) || capo.mkTcx("create node with mock member token");
+                    tcx2.state.memberToken = new UutName("member", mockMemberToken);
+                    return tcx2 as any;
+                },
+            );
+        }
+
+        const controller = await this.nbhRegistryDgt();
+        const tcx = await controller.mkTxnRegisteringNeighborhood(neighborhood);
+        return this.submitTxnWithBlock(tcx, {
+            expectError,
+        });
+    }
 
     async updateSettings(
         settings: FoundDatumUtxo<ErgoProtocolSettings, any>,

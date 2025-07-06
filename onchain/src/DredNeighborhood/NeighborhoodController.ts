@@ -12,12 +12,13 @@ import type {
     hasSeed,
     hasSettingsRef,
     minimalData,
+    DgDataUpdateOptions,
 } from "@donecollectively/stellar-contracts";
 
-import NeighborhoodBundle from "./Neighborhood.hlb.js";
+import NeighborhoodRegistryBundle from "./NeighborhoodRegistry.hlb.js";
 import type { DredCapo } from "../DredCapo.js";
-import type { ErgoNeighborhoodData, NeighborhoodDataLike } from "./Neighborhood.typeInfo.js";
-import NeighborhoodPolicyDataBridge from "./Neighborhood.bridge.js";
+import type { ErgoNeighborhoodData, minimalNeighborhoodData, NeighborhoodData, NeighborhoodDataLike } from "./NeighborhoodRegistry.typeInfo.js";
+import NeighborhoodPolicyDataBridge from "./NeighborhoodRegistry.bridge.js";
 
 export type PartialPartialData<T extends AnyDataTemplate<any, any>> = Partial<{
     [K in keyof T]: T[K] extends Array<any>
@@ -27,10 +28,8 @@ export type PartialPartialData<T extends AnyDataTemplate<any, any>> = Partial<{
         : T[K];
 }>;
 
-export type minimalNeighborhoodData = minimalData<ErgoNeighborhoodData>;
-
-export type partialMinimalData<T extends AnyDataTemplate<any, any>> =
-    PartialPartialData<minimalData<T>>;
+// export type partialMinimalData<T extends AnyDataTemplate<any, any>> =
+//     PartialPartialData<minimalData<T>>;
 
 export class NeighborhoodController extends DelegatedDataContract<
     ErgoNeighborhoodData,
@@ -39,7 +38,7 @@ export class NeighborhoodController extends DelegatedDataContract<
     dataBridgeClass = NeighborhoodPolicyDataBridge;
 
     scriptBundle() {
-        return NeighborhoodBundle.create();
+        return NeighborhoodRegistryBundle.create();
     }
     idPrefix = "nbhd";
 
@@ -48,7 +47,7 @@ export class NeighborhoodController extends DelegatedDataContract<
     }
 
     get recordTypeName() {
-        return "dredNbh";
+        return "DredNbh";
     }
 
     exampleData(): minimalNeighborhoodData {
@@ -56,10 +55,10 @@ export class NeighborhoodController extends DelegatedDataContract<
             // id: "nbhd-0000000000",
             // type: "dredNbh",
             memberToken: "member-owner",
-            name: "Default Neighborhood",
-            description: "A default neighborhood for Dred services",
-
+            state: {Preproduction: {}},
             appInfo: {
+                name: "Default Neighborhood",
+                description: "A default neighborhood for Dred services",
                 url: "https://dred.com",
                 revenueModel: [
                     {
@@ -73,6 +72,7 @@ export class NeighborhoodController extends DelegatedDataContract<
                     }
                 ]
             },
+            updateInfo: undefined,
             opsInfo: {
                 minNodes: 3n,
                 maxNodes: 13n,
@@ -86,25 +86,60 @@ export class NeighborhoodController extends DelegatedDataContract<
         return super.capo as unknown as DredCapo;
     }
 
-    async mkTxnRegisteringNode(
+    async mkTxnRegisteringNeighborhood(
         this: NeighborhoodController,
-        nodeReg: minimalNeighborhoodData,
+        nbhReg: minimalNeighborhoodData,
+        initialTcx?: StellarTxnContext
         // initialVaultStake: bigint
     ) {
         const mintDelegate = await this.capo.getMintDelegate();
+        const {capo} = this
 
-        // const tcx = await this.capo.mkTxnWithMemberInfo();
+        const tcx0 = initialTcx || this.mkTcx(
+            "registering dred neighborhood"
+        );
+
+        const tcx1 = await capo.mkTxnWithMemberInfo(undefined, tcx0);
         return this.mkTxnCreateRecord(
             {
                 activity:
                     this.activity.MintingActivities.$seeded$CreatingRecord,
                 data: {
-                    ...nodeReg,
-                    // memberToken: tcx.state.memberToken.name,
+                    ...nbhReg,
+                    memberToken: tcx1.state.memberToken.name,
                 },
                 // addedUtxoValue: makeValue(initialVaultStake),
             },
-            // tcx
+            tcx1
+        );
+    }
+
+    async mkTxnUpdatingNeighborhood(
+        this: NeighborhoodController,
+        txnName: string,
+        nbh: FoundDatumUtxo<ErgoNeighborhoodData | NeighborhoodData>,
+        options: Omit<DgDataUpdateOptions<
+        NeighborhoodDataLike>, "activity"> & {
+            activity?: DgDataUpdateOptions<NeighborhoodDataLike>["activity"]
+        },
+        initialTcx?: StellarTxnContext,
+    ) {
+        const {
+            activity = this.activity.SpendingActivities.UpdatingRecord(nbh.data!.id),
+            ...otherOptions
+        } = options
+        const tcx0 = initialTcx || this.mkTcx(
+            "updating dred neighborhood"
+        );
+        const tcx1 = await this.capo.mkTxnWithMemberInfo(undefined, tcx0);
+        
+        return this.mkTxnUpdateRecord(
+            txnName, nbh,
+            {
+                activity: activity,
+                ...otherOptions
+            },
+            tcx1
         );
     }
 

@@ -132,6 +132,7 @@ export class NodeRegistryController extends DelegatedDataContract<
             debugger
             throw new Error("node not found");
         }
+        
         return this.mkTxnUpdatingNodeRegistration("activating dred node", item, {
             ...options,
             withMemberToken: false,

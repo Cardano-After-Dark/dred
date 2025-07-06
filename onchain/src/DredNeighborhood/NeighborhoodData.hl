@@ -32,14 +32,23 @@ enum RevenueModel {
         maxTxFee: Option[Value]
         chargeTo: FeeSource
     }
+
     Subscription {
         subscriptionFee: []SubscriptionFeeFrequency
     }
 }
 
 struct AppInfo {
+    url: String
+    revenueModel: []RevenueModel
+    name: String
+    description: String
+}
+
+struct UpdateInfo {
+    name: String "nm"
+    description: String "dsc"
     url: String "url"
-    revenueModel: []RevenueModel "revMdl"
 }
 
 struct NodeOpsInfo {
@@ -49,16 +58,24 @@ struct NodeOpsInfo {
     minUptime: Int "minUpt"
 }
 
+enum NeighborhoodState {
+    Preproduction
+    Beta
+    Active
+    UpdatePending
+    UpdateDisputed
+    Retired
+}
+
 struct NeighborhoodData {
     id : ByteArray "@id" // = "nbhd-XXXXyyyyZZZZ"
     type : String "tpe" // = "nbhd"
 
     memberToken: String "mt"
-    name: String "nm"
-    description: String "dsc"
+    state: NeighborhoodState "st"
     appInfo: AppInfo "app"
     opsInfo: NodeOpsInfo "ops"
-
+    updateInfo: Option[UpdateInfo] "upd"
 
     func validate(self) -> Bool {
         assert(true || /*never executed*/ self == self, "no way");
@@ -66,3 +83,4 @@ struct NeighborhoodData {
         true
     }
 }
+
