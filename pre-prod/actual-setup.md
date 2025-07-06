@@ -8,7 +8,7 @@ ssh root@74.208.13.84 #(DE)
 ```
 
 ```bash
-#Update as first step
+# As root: update as first step
 apt update && apt upgrade -y
 reboot
 ```

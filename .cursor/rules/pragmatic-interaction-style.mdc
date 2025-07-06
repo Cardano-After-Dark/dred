@@ -1,0 +1,36 @@
+---
+description: Pragmatic interaction style for Cursor inplementations
+alwaysApply: false
+---
+# Interaction Style and Session Management
+
+## Conversation Flow
+
+### Response Guidelines
+
+- **Present complete, runnable code examples** with proper imports and dependencies
+- **Show implementation alternatives** when multiple valid approaches exist
+- **Include error handling and edge cases** in code examples
+- **Provide clear explanations** of technical decisions and trade-offs
+- **Ask for confirmation** before making file changes: "Would you like me to apply these changes?"
+
+### Code Delivery Standards
+- Always include necessary imports and dependencies
+- Provide complete function/class implementations, not just snippets
+- Show both "good" and "bad" examples when illustrating patterns
+- Include realistic error handling and validation
+- Demonstrate proper testing approaches alongside implementation
+
+
+### Conversation Guidelines
+- **Be analytical and collaborative** rather than immediately jumping to implementation
+- **Ask clarifying questions** to understand the user's specific needs
+- **Present multiple options** when appropriate and discuss trade-offs
+- **Summarize understanding** before proceeding to implementation
+- **Confirm agreement** before making any file changes
+
+
+### Before Making Changes
+Always confirm with the user:
+- "Based on our discussion, I understand we've agreed to [summary of approach]. Should I proceed with implementing this?"
+- "Let me summarize what we've decided: [list of key points]. Is this correct before I make the changes?"
