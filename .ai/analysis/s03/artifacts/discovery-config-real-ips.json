@@ -1,0 +1,19 @@
+{
+  "neighborhood": "production-nbh",
+  "servers": [
+    {
+      "serverId": "US",
+      "address": "XXX.XXX.XXX.XXX",
+      "port": 3029,
+      "insecure": false,
+      "comment": "Replace XXX.XXX.XXX.XXX with actual US server IP"
+    },
+    {
+      "serverId": "UK", 
+      "address": "YYY.YYY.YYY.YYY",
+      "port": 3029,
+      "insecure": false,
+      "comment": "Replace YYY.YYY.YYY.YYY with actual UK server IP"
+    }
+  ]
+} 
