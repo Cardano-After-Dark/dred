@@ -410,8 +410,9 @@ enum DelegateActivity {
 
                         REQT("the updated data must be valid");
 
-                        hasMemberToken &&
-                        inputData.validateUpdate(updatedData) // throws if invalid 
+                        hasMemberToken 
+                        && inputData.validateUpdate(updatedData) // throws if invalid 
+                        && updatedData.validate()
                     },
                     ValidatingNode{recId, validatorId} => {
                         print("validating a registered node...");
@@ -419,7 +420,7 @@ enum DelegateActivity {
 
                         REQT("rejects without a refInput pointing at the validator's registration record");
                         validatorRef = cctx.referencingDgData(recIdBytes:validatorId);
-                        validatorData : NodeRegistrationData = NodeRegistrationData::from_data(
+                        validatorData = NodeRegistrationData::from_data(
                             validatorRef.inputData()
                         );
                         validatorPkh = validatorData.nodeDetails.pubKeyHash;

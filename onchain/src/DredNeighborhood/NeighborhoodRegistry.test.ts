@@ -125,4 +125,71 @@ describe("Dred Neighborhood Registry", async () => {
             });
         });
     });
- })
+    describe("Switching to Active state", () => {
+        it("requires the right memberToken", async (context: DredCapo_TC) => {
+            const {
+                h,
+                h: { network, actors, delay, state },
+            } = context;
+
+            await h.reusableBootstrap();
+            await h.setActor("nbhOwner");
+            await h.snapToFirstRegisteredNeighborhood();
+
+            const controller = await h.nbhRegistryDgt();
+            const firstNbh = await h.findFirstNeighborhood();
+
+            await h.setActor("ned");
+            const reg = await h.participantSelfRegisters();
+
+            await expect(h.activateNeighborhood(firstNbh, { 
+                expectError: true,
+
+            })).rejects.toThrow(
+                /missing member token/,
+            );
+            if (!firstNbh?.data) throw new Error("no node found");
+            await h.mockMemberToken();
+
+            // can't change the member token
+            const activating = h.activateNeighborhood(firstNbh, {
+                updatedFields: {
+                    memberToken: reg.state.uuts.member.name
+                }
+            });
+            await expect(activating).rejects.toThrow(/missing member token/);
+        });
+
+        it("fails if they try to change the member-token name", async (context: DredCapo_TC) => {
+            const {
+                h,
+                h: { network, actors, delay, state },
+            } = context;
+           
+            await h.reusableBootstrap();
+            await h.snapToFirstRegisteredNeighborhood();
+
+            const controller = await h.nbhRegistryDgt();
+            const firstNbh = await h.findFirstNeighborhood();
+
+            await h.setActor("ned");
+
+            const reg = await h.participantSelfRegisters();
+        });
+
+        it("works with the right member token", async (context: DredCapo_TC) => {
+            const {
+                h,
+                h: { network, actors, delay, state },
+            } = context;
+
+            await h.reusableBootstrap();
+            await h.snapToFirstRegisteredNeighborhood();
+
+            const controller = await h.nbhRegistryDgt();
+            const firstNbh = await h.findFirstNeighborhood();
+
+            return h.activateNeighborhood(firstNbh);
+        });
+    });
+});

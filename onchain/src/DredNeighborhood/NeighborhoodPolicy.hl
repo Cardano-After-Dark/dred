@@ -156,6 +156,16 @@ enum SpendingActivity {
     UpdatingRecord {
         id: ByteArray
     }
+    ActivatingNeighborhood {
+        id: ByteArray
+    }
+    func getId(self) -> ByteArray {
+        self.switch {
+            UpdatingRecord{id} => id,
+            ActivatingNeighborhood{id} => id
+            // _ => error("no id")
+        }
+    }
 }
 
 func ensureConstrainedTxValidity() -> () {
@@ -360,38 +370,26 @@ enum DelegateActivity {
             },
             SpendingActivities{VSA} => {
                 assert(cctx.withCharterRef().orFail(), "no charter ref");
+                recId = VSA.getId()
+                updateDetails = cctx.updatingDgData(recIdBytes: recId)
 
-                VSA.switch {                    
-                    UpdatingRecord{recId} => {
+                print("decoding input");
+                inputData = NeighborhoodData::from_data(updateDetails.inputData());
+
+                print("decoding output");
+                updatedData = NeighborhoodData::from_data(updateDetails.outputData());
+
+                VSA.switch {
+                    UpdatingRecord => {
                         print("updating the registration details for a single Neighborhood...");
 
-                        hasRecInput : (TxInput) -> Bool = 
-                            cctx.mkDelegatedDataPredicate("nbhd", recId);                        
-                        // _settings = ProtocolSettings::from_data(
-                        //     cctx.getManifestedData("currentSettings")
-                        // );                        
-                        hasRecOutput : (TxOutput) -> Bool = 
-                            cctx.mkDelegatedDataOutputPredicate("nbhd", recId);
-    
-                        tx.inputs.filter(hasRecInput).for_each( (utxo : TxInput) -> () {
-                            // they're all album vaults, because of the above.
-                            _inputData : NeighborhoodData = 
-                                NeighborhoodData::from_data(utxo.datum.inline);
-                            updatedUtxo : TxOutput = tx.outputs.find(hasRecOutput);
-                            updatedData : NeighborhoodData = 
-                                NeighborhoodData::from_data(updatedUtxo.datum.inline);
+                        updatedData.validate()
+                    },
+                    ActivatingNeighborhood => {
+                        print("activating a Neighborhood...");
 
-                            // possibly move this to a separate SpendingActivity
-
-                            // REQT("the lastHeartbeat must be set to the current time");
-                            // assert(isNowish(updatedData.lastHeartbeat), "lastHeartbeat must be set to the current time");
-
-                            // _freshExpiry : TimeRange = daysInFuture(settings.artistVaultSettings.albumCommissionDiscountDays.trunc());
-
-                            assert(updatedData.validate(), "<-- that throws; this can't."); // throws if invalid
-                            ()
-                        });
-                        true
+                        inputData.validateActivation(updatedData).trace("  -- validateActivation: ")
+                        && updatedData.validate().trace("  -- validate: ")
                     }
                 }
             },

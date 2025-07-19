@@ -1179,18 +1179,8 @@ export class NeighborhoodStateHelper extends EnumBridge<JustAnEnum> {
     } /* tagOnly variant accessor */
 
 /**
- * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Beta"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
- */
-    get Beta() {
-        const uplc = this.mkUplcData({ Beta: {} }, 
-            "NeighborhoodData::NeighborhoodState.Beta");
-        return uplc;
-    } /* tagOnly variant accessor */
-
-/**
  * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Active"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
  */
     get Active() {
         const uplc = this.mkUplcData({ Active: {} }, 
@@ -1200,7 +1190,7 @@ export class NeighborhoodStateHelper extends EnumBridge<JustAnEnum> {
 
 /**
  * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.UpdatePending"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
  */
     get UpdatePending() {
         const uplc = this.mkUplcData({ UpdatePending: {} }, 
@@ -1210,7 +1200,7 @@ export class NeighborhoodStateHelper extends EnumBridge<JustAnEnum> {
 
 /**
  * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.UpdateDisputed"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
  */
     get UpdateDisputed() {
         const uplc = this.mkUplcData({ UpdateDisputed: {} }, 
@@ -1220,7 +1210,7 @@ export class NeighborhoodStateHelper extends EnumBridge<JustAnEnum> {
 
 /**
  * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Retired"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#5***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4***
  */
     get Retired() {
         const uplc = this.mkUplcData({ Retired: {} }, 
@@ -2325,6 +2315,18 @@ export class SpendingActivityHelper extends EnumBridge<JustAnEnum> {
         }, "NeighborhoodPolicy::SpendingActivity.UpdatingRecord"); /*singleField enum variant*/
        return uplc;
     }
+
+    /**
+     * generates  UplcData for ***"NeighborhoodPolicy::SpendingActivity.ActivatingNeighborhood"***
+     */
+    ActivatingNeighborhood(
+        id: number[]
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           ActivatingNeighborhood: id
+        }, "NeighborhoodPolicy::SpendingActivity.ActivatingNeighborhood"); /*singleField enum variant*/
+       return uplc;
+    }
 }/*mkEnumHelperClass*/
 
 
@@ -2949,6 +2951,23 @@ export class SpendingActivityHelperNested extends EnumBridge<isActivity> {
         const uplc = this.mkUplcData({ 
            UpdatingRecord: id
         }, "NeighborhoodPolicy::SpendingActivity.UpdatingRecord"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::SpendingActivity.ActivatingNeighborhood"***
+    * @remarks
+    * #### Nested activity: 
+    * this is connected to a nested-activity wrapper, so the details are piped through 
+    * the parent's uplc-encoder, producing a single uplc object with 
+    * a complete wrapper for this inner activity detail.
+     */
+    ActivatingNeighborhood(
+        id: number[]
+    ) : isActivity {
+        const uplc = this.mkUplcData({ 
+           ActivatingNeighborhood: id
+        }, "NeighborhoodPolicy::SpendingActivity.ActivatingNeighborhood"); /*singleField enum variant*/
        return uplc;
     }
 }/*mkEnumHelperClass*/
@@ -3920,34 +3939,27 @@ export const NeighborhoodStateSchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 1,
-            "id": "__module__NeighborhoodData__NeighborhoodState[]__Beta",
-            "name": "Beta",
-            "fieldTypes": []
-        },
-        {
-            "kind": "variant",
-            "tag": 2,
             "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
             "name": "Active",
             "fieldTypes": []
         },
         {
             "kind": "variant",
-            "tag": 3,
+            "tag": 2,
             "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
             "name": "UpdatePending",
             "fieldTypes": []
         },
         {
             "kind": "variant",
-            "tag": 4,
+            "tag": 3,
             "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
             "name": "UpdateDisputed",
             "fieldTypes": []
         },
         {
             "kind": "variant",
-            "tag": 5,
+            "tag": 4,
             "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
             "name": "Retired",
             "fieldTypes": []
@@ -4456,34 +4468,27 @@ export const NeighborhoodDataSchema : StructTypeSchema = {
                     {
                         "kind": "variant",
                         "tag": 1,
-                        "id": "__module__NeighborhoodData__NeighborhoodState[]__Beta",
-                        "name": "Beta",
-                        "fieldTypes": []
-                    },
-                    {
-                        "kind": "variant",
-                        "tag": 2,
                         "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
                         "name": "Active",
                         "fieldTypes": []
                     },
                     {
                         "kind": "variant",
-                        "tag": 3,
+                        "tag": 2,
                         "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
                         "name": "UpdatePending",
                         "fieldTypes": []
                     },
                     {
                         "kind": "variant",
-                        "tag": 4,
+                        "tag": 3,
                         "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
                         "name": "UpdateDisputed",
                         "fieldTypes": []
                     },
                     {
                         "kind": "variant",
-                        "tag": 5,
+                        "tag": 4,
                         "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
                         "name": "Retired",
                         "fieldTypes": []
@@ -4896,34 +4901,27 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                         {
                                             "kind": "variant",
                                             "tag": 1,
-                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__Beta",
-                                            "name": "Beta",
-                                            "fieldTypes": []
-                                        },
-                                        {
-                                            "kind": "variant",
-                                            "tag": 2,
                                             "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
                                             "name": "Active",
                                             "fieldTypes": []
                                         },
                                         {
                                             "kind": "variant",
-                                            "tag": 3,
+                                            "tag": 2,
                                             "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
                                             "name": "UpdatePending",
                                             "fieldTypes": []
                                         },
                                         {
                                             "kind": "variant",
-                                            "tag": 4,
+                                            "tag": 3,
                                             "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
                                             "name": "UpdateDisputed",
                                             "fieldTypes": []
                                         },
                                         {
                                             "kind": "variant",
-                                            "tag": 5,
+                                            "tag": 4,
                                             "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
                                             "name": "Retired",
                                             "fieldTypes": []
@@ -5759,6 +5757,21 @@ export const SpendingActivitySchema : EnumTypeSchema = {
                     }
                 }
             ]
+        },
+        {
+            "kind": "variant",
+            "tag": 1,
+            "id": "__module__NeighborhoodPolicy__SpendingActivity[]__ActivatingNeighborhood",
+            "name": "ActivatingNeighborhood",
+            "fieldTypes": [
+                {
+                    "name": "id",
+                    "type": {
+                        "kind": "internal",
+                        "name": "ByteArray"
+                    }
+                }
+            ]
         }
     ]
 };
@@ -6195,6 +6208,21 @@ export const DelegateActivitySchema : EnumTypeSchema = {
                                 "tag": 0,
                                 "id": "__module__NeighborhoodPolicy__SpendingActivity[]__UpdatingRecord",
                                 "name": "UpdatingRecord",
+                                "fieldTypes": [
+                                    {
+                                        "name": "id",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "ByteArray"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 1,
+                                "id": "__module__NeighborhoodPolicy__SpendingActivity[]__ActivatingNeighborhood",
+                                "name": "ActivatingNeighborhood",
                                 "fieldTypes": [
                                     {
                                         "name": "id",

@@ -183,20 +183,17 @@ export interface DelegationDetailLike {
         Preproduction: singleEnumVariantMeta<NeighborhoodStateMeta, "Preproduction",
             "Constr#0", "tagOnly", tagOnly, "noSpecialFlags"
         >,
-        Beta: singleEnumVariantMeta<NeighborhoodStateMeta, "Beta",
+        Active: singleEnumVariantMeta<NeighborhoodStateMeta, "Active",
             "Constr#1", "tagOnly", tagOnly, "noSpecialFlags"
         >,
-        Active: singleEnumVariantMeta<NeighborhoodStateMeta, "Active",
+        UpdatePending: singleEnumVariantMeta<NeighborhoodStateMeta, "UpdatePending",
             "Constr#2", "tagOnly", tagOnly, "noSpecialFlags"
         >,
-        UpdatePending: singleEnumVariantMeta<NeighborhoodStateMeta, "UpdatePending",
+        UpdateDisputed: singleEnumVariantMeta<NeighborhoodStateMeta, "UpdateDisputed",
             "Constr#3", "tagOnly", tagOnly, "noSpecialFlags"
         >,
-        UpdateDisputed: singleEnumVariantMeta<NeighborhoodStateMeta, "UpdateDisputed",
-            "Constr#4", "tagOnly", tagOnly, "noSpecialFlags"
-        >,
         Retired: singleEnumVariantMeta<NeighborhoodStateMeta, "Retired",
-            "Constr#5", "tagOnly", tagOnly, "noSpecialFlags"
+            "Constr#4", "tagOnly", tagOnly, "noSpecialFlags"
         >
     }
 >;
@@ -206,7 +203,7 @@ export interface DelegationDetailLike {
  * NeighborhoodState enum variants
  * 
  * @remarks - expresses the essential raw data structures
- * supporting the **6 variant(s)** of the NeighborhoodState enum type
+ * supporting the **5 variant(s)** of the NeighborhoodState enum type
  * 
  * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodStateHelper` class
  *     for generating UPLC data for this enum type
@@ -214,7 +211,6 @@ export interface DelegationDetailLike {
  */
 export type NeighborhoodState = 
         | { Preproduction: tagOnly /*minEnumVariant*/ }
-        | { Beta: tagOnly /*minEnumVariant*/ }
         | { Active: tagOnly /*minEnumVariant*/ }
         | { UpdatePending: tagOnly /*minEnumVariant*/ }
         | { UpdateDisputed: tagOnly /*minEnumVariant*/ }
@@ -233,7 +229,7 @@ export type ErgoNeighborhoodState = IntersectedEnum<NeighborhoodState/*like cano
  * NeighborhoodState enum variants (permissive)
  * 
  * @remarks - expresses the allowable data structure
- * for creating any of the **6 variant(s)** of the NeighborhoodState enum type
+ * for creating any of the **5 variant(s)** of the NeighborhoodState enum type
  * 
  * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodStateHelper` class
  *     for generating UPLC data for this enum type
@@ -245,7 +241,6 @@ export type ErgoNeighborhoodState = IntersectedEnum<NeighborhoodState/*like cano
  */
 export type NeighborhoodStateLike = IntersectedEnum<
         | { Preproduction: tagOnly /*minEnumVariant*/ }
-        | { Beta: tagOnly /*minEnumVariant*/ }
         | { Active: tagOnly /*minEnumVariant*/ }
         | { UpdatePending: tagOnly /*minEnumVariant*/ }
         | { UpdateDisputed: tagOnly /*minEnumVariant*/ }
@@ -1470,6 +1465,10 @@ export type DelegateLifecycleActivityLike = IntersectedEnum<
         UpdatingRecord: singleEnumVariantMeta<SpendingActivityMeta, "UpdatingRecord",
             "Constr#0", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
 			number[]   , "noSpecialFlags"
+        >,
+        ActivatingNeighborhood: singleEnumVariantMeta<SpendingActivityMeta, "ActivatingNeighborhood",
+            "Constr#1", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]   , "noSpecialFlags"
         >
     }
 >;
@@ -1479,7 +1478,7 @@ export type DelegateLifecycleActivityLike = IntersectedEnum<
  * SpendingActivity enum variants
  * 
  * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the SpendingActivity enum type
+ * supporting the **2 variant(s)** of the SpendingActivity enum type
  * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -1487,6 +1486,8 @@ export type DelegateLifecycleActivityLike = IntersectedEnum<
  */
 export type SpendingActivity = 
         | { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { ActivatingNeighborhood: /* implied wrapper { id: ... } for singleVariantField */ 
 			number[]    /*minEnumVariant*/ }
 
 /**
@@ -1502,7 +1503,7 @@ export type ErgoSpendingActivity = IntersectedEnum<SpendingActivity/*like canon 
  * SpendingActivity enum variants (permissive)
  * 
  * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the SpendingActivity enum type
+ * for creating any of the **2 variant(s)** of the SpendingActivity enum type
  * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -1514,6 +1515,8 @@ export type ErgoSpendingActivity = IntersectedEnum<SpendingActivity/*like canon 
  */
 export type SpendingActivityLike = IntersectedEnum<
         | { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { ActivatingNeighborhood: /* implied wrapper { id: ... } for singleVariantField */ 
 			number[]    /*minEnumVariant*/ }
 >
 

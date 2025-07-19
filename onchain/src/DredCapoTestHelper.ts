@@ -447,6 +447,30 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
         });
     }
 
+    async activateNeighborhood(
+        neighborhood: FoundDatumUtxo<ErgoNeighborhoodData | NeighborhoodData, any>,
+        options: { 
+            submit?: boolean, 
+            updatedFields?: Partial<minimalData<ErgoNeighborhoodData>>,
+            expectError?: true 
+        } = {},
+    ) {
+        const { submit = true, expectError, updatedFields = {} } = options;
+        const controller = await this.nbhRegistryDgt();
+
+        const tcx = await controller.mkTxnUpdatingNeighborhood("activating", neighborhood, {
+            activity: controller.activity.SpendingActivities.ActivatingNeighborhood(neighborhood.data!.id),
+            updatedFields: {
+                state: { Active: {} },
+                ...updatedFields,
+            },
+        });
+
+        return this.submitTxnWithBlock(tcx, {
+            expectError,
+        });
+    }    
+
     async updateSettings(
         settings: FoundDatumUtxo<ErgoProtocolSettings, any>,
         options: {

@@ -233,7 +233,7 @@ enum DelegateActivity {
 
                 VSA.switch {
                     UpdatingRecord{recId} => {
-                        hasDD : (TxInput) -> Bool = cctx.mkDelegatedDataPredicate("settings", recId);
+                        hasDD : (TxInput) -> Bool = cctx.mkDelegatedDataPredicate("settings", id:recId);
                         // settings: ProtocolSettings = cctx.getManifestDatum[ProtocolSettings]("settings");
                         hasDDOutput : (TxOutput) -> Bool = cctx.mkDelegatedDataOutputPredicate("settings", recId);
     

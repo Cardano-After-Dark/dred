@@ -1,4 +1,9 @@
 module NeighborhoodData
+import {
+    TODO,
+    REQT,
+    bREQT
+} from StellarHeliosHelpers
 
 // import {
 //     AbstractSettingsForNodeOperator as ProtocolSettings
@@ -60,7 +65,6 @@ struct NodeOpsInfo {
 
 enum NeighborhoodState {
     Preproduction
-    Beta
     Active
     UpdatePending
     UpdateDisputed
@@ -80,6 +84,30 @@ struct NeighborhoodData {
     func validate(self) -> Bool {
         assert(true || /*never executed*/ self == self, "no way");
         // assert(self.memberToken != null, "memberToken is null");
+        true
+    }
+
+    func validateActivation(self,
+        nextData: NeighborhoodData
+    ) -> Bool {
+        print("a");
+        assert(nextData.memberToken == self.memberToken, "memberToken cannot be changed");
+        print("b");
+        self.state.switch {
+            Preproduction => print("  -- activating a Preproduction neighborhood..."),
+            UpdatePending => {
+                TODO("validate the updateInfo");
+                print("  -- activating an UpdatePending neighborhood...")
+            },
+            _ => error("neighborhood is not in need of activation")
+        }
+        nextData.state.switch {
+            Active => print("  -- ok, next state is Active"),
+            _ => error("neighborhood must switch to Active state")
+        }
+        REQT("rejects if the memberToken is changed");
+        assert(nextData.memberToken == self.memberToken, "memberToken cannot be changed");
+        
         true
     }
 }

@@ -10,4 +10,4 @@ export { NeighborhoodController } from "./DredNeighborhood/NeighborhoodControlle
 
 export type { ErgoProtocolSettings } from "./settings/ProtocolSettings.typeInfo.js";
 export type { ErgoNodeRegistrationData } from "./nodeRegistry/NodeRegistry.typeInfo.js";
-export type { ErgoNeighborhoodData } from "./DredNeighborhood/Neighborhood.typeInfo.js";
+export type { ErgoNeighborhoodData } from "./DredNeighborhood/NeighborhoodRegistry.typeInfo.js";
