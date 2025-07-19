@@ -1,4 +1,4 @@
-export { DredClient } from "./DredClient";
+export { DredClient } from "./DredClient.js";
 export type {
     ClientState,
     DredMessage,
@@ -9,9 +9,9 @@ export type {
     ClientEvents,
     eventHasChannels,
     eventChannelInfo,
-} from "./DredClient";
-export { StaticHostDiscovery } from "../peers/StaticHostDiscovery";
-export { NeighborhoodDiscovery } from "../peers/NeighborhoodDiscovery";
-export type { DredEvent, DredError } from "../types/DredEvents";
-export type { ChanId, NbhId, MsgId, DredChannelMessage } from "../types/ChannelSubscriptions";
+} from "./DredClient.js";
+export { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
+export { NeighborhoodDiscovery } from "../peers/NeighborhoodDiscovery.js";
+export type { DredEvent, DredError } from "../types/DredEvents.js";
+export type { ChanId, NbhId, MsgId, DredChannelMessage } from "../types/ChannelSubscriptions.js";
 // export { StateChannel, type ChannelState, hasStateChannel } from "./StateChannel";

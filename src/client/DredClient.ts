@@ -25,7 +25,7 @@ const {
 import { EventEmitter } from "eventemitter3";
 import { asyncDelay, autobind, StateMachine, zonedLogger } from "@poshplum/utils";
 
-import { ConnectionManager } from "./ConnectionManager";
+import { ConnectionManager } from "./ConnectionManager.js";
 
 import { ChannelOptions } from "../types/ChannelOptions.js";
 import { Subscriber } from "../Subscriber.js";
@@ -40,7 +40,7 @@ import {
     ChannelSubscriptionListener,
     NbhId,
     DredChannelMessage,
-} from "../types/ChannelSubscriptions";
+} from "../types/ChannelSubscriptions.js";
 import { devMessage, DredError, DredEvent } from "../types/DredEvents.js";
 
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;

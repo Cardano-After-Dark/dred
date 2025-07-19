@@ -17,7 +17,7 @@ import {
     SubscriptionListenerMap,
     DredChannelMessage,
     SubscriptionList,
-} from "../types/ChannelSubscriptions";
+} from "../types/ChannelSubscriptions.js";
 import { ndjsonStream } from "./betterJsonStream.js";
 import { DredMessage } from "./DredClient.js";
 import { Logger } from "../types/Logger.js";

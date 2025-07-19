@@ -1,13 +1,13 @@
 "use strict";
 
-import { ReadableStream } from "@platform/ReadableStream";
+import { ReadableStream } from "@platform/ReadableStream.js";
 
 /*exported ndjsonStream*/
 // forked from can-ndjson-stream because its error handling is sub-par.
 
-export function ndjsonStream(responseBody) {
+export function ndjsonStream(responseBody: any) {
     // For cancellation
-    let is_reader,
+    let is_reader: any,
         cancellationRequest = false;
     return new ReadableStream({
         start: function (controller) {
@@ -16,7 +16,7 @@ export function ndjsonStream(responseBody) {
             var decoder = new TextDecoder();
             var data_buf = "";
 
-            return reader.read().then(function processResult(result) {
+            return reader.read().then(function processResult(result: any) {
                 if (result.done) {
                     if (cancellationRequest) {
                         // Immediately exit

@@ -1,5 +1,5 @@
 import fetch from "cross-fetch";
-import { DredHostDetails } from "../types/DredHosts";
+import { DredHostDetails } from "../types/DredHosts.js";
 
 export interface fetchOptions extends RequestInit {
     host: DredHostDetails;

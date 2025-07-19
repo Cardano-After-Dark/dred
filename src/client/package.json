@@ -1,16 +1,16 @@
 {
     "name": "@cardano-after-dark/dred-client",
-    "version": "0.0.1",
+    "version": "0.6.0",
     "description": "Distributed event streams for web3 (client)",
     "type": "module",
-    "packageManager": "pnpm@9.15.4",
+    "packageManager": "pnpm@10.10.0",
     "exports": {
         ".": {
             "types": "./dist/dred-client.d.ts",
             "browser": "./dist/dred-client.mjs",
+            "node": "./dist/dred-client-nodejs.mjs",
             "import": "./dist/dred-client.mjs",
             "require": "./dist/dred-client.js",
-            "node": "./dist/dred-client-nodejs.mjs",
             "default": "./dist/dred-client.js"
         },
         "./node": {
