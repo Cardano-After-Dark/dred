@@ -53,6 +53,7 @@ type FieldProps = {
     fieldId: string;
     problem?: string;
     onChange: ChangeHandler;
+    readonly?: boolean;
 };
 type eventArg = React.ChangeEvent<HTMLInputElement>
 type ChangeHandler = ( event: eventArg ) => void
@@ -100,6 +101,7 @@ type fieldOptions =
           validator?: Function;
           options?: HtmlSelectOptions;
           type?: "textarea" | "input" | "select" | React.ElementType;
+          readonly?: boolean;
       }
     | undefined;
 
@@ -357,7 +359,7 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
             memberUut, roles, wallet, walletAddress, walletHandle
         } } = provider;
         if (!rec) return ""; //wait for didMount
-        const showTitle = <>{create ? "Creating new" : "Edit"} page</>;
+        const showTitle = <>{create ? "Register" : "Updating"} Dred Node</>;
         let sidebarContent;
 
         const { isAdmin, memberOwnsNode } = this;
@@ -403,31 +405,18 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
                                         marginTop: "4em",
                                     }}
                                 >
-                                    The page content will be shown on this
-                                    website and visible in the Cardano
-                                    blockchain.
+                                    The node registration will be visible on the
+                                    blockchain, and available for use by applications.
                                 </p>
 
                                 <p
                                     style={{
                                         fontStyle: "italic",
-                                        marginTop: "4em",
+                                        marginTop: "2em",
                                     }}
                                 >
-                                    Your  member token is required for
-                                    making modifications to the page, and for
-                                    accepting changes other collaborators may
-                                    propose.
-                                </p>
-
-                                <p style={{ fontStyle: "italic" }}>
-                                    The page will start in "suggested" state,
-                                    and will have an expiration date. The book
-                                    editor(s) can accept the page officially
-                                    into the book. You'll normally continue to
-                                    have ownership of the page, with the
-                                    authority to approve changes to the page
-                                    content.
+                                    Your  member token is required for creating or
+                                    updating the registration.
                                 </p>
                             </Prose>,
                             portalTarget
@@ -450,14 +439,6 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
                 <Head>
                     <title>{showTitle}</title>
                 </Head>
-                <header className="mb-9 space-y-1">
-                    <p className="font-display text-sm font-medium text-sky-500">
-                        Book&nbsp;&nbsp;››&nbsp;&nbsp;
-                        <Link href={`/book`}> Topics</Link>
-                        &nbsp;&nbsp;››&nbsp;&nbsp;&nbsp;
-                        {breadcrumbTitle}
-                    </p>
-                </header>
                 {sidebarContent}
                 <Prose
                     className="prose-slate"
@@ -488,7 +469,7 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
                         )}
                     </div>
                     <h1
-                        className="font-display text-3xl tracking-tight text-slate-900 dark:text-white"
+                        className="font-display text-3xl tracking-tight text-slate-900 dark:text-white -mt-8"
                         style={{
                             marginBottom: "0",
                         }}
@@ -500,18 +481,59 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
                         onSubmit={this.save}
                         style={{
                             padding: "0.75em",
-                            fontSize: "85%",
+                            // fontSize: "91%",
                         }}
                     >
                         <table>
-                            <tbody ref={this.formBody}>
-                                {this.field("Page Title", "title", {
-                                    placeholder: "Book Index title",
+                            <tbody ref={this.formBody}>                                
+                                {this.field("Node address or DNS name", "nodeDetails.address", {
+                                    placeholder: "Node Name",
+                                    helpText: "Your node must have a TLS certificate matching this name",
                                     validator(v: string) {
                                         if (v.length < 8)
                                             return "must be at least 8 characters";
                                     },
                                 })}
+                                {this.field("Node port", "nodeDetails.port", {
+                                    placeholder: "Node Port",
+                                    helpText: "Your node must listen with TLS on this port",
+                                    validator(v: string) {
+                                        if (v.length < 1)
+                                            return "must be at least 1 character";
+                                        const port = parseInt(v);
+                                        if (isNaN(port))
+                                            return "must be a number";
+                                        if (port < 1 || port > 65535)
+                                            return "must be a valid port number";
+                                        return "";
+                                    },
+                                })}
+                                {this.field("Node's Public Key", "nodeDetails.pubKey", {
+                                    helpText: "Get the pubkey from the node container startup logs",
+                                    validator(v: string) {
+                                        if (v.length < 1)
+                                            return "must be at least 1 character";
+                                        if (v.length != 64)
+                                            return "must be 64 characters long";
+                                        return "";
+                                    },
+                                })}
+                                                                {this.field("Owner", "memberToken", {
+                                    helpText: "Your member token is required for creating or updating the registration",
+                                    readonly: true,
+                                    style: {
+                                        color: "#ccc",
+                                        opacity: 0.4,
+                                    },
+                                })}
+
+                                <tr><td className="align-baseline">State</td><td className="align-baseline">
+                                {create ? 
+                                    <>
+                                        <b>Needs Validation</b>: The node will need to be validated by other nodes before it is activated
+                                    </>
+                                : null}
+                                </td></tr>
                                 {/* {roles?.includes("editor") &&
                                     this.field("Entry Type", "entryType", {
                                         type: "select",
@@ -645,7 +667,8 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
             fwdRef,
             options: selectOptions,
             style,
-            validator,            
+            validator,
+            readonly,
             tableCellStyle,
             rows, helpText, placeholder, defaultValue, 
         } = options || {}; //prettier-ignore
@@ -676,6 +699,7 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
                     {...showProblem}
                     {...{
                         rec,
+                        readonly,
                         as,
                         fwdRef,
                         fn,
@@ -728,6 +752,7 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
                                 index,
                                 fieldId,
                                 label,
+                                readonly,
                                 placeholder,
                                 defaultValue,
                                 helpText: helpText || "‹!!! no help text›",
@@ -883,6 +908,7 @@ function Field({
     placeholder,
     defaultValue,
     rows,
+    readonly,
     options,
     label,
     style,
@@ -946,6 +972,7 @@ function Field({
                     ...style,
                 }}
                 id={fieldId}
+                readonly={readonly}
                 aria-invalid={errorId ? true : false}
                 aria-describedby={`${helpId} ${errorId}`}
                 rows={rows}
@@ -968,7 +995,7 @@ function Field({
                     id={helpId}
                     style={{
                         marginTop: "0.5em",
-                        fontSize: "91%",
+                        // fontSize: "91%",
                         fontStyle: "italic",
                     }}
                 >
@@ -981,7 +1008,9 @@ function Field({
 
     return (
         <tr {...arrayTableStyle}>
-            <th>{!!index || <label htmlFor={fieldId}> {label}</label>}</th>
+            <th className={
+                `align-baseline ${readonly ? "text-slate-500" : ""}`
+            }>{!!index || <label htmlFor={fieldId}> {label}</label>}</th>
             <td style={tableCellStyle || {}}>{content}</td>
         </tr>
     );

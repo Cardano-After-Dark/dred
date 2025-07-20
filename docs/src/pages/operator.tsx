@@ -1,7 +1,7 @@
 "use client"
 
 import { useSignal, useComputed, useSignalEffect } from "@preact/signals-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { signals, updaters } from "@/capoSignals.js";
 import type { 
     FoundDatumUtxo, AnyDataTemplate, CharterData 
@@ -10,6 +10,7 @@ import type { TxInput } from "@helios-lang/ledger";
 
 import { ErgoNodeRegistrationData, ErgoProtocolSettings } from "dred-network-registry";
 import { NodeRegTable } from "@/components/nodeRegistry/nodeRegTable.tsx";
+import { NodeRegEditor } from "@/components/nodeRegistry/nodeRegForm.tsx";
 
 export const getStaticProps = async () => {
     return { props: {
@@ -22,6 +23,7 @@ export function OperatorPage() {
     const lastUpdate = useSignal<Date>(new Date());
     const nodeRegistryData = useSignal<ErgoNodeRegistrationData[]>([]);
     const settingsDetail = useSignal<ErgoProtocolSettings | undefined>(undefined);
+    const [showEditor, setShowEditor] = useState<boolean>(false);
 
     // Get current user's member token for filtering
     const userMemberToken = useComputed(() => {
@@ -29,15 +31,8 @@ export function OperatorPage() {
         return userInfo?.memberUut?.name;
     });
 
-    // Effect to fetch node registry data when provider changes
-  useSignalEffect(() => {
-    fetchNodeRegistry();
-    
-    // Set up periodic refresh every 5 minutes
-    const refreshInterval = setInterval(fetchNodeRegistry, 5 * 60 * 1000);
-    return () => clearInterval(refreshInterval);
-
-    async function fetchNodeRegistry() {
+    // Define fetchNodeRegistry function outside useSignalEffect so it can be reused
+    const fetchNodeRegistry = async () => {
       const provider = signals.provider.value;
       if (!provider) return;
 
@@ -80,13 +75,62 @@ export function OperatorPage() {
         console.error("Failed to fetch node registry:", error);
       }
     };
+
+    // Effect to fetch node registry data when provider changes
+  useSignalEffect(() => {
+    fetchNodeRegistry();
+    
+    // Set up periodic refresh every 5 minutes
+    const refreshInterval = setInterval(fetchNodeRegistry, 5 * 60 * 1000);
+    return () => clearInterval(refreshInterval);
   });
 
+  const handleRefresh = () => {
+    // Refresh the node registry data
+    fetchNodeRegistry();
+  };
+
+  const handleSave = () => {
+    // Close editor and refresh data
+    setShowEditor(false);
+    handleRefresh();
+  };
+
+  const handleClose = () => {
+    // Just close the editor
+    setShowEditor(false);
+  };
+
+  const handleRegisterNewNode = () => {
+    console.log("handleRegisterNewNode called, current showEditor.value:", showEditor);
+    setShowEditor(true);
+    console.log("showEditor.value set to:", showEditor);
+  };
+
+const form = showEditor ? <NodeRegEditor
+        create={true}
+        refresh={handleRefresh}
+        onSave={handleSave}
+        onClose={handleClose}
+      /> : null
+
+    //   console.log("Rendering OperatorPage, showEditor.value:", showEditor, "form:", !!form);
   return (
     <div className="container mx-auto px-4">
-      
-      {/* My Nodes Section */}
-      <h2 className="text-2xl font-bold mb-4">My Nodes</h2>
+      {/* <div style={{backgroundColor: 'yellow', padding: '10px', margin: '10px'}}>
+        DEBUG: showEditor = {showEditor ? "true" : "false"}
+      </div> */}
+      {/* Header with title and register button */}
+      {form || <div className="flex justify-end items-center mb-4 -mt-14">
+        <button
+          onClick={handleRegisterNewNode}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+        >
+          Register New Node
+        </button>
+      </div>}
+      {form && <hr className="my-4"/>}
+
       <NodeRegTable 
         nodeRegistryData={nodeRegistryData.value} 
         settingsDetail={settingsDetail.value}
