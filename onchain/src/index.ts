@@ -9,5 +9,5 @@ export { ProtocolSettingsController } from "./settings/ProtocolSettingsControlle
 export { NeighborhoodController } from "./DredNeighborhood/NeighborhoodController.js";
 
 export type { ErgoProtocolSettings } from "./settings/ProtocolSettings.typeInfo.js";
-export type { ErgoNodeRegistrationData } from "./nodeRegistry/NodeRegistry.typeInfo.js";
-export type { ErgoNeighborhoodData } from "./DredNeighborhood/NeighborhoodRegistry.typeInfo.js";
+export type { ErgoNodeRegistrationData, NodeRegistrationData, minimalNodeRegistrationData } from "./nodeRegistry/NodeRegistry.typeInfo.js";
+export type { ErgoNeighborhoodData, NeighborhoodData, minimalNeighborhoodData } from "./DredNeighborhood/NeighborhoodRegistry.typeInfo.js";

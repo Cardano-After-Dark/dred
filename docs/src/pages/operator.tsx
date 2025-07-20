@@ -7,22 +7,27 @@ import type {
     FoundDatumUtxo, AnyDataTemplate, CharterData 
 } from "@donecollectively/stellar-contracts";
 import type { TxInput } from "@helios-lang/ledger";
-// import { CharterStatus } from "@/components/ui/CharterStatus.tsx";
-import { CharterStatus } from "@donecollectively/stellar-contracts/ui";
+
 import { ErgoNodeRegistrationData, ErgoProtocolSettings } from "dred-network-registry";
 import { NodeRegTable } from "@/components/nodeRegistry/nodeRegTable.tsx";
 
 export const getStaticProps = async () => {
     return { props: {
-        pageTitle: "Admin: Dred Node Registry",
-        title: "DRED Registry"
+        pageTitle: "Node Operator",
+        title: "DRED Node Operator Home"
     }}
 }
 
-export function AdminPage() {
+export function OperatorPage() {
     const lastUpdate = useSignal<Date>(new Date());
     const nodeRegistryData = useSignal<ErgoNodeRegistrationData[]>([]);
     const settingsDetail = useSignal<ErgoProtocolSettings | undefined>(undefined);
+
+    // Get current user's member token for filtering
+    const userMemberToken = useComputed(() => {
+        const userInfo = signals.userInfo.value;
+        return userInfo?.memberUut?.name;
+    });
 
     // Effect to fetch node registry data when provider changes
   useSignalEffect(() => {
@@ -79,31 +84,19 @@ export function AdminPage() {
 
   return (
     <div className="container mx-auto px-4">
-      <CharterStatus />
-
-      <div className="flex justify-end items-center mb-6 -mt-14 w-full">
-        <p className="text-sm text-right text-gray-500">Updated<br/>{lastUpdate.value.toLocaleString()}</p>
-      </div>
       
-      {/* Statistics Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold mb-2">Total Nodes</h3>
-          <p className="text-2xl">{nodeRegistryData.value.length}</p>
-        </div>
-        {/* <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold mb-2">Active Nodes</h3>
-          <p className="text-2xl">{activeNodes.value}</p>
-        </div> */}
-      </div>
-
-      {/* Node Registry Table */}
+      {/* My Nodes Section */}
+      <h2 className="text-2xl font-bold mb-4">My Nodes</h2>
       <NodeRegTable 
         nodeRegistryData={nodeRegistryData.value} 
-        settingsDetail={settingsDetail.value} 
+        settingsDetail={settingsDetail.value}
+        memberTokenFilter={userMemberToken.value}
       />
+      <div className="flex justify-start items-center mb-6 w-full">
+      <p className="text-sm text-left text-gray-500">Updated {lastUpdate.value.toLocaleString()}</p>
     </div>
-  );
+    </div>
+);
 }
 
-export default AdminPage;
+export default OperatorPage;

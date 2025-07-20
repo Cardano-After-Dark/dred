@@ -54,7 +54,7 @@ import type {
     ErgoNodeRegistrationData,
     NodeRegistrationData,
 } from "src/nodeRegistry/NodeRegistry.typeInfo.js";
-import type { ErgoNeighborhoodData } from "src/DredNeighborhood/Neighborhood.typeInfo.js";
+import type { ErgoNeighborhoodData } from "./DredNeighborhood/NeighborhoodRegistry.typeInfo.js";
 /* Add imports for each model-specific controller class here */
 
 const useAll = {
