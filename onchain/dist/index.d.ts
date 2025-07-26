@@ -43,7 +43,7 @@ import { ReqtsMap as ReqtsMap_4 } from '@donecollectively/stellar-contracts';
 import type { ScriptHash } from '@helios-lang/ledger';
 import { SeedActivity as SeedActivity_2 } from '@donecollectively/stellar-contracts';
 import { Signature } from '@helios-lang/ledger';
-import type { SimpleWallet } from '@helios-lang/tx-utils';
+import { SimpleWallet } from '@helios-lang/tx-utils';
 import type { Site } from '@helios-lang/compiler-utils';
 import { Source } from '@helios-lang/compiler-utils';
 import { StellarDelegate as StellarDelegate_2 } from '@donecollectively/stellar-contracts';
@@ -823,6 +823,8 @@ declare type anyUplcProgram_2 = UplcProgramV2;
 declare interface AppInfo {
     url: string;
     revenueModel: Array<RevenueModel>;
+    name: string;
+    description: string;
 }
 
 /**
@@ -834,6 +836,8 @@ declare interface AppInfo {
 declare interface AppInfoLike {
     url: string;
     revenueModel: Array<RevenueModelLike>;
+    name: string;
+    description: string;
 }
 
 /**
@@ -1175,9 +1179,9 @@ declare class BurningActivityHelper extends EnumBridge<JustAnEnum> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         _placeholder1BA: number[];
-    }, Partial<{
+    }, {
         _placeholder1BA: number[];
-    }>>;
+    }>;
     /**
      * generates  UplcData for ***"UnspecializedDelegate::BurningActivity._placeholder1BA"***
      */
@@ -1195,9 +1199,9 @@ declare class BurningActivityHelper_2 extends EnumBridge<JustAnEnum_3> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         _placeholder1BA: number[];
-    }, Partial<{
+    }, {
         _placeholder1BA: number[];
-    }>>;
+    }>;
     /**
      * generates  UplcData for ***"STokMintDelegate::BurningActivity._placeholder1BA"***
      */
@@ -1215,9 +1219,9 @@ declare class BurningActivityHelper_3 extends EnumBridge<JustAnEnum_3> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         DeletingRecord: number[];
-    }, Partial<{
+    }, {
         DeletingRecord: number[];
-    }>>;
+    }>;
     /**
      * generates  UplcData for ***"DredNodeRegistryPolicy::BurningActivity.DeletingRecord"***
      */
@@ -1235,9 +1239,9 @@ declare class BurningActivityHelper_4 extends EnumBridge<JustAnEnum_3> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         DeletingRecord: number[];
-    }, Partial<{
+    }, {
         DeletingRecord: number[];
-    }>>;
+    }>;
     /**
      * generates  UplcData for ***"NeighborhoodPolicy::BurningActivity.DeletingRecord"***
      */
@@ -1255,9 +1259,9 @@ declare class BurningActivityHelper_5 extends EnumBridge<JustAnEnum_3> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         DeletingRecord: number[];
-    }, Partial<{
+    }, {
         DeletingRecord: number[];
-    }>>;
+    }>;
     /**
      * generates  UplcData for ***"ProtocolSettingsPolicy::BurningActivity.DeletingRecord"***
      */
@@ -1275,9 +1279,9 @@ declare class BurningActivityHelperNested extends EnumBridge<isActivity> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         _placeholder1BA: number[];
-    }, Partial<{
+    }, {
         _placeholder1BA: number[];
-    }>>;
+    }>;
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"UnspecializedDelegate::BurningActivity._placeholder1BA"***
      * @remarks
@@ -1300,9 +1304,9 @@ declare class BurningActivityHelperNested_2 extends EnumBridge<isActivity> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         _placeholder1BA: number[];
-    }, Partial<{
+    }, {
         _placeholder1BA: number[];
-    }>>;
+    }>;
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::BurningActivity._placeholder1BA"***
      * @remarks
@@ -1325,9 +1329,9 @@ declare class BurningActivityHelperNested_3 extends EnumBridge<isActivity> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         DeletingRecord: number[];
-    }, Partial<{
+    }, {
         DeletingRecord: number[];
-    }>>;
+    }>;
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::BurningActivity.DeletingRecord"***
      * @remarks
@@ -1350,9 +1354,9 @@ declare class BurningActivityHelperNested_4 extends EnumBridge<isActivity> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         DeletingRecord: number[];
-    }, Partial<{
+    }, {
         DeletingRecord: number[];
-    }>>;
+    }>;
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::BurningActivity.DeletingRecord"***
      * @remarks
@@ -1375,9 +1379,9 @@ declare class BurningActivityHelperNested_5 extends EnumBridge<isActivity> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         DeletingRecord: number[];
-    }, Partial<{
+    }, {
         DeletingRecord: number[];
-    }>>;
+    }>;
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"ProtocolSettingsPolicy::BurningActivity.DeletingRecord"***
      * @remarks
@@ -6770,7 +6774,7 @@ declare class CapoMinter extends StellarContract<BasicMinterParams> implements M
  * method is the normal way to locate and decode on-chain data without needing to explicitly use the data-bridge helper classes.
  *
  * ##### customizing the bridge class name
- * Note that you may override `get dataBridgeName() { return "..." }` to customize the name of this bridge class
+ * Note that you may override `get bridgeClassName() { return "..." }` to customize the name of this bridge class
  * @public
  */
 declare class CapoMinterDataBridge extends ContractDataBridge {
@@ -7623,6 +7627,8 @@ declare type charterDataState = {
     charterData: CharterDataLike;
     uuts: uutMap;
 };
+
+declare type CoinSelector = (utxos: TxInput[], amount: Value) => [TxInput[], TxInput[]];
 
 /**
  * @public
@@ -9940,7 +9946,7 @@ declare abstract class DelegatedDataContract<T extends AnyDataTemplate<any, any>
      * Returns a record list when no ID is provided, or a single record when an ID is provided.
      */
     findRecords<THIS extends DelegatedDataContract<any, any>, ID extends undefined | string | UutName | number[]>(this: THIS, options: {
-        id: T;
+        id: ID;
     }): Promise<FoundDatumUtxo<T, TLike>>;
     mkDgDatum<THIS extends DelegatedDataContract<any, any>>(this: THIS, record: TLike): InlineDatum;
     /**
@@ -12858,13 +12864,16 @@ export declare class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFe
      * Finds all the node-registration records
      * @remarks
      * This is a convenience method for finding all the node-registration records.
-     * It is equivalent to calling `findDelegatedDataUtxos` with the type `"dredNode"`.
+     * It is equivalent to calling `findDelegatedDataUtxos` with the type `"DredNode"`.
      */
-    findNodeOpEntries(): Promise<FoundDatumUtxo<NodeRegistrationData_2, unknown>[]>;
+    findNodeOpEntries(options: {
+        charterData: CharterData;
+        capoUtxos?: TxInput[];
+    }): Promise<FoundDatumUtxo<ErgoNodeRegistrationData_2, unknown>[]>;
     /**
      * Finds all the neighborhood-registration records
      */
-    findNbhRegistryEntries(): Promise<FoundDatumUtxo<ErgoNeighborhoodData_2, unknown>[]>;
+    findNbhRegistryEntries(): Promise<FoundDatumUtxo<ErgoNeighborhoodData, unknown>[]>;
     /**
      * Initializes the delegate roles for the capo
      * @internal
@@ -12875,6 +12884,7 @@ export declare class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFe
     readonly govAuthority: DelegateSetup_2<"authority", StellarDelegate_2, any>;
     readonly settings: DelegateSetup_2<"dgDataPolicy", any, {}>;
     readonly DredNode: DelegateSetup_2<"dgDataPolicy", any, {}>;
+    readonly DredNbh: DelegateSetup_2<"dgDataPolicy", any, {}>;
     }>;
     /**
      * Mints fungible tokens under the Capo's minting policy
@@ -12887,7 +12897,7 @@ export declare class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFe
 declare type DredCapoFeatures = {
     settings?: boolean;
     DredNode?: boolean;
-    DredNeighborhood?: boolean;
+    DredNbh?: boolean;
 };
 
 /**
@@ -12931,6 +12941,10 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
      * @remarks - these accessors are used to generate UplcData for each type
      */
     types: {
+        /**
+         * generates UplcData for the enum type ***DredNodeState*** for the `BasicDelegate` script
+         */
+        DredNodeState: DredNodeStateHelper;
         /**
          * generates UplcData for the enum type ***DelegateDatum*** for the `BasicDelegate` script
          */
@@ -12984,6 +12998,10 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
          */
         cctx_CharterInputType: cctx_CharterInputTypeHelper_3;
         /**
+         * generates UplcData for the enum type ***NodeOperatorSettings*** for the `BasicDelegate` script
+         */
+        NodeOperatorSettings: NodeOperatorSettingsHelper;
+        /**
          * generates UplcData for the enum type ***dgd_DataSrc*** for the `BasicDelegate` script
          */
         dgd_DataSrc: dgd_DataSrcHelper;
@@ -13003,16 +13021,23 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
             tn: number[];
         }) => UplcData;
         /**
+         * generates UplcData for the enum type ***NodeDetails*** for the `BasicDelegate` script
+         */
+        NodeDetails: (fields: NodeDetailsLike | {
+            address: string;
+            port: IntLike;
+            pubKey: /*minStructField*/ PubKey | string | number[];
+            pubKeyHash: /*minStructField*/ PubKeyHash | string | number[];
+        }) => UplcData;
+        /**
          * generates UplcData for the enum type ***NodeRegistrationData*** for the `BasicDelegate` script
          */
         NodeRegistrationData: (fields: NodeRegistrationDataLike | {
             id: number[];
             type: string;
             memberToken: string;
-            nodeAddress: string;
-            nodePort: IntLike;
-            nodePublicKey: /*minStructField*/ PubKey | string | number[];
-            lastHeartbeat: TimeLike_2;
+            state: DredNodeStateLike;
+            nodeDetails: NodeDetailsLike;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***RelativeDelegateLink*** for the `BasicDelegate` script
@@ -13046,11 +13071,12 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
             charter: cctx_CharterInputTypeLike_3;
         }) => UplcData;
         /**
-         * generates UplcData for the enum type ***NodeOperatorSettings*** for the `BasicDelegate` script
+         * generates UplcData for the enum type ***NodeOperatorSettingsV1*** for the `BasicDelegate` script
          */
-        NodeOperatorSettings: (fields: NodeOperatorSettingsLike | {
+        NodeOperatorSettingsV1: (fields: NodeOperatorSettingsV1Like | {
             expectedHeartbeatInterval: IntLike;
             requiredNodeUptime: number;
+            minValidations: IntLike;
             minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
                 mph: MintingPolicyHash | string | number[];
                 tokens: {
@@ -13090,6 +13116,9 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
     ᱺᱺDelegationDetailCast: Cast<DelegationDetail_4, DelegationDetailLike_3>;
     /**
      * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺNodeDetailsCast: Cast<NodeDetails, NodeDetailsLike>;
+    /**
+     * uses unicode U+1c7a - sorts to the end */
     ᱺᱺNodeRegistrationDataCast: Cast<NodeRegistrationData, NodeRegistrationDataLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
@@ -13105,7 +13134,7 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
     ᱺᱺCapoCtxCast: Cast<CapoCtx_3, CapoCtxLike_3>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNodeOperatorSettingsCast: Cast<NodeOperatorSettings_2, NodeOperatorSettingsLike>;
+    ᱺᱺNodeOperatorSettingsV1Cast: Cast<NodeOperatorSettingsV1_2, NodeOperatorSettingsV1Like>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺAbstractSettingsForNodeOperatorCast: Cast<AbstractSettingsForNodeOperator, AbstractSettingsForNodeOperatorLike>;
@@ -13117,6 +13146,21 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
 declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderClass {
     bridge: DredNodeRegistryPolicyDataBridge;
     constructor(bridge: DredNodeRegistryPolicyDataBridge, isMainnet: boolean);
+    /**
+     * reads UplcData *known to fit the **DredNodeState*** enum type,
+     * for the BasicDelegate script.
+     * #### Standard WARNING
+     *
+     * This is a low-level data-reader for use in ***advanced development scenarios***.
+     *
+     * Used correctly with data that matches the enum type, this reader
+     * returns strongly-typed data - your code using these types will be safe.
+     *
+     * On the other hand, reading non-matching data will not give you a valid result.
+     * It may throw an error, or it may throw no error, but return a value that
+     * causes some error later on in your code, when you try to use it.
+     */
+    DredNodeState(d: UplcData): ErgoDredNodeState;
     datum: (d: UplcData) => Partial<{
         Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_3;
         IsDelegation: ErgoDelegationDetail_3;
@@ -13318,6 +13362,21 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      */
     cctx_CharterInputType(d: UplcData): Ergocctx_CharterInputType_3;
     /**
+     * reads UplcData *known to fit the **NodeOperatorSettings*** enum type,
+     * for the BasicDelegate script.
+     * #### Standard WARNING
+     *
+     * This is a low-level data-reader for use in ***advanced development scenarios***.
+     *
+     * Used correctly with data that matches the enum type, this reader
+     * returns strongly-typed data - your code using these types will be safe.
+     *
+     * On the other hand, reading non-matching data will not give you a valid result.
+     * It may throw an error, or it may throw no error, but return a value that
+     * causes some error later on in your code, when you try to use it.
+     */
+    NodeOperatorSettings(d: UplcData): ErgoNodeOperatorSettings_2;
+    /**
      * reads UplcData *known to fit the **dgd_DataSrc*** enum type,
      * for the BasicDelegate script.
      * #### Standard WARNING
@@ -13362,6 +13421,21 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * causes some error later on in your code, when you try to use it.
      */
     DelegationDetail(d: UplcData): DelegationDetail_4;
+    /**
+     * reads UplcData *known to fit the **NodeDetails*** struct type,
+     * for the BasicDelegate script.
+     * #### Standard WARNING
+     *
+     * This is a low-level data-reader for use in ***advanced development scenarios***.
+     *
+     * Used correctly with data that matches the type, this reader
+     * returns strongly-typed data - your code using these types will be safe.
+     *
+     * On the other hand, reading non-matching data will not give you a valid result.
+     * It may throw an error, or it may throw no error, but return a value that
+     * causes some error later on in your code, when you try to use it.
+     */
+    NodeDetails(d: UplcData): NodeDetails;
     /**
      * reads UplcData *known to fit the **NodeRegistrationData*** struct type,
      * for the BasicDelegate script.
@@ -13438,7 +13512,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      */
     CapoCtx(d: UplcData): CapoCtx_3;
     /**
-     * reads UplcData *known to fit the **NodeOperatorSettings*** struct type,
+     * reads UplcData *known to fit the **NodeOperatorSettingsV1*** struct type,
      * for the BasicDelegate script.
      * #### Standard WARNING
      *
@@ -13451,7 +13525,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NodeOperatorSettings(d: UplcData): NodeOperatorSettings_2;
+    NodeOperatorSettingsV1(d: UplcData): NodeOperatorSettingsV1_2;
     /**
      * reads UplcData *known to fit the **AbstractSettingsForNodeOperator*** struct type,
      * for the BasicDelegate script.
@@ -13483,6 +13557,103 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      */
     DgDataDetails(d: UplcData): DgDataDetails;
 }
+
+/**
+ * DredNodeState enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **4 variant(s)** of the DredNodeState enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `DredNodeStateHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type DredNodeState = {
+    NeedsValidation: Array<number[]>;
+} | {
+    Active: number;
+} | {
+    NeedsHeartbeats: Array<number[]>;
+} | {
+    Inactive: tagOnly;
+};
+
+/**
+ * DredNodeState enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **4 variant(s)** of the DredNodeState enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `DredNodeStateHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type DredNodeState_2 = 
+| { NeedsValidation: /* implied wrapper { validators: ... } for singleVariantField */ 
+    			Array<number[]>    /*minEnumVariant*/ }
+| { Active: /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ 
+    			number    /*minEnumVariant*/ }
+| { NeedsHeartbeats: /* implied wrapper { validators: ... } for singleVariantField */ 
+    			Array<number[]>    /*minEnumVariant*/ }
+| { Inactive: tagOnly /*minEnumVariant*/ }
+
+/**
+ * Helper class for generating UplcData for variants of the ***DredNodeState*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class DredNodeStateHelper extends EnumBridge<JustAnEnum_3> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<DredNodeState, Partial<{
+        NeedsValidation: Array<number[]>;
+        Active: IntLike;
+        NeedsHeartbeats: Array<number[]>;
+        Inactive: tagOnly;
+    }>>;
+    /**
+     * generates  UplcData for ***"NodeRegistrationData::DredNodeState.NeedsValidation"***
+     */
+    NeedsValidation(validators: Array<number[]>): UplcData;
+    /**
+     * generates  UplcData for ***"NodeRegistrationData::DredNodeState.Active"***
+     */
+    Active(lastHeartbeat: TimeLike_2): UplcData;
+    /**
+     * generates  UplcData for ***"NodeRegistrationData::DredNodeState.NeedsHeartbeats"***
+     */
+    NeedsHeartbeats(validators: Array<number[]>): UplcData;
+    /**
+     * (property getter): UplcData for ***"NodeRegistrationData::DredNodeState.Inactive"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+     */
+    get Inactive(): UplcData;
+}
+
+/**
+ * DredNodeState enum variants (permissive)
+ *
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **4 variant(s)** of the DredNodeState enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `DredNodeStateHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+declare type DredNodeStateLike = IntersectedEnum<{
+    NeedsValidation: Array<number[]>;
+} | {
+    Active: TimeLike;
+} | {
+    NeedsHeartbeats: Array<number[]>;
+} | {
+    Inactive: tagOnly;
+}>;
 
 declare type EachUnionElement<Union> = ReverseTuple<ReversedAllOfUnion<Union>>;
 
@@ -13567,21 +13738,9 @@ declare type ErgoAnyData_5 = AnyData_6;
 declare type ErgoAppInfo = {
     url: string;
     revenueModel: Array<ErgoRevenueModel>;
+    name: string;
+    description: string;
 };
-
-/**
- * An ergonomic, though less strictly-safe form of AppInfo
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the AppInfoLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoAppInfo_2 = {
-    url: /*minStructField*/ string
-    revenueModel: /*minStructField*/ Array<ErgoRevenueModel_2>
-}
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -14450,7 +14609,7 @@ declare type Ergodgd_DataSrc_2 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoFeeSource = IntersectedEnum<FeeSource>;
+declare type ErgoDredNodeState = IntersectedEnum<DredNodeState>;
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -14459,7 +14618,16 @@ declare type ErgoFeeSource = IntersectedEnum<FeeSource>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoFeeSource_2 = IntersectedEnum<FeeSource_2/*like canon enum*/>
+declare type ErgoDredNodeState_2 = IntersectedEnum<DredNodeState_2/*like canon enum*/>
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoFeeSource = IntersectedEnum<FeeSource>;
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -14844,52 +15012,130 @@ export declare type ErgoNeighborhoodData = {
     id: number[];
     type: string;
     memberToken: string;
-    name: string;
-    description: string;
+    state: ErgoNeighborhoodState;
     appInfo: ErgoAppInfo;
     opsInfo: ErgoNodeOpsInfo;
+    updateInfo: /*minStructField*/ ErgoUpdateInfo | undefined;
 };
 
 /**
- * An ergonomic, though less strictly-safe form of NeighborhoodData
+ * ergonomic type enabling easy access to values converted from the on-chain form
  * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NeighborhoodDataLike type,
- * or the on-chain data-building helpers instead.
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoNeighborhoodData_2 = {
-    id: /*minStructField*/ number[]
-    type: /*minStructField*/ string
-    memberToken: /*minStructField*/ string
-    name: /*minStructField*/ string
-    description: /*minStructField*/ string
-    appInfo: /*minStructField*/ ErgoAppInfo_2
-    opsInfo: /*minStructField*/ ErgoNodeOpsInfo_2
-}
+declare type ErgoNeighborhoodSettings = IntersectedEnum<{
+    V1: ErgoNeighborhoodSettingsV1;
+}>;
 
 /**
- * An ergonomic, though less strictly-safe form of NeighborhoodSettings
+ * ergonomic type enabling easy access to values converted from the on-chain form
  * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NeighborhoodSettingsLike type,
- * or the on-chain data-building helpers instead.
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoNeighborhoodSettings = NeighborhoodSettings;
+declare type ErgoNeighborhoodSettings_2 = IntersectedEnum<{
+    V1: ErgoNeighborhoodSettingsV1_2;
+}>;
 
 /**
- * An ergonomic, though less strictly-safe form of NodeOperatorSettings
+ * An ergonomic, though less strictly-safe form of NeighborhoodSettingsV1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeOperatorSettingsLike type,
+ * conversion to on-chain use.  For creating such data, use the NeighborhoodSettingsV1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoNodeOperatorSettings = NodeOperatorSettings;
+declare type ErgoNeighborhoodSettingsV1 = NeighborhoodSettingsV1;
+
+/**
+ * An ergonomic, though less strictly-safe form of NeighborhoodSettingsV1
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the NeighborhoodSettingsV1Like type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ErgoNeighborhoodSettingsV1_2 = NeighborhoodSettingsV1_2;
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoNeighborhoodState = IntersectedEnum<NeighborhoodState>;
+
+/**
+ * An ergonomic, though less strictly-safe form of NodeDetails
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the NodeDetailsLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ErgoNodeDetails = NodeDetails;
+
+/**
+ * An ergonomic, though less strictly-safe form of NodeDetails
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the NodeDetailsLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ErgoNodeDetails_2 = NodeDetails_2
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoNodeOperatorSettings = IntersectedEnum<{
+    V1: ErgoNodeOperatorSettingsV1;
+}>;
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoNodeOperatorSettings_2 = IntersectedEnum<{
+    V1: ErgoNodeOperatorSettingsV1_2;
+}>;
+
+/**
+ * An ergonomic, though less strictly-safe form of NodeOperatorSettingsV1
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the NodeOperatorSettingsV1Like type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ErgoNodeOperatorSettingsV1 = NodeOperatorSettingsV1;
+
+/**
+ * An ergonomic, though less strictly-safe form of NodeOperatorSettingsV1
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the NodeOperatorSettingsV1Like type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type ErgoNodeOperatorSettingsV1_2 = NodeOperatorSettingsV1_2;
 
 /**
  * An ergonomic, though less strictly-safe form of NodeOpsInfo
@@ -14903,15 +15149,21 @@ declare type ErgoNodeOperatorSettings = NodeOperatorSettings;
 declare type ErgoNodeOpsInfo = NodeOpsInfo;
 
 /**
- * An ergonomic, though less strictly-safe form of NodeOpsInfo
+ * An ergonomic, though less strictly-safe form of NodeRegistrationData
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeOpsInfoLike type,
+ * conversion to on-chain use.  For creating such data, use the NodeRegistrationDataLike type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoNodeOpsInfo_2 = NodeOpsInfo_2
+export declare type ErgoNodeRegistrationData = {
+    id: number[];
+    type: string;
+    memberToken: string;
+    state: ErgoDredNodeState;
+    nodeDetails: ErgoNodeDetails;
+};
 
 /**
  * An ergonomic, though less strictly-safe form of NodeRegistrationData
@@ -14922,7 +15174,13 @@ declare type ErgoNodeOpsInfo_2 = NodeOpsInfo_2
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ErgoNodeRegistrationData = NodeRegistrationData;
+declare type ErgoNodeRegistrationData_2 = {
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    memberToken: /*minStructField*/ string
+    state: /*minStructField*/ ErgoDredNodeState_2
+    nodeDetails: /*minStructField*/ ErgoNodeDetails_2
+}
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -15392,19 +15650,6 @@ declare type ErgoRevenueModel = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoRevenueModel_2 = IntersectedEnum<
-| { TransactionBased: RevenueModel$Ergo$TransactionBased_2 /*minEnumVariant*/ }
-| { Subscription: /* implied wrapper { subscriptionFee: ... } for singleVariantField */ 
-    			Array<ErgoSubscriptionFeeFrequency_2>    /*minEnumVariant*/ }
->
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
 declare type ErgoSpendingActivity = IntersectedEnum<SpendingActivity>;
 
 /**
@@ -15423,7 +15668,17 @@ declare type ErgoSpendingActivity_2 = IntersectedEnum<SpendingActivity_2>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoSpendingActivity_3 = IntersectedEnum<SpendingActivity_3>;
+declare type ErgoSpendingActivity_3 = IntersectedEnum<{
+    UpdatingRecord: number[];
+} | {
+    ValidatingNode: SpendingActivity$Ergo$ValidatingNode;
+} | {
+    ActivatingNode: number[];
+} | {
+    ReportingInactiveNode: number[];
+} | {
+    RefutingInactivity: number[];
+}>;
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -15453,13 +15708,15 @@ declare type ErgoSpendingActivity_5 = IntersectedEnum<SpendingActivity_5>;
 declare type ErgoSubscriptionFeeFrequency = IntersectedEnum<SubscriptionFeeFrequency>;
 
 /**
- * ergonomic type enabling easy access to values converted from the on-chain form
+ * An ergonomic, though less strictly-safe form of UpdateInfo
  * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the UpdateInfoLike type,
+ * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoSubscriptionFeeFrequency_2 = IntersectedEnum<SubscriptionFeeFrequency_2/*like canon enum*/>
+declare type ErgoUpdateInfo = UpdateInfo;
 
 /**
  * Reveals errors found during delegate selection
@@ -15501,21 +15758,6 @@ declare type FeeSource = {
 } | {
     SponsorContract: ScriptHash;
 };
-
-/**
- * FeeSource enum variants
- * 
- * @remarks - expresses the essential raw data structures
- * supporting the **2 variant(s)** of the FeeSource enum type
- * 
- * - **Note**: Stellar Contracts provides a higher-level `FeeSourceHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type FeeSource_2 = 
-| { EndUser: tagOnly /*minEnumVariant*/ }
-| { SponsorContract: /* implied wrapper { sponsorContract: ... } for singleVariantField */ 
-    			ScriptHash    /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***FeeSource*** enum type.
@@ -16051,7 +16293,7 @@ declare type intersectedElements<T extends any[]> = T extends [infer A, ...infer
  */
 declare type IntersectedEnum<T, intersected = intersectedElements<EachUnionElement<T>>, merged = {
     [key in keyof intersected]: key extends keyof intersected ? intersected[key] : never;
-}> = Partial<merged>;
+}> = IFISNEVER<ExtractRestOfUnion<keyof intersected>, merged, Partial<merged>>;
 
 declare type _intersectInspectFuncs<U> = _inspectableUnionFuncs<U> extends (k: infer MAGIC) => void ? MAGIC : never;
 
@@ -19358,13 +19600,17 @@ declare type MinimalDelegateUpdateLink = Omit<OffchainPartialDelegateLink, "uutN
     forcedUpdate?: true;
 };
 
-declare type minimalNeighborhoodData = minimalData<ErgoNeighborhoodData>;
+/**
+ * expresses the essential fields needed for initiating creation of a NeighborhoodData
+ * @public
+ */
+export declare type minimalNeighborhoodData = minimalData<NeighborhoodDataLike>;
 
 /**
  * expresses the essential fields needed for initiating creation of a NodeRegistrationData
  * @public
  */
-declare type minimalNodeRegistrationData = minimalData<NodeRegistrationDataLike>;
+export declare type minimalNodeRegistrationData = minimalData<NodeRegistrationDataLike>;
 
 /**
  * expresses the essential fields needed for initiating creation of a ProtocolSettings
@@ -19689,9 +19935,9 @@ declare class MintingActivityHelper extends EnumBridge<JustAnEnum> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         _placeholder1MA: TxOutputId;
-    }, Partial<{
+    }, {
         _placeholder1MA: TxOutputId | string;
-    }>>;
+    }>;
     /**
      * generates  UplcData for ***"UnspecializedDelegate::MintingActivity._placeholder1MA"***,
      * given a transaction-context (or direct arg) with a ***seed utxo***
@@ -19782,9 +20028,9 @@ declare class MintingActivityHelper_3 extends EnumBridge<JustAnEnum_3> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         CreatingRecord: TxOutputId;
-    }, Partial<{
+    }, {
         CreatingRecord: TxOutputId | string;
-    }>>;
+    }>;
     /**
      * generates  UplcData for ***"DredNodeRegistryPolicy::MintingActivity.CreatingRecord"***,
      * given a transaction-context (or direct arg) with a ***seed utxo***
@@ -19827,9 +20073,9 @@ declare class MintingActivityHelper_4 extends EnumBridge<JustAnEnum_3> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         CreatingRecord: TxOutputId;
-    }, Partial<{
+    }, {
         CreatingRecord: TxOutputId | string;
-    }>>;
+    }>;
     /**
      * generates  UplcData for ***"NeighborhoodPolicy::MintingActivity.CreatingRecord"***,
      * given a transaction-context (or direct arg) with a ***seed utxo***
@@ -19872,9 +20118,9 @@ declare class MintingActivityHelper_5 extends EnumBridge<JustAnEnum_3> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         CreatingRecord: TxOutputId;
-    }, Partial<{
+    }, {
         CreatingRecord: TxOutputId | string;
-    }>>;
+    }>;
     /**
      * generates  UplcData for ***"ProtocolSettingsPolicy::MintingActivity.CreatingRecord"***,
      * given a transaction-context (or direct arg) with a ***seed utxo***
@@ -19917,9 +20163,9 @@ declare class MintingActivityHelperNested extends EnumBridge<isActivity> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         _placeholder1MA: TxOutputId;
-    }, Partial<{
+    }, {
         _placeholder1MA: TxOutputId | string;
-    }>>;
+    }>;
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"UnspecializedDelegate::MintingActivity._placeholder1MA"***,
      * given a transaction-context (or direct arg) with a ***seed utxo***
@@ -20031,9 +20277,9 @@ declare class MintingActivityHelperNested_3 extends EnumBridge<isActivity> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         CreatingRecord: TxOutputId;
-    }, Partial<{
+    }, {
         CreatingRecord: TxOutputId | string;
-    }>>;
+    }>;
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::MintingActivity.CreatingRecord"***,
      * given a transaction-context (or direct arg) with a ***seed utxo***
@@ -20084,9 +20330,9 @@ declare class MintingActivityHelperNested_4 extends EnumBridge<isActivity> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         CreatingRecord: TxOutputId;
-    }, Partial<{
+    }, {
         CreatingRecord: TxOutputId | string;
-    }>>;
+    }>;
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::MintingActivity.CreatingRecord"***,
      * given a transaction-context (or direct arg) with a ***seed utxo***
@@ -20137,9 +20383,9 @@ declare class MintingActivityHelperNested_5 extends EnumBridge<isActivity> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         CreatingRecord: TxOutputId;
-    }, Partial<{
+    }, {
         CreatingRecord: TxOutputId | string;
-    }>>;
+    }>;
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"ProtocolSettingsPolicy::MintingActivity.CreatingRecord"***,
      * given a transaction-context (or direct arg) with a ***seed utxo***
@@ -20800,7 +21046,10 @@ export declare class NeighborhoodController extends DelegatedDataContract<ErgoNe
     get recordTypeName(): string;
     exampleData(): minimalNeighborhoodData;
     get capo(): DredCapo;
-    mkTxnRegisteringNode(this: NeighborhoodController, nodeReg: minimalNeighborhoodData): Promise<hasUutContext_2<string> & StellarTxnContext<anyState_3> & hasCharterRef_2 & hasSeedUtxo_2 & hasUutContext_2<"recordId" | "‹idPrefix (hint: declare with 'idPrefix = \"...\" as const')›">>;
+    mkTxnRegisteringNeighborhood(this: NeighborhoodController, nbhReg: minimalNeighborhoodData, initialTcx?: StellarTxnContext): Promise<hasUutContext_2<string> & StellarTxnContext<anyState_3> & hasMemberToken_2 & hasSeedUtxo_2 & hasCharterRef_2 & hasUutContext_2<"recordId" | "‹idPrefix (hint: declare with 'idPrefix = \"...\" as const')›">>;
+    mkTxnUpdatingNeighborhood(this: NeighborhoodController, txnName: string, nbh: FoundDatumUtxo<ErgoNeighborhoodData | NeighborhoodData>, options: Omit<DgDataUpdateOptions<NeighborhoodDataLike>, "activity"> & {
+        activity?: DgDataUpdateOptions<NeighborhoodDataLike>["activity"];
+    }, initialTcx?: StellarTxnContext): Promise<StellarTxnContext<anyState_3> & hasMemberToken_2 & hasSeedUtxo_2>;
     requirements(): ReqtsMap_4<never, never>;
 }
 
@@ -20812,14 +21061,14 @@ export declare class NeighborhoodController extends DelegatedDataContract<ErgoNe
  * For a more ergonomic, though less strictly-safe form of this type, see ErgoNeighborhoodData instead.
  * @public
  */
-declare interface NeighborhoodData {
+export declare interface NeighborhoodData {
     id: number[];
     type: string;
     memberToken: string;
-    name: string;
-    description: string;
+    state: NeighborhoodState;
     appInfo: AppInfo;
     opsInfo: NodeOpsInfo;
+    updateInfo: /*minStructField*/ UpdateInfo | undefined;
 }
 
 /**
@@ -20832,14 +21081,14 @@ declare interface NeighborhoodDataLike {
     id: number[];
     type: string;
     memberToken: string;
-    name: string;
-    description: string;
+    state: NeighborhoodStateLike;
     appInfo: AppInfoLike;
     opsInfo: NodeOpsInfoLike;
+    updateInfo: /*minStructField*/ UpdateInfoLike | undefined;
 }
 
 /**
- * GENERATED data bridge for **BasicDelegate** script (defined in class ***NeighborhoodBundle***)
+ * GENERATED data bridge for **BasicDelegate** script (defined in class ***NeighborhoodRegistryBundle***)
  * main: **src/delegation/BasicDelegate.hl**, project: **stellar-contracts**
  * @remarks
  * This class doesn't need to be used directly.  Its methods are available through the ***contract's methods***:
@@ -20879,6 +21128,10 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
      * @remarks - these accessors are used to generate UplcData for each type
      */
     types: {
+        /**
+         * generates UplcData for the enum type ***NeighborhoodState*** for the `BasicDelegate` script
+         */
+        NeighborhoodState: NeighborhoodStateHelper;
         /**
          * generates UplcData for the enum type ***FeeSource*** for the `BasicDelegate` script
          */
@@ -20944,6 +21197,10 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
          */
         cctx_CharterInputType: cctx_CharterInputTypeHelper_4;
         /**
+         * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
+         */
+        NeighborhoodSettings: NeighborhoodSettingsHelper;
+        /**
          * generates UplcData for the enum type ***dgd_DataSrc*** for the `BasicDelegate` script
          */
         dgd_DataSrc: dgd_DataSrcHelper_2;
@@ -20968,6 +21225,8 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
         AppInfo: (fields: AppInfoLike | {
             url: string;
             revenueModel: Array<RevenueModelLike>;
+            name: string;
+            description: string;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***NodeOpsInfo*** for the `BasicDelegate` script
@@ -20985,16 +21244,24 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
             minUptime: IntLike;
         }) => UplcData;
         /**
+         * generates UplcData for the enum type ***UpdateInfo*** for the `BasicDelegate` script
+         */
+        UpdateInfo: (fields: UpdateInfoLike | {
+            name: string;
+            description: string;
+            url: string;
+        }) => UplcData;
+        /**
          * generates UplcData for the enum type ***NeighborhoodData*** for the `BasicDelegate` script
          */
         NeighborhoodData: (fields: NeighborhoodDataLike | {
             id: number[];
             type: string;
             memberToken: string;
-            name: string;
-            description: string;
+            state: NeighborhoodStateLike;
             appInfo: AppInfoLike;
             opsInfo: NodeOpsInfoLike;
+            updateInfo: /*minStructField*/ UpdateInfoLike | undefined;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***RelativeDelegateLink*** for the `BasicDelegate` script
@@ -21028,9 +21295,9 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
             charter: cctx_CharterInputTypeLike_4;
         }) => UplcData;
         /**
-         * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
+         * generates UplcData for the enum type ***NeighborhoodSettingsV1*** for the `BasicDelegate` script
          */
-        NeighborhoodSettings: (fields: NeighborhoodSettingsLike | {
+        NeighborhoodSettingsV1: (fields: NeighborhoodSettingsV1Like | {
             minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
                 mph: MintingPolicyHash | string | number[];
                 tokens: {
@@ -21076,6 +21343,9 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     ᱺᱺNodeOpsInfoCast: Cast<NodeOpsInfo, NodeOpsInfoLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
+    ᱺᱺUpdateInfoCast: Cast<UpdateInfo, UpdateInfoLike>;
+    /**
+     * uses unicode U+1c7a - sorts to the end */
     ᱺᱺNeighborhoodDataCast: Cast<NeighborhoodData, NeighborhoodDataLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
@@ -21091,7 +21361,7 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     ᱺᱺCapoCtxCast: Cast<CapoCtx_4, CapoCtxLike_4>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNeighborhoodSettingsCast: Cast<NeighborhoodSettings_2, NeighborhoodSettingsLike>;
+    ᱺᱺNeighborhoodSettingsV1Cast: Cast<NeighborhoodSettingsV1_2, NeighborhoodSettingsV1Like>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺAbstractSettingsForNeighborhoodCast: Cast<AbstractSettingsForNeighborhood, AbstractSettingsForNeighborhoodLike>;
@@ -21103,6 +21373,21 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
 declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
     bridge: NeighborhoodPolicyDataBridge;
     constructor(bridge: NeighborhoodPolicyDataBridge, isMainnet: boolean);
+    /**
+     * reads UplcData *known to fit the **NeighborhoodState*** enum type,
+     * for the BasicDelegate script.
+     * #### Standard WARNING
+     *
+     * This is a low-level data-reader for use in ***advanced development scenarios***.
+     *
+     * Used correctly with data that matches the enum type, this reader
+     * returns strongly-typed data - your code using these types will be safe.
+     *
+     * On the other hand, reading non-matching data will not give you a valid result.
+     * It may throw an error, or it may throw no error, but return a value that
+     * causes some error later on in your code, when you try to use it.
+     */
+    NeighborhoodState(d: UplcData): ErgoNeighborhoodState;
     /**
      * reads UplcData *known to fit the **FeeSource*** enum type,
      * for the BasicDelegate script.
@@ -21349,6 +21634,21 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      */
     cctx_CharterInputType(d: UplcData): Ergocctx_CharterInputType_4;
     /**
+     * reads UplcData *known to fit the **NeighborhoodSettings*** enum type,
+     * for the BasicDelegate script.
+     * #### Standard WARNING
+     *
+     * This is a low-level data-reader for use in ***advanced development scenarios***.
+     *
+     * Used correctly with data that matches the enum type, this reader
+     * returns strongly-typed data - your code using these types will be safe.
+     *
+     * On the other hand, reading non-matching data will not give you a valid result.
+     * It may throw an error, or it may throw no error, but return a value that
+     * causes some error later on in your code, when you try to use it.
+     */
+    NeighborhoodSettings(d: UplcData): ErgoNeighborhoodSettings_2;
+    /**
      * reads UplcData *known to fit the **dgd_DataSrc*** enum type,
      * for the BasicDelegate script.
      * #### Standard WARNING
@@ -21423,6 +21723,21 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * causes some error later on in your code, when you try to use it.
      */
     NodeOpsInfo(d: UplcData): NodeOpsInfo;
+    /**
+     * reads UplcData *known to fit the **UpdateInfo*** struct type,
+     * for the BasicDelegate script.
+     * #### Standard WARNING
+     *
+     * This is a low-level data-reader for use in ***advanced development scenarios***.
+     *
+     * Used correctly with data that matches the type, this reader
+     * returns strongly-typed data - your code using these types will be safe.
+     *
+     * On the other hand, reading non-matching data will not give you a valid result.
+     * It may throw an error, or it may throw no error, but return a value that
+     * causes some error later on in your code, when you try to use it.
+     */
+    UpdateInfo(d: UplcData): UpdateInfo;
     /**
      * reads UplcData *known to fit the **NeighborhoodData*** struct type,
      * for the BasicDelegate script.
@@ -21499,7 +21814,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      */
     CapoCtx(d: UplcData): CapoCtx_4;
     /**
-     * reads UplcData *known to fit the **NeighborhoodSettings*** struct type,
+     * reads UplcData *known to fit the **NeighborhoodSettingsV1*** struct type,
      * for the BasicDelegate script.
      * #### Standard WARNING
      *
@@ -21512,7 +21827,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NeighborhoodSettings(d: UplcData): NeighborhoodSettings_2;
+    NeighborhoodSettingsV1(d: UplcData): NeighborhoodSettingsV1_2;
     /**
      * reads UplcData *known to fit the **AbstractSettingsForNeighborhood*** struct type,
      * for the BasicDelegate script.
@@ -21546,38 +21861,174 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
 }
 
 /**
- * A strong type for the canonical form of NeighborhoodSettings
+ * NeighborhoodSettings enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the NeighborhoodSettings enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type NeighborhoodSettings = {
+    V1: NeighborhoodSettingsV1;
+};
+
+/**
+ * NeighborhoodSettings enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the NeighborhoodSettings enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type NeighborhoodSettings_2 = {
+    V1: NeighborhoodSettingsV1_2;
+};
+
+/**
+ * Helper class for generating UplcData for variants of the ***NeighborhoodSettings*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class NeighborhoodSettingsHelper extends EnumBridge<JustAnEnum_3> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<{
+        V1: NeighborhoodSettingsV1_2;
+    }, {
+        V1: NeighborhoodSettingsV1Like;
+    }>;
+    /**
+     * generates  UplcData for ***"NeighborhoodSettings::NeighborhoodSettings.V1"***
+     * @remarks - ***NeighborhoodSettingsV1Like*** is the same as the expanded field-type.
+     */
+    V1(s: NeighborhoodSettingsV1Like | {
+        minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+            mph: MintingPolicyHash | string | number[];
+            tokens: {
+                name: number[] | string;
+                qty: IntLike;
+            }[];
+        }[];
+        minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+            mph: MintingPolicyHash | string | number[];
+            tokens: {
+                name: number[] | string;
+                qty: IntLike;
+            }[];
+        }[];
+    }): UplcData;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***NeighborhoodSettings*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class NeighborhoodSettingsHelper_2 extends EnumBridge<JustAnEnum_3> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<{
+        V1: NeighborhoodSettingsV1;
+    }, {
+        V1: NeighborhoodSettingsV1Like_2;
+    }>;
+    /**
+     * generates  UplcData for ***"NeighborhoodSettings::NeighborhoodSettings.V1"***
+     * @remarks - ***NeighborhoodSettingsV1Like*** is the same as the expanded field-type.
+     */
+    V1(s: NeighborhoodSettingsV1Like_2 | {
+        minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+            mph: MintingPolicyHash | string | number[];
+            tokens: {
+                name: number[] | string;
+                qty: IntLike;
+            }[];
+        }[];
+        minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+            mph: MintingPolicyHash | string | number[];
+            tokens: {
+                name: number[] | string;
+                qty: IntLike;
+            }[];
+        }[];
+    }): UplcData;
+}
+
+/**
+ * NeighborhoodSettings enum variants (permissive)
+ *
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the NeighborhoodSettings enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+declare type NeighborhoodSettingsLike = IntersectedEnum<{
+    V1: NeighborhoodSettingsV1Like;
+}>;
+
+/**
+ * NeighborhoodSettings enum variants (permissive)
+ *
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the NeighborhoodSettings enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+declare type NeighborhoodSettingsLike_2 = IntersectedEnum<{
+    V1: NeighborhoodSettingsV1Like_2;
+}>;
+
+/**
+ * A strong type for the canonical form of NeighborhoodSettingsV1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNeighborhoodSettings instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNeighborhoodSettingsV1 instead.
  * @public
  */
-declare interface NeighborhoodSettings {
+declare interface NeighborhoodSettingsV1 {
     minRegistrationFee: Value;
     minNbhStake: Value;
 }
 
 /**
- * A strong type for the canonical form of NeighborhoodSettings
+ * A strong type for the canonical form of NeighborhoodSettingsV1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNeighborhoodSettings instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNeighborhoodSettingsV1 instead.
  * @public
  */
-declare interface NeighborhoodSettings_2 {
+declare interface NeighborhoodSettingsV1_2 {
     minRegistrationFee: Value;
     minNbhStake: Value;
 }
 
 /**
- * A strong type for the permissive form of NeighborhoodSettings
+ * A strong type for the permissive form of NeighborhoodSettingsV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface NeighborhoodSettingsLike {
+declare interface NeighborhoodSettingsV1Like {
     minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
         mph: MintingPolicyHash | string | number[];
         tokens: {
@@ -21595,12 +22046,12 @@ declare interface NeighborhoodSettingsLike {
 }
 
 /**
- * A strong type for the permissive form of NeighborhoodSettings
+ * A strong type for the permissive form of NeighborhoodSettingsV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface NeighborhoodSettingsLike_2 {
+declare interface NeighborhoodSettingsV1Like_2 {
     minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
         mph: MintingPolicyHash | string | number[];
         tokens: {
@@ -21616,48 +22067,327 @@ declare interface NeighborhoodSettingsLike_2 {
         }[];
     }[];
 }
+
+/**
+ * NeighborhoodState enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **5 variant(s)** of the NeighborhoodState enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodStateHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type NeighborhoodState = {
+    Preproduction: tagOnly;
+} | {
+    Active: tagOnly;
+} | {
+    UpdatePending: tagOnly;
+} | {
+    UpdateDisputed: tagOnly;
+} | {
+    Retired: tagOnly;
+};
+
+/**
+ * Helper class for generating UplcData for variants of the ***NeighborhoodState*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class NeighborhoodStateHelper extends EnumBridge<JustAnEnum_3> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<NeighborhoodState, Partial<{
+        Preproduction: tagOnly;
+        Active: tagOnly;
+        UpdatePending: tagOnly;
+        UpdateDisputed: tagOnly;
+        Retired: tagOnly;
+    }>>;
+    /**
+     * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Preproduction"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+     */
+    get Preproduction(): UplcData;
+    /**
+     * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Active"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+     */
+    get Active(): UplcData;
+    /**
+     * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.UpdatePending"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+     */
+    get UpdatePending(): UplcData;
+    /**
+     * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.UpdateDisputed"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+     */
+    get UpdateDisputed(): UplcData;
+    /**
+     * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Retired"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4***
+     */
+    get Retired(): UplcData;
+}
+
+/**
+ * NeighborhoodState enum variants (permissive)
+ *
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **5 variant(s)** of the NeighborhoodState enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodStateHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+declare type NeighborhoodStateLike = IntersectedEnum<{
+    Preproduction: tagOnly;
+} | {
+    Active: tagOnly;
+} | {
+    UpdatePending: tagOnly;
+} | {
+    UpdateDisputed: tagOnly;
+} | {
+    Retired: tagOnly;
+}>;
 
 declare type NetworkName = "testnet" | "mainnet";
 
 /**
- * A strong type for the canonical form of NodeOperatorSettings
+ * A strong type for the canonical form of NodeDetails
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOperatorSettings instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeDetails instead.
  * @public
  */
-declare interface NodeOperatorSettings {
-    expectedHeartbeatInterval: bigint;
-    requiredNodeUptime: number;
-    minNodeRegistrationFee: Value;
-    minNodeOperatorStake: Value;
+declare interface NodeDetails {
+    address: string;
+    port: bigint;
+    pubKey: PubKey;
+    pubKeyHash: PubKeyHash;
 }
 
 /**
- * A strong type for the canonical form of NodeOperatorSettings
+ * A strong type for the canonical form of NodeDetails
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOperatorSettings instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeDetails instead.
  * @public
  */
-declare interface NodeOperatorSettings_2 {
-    expectedHeartbeatInterval: bigint;
-    requiredNodeUptime: number;
-    minNodeRegistrationFee: Value;
-    minNodeOperatorStake: Value;
+declare interface NodeDetails_2 {
+    address: /*minStructField*/ string
+    port: /*minStructField*/ bigint
+    pubKey: /*minStructField*/ PubKey
+    pubKeyHash: /*minStructField*/ PubKeyHash
 }
 
 /**
- * A strong type for the permissive form of NodeOperatorSettings
+ * A strong type for the permissive form of NodeDetails
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface NodeOperatorSettingsLike {
+declare interface NodeDetailsLike {
+    address: string;
+    port: IntLike;
+    pubKey: /*minStructField*/ PubKey | string | number[];
+    pubKeyHash: /*minStructField*/ PubKeyHash | string | number[];
+}
+
+/**
+ * NodeOperatorSettings enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the NodeOperatorSettings enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type NodeOperatorSettings = {
+    V1: NodeOperatorSettingsV1;
+};
+
+/**
+ * NodeOperatorSettings enum variants
+ *
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the NodeOperatorSettings enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type NodeOperatorSettings_2 = {
+    V1: NodeOperatorSettingsV1_2;
+};
+
+/**
+ * Helper class for generating UplcData for variants of the ***NodeOperatorSettings*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class NodeOperatorSettingsHelper extends EnumBridge<JustAnEnum_3> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<{
+        V1: NodeOperatorSettingsV1_2;
+    }, {
+        V1: NodeOperatorSettingsV1Like;
+    }>;
+    /**
+     * generates  UplcData for ***"NodeOperatorSettings::NodeOperatorSettings.V1"***
+     * @remarks - ***NodeOperatorSettingsV1Like*** is the same as the expanded field-type.
+     */
+    V1(s: NodeOperatorSettingsV1Like | {
+        expectedHeartbeatInterval: IntLike;
+        requiredNodeUptime: number;
+        minValidations: IntLike;
+        minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+            mph: MintingPolicyHash | string | number[];
+            tokens: {
+                name: number[] | string;
+                qty: IntLike;
+            }[];
+        }[];
+        minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+            mph: MintingPolicyHash | string | number[];
+            tokens: {
+                name: number[] | string;
+                qty: IntLike;
+            }[];
+        }[];
+    }): UplcData;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***NodeOperatorSettings*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class NodeOperatorSettingsHelper_2 extends EnumBridge<JustAnEnum_3> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<{
+        V1: NodeOperatorSettingsV1;
+    }, {
+        V1: NodeOperatorSettingsV1Like_2;
+    }>;
+    /**
+     * generates  UplcData for ***"NodeOperatorSettings::NodeOperatorSettings.V1"***
+     * @remarks - ***NodeOperatorSettingsV1Like*** is the same as the expanded field-type.
+     */
+    V1(s: NodeOperatorSettingsV1Like_2 | {
+        expectedHeartbeatInterval: IntLike;
+        requiredNodeUptime: number;
+        minValidations: IntLike;
+        minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+            mph: MintingPolicyHash | string | number[];
+            tokens: {
+                name: number[] | string;
+                qty: IntLike;
+            }[];
+        }[];
+        minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
+            mph: MintingPolicyHash | string | number[];
+            tokens: {
+                name: number[] | string;
+                qty: IntLike;
+            }[];
+        }[];
+    }): UplcData;
+}
+
+/**
+ * NodeOperatorSettings enum variants (permissive)
+ *
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the NodeOperatorSettings enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+declare type NodeOperatorSettingsLike = IntersectedEnum<{
+    V1: NodeOperatorSettingsV1Like;
+}>;
+
+/**
+ * NodeOperatorSettings enum variants (permissive)
+ *
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the NodeOperatorSettings enum type
+ *
+ * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+declare type NodeOperatorSettingsLike_2 = IntersectedEnum<{
+    V1: NodeOperatorSettingsV1Like_2;
+}>;
+
+/**
+ * A strong type for the canonical form of NodeOperatorSettingsV1
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOperatorSettingsV1 instead.
+ * @public
+ */
+declare interface NodeOperatorSettingsV1 {
+    expectedHeartbeatInterval: bigint;
+    requiredNodeUptime: number;
+    minValidations: bigint;
+    minNodeRegistrationFee: Value;
+    minNodeOperatorStake: Value;
+}
+
+/**
+ * A strong type for the canonical form of NodeOperatorSettingsV1
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOperatorSettingsV1 instead.
+ * @public
+ */
+declare interface NodeOperatorSettingsV1_2 {
+    expectedHeartbeatInterval: bigint;
+    requiredNodeUptime: number;
+    minValidations: bigint;
+    minNodeRegistrationFee: Value;
+    minNodeOperatorStake: Value;
+}
+
+/**
+ * A strong type for the permissive form of NodeOperatorSettingsV1
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface NodeOperatorSettingsV1Like {
     expectedHeartbeatInterval: IntLike;
     requiredNodeUptime: number;
+    minValidations: IntLike;
     minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
         mph: MintingPolicyHash | string | number[];
         tokens: {
@@ -21675,14 +22405,15 @@ declare interface NodeOperatorSettingsLike {
 }
 
 /**
- * A strong type for the permissive form of NodeOperatorSettings
+ * A strong type for the permissive form of NodeOperatorSettingsV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface NodeOperatorSettingsLike_2 {
+declare interface NodeOperatorSettingsV1Like_2 {
     expectedHeartbeatInterval: IntLike;
     requiredNodeUptime: number;
+    minValidations: IntLike;
     minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
         mph: MintingPolicyHash | string | number[];
         tokens: {
@@ -21715,21 +22446,6 @@ declare interface NodeOpsInfo {
 }
 
 /**
- * A strong type for the canonical form of NodeOpsInfo
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOpsInfo instead.
- * @public
- */
-declare interface NodeOpsInfo_2 {
-    minNodes: /*minStructField*/ bigint
-    maxNodes: /*minStructField*/ bigint
-    minNodeOperatorStake: /*minStructField*/ Value
-    minUptime: /*minStructField*/ bigint
-}
-
-/**
  * A strong type for the permissive form of NodeOpsInfo
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
@@ -21756,32 +22472,12 @@ declare interface NodeOpsInfoLike {
  * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeRegistrationData instead.
  * @public
  */
-declare interface NodeRegistrationData {
+export declare interface NodeRegistrationData {
     id: number[];
     type: string;
     memberToken: string;
-    nodeAddress: string;
-    nodePort: bigint;
-    nodePublicKey: PubKey;
-    lastHeartbeat: number;
-}
-
-/**
- * A strong type for the canonical form of NodeRegistrationData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeRegistrationData instead.
- * @public
- */
-declare interface NodeRegistrationData_2 {
-    id: /*minStructField*/ number[]
-    type: /*minStructField*/ string
-    memberToken: /*minStructField*/ string
-    nodeAddress: /*minStructField*/ string
-    nodePort: /*minStructField*/ bigint
-    nodePublicKey: /*minStructField*/ PubKey
-    lastHeartbeat: /*minStructField*/ number
+    state: DredNodeState;
+    nodeDetails: NodeDetails;
 }
 
 /**
@@ -21794,10 +22490,8 @@ declare interface NodeRegistrationDataLike {
     id: number[];
     type: string;
     memberToken: string;
-    nodeAddress: string;
-    nodePort: IntLike;
-    nodePublicKey: /*minStructField*/ PubKey | string | number[];
-    lastHeartbeat: TimeLike;
+    state: DredNodeStateLike;
+    nodeDetails: NodeDetailsLike;
 }
 
 export declare class NodeRegistryController extends DelegatedDataContract<ErgoNodeRegistrationData, NodeRegistrationDataLike> {
@@ -21809,7 +22503,17 @@ export declare class NodeRegistryController extends DelegatedDataContract<ErgoNo
     exampleData(): minimalNodeRegistrationData;
     get capo(): DredCapo;
     mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData, initialTcx?: StellarTxnContext): Promise<hasUutContext_2<string> & StellarTxnContext<anyState> & hasMemberToken_2 & hasSeedUtxo_2 & hasSettingsRef<any, any> & hasCharterRef_2 & hasUutContext_2<"recordId" | "‹idPrefix (hint: declare with 'idPrefix = \"...\" as const')›">>;
-    mkTxnUpdatingNodeRegistration(txnName: string, item: FoundDatumUtxo<NodeRegistrationData, any>, options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity">, initialTcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
+    mkTxnActivatingNode(item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, options?: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
+        activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"];
+    }, initialTcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
+    mkTxnUpdatingNodeRegistration(txnName: string, item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
+        activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"];
+        withMemberToken?: boolean;
+    }, initialTcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
+    mkTxnValidatingNode(txnName: string, item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity" | "updatedFields"> & {
+        validatorReg: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>;
+    }, initialTcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
+    addValidatorRef(tcx: StellarTxnContext<anyState>, validatorReg: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>): StellarTxnContext<anyState>;
     requirements(): ReqtsMap_4<never, never>;
 }
 
@@ -24368,6 +25072,14 @@ declare class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
      */
     types: {
         /**
+         * generates UplcData for the enum type ***NodeOperatorSettings*** for the `BasicDelegate` script
+         */
+        NodeOperatorSettings: NodeOperatorSettingsHelper_2;
+        /**
+         * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
+         */
+        NeighborhoodSettings: NeighborhoodSettingsHelper_2;
+        /**
          * generates UplcData for the enum type ***DelegateDatum*** for the `BasicDelegate` script
          */
         DelegateDatum: DelegateDatumHelper_5;
@@ -24435,11 +25147,12 @@ declare class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
             tn: number[];
         }) => UplcData;
         /**
-         * generates UplcData for the enum type ***NodeOperatorSettings*** for the `BasicDelegate` script
+         * generates UplcData for the enum type ***NodeOperatorSettingsV1*** for the `BasicDelegate` script
          */
-        NodeOperatorSettings: (fields: NodeOperatorSettingsLike_2 | {
+        NodeOperatorSettingsV1: (fields: NodeOperatorSettingsV1Like_2 | {
             expectedHeartbeatInterval: IntLike;
             requiredNodeUptime: number;
+            minValidations: IntLike;
             minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
                 mph: MintingPolicyHash | string | number[];
                 tokens: {
@@ -24456,9 +25169,9 @@ declare class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
             }[];
         }) => UplcData;
         /**
-         * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
+         * generates UplcData for the enum type ***NeighborhoodSettingsV1*** for the `BasicDelegate` script
          */
-        NeighborhoodSettings: (fields: NeighborhoodSettingsLike_2 | {
+        NeighborhoodSettingsV1: (fields: NeighborhoodSettingsV1Like_2 | {
             minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
                 mph: MintingPolicyHash | string | number[];
                 tokens: {
@@ -24523,10 +25236,10 @@ declare class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
     ᱺᱺDelegationDetailCast: Cast<DelegationDetail_6, DelegationDetailLike_5>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNodeOperatorSettingsCast: Cast<NodeOperatorSettings, NodeOperatorSettingsLike_2>;
+    ᱺᱺNodeOperatorSettingsV1Cast: Cast<NodeOperatorSettingsV1, NodeOperatorSettingsV1Like_2>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNeighborhoodSettingsCast: Cast<NeighborhoodSettings, NeighborhoodSettingsLike_2>;
+    ᱺᱺNeighborhoodSettingsV1Cast: Cast<NeighborhoodSettingsV1, NeighborhoodSettingsV1Like_2>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺProtocolSettingsCast: Cast<ProtocolSettings, ProtocolSettingsLike>;
@@ -24547,6 +25260,36 @@ declare class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
 declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderClass {
     bridge: ProtocolSettingsPolicyDataBridge;
     constructor(bridge: ProtocolSettingsPolicyDataBridge, isMainnet: boolean);
+    /**
+     * reads UplcData *known to fit the **NodeOperatorSettings*** enum type,
+     * for the BasicDelegate script.
+     * #### Standard WARNING
+     *
+     * This is a low-level data-reader for use in ***advanced development scenarios***.
+     *
+     * Used correctly with data that matches the enum type, this reader
+     * returns strongly-typed data - your code using these types will be safe.
+     *
+     * On the other hand, reading non-matching data will not give you a valid result.
+     * It may throw an error, or it may throw no error, but return a value that
+     * causes some error later on in your code, when you try to use it.
+     */
+    NodeOperatorSettings(d: UplcData): ErgoNodeOperatorSettings;
+    /**
+     * reads UplcData *known to fit the **NeighborhoodSettings*** enum type,
+     * for the BasicDelegate script.
+     * #### Standard WARNING
+     *
+     * This is a low-level data-reader for use in ***advanced development scenarios***.
+     *
+     * Used correctly with data that matches the enum type, this reader
+     * returns strongly-typed data - your code using these types will be safe.
+     *
+     * On the other hand, reading non-matching data will not give you a valid result.
+     * It may throw an error, or it may throw no error, but return a value that
+     * causes some error later on in your code, when you try to use it.
+     */
+    NeighborhoodSettings(d: UplcData): ErgoNeighborhoodSettings;
     datum: (d: UplcData) => Partial<{
         Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_5;
         IsDelegation: ErgoDelegationDetail_5;
@@ -24778,7 +25521,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      */
     DelegationDetail(d: UplcData): DelegationDetail_6;
     /**
-     * reads UplcData *known to fit the **NodeOperatorSettings*** struct type,
+     * reads UplcData *known to fit the **NodeOperatorSettingsV1*** struct type,
      * for the BasicDelegate script.
      * #### Standard WARNING
      *
@@ -24791,9 +25534,9 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NodeOperatorSettings(d: UplcData): NodeOperatorSettings;
+    NodeOperatorSettingsV1(d: UplcData): NodeOperatorSettingsV1;
     /**
-     * reads UplcData *known to fit the **NeighborhoodSettings*** struct type,
+     * reads UplcData *known to fit the **NeighborhoodSettingsV1*** struct type,
      * for the BasicDelegate script.
      * #### Standard WARNING
      *
@@ -24806,7 +25549,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NeighborhoodSettings(d: UplcData): NeighborhoodSettings;
+    NeighborhoodSettingsV1(d: UplcData): NeighborhoodSettingsV1;
     /**
      * reads UplcData *known to fit the **ProtocolSettings*** struct type,
      * for the BasicDelegate script.
@@ -25185,21 +25928,6 @@ declare type RevenueModel$Ergo$TransactionBased = {
 };
 
 /**
- * An ergonomic, though less strictly-safe form of RevenueModel$TransactionBased
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the RevenueModel$TransactionBasedLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type RevenueModel$Ergo$TransactionBased_2 = {
-    minTxFee: Value  /*minVariantField*/ ,
-    maxTxFee: Value | undefined  /*minVariantField*/ ,
-    chargeTo: ErgoFeeSource_2  /*minVariantField*/ 
-}
-
-/**
  * A strong type for the canonical form of RevenueModel$TransactionBased
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -25476,6 +26204,41 @@ declare type SomeDgtDatumHelper<T extends AnyDataTemplate<any, any>> = EnumBridg
 };
 
 /**
+ * An ergonomic, though less strictly-safe form of SpendingActivity$ValidatingNode
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the SpendingActivity$ValidatingNodeLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type SpendingActivity$Ergo$ValidatingNode = SpendingActivity$ValidatingNode;
+
+/**
+ * A strong type for the canonical form of SpendingActivity$ValidatingNode
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see SpendingActivity$Ergo$ValidatingNode instead.
+ * @public
+ */
+declare interface SpendingActivity$ValidatingNode {
+    id: number[];
+    validatorId: number[];
+}
+
+/**
+ * A strong type for the permissive form of SpendingActivity$ValidatingNode
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface SpendingActivity$ValidatingNodeLike {
+    id: number[];
+    validatorId: number[];
+}
+
+/**
  * SpendingActivity enum variants
  *
  * @remarks - expresses the essential raw data structures
@@ -25507,7 +26270,7 @@ declare type SpendingActivity_2 = {
  * SpendingActivity enum variants
  *
  * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the SpendingActivity enum type
+ * supporting the **5 variant(s)** of the SpendingActivity enum type
  *
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -25515,13 +26278,21 @@ declare type SpendingActivity_2 = {
  */
 declare type SpendingActivity_3 = {
     UpdatingRecord: number[];
+} | {
+    ValidatingNode: SpendingActivity$ValidatingNode;
+} | {
+    ActivatingNode: number[];
+} | {
+    ReportingInactiveNode: number[];
+} | {
+    RefutingInactivity: number[];
 };
 
 /**
  * SpendingActivity enum variants
  *
  * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the SpendingActivity enum type
+ * supporting the **2 variant(s)** of the SpendingActivity enum type
  *
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -25529,6 +26300,8 @@ declare type SpendingActivity_3 = {
  */
 declare type SpendingActivity_4 = {
     UpdatingRecord: number[];
+} | {
+    ActivatingNeighborhood: number[];
 };
 
 /**
@@ -25556,9 +26329,9 @@ declare class SpendingActivityHelper extends EnumBridge<JustAnEnum> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         _placeholder1SA: number[];
-    }, Partial<{
+    }, {
         _placeholder1SA: number[];
-    }>>;
+    }>;
     /**
      * generates  UplcData for ***"UnspecializedDelegate::SpendingActivity._placeholder1SA"***
      */
@@ -25576,9 +26349,9 @@ declare class SpendingActivityHelper_2 extends EnumBridge<JustAnEnum_3> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         _placeholder1SA: number[];
-    }, Partial<{
+    }, {
         _placeholder1SA: number[];
-    }>>;
+    }>;
     /**
      * generates  UplcData for ***"STokMintDelegate::SpendingActivity._placeholder1SA"***
      */
@@ -25594,15 +26367,37 @@ declare class SpendingActivityHelper_3 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<{
+    ᱺᱺcast: Cast<SpendingActivity_3, Partial<{
         UpdatingRecord: number[];
-    }, Partial<{
-        UpdatingRecord: number[];
+        ValidatingNode: SpendingActivity$ValidatingNodeLike;
+        ActivatingNode: number[];
+        ReportingInactiveNode: number[];
+        RefutingInactivity: number[];
     }>>;
     /**
      * generates  UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.UpdatingRecord"***
      */
     UpdatingRecord(id: number[]): UplcData;
+    /**
+     * generates  UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ValidatingNode"***
+     * @remarks - ***SpendingActivity$ValidatingNodeLike*** is the same as the expanded field-types.
+     */
+    ValidatingNode(fields: SpendingActivity$ValidatingNodeLike | {
+        id: number[];
+        validatorId: number[];
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ActivatingNode"***
+     */
+    ActivatingNode(id: number[]): UplcData;
+    /**
+     * generates  UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ReportingInactiveNode"***
+     */
+    ReportingInactiveNode(id: number[]): UplcData;
+    /**
+     * generates  UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.RefutingInactivity"***
+     */
+    RefutingInactivity(id: number[]): UplcData;
 }
 
 /**
@@ -25614,15 +26409,18 @@ declare class SpendingActivityHelper_4 extends EnumBridge<JustAnEnum_3> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<{
+    ᱺᱺcast: Cast<SpendingActivity_4, Partial<{
         UpdatingRecord: number[];
-    }, Partial<{
-        UpdatingRecord: number[];
+        ActivatingNeighborhood: number[];
     }>>;
     /**
      * generates  UplcData for ***"NeighborhoodPolicy::SpendingActivity.UpdatingRecord"***
      */
     UpdatingRecord(id: number[]): UplcData;
+    /**
+     * generates  UplcData for ***"NeighborhoodPolicy::SpendingActivity.ActivatingNeighborhood"***
+     */
+    ActivatingNeighborhood(id: number[]): UplcData;
 }
 
 /**
@@ -25636,9 +26434,9 @@ declare class SpendingActivityHelper_5 extends EnumBridge<JustAnEnum_3> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         UpdatingRecord: number[];
-    }, Partial<{
+    }, {
         UpdatingRecord: number[];
-    }>>;
+    }>;
     /**
      * generates  UplcData for ***"ProtocolSettingsPolicy::SpendingActivity.UpdatingRecord"***
      */
@@ -25656,9 +26454,9 @@ declare class SpendingActivityHelperNested extends EnumBridge<isActivity> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         _placeholder1SA: number[];
-    }, Partial<{
+    }, {
         _placeholder1SA: number[];
-    }>>;
+    }>;
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"UnspecializedDelegate::SpendingActivity._placeholder1SA"***
      * @remarks
@@ -25681,9 +26479,9 @@ declare class SpendingActivityHelperNested_2 extends EnumBridge<isActivity> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         _placeholder1SA: number[];
-    }, Partial<{
+    }, {
         _placeholder1SA: number[];
-    }>>;
+    }>;
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::SpendingActivity._placeholder1SA"***
      * @remarks
@@ -25704,10 +26502,12 @@ declare class SpendingActivityHelperNested_3 extends EnumBridge<isActivity> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<{
+    ᱺᱺcast: Cast<SpendingActivity_3, Partial<{
         UpdatingRecord: number[];
-    }, Partial<{
-        UpdatingRecord: number[];
+        ValidatingNode: SpendingActivity$ValidatingNodeLike;
+        ActivatingNode: number[];
+        ReportingInactiveNode: number[];
+        RefutingInactivity: number[];
     }>>;
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.UpdatingRecord"***
@@ -25718,6 +26518,45 @@ declare class SpendingActivityHelperNested_3 extends EnumBridge<isActivity> {
      * a complete wrapper for this inner activity detail.
      */
     UpdatingRecord(id: number[]): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ValidatingNode"***
+     * @remarks - ***SpendingActivity$ValidatingNodeLike*** is the same as the expanded field-types.
+     * ##### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    ValidatingNode(fields: SpendingActivity$ValidatingNodeLike | {
+        id: number[];
+        validatorId: number[];
+    }): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ActivatingNode"***
+     * @remarks
+     * #### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    ActivatingNode(id: number[]): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ReportingInactiveNode"***
+     * @remarks
+     * #### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    ReportingInactiveNode(id: number[]): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.RefutingInactivity"***
+     * @remarks
+     * #### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    RefutingInactivity(id: number[]): isActivity;
 }
 
 /**
@@ -25729,10 +26568,9 @@ declare class SpendingActivityHelperNested_4 extends EnumBridge<isActivity> {
     /**
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<{
+    ᱺᱺcast: Cast<SpendingActivity_4, Partial<{
         UpdatingRecord: number[];
-    }, Partial<{
-        UpdatingRecord: number[];
+        ActivatingNeighborhood: number[];
     }>>;
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::SpendingActivity.UpdatingRecord"***
@@ -25743,6 +26581,15 @@ declare class SpendingActivityHelperNested_4 extends EnumBridge<isActivity> {
      * a complete wrapper for this inner activity detail.
      */
     UpdatingRecord(id: number[]): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::SpendingActivity.ActivatingNeighborhood"***
+     * @remarks
+     * #### Nested activity:
+     * this is connected to a nested-activity wrapper, so the details are piped through
+     * the parent's uplc-encoder, producing a single uplc object with
+     * a complete wrapper for this inner activity detail.
+     */
+    ActivatingNeighborhood(id: number[]): isActivity;
 }
 
 /**
@@ -25756,9 +26603,9 @@ declare class SpendingActivityHelperNested_5 extends EnumBridge<isActivity> {
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
         UpdatingRecord: number[];
-    }, Partial<{
+    }, {
         UpdatingRecord: number[];
-    }>>;
+    }>;
     /**
      * generates isActivity/redeemer wrapper with UplcData for ***"ProtocolSettingsPolicy::SpendingActivity.UpdatingRecord"***
      * @remarks
@@ -25810,7 +26657,7 @@ declare type SpendingActivityLike_2 = IntersectedEnum<{
  * SpendingActivity enum variants (permissive)
  *
  * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the SpendingActivity enum type
+ * for creating any of the **5 variant(s)** of the SpendingActivity enum type
  *
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -25822,13 +26669,21 @@ declare type SpendingActivityLike_2 = IntersectedEnum<{
  */
 declare type SpendingActivityLike_3 = IntersectedEnum<{
     UpdatingRecord: number[];
+} | {
+    ValidatingNode: SpendingActivity$ValidatingNodeLike;
+} | {
+    ActivatingNode: number[];
+} | {
+    ReportingInactiveNode: number[];
+} | {
+    RefutingInactivity: number[];
 }>;
 
 /**
  * SpendingActivity enum variants (permissive)
  *
  * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the SpendingActivity enum type
+ * for creating any of the **2 variant(s)** of the SpendingActivity enum type
  *
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -25840,6 +26695,8 @@ declare type SpendingActivityLike_3 = IntersectedEnum<{
  */
 declare type SpendingActivityLike_4 = IntersectedEnum<{
     UpdatingRecord: number[];
+} | {
+    ActivatingNeighborhood: number[];
 }>;
 
 /**
@@ -26636,7 +27493,7 @@ declare class StellarTxnContext<S extends anyState = anyState> {
     outputs: TxOutput[];
     feeLimit?: bigint;
     state: S;
-    allNeededWitnesses: Address[];
+    allNeededWitnesses: (Address | PubKeyHash)[];
     otherPartySigners: PubKeyHash[];
     parentTcx?: StellarTxnContext<any>;
     childReservedUtxos: TxInput[];
@@ -26776,8 +27633,18 @@ declare class StellarTxnContext<S extends anyState = anyState> {
     _builtTx?: Tx | Promise<Tx>;
     get builtTx(): Tx | Promise<Tx>;
     addSignature(wallet: Wallet): Promise<void>;
+    hasAuthorityToken(authorityValue: Value): boolean;
     findAnySpareUtxos(): Promise<TxInput[] | never>;
     findChangeAddr(): Promise<Address>;
+    /**
+     * Adds required signers to the transaction context
+     * @remarks
+     * Before a transaction can be submitted, signatures from each of its signers must be included.
+     *
+     * Any inputs from the wallet are automatically added as signers, so addSigners() is not needed
+     * for those.
+     */
+    addSigners(...signers: PubKeyHash[]): Promise<void>;
     build(this: StellarTxnContext<any>, { signers, addlTxInfo, beforeValidate, paramsOverride, expectError, }?: {
         signers?: Address[];
         addlTxInfo?: Pick<TxDescription<any, "buildLater!">, "description">;
@@ -26810,7 +27677,7 @@ declare class StellarTxnContext<S extends anyState = anyState> {
      * onSubmitted can be used to notify the user that the transaction has been submitted,
      * or for logging or any other post-submission processing.
      */
-    submitAll(this: StellarTxnContext<any>, options?: SubmitOptions): Promise<boolean>;
+    submitAll(this: StellarTxnContext<any>, options?: SubmitOptions): Promise<BatchSubmitController_2>;
     /**
      * augments a transaction context with a type indicator
      * that it has additional transactions to be submitted.
@@ -26820,7 +27687,7 @@ declare class StellarTxnContext<S extends anyState = anyState> {
      * transactions to be chained after the current transaction.
      */
     withAddlTxns<TCX extends StellarTxnContext<anyState>>(this: TCX, addlTxns?: Record<string, TxDescription<any, "buildLater!">>): hasAddlTxns<TCX>;
-    buildAndQueueAll(this: StellarTxnContext<any>, options?: SubmitOptions): Promise<boolean | undefined>;
+    buildAndQueueAll(this: StellarTxnContext<any>, options?: SubmitOptions): Promise<BatchSubmitController_2>;
     get currentBatch(): BatchSubmitController_2;
     /**
      * Submits only the current transaction.
@@ -26964,24 +27831,6 @@ declare type SubscriptionFeeFrequency = {
 } | {
     Yearly: Value;
 };
-
-/**
- * SubscriptionFeeFrequency enum variants
- * 
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the SubscriptionFeeFrequency enum type
- * 
- * - **Note**: Stellar Contracts provides a higher-level `SubscriptionFeeFrequencyHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type SubscriptionFeeFrequency_2 = 
-| { Epoch: /* implied wrapper { fee: ... } for singleVariantField */ 
-    			Value    /*minEnumVariant*/ }
-| { Monthly: /* implied wrapper { fee: ... } for singleVariantField */ 
-    			Value    /*minEnumVariant*/ }
-| { Yearly: /* implied wrapper { fee: ... } for singleVariantField */ 
-    			Value    /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***SubscriptionFeeFrequency*** enum type.
@@ -27442,7 +28291,7 @@ declare type TypeError_2<T extends string, moreInfo extends Object = {}> = {
  * method is the normal way to locate and decode on-chain data without needing to explicitly use the data-bridge helper classes.
  *
  * ##### customizing the bridge class name
- * Note that you may override `get dataBridgeName() { return "..." }` to customize the name of this bridge class
+ * Note that you may override `get bridgeClassName() { return "..." }` to customize the name of this bridge class
  * @public
  */
 declare class UnspecializedDelegateBridge extends ContractDataBridge {
@@ -27919,6 +28768,32 @@ declare type UpdateActivityArgs<UA extends updateActivityFunc<any>> = UA extends
  */
 declare type updateActivityFunc<ARGS extends [...any]> = (recId: hasRecId, ...args: ARGS) => isActivity;
 
+/**
+ * A strong type for the canonical form of UpdateInfo
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoUpdateInfo instead.
+ * @public
+ */
+declare interface UpdateInfo {
+    name: string;
+    description: string;
+    url: string;
+}
+
+/**
+ * A strong type for the permissive form of UpdateInfo
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface UpdateInfoLike {
+    name: string;
+    description: string;
+    url: string;
+}
+
 declare class UplcConsoleLogger implements UplcLogger {
     didStart: boolean;
     lines: string[];
@@ -28094,6 +28969,15 @@ declare class UtxoHelper {
      * @public
      **/
     mkMinTokenValue(tokenName: string | number[], quantity: bigint, mph: MintingPolicyHash): Value;
+    /**
+     * finds utxos in the current actor's wallet that have enough ada to cover the given amount
+     * @remarks
+     * This method is useful for finding ADA utxos that can be used to pay for a transaction.
+     *
+     * Other methods in the utxo helper are better for finding individual utxos.
+     * @public
+     */
+    findSufficientActorUtxos(name: string, amount: Value, options?: UtxoSearchScope, strategy?: CoinSelector | CoinSelector[]): Promise<TxInput[]>;
     /**
      * Locates a utxo in the current actor's wallet that matches the provided token predicate
      * @remarks

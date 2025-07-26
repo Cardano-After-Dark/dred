@@ -1,4 +1,4 @@
-import { makeInlineTxOutputDatum, makeValue, makeDummyPubKey } from '@helios-lang/ledger';
+import { makeInlineTxOutputDatum, makeValue, makeDummyPubKey, makePubKey } from '@helios-lang/ledger';
 import '@helios-lang/uplc';
 import { STokMintDelegate, StellarTokenomicsCapo } from 'stellar-tokenomics';
 import { ContractDataBridge, EnumBridge, impliedSeedActivityMaker, DataBridgeReaderClass, DelegatedDataContract, hasReqts, delegateRoles, defineRole, textToBytes, mkValuesEntry, mergesInheritedReqts } from '@donecollectively/stellar-contracts';
@@ -8,7 +8,7 @@ import '@helios-lang/codec-utils';
 import DredCapoBundle from 'dred-network-registry/contracts-preprod/DredCapo.hlb';
 import MyMintSpendDelegateBundle from 'dred-network-registry/contracts-preprod/MyMintSpendDelegate.hlb';
 import NodeRegistryBundle from 'dred-network-registry/contracts-preprod/NodeRegistry.hlb';
-import NeighborhoodBundle from 'dred-network-registry/contracts-preprod/Neighborhood.hlb';
+import NeighborhoodRegistryBundle from 'dred-network-registry/contracts-preprod/NeighborhoodRegistry.hlb';
 
 class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
   static isAbstract = false;
@@ -38,6 +38,14 @@ class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
    * @remarks - these accessors are used to generate UplcData for each type
    */
   types = {
+    /**
+     * generates UplcData for the enum type ***NodeOperatorSettings*** for the `BasicDelegate` script
+     */
+    NodeOperatorSettings: new NodeOperatorSettingsHelper$1({ isMainnet: this.isMainnet }),
+    /**
+     * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
+     */
+    NeighborhoodSettings: new NeighborhoodSettingsHelper$1({ isMainnet: this.isMainnet }),
     /**
      * generates UplcData for the enum type ***DelegateDatum*** for the `BasicDelegate` script
      */
@@ -103,16 +111,16 @@ class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
       return this["\u1C7A\u1C7ADelegationDetailCast"].toUplcData(fields);
     },
     /**
-     * generates UplcData for the enum type ***NodeOperatorSettings*** for the `BasicDelegate` script
+     * generates UplcData for the enum type ***NodeOperatorSettingsV1*** for the `BasicDelegate` script
      */
-    NodeOperatorSettings: (fields) => {
-      return this["\u1C7A\u1C7ANodeOperatorSettingsCast"].toUplcData(fields);
+    NodeOperatorSettingsV1: (fields) => {
+      return this["\u1C7A\u1C7ANodeOperatorSettingsV1Cast"].toUplcData(fields);
     },
     /**
-     * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
+     * generates UplcData for the enum type ***NeighborhoodSettingsV1*** for the `BasicDelegate` script
      */
-    NeighborhoodSettings: (fields) => {
-      return this["\u1C7A\u1C7ANeighborhoodSettingsCast"].toUplcData(fields);
+    NeighborhoodSettingsV1: (fields) => {
+      return this["\u1C7A\u1C7ANeighborhoodSettingsV1Cast"].toUplcData(fields);
     },
     /**
      * generates UplcData for the enum type ***ProtocolSettings*** for the `BasicDelegate` script
@@ -159,14 +167,14 @@ class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
   );
   /**
               * uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7ANodeOperatorSettingsCast" = makeCast(
-    NodeOperatorSettingsSchema$1,
+  "\u1C7A\u1C7ANodeOperatorSettingsV1Cast" = makeCast(
+    NodeOperatorSettingsV1Schema$1,
     { isMainnet: true, unwrapSingleFieldEnumVariants: true }
   );
   /**
               * uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7ANeighborhoodSettingsCast" = makeCast(
-    NeighborhoodSettingsSchema$1,
+  "\u1C7A\u1C7ANeighborhoodSettingsV1Cast" = makeCast(
+    NeighborhoodSettingsV1Schema$1,
     { isMainnet: true, unwrapSingleFieldEnumVariants: true }
   );
   /**
@@ -205,6 +213,46 @@ class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderClass {
     super();
     this.bridge = bridge;
   }
+  /**
+      * reads UplcData *known to fit the **NodeOperatorSettings*** enum type,
+      * for the BasicDelegate script.
+      * #### Standard WARNING
+      * 
+      * This is a low-level data-reader for use in ***advanced development scenarios***.
+      * 
+      * Used correctly with data that matches the enum type, this reader
+      * returns strongly-typed data - your code using these types will be safe.
+      * 
+      * On the other hand, reading non-matching data will not give you a valid result.  
+      * It may throw an error, or it may throw no error, but return a value that
+      * causes some error later on in your code, when you try to use it.
+      */
+  NodeOperatorSettings(d) {
+    const typeHelper = this.bridge.types.NodeOperatorSettings;
+    const cast = typeHelper["\u1C7A\u1C7Acast"];
+    return cast.fromUplcData(d);
+  }
+  /* enumReader helper */
+  /**
+      * reads UplcData *known to fit the **NeighborhoodSettings*** enum type,
+      * for the BasicDelegate script.
+      * #### Standard WARNING
+      * 
+      * This is a low-level data-reader for use in ***advanced development scenarios***.
+      * 
+      * Used correctly with data that matches the enum type, this reader
+      * returns strongly-typed data - your code using these types will be safe.
+      * 
+      * On the other hand, reading non-matching data will not give you a valid result.  
+      * It may throw an error, or it may throw no error, but return a value that
+      * causes some error later on in your code, when you try to use it.
+      */
+  NeighborhoodSettings(d) {
+    const typeHelper = this.bridge.types.NeighborhoodSettings;
+    const cast = typeHelper["\u1C7A\u1C7Acast"];
+    return cast.fromUplcData(d);
+  }
+  /* enumReader helper */
   datum = (d) => {
     return this.DelegateDatum(d);
   };
@@ -507,7 +555,7 @@ class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderClass {
   }
   /* structReader helper */
   /**
-      * reads UplcData *known to fit the **NodeOperatorSettings*** struct type,
+      * reads UplcData *known to fit the **NodeOperatorSettingsV1*** struct type,
       * for the BasicDelegate script.
       * #### Standard WARNING
       * 
@@ -520,13 +568,13 @@ class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderClass {
       * It may throw an error, or it may throw no error, but return a value that
       * causes some error later on in your code, when you try to use it.
       */
-  NodeOperatorSettings(d) {
-    const cast = this.bridge["\u1C7A\u1C7ANodeOperatorSettingsCast"];
+  NodeOperatorSettingsV1(d) {
+    const cast = this.bridge["\u1C7A\u1C7ANodeOperatorSettingsV1Cast"];
     return cast.fromUplcData(d);
   }
   /* structReader helper */
   /**
-      * reads UplcData *known to fit the **NeighborhoodSettings*** struct type,
+      * reads UplcData *known to fit the **NeighborhoodSettingsV1*** struct type,
       * for the BasicDelegate script.
       * #### Standard WARNING
       * 
@@ -539,8 +587,8 @@ class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderClass {
       * It may throw an error, or it may throw no error, but return a value that
       * causes some error later on in your code, when you try to use it.
       */
-  NeighborhoodSettings(d) {
-    const cast = this.bridge["\u1C7A\u1C7ANeighborhoodSettingsCast"];
+  NeighborhoodSettingsV1(d) {
+    const cast = this.bridge["\u1C7A\u1C7ANeighborhoodSettingsV1Cast"];
     return cast.fromUplcData(d);
   }
   /* structReader helper */
@@ -640,6 +688,46 @@ class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderClass {
   }
   /* structReader helper */
 }
+let NodeOperatorSettingsHelper$1 = class NodeOperatorSettingsHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    NodeOperatorSettingsSchema$1,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * generates  UplcData for ***"NodeOperatorSettings::NodeOperatorSettings.V1"***
+   * @remarks - ***NodeOperatorSettingsV1Like*** is the same as the expanded field-type.
+   */
+  V1(s) {
+    const uplc = this.mkUplcData({
+      V1: s
+    }, "NodeOperatorSettings::NodeOperatorSettings.V1");
+    return uplc;
+  }
+};
+let NeighborhoodSettingsHelper$1 = class NeighborhoodSettingsHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    NeighborhoodSettingsSchema$1,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * generates  UplcData for ***"NeighborhoodSettings::NeighborhoodSettings.V1"***
+   * @remarks - ***NeighborhoodSettingsV1Like*** is the same as the expanded field-type.
+   */
+  V1(s) {
+    const uplc = this.mkUplcData({
+      V1: s
+    }, "NeighborhoodSettings::NeighborhoodSettings.V1");
+    return uplc;
+  }
+};
 let DelegateDatumHelper$3 = class DelegateDatumHelper extends EnumBridge {
   /*mkEnumHelperClass*/
   /**
@@ -2333,11 +2421,11 @@ const DelegationDetailSchema$3 = {
     }
   ]
 };
-const NodeOperatorSettingsSchema$1 = {
+const NodeOperatorSettingsV1Schema$1 = {
   "kind": "struct",
   "format": "map",
-  "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
-  "name": "NodeOperatorSettings",
+  "id": "__module__NodeOperatorSettings__NodeOperatorSettingsV1[]",
+  "name": "NodeOperatorSettingsV1",
   "fieldTypes": [
     {
       "name": "expectedHeartbeatInterval",
@@ -2354,6 +2442,14 @@ const NodeOperatorSettingsSchema$1 = {
         "name": "Real"
       },
       "key": "ndUpt"
+    },
+    {
+      "name": "minValidations",
+      "type": {
+        "kind": "internal",
+        "name": "Int"
+      },
+      "key": "minVals"
     },
     {
       "name": "minNodeRegistrationFee",
@@ -2373,11 +2469,77 @@ const NodeOperatorSettingsSchema$1 = {
     }
   ]
 };
-const NeighborhoodSettingsSchema$1 = {
+const NodeOperatorSettingsSchema$1 = {
+  "kind": "enum",
+  "name": "NodeOperatorSettings",
+  "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
+  "variantTypes": [
+    {
+      "kind": "variant",
+      "tag": 0,
+      "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]__V1",
+      "name": "V1",
+      "fieldTypes": [
+        {
+          "name": "s",
+          "type": {
+            "kind": "struct",
+            "format": "map",
+            "id": "__module__NodeOperatorSettings__NodeOperatorSettingsV1[]",
+            "name": "NodeOperatorSettingsV1",
+            "fieldTypes": [
+              {
+                "name": "expectedHeartbeatInterval",
+                "type": {
+                  "kind": "internal",
+                  "name": "Duration"
+                },
+                "key": "ndHbi"
+              },
+              {
+                "name": "requiredNodeUptime",
+                "type": {
+                  "kind": "internal",
+                  "name": "Real"
+                },
+                "key": "ndUpt"
+              },
+              {
+                "name": "minValidations",
+                "type": {
+                  "kind": "internal",
+                  "name": "Int"
+                },
+                "key": "minVals"
+              },
+              {
+                "name": "minNodeRegistrationFee",
+                "type": {
+                  "kind": "internal",
+                  "name": "Value"
+                },
+                "key": "minFee"
+              },
+              {
+                "name": "minNodeOperatorStake",
+                "type": {
+                  "kind": "internal",
+                  "name": "Value"
+                },
+                "key": "minStk"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+};
+const NeighborhoodSettingsV1Schema$1 = {
   "kind": "struct",
   "format": "map",
-  "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
-  "name": "NeighborhoodSettings",
+  "id": "__module__NeighborhoodSettings__NeighborhoodSettingsV1[]",
+  "name": "NeighborhoodSettingsV1",
   "fieldTypes": [
     {
       "name": "minRegistrationFee",
@@ -2394,6 +2556,48 @@ const NeighborhoodSettingsSchema$1 = {
         "name": "Value"
       },
       "key": "minStk"
+    }
+  ]
+};
+const NeighborhoodSettingsSchema$1 = {
+  "kind": "enum",
+  "name": "NeighborhoodSettings",
+  "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+  "variantTypes": [
+    {
+      "kind": "variant",
+      "tag": 0,
+      "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]__V1",
+      "name": "V1",
+      "fieldTypes": [
+        {
+          "name": "s",
+          "type": {
+            "kind": "struct",
+            "format": "map",
+            "id": "__module__NeighborhoodSettings__NeighborhoodSettingsV1[]",
+            "name": "NeighborhoodSettingsV1",
+            "fieldTypes": [
+              {
+                "name": "minRegistrationFee",
+                "type": {
+                  "kind": "internal",
+                  "name": "Value"
+                },
+                "key": "minRegFee"
+              },
+              {
+                "name": "minNbhStake",
+                "type": {
+                  "kind": "internal",
+                  "name": "Value"
+                },
+                "key": "minStk"
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 };
@@ -2422,42 +2626,68 @@ const ProtocolSettingsSchema = {
     {
       "name": "nodeOpSettings",
       "type": {
-        "kind": "struct",
-        "format": "map",
-        "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
+        "kind": "enum",
         "name": "NodeOperatorSettings",
-        "fieldTypes": [
+        "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
+        "variantTypes": [
           {
-            "name": "expectedHeartbeatInterval",
-            "type": {
-              "kind": "internal",
-              "name": "Duration"
-            },
-            "key": "ndHbi"
-          },
-          {
-            "name": "requiredNodeUptime",
-            "type": {
-              "kind": "internal",
-              "name": "Real"
-            },
-            "key": "ndUpt"
-          },
-          {
-            "name": "minNodeRegistrationFee",
-            "type": {
-              "kind": "internal",
-              "name": "Value"
-            },
-            "key": "minFee"
-          },
-          {
-            "name": "minNodeOperatorStake",
-            "type": {
-              "kind": "internal",
-              "name": "Value"
-            },
-            "key": "minStk"
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]__V1",
+            "name": "V1",
+            "fieldTypes": [
+              {
+                "name": "s",
+                "type": {
+                  "kind": "struct",
+                  "format": "map",
+                  "id": "__module__NodeOperatorSettings__NodeOperatorSettingsV1[]",
+                  "name": "NodeOperatorSettingsV1",
+                  "fieldTypes": [
+                    {
+                      "name": "expectedHeartbeatInterval",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Duration"
+                      },
+                      "key": "ndHbi"
+                    },
+                    {
+                      "name": "requiredNodeUptime",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Real"
+                      },
+                      "key": "ndUpt"
+                    },
+                    {
+                      "name": "minValidations",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Int"
+                      },
+                      "key": "minVals"
+                    },
+                    {
+                      "name": "minNodeRegistrationFee",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Value"
+                      },
+                      "key": "minFee"
+                    },
+                    {
+                      "name": "minNodeOperatorStake",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Value"
+                      },
+                      "key": "minStk"
+                    }
+                  ]
+                }
+              }
+            ]
           }
         ]
       },
@@ -2466,26 +2696,44 @@ const ProtocolSettingsSchema = {
     {
       "name": "nbhSettings",
       "type": {
-        "kind": "struct",
-        "format": "map",
-        "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+        "kind": "enum",
         "name": "NeighborhoodSettings",
-        "fieldTypes": [
+        "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+        "variantTypes": [
           {
-            "name": "minRegistrationFee",
-            "type": {
-              "kind": "internal",
-              "name": "Value"
-            },
-            "key": "minRegFee"
-          },
-          {
-            "name": "minNbhStake",
-            "type": {
-              "kind": "internal",
-              "name": "Value"
-            },
-            "key": "minStk"
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]__V1",
+            "name": "V1",
+            "fieldTypes": [
+              {
+                "name": "s",
+                "type": {
+                  "kind": "struct",
+                  "format": "map",
+                  "id": "__module__NeighborhoodSettings__NeighborhoodSettingsV1[]",
+                  "name": "NeighborhoodSettingsV1",
+                  "fieldTypes": [
+                    {
+                      "name": "minRegistrationFee",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Value"
+                      },
+                      "key": "minRegFee"
+                    },
+                    {
+                      "name": "minNbhStake",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Value"
+                      },
+                      "key": "minStk"
+                    }
+                  ]
+                }
+              }
+            ]
           }
         ]
       },
@@ -2620,42 +2868,68 @@ const DelegateDatumSchema$3 = {
               {
                 "name": "nodeOpSettings",
                 "type": {
-                  "kind": "struct",
-                  "format": "map",
-                  "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
+                  "kind": "enum",
                   "name": "NodeOperatorSettings",
-                  "fieldTypes": [
+                  "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
+                  "variantTypes": [
                     {
-                      "name": "expectedHeartbeatInterval",
-                      "type": {
-                        "kind": "internal",
-                        "name": "Duration"
-                      },
-                      "key": "ndHbi"
-                    },
-                    {
-                      "name": "requiredNodeUptime",
-                      "type": {
-                        "kind": "internal",
-                        "name": "Real"
-                      },
-                      "key": "ndUpt"
-                    },
-                    {
-                      "name": "minNodeRegistrationFee",
-                      "type": {
-                        "kind": "internal",
-                        "name": "Value"
-                      },
-                      "key": "minFee"
-                    },
-                    {
-                      "name": "minNodeOperatorStake",
-                      "type": {
-                        "kind": "internal",
-                        "name": "Value"
-                      },
-                      "key": "minStk"
+                      "kind": "variant",
+                      "tag": 0,
+                      "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]__V1",
+                      "name": "V1",
+                      "fieldTypes": [
+                        {
+                          "name": "s",
+                          "type": {
+                            "kind": "struct",
+                            "format": "map",
+                            "id": "__module__NodeOperatorSettings__NodeOperatorSettingsV1[]",
+                            "name": "NodeOperatorSettingsV1",
+                            "fieldTypes": [
+                              {
+                                "name": "expectedHeartbeatInterval",
+                                "type": {
+                                  "kind": "internal",
+                                  "name": "Duration"
+                                },
+                                "key": "ndHbi"
+                              },
+                              {
+                                "name": "requiredNodeUptime",
+                                "type": {
+                                  "kind": "internal",
+                                  "name": "Real"
+                                },
+                                "key": "ndUpt"
+                              },
+                              {
+                                "name": "minValidations",
+                                "type": {
+                                  "kind": "internal",
+                                  "name": "Int"
+                                },
+                                "key": "minVals"
+                              },
+                              {
+                                "name": "minNodeRegistrationFee",
+                                "type": {
+                                  "kind": "internal",
+                                  "name": "Value"
+                                },
+                                "key": "minFee"
+                              },
+                              {
+                                "name": "minNodeOperatorStake",
+                                "type": {
+                                  "kind": "internal",
+                                  "name": "Value"
+                                },
+                                "key": "minStk"
+                              }
+                            ]
+                          }
+                        }
+                      ]
                     }
                   ]
                 },
@@ -2664,26 +2938,44 @@ const DelegateDatumSchema$3 = {
               {
                 "name": "nbhSettings",
                 "type": {
-                  "kind": "struct",
-                  "format": "map",
-                  "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+                  "kind": "enum",
                   "name": "NeighborhoodSettings",
-                  "fieldTypes": [
+                  "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+                  "variantTypes": [
                     {
-                      "name": "minRegistrationFee",
-                      "type": {
-                        "kind": "internal",
-                        "name": "Value"
-                      },
-                      "key": "minRegFee"
-                    },
-                    {
-                      "name": "minNbhStake",
-                      "type": {
-                        "kind": "internal",
-                        "name": "Value"
-                      },
-                      "key": "minStk"
+                      "kind": "variant",
+                      "tag": 0,
+                      "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]__V1",
+                      "name": "V1",
+                      "fieldTypes": [
+                        {
+                          "name": "s",
+                          "type": {
+                            "kind": "struct",
+                            "format": "map",
+                            "id": "__module__NeighborhoodSettings__NeighborhoodSettingsV1[]",
+                            "name": "NeighborhoodSettingsV1",
+                            "fieldTypes": [
+                              {
+                                "name": "minRegistrationFee",
+                                "type": {
+                                  "kind": "internal",
+                                  "name": "Value"
+                                },
+                                "key": "minRegFee"
+                              },
+                              {
+                                "name": "minNbhStake",
+                                "type": {
+                                  "kind": "internal",
+                                  "name": "Value"
+                                },
+                                "key": "minStk"
+                              }
+                            ]
+                          }
+                        }
+                      ]
                     }
                   ]
                 },
@@ -8729,14 +9021,19 @@ class ProtocolSettingsController extends DelegatedDataContract {
   exampleData() {
     const settings = {
       nodeOpSettings: {
-        expectedHeartbeatInterval: 7 * 24 * 60 * 60 * 1e3,
-        minNodeOperatorStake: makeValue(this.ADA(200n)),
-        minNodeRegistrationFee: makeValue(this.ADA(50n)),
-        requiredNodeUptime: 0.95
+        V1: {
+          expectedHeartbeatInterval: 7 * 24 * 60 * 60 * 1e3,
+          minNodeOperatorStake: makeValue(this.ADA(200n)),
+          minNodeRegistrationFee: makeValue(this.ADA(50n)),
+          requiredNodeUptime: 0.95,
+          minValidations: 1
+        }
       },
       nbhSettings: {
-        minNbhStake: makeValue(this.ADA(5000n)),
-        minRegistrationFee: makeValue(this.ADA(4000n))
+        V1: {
+          minNbhStake: makeValue(this.ADA(5000n)),
+          minRegistrationFee: makeValue(this.ADA(4000n))
+        }
       }
       /* Add other settings here */
     };
@@ -17204,6 +17501,10 @@ class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
    */
   types = {
     /**
+     * generates UplcData for the enum type ***DredNodeState*** for the `BasicDelegate` script
+     */
+    DredNodeState: new DredNodeStateHelper({ isMainnet: this.isMainnet }),
+    /**
      * generates UplcData for the enum type ***DelegateDatum*** for the `BasicDelegate` script
      */
     DelegateDatum: new DelegateDatumHelper$1({ isMainnet: this.isMainnet }),
@@ -17256,6 +17557,10 @@ class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
      */
     cctx_CharterInputType: new cctx_CharterInputTypeHelper$1({ isMainnet: this.isMainnet }),
     /**
+     * generates UplcData for the enum type ***NodeOperatorSettings*** for the `BasicDelegate` script
+     */
+    NodeOperatorSettings: new NodeOperatorSettingsHelper({ isMainnet: this.isMainnet }),
+    /**
      * generates UplcData for the enum type ***dgd_DataSrc*** for the `BasicDelegate` script
      */
     dgd_DataSrc: new dgd_DataSrcHelper$1({ isMainnet: this.isMainnet }),
@@ -17270,6 +17575,12 @@ class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
      */
     DelegationDetail: (fields) => {
       return this["\u1C7A\u1C7ADelegationDetailCast"].toUplcData(fields);
+    },
+    /**
+     * generates UplcData for the enum type ***NodeDetails*** for the `BasicDelegate` script
+     */
+    NodeDetails: (fields) => {
+      return this["\u1C7A\u1C7ANodeDetailsCast"].toUplcData(fields);
     },
     /**
      * generates UplcData for the enum type ***NodeRegistrationData*** for the `BasicDelegate` script
@@ -17302,10 +17613,10 @@ class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
       return this["\u1C7A\u1C7ACapoCtxCast"].toUplcData(fields);
     },
     /**
-     * generates UplcData for the enum type ***NodeOperatorSettings*** for the `BasicDelegate` script
+     * generates UplcData for the enum type ***NodeOperatorSettingsV1*** for the `BasicDelegate` script
      */
-    NodeOperatorSettings: (fields) => {
-      return this["\u1C7A\u1C7ANodeOperatorSettingsCast"].toUplcData(fields);
+    NodeOperatorSettingsV1: (fields) => {
+      return this["\u1C7A\u1C7ANodeOperatorSettingsV1Cast"].toUplcData(fields);
     },
     /**
      * generates UplcData for the enum type ***AbstractSettingsForNodeOperator*** for the `BasicDelegate` script
@@ -17330,6 +17641,12 @@ class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
               * uses unicode U+1c7a - sorts to the end */
   "\u1C7A\u1C7ADelegationDetailCast" = makeCast(
     DelegationDetailSchema$1,
+    { isMainnet: true, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+              * uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7ANodeDetailsCast" = makeCast(
+    NodeDetailsSchema,
     { isMainnet: true, unwrapSingleFieldEnumVariants: true }
   );
   /**
@@ -17364,8 +17681,8 @@ class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
   );
   /**
               * uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7ANodeOperatorSettingsCast" = makeCast(
-    NodeOperatorSettingsSchema,
+  "\u1C7A\u1C7ANodeOperatorSettingsV1Cast" = makeCast(
+    NodeOperatorSettingsV1Schema,
     { isMainnet: true, unwrapSingleFieldEnumVariants: true }
   );
   /**
@@ -17386,6 +17703,26 @@ class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderClass {
     super();
     this.bridge = bridge;
   }
+  /**
+      * reads UplcData *known to fit the **DredNodeState*** enum type,
+      * for the BasicDelegate script.
+      * #### Standard WARNING
+      * 
+      * This is a low-level data-reader for use in ***advanced development scenarios***.
+      * 
+      * Used correctly with data that matches the enum type, this reader
+      * returns strongly-typed data - your code using these types will be safe.
+      * 
+      * On the other hand, reading non-matching data will not give you a valid result.  
+      * It may throw an error, or it may throw no error, but return a value that
+      * causes some error later on in your code, when you try to use it.
+      */
+  DredNodeState(d) {
+    const typeHelper = this.bridge.types.DredNodeState;
+    const cast = typeHelper["\u1C7A\u1C7Acast"];
+    return cast.fromUplcData(d);
+  }
+  /* enumReader helper */
   datum = (d) => {
     return this.DelegateDatum(d);
   };
@@ -17650,6 +17987,26 @@ class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderClass {
   }
   /* enumReader helper */
   /**
+      * reads UplcData *known to fit the **NodeOperatorSettings*** enum type,
+      * for the BasicDelegate script.
+      * #### Standard WARNING
+      * 
+      * This is a low-level data-reader for use in ***advanced development scenarios***.
+      * 
+      * Used correctly with data that matches the enum type, this reader
+      * returns strongly-typed data - your code using these types will be safe.
+      * 
+      * On the other hand, reading non-matching data will not give you a valid result.  
+      * It may throw an error, or it may throw no error, but return a value that
+      * causes some error later on in your code, when you try to use it.
+      */
+  NodeOperatorSettings(d) {
+    const typeHelper = this.bridge.types.NodeOperatorSettings;
+    const cast = typeHelper["\u1C7A\u1C7Acast"];
+    return cast.fromUplcData(d);
+  }
+  /* enumReader helper */
+  /**
       * reads UplcData *known to fit the **dgd_DataSrc*** enum type,
       * for the BasicDelegate script.
       * #### Standard WARNING
@@ -17704,6 +18061,25 @@ class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderClass {
       */
   DelegationDetail(d) {
     const cast = this.bridge["\u1C7A\u1C7ADelegationDetailCast"];
+    return cast.fromUplcData(d);
+  }
+  /* structReader helper */
+  /**
+      * reads UplcData *known to fit the **NodeDetails*** struct type,
+      * for the BasicDelegate script.
+      * #### Standard WARNING
+      * 
+      * This is a low-level data-reader for use in ***advanced development scenarios***.
+      * 
+      * Used correctly with data that matches the type, this reader
+      * returns strongly-typed data - your code using these types will be safe.
+      * 
+      * On the other hand, reading non-matching data will not give you a valid result.  
+      * It may throw an error, or it may throw no error, but return a value that
+      * causes some error later on in your code, when you try to use it.
+      */
+  NodeDetails(d) {
+    const cast = this.bridge["\u1C7A\u1C7ANodeDetailsCast"];
     return cast.fromUplcData(d);
   }
   /* structReader helper */
@@ -17803,7 +18179,7 @@ class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderClass {
   }
   /* structReader helper */
   /**
-      * reads UplcData *known to fit the **NodeOperatorSettings*** struct type,
+      * reads UplcData *known to fit the **NodeOperatorSettingsV1*** struct type,
       * for the BasicDelegate script.
       * #### Standard WARNING
       * 
@@ -17816,8 +18192,8 @@ class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderClass {
       * It may throw an error, or it may throw no error, but return a value that
       * causes some error later on in your code, when you try to use it.
       */
-  NodeOperatorSettings(d) {
-    const cast = this.bridge["\u1C7A\u1C7ANodeOperatorSettingsCast"];
+  NodeOperatorSettingsV1(d) {
+    const cast = this.bridge["\u1C7A\u1C7ANodeOperatorSettingsV1Cast"];
     return cast.fromUplcData(d);
   }
   /* structReader helper */
@@ -17859,6 +18235,55 @@ class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderClass {
     return cast.fromUplcData(d);
   }
   /* structReader helper */
+}
+class DredNodeStateHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    DredNodeStateSchema,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * generates  UplcData for ***"NodeRegistrationData::DredNodeState.NeedsValidation"***
+   */
+  NeedsValidation(validators) {
+    const uplc = this.mkUplcData({
+      NeedsValidation: validators
+    }, "NodeRegistrationData::DredNodeState.NeedsValidation");
+    return uplc;
+  }
+  /**
+   * generates  UplcData for ***"NodeRegistrationData::DredNodeState.Active"***
+   */
+  Active(lastHeartbeat) {
+    const uplc = this.mkUplcData({
+      Active: lastHeartbeat
+    }, "NodeRegistrationData::DredNodeState.Active");
+    return uplc;
+  }
+  /**
+   * generates  UplcData for ***"NodeRegistrationData::DredNodeState.NeedsHeartbeats"***
+   */
+  NeedsHeartbeats(validators) {
+    const uplc = this.mkUplcData({
+      NeedsHeartbeats: validators
+    }, "NodeRegistrationData::DredNodeState.NeedsHeartbeats");
+    return uplc;
+  }
+  /**
+   * (property getter): UplcData for ***"NodeRegistrationData::DredNodeState.Inactive"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+   */
+  get Inactive() {
+    const uplc = this.mkUplcData(
+      { Inactive: {} },
+      "NodeRegistrationData::DredNodeState.Inactive"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
 }
 let DelegateDatumHelper$1 = class DelegateDatumHelper extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -18531,6 +18956,44 @@ let SpendingActivityHelper$1 = class SpendingActivityHelper extends EnumBridge {
     }, "DredNodeRegistryPolicy::SpendingActivity.UpdatingRecord");
     return uplc;
   }
+  /**
+   * generates  UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ValidatingNode"***
+   * @remarks - ***SpendingActivity$ValidatingNodeLike*** is the same as the expanded field-types.
+   */
+  ValidatingNode(fields) {
+    const uplc = this.mkUplcData({
+      ValidatingNode: fields
+    }, "DredNodeRegistryPolicy::SpendingActivity.ValidatingNode");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
+  /**
+   * generates  UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ActivatingNode"***
+   */
+  ActivatingNode(id) {
+    const uplc = this.mkUplcData({
+      ActivatingNode: id
+    }, "DredNodeRegistryPolicy::SpendingActivity.ActivatingNode");
+    return uplc;
+  }
+  /**
+   * generates  UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ReportingInactiveNode"***
+   */
+  ReportingInactiveNode(id) {
+    const uplc = this.mkUplcData({
+      ReportingInactiveNode: id
+    }, "DredNodeRegistryPolicy::SpendingActivity.ReportingInactiveNode");
+    return uplc;
+  }
+  /**
+   * generates  UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.RefutingInactivity"***
+   */
+  RefutingInactivity(id) {
+    const uplc = this.mkUplcData({
+      RefutingInactivity: id
+    }, "DredNodeRegistryPolicy::SpendingActivity.RefutingInactivity");
+    return uplc;
+  }
 };
 let MintingActivityHelper$1 = class MintingActivityHelper extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -19001,6 +19464,63 @@ let SpendingActivityHelperNested$1 = class SpendingActivityHelperNested extends 
     const uplc = this.mkUplcData({
       UpdatingRecord: id
     }, "DredNodeRegistryPolicy::SpendingActivity.UpdatingRecord");
+    return uplc;
+  }
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ValidatingNode"***
+   * @remarks - ***SpendingActivity$ValidatingNodeLike*** is the same as the expanded field-types.
+  * ##### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  ValidatingNode(fields) {
+    const uplc = this.mkUplcData({
+      ValidatingNode: fields
+    }, "DredNodeRegistryPolicy::SpendingActivity.ValidatingNode");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ActivatingNode"***
+  * @remarks
+  * #### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  ActivatingNode(id) {
+    const uplc = this.mkUplcData({
+      ActivatingNode: id
+    }, "DredNodeRegistryPolicy::SpendingActivity.ActivatingNode");
+    return uplc;
+  }
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.ReportingInactiveNode"***
+  * @remarks
+  * #### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  ReportingInactiveNode(id) {
+    const uplc = this.mkUplcData({
+      ReportingInactiveNode: id
+    }, "DredNodeRegistryPolicy::SpendingActivity.ReportingInactiveNode");
+    return uplc;
+  }
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::SpendingActivity.RefutingInactivity"***
+  * @remarks
+  * #### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  RefutingInactivity(id) {
+    const uplc = this.mkUplcData({
+      RefutingInactivity: id
+    }, "DredNodeRegistryPolicy::SpendingActivity.RefutingInactivity");
     return uplc;
   }
 };
@@ -19500,6 +20020,26 @@ let cctx_CharterInputTypeHelper$1 = class cctx_CharterInputTypeHelper extends En
   }
   /*multiFieldVariant enum accessor*/
 };
+class NodeOperatorSettingsHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    NodeOperatorSettingsSchema,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * generates  UplcData for ***"NodeOperatorSettings::NodeOperatorSettings.V1"***
+   * @remarks - ***NodeOperatorSettingsV1Like*** is the same as the expanded field-type.
+   */
+  V1(s) {
+    const uplc = this.mkUplcData({
+      V1: s
+    }, "NodeOperatorSettings::NodeOperatorSettings.V1");
+    return uplc;
+  }
+}
 let dgd_DataSrcHelper$1 = class dgd_DataSrcHelper extends EnumBridge {
   /*mkEnumHelperClass*/
   /**
@@ -19604,6 +20144,107 @@ const DelegationDetailSchema$1 = {
     }
   ]
 };
+const DredNodeStateSchema = {
+  "kind": "enum",
+  "name": "DredNodeState",
+  "id": "__module__NodeRegistrationData__DredNodeState[]",
+  "variantTypes": [
+    {
+      "kind": "variant",
+      "tag": 0,
+      "id": "__module__NodeRegistrationData__DredNodeState[]__NeedsValidation",
+      "name": "NeedsValidation",
+      "fieldTypes": [
+        {
+          "name": "validators",
+          "type": {
+            "kind": "list",
+            "itemType": {
+              "kind": "internal",
+              "name": "ByteArray"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 1,
+      "id": "__module__NodeRegistrationData__DredNodeState[]__Active",
+      "name": "Active",
+      "fieldTypes": [
+        {
+          "name": "lastHeartbeat",
+          "type": {
+            "kind": "internal",
+            "name": "Time"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 2,
+      "id": "__module__NodeRegistrationData__DredNodeState[]__NeedsHeartbeats",
+      "name": "NeedsHeartbeats",
+      "fieldTypes": [
+        {
+          "name": "validators",
+          "type": {
+            "kind": "list",
+            "itemType": {
+              "kind": "internal",
+              "name": "ByteArray"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 3,
+      "id": "__module__NodeRegistrationData__DredNodeState[]__Inactive",
+      "name": "Inactive",
+      "fieldTypes": []
+    }
+  ]
+};
+const NodeDetailsSchema = {
+  "kind": "struct",
+  "format": "list",
+  "id": "__module__NodeRegistrationData__NodeDetails[]",
+  "name": "NodeDetails",
+  "fieldTypes": [
+    {
+      "name": "address",
+      "type": {
+        "kind": "internal",
+        "name": "String"
+      }
+    },
+    {
+      "name": "port",
+      "type": {
+        "kind": "internal",
+        "name": "Int"
+      }
+    },
+    {
+      "name": "pubKey",
+      "type": {
+        "kind": "internal",
+        "name": "PubKey"
+      }
+    },
+    {
+      "name": "pubKeyHash",
+      "type": {
+        "kind": "internal",
+        "name": "PubKeyHash"
+      }
+    }
+  ]
+};
 const NodeRegistrationDataSchema = {
   "kind": "struct",
   "format": "map",
@@ -19635,36 +20276,113 @@ const NodeRegistrationDataSchema = {
       "key": "mt"
     },
     {
-      "name": "nodeAddress",
+      "name": "state",
       "type": {
-        "kind": "internal",
-        "name": "String"
+        "kind": "enum",
+        "name": "DredNodeState",
+        "id": "__module__NodeRegistrationData__DredNodeState[]",
+        "variantTypes": [
+          {
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__NodeRegistrationData__DredNodeState[]__NeedsValidation",
+            "name": "NeedsValidation",
+            "fieldTypes": [
+              {
+                "name": "validators",
+                "type": {
+                  "kind": "list",
+                  "itemType": {
+                    "kind": "internal",
+                    "name": "ByteArray"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "kind": "variant",
+            "tag": 1,
+            "id": "__module__NodeRegistrationData__DredNodeState[]__Active",
+            "name": "Active",
+            "fieldTypes": [
+              {
+                "name": "lastHeartbeat",
+                "type": {
+                  "kind": "internal",
+                  "name": "Time"
+                }
+              }
+            ]
+          },
+          {
+            "kind": "variant",
+            "tag": 2,
+            "id": "__module__NodeRegistrationData__DredNodeState[]__NeedsHeartbeats",
+            "name": "NeedsHeartbeats",
+            "fieldTypes": [
+              {
+                "name": "validators",
+                "type": {
+                  "kind": "list",
+                  "itemType": {
+                    "kind": "internal",
+                    "name": "ByteArray"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "kind": "variant",
+            "tag": 3,
+            "id": "__module__NodeRegistrationData__DredNodeState[]__Inactive",
+            "name": "Inactive",
+            "fieldTypes": []
+          }
+        ]
       },
-      "key": "addr"
+      "key": "state"
     },
     {
-      "name": "nodePort",
+      "name": "nodeDetails",
       "type": {
-        "kind": "internal",
-        "name": "Int"
+        "kind": "struct",
+        "format": "list",
+        "id": "__module__NodeRegistrationData__NodeDetails[]",
+        "name": "NodeDetails",
+        "fieldTypes": [
+          {
+            "name": "address",
+            "type": {
+              "kind": "internal",
+              "name": "String"
+            }
+          },
+          {
+            "name": "port",
+            "type": {
+              "kind": "internal",
+              "name": "Int"
+            }
+          },
+          {
+            "name": "pubKey",
+            "type": {
+              "kind": "internal",
+              "name": "PubKey"
+            }
+          },
+          {
+            "name": "pubKeyHash",
+            "type": {
+              "kind": "internal",
+              "name": "PubKeyHash"
+            }
+          }
+        ]
       },
-      "key": "port"
-    },
-    {
-      "name": "nodePublicKey",
-      "type": {
-        "kind": "internal",
-        "name": "PubKey"
-      },
-      "key": "pubk"
-    },
-    {
-      "name": "lastHeartbeat",
-      "type": {
-        "kind": "internal",
-        "name": "Time"
-      },
-      "key": "lhb"
+      "key": "nd"
     }
   ]
 };
@@ -19801,36 +20519,113 @@ const DelegateDatumSchema$1 = {
                 "key": "mt"
               },
               {
-                "name": "nodeAddress",
+                "name": "state",
                 "type": {
-                  "kind": "internal",
-                  "name": "String"
+                  "kind": "enum",
+                  "name": "DredNodeState",
+                  "id": "__module__NodeRegistrationData__DredNodeState[]",
+                  "variantTypes": [
+                    {
+                      "kind": "variant",
+                      "tag": 0,
+                      "id": "__module__NodeRegistrationData__DredNodeState[]__NeedsValidation",
+                      "name": "NeedsValidation",
+                      "fieldTypes": [
+                        {
+                          "name": "validators",
+                          "type": {
+                            "kind": "list",
+                            "itemType": {
+                              "kind": "internal",
+                              "name": "ByteArray"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "variant",
+                      "tag": 1,
+                      "id": "__module__NodeRegistrationData__DredNodeState[]__Active",
+                      "name": "Active",
+                      "fieldTypes": [
+                        {
+                          "name": "lastHeartbeat",
+                          "type": {
+                            "kind": "internal",
+                            "name": "Time"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "variant",
+                      "tag": 2,
+                      "id": "__module__NodeRegistrationData__DredNodeState[]__NeedsHeartbeats",
+                      "name": "NeedsHeartbeats",
+                      "fieldTypes": [
+                        {
+                          "name": "validators",
+                          "type": {
+                            "kind": "list",
+                            "itemType": {
+                              "kind": "internal",
+                              "name": "ByteArray"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "variant",
+                      "tag": 3,
+                      "id": "__module__NodeRegistrationData__DredNodeState[]__Inactive",
+                      "name": "Inactive",
+                      "fieldTypes": []
+                    }
+                  ]
                 },
-                "key": "addr"
+                "key": "state"
               },
               {
-                "name": "nodePort",
+                "name": "nodeDetails",
                 "type": {
-                  "kind": "internal",
-                  "name": "Int"
+                  "kind": "struct",
+                  "format": "list",
+                  "id": "__module__NodeRegistrationData__NodeDetails[]",
+                  "name": "NodeDetails",
+                  "fieldTypes": [
+                    {
+                      "name": "address",
+                      "type": {
+                        "kind": "internal",
+                        "name": "String"
+                      }
+                    },
+                    {
+                      "name": "port",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Int"
+                      }
+                    },
+                    {
+                      "name": "pubKey",
+                      "type": {
+                        "kind": "internal",
+                        "name": "PubKey"
+                      }
+                    },
+                    {
+                      "name": "pubKeyHash",
+                      "type": {
+                        "kind": "internal",
+                        "name": "PubKeyHash"
+                      }
+                    }
+                  ]
                 },
-                "key": "port"
-              },
-              {
-                "name": "nodePublicKey",
-                "type": {
-                  "kind": "internal",
-                  "name": "PubKey"
-                },
-                "key": "pubk"
-              },
-              {
-                "name": "lastHeartbeat",
-                "type": {
-                  "kind": "internal",
-                  "name": "Time"
-                },
-                "key": "lhb"
+                "key": "nd"
               }
             ]
           }
@@ -20402,6 +21197,73 @@ const SpendingActivitySchema$1 = {
           }
         }
       ]
+    },
+    {
+      "kind": "variant",
+      "tag": 1,
+      "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__ValidatingNode",
+      "name": "ValidatingNode",
+      "fieldTypes": [
+        {
+          "name": "id",
+          "type": {
+            "kind": "internal",
+            "name": "ByteArray"
+          }
+        },
+        {
+          "name": "validatorId",
+          "type": {
+            "kind": "internal",
+            "name": "ByteArray"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 2,
+      "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__ActivatingNode",
+      "name": "ActivatingNode",
+      "fieldTypes": [
+        {
+          "name": "id",
+          "type": {
+            "kind": "internal",
+            "name": "ByteArray"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 3,
+      "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__ReportingInactiveNode",
+      "name": "ReportingInactiveNode",
+      "fieldTypes": [
+        {
+          "name": "id",
+          "type": {
+            "kind": "internal",
+            "name": "ByteArray"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 4,
+      "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__RefutingInactivity",
+      "name": "RefutingInactivity",
+      "fieldTypes": [
+        {
+          "name": "id",
+          "type": {
+            "kind": "internal",
+            "name": "ByteArray"
+          }
+        }
+      ]
     }
   ]
 };
@@ -20835,6 +21697,73 @@ const DelegateActivitySchema$1 = {
                 "tag": 0,
                 "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__UpdatingRecord",
                 "name": "UpdatingRecord",
+                "fieldTypes": [
+                  {
+                    "name": "id",
+                    "type": {
+                      "kind": "internal",
+                      "name": "ByteArray"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 1,
+                "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__ValidatingNode",
+                "name": "ValidatingNode",
+                "fieldTypes": [
+                  {
+                    "name": "id",
+                    "type": {
+                      "kind": "internal",
+                      "name": "ByteArray"
+                    }
+                  },
+                  {
+                    "name": "validatorId",
+                    "type": {
+                      "kind": "internal",
+                      "name": "ByteArray"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 2,
+                "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__ActivatingNode",
+                "name": "ActivatingNode",
+                "fieldTypes": [
+                  {
+                    "name": "id",
+                    "type": {
+                      "kind": "internal",
+                      "name": "ByteArray"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 3,
+                "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__ReportingInactiveNode",
+                "name": "ReportingInactiveNode",
+                "fieldTypes": [
+                  {
+                    "name": "id",
+                    "type": {
+                      "kind": "internal",
+                      "name": "ByteArray"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 4,
+                "id": "__module__DredNodeRegistryPolicy__SpendingActivity[]__RefutingInactivity",
+                "name": "RefutingInactivity",
                 "fieldTypes": [
                   {
                     "name": "id",
@@ -25841,11 +26770,11 @@ const CapoCtxSchema$1 = {
     }
   ]
 };
-const NodeOperatorSettingsSchema = {
+const NodeOperatorSettingsV1Schema = {
   "kind": "struct",
   "format": "map",
-  "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
-  "name": "NodeOperatorSettings",
+  "id": "__module__NodeOperatorSettings__NodeOperatorSettingsV1[]",
+  "name": "NodeOperatorSettingsV1",
   "fieldTypes": [
     {
       "name": "expectedHeartbeatInterval",
@@ -25862,6 +26791,14 @@ const NodeOperatorSettingsSchema = {
         "name": "Real"
       },
       "key": "ndUpt"
+    },
+    {
+      "name": "minValidations",
+      "type": {
+        "kind": "internal",
+        "name": "Int"
+      },
+      "key": "minVals"
     },
     {
       "name": "minNodeRegistrationFee",
@@ -25881,6 +26818,72 @@ const NodeOperatorSettingsSchema = {
     }
   ]
 };
+const NodeOperatorSettingsSchema = {
+  "kind": "enum",
+  "name": "NodeOperatorSettings",
+  "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
+  "variantTypes": [
+    {
+      "kind": "variant",
+      "tag": 0,
+      "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]__V1",
+      "name": "V1",
+      "fieldTypes": [
+        {
+          "name": "s",
+          "type": {
+            "kind": "struct",
+            "format": "map",
+            "id": "__module__NodeOperatorSettings__NodeOperatorSettingsV1[]",
+            "name": "NodeOperatorSettingsV1",
+            "fieldTypes": [
+              {
+                "name": "expectedHeartbeatInterval",
+                "type": {
+                  "kind": "internal",
+                  "name": "Duration"
+                },
+                "key": "ndHbi"
+              },
+              {
+                "name": "requiredNodeUptime",
+                "type": {
+                  "kind": "internal",
+                  "name": "Real"
+                },
+                "key": "ndUpt"
+              },
+              {
+                "name": "minValidations",
+                "type": {
+                  "kind": "internal",
+                  "name": "Int"
+                },
+                "key": "minVals"
+              },
+              {
+                "name": "minNodeRegistrationFee",
+                "type": {
+                  "kind": "internal",
+                  "name": "Value"
+                },
+                "key": "minFee"
+              },
+              {
+                "name": "minNodeOperatorStake",
+                "type": {
+                  "kind": "internal",
+                  "name": "Value"
+                },
+                "key": "minStk"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+};
 const AbstractSettingsForNodeOperatorSchema = {
   "kind": "struct",
   "format": "map",
@@ -25890,42 +26893,68 @@ const AbstractSettingsForNodeOperatorSchema = {
     {
       "name": "nodeOpSettings",
       "type": {
-        "kind": "struct",
-        "format": "map",
-        "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
+        "kind": "enum",
         "name": "NodeOperatorSettings",
-        "fieldTypes": [
+        "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
+        "variantTypes": [
           {
-            "name": "expectedHeartbeatInterval",
-            "type": {
-              "kind": "internal",
-              "name": "Duration"
-            },
-            "key": "ndHbi"
-          },
-          {
-            "name": "requiredNodeUptime",
-            "type": {
-              "kind": "internal",
-              "name": "Real"
-            },
-            "key": "ndUpt"
-          },
-          {
-            "name": "minNodeRegistrationFee",
-            "type": {
-              "kind": "internal",
-              "name": "Value"
-            },
-            "key": "minFee"
-          },
-          {
-            "name": "minNodeOperatorStake",
-            "type": {
-              "kind": "internal",
-              "name": "Value"
-            },
-            "key": "minStk"
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]__V1",
+            "name": "V1",
+            "fieldTypes": [
+              {
+                "name": "s",
+                "type": {
+                  "kind": "struct",
+                  "format": "map",
+                  "id": "__module__NodeOperatorSettings__NodeOperatorSettingsV1[]",
+                  "name": "NodeOperatorSettingsV1",
+                  "fieldTypes": [
+                    {
+                      "name": "expectedHeartbeatInterval",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Duration"
+                      },
+                      "key": "ndHbi"
+                    },
+                    {
+                      "name": "requiredNodeUptime",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Real"
+                      },
+                      "key": "ndUpt"
+                    },
+                    {
+                      "name": "minValidations",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Int"
+                      },
+                      "key": "minVals"
+                    },
+                    {
+                      "name": "minNodeRegistrationFee",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Value"
+                      },
+                      "key": "minFee"
+                    },
+                    {
+                      "name": "minNodeOperatorStake",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Value"
+                      },
+                      "key": "minStk"
+                    }
+                  ]
+                }
+              }
+            ]
           }
         ]
       },
@@ -26111,17 +27140,19 @@ class NodeRegistryController extends DelegatedDataContract {
     return "DredNode";
   }
   exampleData() {
+    const nodePublicKey = makeDummyPubKey();
+    const pubKeyHash = nodePublicKey.hash();
     return {
       // id: textToBytes("dredNode-1234"),
       // type: "dredNode",
-      // status: "active",
-      lastHeartbeat: 0,
       memberToken: "member-1234",
-      nodeAddress: "1.2.4.3.example.com",
-      nodePort: 13337n,
-      // bad data, but good enough for being a lame example.  
-      // It should be a valid Ed25519 public key, expressed as a numeric array
-      nodePublicKey: makeDummyPubKey()
+      nodeDetails: {
+        address: "1.2.4.3.example.com",
+        port: 13337n,
+        pubKey: nodePublicKey,
+        pubKeyHash
+      },
+      state: { NeedsValidation: [] }
     };
   }
   get capo() {
@@ -26131,7 +27162,7 @@ class NodeRegistryController extends DelegatedDataContract {
     await this.capo.getMintDelegate();
     const { capo } = this;
     const tcx0 = initialTcx || this.mkTcx(
-      "registering dred node"
+      "register dred node"
     );
     const tcx1 = await capo.mkTxnWithMemberInfo(void 0, tcx0);
     const capoUtxos = await capo.findCapoUtxos();
@@ -26143,11 +27174,18 @@ class NodeRegistryController extends DelegatedDataContract {
       capoUtxos,
       charterData
     });
+    const nodeReg2 = {
+      ...nodeReg,
+      nodeDetails: {
+        ...nodeReg.nodeDetails,
+        pubKeyHash: makePubKey(nodeReg.nodeDetails.pubKey).hash()
+      }
+    };
     return this.mkTxnCreateRecord(
       {
         activity: this.activity.MintingActivities.$seeded$CreatingRecord,
         data: {
-          ...nodeReg,
+          ...nodeReg2,
           memberToken: tcx2.state.memberToken.name
         }
         // addedUtxoValue: makeValue(initialVaultStake),
@@ -26155,11 +27193,31 @@ class NodeRegistryController extends DelegatedDataContract {
       tcx2
     ).then((tcx) => tcx);
   }
+  async mkTxnActivatingNode(item, options = { updatedFields: {} }, initialTcx) {
+    const tcx0 = initialTcx || this.mkTcx(
+      "activating dred node"
+    );
+    tcx0.addSigners(this.actorContext.wallet.pubKey.hash());
+    if (!item.data) {
+      debugger;
+      throw new Error("node not found");
+    }
+    return this.mkTxnUpdatingNodeRegistration("activating dred node", item, {
+      ...options,
+      withMemberToken: false,
+      activity: this.activity.SpendingActivities.ActivatingNode(item.data.id),
+      updatedFields: {
+        state: { Active: tcx0.txnTime.getTime() },
+        ...options.updatedFields
+      }
+    }, tcx0);
+  }
   async mkTxnUpdatingNodeRegistration(txnName, item, options, initialTcx) {
     const tcx0 = initialTcx || this.mkTcx(
       "registering dred node"
     );
-    const tcx1 = await this.capo.mkTxnWithMemberInfo(void 0, tcx0);
+    const withMemberToken = options.withMemberToken ?? true;
+    const tcx1 = withMemberToken ? await this.capo.mkTxnWithMemberInfo(void 0, tcx0) : tcx0;
     const capoUtxos = await this.capo.findCapoUtxos();
     const tcx2 = await this.capo.tcxWithSettingsRef(tcx1, {
       capoUtxos,
@@ -26168,10 +27226,58 @@ class NodeRegistryController extends DelegatedDataContract {
         optional: false
       })
     });
+    const pubKey = options.updatedFields.nodeDetails?.pubKey ?? item.data?.nodeDetails.pubKey;
+    if (!pubKey) throw new Error("missing required pubKey");
     return super.mkTxnUpdateRecord(txnName, item, {
+      // default activity
+      activity: this.activity.SpendingActivities.UpdatingRecord(item.data.id),
+      // ..., can be overridden by options
       ...options,
-      activity: this.activity.SpendingActivities.UpdatingRecord(item.data.id)
+      updatedFields: {
+        ...options.updatedFields,
+        nodeDetails: {
+          ...item.data.nodeDetails,
+          ...options.updatedFields.nodeDetails,
+          pubKey: makePubKey(pubKey).toHex()
+        }
+      }
     }, tcx2);
+  }
+  async mkTxnValidatingNode(txnName, item, options, initialTcx) {
+    const tcx0 = initialTcx || this.mkTcx(
+      "validating dred node"
+    );
+    const existingNeedsValidation = (item.data?.state).NeedsValidation;
+    if (!existingNeedsValidation) throw new Error("node is not in need of validation");
+    const { validatorReg } = options;
+    const tcx1 = await this.addValidatorRef(tcx0, validatorReg);
+    const tcx2 = await this.mkTxnUpdatingNodeRegistration(txnName, item, {
+      ...options,
+      withMemberToken: false,
+      updatedFields: {
+        state: {
+          NeedsValidation: [validatorReg.data.id, ...existingNeedsValidation]
+        }
+      },
+      activity: this.activity.SpendingActivities.ValidatingNode({
+        id: item.data.id,
+        validatorId: validatorReg.data.id
+      })
+    }, tcx1);
+    tcx2.addSigners(validatorReg.data.nodeDetails.pubKeyHash);
+    return tcx2;
+  }
+  addValidatorRef(tcx, validatorReg) {
+    const foundPkh = validatorReg.data.nodeDetails.pubKeyHash;
+    if (!foundPkh) throw new Error("validator's node-reg record has no pubKeyHash");
+    const actorPkh = this.wallet.pubKey.hash();
+    if (!foundPkh.isEqual(actorPkh)) {
+      console.log("validator's node-reg record has a different pubKeyHash");
+      console.log("validator's registration -> pkh: ", foundPkh.toString());
+      console.log("actorPkh: ", actorPkh.toString());
+      throw new Error("validator's node-reg record has a different pubKeyHash");
+    }
+    return tcx.addRefInput(validatorReg.utxo);
   }
   requirements() {
     return hasReqts({
@@ -26208,6 +27314,10 @@ class NeighborhoodPolicyDataBridge extends ContractDataBridge {
    * @remarks - these accessors are used to generate UplcData for each type
    */
   types = {
+    /**
+     * generates UplcData for the enum type ***NeighborhoodState*** for the `BasicDelegate` script
+     */
+    NeighborhoodState: new NeighborhoodStateHelper({ isMainnet: this.isMainnet }),
     /**
      * generates UplcData for the enum type ***FeeSource*** for the `BasicDelegate` script
      */
@@ -26273,6 +27383,10 @@ class NeighborhoodPolicyDataBridge extends ContractDataBridge {
      */
     cctx_CharterInputType: new cctx_CharterInputTypeHelper({ isMainnet: this.isMainnet }),
     /**
+     * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
+     */
+    NeighborhoodSettings: new NeighborhoodSettingsHelper({ isMainnet: this.isMainnet }),
+    /**
      * generates UplcData for the enum type ***dgd_DataSrc*** for the `BasicDelegate` script
      */
     dgd_DataSrc: new dgd_DataSrcHelper({ isMainnet: this.isMainnet }),
@@ -26299,6 +27413,12 @@ class NeighborhoodPolicyDataBridge extends ContractDataBridge {
      */
     NodeOpsInfo: (fields) => {
       return this["\u1C7A\u1C7ANodeOpsInfoCast"].toUplcData(fields);
+    },
+    /**
+     * generates UplcData for the enum type ***UpdateInfo*** for the `BasicDelegate` script
+     */
+    UpdateInfo: (fields) => {
+      return this["\u1C7A\u1C7AUpdateInfoCast"].toUplcData(fields);
     },
     /**
      * generates UplcData for the enum type ***NeighborhoodData*** for the `BasicDelegate` script
@@ -26331,10 +27451,10 @@ class NeighborhoodPolicyDataBridge extends ContractDataBridge {
       return this["\u1C7A\u1C7ACapoCtxCast"].toUplcData(fields);
     },
     /**
-     * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
+     * generates UplcData for the enum type ***NeighborhoodSettingsV1*** for the `BasicDelegate` script
      */
-    NeighborhoodSettings: (fields) => {
-      return this["\u1C7A\u1C7ANeighborhoodSettingsCast"].toUplcData(fields);
+    NeighborhoodSettingsV1: (fields) => {
+      return this["\u1C7A\u1C7ANeighborhoodSettingsV1Cast"].toUplcData(fields);
     },
     /**
      * generates UplcData for the enum type ***AbstractSettingsForNeighborhood*** for the `BasicDelegate` script
@@ -26375,6 +27495,12 @@ class NeighborhoodPolicyDataBridge extends ContractDataBridge {
   );
   /**
               * uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7AUpdateInfoCast" = makeCast(
+    UpdateInfoSchema,
+    { isMainnet: true, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+              * uses unicode U+1c7a - sorts to the end */
   "\u1C7A\u1C7ANeighborhoodDataCast" = makeCast(
     NeighborhoodDataSchema,
     { isMainnet: true, unwrapSingleFieldEnumVariants: true }
@@ -26405,8 +27531,8 @@ class NeighborhoodPolicyDataBridge extends ContractDataBridge {
   );
   /**
               * uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7ANeighborhoodSettingsCast" = makeCast(
-    NeighborhoodSettingsSchema,
+  "\u1C7A\u1C7ANeighborhoodSettingsV1Cast" = makeCast(
+    NeighborhoodSettingsV1Schema,
     { isMainnet: true, unwrapSingleFieldEnumVariants: true }
   );
   /**
@@ -26427,6 +27553,26 @@ class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
     super();
     this.bridge = bridge;
   }
+  /**
+      * reads UplcData *known to fit the **NeighborhoodState*** enum type,
+      * for the BasicDelegate script.
+      * #### Standard WARNING
+      * 
+      * This is a low-level data-reader for use in ***advanced development scenarios***.
+      * 
+      * Used correctly with data that matches the enum type, this reader
+      * returns strongly-typed data - your code using these types will be safe.
+      * 
+      * On the other hand, reading non-matching data will not give you a valid result.  
+      * It may throw an error, or it may throw no error, but return a value that
+      * causes some error later on in your code, when you try to use it.
+      */
+  NeighborhoodState(d) {
+    const typeHelper = this.bridge.types.NeighborhoodState;
+    const cast = typeHelper["\u1C7A\u1C7Acast"];
+    return cast.fromUplcData(d);
+  }
+  /* enumReader helper */
   /**
       * reads UplcData *known to fit the **FeeSource*** enum type,
       * for the BasicDelegate script.
@@ -26751,6 +27897,26 @@ class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
   }
   /* enumReader helper */
   /**
+      * reads UplcData *known to fit the **NeighborhoodSettings*** enum type,
+      * for the BasicDelegate script.
+      * #### Standard WARNING
+      * 
+      * This is a low-level data-reader for use in ***advanced development scenarios***.
+      * 
+      * Used correctly with data that matches the enum type, this reader
+      * returns strongly-typed data - your code using these types will be safe.
+      * 
+      * On the other hand, reading non-matching data will not give you a valid result.  
+      * It may throw an error, or it may throw no error, but return a value that
+      * causes some error later on in your code, when you try to use it.
+      */
+  NeighborhoodSettings(d) {
+    const typeHelper = this.bridge.types.NeighborhoodSettings;
+    const cast = typeHelper["\u1C7A\u1C7Acast"];
+    return cast.fromUplcData(d);
+  }
+  /* enumReader helper */
+  /**
       * reads UplcData *known to fit the **dgd_DataSrc*** enum type,
       * for the BasicDelegate script.
       * #### Standard WARNING
@@ -26843,6 +28009,25 @@ class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
       */
   NodeOpsInfo(d) {
     const cast = this.bridge["\u1C7A\u1C7ANodeOpsInfoCast"];
+    return cast.fromUplcData(d);
+  }
+  /* structReader helper */
+  /**
+      * reads UplcData *known to fit the **UpdateInfo*** struct type,
+      * for the BasicDelegate script.
+      * #### Standard WARNING
+      * 
+      * This is a low-level data-reader for use in ***advanced development scenarios***.
+      * 
+      * Used correctly with data that matches the type, this reader
+      * returns strongly-typed data - your code using these types will be safe.
+      * 
+      * On the other hand, reading non-matching data will not give you a valid result.  
+      * It may throw an error, or it may throw no error, but return a value that
+      * causes some error later on in your code, when you try to use it.
+      */
+  UpdateInfo(d) {
+    const cast = this.bridge["\u1C7A\u1C7AUpdateInfoCast"];
     return cast.fromUplcData(d);
   }
   /* structReader helper */
@@ -26942,7 +28127,7 @@ class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
   }
   /* structReader helper */
   /**
-      * reads UplcData *known to fit the **NeighborhoodSettings*** struct type,
+      * reads UplcData *known to fit the **NeighborhoodSettingsV1*** struct type,
       * for the BasicDelegate script.
       * #### Standard WARNING
       * 
@@ -26955,8 +28140,8 @@ class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
       * It may throw an error, or it may throw no error, but return a value that
       * causes some error later on in your code, when you try to use it.
       */
-  NeighborhoodSettings(d) {
-    const cast = this.bridge["\u1C7A\u1C7ANeighborhoodSettingsCast"];
+  NeighborhoodSettingsV1(d) {
+    const cast = this.bridge["\u1C7A\u1C7ANeighborhoodSettingsV1Cast"];
     return cast.fromUplcData(d);
   }
   /* structReader helper */
@@ -26998,6 +28183,76 @@ class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
     return cast.fromUplcData(d);
   }
   /* structReader helper */
+}
+class NeighborhoodStateHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    NeighborhoodStateSchema,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Preproduction"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+   */
+  get Preproduction() {
+    const uplc = this.mkUplcData(
+      { Preproduction: {} },
+      "NeighborhoodData::NeighborhoodState.Preproduction"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
+  /**
+   * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Active"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+   */
+  get Active() {
+    const uplc = this.mkUplcData(
+      { Active: {} },
+      "NeighborhoodData::NeighborhoodState.Active"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
+  /**
+   * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.UpdatePending"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+   */
+  get UpdatePending() {
+    const uplc = this.mkUplcData(
+      { UpdatePending: {} },
+      "NeighborhoodData::NeighborhoodState.UpdatePending"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
+  /**
+   * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.UpdateDisputed"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+   */
+  get UpdateDisputed() {
+    const uplc = this.mkUplcData(
+      { UpdateDisputed: {} },
+      "NeighborhoodData::NeighborhoodState.UpdateDisputed"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
+  /**
+   * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Retired"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4***
+   */
+  get Retired() {
+    const uplc = this.mkUplcData(
+      { Retired: {} },
+      "NeighborhoodData::NeighborhoodState.Retired"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
 }
 class FeeSourceHelper extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -27768,6 +29023,15 @@ class SpendingActivityHelper extends EnumBridge {
     }, "NeighborhoodPolicy::SpendingActivity.UpdatingRecord");
     return uplc;
   }
+  /**
+   * generates  UplcData for ***"NeighborhoodPolicy::SpendingActivity.ActivatingNeighborhood"***
+   */
+  ActivatingNeighborhood(id) {
+    const uplc = this.mkUplcData({
+      ActivatingNeighborhood: id
+    }, "NeighborhoodPolicy::SpendingActivity.ActivatingNeighborhood");
+    return uplc;
+  }
 }
 class MintingActivityHelper extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -28238,6 +29502,20 @@ class SpendingActivityHelperNested extends EnumBridge {
     const uplc = this.mkUplcData({
       UpdatingRecord: id
     }, "NeighborhoodPolicy::SpendingActivity.UpdatingRecord");
+    return uplc;
+  }
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::SpendingActivity.ActivatingNeighborhood"***
+  * @remarks
+  * #### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  ActivatingNeighborhood(id) {
+    const uplc = this.mkUplcData({
+      ActivatingNeighborhood: id
+    }, "NeighborhoodPolicy::SpendingActivity.ActivatingNeighborhood");
     return uplc;
   }
 }
@@ -28737,6 +30015,26 @@ class cctx_CharterInputTypeHelper extends EnumBridge {
   }
   /*multiFieldVariant enum accessor*/
 }
+class NeighborhoodSettingsHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    NeighborhoodSettingsSchema,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * generates  UplcData for ***"NeighborhoodSettings::NeighborhoodSettings.V1"***
+   * @remarks - ***NeighborhoodSettingsV1Like*** is the same as the expanded field-type.
+   */
+  V1(s) {
+    const uplc = this.mkUplcData({
+      V1: s
+    }, "NeighborhoodSettings::NeighborhoodSettings.V1");
+    return uplc;
+  }
+}
 class dgd_DataSrcHelper extends EnumBridge {
   /*mkEnumHelperClass*/
   /**
@@ -28838,6 +30136,48 @@ const DelegationDetailSchema = {
         "kind": "internal",
         "name": "ByteArray"
       }
+    }
+  ]
+};
+const NeighborhoodStateSchema = {
+  "kind": "enum",
+  "name": "NeighborhoodState",
+  "id": "__module__NeighborhoodData__NeighborhoodState[]",
+  "variantTypes": [
+    {
+      "kind": "variant",
+      "tag": 0,
+      "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
+      "name": "Preproduction",
+      "fieldTypes": []
+    },
+    {
+      "kind": "variant",
+      "tag": 1,
+      "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
+      "name": "Active",
+      "fieldTypes": []
+    },
+    {
+      "kind": "variant",
+      "tag": 2,
+      "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
+      "name": "UpdatePending",
+      "fieldTypes": []
+    },
+    {
+      "kind": "variant",
+      "tag": 3,
+      "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
+      "name": "UpdateDisputed",
+      "fieldTypes": []
+    },
+    {
+      "kind": "variant",
+      "tag": 4,
+      "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
+      "name": "Retired",
+      "fieldTypes": []
     }
   ]
 };
@@ -29054,7 +30394,7 @@ const RevenueModelSchema = {
 };
 const AppInfoSchema = {
   "kind": "struct",
-  "format": "map",
+  "format": "list",
   "id": "__module__NeighborhoodData__AppInfo[]",
   "name": "AppInfo",
   "fieldTypes": [
@@ -29063,8 +30403,7 @@ const AppInfoSchema = {
       "type": {
         "kind": "internal",
         "name": "String"
-      },
-      "key": "url"
+      }
     },
     {
       "name": "revenueModel",
@@ -29200,8 +30539,21 @@ const AppInfoSchema = {
             }
           ]
         }
-      },
-      "key": "revMdl"
+      }
+    },
+    {
+      "name": "name",
+      "type": {
+        "kind": "internal",
+        "name": "String"
+      }
+    },
+    {
+      "name": "description",
+      "type": {
+        "kind": "internal",
+        "name": "String"
+      }
     }
   ]
 };
@@ -29245,6 +30597,38 @@ const NodeOpsInfoSchema = {
     }
   ]
 };
+const UpdateInfoSchema = {
+  "kind": "struct",
+  "format": "map",
+  "id": "__module__NeighborhoodData__UpdateInfo[]",
+  "name": "UpdateInfo",
+  "fieldTypes": [
+    {
+      "name": "name",
+      "type": {
+        "kind": "internal",
+        "name": "String"
+      },
+      "key": "nm"
+    },
+    {
+      "name": "description",
+      "type": {
+        "kind": "internal",
+        "name": "String"
+      },
+      "key": "dsc"
+    },
+    {
+      "name": "url",
+      "type": {
+        "kind": "internal",
+        "name": "String"
+      },
+      "key": "url"
+    }
+  ]
+};
 const NeighborhoodDataSchema = {
   "kind": "struct",
   "format": "map",
@@ -29276,26 +30660,56 @@ const NeighborhoodDataSchema = {
       "key": "mt"
     },
     {
-      "name": "name",
+      "name": "state",
       "type": {
-        "kind": "internal",
-        "name": "String"
+        "kind": "enum",
+        "name": "NeighborhoodState",
+        "id": "__module__NeighborhoodData__NeighborhoodState[]",
+        "variantTypes": [
+          {
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
+            "name": "Preproduction",
+            "fieldTypes": []
+          },
+          {
+            "kind": "variant",
+            "tag": 1,
+            "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
+            "name": "Active",
+            "fieldTypes": []
+          },
+          {
+            "kind": "variant",
+            "tag": 2,
+            "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
+            "name": "UpdatePending",
+            "fieldTypes": []
+          },
+          {
+            "kind": "variant",
+            "tag": 3,
+            "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
+            "name": "UpdateDisputed",
+            "fieldTypes": []
+          },
+          {
+            "kind": "variant",
+            "tag": 4,
+            "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
+            "name": "Retired",
+            "fieldTypes": []
+          }
+        ]
       },
-      "key": "nm"
-    },
-    {
-      "name": "description",
-      "type": {
-        "kind": "internal",
-        "name": "String"
-      },
-      "key": "dsc"
+      "key": "st"
     },
     {
       "name": "appInfo",
       "type": {
         "kind": "struct",
-        "format": "map",
+        "format": "list",
         "id": "__module__NeighborhoodData__AppInfo[]",
         "name": "AppInfo",
         "fieldTypes": [
@@ -29304,8 +30718,7 @@ const NeighborhoodDataSchema = {
             "type": {
               "kind": "internal",
               "name": "String"
-            },
-            "key": "url"
+            }
           },
           {
             "name": "revenueModel",
@@ -29441,8 +30854,21 @@ const NeighborhoodDataSchema = {
                   }
                 ]
               }
-            },
-            "key": "revMdl"
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "kind": "internal",
+              "name": "String"
+            }
+          },
+          {
+            "name": "description",
+            "type": {
+              "kind": "internal",
+              "name": "String"
+            }
           }
         ]
       },
@@ -29491,6 +30917,45 @@ const NeighborhoodDataSchema = {
         ]
       },
       "key": "ops"
+    },
+    {
+      "name": "updateInfo",
+      "type": {
+        "kind": "option",
+        "someType": {
+          "kind": "struct",
+          "format": "map",
+          "id": "__module__NeighborhoodData__UpdateInfo[]",
+          "name": "UpdateInfo",
+          "fieldTypes": [
+            {
+              "name": "name",
+              "type": {
+                "kind": "internal",
+                "name": "String"
+              },
+              "key": "nm"
+            },
+            {
+              "name": "description",
+              "type": {
+                "kind": "internal",
+                "name": "String"
+              },
+              "key": "dsc"
+            },
+            {
+              "name": "url",
+              "type": {
+                "kind": "internal",
+                "name": "String"
+              },
+              "key": "url"
+            }
+          ]
+        }
+      },
+      "key": "upd"
     }
   ]
 };
@@ -29627,26 +31092,56 @@ const DelegateDatumSchema = {
                 "key": "mt"
               },
               {
-                "name": "name",
+                "name": "state",
                 "type": {
-                  "kind": "internal",
-                  "name": "String"
+                  "kind": "enum",
+                  "name": "NeighborhoodState",
+                  "id": "__module__NeighborhoodData__NeighborhoodState[]",
+                  "variantTypes": [
+                    {
+                      "kind": "variant",
+                      "tag": 0,
+                      "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
+                      "name": "Preproduction",
+                      "fieldTypes": []
+                    },
+                    {
+                      "kind": "variant",
+                      "tag": 1,
+                      "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
+                      "name": "Active",
+                      "fieldTypes": []
+                    },
+                    {
+                      "kind": "variant",
+                      "tag": 2,
+                      "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
+                      "name": "UpdatePending",
+                      "fieldTypes": []
+                    },
+                    {
+                      "kind": "variant",
+                      "tag": 3,
+                      "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
+                      "name": "UpdateDisputed",
+                      "fieldTypes": []
+                    },
+                    {
+                      "kind": "variant",
+                      "tag": 4,
+                      "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
+                      "name": "Retired",
+                      "fieldTypes": []
+                    }
+                  ]
                 },
-                "key": "nm"
-              },
-              {
-                "name": "description",
-                "type": {
-                  "kind": "internal",
-                  "name": "String"
-                },
-                "key": "dsc"
+                "key": "st"
               },
               {
                 "name": "appInfo",
                 "type": {
                   "kind": "struct",
-                  "format": "map",
+                  "format": "list",
                   "id": "__module__NeighborhoodData__AppInfo[]",
                   "name": "AppInfo",
                   "fieldTypes": [
@@ -29655,8 +31150,7 @@ const DelegateDatumSchema = {
                       "type": {
                         "kind": "internal",
                         "name": "String"
-                      },
-                      "key": "url"
+                      }
                     },
                     {
                       "name": "revenueModel",
@@ -29792,8 +31286,21 @@ const DelegateDatumSchema = {
                             }
                           ]
                         }
-                      },
-                      "key": "revMdl"
+                      }
+                    },
+                    {
+                      "name": "name",
+                      "type": {
+                        "kind": "internal",
+                        "name": "String"
+                      }
+                    },
+                    {
+                      "name": "description",
+                      "type": {
+                        "kind": "internal",
+                        "name": "String"
+                      }
                     }
                   ]
                 },
@@ -29842,6 +31349,45 @@ const DelegateDatumSchema = {
                   ]
                 },
                 "key": "ops"
+              },
+              {
+                "name": "updateInfo",
+                "type": {
+                  "kind": "option",
+                  "someType": {
+                    "kind": "struct",
+                    "format": "map",
+                    "id": "__module__NeighborhoodData__UpdateInfo[]",
+                    "name": "UpdateInfo",
+                    "fieldTypes": [
+                      {
+                        "name": "name",
+                        "type": {
+                          "kind": "internal",
+                          "name": "String"
+                        },
+                        "key": "nm"
+                      },
+                      {
+                        "name": "description",
+                        "type": {
+                          "kind": "internal",
+                          "name": "String"
+                        },
+                        "key": "dsc"
+                      },
+                      {
+                        "name": "url",
+                        "type": {
+                          "kind": "internal",
+                          "name": "String"
+                        },
+                        "key": "url"
+                      }
+                    ]
+                  }
+                },
+                "key": "upd"
               }
             ]
           }
@@ -30413,6 +31959,21 @@ const SpendingActivitySchema = {
           }
         }
       ]
+    },
+    {
+      "kind": "variant",
+      "tag": 1,
+      "id": "__module__NeighborhoodPolicy__SpendingActivity[]__ActivatingNeighborhood",
+      "name": "ActivatingNeighborhood",
+      "fieldTypes": [
+        {
+          "name": "id",
+          "type": {
+            "kind": "internal",
+            "name": "ByteArray"
+          }
+        }
+      ]
     }
   ]
 };
@@ -30846,6 +32407,21 @@ const DelegateActivitySchema = {
                 "tag": 0,
                 "id": "__module__NeighborhoodPolicy__SpendingActivity[]__UpdatingRecord",
                 "name": "UpdatingRecord",
+                "fieldTypes": [
+                  {
+                    "name": "id",
+                    "type": {
+                      "kind": "internal",
+                      "name": "ByteArray"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 1,
+                "id": "__module__NeighborhoodPolicy__SpendingActivity[]__ActivatingNeighborhood",
+                "name": "ActivatingNeighborhood",
                 "fieldTypes": [
                   {
                     "name": "id",
@@ -35852,11 +37428,11 @@ const CapoCtxSchema = {
     }
   ]
 };
-const NeighborhoodSettingsSchema = {
+const NeighborhoodSettingsV1Schema = {
   "kind": "struct",
   "format": "map",
-  "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
-  "name": "NeighborhoodSettings",
+  "id": "__module__NeighborhoodSettings__NeighborhoodSettingsV1[]",
+  "name": "NeighborhoodSettingsV1",
   "fieldTypes": [
     {
       "name": "minRegistrationFee",
@@ -35876,6 +37452,48 @@ const NeighborhoodSettingsSchema = {
     }
   ]
 };
+const NeighborhoodSettingsSchema = {
+  "kind": "enum",
+  "name": "NeighborhoodSettings",
+  "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+  "variantTypes": [
+    {
+      "kind": "variant",
+      "tag": 0,
+      "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]__V1",
+      "name": "V1",
+      "fieldTypes": [
+        {
+          "name": "s",
+          "type": {
+            "kind": "struct",
+            "format": "map",
+            "id": "__module__NeighborhoodSettings__NeighborhoodSettingsV1[]",
+            "name": "NeighborhoodSettingsV1",
+            "fieldTypes": [
+              {
+                "name": "minRegistrationFee",
+                "type": {
+                  "kind": "internal",
+                  "name": "Value"
+                },
+                "key": "minRegFee"
+              },
+              {
+                "name": "minNbhStake",
+                "type": {
+                  "kind": "internal",
+                  "name": "Value"
+                },
+                "key": "minStk"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+};
 const AbstractSettingsForNeighborhoodSchema = {
   "kind": "struct",
   "format": "map",
@@ -35885,26 +37503,44 @@ const AbstractSettingsForNeighborhoodSchema = {
     {
       "name": "NeighborhoodSettings",
       "type": {
-        "kind": "struct",
-        "format": "map",
-        "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+        "kind": "enum",
         "name": "NeighborhoodSettings",
-        "fieldTypes": [
+        "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+        "variantTypes": [
           {
-            "name": "minRegistrationFee",
-            "type": {
-              "kind": "internal",
-              "name": "Value"
-            },
-            "key": "minRegFee"
-          },
-          {
-            "name": "minNbhStake",
-            "type": {
-              "kind": "internal",
-              "name": "Value"
-            },
-            "key": "minStk"
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]__V1",
+            "name": "V1",
+            "fieldTypes": [
+              {
+                "name": "s",
+                "type": {
+                  "kind": "struct",
+                  "format": "map",
+                  "id": "__module__NeighborhoodSettings__NeighborhoodSettingsV1[]",
+                  "name": "NeighborhoodSettingsV1",
+                  "fieldTypes": [
+                    {
+                      "name": "minRegistrationFee",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Value"
+                      },
+                      "key": "minRegFee"
+                    },
+                    {
+                      "name": "minNbhStake",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Value"
+                      },
+                      "key": "minStk"
+                    }
+                  ]
+                }
+              }
+            ]
           }
         ]
       },
@@ -36080,23 +37716,24 @@ const DgDataDetailsSchema = {
 class NeighborhoodController extends DelegatedDataContract {
   dataBridgeClass = NeighborhoodPolicyDataBridge;
   scriptBundle() {
-    return NeighborhoodBundle.create();
+    return NeighborhoodRegistryBundle.create();
   }
   idPrefix = "nbhd";
   get delegateName() {
     return "nbhRegistry";
   }
   get recordTypeName() {
-    return "dredNbh";
+    return "DredNbh";
   }
   exampleData() {
     return {
       // id: "nbhd-0000000000",
       // type: "dredNbh",
       memberToken: "member-owner",
-      name: "Default Neighborhood",
-      description: "A default neighborhood for Dred services",
+      state: { Preproduction: {} },
       appInfo: {
+        name: "Default Neighborhood",
+        description: "A default neighborhood for Dred services",
         url: "https://dred.com",
         revenueModel: [
           {
@@ -36110,6 +37747,7 @@ class NeighborhoodController extends DelegatedDataContract {
           }
         ]
       },
+      updateInfo: void 0,
       opsInfo: {
         minNodes: 3n,
         maxNodes: 13n,
@@ -36121,18 +37759,42 @@ class NeighborhoodController extends DelegatedDataContract {
   get capo() {
     return super.capo;
   }
-  async mkTxnRegisteringNode(nodeReg) {
+  async mkTxnRegisteringNeighborhood(nbhReg, initialTcx) {
     await this.capo.getMintDelegate();
+    const { capo } = this;
+    const tcx0 = initialTcx || this.mkTcx(
+      "registering dred neighborhood"
+    );
+    const tcx1 = await capo.mkTxnWithMemberInfo(void 0, tcx0);
     return this.mkTxnCreateRecord(
       {
         activity: this.activity.MintingActivities.$seeded$CreatingRecord,
         data: {
-          ...nodeReg
-          // memberToken: tcx.state.memberToken.name,
+          ...nbhReg,
+          memberToken: tcx1.state.memberToken.name
         }
         // addedUtxoValue: makeValue(initialVaultStake),
-      }
-      // tcx
+      },
+      tcx1
+    );
+  }
+  async mkTxnUpdatingNeighborhood(txnName, nbh, options, initialTcx) {
+    const {
+      activity = this.activity.SpendingActivities.UpdatingRecord(nbh.data.id),
+      ...otherOptions
+    } = options;
+    const tcx0 = initialTcx || this.mkTcx(
+      "updating dred neighborhood"
+    );
+    const tcx1 = await this.capo.mkTxnWithMemberInfo(void 0, tcx0);
+    return this.mkTxnUpdateRecord(
+      txnName,
+      nbh,
+      {
+        activity,
+        ...otherOptions
+      },
+      tcx1
     );
   }
   requirements() {
@@ -36148,7 +37810,7 @@ class DredCapo extends StellarTokenomicsCapo {
     return {
       settings: true,
       DredNode: true,
-      DredNeighborhood: true
+      DredNbh: true
       /* Add other feature-flag defaults here */
     };
   }
@@ -36193,7 +37855,7 @@ class DredCapo extends StellarTokenomicsCapo {
     if (!charterData) {
       charterData = await this.findCharterData();
     }
-    return this.getDgDataController("nbhRegistry", {
+    return this.getDgDataController("DredNbh", {
       charterData
     });
   }
@@ -36209,15 +37871,18 @@ class DredCapo extends StellarTokenomicsCapo {
    */
   async mkInitialSettings() {
     return {
-      nodeOpSettings: {
+      nodeOpSettings: { V1: {
         expectedHeartbeatInterval: BigInt(72 * 60 * 60 * 1e3),
         minNodeOperatorStake: makeValue(this.ADA(200n)),
         minNodeRegistrationFee: makeValue(this.ADA(50n)),
-        requiredNodeUptime: 0.95
-      },
+        requiredNodeUptime: 0.95,
+        minValidations: 1
+      } },
       nbhSettings: {
-        minNbhStake: makeValue(this.ADA(5000n)),
-        minRegistrationFee: makeValue(this.ADA(4000n))
+        V1: {
+          minNbhStake: makeValue(this.ADA(5000n)),
+          minRegistrationFee: makeValue(this.ADA(4000n))
+        }
       }
     };
   }
@@ -36225,11 +37890,13 @@ class DredCapo extends StellarTokenomicsCapo {
    * Finds all the node-registration records
    * @remarks
    * This is a convenience method for finding all the node-registration records.
-   * It is equivalent to calling `findDelegatedDataUtxos` with the type `"dredNode"`.
+   * It is equivalent to calling `findDelegatedDataUtxos` with the type `"DredNode"`.
    */
-  async findNodeOpEntries() {
+  async findNodeOpEntries(options) {
     return this.findDelegatedDataUtxos({
-      type: "dredNode"
+      type: "DredNode",
+      charterData: options.charterData,
+      capoUtxos: options.capoUtxos
     });
   }
   /**
@@ -36253,8 +37920,8 @@ class DredCapo extends StellarTokenomicsCapo {
       mintDelegate: defineRole("mintDgt", MyMintSpendDelegate, {}),
       govAuthority,
       settings: defineRole("dgDataPolicy", ProtocolSettingsController, {}),
-      DredNode: defineRole("dgDataPolicy", NodeRegistryController, {})
-      // nbhRegistry: defineRole("dgDataPolicy", NeighborhoodController, {}),
+      DredNode: defineRole("dgDataPolicy", NodeRegistryController, {}),
+      DredNbh: defineRole("dgDataPolicy", NeighborhoodController, {})
       /* Add other delegate roles here */
       // optional tokenomics features:
       // mktSale: defineRole(
