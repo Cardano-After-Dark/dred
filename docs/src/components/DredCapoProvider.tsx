@@ -37,6 +37,7 @@ export function DredCapoProvider({
     const apiKey = propKey ?? bfPreprodKey
 
     return (
+        //@ts-ignore for now
         <DredCapoProviderRaw
             targetNetwork="preprod"
             blockfrostKey={apiKey}
@@ -50,6 +51,7 @@ export function DredCapoProvider({
             onStatusChange={updaters.updateDAppStatus}
             onUserInfo={updaters.updateUserInfo}
             onContextChange={updaters.updateProvider}
+                        
         >
             {children as any}
         </DredCapoProviderRaw>
