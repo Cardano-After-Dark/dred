@@ -85,7 +85,7 @@ export class NodeRegistryController extends DelegatedDataContract<
         const mintDelegate = await this.capo.getMintDelegate();
         const {capo} = this
         const tcx0 = initialTcx || this.mkTcx(
-            "registering dred node"
+            "register dred node"
         );
 
         const tcx1 = await capo.mkTxnWithMemberInfo(undefined, tcx0);
@@ -100,6 +100,13 @@ export class NodeRegistryController extends DelegatedDataContract<
             charterData,
         });
 
+        const nodeReg2 : minimalNodeRegistrationData = {
+            ...nodeReg,
+            nodeDetails: {
+                ...nodeReg.nodeDetails,
+                pubKeyHash: makePubKey(nodeReg.nodeDetails.pubKey).hash(),
+            },
+        };
 
         // const tcx = await this.capo.mkTxnWithMemberInfo();
         return this.mkTxnCreateRecord(
@@ -107,7 +114,7 @@ export class NodeRegistryController extends DelegatedDataContract<
                 activity:
                     this.activity.MintingActivities.$seeded$CreatingRecord,
                 data: {
-                    ...nodeReg,
+                    ...nodeReg2,
                     memberToken: tcx2.state.memberToken.name,
                 },
                 // addedUtxoValue: makeValue(initialVaultStake),
@@ -170,11 +177,22 @@ export class NodeRegistryController extends DelegatedDataContract<
             }),
         })
 
+        const pubKey = options.updatedFields.nodeDetails?.pubKey ?? item.data?.nodeDetails.pubKey;
+        if (!pubKey) throw new Error("missing required pubKey");
+
         return super.mkTxnUpdateRecord(txnName, item, {
             // default activity
             activity: this.activity.SpendingActivities.UpdatingRecord(item.data!.id),
             // ..., can be overridden by options
             ...options,
+            updatedFields: {
+                ...options.updatedFields,
+                nodeDetails: {
+                    ...item.data!.nodeDetails,
+                    ...options.updatedFields.nodeDetails,
+                    pubKey: makePubKey(pubKey).toHex(),
+                }
+            }
         }, tcx2)
     }
 
