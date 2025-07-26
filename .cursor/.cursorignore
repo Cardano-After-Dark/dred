@@ -1,0 +1,16 @@
+# Cursor Ignore File
+# Files and directories listed here will be ignored by Cursor AI
+
+# Private notes - not for AI context
+.notes/
+.ai/.notes/
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+
+# Build artifacts
+dist/
+build/
+*.log 

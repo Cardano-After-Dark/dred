@@ -48,6 +48,7 @@ let listener: Server; // http.Server from node interfaces
 let servers: DredServer[] = [];
 let server: DredServer; // a single server that tests can push stuff through by default
 let clientCleanupList: Array<DredClient> = [];
+let replicatorClientCleanupList: Array<DredClient> = [];
 
 const rootLogger = zonedLogger("root");
 const monitor = process.env.REDIS_MONITOR ? new Redis(6379, "localhost", { db: 9 }) : undefined;
@@ -119,15 +120,47 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-    testLogger.debug("afterEach: cleaning up clients");
+    testLogger.debug("afterEach: cleaning up");
+    
+    // FIRST: Clean up replication before touching individual clients
+    for (const server of servers) {
+        try {
+            testLogger.debug("afterEach: cleaning up replication for server", server.serverId);
+            await server.cleanupReplication();
+        } catch (error) {
+            testLogger.debug(`afterEach: replication cleanup error: ${error}`);
+        }
+    }
+    
+    // SECOND: Clean up replicator-owned clients (they should already be cleaned by replication cleanup)
+    testLogger.debug("afterEach: cleaning up replicator clients");
+    for (const client of replicatorClientCleanupList) {
+        try {
+            // Defensive disconnect - these should already be disconnected by replicator cleanup
+            client.disconnect();
+        } catch (error) {
+            testLogger.debug(`afterEach: replicator client disconnect error (likely already disconnected): ${error}`);
+        }
+    }
+    replicatorClientCleanupList = [];
+    
+    // THIRD: Clean up server-managed clients
+    testLogger.debug("afterEach: cleaning up server-managed clients");
     for (const client of clientCleanupList) {
-        client.disconnect();
+        try {
+            // Defensive disconnect - ignore if already disconnected
+            client.disconnect();
+        } catch (error) {
+            testLogger.debug(`afterEach: client disconnect error (likely already disconnected): ${error}`);
+        }
     }
     clientCleanupList = [];
+    
+    // FOURTH: Reset servers (without replication cleanup since we already did it)
     for (const server of servers) {
         const redis = server?.redis;
         if (redis) {
-            testLogger.debug("afterEach: closing server", server.myServerInfo?.port);
+            testLogger.debug("afterEach: resetting server", server.myServerInfo?.port);
 
             await server.reset(true, (redis) => {
                 testLogger.debug("afterEach: flushing redis");
@@ -188,12 +221,21 @@ export async function testSetup() {
     // server = server || (await createServer({ insecure: true }));
     // app = app || server.api;
 
-    const realMkClient = server.mkClient.bind(server);
-    vi.spyOn(server, "mkClient").mockImplementation(function (...args) {
-        const client = realMkClient(...args);
-        clientCleanupList.push(client);
-        return client;
-    });
+    // Set up client tracking spy for ALL servers (not just the first one)
+    for (const s of servers) {
+        const realMkClient = s.mkClient.bind(s);
+        vi.spyOn(s, "mkClient").mockImplementation(function (...args) {
+            const client = realMkClient(...args);
+            // Track clients by ownership type
+            const isServerManaged = (client as any)._serverManaged !== false;
+            if (isServerManaged) {
+                clientCleanupList.push(client);
+            } else {
+                replicatorClientCleanupList.push(client);
+            }
+            return client;
+        });
+    }
 
     const info = server.myServerInfo;
     if (info === null) throw new Error(`server is not listening`);

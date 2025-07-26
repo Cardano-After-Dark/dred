@@ -380,16 +380,146 @@ export class DredServer {
         //       listen(port: number, hostname: string, callback?: () => void): http.Server;
     }
 
+
+    // ------------------------------------------------------------
+    // Solution to avoid duplicate messages (replication)
+    // ------------------------------------------------------------
+
+    // knownMessages = new RedisSet(this.redis!.duplicate()); // removed in favor of lazy initialization
+    
+    /**
+     * Known message set. Lazily initialized to avoid undefined errors.
+    */
+   get knownMessages(): RedisSet {
+       if (!this._knownMessages) {
+           // Use a specific key name for the deduplication set instead of abstract
+           this._knownMessages = new RedisSet(this.redis!.duplicate(), `${this.nbh}::knownMessages`);
+        }
+        return this._knownMessages;
+    }
+    private _knownMessages?: RedisSet;
+
+    /**
+     * Ensure a message is processed only once. Use it to avoid duplicate messages.
+     * 
+     * Always await this method to prevent race conditions and blockings. 
+     * 
+     * 
+     * @param channel channel name
+     * @param msgId ocid
+     * @param msg message content
+     * @param messageDetails optional
+     * @returns message id if published, undefined if duplicate
+     */
+    async ensureMessageProcessedOnce(
+        channel: string, 
+        msgId: string, 
+        msg: string, 
+        messageDetails?: any
+    ): Promise<string | undefined> {
+        try {
+            // composite key to ensure uniqueness across channels
+            const deduplicationKey = `${channel}:::${msgId}`;
+            
+            // DEBUG: Add detailed logging
+            this.warn(`🔍 DEDUP CHECK [${this.serverId}] checking: ${deduplicationKey}`);
+            
+            // Check if we've already processed this exact message
+            const alreadyProcessed = await this.knownMessages.has(deduplicationKey);
+            
+            this.warn(`🔍 DEDUP RESULT [${this.serverId}] ${deduplicationKey} -> already processed: ${alreadyProcessed}`);
+            
+            if (alreadyProcessed) {
+                this.warn(`❌ DEDUP SKIP [${this.serverId}] Duplicate message detected, skipping: ${deduplicationKey}`);
+                return undefined; // Signal that message was not posted (duplicate)
+            }
+            
+            // Mark message as being processed (BEFORE actually posting to prevent race conditions)
+            await this.knownMessages.add(deduplicationKey);
+            this.warn(`✅ DEDUP ADD [${this.serverId}] Added to known messages: ${deduplicationKey}`);
+            
+            // Actually post the message to the channel
+            const publishedMessageId = await this.publishMessageToChannel(channel, msg, messageDetails);
+            
+            this.warn(`✅ DEDUP PUBLISH [${this.serverId}] Message successfully deduplicated and posted: ${deduplicationKey} -> ${publishedMessageId}`);
+            return publishedMessageId;
+            
+        } catch (error) {
+            // If we fail after marking as processed, we have a problem - log it
+            this.warn(`Error in message deduplication for ${channel}:::${msgId}:`, error);
+            throw error; // Re-throw so caller can handle appropriately
+        }
+    }
+
+    /**
+     * Publish a message directly without dedup. 
+     * Always await this method to prevent blocking caller and ensure message is published.
+     * 
+     * @returns id of the published message
+     */
+    async publishMessageToChannel(
+        channelId: string, 
+        msg: string, 
+        messageDetails: any = {}
+    ): Promise<string> {
+        try {
+            // Get channel producer for this server
+            const producer = await this.mkChannelProducer(channelId);
+            
+            // Produce the message on the channel with provided details
+            const publishedMessageId = await this.channelConn.produce(producer, msg, messageDetails);
+            
+            this.log(`Message published to channel ${channelId}: ${publishedMessageId}`);
+            return publishedMessageId;
+            
+        } catch (error) {
+            this.warn(`Failed to publish message to channel ${channelId}:`, error);
+            throw error; // Let caller handle the error
+        }
+    }
+
+    async clearMessageDeduplicationCache(olderThanMs?: number): Promise<void> {
+        // TODO: implement time-based cleanup if needed, useful for testing or reset 
+    }
+
+
+
+    // async ensureMessageProcessedOnce(channel: string, msgId, msg: string) {
+    //     // create composite key to avoid duplicates
+    //     const key = `${channel}:::${msgId}`;
+    //     if (await this.knownMessages.has(key)) {
+    //         return;
+    //     }
+    //     this.knownMessages.add(key)
+    //     this.actuallyPost(channel, msg)
+    // }
+
+    
+    // async actuallyPost(channelId: string,msg: string, messageDetails: any) {
+        
+    //     // Get channel producer for home server
+    //     const producer = await this.mkChannelProducer(channelId);
+        
+    //     // Produce the replicated message on the home server
+    //     const id = await this.channelConn.produce(producer, msg, messageDetails);
+        
+    //     return id;
+    // }
+    // ------------------------------------------------------------
+    
     async setupReplication() {
         if (this.replicator) {
             this.warn("Replication already setup");
             return; // Idempotent - safe to call multiple times
         }
+        this.warn(`${this.serverId} Starting replication setup...`);
         try {
             await asyncDelay(1000);
+            this.warn(`${this.serverId} Creating replicator...`);
             this.replicator = new DredReplicator(this, this.discovery);
+            this.warn(`${this.serverId} Initializing replicator...`);
             await this.replicator.initialize();
-            this.log(`Replication setup complete`);
+            this.warn(`${this.serverId} Replication setup complete - replicator exists: ${!!this.replicator}`);
 
             // const hosts = await this.discovery.getHostList();
             // const otherHosts = hosts.filter(host => host.serverId !== this.serverId);
@@ -409,9 +539,10 @@ export class DredServer {
             // this.log(`Replication setup complete with ${otherHosts.length} peer servers`);
         } catch (error: any) {
             // Cleanup on failure
+            this.warn(`${this.serverId} ERROR during replication setup: ${error}`);
+            this.warn(`${this.serverId} ERROR stack:`, error.stack);
             this.replicator = undefined;
-            this.warn(`Failed to setup replication: ${error}`);
-            this.warn(`Failed to setup replication`, error.stack);
+            this.warn(`${this.serverId} Failed to setup replication - nullified replicator`);
             throw error; // Re-throw if caller needs to handle
         }
     }
@@ -421,16 +552,21 @@ export class DredServer {
             this.warn("Replication not setup");
             return; // Idempotent - safe to call multiple times
         }
+        this.warn(`${this.serverId} Starting replication cleanup...`);
         try {
-            await this.replicator.cleanup();
-            this.log("Replication client cleanup complete");
-
-            // await this.replicationClient.cleanup();
-            // this.replicationClient = undefined;
+            // Add timeout to prevent hanging during cleanup
+            await Promise.race([
+                this.replicator.cleanup(),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error("Replication cleanup timeout")), 5000)
+                )
+            ]);
+            this.warn(`${this.serverId} Replication cleanup complete`);
         } catch (error) {
-            this.warn(`Error during replication cleanup: ${error}`);
+            this.warn(`${this.serverId} Error during replication cleanup: ${error}`);
             // Continue cleanup even if error occurs
         } finally {
+            this.warn(`${this.serverId} Nullifying replicator reference`);
             this.replicator = undefined; // Always nullify, even on error
         }
     }
@@ -488,19 +624,20 @@ export class DredServer {
         return addr;
     }
 
-    // create client and wait for key generation.
-    async mkClientAndGenerateKey(
-        serverSelection: string,
-        clientArgs: Partial<DredClientArgs> = {},
-    ): Promise<DredClient> {
-        const client = this.mkClient(serverSelection, clientArgs);
-        await client.generateKey();
-        return client;
-    }
-
-    // consider automatically generating a key
-    // we could add this to everything calling here.
-    mkClient(serverSelection: string, clientArgs: Partial<DredClientArgs> = {}): DredClient {
+    /**
+     * Create a DredClient instance, but does not generate a key. 
+     * Note: The caller should call generateKey() after creating the client.
+     * 
+     * @param serverSelection - The server ID to connect to.
+     * @param clientArgs - Additional client configuration options.
+     * @param serverManaged - Whether the client is managed by the server (affects cleanup).
+     * @returns A DredClient instance.
+     */
+    mkClient(
+            serverSelection: string, 
+            clientArgs: Partial<DredClientArgs> = {}, 
+            serverManaged: boolean = true
+    ): DredClient {
         const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
         if (!discovery) throw new Error("discovery is required");
 
@@ -513,13 +650,18 @@ export class DredServer {
             hosts: [oneHost],
         });
 
-        return new DredClient({
+        const client = new DredClient({
             // name: `${serverSelection || ""}-${clientIndex++}`,
             ...this.clientArgs,
             ...clientArgs,
             neighborhood: this.nbh,
             discovery: singleDiscovery,
         });
+
+        // Mark client ownership for cleanup tracking
+        (client as any)._serverManaged = serverManaged;
+        
+        return client;
     }
 
     log(a1: string, ...args: any[]) {
@@ -894,8 +1036,14 @@ export class DredServer {
                 error: "missing required 'type' attribute for posting message in channel",
             });
         } else {
-            const id = await this.channelConn.produce(tunnelProducer, msg, moreDetails);
-            res.json({ id, status: "created" });
+            // Use deduplication system to prevent replication loops
+            const id = await this.ensureMessageProcessedOnce(channelId, moreDetails.ocid, msg, moreDetails);
+            if (id) {
+                res.json({ id, status: "created", ocid: moreDetails.ocid });
+            } else {
+                // Message was a duplicate (shouldn't happen for original messages, but defensive)
+                res.status(409).json({ error: "duplicate message", ocid: moreDetails.ocid });
+            }
         }
         next();
     };

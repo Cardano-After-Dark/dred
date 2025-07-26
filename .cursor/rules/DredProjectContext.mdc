@@ -1,0 +1,131 @@
+---
+description: General Context for this project
+alwaysApply: true
+---
+
+# DRED Project Context & Rules
+
+## Project Overview
+- **Name**: DRED - Distributed messaging system
+- **Architecture**: Node.js server with Redis backend, WebSocket connections
+- **Language**: TypeScript 5.3.3 (strict mode enabled)
+- **Package Manager**: pnpm 10.11.0 (workspace configuration)
+- **Testing**: Vitest with integration tests
+
+## Workspace Structure
+This is a **pnpm workspace** with multiple packages:
+- **Root**: Main server application
+- **src/client/**: WebSocket client implementation (separate package)
+- **docs/**: Documentation site (separate package)
+- **sampleApp/**: Example application (separate package)
+- **onchain/**: Blockchain-related code (separate package)
+- **src/redis/streams/**: Redis streams utility (yarn-based subproject)
+
+## Key Components
+- **Client**: `src/client/` - WebSocket client implementation
+- **Server**: `src/server/` - Express server with WebSocket handling
+- **Replication**: `src/server/DredReplicator.ts` - Message replication between servers
+- **Peer Discovery**: `src/peers/` - Network peer discovery mechanisms
+- **Redis**: `src/redis/` - Redis data structures and operations
+- **Types**: `src/types/` - TypeScript type definitions
+
+## Technology Stack
+- Node.js with Express.js
+- TypeScript 5.3.3 (strict mode enabled)
+- Redis for message storage and pub/sub
+- WebSockets for real-time communication
+- Vitest for testing (single-threaded due to Redis state)
+- Docker for deployment
+- pnpm workspace for monorepo management
+
+## Testing Infrastructure
+Tests run against a **dockerized Redis instance** using Docker Compose:
+- **Redis Service**: `docker-compose up redis` provides Redis on localhost:6379
+- **Test Environment**: Uses `REDIS_URL` environment variable (defaults to "redis://localhost:6379")
+- **Multi-Server Testing**: Tests create multiple DredServer instances connecting to same Redis but different databases
+- **Single-Threaded**: Tests run serially to avoid Redis state conflicts
+
+## Testing Commands
+- `pnpm test` - Run all tests with Vitest
+- `pnpm test replication` - Run specific test suite (replication tests)
+- `pnpm test [pattern]` - Run tests matching pattern/suite name
+- `pnpm testing` - Run tests in watch mode (less commonly used)
+- `pnpm test:debug` - Run tests with debugging
+- `pnpm test:streams` - Run Redis streams tests (separate yarn project)
+
+## Testing Workflow
+1. **Start Redis**: `docker-compose up redis` (or ensure Redis is running locally)
+2. **Run Tests**: `pnpm test` or `pnpm test replication` for specific suites
+3. **Test Pattern**: Tests automatically create/cleanup multiple servers and clients
+4. **Debugging**: Use `pnpm test:debug` with breakpoints for complex issues
+
+## Coding Standards
+- **TypeScript**: Explicit return types, interface over type for objects
+- **Error Handling**: Use Result<T, E> pattern, structured logging
+- **Code Organization**: One class per file, barrel exports, tests in __tests__/
+- **Testing**: Unit tests required, integration tests for complex workflows
+- **Module Resolution**: Node16 with ESM support
+
+## Common Patterns
+- **Message Flow**: Client → Server → Redis → Replication
+- **Peer Discovery**: Multicast → Static configuration → Connection
+- **Channel Management**: Creation, subscription, cleanup with Redis
+- **Connection Management**: WebSocket with automatic reconnection
+
+## Session Workflow
+1. **Discussion Phase**: Analyze requirements thoroughly before implementation
+2. **Implementation Phase**: Only implement after discussion is complete
+3. **Documentation**: Update session files with decisions and changes
+
+## File Organization
+- **Workspace packages**: Each in separate directories with own package.json
+- **Tests**: Located in `__tests__/` directories alongside source code
+- **Platform abstractions**: `platform/server/` and `platform/browser/`
+- **Session management**: `.ai/sessions/x01/`, `.ai/sessions/x02/` folders
+- **Private notes**: `.notes/` folder (ignored by Cursor)
+- **Build output**: `dist/` directory for compiled code
+# DRED Project Context & Rules
+
+## Project Overview
+- **Name**: DRED - Distributed messaging system
+- **Architecture**: Node.js server with Redis backend, WebSocket connections
+- **Language**: TypeScript (strict mode)
+- **Testing**: Jest with integration tests
+
+## Key Components
+- **Client**: `src/client/` - WebSocket client implementation
+- **Server**: `src/server/` - Express server with WebSocket handling
+- **Replication**: `src/server/DredReplicator.ts` - Message replication between servers
+- **Peer Discovery**: `src/peers/` - Network peer discovery mechanisms
+- **Redis**: `src/redis/` - Redis data structures and operations
+- **Types**: `src/types/` - TypeScript type definitions
+
+## Technology Stack
+- Node.js with Express.js
+- TypeScript (strict mode enabled)
+- Redis for message storage and pub/sub
+- WebSockets for real-time communication
+- Jest for testing
+- Docker for deployment
+
+## Coding Standards
+- **TypeScript**: Explicit return types, interface over type for objects
+- **Error Handling**: Use Result<T, E> pattern, structured logging
+- **Code Organization**: One class per file, barrel exports, tests in __tests__/
+- **Testing**: Unit tests required, integration tests for complex workflows
+
+## Common Patterns
+- **Message Flow**: Client → Server → Redis → Replication
+- **Peer Discovery**: Multicast → Static configuration → Connection
+- **Channel Management**: Creation, subscription, cleanup with Redis
+- **Connection Management**: WebSocket with automatic reconnection
+
+## Session Workflow
+1. **Discussion Phase**: Analyze requirements thoroughly before implementation
+2. **Implementation Phase**: Only implement after discussion is complete
+3. **Documentation**: Update session files with decisions and changes
+
+## File Organization
+- `.ai/sessions/x01/`, `.ai/sessions/x02/` - Session management folders
+- `.notes/` - Private notes folder (ignored by Cursor)
+- Source code follows standard Node.js/TypeScript structure
