@@ -194,11 +194,16 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
      * Finds all the node-registration records
      * @remarks
      * This is a convenience method for finding all the node-registration records.
-     * It is equivalent to calling `findDelegatedDataUtxos` with the type `"dredNode"`.
+     * It is equivalent to calling `findDelegatedDataUtxos` with the type `"DredNode"`.
      */
-    async findNodeOpEntries() {
-        return this.findDelegatedDataUtxos<"dredNode", ErgoNodeRegistrationData, unknown>({
-            type: "dredNode",
+    async findNodeOpEntries(options: {
+        charterData: CharterData;
+        capoUtxos?: TxInput[];
+    }) {
+        return this.findDelegatedDataUtxos<"DredNode", ErgoNodeRegistrationData, unknown>({
+            type: "DredNode",
+            charterData: options.charterData,
+            capoUtxos: options.capoUtxos,
         });
     }
 
