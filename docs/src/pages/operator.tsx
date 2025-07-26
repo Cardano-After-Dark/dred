@@ -188,7 +188,7 @@ export function OperatorPage() {
 
   const { foundNetworkName, roles, memberUut, walletAddress } =
     userInfo.value!.value!;
-  const showInfo = (
+  const showInfo = "" ; const t = (
     <pre>
       {JSON.stringify(
         {
@@ -275,7 +275,7 @@ export function OperatorPage() {
         <p className="text-left text-sm text-gray-500">
           Updated {lastUpdate.value.toLocaleString()}
         </p>
-        {/* {showInfo} */}
+        {showInfo}
       </div>
     </div>
   );
