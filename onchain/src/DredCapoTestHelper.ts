@@ -362,8 +362,7 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
     async snapToFirstActivatedNode() {
         throw new Error("never called");
         this.firstActivatedNode();
-    }   
-    
+    }
 
     async firstActivatedNode() {
         await this.bootstrap();
@@ -389,7 +388,6 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
             expectError,
         });
     }
-
 
     async findFirstNeighborhood() {
         const registryDgt = await this.nbhRegistryDgt();
@@ -469,7 +467,7 @@ export class DredCapoTestHelper extends DefaultCapoTestHelper.forCapoClass(DredC
         return this.submitTxnWithBlock(tcx, {
             expectError,
         });
-    }    
+    }
 
     async updateSettings(
         settings: FoundDatumUtxo<ErgoProtocolSettings, any>,

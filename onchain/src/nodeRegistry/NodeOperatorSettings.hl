@@ -6,7 +6,7 @@ import {
     bREQT
 } from StellarHeliosHelpers
 
-struct NodeOperatorSettings {
+struct NodeOperatorSettingsV1 {
     expectedHeartbeatInterval: Duration "ndHbi"
     requiredNodeUptime: Real "ndUpt" // percentage
     minValidations: Int "minVals"
@@ -22,6 +22,22 @@ struct NodeOperatorSettings {
         (self.minNodeOperatorStake.get_lovelace() > 0).trace("minStake ok? ")
     }
 }
+
+enum NodeOperatorSettings {
+    V1 { s: NodeOperatorSettingsV1 }
+    // V2 { s: NodeOperatorSettingsV2 }
+
+    func validate(self) -> Bool {
+        self.switch {
+            V1{s} => s.validate()
+            // V2{s} => s.validate(),
+
+            // non-exhaustion is an error; don't use a default case.
+            // _ => error("invalid node operator settings")
+        }
+    }
+}
+
 
 struct AbstractSettingsForNodeOperator {
     nodeOpSettings: NodeOperatorSettings "nOp"

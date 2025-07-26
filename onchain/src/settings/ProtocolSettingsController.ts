@@ -60,15 +60,19 @@ export class ProtocolSettingsController extends DelegatedDataContract<
     exampleData(): minimalProtocolSettings {
         const settings: minimalProtocolSettings = {
             nodeOpSettings: {
-                expectedHeartbeatInterval: 7 * 24 * 60 * 60 * 1000,
-                minNodeOperatorStake: makeValue(this.ADA(200n)),
-                minNodeRegistrationFee: makeValue(this.ADA(50n)),
-                requiredNodeUptime: 0.95,
-                minValidations: 1,
+                V1: {
+                    expectedHeartbeatInterval: 7 * 24 * 60 * 60 * 1000,
+                    minNodeOperatorStake: makeValue(this.ADA(200n)),
+                    minNodeRegistrationFee: makeValue(this.ADA(50n)),
+                    requiredNodeUptime: 0.95,
+                    minValidations: 1,
+                }
             },
             nbhSettings: {
-                minNbhStake: makeValue(this.ADA(5_000n)),
-                minRegistrationFee: makeValue(this.ADA(4_000n))
+                V1: {
+                    minNbhStake: makeValue(this.ADA(5_000n)),
+                    minRegistrationFee: makeValue(this.ADA(4_000n))
+                }
             },
             /* Add other settings here */
         };

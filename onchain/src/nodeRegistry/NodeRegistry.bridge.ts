@@ -97,6 +97,7 @@ import type {
     cctx_CharterInputType$Input, cctx_CharterInputType$Ergo$Input, cctx_CharterInputType$InputLike,
     cctx_CharterInputType, Ergocctx_CharterInputType, cctx_CharterInputTypeLike,
     CapoCtx, ErgoCapoCtx, CapoCtxLike,
+    NodeOperatorSettingsV1, ErgoNodeOperatorSettingsV1, NodeOperatorSettingsV1Like,
     NodeOperatorSettings, ErgoNodeOperatorSettings, NodeOperatorSettingsLike,
     AbstractSettingsForNodeOperator, ErgoAbstractSettingsForNodeOperator, AbstractSettingsForNodeOperatorLike,
     dgd_DataSrc$Both, dgd_DataSrc$Ergo$Both, dgd_DataSrc$BothLike,
@@ -216,6 +217,10 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
        */
         cctx_CharterInputType: new cctx_CharterInputTypeHelper({isMainnet: this.isMainnet}),
       /**
+       * generates UplcData for the enum type ***NodeOperatorSettings*** for the `BasicDelegate` script
+       */
+        NodeOperatorSettings: new NodeOperatorSettingsHelper({isMainnet: this.isMainnet}),
+      /**
        * generates UplcData for the enum type ***dgd_DataSrc*** for the `BasicDelegate` script
        */
         dgd_DataSrc: new dgd_DataSrcHelper({isMainnet: this.isMainnet}),
@@ -310,9 +315,9 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
         return this.ᱺᱺCapoCtxCast.toUplcData(fields);
     },
       /**
-       * generates UplcData for the enum type ***NodeOperatorSettings*** for the `BasicDelegate` script
+       * generates UplcData for the enum type ***NodeOperatorSettingsV1*** for the `BasicDelegate` script
        */
-        NodeOperatorSettings: (fields: NodeOperatorSettingsLike | {
+        NodeOperatorSettingsV1: (fields: NodeOperatorSettingsV1Like | {
     expectedHeartbeatInterval: /*minStructField*/ IntLike
     requiredNodeUptime: /*minStructField*/ number
     minValidations: /*minStructField*/ IntLike
@@ -320,7 +325,7 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
     minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 ) => {
-        return this.ᱺᱺNodeOperatorSettingsCast.toUplcData(fields);
+        return this.ᱺᱺNodeOperatorSettingsV1Cast.toUplcData(fields);
     },
       /**
        * generates UplcData for the enum type ***AbstractSettingsForNodeOperator*** for the `BasicDelegate` script
@@ -394,8 +399,8 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
     );
     /**
                 * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNodeOperatorSettingsCast = makeCast<NodeOperatorSettings, NodeOperatorSettingsLike>(
-        NodeOperatorSettingsSchema,
+    ᱺᱺNodeOperatorSettingsV1Cast = makeCast<NodeOperatorSettingsV1, NodeOperatorSettingsV1Like>(
+        NodeOperatorSettingsV1Schema,
         { isMainnet: true, unwrapSingleFieldEnumVariants: true }
     );
     /**
@@ -718,6 +723,27 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
     } /* enumReader helper */
 
     /**
+        * reads UplcData *known to fit the **NodeOperatorSettings*** enum type,
+        * for the BasicDelegate script.
+        * #### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the enum type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    NodeOperatorSettings(d : UplcData) { 
+        const typeHelper = this.bridge.types.NodeOperatorSettings;
+        const cast = typeHelper.ᱺᱺcast;  
+
+        return cast.fromUplcData(d) as ErgoNodeOperatorSettings;        
+    } /* enumReader helper */
+
+    /**
         * reads UplcData *known to fit the **dgd_DataSrc*** enum type,
         * for the BasicDelegate script.
         * #### Standard WARNING
@@ -891,7 +917,7 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
     } /* structReader helper */
 
     /**
-        * reads UplcData *known to fit the **NodeOperatorSettings*** struct type,
+        * reads UplcData *known to fit the **NodeOperatorSettingsV1*** struct type,
         * for the BasicDelegate script.
         * #### Standard WARNING
         * 
@@ -904,9 +930,9 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
         * It may throw an error, or it may throw no error, but return a value that
         * causes some error later on in your code, when you try to use it.
         */
-    NodeOperatorSettings(d: UplcData) {
-        const cast = this.bridge.ᱺᱺNodeOperatorSettingsCast;
-        return cast.fromUplcData(d) //??? as ErgoNodeOperatorSettings;
+    NodeOperatorSettingsV1(d: UplcData) {
+        const cast = this.bridge.ᱺᱺNodeOperatorSettingsV1Cast;
+        return cast.fromUplcData(d) //??? as ErgoNodeOperatorSettingsV1;
     } /* structReader helper */
 
     /**
@@ -3473,16 +3499,16 @@ export class CapoCtxHelper extends DataBridge {
 
 
 /**
- * Helper class for generating UplcData for the struct ***NodeOperatorSettings*** type.
+ * Helper class for generating UplcData for the struct ***NodeOperatorSettingsV1*** type.
  * @public
  */
-export class NodeOperatorSettingsHelper extends DataBridge {
+export class NodeOperatorSettingsV1Helper extends DataBridge {
     isCallable = true
    /**
             * @internal
             * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast = makeCast<NodeOperatorSettings, NodeOperatorSettingsLike>(
-        NodeOperatorSettingsSchema,
+    ᱺᱺcast = makeCast<NodeOperatorSettingsV1, NodeOperatorSettingsV1Like>(
+        NodeOperatorSettingsV1Schema,
         { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
     );
 
@@ -3492,10 +3518,46 @@ export class NodeOperatorSettingsHelper extends DataBridge {
     //
     //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
     //
-    // NodeOperatorSettings(fields: NodeOperatorSettingsLike) {
+    // NodeOperatorSettingsV1(fields: NodeOperatorSettingsV1Like) {
     //    return this.ᱺᱺcast.toUplcData(fields);
     //}
 } //mkStructHelperClass 
+
+
+/**
+ * Helper class for generating UplcData for variants of the ***NodeOperatorSettings*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+export class NodeOperatorSettingsHelper extends EnumBridge<JustAnEnum> {
+    /*mkEnumHelperClass*/
+    /**
+            * @internal
+            *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<NodeOperatorSettings, NodeOperatorSettingsLike>(
+        NodeOperatorSettingsSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    /**
+     * generates  UplcData for ***"NodeOperatorSettings::NodeOperatorSettings.V1"***
+     * @remarks - ***NodeOperatorSettingsV1Like*** is the same as the expanded field-type.
+     */
+    V1(
+        s: NodeOperatorSettingsV1Like | {
+    expectedHeartbeatInterval: /*minStructField*/ IntLike
+    requiredNodeUptime: /*minStructField*/ number
+    minValidations: /*minStructField*/ IntLike
+    minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+}
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           V1: s
+        }, "NodeOperatorSettings::NodeOperatorSettings.V1"); /*singleField enum variant*/
+       return uplc;
+    }
+}/*mkEnumHelperClass*/
 
 
 /**
@@ -10316,11 +10378,11 @@ export const CapoCtxSchema : StructTypeSchema = {
     ]
 };
 
-export const NodeOperatorSettingsSchema : StructTypeSchema = {
+export const NodeOperatorSettingsV1Schema : StructTypeSchema = {
     "kind": "struct",
     "format": "map",
-    "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
-    "name": "NodeOperatorSettings",
+    "id": "__module__NodeOperatorSettings__NodeOperatorSettingsV1[]",
+    "name": "NodeOperatorSettingsV1",
     "fieldTypes": [
         {
             "name": "expectedHeartbeatInterval",
@@ -10365,6 +10427,73 @@ export const NodeOperatorSettingsSchema : StructTypeSchema = {
     ]
 };
 
+export const NodeOperatorSettingsSchema : EnumTypeSchema = {
+    "kind": "enum",
+    "name": "NodeOperatorSettings",
+    "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
+    "variantTypes": [
+        {
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]__V1",
+            "name": "V1",
+            "fieldTypes": [
+                {
+                    "name": "s",
+                    "type": {
+                        "kind": "struct",
+                        "format": "map",
+                        "id": "__module__NodeOperatorSettings__NodeOperatorSettingsV1[]",
+                        "name": "NodeOperatorSettingsV1",
+                        "fieldTypes": [
+                            {
+                                "name": "expectedHeartbeatInterval",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "Duration"
+                                },
+                                "key": "ndHbi"
+                            },
+                            {
+                                "name": "requiredNodeUptime",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "Real"
+                                },
+                                "key": "ndUpt"
+                            },
+                            {
+                                "name": "minValidations",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "Int"
+                                },
+                                "key": "minVals"
+                            },
+                            {
+                                "name": "minNodeRegistrationFee",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "Value"
+                                },
+                                "key": "minFee"
+                            },
+                            {
+                                "name": "minNodeOperatorStake",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "Value"
+                                },
+                                "key": "minStk"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+};
+
 export const AbstractSettingsForNodeOperatorSchema : StructTypeSchema = {
     "kind": "struct",
     "format": "map",
@@ -10374,50 +10503,68 @@ export const AbstractSettingsForNodeOperatorSchema : StructTypeSchema = {
         {
             "name": "nodeOpSettings",
             "type": {
-                "kind": "struct",
-                "format": "map",
-                "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
+                "kind": "enum",
                 "name": "NodeOperatorSettings",
-                "fieldTypes": [
+                "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]",
+                "variantTypes": [
                     {
-                        "name": "expectedHeartbeatInterval",
-                        "type": {
-                            "kind": "internal",
-                            "name": "Duration"
-                        },
-                        "key": "ndHbi"
-                    },
-                    {
-                        "name": "requiredNodeUptime",
-                        "type": {
-                            "kind": "internal",
-                            "name": "Real"
-                        },
-                        "key": "ndUpt"
-                    },
-                    {
-                        "name": "minValidations",
-                        "type": {
-                            "kind": "internal",
-                            "name": "Int"
-                        },
-                        "key": "minVals"
-                    },
-                    {
-                        "name": "minNodeRegistrationFee",
-                        "type": {
-                            "kind": "internal",
-                            "name": "Value"
-                        },
-                        "key": "minFee"
-                    },
-                    {
-                        "name": "minNodeOperatorStake",
-                        "type": {
-                            "kind": "internal",
-                            "name": "Value"
-                        },
-                        "key": "minStk"
+                        "kind": "variant",
+                        "tag": 0,
+                        "id": "__module__NodeOperatorSettings__NodeOperatorSettings[]__V1",
+                        "name": "V1",
+                        "fieldTypes": [
+                            {
+                                "name": "s",
+                                "type": {
+                                    "kind": "struct",
+                                    "format": "map",
+                                    "id": "__module__NodeOperatorSettings__NodeOperatorSettingsV1[]",
+                                    "name": "NodeOperatorSettingsV1",
+                                    "fieldTypes": [
+                                        {
+                                            "name": "expectedHeartbeatInterval",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Duration"
+                                            },
+                                            "key": "ndHbi"
+                                        },
+                                        {
+                                            "name": "requiredNodeUptime",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Real"
+                                            },
+                                            "key": "ndUpt"
+                                        },
+                                        {
+                                            "name": "minValidations",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Int"
+                                            },
+                                            "key": "minVals"
+                                        },
+                                        {
+                                            "name": "minNodeRegistrationFee",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                            },
+                                            "key": "minFee"
+                                        },
+                                        {
+                                            "name": "minNodeOperatorStake",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                            },
+                                            "key": "minStk"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
                     }
                 ]
             },

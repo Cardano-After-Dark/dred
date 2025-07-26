@@ -455,7 +455,9 @@ enum DelegateActivity {
                             updateDetails.outputData()
                         );
                         inputData.checkActivation(
-                            updatedData, settings.nodeOpSettings
+                            updatedData, settings.nodeOpSettings.switch {
+                                V1{s} => s
+                            }
                         ).trace("  -- activation check passed? ")
                     },
                     ReportingInactiveNode{_recId} => {

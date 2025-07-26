@@ -1,10 +1,4 @@
-import { 
-    beforeEach, 
-    describe as descrWithContext, 
-    expect, 
-    it as itWithContext,
-    vi
-} from "vitest";
+import { beforeEach, describe as descrWithContext, expect, it as itWithContext, vi } from "vitest";
 
 import { makeValue } from "@helios-lang/ledger";
 import {
@@ -28,12 +22,7 @@ describe("DRED Settings", () => {
     beforeEach<DredCapo_TC>(async (context) => {
         await new Promise((res) => setTimeout(res, 10));
         console.log("\n\n\n\n   ==================== ======================");
-        await addTestContext(
-            context,
-            DredCapoTestHelper,
-            undefined,
-            helperState
-        );
+        await addTestContext(context, DredCapoTestHelper, undefined, helperState);
         await context.h.delay(10);
     });
 
@@ -49,13 +38,13 @@ describe("DRED Settings", () => {
             const settings = await capo.findSettingsInfo({
                 charterData: await capo.findCharterData(),
             });
-            const {nodeOpSettings} = settings.data!;
+            const { nodeOpSettings } = settings.data!;
             expect(nodeOpSettings).toBeDefined();
-            expect(nodeOpSettings.expectedHeartbeatInterval).toBeGreaterThan(300_000);
-            expect(nodeOpSettings.minNodeOperatorStake.lovelace).toBeGreaterThan(40n * ADA);
-            expect(nodeOpSettings.requiredNodeUptime).toBe(0.95);
-            expect(nodeOpSettings.minValidations).toBe(1n);
-            expect(nodeOpSettings.minNodeRegistrationFee.lovelace).toBeGreaterThan(0n);
+            expect(nodeOpSettings.V1!.expectedHeartbeatInterval).toBeGreaterThan(300_000);
+            expect(nodeOpSettings.V1!.minNodeOperatorStake.lovelace).toBeGreaterThan(40n * ADA);
+            expect(nodeOpSettings.V1!.requiredNodeUptime).toBe(0.95);
+            expect(nodeOpSettings.V1!.minValidations).toBe(1n);
+            expect(nodeOpSettings.V1!.minNodeRegistrationFee.lovelace).toBeGreaterThan(0n);
         });
 
         it("has neighborhood settings", async (context: DredCapo_TC) => {
@@ -70,10 +59,7 @@ describe("DRED Settings", () => {
                 charterData: await capo.findCharterData(),
             });
 
-            const {
-                minNbhStake,
-                minRegistrationFee,
-            } = settings.data!.nbhSettings;
+            const { minNbhStake, minRegistrationFee } = settings.data!.nbhSettings.V1!;
 
             expect(minNbhStake.lovelace).toBeGreaterThan(0n);
             expect(minRegistrationFee.lovelace).toBeGreaterThan(0n);
@@ -96,17 +82,21 @@ describe("DRED Settings", () => {
                 charterData,
             });
 
-            const updatedFields : Partial<minimalData<ErgoProtocolSettings>> = {
+            const updatedFields: Partial<minimalData<ErgoProtocolSettings>> = {
                 nodeOpSettings: {
-                    expectedHeartbeatInterval: 42000n,
-                    minNodeOperatorStake: makeValue(10_000n),
-                    minNodeRegistrationFee: makeValue(10_000n),
-                    requiredNodeUptime: 0.95,
-                    minValidations: 1n,
+                    V1: {
+                        expectedHeartbeatInterval: 42000n,
+                        minNodeOperatorStake: makeValue(10_000n),
+                        minNodeRegistrationFee: makeValue(10_000n),
+                        requiredNodeUptime: 0.95,
+                        minValidations: 1n,
+                    },
                 },
                 nbhSettings: {
-                    minNbhStake: makeValue(10_000n * ADA),
-                    minRegistrationFee: makeValue(1_000n * ADA),
+                    V1: {
+                        minNbhStake: makeValue(10_000n * ADA),
+                        minRegistrationFee: makeValue(1_000n * ADA),
+                    },
                 },
             };
 
@@ -118,16 +108,16 @@ describe("DRED Settings", () => {
             const newSettingsUtxo = await capo.findSettingsInfo({
                 charterData,
             });
-            const {data: newSettings} = newSettingsUtxo;
+            const { data: newSettings } = newSettingsUtxo;
             if (!newSettings) {
                 throw new Error("No new settings found");
             }
             // Add update logic here
-            expect(newSettings.nodeOpSettings.expectedHeartbeatInterval).toBe(42000n);
-            expect(newSettings.nodeOpSettings.minNodeOperatorStake.lovelace).toBe(10_000n);
-            expect(newSettings.nodeOpSettings.minNodeRegistrationFee.lovelace).toBe(10_000n);
-            expect(newSettings.nbhSettings.minNbhStake.lovelace).toBe(10_000n * ADA);
-            expect(newSettings.nbhSettings.minRegistrationFee.lovelace).toBe(1_000n * ADA);
+            expect(newSettings.nodeOpSettings.V1!.expectedHeartbeatInterval).toBe(42000n);
+            expect(newSettings.nodeOpSettings.V1!.minNodeOperatorStake.lovelace).toBe(10_000n);
+            expect(newSettings.nodeOpSettings.V1!.minNodeRegistrationFee.lovelace).toBe(10_000n);
+            expect(newSettings.nbhSettings.V1!.minNbhStake.lovelace).toBe(10_000n * ADA);
+            expect(newSettings.nbhSettings.V1!.minRegistrationFee.lovelace).toBe(1_000n * ADA);
             // After update would be 42000 and 5 respectively
         });
 
@@ -143,17 +133,21 @@ describe("DRED Settings", () => {
             const settings = await capo.findSettingsInfo({
                 charterData,
             });
-            const updatedFields : Partial<minimalData<ErgoProtocolSettings>> = {
+            const updatedFields: Partial<minimalData<ErgoProtocolSettings>> = {
                 nodeOpSettings: {
-                    expectedHeartbeatInterval: 42000n,
-                    minNodeOperatorStake: makeValue(10_000n),
-                    minNodeRegistrationFee: makeValue(10_000n),
-                    requiredNodeUptime: 0.95,
-                    minValidations: 1n,
+                    V1: {
+                        expectedHeartbeatInterval: 42000n,
+                        minNodeOperatorStake: makeValue(10_000n),
+                        minNodeRegistrationFee: makeValue(10_000n),
+                        requiredNodeUptime: 0.95,
+                        minValidations: 1n,
+                    },
                 },
                 nbhSettings: {
-                    minNbhStake: makeValue(10_000n * ADA),
-                    minRegistrationFee: makeValue(1_000n * ADA),
+                    V1: {
+                        minNbhStake: makeValue(10_000n * ADA),
+                        minRegistrationFee: makeValue(1_000n * ADA),
+                    },
                 },
             };
             vi.spyOn(capo, "txnAddGovAuthority").mockImplementation((tcx) => tcx as any);
@@ -163,11 +157,9 @@ describe("DRED Settings", () => {
             });
 
             // Test unauthorized update
-            await expect(
-                authCheck
-            ).rejects.toThrow(/script validation.* missing required input .* dgTkn capoGov/);
+            await expect(authCheck).rejects.toThrow(
+                /script validation.* missing required input .* dgTkn capoGov/,
+            );
         });
     });
-
 });
-

@@ -175,14 +175,14 @@ export interface DelegationDetailLike {
 
 
 /**
- * A strong type for the canonical form of NodeOperatorSettings
+ * A strong type for the canonical form of NodeOperatorSettingsV1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOperatorSettings instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOperatorSettingsV1 instead.
  * @public
  */
-export interface NodeOperatorSettings {
+export interface NodeOperatorSettingsV1 {
     expectedHeartbeatInterval: /*minStructField*/ bigint
     requiredNodeUptime: /*minStructField*/ number
     minValidations: /*minStructField*/ bigint
@@ -192,23 +192,23 @@ export interface NodeOperatorSettings {
 
 
 /**
- * An ergonomic, though less strictly-safe form of NodeOperatorSettings
+ * An ergonomic, though less strictly-safe form of NodeOperatorSettingsV1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeOperatorSettingsLike type,
+ * conversion to on-chain use.  For creating such data, use the NodeOperatorSettingsV1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-export type ErgoNodeOperatorSettings = NodeOperatorSettings/*like canon-other*/
+export type ErgoNodeOperatorSettingsV1 = NodeOperatorSettingsV1/*like canon-other*/
 
 /**
- * A strong type for the permissive form of NodeOperatorSettings
+ * A strong type for the permissive form of NodeOperatorSettingsV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export interface NodeOperatorSettingsLike {
+export interface NodeOperatorSettingsV1Like {
     expectedHeartbeatInterval: /*minStructField*/ IntLike
     requiredNodeUptime: /*minStructField*/ number
     minValidations: /*minStructField*/ IntLike
@@ -218,43 +218,161 @@ export interface NodeOperatorSettingsLike {
 
 
 
+
+            /**
+            * @internal
+            */
+            export type NodeOperatorSettingsMeta = EnumTypeMeta<
+    {module: "NodeOperatorSettings", enumName: "NodeOperatorSettings"}, {
+        V1: singleEnumVariantMeta<NodeOperatorSettingsMeta, "V1",
+            "Constr#0", "singletonField", /* implied wrapper { s: ... } for singleVariantField */ 
+			NodeOperatorSettingsV1   , "noSpecialFlags"
+        >
+    }
+>;
+
+
 /**
- * A strong type for the canonical form of NeighborhoodSettings
+ * NodeOperatorSettings enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the NodeOperatorSettings enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+export type NodeOperatorSettings = 
+        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+			NodeOperatorSettingsV1    /*minEnumVariant*/ }
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+export type ErgoNodeOperatorSettings = IntersectedEnum<
+        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+			ErgoNodeOperatorSettingsV1    /*minEnumVariant*/ }
+>
+
+/**
+ * NodeOperatorSettings enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the NodeOperatorSettings enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+export type NodeOperatorSettingsLike = IntersectedEnum<
+        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+			NodeOperatorSettingsV1Like    /*minEnumVariant*/ }
+>
+
+/**
+ * A strong type for the canonical form of NeighborhoodSettingsV1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNeighborhoodSettings instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNeighborhoodSettingsV1 instead.
  * @public
  */
-export interface NeighborhoodSettings {
+export interface NeighborhoodSettingsV1 {
     minRegistrationFee: /*minStructField*/ Value
     minNbhStake: /*minStructField*/ Value
 }
 
 
 /**
- * An ergonomic, though less strictly-safe form of NeighborhoodSettings
+ * An ergonomic, though less strictly-safe form of NeighborhoodSettingsV1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NeighborhoodSettingsLike type,
+ * conversion to on-chain use.  For creating such data, use the NeighborhoodSettingsV1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-export type ErgoNeighborhoodSettings = NeighborhoodSettings/*like canon-other*/
+export type ErgoNeighborhoodSettingsV1 = NeighborhoodSettingsV1/*like canon-other*/
 
 /**
- * A strong type for the permissive form of NeighborhoodSettings
+ * A strong type for the permissive form of NeighborhoodSettingsV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export interface NeighborhoodSettingsLike {
+export interface NeighborhoodSettingsV1Like {
     minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
     minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 
 
+
+
+            /**
+            * @internal
+            */
+            export type NeighborhoodSettingsMeta = EnumTypeMeta<
+    {module: "NeighborhoodSettings", enumName: "NeighborhoodSettings"}, {
+        V1: singleEnumVariantMeta<NeighborhoodSettingsMeta, "V1",
+            "Constr#0", "singletonField", /* implied wrapper { s: ... } for singleVariantField */ 
+			NeighborhoodSettingsV1   , "noSpecialFlags"
+        >
+    }
+>;
+
+
+/**
+ * NeighborhoodSettings enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the NeighborhoodSettings enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+export type NeighborhoodSettings = 
+        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+			NeighborhoodSettingsV1    /*minEnumVariant*/ }
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+export type ErgoNeighborhoodSettings = IntersectedEnum<
+        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+			ErgoNeighborhoodSettingsV1    /*minEnumVariant*/ }
+>
+
+/**
+ * NeighborhoodSettings enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the NeighborhoodSettings enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+export type NeighborhoodSettingsLike = IntersectedEnum<
+        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+			NeighborhoodSettingsV1Like    /*minEnumVariant*/ }
+>
 
 /**
  * A strong type for the canonical form of ProtocolSettings

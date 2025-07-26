@@ -102,6 +102,7 @@ import type {
     cctx_CharterInputType$Input, cctx_CharterInputType$Ergo$Input, cctx_CharterInputType$InputLike,
     cctx_CharterInputType, Ergocctx_CharterInputType, cctx_CharterInputTypeLike,
     CapoCtx, ErgoCapoCtx, CapoCtxLike,
+    NeighborhoodSettingsV1, ErgoNeighborhoodSettingsV1, NeighborhoodSettingsV1Like,
     NeighborhoodSettings, ErgoNeighborhoodSettings, NeighborhoodSettingsLike,
     AbstractSettingsForNeighborhood, ErgoAbstractSettingsForNeighborhood, AbstractSettingsForNeighborhoodLike,
     dgd_DataSrc$Both, dgd_DataSrc$Ergo$Both, dgd_DataSrc$BothLike,
@@ -233,6 +234,10 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
        */
         cctx_CharterInputType: new cctx_CharterInputTypeHelper({isMainnet: this.isMainnet}),
       /**
+       * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
+       */
+        NeighborhoodSettings: new NeighborhoodSettingsHelper({isMainnet: this.isMainnet}),
+      /**
        * generates UplcData for the enum type ***dgd_DataSrc*** for the `BasicDelegate` script
        */
         dgd_DataSrc: new dgd_DataSrcHelper({isMainnet: this.isMainnet}),
@@ -352,14 +357,14 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
         return this.ᱺᱺCapoCtxCast.toUplcData(fields);
     },
       /**
-       * generates UplcData for the enum type ***NeighborhoodSettings*** for the `BasicDelegate` script
+       * generates UplcData for the enum type ***NeighborhoodSettingsV1*** for the `BasicDelegate` script
        */
-        NeighborhoodSettings: (fields: NeighborhoodSettingsLike | {
+        NeighborhoodSettingsV1: (fields: NeighborhoodSettingsV1Like | {
     minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
     minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 ) => {
-        return this.ᱺᱺNeighborhoodSettingsCast.toUplcData(fields);
+        return this.ᱺᱺNeighborhoodSettingsV1Cast.toUplcData(fields);
     },
       /**
        * generates UplcData for the enum type ***AbstractSettingsForNeighborhood*** for the `BasicDelegate` script
@@ -445,8 +450,8 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     );
     /**
                 * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNeighborhoodSettingsCast = makeCast<NeighborhoodSettings, NeighborhoodSettingsLike>(
-        NeighborhoodSettingsSchema,
+    ᱺᱺNeighborhoodSettingsV1Cast = makeCast<NeighborhoodSettingsV1, NeighborhoodSettingsV1Like>(
+        NeighborhoodSettingsV1Schema,
         { isMainnet: true, unwrapSingleFieldEnumVariants: true }
     );
     /**
@@ -832,6 +837,27 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
     } /* enumReader helper */
 
     /**
+        * reads UplcData *known to fit the **NeighborhoodSettings*** enum type,
+        * for the BasicDelegate script.
+        * #### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the enum type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    NeighborhoodSettings(d : UplcData) { 
+        const typeHelper = this.bridge.types.NeighborhoodSettings;
+        const cast = typeHelper.ᱺᱺcast;  
+
+        return cast.fromUplcData(d) as ErgoNeighborhoodSettings;        
+    } /* enumReader helper */
+
+    /**
         * reads UplcData *known to fit the **dgd_DataSrc*** enum type,
         * for the BasicDelegate script.
         * #### Standard WARNING
@@ -1043,7 +1069,7 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
     } /* structReader helper */
 
     /**
-        * reads UplcData *known to fit the **NeighborhoodSettings*** struct type,
+        * reads UplcData *known to fit the **NeighborhoodSettingsV1*** struct type,
         * for the BasicDelegate script.
         * #### Standard WARNING
         * 
@@ -1056,9 +1082,9 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
         * It may throw an error, or it may throw no error, but return a value that
         * causes some error later on in your code, when you try to use it.
         */
-    NeighborhoodSettings(d: UplcData) {
-        const cast = this.bridge.ᱺᱺNeighborhoodSettingsCast;
-        return cast.fromUplcData(d) //??? as ErgoNeighborhoodSettings;
+    NeighborhoodSettingsV1(d: UplcData) {
+        const cast = this.bridge.ᱺᱺNeighborhoodSettingsV1Cast;
+        return cast.fromUplcData(d) //??? as ErgoNeighborhoodSettingsV1;
     } /* structReader helper */
 
     /**
@@ -3727,16 +3753,16 @@ export class CapoCtxHelper extends DataBridge {
 
 
 /**
- * Helper class for generating UplcData for the struct ***NeighborhoodSettings*** type.
+ * Helper class for generating UplcData for the struct ***NeighborhoodSettingsV1*** type.
  * @public
  */
-export class NeighborhoodSettingsHelper extends DataBridge {
+export class NeighborhoodSettingsV1Helper extends DataBridge {
     isCallable = true
    /**
             * @internal
             * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast = makeCast<NeighborhoodSettings, NeighborhoodSettingsLike>(
-        NeighborhoodSettingsSchema,
+    ᱺᱺcast = makeCast<NeighborhoodSettingsV1, NeighborhoodSettingsV1Like>(
+        NeighborhoodSettingsV1Schema,
         { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
     );
 
@@ -3746,10 +3772,43 @@ export class NeighborhoodSettingsHelper extends DataBridge {
     //
     //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
     //
-    // NeighborhoodSettings(fields: NeighborhoodSettingsLike) {
+    // NeighborhoodSettingsV1(fields: NeighborhoodSettingsV1Like) {
     //    return this.ᱺᱺcast.toUplcData(fields);
     //}
 } //mkStructHelperClass 
+
+
+/**
+ * Helper class for generating UplcData for variants of the ***NeighborhoodSettings*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+export class NeighborhoodSettingsHelper extends EnumBridge<JustAnEnum> {
+    /*mkEnumHelperClass*/
+    /**
+            * @internal
+            *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<NeighborhoodSettings, NeighborhoodSettingsLike>(
+        NeighborhoodSettingsSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    /**
+     * generates  UplcData for ***"NeighborhoodSettings::NeighborhoodSettings.V1"***
+     * @remarks - ***NeighborhoodSettingsV1Like*** is the same as the expanded field-type.
+     */
+    V1(
+        s: NeighborhoodSettingsV1Like | {
+    minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+    minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+}
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           V1: s
+        }, "NeighborhoodSettings::NeighborhoodSettings.V1"); /*singleField enum variant*/
+       return uplc;
+    }
+}/*mkEnumHelperClass*/
 
 
 /**
@@ -11238,11 +11297,11 @@ export const CapoCtxSchema : StructTypeSchema = {
     ]
 };
 
-export const NeighborhoodSettingsSchema : StructTypeSchema = {
+export const NeighborhoodSettingsV1Schema : StructTypeSchema = {
     "kind": "struct",
     "format": "map",
-    "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
-    "name": "NeighborhoodSettings",
+    "id": "__module__NeighborhoodSettings__NeighborhoodSettingsV1[]",
+    "name": "NeighborhoodSettingsV1",
     "fieldTypes": [
         {
             "name": "minRegistrationFee",
@@ -11263,6 +11322,49 @@ export const NeighborhoodSettingsSchema : StructTypeSchema = {
     ]
 };
 
+export const NeighborhoodSettingsSchema : EnumTypeSchema = {
+    "kind": "enum",
+    "name": "NeighborhoodSettings",
+    "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+    "variantTypes": [
+        {
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]__V1",
+            "name": "V1",
+            "fieldTypes": [
+                {
+                    "name": "s",
+                    "type": {
+                        "kind": "struct",
+                        "format": "map",
+                        "id": "__module__NeighborhoodSettings__NeighborhoodSettingsV1[]",
+                        "name": "NeighborhoodSettingsV1",
+                        "fieldTypes": [
+                            {
+                                "name": "minRegistrationFee",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "Value"
+                                },
+                                "key": "minRegFee"
+                            },
+                            {
+                                "name": "minNbhStake",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "Value"
+                                },
+                                "key": "minStk"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+};
+
 export const AbstractSettingsForNeighborhoodSchema : StructTypeSchema = {
     "kind": "struct",
     "format": "map",
@@ -11272,26 +11374,44 @@ export const AbstractSettingsForNeighborhoodSchema : StructTypeSchema = {
         {
             "name": "NeighborhoodSettings",
             "type": {
-                "kind": "struct",
-                "format": "map",
-                "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+                "kind": "enum",
                 "name": "NeighborhoodSettings",
-                "fieldTypes": [
+                "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]",
+                "variantTypes": [
                     {
-                        "name": "minRegistrationFee",
-                        "type": {
-                            "kind": "internal",
-                            "name": "Value"
-                        },
-                        "key": "minRegFee"
-                    },
-                    {
-                        "name": "minNbhStake",
-                        "type": {
-                            "kind": "internal",
-                            "name": "Value"
-                        },
-                        "key": "minStk"
+                        "kind": "variant",
+                        "tag": 0,
+                        "id": "__module__NeighborhoodSettings__NeighborhoodSettings[]__V1",
+                        "name": "V1",
+                        "fieldTypes": [
+                            {
+                                "name": "s",
+                                "type": {
+                                    "kind": "struct",
+                                    "format": "map",
+                                    "id": "__module__NeighborhoodSettings__NeighborhoodSettingsV1[]",
+                                    "name": "NeighborhoodSettingsV1",
+                                    "fieldTypes": [
+                                        {
+                                            "name": "minRegistrationFee",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                            },
+                                            "key": "minRegFee"
+                                        },
+                                        {
+                                            "name": "minNbhStake",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                            },
+                                            "key": "minStk"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
                     }
                 ]
             },

@@ -174,16 +174,18 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
      */
     async mkInitialSettings(): Promise<minimalProtocolSettings> {
         return {
-            nodeOpSettings: {
+            nodeOpSettings: { V1: {
                 expectedHeartbeatInterval: BigInt(72 * 60 * 60 * 1000),
                 minNodeOperatorStake: makeValue(this.ADA(200n)),
                 minNodeRegistrationFee: makeValue(this.ADA(50n)),
                 requiredNodeUptime: 0.95,
                 minValidations: 1,
-            },
+            }},
             nbhSettings: {
-                minNbhStake: makeValue(this.ADA(5_000n)),
-                minRegistrationFee: makeValue(this.ADA(4_000n)),
+                V1: {
+                    minNbhStake: makeValue(this.ADA(5_000n)),
+                    minRegistrationFee: makeValue(this.ADA(4_000n)),
+                },
             },
         };
     }

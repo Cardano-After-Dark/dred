@@ -7,7 +7,7 @@ import {
 } from StellarHeliosHelpers
 
 
-struct NeighborhoodSettings {
+struct NeighborhoodSettingsV1 {
     minRegistrationFee: Value "minRegFee"
     minNbhStake: Value "minStk"
 
@@ -18,6 +18,16 @@ struct NeighborhoodSettings {
         // bREQT("minStake must be > 50 ADA, is "+ self.minNbhStake.get_lovelace().show()) &&
         // (self.minNbhStake.get_lovelace() > 40_000_000).trace("minStake ok? ") &&
         true
+    }
+}
+
+enum NeighborhoodSettings {
+    V1 { s: NeighborhoodSettingsV1 }
+    
+    func validate(self) -> Bool {
+        self.switch {
+            V1{s} => s.validate()
+        }
     }
 }
 
