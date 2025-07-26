@@ -190,7 +190,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "_extractLastInspectableElement",
           "typeParameters": [
@@ -229,7 +229,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "_inspectableUnionFuncs",
           "typeParameters": [
@@ -273,7 +273,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "_intersectInspectFuncs",
           "typeParameters": [
@@ -334,7 +334,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "$states",
           "typeParameters": [
@@ -395,7 +395,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "$transitions",
           "typeParameters": [
@@ -443,7 +443,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "abstractContractBridgeClass",
           "typeTokenRange": {
@@ -477,7 +477,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "AbstractNew",
           "typeParameters": [
@@ -714,7 +714,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "ActivityDelegateRoleHelperNested_2",
@@ -2599,7 +2599,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "ActivityDelegateRoleHelperNested",
@@ -2980,7 +2980,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ActorContext",
           "typeParameters": [
@@ -3033,7 +3033,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "addRefInputArgs",
           "typeTokenRange": {
@@ -3044,7 +3044,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "dred-network-registry!~aggregatedStateString:type",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -3104,7 +3104,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "aggregatedStateString",
           "typeTokenRange": {
@@ -3122,7 +3122,7 @@
               "text": "declare interface AllTxSubmissionStates "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "AllTxSubmissionStates",
           "preserveMemberOrder": false,
@@ -3185,7 +3185,7 @@
               "text": "declare interface AnyData_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "AnyData_2",
           "preserveMemberOrder": false,
@@ -3545,7 +3545,7 @@
               "text": "declare interface AnyData "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "AnyData",
           "preserveMemberOrder": false,
@@ -3617,7 +3617,7 @@
               "text": "declare interface AnyDataLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "AnyDataLike_2",
           "preserveMemberOrder": false,
@@ -3977,7 +3977,7 @@
               "text": "declare interface AnyDataLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "AnyDataLike",
           "preserveMemberOrder": false,
@@ -4083,7 +4083,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "AnyDataTemplate",
           "typeParameters": [
@@ -4138,7 +4138,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "anyDatumProps",
           "typeTokenRange": {
@@ -4187,7 +4187,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "AnyPromise",
           "typeParameters": [
@@ -4218,7 +4218,7 @@
               "text": "export declare interface anyState "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "anyState",
           "preserveMemberOrder": false,
@@ -4273,7 +4273,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts",
           "releaseTag": "Public",
           "name": "anyUplcProgram_2",
           "typeTokenRange": {
@@ -4300,7 +4300,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "anyUplcProgram",
           "typeTokenRange": {
@@ -4607,7 +4607,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": true,
           "name": "AuthorityPolicy",
@@ -4698,7 +4698,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "basicDelegateMap",
           "typeParameters": [
@@ -4722,7 +4722,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "dred-network-registry!~basicDelegateRoles:type",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -4791,7 +4791,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "basicDelegateRoles",
           "typeTokenRange": {
@@ -4818,7 +4818,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "BasicMintDelegate",
@@ -5386,7 +5386,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "BasicMinterParams",
           "typeTokenRange": {
@@ -5404,7 +5404,7 @@
               "text": "export declare class BatchSubmitController "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "BatchSubmitController",
@@ -6739,7 +6739,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "dred-network-registry!~BatchSubmitControllerOptions:type",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -6799,7 +6799,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "BatchSubmitControllerOptions",
           "typeTokenRange": {
@@ -6843,7 +6843,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "bootstrappedCapoConfig",
           "typeTokenRange": {
@@ -6883,7 +6883,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "BuiltTcx",
           "typeTokenRange": {
@@ -6954,7 +6954,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "BuiltTcxStats",
           "typeTokenRange": {
@@ -7084,7 +7084,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "BurningActivity",
           "typeTokenRange": {
@@ -7500,7 +7500,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "BurningActivityHelper",
@@ -7970,7 +7970,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "BurningActivityHelperNested",
@@ -8179,7 +8179,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "BurningActivityLike",
           "typeTokenRange": {
@@ -8210,7 +8210,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts",
           "releaseTag": "Public",
           "name": "CacheableProgramProps",
           "typeTokenRange": {
@@ -8254,7 +8254,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "canHaveDataBridge",
           "typeTokenRange": {
@@ -8299,7 +8299,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "canHaveToken",
           "typeTokenRange": {
@@ -8378,7 +8378,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "typeParameters": [
             {
@@ -18838,7 +18838,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoActivity",
           "typeTokenRange": {
@@ -18878,7 +18878,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "CapoActivityHelper",
@@ -19149,7 +19149,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoBundleClass",
           "typeTokenRange": {
@@ -19233,7 +19233,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoConfig",
           "typeParameters": [
@@ -19560,7 +19560,7 @@
               "text": "declare interface CapoCtx "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoCtx",
           "preserveMemberOrder": false,
@@ -19946,7 +19946,7 @@
               "text": "declare interface CapoCtxLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoCtxLike",
           "preserveMemberOrder": false,
@@ -20033,7 +20033,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "CapoDataBridge",
@@ -20764,7 +20764,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "CapoDataBridgeReader",
@@ -21577,7 +21577,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoDatum_2",
           "typeTokenRange": {
@@ -21595,7 +21595,7 @@
               "text": "declare interface CapoDatum$CharterData_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoDatum$CharterData_2",
           "preserveMemberOrder": false,
@@ -23130,7 +23130,7 @@
               "text": "declare interface CapoDatum$CharterData "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoDatum$CharterData",
           "preserveMemberOrder": false,
@@ -23437,7 +23437,7 @@
               "text": "declare interface CapoDatum$CharterDataLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoDatum$CharterDataLike_2",
           "preserveMemberOrder": false,
@@ -24972,7 +24972,7 @@
               "text": "declare interface CapoDatum$CharterDataLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoDatum$CharterDataLike",
           "preserveMemberOrder": false,
@@ -25279,7 +25279,7 @@
               "text": "declare interface CapoDatum$DelegatedData "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoDatum$DelegatedData",
           "preserveMemberOrder": false,
@@ -25393,7 +25393,7 @@
               "text": "declare interface CapoDatum$DelegatedDataLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoDatum$DelegatedDataLike",
           "preserveMemberOrder": false,
@@ -25633,7 +25633,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoDatum$Ergo$CharterData_2",
           "typeTokenRange": {
@@ -26634,7 +26634,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoDatum$Ergo$CharterData",
           "typeTokenRange": {
@@ -26661,7 +26661,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoDatum$Ergo$DelegatedData",
           "typeTokenRange": {
@@ -26701,7 +26701,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "CapoDatumHelper",
@@ -27025,7 +27025,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": true,
           "name": "CapoDelegateBundle",
@@ -27571,7 +27571,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "capoDelegateConfig",
           "typeTokenRange": {
@@ -27649,7 +27649,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoDeployedDetails",
           "typeParameters": [
@@ -27673,7 +27673,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "dred-network-registry!~CapoFeatureFlags:type",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -27693,7 +27693,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoFeatureFlags",
           "typeTokenRange": {
@@ -27720,7 +27720,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "CapoHeliosBundle",
@@ -28608,7 +28608,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity_2",
           "typeTokenRange": {
@@ -29053,7 +29053,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity",
           "typeTokenRange": {
@@ -29071,7 +29071,7 @@
               "text": "declare interface CapoLifecycleActivity$CreatingDelegate_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$CreatingDelegate_2",
           "preserveMemberOrder": false,
@@ -29436,7 +29436,7 @@
               "text": "declare interface CapoLifecycleActivity$CreatingDelegate "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$CreatingDelegate",
           "preserveMemberOrder": false,
@@ -29509,7 +29509,7 @@
               "text": "declare interface CapoLifecycleActivity$CreatingDelegateLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$CreatingDelegateLike_2",
           "preserveMemberOrder": false,
@@ -29894,7 +29894,7 @@
               "text": "declare interface CapoLifecycleActivity$CreatingDelegateLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$CreatingDelegateLike",
           "preserveMemberOrder": false,
@@ -29980,7 +29980,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$Ergo$CreatingDelegate_2",
           "typeTokenRange": {
@@ -30115,7 +30115,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$Ergo$CreatingDelegate",
           "typeTokenRange": {
@@ -30142,7 +30142,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$Ergo$forcingNewMintDelegate_2",
           "typeTokenRange": {
@@ -30277,7 +30277,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$Ergo$forcingNewMintDelegate",
           "typeTokenRange": {
@@ -30304,7 +30304,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_2",
           "typeTokenRange": {
@@ -30439,7 +30439,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$Ergo$forcingNewSpendDelegate",
           "typeTokenRange": {
@@ -30457,7 +30457,7 @@
               "text": "declare interface CapoLifecycleActivity$forcingNewMintDelegate_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$forcingNewMintDelegate_2",
           "preserveMemberOrder": false,
@@ -30822,7 +30822,7 @@
               "text": "declare interface CapoLifecycleActivity$forcingNewMintDelegate "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$forcingNewMintDelegate",
           "preserveMemberOrder": false,
@@ -30895,7 +30895,7 @@
               "text": "declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$forcingNewMintDelegateLike_2",
           "preserveMemberOrder": false,
@@ -31280,7 +31280,7 @@
               "text": "declare interface CapoLifecycleActivity$forcingNewMintDelegateLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$forcingNewMintDelegateLike",
           "preserveMemberOrder": false,
@@ -31357,7 +31357,7 @@
               "text": "declare interface CapoLifecycleActivity$forcingNewSpendDelegate_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$forcingNewSpendDelegate_2",
           "preserveMemberOrder": false,
@@ -31722,7 +31722,7 @@
               "text": "declare interface CapoLifecycleActivity$forcingNewSpendDelegate "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$forcingNewSpendDelegate",
           "preserveMemberOrder": false,
@@ -31795,7 +31795,7 @@
               "text": "declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$forcingNewSpendDelegateLike_2",
           "preserveMemberOrder": false,
@@ -32180,7 +32180,7 @@
               "text": "declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivity$forcingNewSpendDelegateLike",
           "preserveMemberOrder": false,
@@ -32279,7 +32279,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "CapoLifecycleActivityHelper_2",
@@ -35914,7 +35914,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "CapoLifecycleActivityHelper",
@@ -36641,7 +36641,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "CapoLifecycleActivityHelperNested_2",
@@ -40356,7 +40356,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "CapoLifecycleActivityHelperNested",
@@ -41153,7 +41153,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivityLike_2",
           "typeTokenRange": {
@@ -41623,7 +41623,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoLifecycleActivityLike",
           "typeTokenRange": {
@@ -41641,7 +41641,7 @@
               "text": "declare interface CapoManifestEntry_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoManifestEntry_2",
           "preserveMemberOrder": false,
@@ -42166,7 +42166,7 @@
               "text": "declare interface CapoManifestEntry "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoManifestEntry",
           "preserveMemberOrder": false,
@@ -42271,7 +42271,7 @@
               "text": "declare interface CapoManifestEntryLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoManifestEntryLike_2",
           "preserveMemberOrder": false,
@@ -42796,7 +42796,7 @@
               "text": "declare interface CapoManifestEntryLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CapoManifestEntryLike",
           "preserveMemberOrder": false,
@@ -42932,7 +42932,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "CapoMinter",
@@ -44117,7 +44117,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "CapoMinterDataBridge",
@@ -44451,7 +44451,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "CapoMinterDataBridgeReader",
@@ -44901,7 +44901,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "cctx_CharterInputType",
           "typeTokenRange": {
@@ -45121,7 +45121,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "cctx_CharterInputType$Ergo$Input",
           "typeTokenRange": {
@@ -45341,7 +45341,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "cctx_CharterInputType$Ergo$RefInput",
           "typeTokenRange": {
@@ -45655,7 +45655,7 @@
               "text": "declare interface cctx_CharterInputType$Input "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "cctx_CharterInputType$Input",
           "preserveMemberOrder": false,
@@ -46025,7 +46025,7 @@
               "text": "declare interface cctx_CharterInputType$InputLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "cctx_CharterInputType$InputLike",
           "preserveMemberOrder": false,
@@ -46395,7 +46395,7 @@
               "text": "declare interface cctx_CharterInputType$RefInput "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "cctx_CharterInputType$RefInput",
           "preserveMemberOrder": false,
@@ -46765,7 +46765,7 @@
               "text": "declare interface cctx_CharterInputType$RefInputLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "cctx_CharterInputType$RefInputLike",
           "preserveMemberOrder": false,
@@ -47741,7 +47741,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "cctx_CharterInputTypeHelper",
@@ -48211,7 +48211,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "cctx_CharterInputTypeLike",
           "typeTokenRange": {
@@ -48238,7 +48238,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CharterData",
           "typeTokenRange": {
@@ -48265,7 +48265,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CharterDataLike",
           "typeTokenRange": {
@@ -48309,7 +48309,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "charterDataState",
           "typeTokenRange": {
@@ -48371,7 +48371,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CoinSelector",
           "typeTokenRange": {
@@ -48402,7 +48402,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts",
           "releaseTag": "Public",
           "name": "CompileOptionsForCachedHeliosProgram",
           "typeTokenRange": {
@@ -48469,7 +48469,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ComputedScriptProperties",
           "typeTokenRange": {
@@ -48480,7 +48480,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "dred-network-registry!~ConcreteCapoDelegateBundle:type",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -48549,7 +48549,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ConcreteCapoDelegateBundle",
           "typeTokenRange": {
@@ -48567,7 +48567,7 @@
               "text": "export declare interface configBase "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "configBase",
           "preserveMemberOrder": false,
@@ -48647,7 +48647,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ConfigFor",
           "typeParameters": [
@@ -48736,7 +48736,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ConfiguredDelegate",
           "typeParameters": [
@@ -48775,7 +48775,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "Constructor",
           "typeParameters": [
@@ -48815,7 +48815,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "ContractBasedDelegate",
@@ -50792,7 +50792,7 @@
               "text": "export declare class ContractDataBridge "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "ContractDataBridge",
@@ -51179,7 +51179,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "ContractDataBridgeWithEnumDatum",
@@ -51376,7 +51376,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CoreDgDataCreationOptions",
           "typeParameters": [
@@ -51455,7 +51455,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "CoreDgDataUpdateOptions",
           "typeParameters": [
@@ -51491,7 +51491,7 @@
               "canonicalReference": "!ObjectConstructor:interface"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "isReadonly": true,
           "releaseTag": "Public",
           "name": "DataBridge_base",
@@ -51510,7 +51510,7 @@
               "text": "export declare class DataBridgeReaderClass "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "DataBridgeReaderClass",
@@ -51572,7 +51572,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "dateAsMillis",
           "typeTokenRange": {
@@ -51616,7 +51616,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DeferredState",
           "typeParameters": [
@@ -51703,7 +51703,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DeferredStateMachineAction",
           "typeParameters": [
@@ -51771,7 +51771,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DeferredTransition",
           "typeParameters": [
@@ -52364,7 +52364,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateActivity",
           "typeTokenRange": {
@@ -52674,7 +52674,7 @@
               "text": "declare interface DelegateActivity$CreatingDelegatedData "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateActivity$CreatingDelegatedData",
           "preserveMemberOrder": false,
@@ -53055,7 +53055,7 @@
               "text": "declare interface DelegateActivity$CreatingDelegatedDataLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateActivity$CreatingDelegatedDataLike",
           "preserveMemberOrder": false,
@@ -53420,7 +53420,7 @@
               "text": "declare interface DelegateActivity$DeletingDelegatedData "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateActivity$DeletingDelegatedData",
           "preserveMemberOrder": false,
@@ -53780,7 +53780,7 @@
               "text": "declare interface DelegateActivity$DeletingDelegatedDataLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateActivity$DeletingDelegatedDataLike",
           "preserveMemberOrder": false,
@@ -53969,7 +53969,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateActivity$Ergo$CreatingDelegatedData",
           "typeTokenRange": {
@@ -54104,7 +54104,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateActivity$Ergo$DeletingDelegatedData",
           "typeTokenRange": {
@@ -54239,7 +54239,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateActivity$Ergo$UpdatingDelegatedData",
           "typeTokenRange": {
@@ -54545,7 +54545,7 @@
               "text": "declare interface DelegateActivity$UpdatingDelegatedData "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateActivity$UpdatingDelegatedData",
           "preserveMemberOrder": false,
@@ -54905,7 +54905,7 @@
               "text": "declare interface DelegateActivity$UpdatingDelegatedDataLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateActivity$UpdatingDelegatedDataLike",
           "preserveMemberOrder": false,
@@ -57227,7 +57227,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "DelegateActivityHelper",
@@ -57771,7 +57771,7 @@
               "text": "> "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "typeParameters": [
             {
@@ -58131,7 +58131,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateDatum",
           "typeTokenRange": {
@@ -58553,7 +58553,7 @@
               "text": "declare interface DelegateDatum$capoStoredData "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateDatum$capoStoredData",
           "preserveMemberOrder": false,
@@ -59062,7 +59062,7 @@
               "text": "declare interface DelegateDatum$capoStoredDataLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateDatum$capoStoredDataLike",
           "preserveMemberOrder": false,
@@ -59568,7 +59568,7 @@
               "text": "declare interface DelegateDatum$Cip68RefToken "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateDatum$Cip68RefToken",
           "preserveMemberOrder": false,
@@ -60077,7 +60077,7 @@
               "text": "declare interface DelegateDatum$Cip68RefTokenLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateDatum$Cip68RefTokenLike",
           "preserveMemberOrder": false,
@@ -60381,7 +60381,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateDatum$Ergo$capoStoredData",
           "typeTokenRange": {
@@ -60601,7 +60601,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateDatum$Ergo$Cip68RefToken",
           "typeTokenRange": {
@@ -61757,7 +61757,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "DelegateDatumHelper",
@@ -62049,7 +62049,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "typeParameters": [
             {
@@ -64087,7 +64087,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegatedDataPredicate",
           "typeParameters": [
@@ -64155,7 +64155,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegatedDatumIdPrefix",
           "typeParameters": [
@@ -64444,7 +64444,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateLifecycleActivity",
           "typeTokenRange": {
@@ -64579,7 +64579,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateLifecycleActivity$Ergo$ReplacingMe",
           "typeTokenRange": {
@@ -64889,7 +64889,7 @@
               "text": "declare interface DelegateLifecycleActivity$ReplacingMe "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateLifecycleActivity$ReplacingMe",
           "preserveMemberOrder": false,
@@ -65270,7 +65270,7 @@
               "text": "declare interface DelegateLifecycleActivity$ReplacingMeLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateLifecycleActivity$ReplacingMeLike",
           "preserveMemberOrder": false,
@@ -66541,7 +66541,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "DelegateLifecycleActivityHelper",
@@ -68070,7 +68070,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "DelegateLifecycleActivityHelperNested",
@@ -68629,7 +68629,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateLifecycleActivityLike",
           "typeTokenRange": {
@@ -68709,7 +68709,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateRole_2",
           "typeTokenRange": {
@@ -69269,7 +69269,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateRole",
           "typeTokenRange": {
@@ -69309,7 +69309,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "DelegateRoleHelper_2",
@@ -70954,7 +70954,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "DelegateRoleHelper",
@@ -71283,7 +71283,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "DelegateRoleHelperNested_2",
@@ -72928,7 +72928,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "DelegateRoleHelperNested",
@@ -73302,7 +73302,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateRoleLike_2",
           "typeTokenRange": {
@@ -73727,7 +73727,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateRoleLike",
           "typeTokenRange": {
@@ -73819,7 +73819,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateSetup",
           "typeParameters": [
@@ -73889,7 +73889,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateSetupWithoutMintDelegate",
           "typeTokenRange": {
@@ -73915,7 +73915,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegateTypes",
           "typeTokenRange": {
@@ -73933,7 +73933,7 @@
               "text": "declare interface DelegationDetail_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegationDetail_2",
           "preserveMemberOrder": false,
@@ -74464,7 +74464,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegationDetail",
           "typeTokenRange": {
@@ -74918,7 +74918,7 @@
               "text": "declare interface DelegationDetailLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DelegationDetailLike",
           "preserveMemberOrder": false,
@@ -75087,7 +75087,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DeployedScriptDetails",
           "typeParameters": [
@@ -76290,7 +76290,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DgDataCreationOptions",
           "typeParameters": [
@@ -76907,7 +76907,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "DgDataUpdateOptions",
           "typeParameters": [
@@ -81403,7 +81403,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "EachUnionElement",
           "typeParameters": [
@@ -81442,7 +81442,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "EmptyConstructor",
           "typeParameters": [
@@ -81545,7 +81545,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "typeParameters": [
             {
@@ -81834,7 +81834,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoAnyData",
           "typeTokenRange": {
@@ -82078,7 +82078,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoBurningActivity",
           "typeTokenRange": {
@@ -82163,7 +82163,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoCapoActivity",
           "typeTokenRange": {
@@ -82221,7 +82221,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoCapoDatum",
           "typeTokenRange": {
@@ -82315,7 +82315,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoCapoLifecycleActivity_2",
           "typeTokenRange": {
@@ -82785,7 +82785,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoCapoLifecycleActivity",
           "typeTokenRange": {
@@ -82829,7 +82829,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoCapoManifestEntry_3",
           "typeTokenRange": {
@@ -83137,7 +83137,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoCapoManifestEntry",
           "typeTokenRange": {
@@ -83427,7 +83427,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "Ergocctx_CharterInputType",
           "typeTokenRange": {
@@ -84032,7 +84032,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoDelegateActivity",
           "typeTokenRange": {
@@ -84322,7 +84322,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoDelegateDatum",
           "typeTokenRange": {
@@ -84612,7 +84612,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoDelegateLifecycleActivity",
           "typeTokenRange": {
@@ -84652,7 +84652,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoDelegateRole_2",
           "typeTokenRange": {
@@ -84932,7 +84932,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoDelegateRole",
           "typeTokenRange": {
@@ -85067,7 +85067,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoDelegationDetail",
           "typeTokenRange": {
@@ -85384,7 +85384,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoManifestActivity_2",
           "typeTokenRange": {
@@ -85853,7 +85853,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoManifestActivity",
           "typeTokenRange": {
@@ -85929,7 +85929,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoManifestEntryType_2",
           "typeTokenRange": {
@@ -86461,7 +86461,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoManifestEntryType",
           "typeTokenRange": {
@@ -86546,7 +86546,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoMinterActivity",
           "typeTokenRange": {
@@ -86746,7 +86746,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoMintingActivity",
           "typeTokenRange": {
@@ -87326,7 +87326,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoPendingCharterChange_2",
           "typeTokenRange": {
@@ -87669,7 +87669,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoPendingCharterChange",
           "typeTokenRange": {
@@ -87727,7 +87727,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoPendingDelegateAction_2",
           "typeTokenRange": {
@@ -88133,7 +88133,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoPendingDelegateAction",
           "typeTokenRange": {
@@ -88186,7 +88186,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoPendingDelegateChange_2",
           "typeTokenRange": {
@@ -88557,7 +88557,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoPendingDelegateChange",
           "typeTokenRange": {
@@ -88628,7 +88628,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoRelativeDelegateLink_2",
           "typeTokenRange": {
@@ -88817,7 +88817,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoRelativeDelegateLink",
           "typeTokenRange": {
@@ -89075,7 +89075,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErgoSpendingActivity",
           "typeTokenRange": {
@@ -89173,7 +89173,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ErrorMap",
           "typeTokenRange": {
@@ -89217,7 +89217,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "Expand",
           "typeParameters": [
@@ -89279,7 +89279,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ExtractLastOfUnion",
           "typeParameters": [
@@ -89332,7 +89332,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ExtractRestOfUnion",
           "typeParameters": [
@@ -89603,7 +89603,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "FindableViaCharterData",
           "typeTokenRange": {
@@ -89674,7 +89674,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "findReadDatumType",
           "typeParameters": [
@@ -89771,7 +89771,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "FoundDatumUtxo",
           "typeParameters": [
@@ -89839,7 +89839,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "FoundUut",
           "typeTokenRange": {
@@ -90104,7 +90104,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "GenericDelegateBridge",
           "typeTokenRange": {
@@ -90144,7 +90144,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "GenericDelegateBridgeClass",
           "typeTokenRange": {
@@ -90193,7 +90193,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "GenericDelegateDatum",
           "typeTokenRange": {
@@ -90307,7 +90307,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "hasAddlTxns",
           "typeParameters": [
@@ -90374,7 +90374,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "hasAllUuts",
           "typeParameters": [
@@ -90427,7 +90427,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "hasBootstrappedCapoConfig",
           "typeTokenRange": {
@@ -90485,7 +90485,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "hasCharterRef",
           "typeTokenRange": {
@@ -90534,7 +90534,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "hasGovAuthority",
           "typeTokenRange": {
@@ -90683,7 +90683,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "hasNamedDelegate",
           "typeParameters": [
@@ -90749,7 +90749,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "hasRecId",
           "typeTokenRange": {
@@ -90794,7 +90794,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "hasSeed",
           "typeTokenRange": {
@@ -90843,7 +90843,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "hasSeedUtxo",
           "typeTokenRange": {
@@ -90926,7 +90926,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "hasSettingsRef",
           "typeParameters": [
@@ -90999,7 +90999,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "hasSpendDelegate",
           "typeTokenRange": {
@@ -91047,7 +91047,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "hasUutContext",
           "typeParameters": [
@@ -91122,7 +91122,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "HeliosBundleClassWithCapo",
           "typeTokenRange": {
@@ -91166,7 +91166,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "HeliosBundleTypes",
           "typeTokenRange": {
@@ -91177,7 +91177,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "dred-network-registry!~HeliosOptimizeOptions:type",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -91233,7 +91233,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "HeliosOptimizeOptions",
           "typeTokenRange": {
@@ -91260,7 +91260,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "HeliosProgramWithCacheAPI",
@@ -91487,7 +91487,7 @@
               "text": "export declare abstract class HeliosScriptBundle "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": true,
           "name": "HeliosScriptBundle",
@@ -93978,7 +93978,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "IF_ISANY",
           "typeParameters": [
@@ -94063,7 +94063,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "IF",
           "typeParameters": [
@@ -94143,7 +94143,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "IFISNEVER",
           "typeParameters": [
@@ -94205,7 +94205,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "InlineDatum",
           "typeTokenRange": {
@@ -94261,7 +94261,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "InstallPolicyDgtOptions",
           "typeParameters": [
@@ -94328,7 +94328,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "intersectedElements",
           "typeParameters": [
@@ -94420,7 +94420,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "IntersectedEnum",
           "typeParameters": [
@@ -94490,7 +94490,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "isActivity",
           "typeTokenRange": {
@@ -94512,7 +94512,7 @@
               "text": "unique symbol"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "isReadonly": true,
           "releaseTag": "Public",
           "name": "isDatum_2",
@@ -94544,7 +94544,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "isDatum",
           "typeTokenRange": {
@@ -94566,7 +94566,7 @@
               "text": "unique symbol"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "isReadonly": true,
           "releaseTag": "Public",
           "name": "JustAnEnum_2",
@@ -94598,7 +94598,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "JustAnEnum_3",
           "typeTokenRange": {
@@ -94629,7 +94629,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "JustAnEnum",
           "typeTokenRange": {
@@ -94691,7 +94691,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity_2",
           "typeTokenRange": {
@@ -95001,7 +95001,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity",
           "typeTokenRange": {
@@ -95019,7 +95019,7 @@
               "text": "declare interface ManifestActivity$addingEntry_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$addingEntry_2",
           "preserveMemberOrder": false,
@@ -95523,7 +95523,7 @@
               "text": "declare interface ManifestActivity$addingEntry "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$addingEntry",
           "preserveMemberOrder": false,
@@ -95595,7 +95595,7 @@
               "text": "declare interface ManifestActivity$addingEntryLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$addingEntryLike_2",
           "preserveMemberOrder": false,
@@ -95955,7 +95955,7 @@
               "text": "declare interface ManifestActivity$addingEntryLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$addingEntryLike",
           "preserveMemberOrder": false,
@@ -96027,7 +96027,7 @@
               "text": "declare interface ManifestActivity$burningThreadToken_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$burningThreadToken_2",
           "preserveMemberOrder": false,
@@ -96531,7 +96531,7 @@
               "text": "declare interface ManifestActivity$burningThreadToken "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$burningThreadToken",
           "preserveMemberOrder": false,
@@ -96603,7 +96603,7 @@
               "text": "declare interface ManifestActivity$burningThreadTokenLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$burningThreadTokenLike_2",
           "preserveMemberOrder": false,
@@ -96968,7 +96968,7 @@
               "text": "declare interface ManifestActivity$burningThreadTokenLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$burningThreadTokenLike",
           "preserveMemberOrder": false,
@@ -97050,7 +97050,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$Ergo$addingEntry_2",
           "typeTokenRange": {
@@ -97239,7 +97239,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$Ergo$addingEntry",
           "typeTokenRange": {
@@ -97266,7 +97266,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$Ergo$burningThreadToken_2",
           "typeTokenRange": {
@@ -97455,7 +97455,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$Ergo$burningThreadToken",
           "typeTokenRange": {
@@ -97482,7 +97482,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$Ergo$forkingThreadToken_2",
           "typeTokenRange": {
@@ -97671,7 +97671,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$Ergo$forkingThreadToken",
           "typeTokenRange": {
@@ -97698,7 +97698,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$Ergo$updatingEntry_2",
           "typeTokenRange": {
@@ -97887,7 +97887,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$Ergo$updatingEntry",
           "typeTokenRange": {
@@ -97905,7 +97905,7 @@
               "text": "declare interface ManifestActivity$forkingThreadToken_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$forkingThreadToken_2",
           "preserveMemberOrder": false,
@@ -98409,7 +98409,7 @@
               "text": "declare interface ManifestActivity$forkingThreadToken "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$forkingThreadToken",
           "preserveMemberOrder": false,
@@ -98481,7 +98481,7 @@
               "text": "declare interface ManifestActivity$forkingThreadTokenLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$forkingThreadTokenLike_2",
           "preserveMemberOrder": false,
@@ -98846,7 +98846,7 @@
               "text": "declare interface ManifestActivity$forkingThreadTokenLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$forkingThreadTokenLike",
           "preserveMemberOrder": false,
@@ -98919,7 +98919,7 @@
               "text": "declare interface ManifestActivity$updatingEntry_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$updatingEntry_2",
           "preserveMemberOrder": false,
@@ -99423,7 +99423,7 @@
               "text": "declare interface ManifestActivity$updatingEntry "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$updatingEntry",
           "preserveMemberOrder": false,
@@ -99495,7 +99495,7 @@
               "text": "declare interface ManifestActivity$updatingEntryLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$updatingEntryLike_2",
           "preserveMemberOrder": false,
@@ -99855,7 +99855,7 @@
               "text": "declare interface ManifestActivity$updatingEntryLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivity$updatingEntryLike",
           "preserveMemberOrder": false,
@@ -99949,7 +99949,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "ManifestActivityHelper_2",
@@ -101589,7 +101589,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "ManifestActivityHelper",
@@ -101917,7 +101917,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "ManifestActivityHelperNested_2",
@@ -103557,7 +103557,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "ManifestActivityHelperNested",
@@ -103912,7 +103912,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivityLike_2",
           "typeTokenRange": {
@@ -104247,7 +104247,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestActivityLike",
           "typeTokenRange": {
@@ -104305,7 +104305,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryTokenRef",
           "typeTokenRange": {
@@ -104376,7 +104376,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryType_2",
           "typeTokenRange": {
@@ -104731,7 +104731,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryType",
           "typeTokenRange": {
@@ -104749,7 +104749,7 @@
               "text": "declare interface ManifestEntryType$DelegateThreads_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryType$DelegateThreads_2",
           "preserveMemberOrder": false,
@@ -105114,7 +105114,7 @@
               "text": "declare interface ManifestEntryType$DelegateThreads "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryType$DelegateThreads",
           "preserveMemberOrder": false,
@@ -105187,7 +105187,7 @@
               "text": "declare interface ManifestEntryType$DelegateThreadsLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryType$DelegateThreadsLike_2",
           "preserveMemberOrder": false,
@@ -105557,7 +105557,7 @@
               "text": "declare interface ManifestEntryType$DelegateThreadsLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryType$DelegateThreadsLike",
           "preserveMemberOrder": false,
@@ -105631,7 +105631,7 @@
               "text": "declare interface ManifestEntryType$DgDataPolicy_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryType$DgDataPolicy_2",
           "preserveMemberOrder": false,
@@ -106131,7 +106131,7 @@
               "text": "declare interface ManifestEntryType$DgDataPolicy "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryType$DgDataPolicy",
           "preserveMemberOrder": false,
@@ -106231,7 +106231,7 @@
               "text": "declare interface ManifestEntryType$DgDataPolicyLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryType$DgDataPolicyLike_2",
           "preserveMemberOrder": false,
@@ -106736,7 +106736,7 @@
               "text": "declare interface ManifestEntryType$DgDataPolicyLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryType$DgDataPolicyLike",
           "preserveMemberOrder": false,
@@ -106854,7 +106854,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryType$Ergo$DelegateThreads_2",
           "typeTokenRange": {
@@ -107099,7 +107099,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryType$Ergo$DelegateThreads",
           "typeTokenRange": {
@@ -107134,7 +107134,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryType$Ergo$DgDataPolicy_2",
           "typeTokenRange": {
@@ -107379,7 +107379,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryType$Ergo$DgDataPolicy",
           "typeTokenRange": {
@@ -107419,7 +107419,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "ManifestEntryTypeHelper_2",
@@ -108829,7 +108829,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "ManifestEntryTypeHelper",
@@ -109147,7 +109147,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryTypeLike_2",
           "typeTokenRange": {
@@ -109527,7 +109527,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ManifestEntryTypeLike",
           "typeTokenRange": {
@@ -109554,7 +109554,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MinimalCharterDataArgs",
           "preserveMemberOrder": false,
@@ -109842,7 +109842,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "minimalData",
           "typeParameters": [
@@ -109895,7 +109895,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MinimalDelegateLink",
           "typeTokenRange": {
@@ -109935,7 +109935,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MinimalDelegateUpdateLink",
           "typeTokenRange": {
@@ -110098,7 +110098,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MintCharterActivityArgs",
           "typeParameters": [
@@ -110191,7 +110191,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MinterActivity",
           "typeTokenRange": {
@@ -110209,7 +110209,7 @@
               "text": "declare interface MinterActivity$CreatingNewSpendDelegate "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MinterActivity$CreatingNewSpendDelegate",
           "preserveMemberOrder": false,
@@ -110282,7 +110282,7 @@
               "text": "declare interface MinterActivity$CreatingNewSpendDelegateLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MinterActivity$CreatingNewSpendDelegateLike",
           "preserveMemberOrder": false,
@@ -110368,7 +110368,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MinterActivity$Ergo$CreatingNewSpendDelegate",
           "typeTokenRange": {
@@ -110408,7 +110408,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "MinterActivityHelper",
@@ -111085,7 +111085,7 @@
               "text": "export declare interface MinterBaseMethods "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MinterBaseMethods",
           "preserveMemberOrder": false,
@@ -111541,7 +111541,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MintingActivity",
           "typeTokenRange": {
@@ -112326,7 +112326,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "MintingActivityHelper",
@@ -113241,7 +113241,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "MintingActivityHelperNested",
@@ -113571,7 +113571,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MintingActivityLike",
           "typeTokenRange": {
@@ -113624,7 +113624,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MintTokensParams",
           "typeTokenRange": {
@@ -113664,7 +113664,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MintUnsafeParams",
           "typeTokenRange": {
@@ -113699,7 +113699,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MintUutActivityArgs",
           "typeTokenRange": {
@@ -113808,7 +113808,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "MultiTxnCallback",
           "typeParameters": [
@@ -113889,7 +113889,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "mustFindActivityType",
           "typeParameters": [
@@ -114027,7 +114027,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "mustFindConcreteContractBridgeType",
           "typeParameters": [
@@ -114119,7 +114119,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "mustFindDatumType",
           "typeParameters": [
@@ -114200,7 +114200,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "mustFindReadDatumType",
           "typeParameters": [
@@ -116497,7 +116497,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "NamedPolicyCreationOptions",
           "typeParameters": [
@@ -116570,7 +116570,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "namedSubmitters",
           "typeTokenRange": {
@@ -116764,7 +116764,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "string"
+                  "text": "\"nbhd\""
                 },
                 {
                   "kind": "Content",
@@ -116835,7 +116835,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<string> & "
+                  "text": "<\"recordId\" | \"nbhd\"> & "
                 },
                 {
                   "kind": "Reference",
@@ -116880,16 +116880,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": " & import(\"@donecollectively/stellar-contracts\")."
-                },
-                {
-                  "kind": "Reference",
-                  "text": "hasUutContext",
-                  "canonicalReference": "dred-network-registry!hasUutContext:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": "<\"recordId\" | \"‹idPrefix (hint: declare with 'idPrefix = \\\"...\\\" as const')›\">>"
+                  "text": ">"
                 },
                 {
                   "kind": "Content",
@@ -116899,7 +116890,7 @@
               "isStatic": false,
               "returnTypeTokenRange": {
                 "startIndex": 7,
-                "endIndex": 23
+                "endIndex": 21
               },
               "releaseTag": "Public",
               "isProtected": false,
@@ -122575,7 +122566,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "NetworkName",
           "typeTokenRange": {
@@ -125216,7 +125207,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "string"
+                  "text": "\"dredNode\""
                 },
                 {
                   "kind": "Content",
@@ -125468,7 +125459,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<string> & "
+                  "text": "<\"recordId\" | \"dredNode\"> & "
                 },
                 {
                   "kind": "Reference",
@@ -125522,16 +125513,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": " & import(\"@donecollectively/stellar-contracts\")."
-                },
-                {
-                  "kind": "Reference",
-                  "text": "hasUutContext",
-                  "canonicalReference": "dred-network-registry!hasUutContext:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": "<\"recordId\" | \"‹idPrefix (hint: declare with 'idPrefix = \\\"...\\\" as const')›\">>"
+                  "text": ">"
                 },
                 {
                   "kind": "Content",
@@ -125541,7 +125523,7 @@
               "isStatic": false,
               "returnTypeTokenRange": {
                 "startIndex": 7,
-                "endIndex": 25
+                "endIndex": 23
               },
               "releaseTag": "Public",
               "isProtected": false,
@@ -126132,7 +126114,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "NormalDelegateSetup",
           "typeTokenRange": {
@@ -126143,7 +126125,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "dred-network-registry!~numberString:type",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -126158,7 +126140,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "numberString",
           "typeTokenRange": {
@@ -126211,7 +126193,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "OffchainPartialDelegateLink",
           "typeTokenRange": {
@@ -126264,7 +126246,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts",
           "releaseTag": "Public",
           "name": "OptimizeOptions_2",
           "typeTokenRange": {
@@ -126317,7 +126299,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "OptimizeOptions",
           "typeTokenRange": {
@@ -126357,7 +126339,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PartialParamConfig",
           "typeParameters": [
@@ -126410,7 +126392,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PartialReader",
           "typeTokenRange": {
@@ -126454,7 +126436,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingCharterChange_2",
           "typeTokenRange": {
@@ -126674,7 +126656,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingCharterChange",
           "typeTokenRange": {
@@ -126727,7 +126709,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingCharterChange$Ergo$otherManifestChange_2",
           "typeTokenRange": {
@@ -127098,7 +127080,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingCharterChange$Ergo$otherManifestChange",
           "typeTokenRange": {
@@ -127116,7 +127098,7 @@
               "text": "declare interface PendingCharterChange$otherManifestChange_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingCharterChange$otherManifestChange_2",
           "preserveMemberOrder": false,
@@ -127551,7 +127533,7 @@
               "text": "declare interface PendingCharterChange$otherManifestChange "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingCharterChange$otherManifestChange",
           "preserveMemberOrder": false,
@@ -127638,7 +127620,7 @@
               "text": "declare interface PendingCharterChange$otherManifestChangeLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingCharterChange$otherManifestChangeLike_2",
           "preserveMemberOrder": false,
@@ -128073,7 +128055,7 @@
               "text": "declare interface PendingCharterChange$otherManifestChangeLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingCharterChange$otherManifestChangeLike",
           "preserveMemberOrder": false,
@@ -128182,7 +128164,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "PendingCharterChangeHelper_2",
@@ -129217,7 +129199,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "PendingCharterChangeHelper",
@@ -129433,7 +129415,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingCharterChangeLike_2",
           "typeTokenRange": {
@@ -129678,7 +129660,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingCharterChangeLike",
           "typeTokenRange": {
@@ -129731,7 +129713,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateAction_2",
           "typeTokenRange": {
@@ -129996,7 +129978,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateAction",
           "typeTokenRange": {
@@ -130014,7 +129996,7 @@
               "text": "declare interface PendingDelegateAction$Add_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateAction$Add_2",
           "preserveMemberOrder": false,
@@ -130714,7 +130696,7 @@
               "text": "declare interface PendingDelegateAction$Add "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateAction$Add",
           "preserveMemberOrder": false,
@@ -130814,7 +130796,7 @@
               "text": "declare interface PendingDelegateAction$AddLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateAction$AddLike_2",
           "preserveMemberOrder": false,
@@ -131334,7 +131316,7 @@
               "text": "declare interface PendingDelegateAction$AddLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateAction$AddLike",
           "preserveMemberOrder": false,
@@ -131447,7 +131429,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateAction$Ergo$Add_2",
           "typeTokenRange": {
@@ -131636,7 +131618,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateAction$Ergo$Add",
           "typeTokenRange": {
@@ -131663,7 +131645,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateAction$Ergo$Replace_2",
           "typeTokenRange": {
@@ -131852,7 +131834,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateAction$Ergo$Replace",
           "typeTokenRange": {
@@ -131870,7 +131852,7 @@
               "text": "declare interface PendingDelegateAction$Replace_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateAction$Replace_2",
           "preserveMemberOrder": false,
@@ -132766,7 +132748,7 @@
               "text": "declare interface PendingDelegateAction$Replace "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateAction$Replace",
           "preserveMemberOrder": false,
@@ -132894,7 +132876,7 @@
               "text": "declare interface PendingDelegateAction$ReplaceLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateAction$ReplaceLike_2",
           "preserveMemberOrder": false,
@@ -133664,7 +133646,7 @@
               "text": "declare interface PendingDelegateAction$ReplaceLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateAction$ReplaceLike",
           "preserveMemberOrder": false,
@@ -133840,7 +133822,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "PendingDelegateActionHelper_2",
@@ -136620,7 +136602,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "PendingDelegateActionHelper",
@@ -137194,7 +137176,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateActionLike_2",
           "typeTokenRange": {
@@ -137484,7 +137466,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateActionLike",
           "typeTokenRange": {
@@ -137502,7 +137484,7 @@
               "text": "declare interface PendingDelegateChange_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateChange_2",
           "preserveMemberOrder": false,
@@ -138032,7 +138014,7 @@
               "text": "declare interface PendingDelegateChange "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateChange",
           "preserveMemberOrder": false,
@@ -138138,7 +138120,7 @@
               "text": "declare interface PendingDelegateChangeLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateChangeLike_2",
           "preserveMemberOrder": false,
@@ -138668,7 +138650,7 @@
               "text": "declare interface PendingDelegateChangeLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PendingDelegateChangeLike",
           "preserveMemberOrder": false,
@@ -138805,7 +138787,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PolicyCreationOptions",
           "typeTokenRange": {
@@ -138933,7 +138915,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "possiblyAbstractContractBridgeType",
           "typeParameters": [
@@ -139026,7 +139008,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "PreconfiguredDelegate",
           "typeParameters": [
@@ -139361,7 +139343,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "string"
+                  "text": "\"set\""
                 },
                 {
                   "kind": "Content",
@@ -142476,7 +142458,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "readsUplcData",
           "typeParameters": [
@@ -142524,7 +142506,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "readsUplcTo",
           "typeParameters": [
@@ -142555,7 +142537,7 @@
               "text": "declare interface RelativeDelegateLink_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "RelativeDelegateLink_2",
           "preserveMemberOrder": false,
@@ -142659,7 +142641,7 @@
               "text": "declare interface RelativeDelegateLink_3 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "RelativeDelegateLink_3",
           "preserveMemberOrder": false,
@@ -143387,7 +143369,7 @@
               "text": "export declare interface RelativeDelegateLink "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "RelativeDelegateLink",
           "preserveMemberOrder": false,
@@ -143491,7 +143473,7 @@
               "text": "declare interface RelativeDelegateLinkLike_2 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "RelativeDelegateLinkLike_2",
           "preserveMemberOrder": false,
@@ -143595,7 +143577,7 @@
               "text": "declare interface RelativeDelegateLinkLike_3 "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "RelativeDelegateLinkLike_3",
           "preserveMemberOrder": false,
@@ -144115,7 +144097,7 @@
               "text": "declare interface RelativeDelegateLinkLike "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "RelativeDelegateLinkLike",
           "preserveMemberOrder": false,
@@ -144269,7 +144251,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ReqtsMap_2",
           "typeParameters": [
@@ -144353,7 +144335,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "RequiredDeployedScriptDetails",
           "typeParameters": [
@@ -144436,7 +144418,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "RequirementEntry",
           "typeParameters": [
@@ -144515,7 +144497,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ResolveablePromise",
           "typeParameters": [
@@ -144559,7 +144541,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "resolvedOrBetter",
           "typeTokenRange": {
@@ -145325,7 +145307,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ReversedAllOfUnion",
           "typeParameters": [
@@ -145381,7 +145363,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "ReverseTuple",
           "typeParameters": [
@@ -145429,7 +145411,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "rootCapoConfig",
           "typeTokenRange": {
@@ -145455,7 +145437,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "scriptPurpose",
           "typeTokenRange": {
@@ -145486,7 +145468,7 @@
               "text": "> "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "typeParameters": [
             {
@@ -145759,7 +145741,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "seedActivityFunc",
           "typeParameters": [
@@ -145818,7 +145800,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "SeedAttrs",
           "typeTokenRange": {
@@ -145971,7 +145953,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "seedFunc",
           "typeParameters": [
@@ -146041,7 +146023,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "SeedTxnScriptParams",
           "typeTokenRange": {
@@ -146148,7 +146130,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "SetupInfo",
           "typeTokenRange": {
@@ -146224,7 +146206,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "SetupOrMainnetSignalForBundle",
           "typeTokenRange": {
@@ -146264,7 +146246,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "someContractBridgeClass",
           "typeTokenRange": {
@@ -146291,7 +146273,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "someContractBridgeType",
           "typeTokenRange": {
@@ -146403,7 +146385,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "SomeDgtActivityHelper",
           "typeTokenRange": {
@@ -146497,7 +146479,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "SomeDgtBridgeReader",
           "typeTokenRange": {
@@ -146595,7 +146577,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "SomeDgtDatumHelper",
           "typeParameters": [
@@ -146747,7 +146729,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "SpendingActivity",
           "typeTokenRange": {
@@ -147584,7 +147566,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "SpendingActivityHelper",
@@ -148304,7 +148286,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "SpendingActivityHelperNested",
@@ -148522,7 +148504,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "SpendingActivityLike",
           "typeTokenRange": {
@@ -148556,7 +148538,7 @@
               "text": "> "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "typeParameters": [
             {
@@ -149985,7 +149967,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "StateMachineEmitter",
           "typeParameters": [
@@ -150009,7 +149991,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "dred-network-registry!~stateSummary:type",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -150024,7 +150006,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "stateSummary",
           "typeTokenRange": {
@@ -150138,7 +150120,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "StateTransitionTable",
           "typeParameters": [
@@ -150224,7 +150206,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "StellarBundleSetupDetails",
           "typeParameters": [
@@ -150264,7 +150246,7 @@
               "text": "> "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "typeParameters": [
             {
@@ -153631,7 +153613,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": true,
           "name": "StellarDelegate",
@@ -154569,7 +154551,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "StellarSetupDetails",
           "typeParameters": [
@@ -154675,7 +154657,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "stellarSubclass",
           "typeParameters": [
@@ -155559,7 +155541,7 @@
               "text": "> "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "typeParameters": [
             {
@@ -160070,7 +160052,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "SubmissionsStates",
           "typeTokenRange": {
@@ -160110,7 +160092,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "SubmissionsTransitions",
           "typeTokenRange": {
@@ -160208,7 +160190,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "SubmitManagerState",
           "typeTokenRange": {
@@ -160329,7 +160311,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "SubmitOptions",
           "typeTokenRange": {
@@ -160355,7 +160337,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "submitterName",
           "typeTokenRange": {
@@ -160366,7 +160348,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "dred-network-registry!~SubmitterRetryIntervals:type",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -160381,7 +160363,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "SubmitterRetryIntervals",
           "typeTokenRange": {
@@ -160946,7 +160928,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "tagOnly",
           "typeTokenRange": {
@@ -160969,7 +160951,7 @@
               "canonicalReference": "dred-network-registry!tagOnly:type"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "isReadonly": true,
           "releaseTag": "Public",
           "name": "tagOnly",
@@ -161064,7 +161046,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "TimeoutId",
           "typeTokenRange": {
@@ -161095,7 +161077,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "TODO_TYPE",
           "typeTokenRange": {
@@ -161117,7 +161099,7 @@
               "text": "unique symbol"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "isReadonly": true,
           "releaseTag": "Public",
           "name": "TODO",
@@ -161162,7 +161144,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "tokenPredicate",
           "typeParameters": [
@@ -161232,7 +161214,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "transitionEventInfo",
           "typeParameters": [
@@ -161307,7 +161289,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "TxBatchChangeNotifier",
           "typeTokenRange": {
@@ -161325,7 +161307,7 @@
               "text": "export declare class TxBatcher "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "TxBatcher",
@@ -161680,7 +161662,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "dred-network-registry!~TxBatcherChanges:type",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -161704,7 +161686,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "TxBatcherChanges",
           "typeTokenRange": {
@@ -161715,7 +161697,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "dred-network-registry!~TxBatcherOptions:type",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -161757,7 +161739,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "TxBatcherOptions",
           "typeTokenRange": {
@@ -161783,7 +161765,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "txBuiltOrSubmitted",
           "typeTokenRange": {
@@ -162022,7 +162004,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "TxDescription",
           "typeParameters": [
@@ -162099,7 +162081,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "TxDescriptionWithError",
           "typeTokenRange": {
@@ -162126,7 +162108,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "TxNotNeededError",
@@ -162230,7 +162212,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "TxPipelineOptions",
           "typeTokenRange": {
@@ -162279,7 +162261,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "TxSubmissionTracker",
@@ -163134,7 +163116,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "TxSubmitCallbacks",
           "typeTokenRange": {
@@ -163183,7 +163165,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "TxSubmitMgr",
@@ -163704,7 +163686,7 @@
             {
               "kind": "Property",
               "canonicalReference": "dred-network-registry!~TxSubmitMgr#id:member",
-              "docComment": "/**\n * the locally-unique id-ish label of the tx description\n *\n * @remarks\n *\n * see {@link txId} for the actual txId available after the tx is built\n */\n",
+              "docComment": "/**\n * the locally-unique id-ish label of the tx description\n *\n * @remarks\n *\n * see {@link TxSubmitMgr.txId | txId} for the actual txId available after the tx is built\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -165199,7 +165181,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "dred-network-registry!~TxSubmitterStates:type",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -165214,7 +165196,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "TxSubmitterStates",
           "typeTokenRange": {
@@ -165225,7 +165207,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "dred-network-registry!~TxSubmitterTransitions:type",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -165240,7 +165222,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "TxSubmitterTransitions",
           "typeTokenRange": {
@@ -165271,7 +165253,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "TYPE_ERROR",
           "typeTokenRange": {
@@ -165293,7 +165275,7 @@
               "text": "unique symbol"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "isReadonly": true,
           "releaseTag": "Public",
           "name": "TYPE_ERROR",
@@ -165354,7 +165336,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "TypeError_2",
           "typeParameters": [
@@ -165405,7 +165387,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "UnspecializedDelegateBridge",
@@ -166359,7 +166341,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "UnspecializedDelegateBridgeReader",
@@ -167492,7 +167474,7 @@
               "canonicalReference": "!unknown"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "isReadonly": true,
           "releaseTag": "Public",
           "name": "UnspecializedDgtBundle_base",
@@ -167520,7 +167502,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "UnspecializedDgtBundle",
@@ -167762,7 +167744,7 @@
               "text": "> "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "typeParameters": [
             {
@@ -168049,7 +168031,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "UpdateActivityArgs",
           "typeParameters": [
@@ -168110,7 +168092,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "updateActivityFunc",
           "typeParameters": [
@@ -168348,7 +168330,7 @@
               "text": " "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "UplcConsoleLogger",
@@ -169144,7 +169126,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "UplcRecord_2",
           "typeParameters": [
@@ -169206,7 +169188,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "useRawMinterSetup",
           "typeTokenRange": {
@@ -169217,7 +169199,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "dred-network-registry!~UtxoDisplayCache:type",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -169246,7 +169228,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "UtxoDisplayCache",
           "typeTokenRange": {
@@ -169264,7 +169246,7 @@
               "text": "export declare class UtxoHelper "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "UtxoHelper",
@@ -172084,7 +172066,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "utxoPredicate",
           "typeTokenRange": {
@@ -172155,7 +172137,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "UtxoSearchScope",
           "typeTokenRange": {
@@ -172195,7 +172177,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "UtxoSearchScopeWithUtxos",
           "typeTokenRange": {
@@ -172230,7 +172212,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "utxoSortInfo",
           "typeTokenRange": {
@@ -172265,7 +172247,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "UutCreationAttrsWithSeed",
           "typeTokenRange": {
@@ -172296,7 +172278,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "uutMap",
           "typeTokenRange": {
@@ -172314,7 +172296,7 @@
               "text": "export declare class UutName "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": false,
           "name": "UutName",
@@ -172527,7 +172509,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "uutPurposeMap",
           "typeParameters": [
@@ -172566,7 +172548,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "valuesEntry",
           "typeTokenRange": {
@@ -172577,14 +172559,14 @@
         {
           "kind": "Class",
           "canonicalReference": "dred-network-registry!~WalletSigningStrategy:class",
-          "docComment": "",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
               "text": "export declare abstract class WalletSigningStrategy "
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "isAbstract": true,
           "name": "WalletSigningStrategy",
@@ -172903,7 +172885,7 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "../../stellar-contracts/dist/stellar-contracts.d.ts",
+          "fileUrlPath": "../node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts",
           "releaseTag": "Public",
           "name": "WrappedPromise",
           "typeParameters": [

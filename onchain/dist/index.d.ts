@@ -626,6 +626,9 @@ declare type ActorContext<WTP extends Wallet = Wallet> = {
 
 declare type addRefInputArgs = Parameters<TxBuilder["refer"]>;
 
+/**
+ * @public
+ */
 declare type aggregatedStateString = `pending` | `${numberString} confirming` | `${numberString} submitting` | `${numberString} confirmed` | `${numberString} failed` | `${numberString} mostly confirmed`;
 
 /**
@@ -861,6 +864,9 @@ declare type basicDelegateMap<anyOtherRoles extends {
     [k in keyof anyOtherRoles | keyof basicDelegateRoles]: (k extends keyof anyOtherRoles ? anyOtherRoles[k] : k extends keyof basicDelegateRoles ? basicDelegateRoles[k] : never);
 };
 
+/**
+ * @public
+ */
 declare type basicDelegateRoles = {
     govAuthority: DelegateSetup<"authority", StellarDelegate, any>;
     mintDelegate: DelegateSetup<"mintDgt", BasicMintDelegate, any>;
@@ -1070,6 +1076,9 @@ declare class BatchSubmitController {
     };
 }
 
+/**
+ * @public
+ */
 declare type BatchSubmitControllerOptions = {
     submitters: namedSubmitters;
     setup: SetupInfo;
@@ -3373,6 +3382,9 @@ declare type CapoDeployedDetails<form extends "json" | "native" = "native"> = {
     isNullDeployment?: boolean;
 };
 
+/**
+ * @public
+ */
 declare type CapoFeatureFlags = Record<string, boolean>;
 
 /**
@@ -7649,6 +7661,9 @@ declare type ComputedScriptProperties = Partial<{
     identity: string;
 }>;
 
+/**
+ * @public
+ */
 declare type ConcreteCapoDelegateBundle = typeof CapoDelegateBundle & Constructor<CapoDelegateBundle> & EmptyConstructor<CapoDelegateBundle> & {
     capoBundle: CapoHeliosBundle;
     isConcrete: true;
@@ -16010,6 +16025,9 @@ declare type HeliosBundleTypes = {
     redeemer: DataType;
 };
 
+/**
+ * @public
+ */
 declare type HeliosOptimizeOptions = Exclude<Pick<Exclude<Parameters<Program["compile"]>[0], undefined | boolean>, "optimize">["optimize"], undefined | boolean>;
 
 /**
@@ -21041,12 +21059,12 @@ declare type namedSubmitters = Record<submitterName, CardanoTxSubmitter>;
 export declare class NeighborhoodController extends DelegatedDataContract<ErgoNeighborhoodData, NeighborhoodDataLike> {
     dataBridgeClass: typeof NeighborhoodPolicyDataBridge;
     scriptBundle(): any;
-    idPrefix: string;
+    idPrefix: "nbhd";
     get delegateName(): string;
     get recordTypeName(): string;
     exampleData(): minimalNeighborhoodData;
     get capo(): DredCapo;
-    mkTxnRegisteringNeighborhood(this: NeighborhoodController, nbhReg: minimalNeighborhoodData, initialTcx?: StellarTxnContext): Promise<hasUutContext_2<string> & StellarTxnContext<anyState_3> & hasMemberToken_2 & hasSeedUtxo_2 & hasCharterRef_2 & hasUutContext_2<"recordId" | "‹idPrefix (hint: declare with 'idPrefix = \"...\" as const')›">>;
+    mkTxnRegisteringNeighborhood(this: NeighborhoodController, nbhReg: minimalNeighborhoodData, initialTcx?: StellarTxnContext): Promise<hasUutContext_2<"recordId" | "nbhd"> & StellarTxnContext<anyState_3> & hasMemberToken_2 & hasSeedUtxo_2 & hasCharterRef_2>;
     mkTxnUpdatingNeighborhood(this: NeighborhoodController, txnName: string, nbh: FoundDatumUtxo<ErgoNeighborhoodData | NeighborhoodData>, options: Omit<DgDataUpdateOptions<NeighborhoodDataLike>, "activity"> & {
         activity?: DgDataUpdateOptions<NeighborhoodDataLike>["activity"];
     }, initialTcx?: StellarTxnContext): Promise<StellarTxnContext<anyState_3> & hasMemberToken_2 & hasSeedUtxo_2>;
@@ -22497,12 +22515,12 @@ declare interface NodeRegistrationDataLike {
 export declare class NodeRegistryController extends DelegatedDataContract<ErgoNodeRegistrationData, NodeRegistrationDataLike> {
     dataBridgeClass: typeof DredNodeRegistryPolicyDataBridge;
     scriptBundle(): any;
-    idPrefix: string;
+    idPrefix: "dredNode";
     get delegateName(): string;
     get recordTypeName(): string;
     exampleData(): minimalNodeRegistrationData;
     get capo(): DredCapo;
-    mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData, initialTcx?: StellarTxnContext): Promise<hasUutContext_2<string> & StellarTxnContext<anyState> & hasMemberToken_2 & hasSeedUtxo_2 & hasSettingsRef<any, any> & hasCharterRef_2 & hasUutContext_2<"recordId" | "‹idPrefix (hint: declare with 'idPrefix = \"...\" as const')›">>;
+    mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData, initialTcx?: StellarTxnContext): Promise<hasUutContext_2<"recordId" | "dredNode"> & StellarTxnContext<anyState> & hasMemberToken_2 & hasSeedUtxo_2 & hasSettingsRef<any, any> & hasCharterRef_2>;
     mkTxnActivatingNode(item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, options?: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
         activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"];
     }, initialTcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
@@ -22527,6 +22545,9 @@ declare type NormalDelegateSetup = {
     mintDelegateActivity: isActivity;
 };
 
+/**
+ * @public
+ */
 declare type numberString = `${number}`;
 
 /**
@@ -25007,7 +25028,7 @@ export declare class ProtocolSettingsController extends DelegatedDataContract<Pr
     scriptBundle(): any;
     get capo(): DredCapo;
     get delegateName(): string;
-    get idPrefix(): string;
+    get idPrefix(): "set";
     get recordTypeName(): string;
     requirements(): ReqtsMap_4<never, never>;
     /**
@@ -26855,6 +26876,9 @@ declare type StateMachineEmitter<SM extends StateMachine<any, any>> = {
     [`backoff`]: [SM, number, string];
 };
 
+/**
+ * @public
+ */
 declare type stateSummary = `pending` | `building` | `confirmed` | `submitting` | `confirming` | `failed` | `mostly confirmed` | `pending`;
 
 declare type StateTransitionTable<S extends string, T extends string> = {
@@ -27806,6 +27830,9 @@ declare type SubmitOptions = TxPipelineOptions & {
  */
 declare type submitterName = string;
 
+/**
+ * @public
+ */
 declare type SubmitterRetryIntervals = {
     reconfirm?: number;
     submit?: number;
@@ -28002,10 +28029,16 @@ declare class TxBatcher {
     rotate(chainBuilder?: TxChainBuilder): void;
 }
 
+/**
+ * @public
+ */
 declare type TxBatcherChanges = {
     rotated: [BatchSubmitController];
 };
 
+/**
+ * @public
+ */
 declare type TxBatcherOptions = {
     submitters: namedSubmitters;
     setup?: SetupInfo;
@@ -28200,7 +28233,7 @@ declare class TxSubmitMgr extends StateMachine<TxSubmitterStates, TxSubmitterTra
     /**
      * the locally-unique id-ish label of the tx description
      * @remarks
-     * see {@link txId} for the actual txId available after the tx is built
+     * see {@link TxSubmitMgr.txId|txId} for the actual txId available after the tx is built
      */
     get id(): string;
     get txId(): TxId;
@@ -28258,11 +28291,20 @@ declare class TxSubmitMgr extends StateMachine<TxSubmitterStates, TxSubmitterTra
      */
     doSubmit(): Promise<TxId | undefined>;
     isTxExpired(tx: Tx): boolean;
-    private checkTxValidityDetails;
+    /**
+     * @internal
+     */
+    checkTxValidityDetails(tx: Tx): void;
 }
 
+/**
+ * @public
+ */
 declare type TxSubmitterStates = "submitting" | "confirming" | "softConfirmed" | "confirmed" | "failed";
 
+/**
+ * @public
+ */
 declare type TxSubmitterTransitions = "submitted" | "confirmed" | "unconfirmed" | "hardConfirm" | "failed" | "notOk" | "timeout" | "txExpired" | "reconfirm" | "otherSubmitterProblem";
 
 declare const TYPE_ERROR: unique symbol;
@@ -28831,6 +28873,9 @@ declare type useRawMinterSetup = Omit<NormalDelegateSetup, "mintDelegateActivity
     mintDelegateActivity?: undefined;
 };
 
+/**
+ * @public
+ */
 declare type UtxoDisplayCache = Map<TxOutputId, string>;
 
 /**
@@ -29114,6 +29159,9 @@ declare type uutPurposeMap<unionPurpose extends string> = {
  **/
 declare type valuesEntry = [number[], bigint];
 
+/**
+ * @public
+ */
 declare abstract class WalletSigningStrategy {
     abstract canBatch: boolean;
     wallet: Wallet;
