@@ -21,7 +21,7 @@ export const getStaticProps = async () => {
 
 export function AdminPage() {
     const lastUpdate = useSignal<Date>(new Date());
-    const nodeRegistryData = useSignal<ErgoNodeRegistrationData[]>([]);
+    const nodeRegistryData = useSignal<FoundDatumUtxo<ErgoNodeRegistrationData, unknown>[]>([]);
     const settingsDetail = useSignal<ErgoProtocolSettings | undefined>(undefined);
 
     // Effect to fetch node registry data when provider changes
@@ -100,7 +100,7 @@ export function AdminPage() {
       {/* Node Registry Table */}
       <NodeRegTable 
         nodeRegistryData={nodeRegistryData.value} 
-        settingsDetail={settingsDetail.value} 
+        // settingsDetail={settingsDetail.value} 
       />
     </div>
   );
