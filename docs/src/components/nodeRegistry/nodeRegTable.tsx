@@ -1,9 +1,10 @@
+import { bytesToText, FoundDatumUtxo } from "@donecollectively/stellar-contracts";
 import type { ErgoNodeRegistrationData } from "dred-network-registry";
 
 interface NodeListProps {
-    nodeRegistryData: ErgoNodeRegistrationData[];
-    settingsDetail?: any; // You can type this more specifically if needed
+    nodeRegistryData: FoundDatumUtxo<ErgoNodeRegistrationData, unknown>[];
     memberTokenFilter?: string; // Optional filter for specific member token
+    editNode?: (event: React.MouseEvent<HTMLTableRowElement>) => void;
 }
 
 // Helper function to check if a node is active based on its last heartbeat
@@ -13,10 +14,14 @@ const isNodeActive = (lastHeartbeat: number, heartbeatInterval: bigint): boolean
   return (now - lastHeartbeat) <= maxAge;
 };
 
-export function NodeRegTable({ nodeRegistryData, settingsDetail, memberTokenFilter }: NodeListProps) {
+export function NodeRegTable({ 
+    nodeRegistryData, 
+    memberTokenFilter,
+    editNode
+}: NodeListProps) {
     // Filter data by memberToken if filter is provided
     const filteredData = memberTokenFilter 
-        ? nodeRegistryData.filter(node => node.memberToken === memberTokenFilter)
+        ? nodeRegistryData.filter(node => node.data?.memberToken === memberTokenFilter)
         : nodeRegistryData;
 
     if (filteredData.length === 0) {
@@ -31,7 +36,7 @@ export function NodeRegTable({ nodeRegistryData, settingsDetail, memberTokenFilt
         );
     }
 
-    const stateName = Object.keys(filteredData[0].state)[0];
+    const stateName = Object.keys(filteredData[0].data!.state)[0];
     
     // Hide Member Token column when filtering by memberToken
     const showMemberToken = !memberTokenFilter;
@@ -52,40 +57,35 @@ export function NodeRegTable({ nodeRegistryData, settingsDetail, memberTokenFilt
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-500 uppercase tracking-wider">
                             Port
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-500 uppercase tracking-wider">
-                            Last Heartbeat
-                        </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-200 uppercase tracking-wider">
-                            Status
+                            Status / Heartbeat
                         </th>
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                    {filteredData.map((node, index) => {
+                    {filteredData.map((nodeUtxo, index) => {
                         // const isActive = isNodeActive(node.lastHeartbeat, heartbeatIntervalSignal.value);
+                        const node = nodeUtxo.data!;
                         return (
-                            <tr key={`${node.memberToken}-${index}`} 
-                                className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                            <tr key={`${node.memberToken}-${node.id}`} data-id={bytesToText(node.id)}
+                                {... editNode ? {onClick:editNode} : {}}
+                                className={`cursor-pointer  text-slate-900 dark:text-slate-200 ${
+                                    index % 2 === 0 ? "bg-white dark:bg-slate-700" : "bg-slate-100 dark:bg-slate-800"
+                                } hover:!bg-[#1e244c]`}>
                                 {showMemberToken && (
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         {node.memberToken}
                                     </td>
                                 )}
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm">
                                     {node.nodeDetails.address}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm">
                                     {node.nodeDetails.port.toString()}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {node.state.Active ? new Date(Number(node.state.Active)).toLocaleString() : stateName}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap">?active/inactive?
-                                    {/* <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                      ${isActive ? 'bg-green-100 text-green-800' : 
-                                        'bg-red-100 text-red-800'}`}>
-                                      {isActive ? 'active' : 'inactive'}
-                                    </span> */}
+                                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                    {stateName}
+                                    {node.state.Active ? " / " +new Date(Number(node.state.Active)).toLocaleString() : ""}
                                 </td>
                             </tr>
                         );

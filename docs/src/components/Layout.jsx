@@ -253,7 +253,7 @@ export function Layout({ children, title, tableOfContents, prose }) {
           </dl>
         </div>
         <div id="toc-area" className="hidden xl:block xl:w-56">
-          <div className="sticky top-[4.5rem] h-[calc(100vh-4.5rem)] overflow-y-auto py-16">
+          <div id="sidebar" className="sticky top-[4.5rem] h-[calc(100vh-4.5rem)] overflow-y-auto py-16">
             <nav aria-labelledby="on-this-page-title">
               {tableOfContents.length > 0 && (
                 <>

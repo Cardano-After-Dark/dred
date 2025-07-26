@@ -11,7 +11,9 @@ import { DredCapo } from "dred-network-registry"
 export const coreSignals = {
     network: signal<CardanoClient | undefined>(undefined),
     wallet: signal<Cip30Wallet | undefined>(undefined),
+    // use useCapoDappProvider instead; these weren't working the way we needed
     provider: signal<DredCapoProviderRaw | undefined>(undefined),
+    capo: signal<DredCapo | undefined>(undefined),
     dAppStatus: signal<CapoDappStatus<any> | undefined>(undefined),
     userInfo: signal<DappUserInfo | undefined>(undefined),
     failedTxns: signal<TxDescription<any, "built">[]>([]),
@@ -46,11 +48,11 @@ export const computedSignals = {
         return addresses?.[0]
     }),
 
-    capo: computed<DredCapo | undefined>(() => {
-        const provider = coreSignals.provider.value
-        if (!provider) return undefined
-        return provider.capo
-    }),
+    // capo: computed<DredCapo | undefined>(() => {
+    //     const provider = coreSignals.provider.value
+    //     if (!provider) return undefined
+    //     return provider.capo
+    // }),
 
     isConnected: computed(() => {
         return !!coreSignals.userInfo.value?.wallet
@@ -135,12 +137,15 @@ export const updaters = {
         coreSignals.wallet.value = handle
     },
 
+    // why does it sometimes show up ok, but not all the time?
     updateProvider: (provider: DredCapoProviderRaw | undefined) => {
         coreSignals.provider.value = provider
+        coreSignals.capo.value = provider?.capo
     },
 
     updateDAppStatus: (status: CapoDappStatus<any>) => {
         coreSignals.dAppStatus.value = status
+
     },
 
     updateUserInfo: (info: any) => {
