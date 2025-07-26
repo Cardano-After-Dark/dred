@@ -40,7 +40,7 @@ export class NeighborhoodController extends DelegatedDataContract<
     scriptBundle() {
         return NeighborhoodRegistryBundle.create();
     }
-    idPrefix = "nbhd";
+    idPrefix = "nbhd" as const;
 
     get delegateName() {
         return "nbhRegistry";

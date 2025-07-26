@@ -43,7 +43,7 @@ export class NodeRegistryController extends DelegatedDataContract<
     scriptBundle() {
         return NodeRegistryBundle.create();
     }
-    idPrefix = "dredNode";
+    idPrefix = "dredNode" as const;
 
     get delegateName() {
         return "nodeRegistry";

@@ -37,7 +37,7 @@ export class ProtocolSettingsController extends DelegatedDataContract<
     }
 
     get idPrefix() {
-        return "set";
+        return "set" as const;
     }
 
     get recordTypeName() {
