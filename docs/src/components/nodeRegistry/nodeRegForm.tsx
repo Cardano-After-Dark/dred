@@ -12,7 +12,7 @@ import {
   StellarTxnContext,
 } from "@donecollectively/stellar-contracts";
 import type {
-    DredCapo,
+  DredCapo,
   ErgoNodeRegistrationData,
   minimalNodeRegistrationData,
 } from "dred-network-registry";
@@ -147,7 +147,7 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
   }
 
   get capo() {
-    const capo : DredCapo = this.provider.capo;
+    const capo: DredCapo = this.provider.capo;
 
     if (!capo) throw new Error("no capo");
     return capo;
@@ -170,8 +170,8 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
     return userInfo;
   }
 
-  formBody: React.RefObject<HTMLTableSectionElement | null> = React.createRef();
-  editor: React.RefObject<HTMLDivElement | null> = React.createRef();
+  formBody = React.createRef<HTMLTableSectionElement>();
+  editor = React.createRef<HTMLDivElement>();
   keepControlsOnscreen = (e: Event) => {
     const currentScroll = window.scrollY;
     const stickyHeader = document.querySelector("header.sticky");
@@ -313,14 +313,15 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
         `//mkTxn ${txnDescription}`,
       );
       console.log(new Date(), "@1");
-      debugger;
+
+      //@ts-expect-error for now
       const tcx: StellarTxnContext<anyState> = create
         ? await nodeRegistry.mkTxnRegisteringNode(updatedNode)
         : await nodeRegistry.mkTxnUpdatingNodeRegistration(
             "saving update",
             datumUtxo!,
             {
-              updatedFields: updatedNode,              
+              updatedFields: updatedNode,
             },
           );
       // : await bookContract.mkTxnSuggestingUpdate({
