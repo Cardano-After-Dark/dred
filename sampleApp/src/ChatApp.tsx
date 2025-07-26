@@ -1,4 +1,3 @@
-//@ts-expect-error
 import React from "react";
 import PropTypes, { InferProps } from "prop-types";
 
@@ -94,6 +93,7 @@ export class ChatApp extends Component<myProps, MyState> {
             this.client ||
             new DredClient({
                 discovery: new StaticHostDiscovery({}),
+                neighborhood: process.env.NEIGHBORHOOD || "dred-dev",
                 waitFor: "minimal",
                 name: "Dred Communicator dev-0.2.0",
             });

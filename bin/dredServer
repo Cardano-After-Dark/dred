@@ -15,6 +15,7 @@ async function init() {
     console.log("Dred server starting on host", firstHost);
     const server = await createServer({ 
         discovery ,
+        neighborhood: process.env.NEIGHBORHOOD || "dred-dev",
         waitFor: "healthy",        
         // connectionSettings: {
 
