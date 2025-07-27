@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  app:
+    image: dred-node:latest
+    container_name: dred-node
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=sub.example.com   # Pass your domain here
+      - EMAIL=admin@dred.network            # Pass your email here
+      - NODE_ENV=production
+    volumes:
+      - ./letsencrypt:/etc/letsencrypt   # Persist certificates
+      - ./nginx-ssl:/etc/nginx/ssl       # Persist SSL config
+      - ./redis-data:/var/lib/redis      # Persist Redis data
