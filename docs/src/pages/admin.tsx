@@ -2,14 +2,12 @@
 
 import { useSignal, useComputed, useSignalEffect } from "@preact/signals-react";
 import { useEffect } from "react";
-import { signals, updaters } from "@/capoSignals.js";
 import type { 
     FoundDatumUtxo, AnyDataTemplate, CharterData 
 } from "@donecollectively/stellar-contracts";
-import type { TxInput } from "@helios-lang/ledger";
-// import { CharterStatus } from "@/components/ui/CharterStatus.tsx";
+
 import { CharterStatus } from "@donecollectively/stellar-contracts/ui";
-import { ErgoNodeRegistrationData, ErgoProtocolSettings } from "dred-network-registry";
+import { dredCapoSignals, ErgoNodeRegistrationData, ErgoProtocolSettings } from "dred-network-registry";
 import { NodeRegTable } from "@/components/nodeRegistry/nodeRegTable.tsx";
 
 export const getStaticProps = async () => {
@@ -33,10 +31,10 @@ export function AdminPage() {
     return () => clearInterval(refreshInterval);
 
     async function fetchNodeRegistry() {
-      const provider = signals.provider.value;
+      const provider = dredCapoSignals.provider.value;
       if (!provider) return;
 
-      const capo = signals.capo.value
+      const capo = dredCapoSignals.capo.value
         if (!capo) return;
       try {
         // Get protocol settings for heartbeat interval
