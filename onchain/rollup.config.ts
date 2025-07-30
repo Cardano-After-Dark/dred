@@ -3,7 +3,7 @@
 import externals from "rollup-plugin-node-externals";
 
 import esbuild from "rollup-plugin-esbuild";
-import resolve from "@rollup/plugin-node-resolve";
+import { nodeResolve as resolve } from "@rollup/plugin-node-resolve";
 import json from "@rollup/plugin-json";
 import execute from "rollup-plugin-shell";
 import { type Plugin } from "rollup";

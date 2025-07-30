@@ -11,3 +11,6 @@ export { NeighborhoodController } from "./DredNeighborhood/NeighborhoodControlle
 export type { ErgoProtocolSettings } from "./settings/ProtocolSettings.typeInfo.js";
 export type { ErgoNodeRegistrationData, NodeRegistrationData, minimalNodeRegistrationData } from "./nodeRegistry/NodeRegistry.typeInfo.js";
 export type { ErgoNeighborhoodData, NeighborhoodData, minimalNeighborhoodData } from "./DredNeighborhood/NeighborhoodRegistry.typeInfo.js";
+
+export { dredCapoSignals, dredCapoUpdaters } from "./capoSignals.js";
+export { DredCapoProvider } from "./DredCapoProvider.js";

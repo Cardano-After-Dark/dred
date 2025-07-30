@@ -27,8 +27,9 @@
         // "isolatedModules": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        
-        "outDir": "./.api-extractor-temp",        
+        "jsx": "preserve",
+
+        "outDir": "./.api-extractor-temp",
         // "outFile": ".api-extractor-temp/raw.d.ts",
         // "importHelpers": true,
         "rootDir": ".",
@@ -57,10 +58,10 @@
         "src/index.ts",
         "./heliosModule.d.ts",
     ],
-    "include": [
-        "src/**/*.ts",
-        "src/**/*.hl"
-    ],
+    // "include": [
+    //     "src/**/*.ts",
+    //     "src/**/*.hl"
+    // ],
     "exclude": [
         "node_modules/**/*",
         "**/node_modules/"

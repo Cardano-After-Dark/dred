@@ -1,22 +1,26 @@
 import React from "react"
 import {
     CapoDAppProvider,
-    UserActionMap,
+    type UserActionMap,
 } from "@donecollectively/stellar-contracts/ui"
 import { DredCapo } from "dred-network-registry"
 import {
-    updaters,
-    signals
-} from "../capoSignals.ts"
+    dredCapoUpdaters,
+    dredCapoSignals
+} from "./capoSignals.js"
 
-export const CapoSignals = signals
-// import { CapoDAppProvider, UserActionMap } from "@/components/ui/CapoDappProvider.tsx"
-
+/**
+ * component for providing the DredCapo context to the app
+ * @remarks
+ * dApps shouldn't need to use this component directly.  Instead,
+ * use the DredCapoProvider component, and use useCapoDappProvider() 
+ * and/or dredCapoSignals to access the state of the DredCapo.
+ * @public
+ */
 export class DredCapoProviderRaw extends CapoDAppProvider<
     DredCapo & any,
     UserActionMap<"ourActivity1">
 > {
-
     getStartedMessage() {
         return "Welcome to the Dred Operator Network. Register a staking vault to get started as a node operator or token-holder"
     }
@@ -30,6 +34,9 @@ interface DredCapoProviderProps {
 // this isn't worth protecting as a secret becuase it's used in the front-end.
 const bfPreprodKey = "preprodwj3I80hV2evfb5pVuPqhcM14pX4kLYJD"
 
+/**
+ * @public
+ */
 export function DredCapoProvider({
     children,
     bfPreprodKey: propKey,
@@ -37,21 +44,18 @@ export function DredCapoProvider({
     const apiKey = propKey ?? bfPreprodKey
 
     return (
-        //@ts-ignore for now
         <DredCapoProviderRaw
             targetNetwork="preprod"
             blockfrostKey={apiKey}
-            //@ts-expect-error temporarily
             capoClass={DredCapo}
             hydra={false}
             dAppName="Dred Operator Network"
-            onNetwork={updaters.updateNetwork}
-            onWalletChange={updaters.updateWalletHandle}
-            onSubmitError={updaters.addFailedTxn}
-            onStatusChange={updaters.updateDAppStatus}
-            onUserInfo={updaters.updateUserInfo}
-            onContextChange={updaters.updateProvider}
-                        
+            onNetwork={dredCapoUpdaters.updateNetwork}
+            onWalletChange={dredCapoUpdaters.updateWalletHandle}
+            onSubmitError={dredCapoUpdaters.addFailedTxn}
+            onStatusChange={dredCapoUpdaters.updateDAppStatus}
+            onUserInfo={dredCapoUpdaters.updateUserInfo}
+            onContextChange={dredCapoUpdaters.updateProvider}                        
         >
             {children as any}
         </DredCapoProviderRaw>

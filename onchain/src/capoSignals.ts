@@ -1,10 +1,9 @@
 import { signal, computed, effect } from "@preact/signals-react"
-import type { CapoDappStatus, DappUserInfo } from "@donecollectively/stellar-contracts/ui"
-import type { DredCapoProviderRaw } from "./components/DredCapoProvider.tsx"
+import type { Address, Value } from "@helios-lang/ledger"
+import type { CardanoClient, Cip30Wallet } from "@helios-lang/tx-utils"
 import type { TxDescription } from "@donecollectively/stellar-contracts"
-import { CardanoClient, Cip30Wallet } from "@helios-lang/tx-utils"
-import { Address, Value } from "@helios-lang/ledger"
-import { DredCapo } from "dred-network-registry"
+import type { CapoDAppProvider, CapoDappStatus, DappUserInfo } from "@donecollectively/stellar-contracts/ui"
+import type { DredCapo } from "./DredCapo.js"
 
 
 // Core signals
@@ -12,7 +11,7 @@ export const coreSignals = {
     network: signal<CardanoClient | undefined>(undefined),
     wallet: signal<Cip30Wallet | undefined>(undefined),
     // use useCapoDappProvider instead; these weren't working the way we needed
-    provider: signal<DredCapoProviderRaw | undefined>(undefined),
+    provider: signal<CapoDAppProvider<DredCapo, any> | undefined>(undefined),
     capo: signal<DredCapo | undefined>(undefined),
     dAppStatus: signal<CapoDappStatus<any> | undefined>(undefined),
     userInfo: signal<DappUserInfo | undefined>(undefined),
@@ -122,13 +121,20 @@ export const computedSignals = {
     }),
 }
 
-export const signals : typeof coreSignals & typeof computedSignals = {
+/**
+ * Signals for state updates in the DredCapo provider
+ * @public
+ */
+export const dredCapoSignals : typeof coreSignals & typeof computedSignals = {
     ...coreSignals,
     ...computedSignals,
 }
 
-// Signal updater functions
-export const updaters = {
+/**
+ * Signal updater functions
+ * @public
+ */
+export const dredCapoUpdaters = {
     updateNetwork: (network: any) => {
         coreSignals.network.value = network
     },
@@ -138,7 +144,7 @@ export const updaters = {
     },
 
     // why does it sometimes show up ok, but not all the time?
-    updateProvider: (provider: DredCapoProviderRaw | undefined) => {
+    updateProvider: (provider: CapoDAppProvider<DredCapo, any> | undefined) => {
         coreSignals.provider.value = provider
         coreSignals.capo.value = provider?.capo
     },

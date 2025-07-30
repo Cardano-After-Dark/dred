@@ -25,7 +25,6 @@ import {
   Button,
   CapoDappProviderContext,
 } from "@donecollectively/stellar-contracts/ui";
-import { DredCapoProviderRaw } from "../DredCapoProvider.tsx";
 
 type propsType = {
   datumUtxo?: FoundDatumUtxo<ErgoNodeRegistrationData>;
@@ -344,12 +343,12 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
 
       debugger;
       const t = await tcx.submitAll();
-      debugger;
 
       console.log(new Date(), "@4");
-
+      
       await minDelay;
       console.log(new Date(), "@5");
+      return
 
       // updateState(`submitting the ${txnDescription} to the network`,);
       refresh().then(async () => {

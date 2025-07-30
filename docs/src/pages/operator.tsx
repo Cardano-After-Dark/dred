@@ -7,6 +7,7 @@ import {
   effect,
 } from "@preact/signals-react";
 import { useEffect, useState } from "react";
+import { useLiveSignal } from "@preact/signals-react/utils";
 import {
   type FoundDatumUtxo,
   type AnyDataTemplate,
@@ -14,20 +15,19 @@ import {
   bytesToText,
 } from "@donecollectively/stellar-contracts";
 import { makeAddress, type TxInput } from "@helios-lang/ledger";
+import { useCapoDappProvider } from "@donecollectively/stellar-contracts/ui";
 
 import {
   DredCapo,
   ErgoNodeRegistrationData,
   ErgoProtocolSettings,
   NodeRegistrationData,
+  DredCapoProvider,
+  dredCapoSignals,
 } from "dred-network-registry";
 import { NodeRegTable } from "@/components/nodeRegistry/nodeRegTable.tsx";
 import { NodeRegEditor } from "@/components/nodeRegistry/nodeRegForm.tsx";
-import { useLiveSignal } from "@preact/signals-react/utils";
-import { signals, updaters } from "../capoSignals.js";
-import * as FFF from "../capoSignals.js";
-import { useCapoDappProvider } from "@donecollectively/stellar-contracts/ui";
-import { DredCapoProviderRaw } from "../components/DredCapoProvider.tsx";
+
 export const getStaticProps = async () => {
   return {
     props: {
@@ -46,8 +46,8 @@ export function OperatorPage() {
   const [editingNode, setEditingNode] = useState<FoundDatumUtxo<ErgoNodeRegistrationData, unknown> | undefined>(undefined);
 
   const [gen, bump] = useState(0);
-  const userInfo = useLiveSignal(signals.userInfo);
-  //@ts-expect-error until we can iron out the types
+  const userInfo = useLiveSignal(dredCapoSignals.userInfo);
+
   const { provider, capo } = useCapoDappProvider<DredCapo>();
   const {
     walletUtxos,
