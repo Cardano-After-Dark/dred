@@ -1,7 +1,7 @@
 {
   "metadata": {
     "toolPackage": "@microsoft/api-extractor",
-    "toolVersion": "7.52.8",
+    "toolVersion": "7.52.9",
     "schemaVersion": 1011,
     "oldestForwardsCompatibleVersion": 1001,
     "tsdocConfig": {
@@ -1188,6 +1188,91 @@
             }
           ],
           "name": "DredCapoProvider"
+        },
+        {
+          "kind": "Class",
+          "canonicalReference": "dred-network-registry!DredCapoProviderRaw:class",
+          "docComment": "/**\n * component for providing the DredCapo context to the app\n *\n * @remarks\n *\n * dApps shouldn't need to use this component directly. Instead, use the DredCapoProvider component, and use useCapoDappProvider() and/or dredCapoSignals to access the state of the DredCapo.\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export declare class DredCapoProviderRaw extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "CapoDAppProvider",
+              "canonicalReference": "@donecollectively/stellar-contracts!CapoDAppProvider:class"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "DredCapo",
+              "canonicalReference": "dred-network-registry!~DredCapo_2:class"
+            },
+            {
+              "kind": "Content",
+              "text": " & any, "
+            },
+            {
+              "kind": "Reference",
+              "text": "UserActionMap",
+              "canonicalReference": "@donecollectively/stellar-contracts!UserActionMap:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<\"ourActivity1\">>"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "src/DredCapoProvider.tsx",
+          "releaseTag": "Public",
+          "isAbstract": false,
+          "name": "DredCapoProviderRaw",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "Method",
+              "canonicalReference": "dred-network-registry!DredCapoProviderRaw#getStartedMessage:member(1)",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "getStartedMessage(): "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "releaseTag": "Public",
+              "isProtected": false,
+              "overloadIndex": 1,
+              "parameters": [],
+              "isOptional": false,
+              "isAbstract": false,
+              "name": "getStartedMessage"
+            }
+          ],
+          "extendsTokenRange": {
+            "startIndex": 1,
+            "endIndex": 7
+          },
+          "implementsTokenRanges": []
         },
         {
           "kind": "Variable",

@@ -37918,7 +37918,7 @@ class DredCapo extends StellarTokenomicsCapo {
    */
   initDelegateRoles() {
     const inh = super.basicDelegateRoles();
-    const { mintDelegate: parentMD, spendDelegate, govAuthority } = inh;
+    const govAuthority = inh.govAuthority;
     const myDelegates = delegateRoles({
       spendDelegate: defineRole("spendDgt", MyMintSpendDelegate, {}),
       mintDelegate: defineRole("mintDgt", MyMintSpendDelegate, {}),
@@ -38172,5 +38172,5 @@ function DredCapoProvider({
   );
 }
 
-export { DredCapo, DredCapoProvider, MyMintSpendDelegate, NeighborhoodController, NodeRegistryController, ProtocolSettingsController, dredCapoSignals, dredCapoUpdaters };
+export { DredCapo, DredCapoProvider, DredCapoProviderRaw, MyMintSpendDelegate, NeighborhoodController, NodeRegistryController, ProtocolSettingsController, dredCapoSignals, dredCapoUpdaters };
 //# sourceMappingURL=index.mjs.map

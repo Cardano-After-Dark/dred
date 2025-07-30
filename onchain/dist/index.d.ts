@@ -1,7 +1,8 @@
 import type { Address } from '@helios-lang/ledger';
 import { anyState } from '@donecollectively/stellar-contracts';
 import type { AssetClass } from '@helios-lang/ledger';
-import type { CapoDAppProvider } from '@donecollectively/stellar-contracts/ui';
+import type { basicDelegateMap } from '@donecollectively/stellar-contracts';
+import { CapoDAppProvider } from '@donecollectively/stellar-contracts/ui';
 import type { CapoDappStatus } from '@donecollectively/stellar-contracts/ui';
 import { CapoDelegateBundle } from '@donecollectively/stellar-contracts';
 import type { CapoHeliosBundle } from '@donecollectively/stellar-contracts';
@@ -13,8 +14,6 @@ import { ContractDataBridge } from '@donecollectively/stellar-contracts';
 import type { DappUserInfo } from '@donecollectively/stellar-contracts/ui';
 import { DataBridgeReaderClass } from '@donecollectively/stellar-contracts';
 import { DelegatedDataContract } from '@donecollectively/stellar-contracts';
-import { DelegateMap } from '@donecollectively/stellar-contracts';
-import { DelegateSetup } from '@donecollectively/stellar-contracts';
 import type { DgDataUpdateOptions } from '@donecollectively/stellar-contracts';
 import { EnumBridge } from '@donecollectively/stellar-contracts';
 import type { EnumTypeMeta } from '@donecollectively/stellar-contracts';
@@ -42,7 +41,6 @@ import type { ScriptHash } from '@helios-lang/ledger';
 import { SeedActivity } from '@donecollectively/stellar-contracts';
 import { Signal } from '@preact/signals-core';
 import type { singleEnumVariantMeta } from '@donecollectively/stellar-contracts';
-import { StellarDelegate } from '@donecollectively/stellar-contracts';
 import { StellarTokenomicsCapo } from 'stellar-tokenomics';
 import { StellarTxnContext } from '@donecollectively/stellar-contracts';
 import { STokMintDelegate } from 'stellar-tokenomics';
@@ -52,6 +50,7 @@ import { TxInput } from '@helios-lang/ledger';
 import type { TxOutput } from '@helios-lang/ledger';
 import type { TxOutputId } from '@helios-lang/ledger';
 import type { UplcData } from '@helios-lang/uplc';
+import { UserActionMap } from '@donecollectively/stellar-contracts/ui';
 import type { ValidatorHash } from '@helios-lang/ledger';
 import type { Value } from '@helios-lang/ledger';
 
@@ -7795,20 +7794,234 @@ export declare class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFe
      * Initializes the delegate roles for the capo
      * @internal
      */
-    initDelegateRoles(): DelegateMap<    {
-    readonly spendDelegate: DelegateSetup<"spendDgt", any, {}>;
-    readonly mintDelegate: DelegateSetup<"mintDgt", any, {}>;
-    readonly govAuthority: DelegateSetup<"authority", StellarDelegate, any>;
-    readonly settings: DelegateSetup<"dgDataPolicy", any, {}>;
-    readonly DredNode: DelegateSetup<"dgDataPolicy", any, {}>;
-    readonly DredNbh: DelegateSetup<"dgDataPolicy", any, {}>;
-    }>;
+    initDelegateRoles(): basicDelegateMap<any>;
     /**
      * Mints fungible tokens under the Capo's minting policy
      */
     txnMintingFungibleTokens<TCX extends StellarTxnContext>(tcx: TCX, tokenName: string | number[], tokenCount: bigint): Promise<TCX & hasCharterRef & hasGovAuthority>;
     todoAddNamedDelegates(): void;
     requirements(): ReqtsMap<"Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants" | "has custom settings for protocol parameters" | "can update the settings" | "Provides a Node Operator registry, in which node operators can maintain their node registrations", "Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants"> & ReqtsMap<"Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants", never>;
+}
+
+declare class DredCapo_2 extends StellarTokenomicsCapo {
+    autoSetup = true;
+    get defaultFeatureFlags() {
+        return {
+            settings: true,
+            DredNode: true,
+            DredNbh: true
+            /* Add other feature-flag defaults here */
+        };
+    }
+    scriptBundle() {
+        return DredCapoBundle.create({
+            setup: this.setup
+        });
+    }
+    /**
+     * locates the current settings for the capo
+     */
+    async findSettingsInfo(options) {
+        return super.findSettingsInfo(options);
+    }
+    /**
+     * Finds and instantiates the mint delegate for the capo
+     */
+    async getMintDelegate(charterData) {
+        return super.getMintDelegate(charterData);
+    }
+    /**
+     * Finds and instantiates the spend delegate for the capo
+     */
+    async getSpendDelegate(charterData) {
+        return super.getSpendDelegate(charterData);
+    }
+    /**
+     * Finds and instantiates the node registry controller for the capo
+     */
+    async getNodeRegistryController(charterData) {
+        if (!charterData) {
+            charterData = await this.findCharterData();
+        }
+        return this.getDgDataController("DredNode", {
+            charterData
+        });
+    }
+    /**
+     * Finds and instantiates the neighborhood registry controller for the capo
+     */
+    async getNbhRegistryController(charterData) {
+        if (!charterData) {
+            charterData = await this.findCharterData();
+        }
+        return this.getDgDataController("DredNbh", {
+            charterData
+        });
+    }
+    /**
+     * Finds and instantiates the settings controller for the capo
+     */
+    async getSettingsController(options) {
+        return this.getDgDataController("settings", options);
+    }
+    /* add other controller-fetching methods here */
+    /**
+     * Creates the initial settings for the capo
+     */
+    async mkInitialSettings() {
+        return {
+            nodeOpSettings: { V1: {
+                    expectedHeartbeatInterval: BigInt(72 * 60 * 60 * 1e3),
+                    minNodeOperatorStake: makeValue(this.ADA(200n)),
+                    minNodeRegistrationFee: makeValue(this.ADA(50n)),
+                    requiredNodeUptime: 0.95,
+                    minValidations: 1
+                } },
+            nbhSettings: {
+                V1: {
+                    minNbhStake: makeValue(this.ADA(5000n)),
+                    minRegistrationFee: makeValue(this.ADA(4000n))
+                }
+            }
+        };
+    }
+    /**
+     * Finds all the node-registration records
+     * @remarks
+     * This is a convenience method for finding all the node-registration records.
+     * It is equivalent to calling `findDelegatedDataUtxos` with the type `"DredNode"`.
+     */
+    async findNodeOpEntries(options) {
+        return this.findDelegatedDataUtxos({
+            type: "DredNode",
+            charterData: options.charterData,
+            capoUtxos: options.capoUtxos
+        });
+    }
+    /**
+     * Finds all the neighborhood-registration records
+     */
+    async findNbhRegistryEntries() {
+        return this.findDelegatedDataUtxos({
+            type: "dredNbh"
+        });
+    }
+    /* add other model-specific finders here */
+    /**
+     * Initializes the delegate roles for the capo
+     * @internal
+     */
+    initDelegateRoles() {
+        const inh = super.basicDelegateRoles();
+        const govAuthority = inh.govAuthority;
+        const myDelegates = delegateRoles({
+            spendDelegate: defineRole("spendDgt", MyMintSpendDelegate, {}),
+            mintDelegate: defineRole("mintDgt", MyMintSpendDelegate, {}),
+            govAuthority,
+            settings: defineRole("dgDataPolicy", ProtocolSettingsController, {}),
+            DredNode: defineRole("dgDataPolicy", NodeRegistryController, {}),
+            DredNbh: defineRole("dgDataPolicy", NeighborhoodController, {})
+            /* Add other delegate roles here */
+            // optional tokenomics features:
+            // mktSale: defineRole(
+            //     "dgDataPolicy",
+            //     MarketSaleController, {}
+            // ),
+            // needs to stay disabled until it can have access to TieredScale:
+            // fundedPurpose: defineRole(
+            //     "dgDataPolicy",
+            //     FundedPurposeController,
+            //     {}
+            // ),
+        });
+        return myDelegates;
+    }
+    /**
+     * Mints fungible tokens under the Capo's minting policy
+     */
+    async txnMintingFungibleTokens(tcx, tokenName, tokenCount) {
+        if (typeof tokenName === "string") {
+            tokenName = textToBytes(tokenName);
+        }
+        const mintDgt = await this.getMintDelegate();
+        const tcx2 = await this.tcxWithCharterRef(tcx);
+        const tcx2a = await this.txnAddGovAuthority(tcx2);
+        const minter = this.minter;
+        return minter.txnMintWithDelegateAuthorizing(
+        tcx2a,
+        [mkValuesEntry(tokenName, tokenCount)],
+        mintDgt,
+        mintDgt.activity.MintingActivities.MintingFungibleTokens(tokenName)
+        );
+    }
+    // mkConfigData() {
+    //     throw new Error(`unused, but a basic example of how to create a MapData object`);
+    //     const uplcMap = makeMapData([
+    //         [makeByteArrayData(textToBytes("id")), makeByteArrayData(textToBytes("set"))],
+    //     ]);
+    //     return uplcMap;
+    // }
+    todoAddNamedDelegates() {
+    }
+    // async mkAdditionalTxnsForCharter<TCX extends hasAddlTxns<StellarTxnContext<any>>>(
+    //     this: DredCapo,
+    //     tcx: TCX,
+    //     options: {
+    //         charterData: CharterData;
+    //         capoUtxos: TxInput[];
+    //     }
+    // ) {
+    //    // now handled by autoSetup
+    //
+    //     await this.setupFundedPurpose(tcx, options);
+    //     await this.setupMarketSale(tcx, options);
+    //     await this.setupNodeRegistry(tcx, options);
+    //
+    //     return tcx;
+    // }
+    requirements() {
+        const baseTokenomics = super.requirements();
+        return mergesInheritedReqts(baseTokenomics, {
+            "has custom settings for protocol parameters": {
+                purpose: "sets up particular points of adjustability for operational policies",
+                details: [
+                "Arranges details including expiration period for node registrations, ",
+                "  ... so clients and node operator (software) can reference them and make adjustments",
+                "The configuration details can be stored in a separate script. ",
+                "The transaction-builder references the config record in txns needing to access it. ",
+                "On-chain scripts needing to read the config ('client scripts') can find it as a refInput to the txn. ",
+                "By using a CIP-68-style struct, the config's structure can be be upgraded, ",
+                "  ... allowing new scripts needing new configs to get those new configs, ",
+                "  ... while leaving its existing client scripts unmodified, "
+                ],
+                mech: [
+                "has an initial discount scale for artists and listeners",
+                "has staking-reward settings",
+                "provides a 'settings' struct in a module that other contracts import to access parameters"
+                ],
+                requires: ["can update the settings"]
+            },
+            "can update the settings": {
+                purpose: "to allow for future adjustments to protocol parameters",
+                details: [
+                "When the settings are updated, the new settings are used in all future transactions referencing settings`"
+                ],
+                mech: [
+                "applies the new settings on-chain",
+                "won't update the settings without capo govAuthority approval"
+                ]
+            },
+            "Provides a Node Operator registry, in which node operators can maintain their node registrations": {
+                purpose: "so node operators can publish their server availability",
+                details: ["Node operators can join the network and contribute capacity."],
+                mech: [
+                "Allows registering a node operator record with the DRED.nodeOperator token",
+                "Registers the member-* id with the node registration record"
+                ],
+                requires: []
+            }
+        });
+    }
 }
 
 declare type DredCapoFeatures = {
@@ -7825,6 +8038,18 @@ export declare function DredCapoProvider({ children, bfPreprodKey: propKey, }: D
 declare interface DredCapoProviderProps {
     children: React_2.ReactNode;
     bfPreprodKey?: string;
+}
+
+/**
+ * component for providing the DredCapo context to the app
+ * @remarks
+ * dApps shouldn't need to use this component directly.  Instead,
+ * use the DredCapoProvider component, and use useCapoDappProvider()
+ * and/or dredCapoSignals to access the state of the DredCapo.
+ * @public
+ */
+export declare class DredCapoProviderRaw extends CapoDAppProvider<DredCapo_2 & any, UserActionMap<"ourActivity1">> {
+    getStartedMessage(): string;
 }
 
 /**

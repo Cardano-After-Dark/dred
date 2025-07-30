@@ -7,6 +7,7 @@ import {
 } from "@helios-lang/ledger";
 import { makeByteArrayData, makeMapData } from "@helios-lang/uplc";
 import type {
+    basicDelegateMap,
     CapoHeliosBundle,
     CharterData,
     charterDataState,
@@ -222,10 +223,11 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
      * Initializes the delegate roles for the capo
      * @internal
      */
-    initDelegateRoles() {
-        const inh = super.basicDelegateRoles();
+    initDelegateRoles() : basicDelegateMap<any>{
+        const inh : basicDelegateMap<any> = super.basicDelegateRoles();
 
-        const { mintDelegate: parentMD, spendDelegate, govAuthority } = inh;
+        //@ts-ignore
+        const govAuthority : basicDelegateMap<any>["govAuthority"] = inh.govAuthority;
         const myDelegates = delegateRoles({
             spendDelegate: defineRole("spendDgt", MyMintSpendDelegate, {}),
             mintDelegate: defineRole("mintDgt", MyMintSpendDelegate, {}),
