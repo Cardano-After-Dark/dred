@@ -7,7 +7,8 @@
 import type { Address } from '@helios-lang/ledger';
 import { anyState } from '@donecollectively/stellar-contracts';
 import type { AssetClass } from '@helios-lang/ledger';
-import type { CapoDAppProvider } from '@donecollectively/stellar-contracts/ui';
+import type { basicDelegateMap } from '@donecollectively/stellar-contracts';
+import { CapoDAppProvider } from '@donecollectively/stellar-contracts/ui';
 import type { CapoDappStatus } from '@donecollectively/stellar-contracts/ui';
 import { CapoDelegateBundle } from '@donecollectively/stellar-contracts';
 import type { CapoHeliosBundle } from '@donecollectively/stellar-contracts';
@@ -19,8 +20,6 @@ import { ContractDataBridge } from '@donecollectively/stellar-contracts';
 import type { DappUserInfo } from '@donecollectively/stellar-contracts/ui';
 import { DataBridgeReaderClass } from '@donecollectively/stellar-contracts';
 import { DelegatedDataContract } from '@donecollectively/stellar-contracts';
-import { DelegateMap } from '@donecollectively/stellar-contracts';
-import { DelegateSetup } from '@donecollectively/stellar-contracts';
 import type { DgDataUpdateOptions } from '@donecollectively/stellar-contracts';
 import { EnumBridge } from '@donecollectively/stellar-contracts';
 import type { EnumTypeMeta } from '@donecollectively/stellar-contracts';
@@ -48,7 +47,6 @@ import type { ScriptHash } from '@helios-lang/ledger';
 import { SeedActivity } from '@donecollectively/stellar-contracts';
 import { Signal } from '@preact/signals-core';
 import type { singleEnumVariantMeta } from '@donecollectively/stellar-contracts';
-import { StellarDelegate } from '@donecollectively/stellar-contracts';
 import { StellarTokenomicsCapo } from 'stellar-tokenomics';
 import { StellarTxnContext } from '@donecollectively/stellar-contracts';
 import { STokMintDelegate } from 'stellar-tokenomics';
@@ -58,6 +56,7 @@ import { TxInput } from '@helios-lang/ledger';
 import type { TxOutput } from '@helios-lang/ledger';
 import type { TxOutputId } from '@helios-lang/ledger';
 import type { UplcData } from '@helios-lang/uplc';
+import { UserActionMap } from '@donecollectively/stellar-contracts/ui';
 import type { ValidatorHash } from '@helios-lang/ledger';
 import type { Value } from '@helios-lang/ledger';
 
@@ -90,14 +89,7 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
     }): Promise<ProtocolSettingsController>;
     getSpendDelegate(charterData?: CapoDatum$Ergo$CharterData): Promise<MyMintSpendDelegate>;
     // @internal
-    initDelegateRoles(): DelegateMap<    {
-    readonly spendDelegate: DelegateSetup<"spendDgt", any, {}>;
-    readonly mintDelegate: DelegateSetup<"mintDgt", any, {}>;
-    readonly govAuthority: DelegateSetup<"authority", StellarDelegate, any>;
-    readonly settings: DelegateSetup<"dgDataPolicy", any, {}>;
-    readonly DredNode: DelegateSetup<"dgDataPolicy", any, {}>;
-    readonly DredNbh: DelegateSetup<"dgDataPolicy", any, {}>;
-    }>;
+    initDelegateRoles(): basicDelegateMap<any>;
     // Warning: (ae-forgotten-export) The symbol "minimalProtocolSettings" needs to be exported by the entry point index.d.ts
     mkInitialSettings(): Promise<minimalProtocolSettings>;
     // (undocumented)
@@ -113,6 +105,14 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
 //
 // @public (undocumented)
 export function DredCapoProvider({ children, bfPreprodKey: propKey, }: DredCapoProviderProps): React_2.JSX.Element;
+
+// Warning: (ae-forgotten-export) The symbol "DredCapo_2" needs to be exported by the entry point index.d.ts
+//
+// @public
+export class DredCapoProviderRaw extends CapoDAppProvider<DredCapo_2 & any, UserActionMap<"ourActivity1">> {
+    // (undocumented)
+    getStartedMessage(): string;
+}
 
 // Warning: (ae-forgotten-export) The symbol "coreSignals" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "computedSignals" needs to be exported by the entry point index.d.ts

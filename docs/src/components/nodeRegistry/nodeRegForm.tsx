@@ -15,6 +15,8 @@ import type {
   DredCapo,
   ErgoNodeRegistrationData,
   minimalNodeRegistrationData,
+  DredCapoProvider,
+  DredCapoProviderRaw
 } from "dred-network-registry";
 
 type NodeStateFormProps = {
@@ -313,7 +315,6 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
       );
       console.log(new Date(), "@1");
 
-      //@ts-expect-error for now
       const tcx: StellarTxnContext<anyState> = create
         ? await nodeRegistry.mkTxnRegisteringNode(updatedNode)
         : await nodeRegistry.mkTxnUpdatingNodeRegistration(

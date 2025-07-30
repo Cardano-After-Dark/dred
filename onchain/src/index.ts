@@ -13,4 +13,7 @@ export type { ErgoNodeRegistrationData, NodeRegistrationData, minimalNodeRegistr
 export type { ErgoNeighborhoodData, NeighborhoodData, minimalNeighborhoodData } from "./DredNeighborhood/NeighborhoodRegistry.typeInfo.js";
 
 export { dredCapoSignals, dredCapoUpdaters } from "./capoSignals.js";
-export { DredCapoProvider } from "./DredCapoProvider.js";
+export { 
+    DredCapoProvider, 
+    DredCapoProviderRaw 
+} from "./DredCapoProvider.js";
