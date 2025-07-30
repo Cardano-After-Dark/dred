@@ -34,6 +34,9 @@ export type PartialPartialData<T extends AnyDataTemplate<any, any>> = Partial<{
 export type partialMinimalData<T extends AnyDataTemplate<any, any>> =
     PartialPartialData<minimalData<T>>;
 
+/**
+ * @public
+ */
 export class NodeRegistryController extends DelegatedDataContract<
     ErgoNodeRegistrationData,
     NodeRegistrationDataLike
@@ -163,7 +166,7 @@ export class NodeRegistryController extends DelegatedDataContract<
         initialTcx?: StellarTxnContext<anyState> | undefined
     ): Promise<StellarTxnContext<anyState>> {
         const tcx0 = initialTcx || this.mkTcx(
-            "registering dred node"
+            "update node registration"
         );
         const withMemberToken = options.withMemberToken ?? true;
         const tcx1 = withMemberToken ? await this.capo.mkTxnWithMemberInfo(undefined, tcx0) : tcx0;

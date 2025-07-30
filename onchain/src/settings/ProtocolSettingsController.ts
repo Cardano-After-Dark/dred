@@ -19,6 +19,9 @@ import { encodeUtf8 } from "@helios-lang/codec-utils";
 import { DredCapo } from "../DredCapo.js";
 import { makeValue } from "@helios-lang/ledger";
 
+/**
+ * @public
+ */
 export class ProtocolSettingsController extends DelegatedDataContract<
     ProtocolSettings,
     ProtocolSettingsLike

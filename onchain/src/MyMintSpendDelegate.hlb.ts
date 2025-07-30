@@ -1,7 +1,8 @@
 import { makeSTokMintDelegateBundle } from "stellar-tokenomics"
 import DredCapoBundle from "./DredCapo.hlb.js"
+import type { ConcreteCapoDelegateBundle } from "@donecollectively/stellar-contracts";
 
-const DredMintSpendDelegateBundle = class extends makeSTokMintDelegateBundle(
+const DredMintSpendDelegateBundle : ConcreteCapoDelegateBundle = class extends makeSTokMintDelegateBundle(
     DredCapoBundle, "DredMintSpendDelegate"
 ) {
     static needsSpecializedDelegateModule = false;

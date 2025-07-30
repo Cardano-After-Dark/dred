@@ -4,80 +4,63 @@
 
 ```ts
 
-import { Address } from '@helios-lang/ledger';
-import { anyState as anyState_2 } from './StellarTxnContext.js';
-import { anyState as anyState_3 } from '@donecollectively/stellar-contracts';
-import { AssetClass } from '@helios-lang/ledger';
-import { Assets } from '@helios-lang/ledger';
-import { BatchSubmitController as BatchSubmitController_2 } from './networkClients/BatchSubmitController.js';
-import { BytesLike } from '@helios-lang/codec-utils';
-import { CapoConfig as CapoConfig_2 } from '../../CapoTypes.js';
-import { CardanoClient } from '@helios-lang/tx-utils';
-import type { CardanoTxSubmitter } from '@helios-lang/tx-utils';
+import type { Address } from '@helios-lang/ledger';
+import { anyState } from '@donecollectively/stellar-contracts';
+import type { AssetClass } from '@helios-lang/ledger';
+import type { CapoDAppProvider } from '@donecollectively/stellar-contracts/ui';
+import type { CapoDappStatus } from '@donecollectively/stellar-contracts/ui';
+import { CapoDelegateBundle } from '@donecollectively/stellar-contracts';
+import type { CapoHeliosBundle } from '@donecollectively/stellar-contracts';
+import type { CardanoClient } from '@helios-lang/tx-utils';
 import { Cast } from '@helios-lang/contract-utils';
-import { CompileOptions } from '@helios-lang/compiler';
-import { ConcreteCapoDelegateBundle as ConcreteCapoDelegateBundle_2 } from '../helios/scriptBundling/CapoDelegateBundle.js';
-import type { Cost } from '@helios-lang/uplc';
-import type { DataType } from '@helios-lang/compiler';
-import { DeferredState as DeferredState_2 } from '../StateMachine.js';
+import type { CharterData } from '@donecollectively/stellar-contracts';
+import type { Cip30Wallet } from '@helios-lang/tx-utils';
+import { ContractDataBridge } from '@donecollectively/stellar-contracts';
+import type { DappUserInfo } from '@donecollectively/stellar-contracts/ui';
+import { DataBridgeReaderClass } from '@donecollectively/stellar-contracts';
+import { DelegatedDataContract } from '@donecollectively/stellar-contracts';
 import { DelegateMap } from '@donecollectively/stellar-contracts';
-import { DelegateSetup as DelegateSetup_2 } from '@donecollectively/stellar-contracts';
-import { DeployedProgramBundle as DeployedProgramBundle_2 } from '../CachedHeliosProgram.js';
-import { Emulator } from '@helios-lang/tx-utils';
-import type { EnumMemberType } from '@helios-lang/compiler';
-import { ErgoCapoManifestEntry as ErgoCapoManifestEntry_2 } from './helios/scriptBundling/CapoHeliosBundle.typeInfo.js';
-import { ErgoPendingDelegateChange as ErgoPendingDelegateChange_3 } from './helios/scriptBundling/CapoHeliosBundle.typeInfo.js';
-import { EventEmitter } from 'eventemitter3';
-import { hasCharterRef as hasCharterRef_2 } from '@donecollectively/stellar-contracts';
-import { hasGovAuthority as hasGovAuthority_2 } from '@donecollectively/stellar-contracts';
-import { hasMemberToken as hasMemberToken_2 } from 'stellar-tokenomics';
-import { hasSeedUtxo as hasSeedUtxo_2 } from '@donecollectively/stellar-contracts';
-import { hasUutContext as hasUutContext_2 } from '@donecollectively/stellar-contracts';
+import { DelegateSetup } from '@donecollectively/stellar-contracts';
+import type { DgDataUpdateOptions } from '@donecollectively/stellar-contracts';
+import { EnumBridge } from '@donecollectively/stellar-contracts';
+import type { EnumTypeMeta } from '@donecollectively/stellar-contracts';
+import type { FoundDatumUtxo } from '@donecollectively/stellar-contracts';
+import { hasCharterRef } from '@donecollectively/stellar-contracts';
+import { hasGovAuthority } from '@donecollectively/stellar-contracts';
+import { hasMemberToken } from 'stellar-tokenomics';
+import { hasSeed } from '@donecollectively/stellar-contracts';
+import { hasSeedUtxo } from '@donecollectively/stellar-contracts';
+import type { hasSettingsRef } from '@donecollectively/stellar-contracts';
+import { hasUutContext } from '@donecollectively/stellar-contracts';
 import { InlineTxOutputDatum } from '@helios-lang/ledger';
+import type { IntersectedEnum } from '@donecollectively/stellar-contracts';
 import type { IntLike } from '@helios-lang/codec-utils';
-import { MintingPolicyHash } from '@helios-lang/ledger';
-import type { MintingPolicyHashLike } from '@helios-lang/ledger';
-import { NetworkParams } from '@helios-lang/ledger';
-import { PendingCharterChange$Ergo$otherManifestChange as PendingCharterChange$Ergo$otherManifestChange_3 } from './helios/scriptBundling/CapoHeliosBundle.typeInfo.js';
-import { Program } from '@helios-lang/compiler';
-import { ProgramProps } from '@helios-lang/compiler';
+import { isActivity } from '@donecollectively/stellar-contracts';
+import { JustAnEnum } from '@donecollectively/stellar-contracts';
+import type { minimalData } from '@donecollectively/stellar-contracts';
+import type { MintingPolicyHash } from '@helios-lang/ledger';
 import type { PubKey } from '@helios-lang/ledger';
-import { PubKeyHash } from '@helios-lang/ledger';
-import { ReqtsMap } from '../Requirements.js';
-import { ReqtsMap as ReqtsMap_3 } from './Requirements.js';
-import { ReqtsMap as ReqtsMap_4 } from '@donecollectively/stellar-contracts';
+import type { PubKeyHash } from '@helios-lang/ledger';
+import { default as React_2 } from 'react';
+import { ReadonlySignal } from '@preact/signals-core';
+import { ReqtsMap } from '@donecollectively/stellar-contracts';
 import type { ScriptHash } from '@helios-lang/ledger';
-import { SeedActivity as SeedActivity_2 } from '@donecollectively/stellar-contracts';
-import { Signature } from '@helios-lang/ledger';
-import { SimpleWallet } from '@helios-lang/tx-utils';
-import type { Site } from '@helios-lang/compiler-utils';
-import { Source } from '@helios-lang/compiler-utils';
-import { StellarDelegate as StellarDelegate_2 } from '@donecollectively/stellar-contracts';
-import type { SubmissionExpiryError } from '@helios-lang/tx-utils';
-import type { SubmissionUtxoError } from '@helios-lang/tx-utils';
-import { tokenPredicate as tokenPredicate_2 } from '../UtxoHelper.js';
-import { Tx } from '@helios-lang/ledger';
-import { TxBuilder } from '@helios-lang/tx-utils';
-import { TxChainBuilder } from '@helios-lang/tx-utils';
-import { TxId } from '@helios-lang/ledger';
+import { SeedActivity } from '@donecollectively/stellar-contracts';
+import { Signal } from '@preact/signals-core';
+import type { singleEnumVariantMeta } from '@donecollectively/stellar-contracts';
+import { StellarDelegate } from '@donecollectively/stellar-contracts';
+import { StellarTokenomicsCapo } from 'stellar-tokenomics';
+import { StellarTxnContext } from '@donecollectively/stellar-contracts';
+import { STokMintDelegate } from 'stellar-tokenomics';
+import { tagOnly } from '@donecollectively/stellar-contracts';
+import type { TxDescription } from '@donecollectively/stellar-contracts';
 import { TxInput } from '@helios-lang/ledger';
-import { TxOutput } from '@helios-lang/ledger';
-import { TxOutputDatum } from '@helios-lang/ledger';
-import { TxOutputId } from '@helios-lang/ledger';
-import { TxOutputIdLike } from '@helios-lang/ledger';
-import type { TypeSchema } from '@helios-lang/type-utils';
-import { UplcData } from '@helios-lang/uplc';
-import type { UplcLogger } from '@helios-lang/uplc';
-import { UplcProgramV2 } from '@helios-lang/uplc';
-import { UplcRecord } from '../../StellarContract.js';
-import { UplcSourceMapJsonSafe } from '@helios-lang/uplc';
-import { ValidatorHash } from '@helios-lang/ledger';
-import { Value } from '@helios-lang/ledger';
-import { valuesEntry as valuesEntry_2 } from './HeliosPromotedTypes.js';
-import { Wallet } from '@helios-lang/tx-utils';
-import { WalletHelper } from '@helios-lang/tx-utils';
+import type { TxOutput } from '@helios-lang/ledger';
+import type { TxOutputId } from '@helios-lang/ledger';
+import type { UplcData } from '@helios-lang/uplc';
+import type { ValidatorHash } from '@helios-lang/ledger';
+import type { Value } from '@helios-lang/ledger';
 
-// Warning: (ae-forgotten-export) The symbol "StellarTokenomicsCapo" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "DredCapoFeatures" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
@@ -92,38 +75,60 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
         charterData: CharterData;
         capoUtxos?: TxInput[];
     }): Promise<FoundDatumUtxo<ErgoNodeRegistrationData_2, unknown>[]>;
+    // Warning: (ae-forgotten-export) The symbol "ProtocolSettings" needs to be exported by the entry point index.d.ts
     findSettingsInfo(options: {
         charterData: CharterData;
         capoUtxos?: TxInput[];
     }): Promise<FoundDatumUtxo<ErgoProtocolSettings, ProtocolSettings>>;
-    // Warning: (ae-forgotten-export) The symbol "CapoDatum$Ergo$CharterData_4" needs to be exported by the entry point index.d.ts
-    getMintDelegate(charterData?: CapoDatum$Ergo$CharterData_4): Promise<MyMintSpendDelegate>;
-    getNbhRegistryController(charterData?: CapoDatum$Ergo$CharterData_4): Promise<NeighborhoodController>;
-    getNodeRegistryController(charterData?: CapoDatum$Ergo$CharterData_4): Promise<NodeRegistryController>;
+    // Warning: (ae-forgotten-export) The symbol "CapoDatum$Ergo$CharterData" needs to be exported by the entry point index.d.ts
+    getMintDelegate(charterData?: CapoDatum$Ergo$CharterData): Promise<MyMintSpendDelegate>;
+    getNbhRegistryController(charterData?: CapoDatum$Ergo$CharterData): Promise<NeighborhoodController>;
+    getNodeRegistryController(charterData?: CapoDatum$Ergo$CharterData): Promise<NodeRegistryController>;
     getSettingsController(options: {
         charterData: CharterData;
         optional?: true;
     }): Promise<ProtocolSettingsController>;
-    getSpendDelegate(charterData?: CapoDatum$Ergo$CharterData_4): Promise<MyMintSpendDelegate>;
+    getSpendDelegate(charterData?: CapoDatum$Ergo$CharterData): Promise<MyMintSpendDelegate>;
     // @internal
     initDelegateRoles(): DelegateMap<    {
-    readonly spendDelegate: DelegateSetup_2<"spendDgt", any, {}>;
-    readonly mintDelegate: DelegateSetup_2<"mintDgt", any, {}>;
-    readonly govAuthority: DelegateSetup_2<"authority", StellarDelegate_2, any>;
-    readonly settings: DelegateSetup_2<"dgDataPolicy", any, {}>;
-    readonly DredNode: DelegateSetup_2<"dgDataPolicy", any, {}>;
-    readonly DredNbh: DelegateSetup_2<"dgDataPolicy", any, {}>;
+    readonly spendDelegate: DelegateSetup<"spendDgt", any, {}>;
+    readonly mintDelegate: DelegateSetup<"mintDgt", any, {}>;
+    readonly govAuthority: DelegateSetup<"authority", StellarDelegate, any>;
+    readonly settings: DelegateSetup<"dgDataPolicy", any, {}>;
+    readonly DredNode: DelegateSetup<"dgDataPolicy", any, {}>;
+    readonly DredNbh: DelegateSetup<"dgDataPolicy", any, {}>;
     }>;
     // Warning: (ae-forgotten-export) The symbol "minimalProtocolSettings" needs to be exported by the entry point index.d.ts
     mkInitialSettings(): Promise<minimalProtocolSettings>;
     // (undocumented)
-    requirements(): ReqtsMap_4<"Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants" | "has custom settings for protocol parameters" | "can update the settings" | "Provides a Node Operator registry, in which node operators can maintain their node registrations", "Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants"> & ReqtsMap_4<"Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants", never>;
+    requirements(): ReqtsMap<"Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants" | "has custom settings for protocol parameters" | "can update the settings" | "Provides a Node Operator registry, in which node operators can maintain their node registrations", "Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants"> & ReqtsMap<"Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants", never>;
     // (undocumented)
     scriptBundle(): CapoHeliosBundle;
     // (undocumented)
     todoAddNamedDelegates(): void;
-    txnMintingFungibleTokens<TCX extends StellarTxnContext>(tcx: TCX, tokenName: string | number[], tokenCount: bigint): Promise<TCX & hasCharterRef_2 & hasGovAuthority_2>;
+    txnMintingFungibleTokens<TCX extends StellarTxnContext>(tcx: TCX, tokenName: string | number[], tokenCount: bigint): Promise<TCX & hasCharterRef & hasGovAuthority>;
 }
+
+// Warning: (ae-forgotten-export) The symbol "DredCapoProviderProps" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export function DredCapoProvider({ children, bfPreprodKey: propKey, }: DredCapoProviderProps): React_2.JSX.Element;
+
+// Warning: (ae-forgotten-export) The symbol "coreSignals" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "computedSignals" needs to be exported by the entry point index.d.ts
+//
+// @public
+export const dredCapoSignals: typeof coreSignals & typeof computedSignals;
+
+// @public
+export const dredCapoUpdaters: {
+    updateNetwork: (network: any) => void;
+    updateWalletHandle: (handle: any) => void;
+    updateProvider: (provider: CapoDAppProvider<DredCapo, any> | undefined) => void;
+    updateDAppStatus: (status: CapoDappStatus<any>) => void;
+    updateUserInfo: (info: any) => void;
+    addFailedTxn: (txn: TxDescription<any, "built">) => void;
+};
 
 // @public
 export type ErgoNeighborhoodData = {
@@ -153,14 +158,16 @@ export type ErgoProtocolSettings = {
     nbhSettings: ErgoNeighborhoodSettings;
 };
 
+// Warning: (ae-forgotten-export) The symbol "NeighborhoodDataLike" needs to be exported by the entry point index.d.ts
+//
 // @public
 export type minimalNeighborhoodData = minimalData<NeighborhoodDataLike>;
 
+// Warning: (ae-forgotten-export) The symbol "NodeRegistrationDataLike" needs to be exported by the entry point index.d.ts
+//
 // @public
 export type minimalNodeRegistrationData = minimalData<NodeRegistrationDataLike>;
 
-// Warning: (ae-forgotten-export) The symbol "STokMintDelegate" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export class MyMintSpendDelegate extends STokMintDelegate {
     // Warning: (ae-forgotten-export) The symbol "MyMintSpendDelegateDataBridge" needs to be exported by the entry point index.d.ts
@@ -188,15 +195,15 @@ export class NeighborhoodController extends DelegatedDataContract<ErgoNeighborho
     // (undocumented)
     idPrefix: "nbhd";
     // (undocumented)
-    mkTxnRegisteringNeighborhood(this: NeighborhoodController, nbhReg: minimalNeighborhoodData, initialTcx?: StellarTxnContext): Promise<hasUutContext_2<"recordId" | "nbhd"> & StellarTxnContext<anyState_3> & hasMemberToken_2 & hasSeedUtxo_2 & hasCharterRef_2>;
+    mkTxnRegisteringNeighborhood(this: NeighborhoodController, nbhReg: minimalNeighborhoodData, initialTcx?: StellarTxnContext): Promise<hasUutContext<"recordId" | "nbhd"> & StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo & hasCharterRef>;
     // (undocumented)
     mkTxnUpdatingNeighborhood(this: NeighborhoodController, txnName: string, nbh: FoundDatumUtxo<ErgoNeighborhoodData | NeighborhoodData>, options: Omit<DgDataUpdateOptions<NeighborhoodDataLike>, "activity"> & {
         activity?: DgDataUpdateOptions<NeighborhoodDataLike>["activity"];
-    }, initialTcx?: StellarTxnContext): Promise<StellarTxnContext<anyState_3> & hasMemberToken_2 & hasSeedUtxo_2>;
+    }, initialTcx?: StellarTxnContext): Promise<StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo>;
     // (undocumented)
     get recordTypeName(): string;
     // (undocumented)
-    requirements(): ReqtsMap_4<never, never>;
+    requirements(): ReqtsMap<never, never>;
     // (undocumented)
     scriptBundle(): any;
 }
@@ -211,12 +218,18 @@ export interface NeighborhoodData {
     id: number[];
     // (undocumented)
     memberToken: string;
+    // Warning: (ae-forgotten-export) The symbol "NodeOpsInfo" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
     opsInfo: NodeOpsInfo;
+    // Warning: (ae-forgotten-export) The symbol "NeighborhoodState" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
     state: NeighborhoodState;
     // (undocumented)
     type: string;
+    // Warning: (ae-forgotten-export) The symbol "UpdateInfo" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
     updateInfo: /*minStructField*/ UpdateInfo | undefined;
 }
@@ -227,8 +240,12 @@ export interface NodeRegistrationData {
     id: number[];
     // (undocumented)
     memberToken: string;
+    // Warning: (ae-forgotten-export) The symbol "NodeDetails" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
     nodeDetails: NodeDetails;
+    // Warning: (ae-forgotten-export) The symbol "DredNodeState" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
     state: DredNodeState;
     // (undocumented)
@@ -241,6 +258,8 @@ export class NodeRegistryController extends DelegatedDataContract<ErgoNodeRegist
     addValidatorRef(tcx: StellarTxnContext<anyState>, validatorReg: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>): StellarTxnContext<anyState>;
     // (undocumented)
     get capo(): DredCapo;
+    // Warning: (ae-forgotten-export) The symbol "DredNodeRegistryPolicyDataBridge" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
     dataBridgeClass: typeof DredNodeRegistryPolicyDataBridge;
     // (undocumented)
@@ -254,7 +273,7 @@ export class NodeRegistryController extends DelegatedDataContract<ErgoNodeRegist
         activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"];
     }, initialTcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
     // (undocumented)
-    mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData, initialTcx?: StellarTxnContext): Promise<hasUutContext_2<"recordId" | "dredNode"> & StellarTxnContext<anyState> & hasMemberToken_2 & hasSeedUtxo_2 & hasSettingsRef<any, any> & hasCharterRef_2>;
+    mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData, initialTcx?: StellarTxnContext): Promise<hasUutContext<"recordId" | "dredNode"> & StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo & hasSettingsRef<any, any> & hasCharterRef>;
     // (undocumented)
     mkTxnUpdatingNodeRegistration(txnName: string, item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
         activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"];
@@ -267,11 +286,13 @@ export class NodeRegistryController extends DelegatedDataContract<ErgoNodeRegist
     // (undocumented)
     get recordTypeName(): string;
     // (undocumented)
-    requirements(): ReqtsMap_4<never, never>;
+    requirements(): ReqtsMap<never, never>;
     // (undocumented)
     scriptBundle(): any;
 }
 
+// Warning: (ae-forgotten-export) The symbol "ProtocolSettingsLike" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
 export class ProtocolSettingsController extends DelegatedDataContract<ProtocolSettings, ProtocolSettingsLike> {
     // (undocumented)
@@ -290,1192 +311,21 @@ export class ProtocolSettingsController extends DelegatedDataContract<ProtocolSe
     // (undocumented)
     get recordTypeName(): string;
     // (undocumented)
-    requirements(): ReqtsMap_4<never, never>;
+    requirements(): ReqtsMap<never, never>;
     // (undocumented)
     scriptBundle(): any;
 }
 
 // Warnings were encountered during analysis:
 //
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts:55:5 - (ae-forgotten-export) The symbol "OptimizeOptions_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts:78:5 - (ae-forgotten-export) The symbol "HeliosProgramCacheEntry" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts:79:5 - (ae-forgotten-export) The symbol "CacheableProgramProps" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts:81:5 - (ae-forgotten-export) The symbol "CompileOptionsForCachedHeliosProgram" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/HeliosProgramWithCacheAPI.d.ts:81:5 - (ae-forgotten-export) The symbol "anyUplcProgram_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:75:1 - (ae-forgotten-export) The symbol "StateMachine" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:100:1 - (ae-forgotten-export) The symbol "ContractDataBridge" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:147:1 - (ae-forgotten-export) The symbol "EnumBridge" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:147:1 - (ae-forgotten-export) The symbol "isActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:151:5 - (ae-forgotten-export) The symbol "DelegateRole" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:152:9 - (ae-forgotten-export) The symbol "tagOnly" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:232:5 - (ae-forgotten-export) The symbol "DelegateRole_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:405:1 - (ae-forgotten-export) The symbol "numberString" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:418:5 - (ae-forgotten-export) The symbol "TxSubmissionTracker" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:526:1 - (ae-forgotten-export) The symbol "anyDatumProps" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:536:1 - (ae-forgotten-export) The symbol "WrappedPromise" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:536:1 - (ae-forgotten-export) The symbol "ResolveablePromise" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:548:5 - (ae-forgotten-export) The symbol "uutMap" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:575:1 - (ae-forgotten-export) The symbol "StellarDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:581:1 - (ae-forgotten-export) The symbol "basicDelegateRoles" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:582:5 - (ae-forgotten-export) The symbol "DelegateSetup" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:592:5 - (ae-forgotten-export) The symbol "BasicMintDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:593:5 - (ae-forgotten-export) The symbol "ContractBasedDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:612:5 - (ae-forgotten-export) The symbol "GenericDelegateBridgeClass" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:627:5 - (ae-forgotten-export) The symbol "UnspecializedDgtBundle" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:642:5 - (ae-forgotten-export) The symbol "hasSeed" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:651:5 - (ae-forgotten-export) The symbol "StellarTxnContext" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:658:1 - (ae-forgotten-export) The symbol "configBase" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:658:1 - (ae-forgotten-export) The symbol "SeedTxnScriptParams" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:659:5 - (ae-forgotten-export) The symbol "Capo" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:709:5 - (ae-forgotten-export) The symbol "namedSubmitters" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:710:5 - (ae-forgotten-export) The symbol "SetupInfo" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:711:5 - (ae-forgotten-export) The symbol "SubmitOptions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:711:5 - (ae-forgotten-export) The symbol "TxSubmitCallbacks" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:712:5 - (ae-forgotten-export) The symbol "aggregatedStateString" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:713:5 - (ae-forgotten-export) The symbol "stateSummary" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:714:5 - (ae-forgotten-export) The symbol "AllTxSubmissionStates" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:719:5 - (ae-forgotten-export) The symbol "TimeoutId" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:720:5 - (ae-forgotten-export) The symbol "WalletSigningStrategy" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:721:5 - (ae-forgotten-export) The symbol "TxBatchChangeNotifier" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:726:5 - (ae-forgotten-export) The symbol "BatchSubmitControllerOptions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:732:5 - (ae-forgotten-export) The symbol "TxDescription" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:738:5 - (ae-forgotten-export) The symbol "TxDescriptionWithError" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:815:5 - (ae-forgotten-export) The symbol "CapoConfig" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:820:1 - (ae-forgotten-export) The symbol "BuiltTcxStats" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:868:1 - (ae-forgotten-export) The symbol "JustAnEnum" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:967:1 - (ae-forgotten-export) The symbol "IntersectedEnum" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1020:5 - (ae-forgotten-export) The symbol "AbstractNew" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1087:1 - (ae-forgotten-export) The symbol "CapoFeatureFlags" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1087:1 - (ae-forgotten-export) The symbol "StellarContract" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1103:5 - (ae-forgotten-export) The symbol "CapoDataBridge" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1105:5 - (ae-forgotten-export) The symbol "mustFindConcreteContractBridgeType" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1125:5 - (ae-forgotten-export) The symbol "mustFindActivityType" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1126:5 - (ae-forgotten-export) The symbol "mustFindDatumType" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1136:5 - (ae-forgotten-export) The symbol "mustFindReadDatumType" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1138:5 - (ae-forgotten-export) The symbol "CapoHeliosBundle" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1146:5 - (ae-forgotten-export) The symbol "ConfiguredDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1154:5 - (ae-forgotten-export) The symbol "StellarSetupDetails" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1175:5 - (ae-forgotten-export) The symbol "hasAddlTxns" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1176:9 - (ae-forgotten-export) The symbol "CharterData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1179:5 - (ae-forgotten-export) The symbol "stellarSubclass" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1179:5 - (ae-forgotten-export) The symbol "CapoMinter" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1191:5 - (ae-forgotten-export) The symbol "uutPurposeMap" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1195:5 - (ae-forgotten-export) The symbol "hasUutContext" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1199:5 - (ae-forgotten-export) The symbol "UutName" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1208:5 - (ae-forgotten-export) The symbol "tokenPredicate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1215:5 - (ae-forgotten-export) The symbol "hasCharterRef" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1228:5 - (ae-forgotten-export) The symbol "hasSettingsRef" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1236:5 - (ae-forgotten-export) The symbol "CharterDataLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1256:5 - (ae-forgotten-export) The symbol "hasSpendDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1270:5 - (ae-forgotten-export) The symbol "FoundUut" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1275:5 - (ae-forgotten-export) The symbol "MinimalDelegateLink" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1275:5 - (ae-forgotten-export) The symbol "OffchainPartialDelegateLink" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1275:5 - (ae-forgotten-export) The symbol "RelativeDelegateLinkLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1276:5 - (ae-forgotten-export) The symbol "ErgoRelativeDelegateLink" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1276:5 - (ae-forgotten-export) The symbol "capoDelegateConfig" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1329:5 - (ae-forgotten-export) The symbol "FoundDatumUtxo" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1337:5 - (ae-forgotten-export) The symbol "DeployedProgramBundle" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1339:9 - (ae-forgotten-export) The symbol "anyUplcProgram" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1436:5 - (ae-forgotten-export) The symbol "DelegationDetail" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1465:5 - (ae-forgotten-export) The symbol "PreconfiguredDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1484:5 - (ae-forgotten-export) The symbol "basicDelegateMap" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1485:5 - (ae-forgotten-export) The symbol "IF_ISANY" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1487:5 - (ae-forgotten-export) The symbol "DelegateConfigDetails" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1487:5 - (ae-forgotten-export) The symbol "AuthorityPolicy" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1504:5 - (ae-forgotten-export) The symbol "hasGovAuthority" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1507:5 - (ae-forgotten-export) The symbol "FindableViaCharterData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1507:5 - (ae-forgotten-export) The symbol "DelegatedDataContract" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1540:9 - (ae-forgotten-export) The symbol "MinimalCharterDataArgs" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1555:5 - (ae-forgotten-export) The symbol "anyState" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1555:5 - (ae-forgotten-export) The symbol "hasBootstrappedCapoConfig" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1555:5 - (ae-forgotten-export) The symbol "charterDataState" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1555:5 - (ae-forgotten-export) The symbol "hasSeedUtxo" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1559:5 - (ae-forgotten-export) The symbol "UtxoSearchScope" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1627:5 - (ae-forgotten-export) The symbol "AnyDataTemplate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1630:9 - (ae-forgotten-export) The symbol "DelegatedDataPredicate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1656:5 - (ae-forgotten-export) The symbol "MinimalDelegateUpdateLink" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1676:5 - (ae-forgotten-export) The symbol "NamedPolicyCreationOptions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1676:5 - (ae-forgotten-export) The symbol "hasNamedDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1693:5 - (ae-forgotten-export) The symbol "InstallPolicyDgtOptions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1720:5 - (ae-forgotten-export) The symbol "ManifestEntryTokenRef" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1733:5 - (ae-forgotten-export) The symbol "CapoDatum$Ergo$CharterData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1737:5 - (ae-forgotten-export) The symbol "ErgoPendingCharterChange_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1741:5 - (ae-forgotten-export) The symbol "SomeDgtActivityHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1771:5 - (ae-forgotten-export) The symbol "NormalDelegateSetup" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1771:5 - (ae-forgotten-export) The symbol "DelegateSetupWithoutMintDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1797:5 - (ae-forgotten-export) The symbol "UutCreationAttrsWithSeed" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1812:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1834:5 - (ae-forgotten-export) The symbol "CapoActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1835:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivityLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1845:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivityHelperNested" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1889:1 - (ae-forgotten-export) The symbol "rootCapoConfig" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1940:5 - (ae-forgotten-export) The symbol "cctx_CharterInputType" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:1964:5 - (ae-forgotten-export) The symbol "cctx_CharterInputTypeLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2002:5 - (ae-forgotten-export) The symbol "CapoDatumHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2007:5 - (ae-forgotten-export) The symbol "ErgoCapoDatum" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2011:5 - (ae-forgotten-export) The symbol "CapoActivityHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2013:5 - (ae-forgotten-export) The symbol "CapoDataBridgeReader" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2022:9 - (ae-forgotten-export) The symbol "DelegateRoleHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2026:9 - (ae-forgotten-export) The symbol "ManifestEntryTypeHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2030:9 - (ae-forgotten-export) The symbol "PendingDelegateActionHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2034:9 - (ae-forgotten-export) The symbol "ManifestActivityHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2038:9 - (ae-forgotten-export) The symbol "PendingCharterChangeHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2046:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivityHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2062:9 - (ae-forgotten-export) The symbol "CapoManifestEntryLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2063:13 - (ae-forgotten-export) The symbol "ManifestEntryTypeLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2070:9 - (ae-forgotten-export) The symbol "PendingDelegateChangeLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2071:13 - (ae-forgotten-export) The symbol "PendingDelegateActionLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2072:13 - (ae-forgotten-export) The symbol "DelegateRoleLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2078:9 - (ae-forgotten-export) The symbol "AnyDataLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2085:5 - (ae-forgotten-export) The symbol "RelativeDelegateLink" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2088:5 - (ae-forgotten-export) The symbol "CapoManifestEntry" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2091:5 - (ae-forgotten-export) The symbol "PendingDelegateChange" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2094:5 - (ae-forgotten-export) The symbol "AnyData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2097:1 - (ae-forgotten-export) The symbol "DataBridgeReaderClass" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2114:5 - (ae-forgotten-export) The symbol "ErgoDelegateRole" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2129:5 - (ae-forgotten-export) The symbol "ErgoManifestEntryType" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2144:5 - (ae-forgotten-export) The symbol "ErgoPendingDelegateAction" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2159:5 - (ae-forgotten-export) The symbol "ErgoManifestActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2174:5 - (ae-forgotten-export) The symbol "ErgoPendingCharterChange" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2178:9 - (ae-forgotten-export) The symbol "CapoDatum$Ergo$DelegatedData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2209:5 - (ae-forgotten-export) The symbol "ErgoCapoLifecycleActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2224:5 - (ae-forgotten-export) The symbol "ErgoCapoActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2303:5 - (ae-forgotten-export) The symbol "PendingCharterChange" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2315:5 - (ae-forgotten-export) The symbol "RelativeDelegateLink_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2321:5 - (ae-forgotten-export) The symbol "CapoManifestEntry_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2322:5 - (ae-forgotten-export) The symbol "PendingCharterChange_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2358:5 - (ae-forgotten-export) The symbol "PendingCharterChangeLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2368:5 - (ae-forgotten-export) The symbol "RelativeDelegateLinkLike_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2374:5 - (ae-forgotten-export) The symbol "CapoManifestEntryLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2375:5 - (ae-forgotten-export) The symbol "PendingCharterChangeLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2437:5 - (ae-forgotten-export) The symbol "ErgoCapoManifestEntry" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2451:5 - (ae-forgotten-export) The symbol "ErgoRelativeDelegateLink_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2457:5 - (ae-forgotten-export) The symbol "ErgoCapoManifestEntry_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2490:1 - (ae-forgotten-export) The symbol "CapoDatum$DelegatedData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2508:5 - (ae-forgotten-export) The symbol "CapoDatum$CharterData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2524:5 - (ae-forgotten-export) The symbol "CapoDatum_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2525:9 - (ae-forgotten-export) The symbol "CapoDatum$CharterDataLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2527:9 - (ae-forgotten-export) The symbol "CapoDatum$DelegatedDataLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2564:1 - (ae-forgotten-export) The symbol "HeliosScriptBundle" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2598:5 - (ae-forgotten-export) The symbol "CapoBundleClass" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2598:5 - (ae-forgotten-export) The symbol "ConcreteCapoDelegateBundle" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2640:5 - (ae-forgotten-export) The symbol "DeployedScriptDetails" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2641:5 - (ae-forgotten-export) The symbol "BasicMinterParams" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2664:5 - (ae-forgotten-export) The symbol "CapoDeployedDetails" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2673:5 - (ae-forgotten-export) The symbol "StellarBundleSetupDetails" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2786:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$CreatingDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2797:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$CreatingDelegate_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2819:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewMintDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2830:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewMintDelegate_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2852:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewSpendDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:2863:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewSpendDelegate_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3043:5 - (ae-forgotten-export) The symbol "ManifestActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3069:5 - (ae-forgotten-export) The symbol "ManifestActivity_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3108:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$CreatingDelegateLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3112:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewSpendDelegateLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3113:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewMintDelegateLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3114:9 - (ae-forgotten-export) The symbol "ManifestActivityLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3152:5 - (ae-forgotten-export) The symbol "SeedActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3165:5 - (ae-forgotten-export) The symbol "DelegateRoleHelperNested" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3256:5 - (ae-forgotten-export) The symbol "ManifestActivityHelperNested" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3268:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivity_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3269:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$CreatingDelegateLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3271:9 - (ae-forgotten-export) The symbol "DelegateRoleLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3273:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewSpendDelegateLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3274:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewMintDelegateLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3275:9 - (ae-forgotten-export) The symbol "ManifestActivityLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3326:5 - (ae-forgotten-export) The symbol "DelegateRoleHelperNested_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3417:5 - (ae-forgotten-export) The symbol "ManifestActivityHelperNested_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3658:5 - (ae-forgotten-export) The symbol "ActivityDelegateRoleHelperNested" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:3847:5 - (ae-forgotten-export) The symbol "ActivityDelegateRoleHelperNested_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4247:5 - (ae-forgotten-export) The symbol "ManifestEntryType" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4261:5 - (ae-forgotten-export) The symbol "ManifestEntryType_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4299:5 - (ae-forgotten-export) The symbol "ManifestEntryTypeLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4335:1 - (ae-forgotten-export) The symbol "MinterBaseMethods" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4341:5 - (ae-forgotten-export) The symbol "CapoMinterDataBridge" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4353:5 - (ae-forgotten-export) The symbol "MintCharterActivityArgs" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4410:5 - (ae-forgotten-export) The symbol "valuesEntry" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4448:5 - (ae-forgotten-export) The symbol "MinterActivityHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4450:5 - (ae-forgotten-export) The symbol "CapoMinterDataBridgeReader" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4463:9 - (ae-forgotten-export) The symbol "RelativeDelegateLinkLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4471:5 - (ae-forgotten-export) The symbol "RelativeDelegateLink_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4491:5 - (ae-forgotten-export) The symbol "ErgoMinterActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4532:5 - (ae-forgotten-export) The symbol "CapoDatum$Ergo$CharterData_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4587:5 - (ae-forgotten-export) The symbol "CapoDatum$CharterData_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4611:5 - (ae-forgotten-export) The symbol "CapoDatum$CharterDataLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4687:5 - (ae-forgotten-export) The symbol "cctx_CharterInputType$RefInput" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4689:5 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Input" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4721:9 - (ae-forgotten-export) The symbol "cctx_CharterInputType$RefInputLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4722:9 - (ae-forgotten-export) The symbol "cctx_CharterInputType$InputLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4912:1 - (ae-forgotten-export) The symbol "CapoDelegateBundle" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4912:1 - (ae-forgotten-export) The symbol "Constructor" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4912:1 - (ae-forgotten-export) The symbol "EmptyConstructor" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:4962:5 - (ae-forgotten-export) The symbol "GenericDelegateBridge" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5026:5 - (ae-forgotten-export) The symbol "MintUutActivityArgs" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5083:5 - (ae-unresolved-inheritdoc-reference) The @inheritDoc reference could not be resolved: The package "dred-network-registry" does not have an export "StellarDelegate"
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5137:5 - (ae-unresolved-inheritdoc-reference) The @inheritDoc reference could not be resolved: The package "dred-network-registry" does not have an export "StellarDelegate"
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5147:5 - (ae-forgotten-export) The symbol "DataBridge" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5151:5 - (ae-forgotten-export) The symbol "readsUplcData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5177:5 - (ae-forgotten-export) The symbol "minimalData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5190:1 - (ae-forgotten-export) The symbol "DataBridge_base" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5199:5 - (ae-forgotten-export) The symbol "DataBridgeOptions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5222:5 - (ae-forgotten-export) The symbol "readsUplcTo" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5270:1 - (ae-forgotten-export) The symbol "DeferredStateMachineAction" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5274:5 - (ae-forgotten-export) The symbol "AnyPromise" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5277:5 - (ae-forgotten-export) The symbol "$states" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5279:5 - (ae-forgotten-export) The symbol "$transitions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5404:1 - (ae-forgotten-export) The symbol "DelegateActivity$CreatingDelegatedData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5426:1 - (ae-forgotten-export) The symbol "DelegateActivity$DeletingDelegatedData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5448:1 - (ae-forgotten-export) The symbol "DelegateActivity$UpdatingDelegatedData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5522:5 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5524:5 - (ae-forgotten-export) The symbol "SpendingActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5526:5 - (ae-forgotten-export) The symbol "MintingActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5528:5 - (ae-forgotten-export) The symbol "BurningActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5578:5 - (ae-forgotten-export) The symbol "DelegateActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5579:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivityLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5580:9 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5581:9 - (ae-forgotten-export) The symbol "SpendingActivityLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5582:9 - (ae-forgotten-export) The symbol "MintingActivityLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5583:9 - (ae-forgotten-export) The symbol "BurningActivityLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5584:9 - (ae-forgotten-export) The symbol "DelegateActivity$CreatingDelegatedDataLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5585:9 - (ae-forgotten-export) The symbol "DelegateActivity$UpdatingDelegatedDataLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5586:9 - (ae-forgotten-export) The symbol "DelegateActivity$DeletingDelegatedDataLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5592:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivityHelperNested_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5596:5 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityHelperNested" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5600:5 - (ae-forgotten-export) The symbol "SpendingActivityHelperNested" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5604:5 - (ae-forgotten-export) The symbol "MintingActivityHelperNested" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5608:5 - (ae-forgotten-export) The symbol "BurningActivityHelperNested" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5785:5 - (ae-forgotten-export) The symbol "PartialParamConfig" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5785:5 - (ae-forgotten-export) The symbol "ConfigFor" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5786:5 - (ae-forgotten-export) The symbol "delegateConfigValidation" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5811:1 - (ae-forgotten-export) The symbol "ErrorMap" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5824:5 - (ae-forgotten-export) The symbol "AnyData_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5850:5 - (ae-forgotten-export) The symbol "AnyDataLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5929:5 - (ae-forgotten-export) The symbol "ErgoAnyData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5990:5 - (ae-forgotten-export) The symbol "DelegateDatum$Cip68RefToken" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5992:5 - (ae-forgotten-export) The symbol "DelegationDetail_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:5994:5 - (ae-forgotten-export) The symbol "DelegateDatum$capoStoredData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6024:5 - (ae-forgotten-export) The symbol "DelegateDatum" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6025:9 - (ae-forgotten-export) The symbol "DelegateDatum$Cip68RefTokenLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6026:9 - (ae-forgotten-export) The symbol "DelegationDetailLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6027:9 - (ae-forgotten-export) The symbol "DelegateDatum$capoStoredDataLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6191:5 - (ae-forgotten-export) The symbol "ReqtsMap_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6208:5 - (ae-forgotten-export) The symbol "InlineDatum" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6214:5 - (ae-forgotten-export) The symbol "seedActivityFunc" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6214:5 - (ae-forgotten-export) The symbol "SeedActivityArg" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6222:5 - (ae-forgotten-export) The symbol "DgDataCreationOptions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6225:5 - (ae-forgotten-export) The symbol "CoreDgDataCreationOptions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6225:5 - (ae-forgotten-export) The symbol "DelegatedDatumIdPrefix" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6242:5 - (ae-forgotten-export) The symbol "updateActivityFunc" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6242:5 - (ae-forgotten-export) The symbol "UpdateActivityArgs" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6242:5 - (ae-forgotten-export) The symbol "UpdateActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6254:5 - (ae-forgotten-export) The symbol "DgDataUpdateOptions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6255:5 - (ae-forgotten-export) The symbol "hasRecId" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6255:5 - (ae-forgotten-export) The symbol "CoreDgDataUpdateOptions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6315:1 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$ReplacingMe" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:6422:9 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$ReplacingMeLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7352:1 - (ae-forgotten-export) The symbol "DelegateTypes" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7363:5 - (ae-forgotten-export) The symbol "useRawMinterSetup" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7446:1 - (ae-forgotten-export) The symbol "SerializedHeliosCacheEntry" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7451:1 - (ae-forgotten-export) The symbol "RequiredDeployedScriptDetails" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7529:1 - (ae-forgotten-export) The symbol "ReverseTuple" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7529:1 - (ae-forgotten-export) The symbol "ReversedAllOfUnion" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7538:1 - (ae-forgotten-export) The symbol "isDatum" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7662:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$CreatingDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7670:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$forcingNewSpendDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7672:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$forcingNewMintDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7685:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$CreatingDelegate_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7689:5 - (ae-forgotten-export) The symbol "ErgoDelegateRole_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7693:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7695:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$forcingNewMintDelegate_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7697:5 - (ae-forgotten-export) The symbol "ErgoManifestActivity_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7748:5 - (ae-forgotten-export) The symbol "ErgoManifestEntryType_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7778:5 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Ergo$RefInput" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7780:5 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Ergo$Input" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7806:5 - (ae-forgotten-export) The symbol "ErgoCapoLifecycleActivity_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7808:5 - (ae-forgotten-export) The symbol "ErgoDelegateLifecycleActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7810:5 - (ae-forgotten-export) The symbol "ErgoSpendingActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7812:5 - (ae-forgotten-export) The symbol "ErgoMintingActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7814:5 - (ae-forgotten-export) The symbol "ErgoBurningActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7816:5 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$CreatingDelegatedData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7818:5 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$UpdatingDelegatedData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7820:5 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$DeletingDelegatedData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7860:5 - (ae-forgotten-export) The symbol "DelegateDatum$Ergo$Cip68RefToken" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7862:5 - (ae-forgotten-export) The symbol "ErgoDelegationDetail" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7864:5 - (ae-forgotten-export) The symbol "DelegateDatum$Ergo$capoStoredData" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7890:5 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$Ergo$ReplacingMe" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7971:5 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$updatingEntry" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7973:5 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$addingEntry" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7975:5 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$forkingThreadToken" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7977:5 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$burningThreadToken" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7990:5 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$updatingEntry_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7992:5 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$addingEntry_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7994:5 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$forkingThreadToken_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:7996:5 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$burningThreadToken_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8028:5 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DgDataPolicy" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8030:5 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DelegateThreads" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8047:5 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DgDataPolicy_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8049:5 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DelegateThreads_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8093:5 - (ae-forgotten-export) The symbol "MinterActivity$Ergo$CreatingNewSpendDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8122:5 - (ae-forgotten-export) The symbol "ErgoPendingDelegateChange" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8124:5 - (ae-forgotten-export) The symbol "PendingCharterChange$Ergo$otherManifestChange" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8135:5 - (ae-forgotten-export) The symbol "ErgoPendingDelegateChange_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8137:5 - (ae-forgotten-export) The symbol "PendingCharterChange$Ergo$otherManifestChange_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8161:5 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Add" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8165:5 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Replace" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8176:5 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Add_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8180:5 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Replace_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8223:5 - (ae-forgotten-export) The symbol "ErgoPendingDelegateAction_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8332:1 - (ae-forgotten-export) The symbol "_extractLastInspectableElement" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8332:1 - (ae-forgotten-export) The symbol "_intersectInspectFuncs" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8332:1 - (ae-forgotten-export) The symbol "_inspectableUnionFuncs" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8334:1 - (ae-forgotten-export) The symbol "ExtractLastOfUnion" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8361:1 - (ae-forgotten-export) The symbol "canHaveDataBridge" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8361:1 - (ae-forgotten-export) The symbol "someContractBridgeType" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8361:1 - (ae-forgotten-export) The symbol "possiblyAbstractContractBridgeType" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8361:1 - (ae-forgotten-export) The symbol "IF" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8409:1 - (ae-forgotten-export) The symbol "ContractDataBridgeWithEnumDatum" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8409:1 - (ae-forgotten-export) The symbol "UnspecializedDelegateBridge" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8410:5 - (ae-forgotten-export) The symbol "SomeDgtBridgeReader" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8413:5 - (ae-forgotten-export) The symbol "SomeDgtDatumHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8415:5 - (ae-forgotten-export) The symbol "GenericDelegateDatum" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8433:1 - (ae-forgotten-export) The symbol "ErgoDelegateDatum" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8501:1 - (ae-forgotten-export) The symbol "bootstrappedCapoConfig" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8527:1 - (ae-forgotten-export) The symbol "dgtStateKey" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8557:1 - (ae-forgotten-export) The symbol "SeedAttrs" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8600:1 - (ae-forgotten-export) The symbol "hasAllUuts" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8659:5 - (ae-forgotten-export) The symbol "HeliosBundleClassWithCapo" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8681:5 - (ae-forgotten-export) The symbol "HeliosProgramWithCacheAPI" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8687:5 - (ae-forgotten-export) The symbol "SetupOrMainnetSignalForBundle" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8688:5 - (ae-forgotten-export) The symbol "UplcRecord_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8778:5 - (ae-forgotten-export) The symbol "HeliosOptimizeOptions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8824:5 - (ae-forgotten-export) The symbol "HeliosBundleTypes" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8882:1 - (ae-forgotten-export) The symbol "intersectedElements" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8882:1 - (ae-forgotten-export) The symbol "EachUnionElement" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8882:1 - (ae-forgotten-export) The symbol "IFISNEVER" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:8882:1 - (ae-forgotten-export) The symbol "ExtractRestOfUnion" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9099:1 - (ae-forgotten-export) The symbol "ManifestActivity$addingEntry" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9110:1 - (ae-forgotten-export) The symbol "ManifestActivity$addingEntry_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9132:1 - (ae-forgotten-export) The symbol "ManifestActivity$burningThreadToken" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9143:1 - (ae-forgotten-export) The symbol "ManifestActivity$burningThreadToken_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9165:1 - (ae-forgotten-export) The symbol "ManifestActivity$forkingThreadToken" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9176:1 - (ae-forgotten-export) The symbol "ManifestActivity$forkingThreadToken_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9198:1 - (ae-forgotten-export) The symbol "ManifestActivity$updatingEntry" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9209:1 - (ae-forgotten-export) The symbol "ManifestActivity$updatingEntry_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9443:9 - (ae-forgotten-export) The symbol "ManifestActivity$updatingEntryLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9444:9 - (ae-forgotten-export) The symbol "ManifestActivity$addingEntryLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9445:9 - (ae-forgotten-export) The symbol "ManifestActivity$forkingThreadTokenLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9446:9 - (ae-forgotten-export) The symbol "ManifestActivity$burningThreadTokenLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9497:9 - (ae-forgotten-export) The symbol "ManifestActivity$updatingEntryLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9498:9 - (ae-forgotten-export) The symbol "ManifestActivity$addingEntryLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9499:9 - (ae-forgotten-export) The symbol "ManifestActivity$forkingThreadTokenLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:9500:9 - (ae-forgotten-export) The symbol "ManifestActivity$burningThreadTokenLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:10154:5 - (ae-forgotten-export) The symbol "ManifestEntryType$DgDataPolicy" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:10156:5 - (ae-forgotten-export) The symbol "ManifestEntryType$DelegateThreads" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:10176:5 - (ae-forgotten-export) The symbol "ManifestEntryType$DgDataPolicy_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:10178:5 - (ae-forgotten-export) The symbol "ManifestEntryType$DelegateThreads_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:10218:9 - (ae-forgotten-export) The symbol "ManifestEntryType$DgDataPolicyLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:10219:9 - (ae-forgotten-export) The symbol "ManifestEntryType$DelegateThreadsLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:10268:9 - (ae-forgotten-export) The symbol "ManifestEntryType$DgDataPolicyLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:10269:9 - (ae-forgotten-export) The symbol "ManifestEntryType$DelegateThreadsLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:10558:1 - (ae-forgotten-export) The symbol "MinterActivity$CreatingNewSpendDelegate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:10593:5 - (ae-forgotten-export) The symbol "MinterActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:10599:9 - (ae-forgotten-export) The symbol "MinterActivity$CreatingNewSpendDelegateLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11048:1 - (ae-forgotten-export) The symbol "MintUnsafeParams" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11133:1 - (ae-forgotten-export) The symbol "resolvedOrBetter" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11143:1 - (ae-forgotten-export) The symbol "someContractBridgeClass" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11158:1 - (ae-forgotten-export) The symbol "PolicyCreationOptions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11168:1 - (ae-forgotten-export) The symbol "submitterName" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11300:1 - (ae-forgotten-export) The symbol "UnspecializedDelegateBridgeReader" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11449:5 - (ae-forgotten-export) The symbol "PendingCharterChange$otherManifestChange" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11463:5 - (ae-forgotten-export) The symbol "PendingDelegateChange_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11465:5 - (ae-forgotten-export) The symbol "PendingCharterChange$otherManifestChange_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11495:9 - (ae-forgotten-export) The symbol "PendingCharterChange$otherManifestChangeLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11526:9 - (ae-forgotten-export) The symbol "PendingDelegateChangeLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11527:9 - (ae-forgotten-export) The symbol "PendingCharterChange$otherManifestChangeLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11534:9 - (ae-forgotten-export) The symbol "PendingDelegateActionLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11727:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Add" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11738:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Add_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11760:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Replace" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11771:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Replace_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11940:5 - (ae-forgotten-export) The symbol "PendingDelegateAction" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11941:9 - (ae-forgotten-export) The symbol "PendingDelegateAction$AddLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:11943:9 - (ae-forgotten-export) The symbol "PendingDelegateAction$ReplaceLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:12067:5 - (ae-forgotten-export) The symbol "PendingDelegateAction_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:12068:9 - (ae-forgotten-export) The symbol "PendingDelegateAction$AddLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:12070:9 - (ae-forgotten-export) The symbol "PendingDelegateAction$ReplaceLike_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:12487:1 - (ae-forgotten-export) The symbol "abstractContractBridgeClass" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:12711:1 - (ae-forgotten-export) The symbol "TODO_TYPE" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:12711:1 - (ae-forgotten-export) The symbol "RequirementEntry" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13251:1 - (ae-forgotten-export) The symbol "txBuiltOrSubmitted" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13290:1 - (ae-forgotten-export) The symbol "seedFunc" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13295:1 - (ae-forgotten-export) The symbol "TypeError_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13331:5 - (ae-forgotten-export) The symbol "OptimizeOptions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13361:5 - (ae-forgotten-export) The symbol "TxBatcher" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13365:5 - (ae-forgotten-export) The symbol "ActorContext" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13369:5 - (ae-forgotten-export) The symbol "UtxoHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13373:5 - (ae-forgotten-export) The symbol "UtxoDisplayCache" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13429:1 - (ae-forgotten-export) The symbol "DelegateActivityHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13444:1 - (ae-forgotten-export) The symbol "PartialReader" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13456:1 - (ae-forgotten-export) The symbol "DelegateDatumHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13622:5 - (ae-forgotten-export) The symbol "StateMachineEmitter" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13625:5 - (ae-forgotten-export) The symbol "StateTransitionTable" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13656:5 - (ae-forgotten-export) The symbol "DeferredTransition" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13696:5 - (ae-forgotten-export) The symbol "DeferredState" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13752:5 - (ae-forgotten-export) The symbol "transitionEventInfo" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13888:5 - (ae-forgotten-export) The symbol "findReadDatumType" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:13976:5 - (ae-forgotten-export) The symbol "NetworkName" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14010:5 - (ae-forgotten-export) The symbol "scriptPurpose" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14130:5 - (ae-forgotten-export) The symbol "ComputedScriptProperties" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14145:9 - (ae-forgotten-export) The symbol "utxoPredicate" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14373:5 - (ae-forgotten-export) The symbol "TxNotNeededError" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14398:5 - (ae-forgotten-export) The symbol "UplcConsoleLogger" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14416:5 - (ae-forgotten-export) The symbol "MintTokensParams" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14492:5 - (ae-forgotten-export) The symbol "addRefInputArgs" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14520:5 - (ae-forgotten-export) The symbol "BuiltTcx" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14586:5 - (ae-forgotten-export) The symbol "TxPipelineOptions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14618:1 - (ae-forgotten-export) The symbol "SubmissionsStates" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14626:5 - (ae-forgotten-export) The symbol "dateAsMillis" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14668:5 - (ae-forgotten-export) The symbol "MultiTxnCallback" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14735:1 - (ae-forgotten-export) The symbol "canHaveToken" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14757:5 - (ae-forgotten-export) The symbol "BatchSubmitController" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14771:5 - (ae-forgotten-export) The symbol "TxBatcherChanges" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14772:5 - (ae-forgotten-export) The symbol "TxBatcherOptions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14897:1 - (ae-forgotten-export) The symbol "Expand" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14906:1 - (ae-forgotten-export) The symbol "SubmissionsTransitions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14909:5 - (ae-forgotten-export) The symbol "TxSubmitMgr" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14983:1 - (ae-forgotten-export) The symbol "TxSubmitterStates" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:14983:1 - (ae-forgotten-export) The symbol "TxSubmitterTransitions" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15007:5 - (ae-forgotten-export) The symbol "SubmitManagerState" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15013:5 - (ae-forgotten-export) The symbol "SubmitterRetryIntervals" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15111:5 - (ae-forgotten-export) The symbol "TYPE_ERROR" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15163:9 - (ae-forgotten-export) The symbol "DelegateRoleHelper_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15167:9 - (ae-forgotten-export) The symbol "ManifestActivityHelper_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15171:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivityHelper_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15175:9 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15179:9 - (ae-forgotten-export) The symbol "SpendingActivityHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15183:9 - (ae-forgotten-export) The symbol "MintingActivityHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15187:9 - (ae-forgotten-export) The symbol "BurningActivityHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15195:9 - (ae-forgotten-export) The symbol "PendingDelegateActionHelper_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15199:9 - (ae-forgotten-export) The symbol "ManifestEntryTypeHelper_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15203:9 - (ae-forgotten-export) The symbol "PendingCharterChangeHelper_2" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15207:9 - (ae-forgotten-export) The symbol "cctx_CharterInputTypeHelper" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15250:9 - (ae-forgotten-export) The symbol "CapoCtxLike" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15272:5 - (ae-forgotten-export) The symbol "CapoCtx" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15417:5 - (ae-forgotten-export) The symbol "ErgoDelegateActivity" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15477:5 - (ae-forgotten-export) The symbol "Ergocctx_CharterInputType" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15575:1 - (ae-forgotten-export) The symbol "UnspecializedDgtBundle_base" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15700:5 - (ae-forgotten-export) The symbol "utxoSortInfo" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15820:5 - (ae-forgotten-export) The symbol "CoinSelector" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/@donecollectively/stellar-contracts/dist/stellar-contracts.d.ts:15839:5 - (ae-forgotten-export) The symbol "UtxoSearchScopeWithUtxos" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:373:5 - (ae-forgotten-export) The symbol "ErgoRelativeDelegateLink_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:379:5 - (ae-forgotten-export) The symbol "ErgoCapoManifestEntry_4" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:380:5 - (ae-forgotten-export) The symbol "ErgoPendingCharterChange_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2243:5 - (ae-forgotten-export) The symbol "ErgoManifestEntryType_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2342:1 - (ae-forgotten-export) The symbol "DelegateRole_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2418:5 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$updatingEntry_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2420:5 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$addingEntry_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2422:5 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$forkingThreadToken_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2424:5 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$burningThreadToken_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2456:5 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DgDataPolicy_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2458:5 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DelegateThreads_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2561:5 - (ae-forgotten-export) The symbol "ErgoPendingDelegateChange_4" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2563:5 - (ae-forgotten-export) The symbol "PendingCharterChange$Ergo$otherManifestChange_4" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2587:5 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Add_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2591:5 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Replace_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2619:5 - (ae-forgotten-export) The symbol "ErgoPendingDelegateAction_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2620:5 - (ae-forgotten-export) The symbol "ErgoDelegateRole_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2648:1 - (ae-forgotten-export) The symbol "RelativeDelegateLink_4" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2918:1 - (ae-forgotten-export) The symbol "ManifestActivity$addingEntry_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2940:1 - (ae-forgotten-export) The symbol "ManifestActivity$burningThreadToken_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2962:1 - (ae-forgotten-export) The symbol "ManifestActivity$forkingThreadToken_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:2984:1 - (ae-forgotten-export) The symbol "ManifestActivity$updatingEntry_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:4838:5 - (ae-forgotten-export) The symbol "ErgoManifestActivity_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:4997:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Add_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:5019:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Replace_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:5728:1 - (ae-forgotten-export) The symbol "GenericTokenomicsFeatureFlags" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:5733:5 - (ae-forgotten-export) The symbol "CapoDatum$Ergo$CharterData_3" needs to be exported by the entry point index.d.ts
-// /home/san/dev/dred/node_modules/stellar-tokenomics/dist/stellar-tokenomics.d.ts:5741:5 - (ae-forgotten-export) The symbol "hasMemberToken" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:73:1 - (ae-forgotten-export) The symbol "RelativeDelegateLink_5" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:199:1 - (ae-forgotten-export) The symbol "DelegateRole_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:323:13 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DgDataPolicy_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:324:13 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DelegateThreads_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:376:5 - (ae-forgotten-export) The symbol "ErgoManifestEntryType_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:420:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Add_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:461:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Replace_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:522:13 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Add_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:524:13 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Replace_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:572:5 - (ae-forgotten-export) The symbol "ErgoPendingDelegateAction_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:573:5 - (ae-forgotten-export) The symbol "ErgoDelegateRole_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:615:1 - (ae-forgotten-export) The symbol "ManifestActivity$updatingEntry_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:653:1 - (ae-forgotten-export) The symbol "ManifestActivity$addingEntry_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:691:1 - (ae-forgotten-export) The symbol "ManifestActivity$forkingThreadToken_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:729:1 - (ae-forgotten-export) The symbol "ManifestActivity$burningThreadToken_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:802:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$updatingEntry_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:803:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$addingEntry_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:804:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$forkingThreadToken_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:805:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$burningThreadToken_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:855:5 - (ae-forgotten-export) The symbol "ErgoManifestActivity_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:914:13 - (ae-forgotten-export) The symbol "ErgoPendingDelegateChange_5" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:916:13 - (ae-forgotten-export) The symbol "PendingCharterChange$Ergo$otherManifestChange_5" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:969:5 - (ae-forgotten-export) The symbol "ErgoRelativeDelegateLink_4" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:975:5 - (ae-forgotten-export) The symbol "ErgoCapoManifestEntry_5" needs to be exported by the entry point index.d.ts
-// src/DredCapo.typeInfo.ts:976:5 - (ae-forgotten-export) The symbol "ErgoPendingCharterChange_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:142:5 - (ae-forgotten-export) The symbol "DelegateDatumHelper_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:150:5 - (ae-forgotten-export) The symbol "ErgoDelegateDatum_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:158:5 - (ae-forgotten-export) The symbol "DelegateActivityHelper_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:161:5 - (ae-forgotten-export) The symbol "NeighborhoodPolicyDataBridgeReader" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:171:7 - (ae-forgotten-export) The symbol "NeighborhoodStateHelper" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:175:7 - (ae-forgotten-export) The symbol "FeeSourceHelper" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:179:7 - (ae-forgotten-export) The symbol "SubscriptionFeeFrequencyHelper" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:183:7 - (ae-forgotten-export) The symbol "RevenueModelHelper" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:191:7 - (ae-forgotten-export) The symbol "DelegateRoleHelper_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:195:7 - (ae-forgotten-export) The symbol "ManifestActivityHelper_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:199:7 - (ae-forgotten-export) The symbol "CapoLifecycleActivityHelper_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:203:7 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityHelper_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:207:7 - (ae-forgotten-export) The symbol "SpendingActivityHelper_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:211:7 - (ae-forgotten-export) The symbol "MintingActivityHelper_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:215:7 - (ae-forgotten-export) The symbol "BurningActivityHelper_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:223:7 - (ae-forgotten-export) The symbol "PendingDelegateActionHelper_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:227:7 - (ae-forgotten-export) The symbol "ManifestEntryTypeHelper_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:231:7 - (ae-forgotten-export) The symbol "PendingCharterChangeHelper_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:235:7 - (ae-forgotten-export) The symbol "cctx_CharterInputTypeHelper_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:239:7 - (ae-forgotten-export) The symbol "NeighborhoodSettingsHelper" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:243:7 - (ae-forgotten-export) The symbol "dgd_DataSrcHelper_2" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:330:7 - (ae-forgotten-export) The symbol "PendingDelegateChangeLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:331:5 - (ae-forgotten-export) The symbol "PendingDelegateActionLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:352:7 - (ae-forgotten-export) The symbol "CapoCtxLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:362:7 - (ae-forgotten-export) The symbol "NeighborhoodSettingsV1Like" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:372:7 - (ae-forgotten-export) The symbol "AbstractSettingsForNeighborhoodLike" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:381:7 - (ae-forgotten-export) The symbol "DgDataDetailsLike_2" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:435:5 - (ae-forgotten-export) The symbol "PendingDelegateChange_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:447:5 - (ae-forgotten-export) The symbol "CapoCtx_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:459:5 - (ae-forgotten-export) The symbol "AbstractSettingsForNeighborhood" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:465:5 - (ae-forgotten-export) The symbol "DgDataDetails_2" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:516:5 - (ae-forgotten-export) The symbol "ErgoFeeSource" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:748:5 - (ae-forgotten-export) The symbol "ErgoDelegateActivity_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:832:5 - (ae-forgotten-export) The symbol "Ergocctx_CharterInputType_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:853:5 - (ae-forgotten-export) The symbol "ErgoNeighborhoodSettings_2" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:874:5 - (ae-forgotten-export) The symbol "Ergodgd_DataSrc_2" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1352:9 - (ae-forgotten-export) The symbol "RevenueModel$TransactionBasedLike" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1353:9 - (ae-forgotten-export) The symbol "SubscriptionFeeFrequencyLike" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1499:5 - (ae-forgotten-export) The symbol "DelegateDatum_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1499:11 - (ae-forgotten-export) The symbol "DelegateDatum$capoStoredDataLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1500:9 - (ae-forgotten-export) The symbol "DelegateDatum$Cip68RefTokenLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1501:9 - (ae-forgotten-export) The symbol "DelegationDetailLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1664:11 - (ae-forgotten-export) The symbol "ManifestActivity$addingEntryLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1664:11 - (ae-forgotten-export) The symbol "ManifestActivity$forkingThreadTokenLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1664:11 - (ae-forgotten-export) The symbol "ManifestActivity$burningThreadTokenLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1666:9 - (ae-forgotten-export) The symbol "ManifestActivity$updatingEntryLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1966:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivity_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1966:11 - (ae-forgotten-export) The symbol "DelegateRoleLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1966:11 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewSpendDelegateLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1967:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$CreatingDelegateLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1972:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewMintDelegateLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:1973:9 - (ae-forgotten-export) The symbol "ManifestActivityLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:2048:5 - (ae-forgotten-export) The symbol "DelegateRoleHelperNested_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:2202:5 - (ae-forgotten-export) The symbol "ManifestActivityHelperNested_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:2228:9 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$ReplacingMeLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:2456:5 - (ae-forgotten-export) The symbol "DelegateRole_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:2657:5 - (ae-forgotten-export) The symbol "ActivityDelegateRoleHelperNested_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3114:5 - (ae-forgotten-export) The symbol "DelegateActivity_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3114:11 - (ae-forgotten-export) The symbol "SpendingActivityLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3114:11 - (ae-forgotten-export) The symbol "MintingActivityLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3114:11 - (ae-forgotten-export) The symbol "BurningActivityLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3114:11 - (ae-forgotten-export) The symbol "DelegateActivity$UpdatingDelegatedDataLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3115:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivityLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3116:9 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3120:9 - (ae-forgotten-export) The symbol "DelegateActivity$CreatingDelegatedDataLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3122:9 - (ae-forgotten-export) The symbol "DelegateActivity$DeletingDelegatedDataLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3122:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivityHelperNested_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3138:5 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityHelperNested_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3154:5 - (ae-forgotten-export) The symbol "SpendingActivityHelperNested_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3170:5 - (ae-forgotten-export) The symbol "MintingActivityHelperNested_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3186:5 - (ae-forgotten-export) The symbol "BurningActivityHelperNested_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3315:5 - (ae-forgotten-export) The symbol "PendingDelegateAction_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3315:11 - (ae-forgotten-export) The symbol "PendingDelegateAction$ReplaceLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3316:9 - (ae-forgotten-export) The symbol "PendingDelegateAction$AddLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3534:11 - (ae-forgotten-export) The symbol "ManifestEntryType$DelegateThreadsLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3536:9 - (ae-forgotten-export) The symbol "ManifestEntryType$DgDataPolicyLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3638:9 - (ae-forgotten-export) The symbol "PendingCharterChange$otherManifestChangeLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3684:11 - (ae-forgotten-export) The symbol "cctx_CharterInputType$InputLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3686:9 - (ae-forgotten-export) The symbol "cctx_CharterInputType$RefInputLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3850:5 - (ae-forgotten-export) The symbol "dgd_DataSrc_2" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.bridge.ts:3850:11 - (ae-forgotten-export) The symbol "dgd_DataSrc$BothLike_2" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:101:5 - (ae-forgotten-export) The symbol "AnyData_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:117:5 - (ae-forgotten-export) The symbol "ErgoAnyData_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:130:5 - (ae-forgotten-export) The symbol "AnyDataLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:226:1 - (ae-forgotten-export) The symbol "NeighborhoodState" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:289:1 - (ae-forgotten-export) The symbol "FeeSource" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:351:5 - (ae-forgotten-export) The symbol "FeeSourceLike" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:403:1 - (ae-forgotten-export) The symbol "SubscriptionFeeFrequency" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:457:13 - (ae-forgotten-export) The symbol "RevenueModel$TransactionBased" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:469:13 - (ae-forgotten-export) The symbol "RevenueModel$Ergo$TransactionBased" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:470:13 - (ae-forgotten-export) The symbol "ErgoSubscriptionFeeFrequency" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:504:5 - (ae-forgotten-export) The symbol "RevenueModel" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:521:5 - (ae-forgotten-export) The symbol "ErgoRevenueModel" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:535:5 - (ae-forgotten-export) The symbol "RevenueModelLike" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:567:1 - (ae-forgotten-export) The symbol "NodeOpsInfo" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:608:1 - (ae-forgotten-export) The symbol "UpdateInfo" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:656:5 - (ae-forgotten-export) The symbol "ErgoNeighborhoodState" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:657:5 - (ae-forgotten-export) The symbol "ErgoAppInfo" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:658:5 - (ae-forgotten-export) The symbol "ErgoNodeOpsInfo" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:659:5 - (ae-forgotten-export) The symbol "ErgoUpdateInfo" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:673:5 - (ae-forgotten-export) The symbol "NeighborhoodStateLike" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:674:5 - (ae-forgotten-export) The symbol "AppInfoLike" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:675:5 - (ae-forgotten-export) The symbol "NodeOpsInfoLike" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:676:5 - (ae-forgotten-export) The symbol "UpdateInfoLike" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:724:5 - (ae-forgotten-export) The symbol "NeighborhoodDataLike" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:764:13 - (ae-forgotten-export) The symbol "DelegateDatum$Cip68RefToken_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:765:13 - (ae-forgotten-export) The symbol "DelegationDetail_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:767:13 - (ae-forgotten-export) The symbol "DelegateDatum$capoStoredData_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:777:13 - (ae-forgotten-export) The symbol "DelegateDatum$Ergo$Cip68RefToken_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:778:13 - (ae-forgotten-export) The symbol "ErgoDelegationDetail_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:780:13 - (ae-forgotten-export) The symbol "DelegateDatum$Ergo$capoStoredData_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:827:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$CreatingDelegate_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:959:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewSpendDelegate_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:997:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewMintDelegate_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1035:1 - (ae-forgotten-export) The symbol "ManifestActivity$updatingEntry_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1073:1 - (ae-forgotten-export) The symbol "ManifestActivity$addingEntry_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1111:1 - (ae-forgotten-export) The symbol "ManifestActivity$forkingThreadToken_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1149:1 - (ae-forgotten-export) The symbol "ManifestActivity$burningThreadToken_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1222:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$updatingEntry_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1223:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$addingEntry_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1224:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$forkingThreadToken_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1225:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$burningThreadToken_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1305:13 - (ae-forgotten-export) The symbol "ManifestActivity_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1316:13 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$CreatingDelegate_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1318:13 - (ae-forgotten-export) The symbol "ErgoDelegateRole_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1321:13 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1322:13 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$forcingNewMintDelegate_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1323:13 - (ae-forgotten-export) The symbol "ErgoManifestActivity_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1376:1 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$ReplacingMe_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1434:13 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$Ergo$ReplacingMe_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1658:1 - (ae-forgotten-export) The symbol "DelegateActivity$CreatingDelegatedData_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1696:1 - (ae-forgotten-export) The symbol "DelegateActivity$UpdatingDelegatedData_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1734:1 - (ae-forgotten-export) The symbol "DelegateActivity$DeletingDelegatedData_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1808:13 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1810:13 - (ae-forgotten-export) The symbol "SpendingActivity_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1812:13 - (ae-forgotten-export) The symbol "MintingActivity_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1814:13 - (ae-forgotten-export) The symbol "BurningActivity_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1830:13 - (ae-forgotten-export) The symbol "ErgoCapoLifecycleActivity_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1832:13 - (ae-forgotten-export) The symbol "ErgoDelegateLifecycleActivity_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1834:13 - (ae-forgotten-export) The symbol "ErgoSpendingActivity_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1836:13 - (ae-forgotten-export) The symbol "ErgoMintingActivity_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1838:13 - (ae-forgotten-export) The symbol "ErgoBurningActivity_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1840:13 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$CreatingDelegatedData_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1841:13 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$UpdatingDelegatedData_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1842:13 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$DeletingDelegatedData_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1903:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Add_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:1944:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Replace_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2005:13 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Add_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2007:13 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Replace_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2095:5 - (ae-forgotten-export) The symbol "ErgoPendingDelegateAction_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2241:13 - (ae-forgotten-export) The symbol "ManifestEntryType$DgDataPolicy_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2242:13 - (ae-forgotten-export) The symbol "ManifestEntryType$DelegateThreads_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2255:13 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DgDataPolicy_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2256:13 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DelegateThreads_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2292:5 - (ae-forgotten-export) The symbol "ManifestEntryType_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2308:5 - (ae-forgotten-export) The symbol "ErgoManifestEntryType_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2321:5 - (ae-forgotten-export) The symbol "ManifestEntryTypeLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2401:13 - (ae-forgotten-export) The symbol "PendingCharterChange$otherManifestChange_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2411:13 - (ae-forgotten-export) The symbol "ErgoPendingDelegateChange_8" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2413:13 - (ae-forgotten-export) The symbol "PendingCharterChange$Ergo$otherManifestChange_8" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2445:5 - (ae-forgotten-export) The symbol "RelativeDelegateLink_8" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2451:5 - (ae-forgotten-export) The symbol "CapoManifestEntry_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2452:5 - (ae-forgotten-export) The symbol "PendingCharterChange_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2466:5 - (ae-forgotten-export) The symbol "ErgoRelativeDelegateLink_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2472:5 - (ae-forgotten-export) The symbol "ErgoCapoManifestEntry_8" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2473:5 - (ae-forgotten-export) The symbol "ErgoPendingCharterChange_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2484:5 - (ae-forgotten-export) The symbol "RelativeDelegateLinkLike_6" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2490:5 - (ae-forgotten-export) The symbol "CapoManifestEntryLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2491:5 - (ae-forgotten-export) The symbol "PendingCharterChangeLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2547:5 - (ae-forgotten-export) The symbol "CapoDatum$CharterData_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2562:5 - (ae-forgotten-export) The symbol "CapoDatum$Ergo$CharterData_7" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2574:5 - (ae-forgotten-export) The symbol "CapoDatum$CharterDataLike_5" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2613:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$RefInput_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2614:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Input_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2625:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Ergo$RefInput_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2626:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Ergo$Input_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2659:5 - (ae-forgotten-export) The symbol "cctx_CharterInputType_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2686:5 - (ae-forgotten-export) The symbol "cctx_CharterInputTypeLike_4" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2714:1 - (ae-forgotten-export) The symbol "NeighborhoodSettingsV1_2" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2765:13 - (ae-forgotten-export) The symbol "ErgoNeighborhoodSettingsV1_2" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2797:5 - (ae-forgotten-export) The symbol "NeighborhoodSettings_2" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2822:5 - (ae-forgotten-export) The symbol "NeighborhoodSettingsLike" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2850:1 - (ae-forgotten-export) The symbol "dgd_DataSrc$Both_2" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2921:13 - (ae-forgotten-export) The symbol "dgd_DataSrc$Ergo$Both_2" needs to be exported by the entry point index.d.ts
-// src/DredNeighborhood/NeighborhoodRegistry.typeInfo.ts:2987:5 - (ae-forgotten-export) The symbol "dgd_DataSrcLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:127:5 - (ae-forgotten-export) The symbol "DelegateDatumHelper_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:135:5 - (ae-forgotten-export) The symbol "ErgoDelegateDatum_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:143:5 - (ae-forgotten-export) The symbol "DelegateActivityHelper_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:146:5 - (ae-forgotten-export) The symbol "MyMintSpendDelegateDataBridgeReader" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:160:7 - (ae-forgotten-export) The symbol "DelegateRoleHelper_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:164:7 - (ae-forgotten-export) The symbol "ManifestActivityHelper_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:168:7 - (ae-forgotten-export) The symbol "CapoLifecycleActivityHelper_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:172:7 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityHelper_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:176:7 - (ae-forgotten-export) The symbol "SpendingActivityHelper_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:180:7 - (ae-forgotten-export) The symbol "MintingActivityHelper_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:184:7 - (ae-forgotten-export) The symbol "BurningActivityHelper_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:192:7 - (ae-forgotten-export) The symbol "PendingDelegateActionHelper_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:196:7 - (ae-forgotten-export) The symbol "ManifestEntryTypeHelper_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:200:7 - (ae-forgotten-export) The symbol "PendingCharterChangeHelper_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:204:7 - (ae-forgotten-export) The symbol "cctx_CharterInputTypeHelper_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:241:7 - (ae-forgotten-export) The symbol "PendingDelegateChangeLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:242:5 - (ae-forgotten-export) The symbol "PendingDelegateActionLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:263:7 - (ae-forgotten-export) The symbol "CapoCtxLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:291:5 - (ae-forgotten-export) The symbol "PendingDelegateChange_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:303:5 - (ae-forgotten-export) The symbol "CapoCtx_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:502:5 - (ae-forgotten-export) The symbol "ErgoDelegateActivity_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:586:5 - (ae-forgotten-export) The symbol "Ergocctx_CharterInputType_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:771:5 - (ae-forgotten-export) The symbol "DelegateDatum_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:771:11 - (ae-forgotten-export) The symbol "DelegateDatum$capoStoredDataLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:772:9 - (ae-forgotten-export) The symbol "DelegateDatum$Cip68RefTokenLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:773:9 - (ae-forgotten-export) The symbol "DelegationDetailLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:936:11 - (ae-forgotten-export) The symbol "ManifestActivity$addingEntryLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:936:11 - (ae-forgotten-export) The symbol "ManifestActivity$forkingThreadTokenLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:936:11 - (ae-forgotten-export) The symbol "ManifestActivity$burningThreadTokenLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:938:9 - (ae-forgotten-export) The symbol "ManifestActivity$updatingEntryLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:1238:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivity_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:1238:11 - (ae-forgotten-export) The symbol "DelegateRoleLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:1238:11 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewSpendDelegateLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:1239:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$CreatingDelegateLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:1244:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewMintDelegateLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:1245:9 - (ae-forgotten-export) The symbol "ManifestActivityLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:1320:5 - (ae-forgotten-export) The symbol "DelegateRoleHelperNested_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:1474:5 - (ae-forgotten-export) The symbol "ManifestActivityHelperNested_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:1500:9 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$ReplacingMeLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:1694:1 - (ae-forgotten-export) The symbol "JustAnEnum_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:1728:5 - (ae-forgotten-export) The symbol "DelegateRole_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:1929:5 - (ae-forgotten-export) The symbol "ActivityDelegateRoleHelperNested_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2386:5 - (ae-forgotten-export) The symbol "DelegateActivity_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2386:11 - (ae-forgotten-export) The symbol "SpendingActivityLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2386:11 - (ae-forgotten-export) The symbol "MintingActivityLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2386:11 - (ae-forgotten-export) The symbol "BurningActivityLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2386:11 - (ae-forgotten-export) The symbol "DelegateActivity$UpdatingDelegatedDataLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2387:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivityLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2388:9 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2392:9 - (ae-forgotten-export) The symbol "DelegateActivity$CreatingDelegatedDataLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2394:9 - (ae-forgotten-export) The symbol "DelegateActivity$DeletingDelegatedDataLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2394:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivityHelperNested_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2410:5 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityHelperNested_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2426:5 - (ae-forgotten-export) The symbol "SpendingActivityHelperNested_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2442:5 - (ae-forgotten-export) The symbol "MintingActivityHelperNested_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2458:5 - (ae-forgotten-export) The symbol "BurningActivityHelperNested_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2587:5 - (ae-forgotten-export) The symbol "PendingDelegateAction_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2587:11 - (ae-forgotten-export) The symbol "PendingDelegateAction$ReplaceLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2588:9 - (ae-forgotten-export) The symbol "PendingDelegateAction$AddLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2806:11 - (ae-forgotten-export) The symbol "ManifestEntryType$DelegateThreadsLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2808:9 - (ae-forgotten-export) The symbol "ManifestEntryType$DgDataPolicyLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2910:9 - (ae-forgotten-export) The symbol "PendingCharterChange$otherManifestChangeLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2956:11 - (ae-forgotten-export) The symbol "cctx_CharterInputType$InputLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.bridge.ts:2958:9 - (ae-forgotten-export) The symbol "cctx_CharterInputType$RefInputLike_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:186:5 - (ae-forgotten-export) The symbol "AnyData_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:202:5 - (ae-forgotten-export) The symbol "ErgoAnyData_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:215:5 - (ae-forgotten-export) The symbol "AnyDataLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:255:13 - (ae-forgotten-export) The symbol "DelegateDatum$Cip68RefToken_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:256:13 - (ae-forgotten-export) The symbol "DelegationDetail_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:258:13 - (ae-forgotten-export) The symbol "DelegateDatum$capoStoredData_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:268:13 - (ae-forgotten-export) The symbol "DelegateDatum$Ergo$Cip68RefToken_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:269:13 - (ae-forgotten-export) The symbol "ErgoDelegationDetail_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:271:13 - (ae-forgotten-export) The symbol "DelegateDatum$Ergo$capoStoredData_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:318:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$CreatingDelegate_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:450:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewSpendDelegate_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:488:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewMintDelegate_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:526:1 - (ae-forgotten-export) The symbol "ManifestActivity$updatingEntry_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:564:1 - (ae-forgotten-export) The symbol "ManifestActivity$addingEntry_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:602:1 - (ae-forgotten-export) The symbol "ManifestActivity$forkingThreadToken_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:640:1 - (ae-forgotten-export) The symbol "ManifestActivity$burningThreadToken_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:713:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$updatingEntry_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:714:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$addingEntry_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:715:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$forkingThreadToken_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:716:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$burningThreadToken_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:796:13 - (ae-forgotten-export) The symbol "ManifestActivity_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:807:13 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$CreatingDelegate_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:809:13 - (ae-forgotten-export) The symbol "ErgoDelegateRole_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:812:13 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:813:13 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$forcingNewMintDelegate_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:814:13 - (ae-forgotten-export) The symbol "ErgoManifestActivity_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:867:1 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$ReplacingMe_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:925:13 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$Ergo$ReplacingMe_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1149:1 - (ae-forgotten-export) The symbol "DelegateActivity$CreatingDelegatedData_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1187:1 - (ae-forgotten-export) The symbol "DelegateActivity$UpdatingDelegatedData_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1225:1 - (ae-forgotten-export) The symbol "DelegateActivity$DeletingDelegatedData_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1299:13 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1301:13 - (ae-forgotten-export) The symbol "SpendingActivity_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1303:13 - (ae-forgotten-export) The symbol "MintingActivity_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1305:13 - (ae-forgotten-export) The symbol "BurningActivity_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1321:13 - (ae-forgotten-export) The symbol "ErgoCapoLifecycleActivity_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1323:13 - (ae-forgotten-export) The symbol "ErgoDelegateLifecycleActivity_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1325:13 - (ae-forgotten-export) The symbol "ErgoSpendingActivity_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1327:13 - (ae-forgotten-export) The symbol "ErgoMintingActivity_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1329:13 - (ae-forgotten-export) The symbol "ErgoBurningActivity_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1331:13 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$CreatingDelegatedData_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1332:13 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$UpdatingDelegatedData_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1333:13 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$DeletingDelegatedData_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1394:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Add_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1435:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Replace_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1496:13 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Add_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1498:13 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Replace_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1586:5 - (ae-forgotten-export) The symbol "ErgoPendingDelegateAction_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1732:13 - (ae-forgotten-export) The symbol "ManifestEntryType$DgDataPolicy_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1733:13 - (ae-forgotten-export) The symbol "ManifestEntryType$DelegateThreads_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1746:13 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DgDataPolicy_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1747:13 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DelegateThreads_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1783:5 - (ae-forgotten-export) The symbol "ManifestEntryType_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1799:5 - (ae-forgotten-export) The symbol "ErgoManifestEntryType_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1812:5 - (ae-forgotten-export) The symbol "ManifestEntryTypeLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1892:13 - (ae-forgotten-export) The symbol "PendingCharterChange$otherManifestChange_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1902:13 - (ae-forgotten-export) The symbol "ErgoPendingDelegateChange_6" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1904:13 - (ae-forgotten-export) The symbol "PendingCharterChange$Ergo$otherManifestChange_6" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1936:5 - (ae-forgotten-export) The symbol "RelativeDelegateLink_6" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1942:5 - (ae-forgotten-export) The symbol "CapoManifestEntry_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1943:5 - (ae-forgotten-export) The symbol "PendingCharterChange_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1957:5 - (ae-forgotten-export) The symbol "ErgoRelativeDelegateLink_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1963:5 - (ae-forgotten-export) The symbol "ErgoCapoManifestEntry_6" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1964:5 - (ae-forgotten-export) The symbol "ErgoPendingCharterChange_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1975:5 - (ae-forgotten-export) The symbol "RelativeDelegateLinkLike_4" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1981:5 - (ae-forgotten-export) The symbol "CapoManifestEntryLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:1982:5 - (ae-forgotten-export) The symbol "PendingCharterChangeLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:2038:5 - (ae-forgotten-export) The symbol "CapoDatum$CharterData_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:2053:5 - (ae-forgotten-export) The symbol "CapoDatum$Ergo$CharterData_5" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:2065:5 - (ae-forgotten-export) The symbol "CapoDatum$CharterDataLike_3" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:2104:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$RefInput_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:2105:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Input_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:2116:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Ergo$RefInput_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:2117:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Ergo$Input_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:2150:5 - (ae-forgotten-export) The symbol "cctx_CharterInputType_2" needs to be exported by the entry point index.d.ts
-// src/MyMintSpendDelegate.typeInfo.ts:2177:5 - (ae-forgotten-export) The symbol "cctx_CharterInputTypeLike_2" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:137:5 - (ae-forgotten-export) The symbol "DelegateDatumHelper_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:145:5 - (ae-forgotten-export) The symbol "ErgoDelegateDatum_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:153:5 - (ae-forgotten-export) The symbol "DelegateActivityHelper_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:156:5 - (ae-forgotten-export) The symbol "DredNodeRegistryPolicyDataBridgeReader" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:166:7 - (ae-forgotten-export) The symbol "DredNodeStateHelper" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:174:7 - (ae-forgotten-export) The symbol "DelegateRoleHelper_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:178:7 - (ae-forgotten-export) The symbol "ManifestActivityHelper_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:182:7 - (ae-forgotten-export) The symbol "CapoLifecycleActivityHelper_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:186:7 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityHelper_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:190:7 - (ae-forgotten-export) The symbol "SpendingActivityHelper_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:194:7 - (ae-forgotten-export) The symbol "MintingActivityHelper_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:198:7 - (ae-forgotten-export) The symbol "BurningActivityHelper_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:206:7 - (ae-forgotten-export) The symbol "PendingDelegateActionHelper_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:210:7 - (ae-forgotten-export) The symbol "ManifestEntryTypeHelper_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:214:7 - (ae-forgotten-export) The symbol "PendingCharterChangeHelper_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:218:7 - (ae-forgotten-export) The symbol "cctx_CharterInputTypeHelper_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:222:7 - (ae-forgotten-export) The symbol "NodeOperatorSettingsHelper" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:226:7 - (ae-forgotten-export) The symbol "dgd_DataSrcHelper" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:252:7 - (ae-forgotten-export) The symbol "NodeDetailsLike" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:268:5 - (ae-forgotten-export) The symbol "DredNodeStateLike" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:288:7 - (ae-forgotten-export) The symbol "PendingDelegateChangeLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:289:5 - (ae-forgotten-export) The symbol "PendingDelegateActionLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:310:7 - (ae-forgotten-export) The symbol "CapoCtxLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:320:7 - (ae-forgotten-export) The symbol "NodeOperatorSettingsV1Like" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:333:7 - (ae-forgotten-export) The symbol "AbstractSettingsForNodeOperatorLike" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:342:7 - (ae-forgotten-export) The symbol "DgDataDetailsLike" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:366:5 - (ae-forgotten-export) The symbol "NodeDetails" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:384:5 - (ae-forgotten-export) The symbol "PendingDelegateChange_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:396:5 - (ae-forgotten-export) The symbol "CapoCtx_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:402:5 - (ae-forgotten-export) The symbol "NodeOperatorSettingsV1_2" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:408:5 - (ae-forgotten-export) The symbol "AbstractSettingsForNodeOperator" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:414:5 - (ae-forgotten-export) The symbol "DgDataDetails" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:427:24 - (ae-forgotten-export) The symbol "DredNodeRegistryPolicyDataBridge" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:444:5 - (ae-forgotten-export) The symbol "ErgoDredNodeState" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:452:6 - (ae-forgotten-export) The symbol "DelegateDatum$Ergo$Cip68RefToken_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:453:6 - (ae-forgotten-export) The symbol "ErgoDelegationDetail_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:454:6 - (ae-forgotten-export) The symbol "DelegateDatum$Ergo$capoStoredData_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:487:5 - (ae-forgotten-export) The symbol "ErgoDelegateRole_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:508:5 - (ae-forgotten-export) The symbol "ErgoManifestActivity_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:529:5 - (ae-forgotten-export) The symbol "ErgoCapoLifecycleActivity_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:550:5 - (ae-forgotten-export) The symbol "ErgoDelegateLifecycleActivity_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:571:5 - (ae-forgotten-export) The symbol "ErgoSpendingActivity_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:592:5 - (ae-forgotten-export) The symbol "ErgoMintingActivity_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:613:5 - (ae-forgotten-export) The symbol "ErgoBurningActivity_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:634:5 - (ae-forgotten-export) The symbol "ErgoDelegateActivity_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:655:5 - (ae-forgotten-export) The symbol "ErgoPendingDelegateAction_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:676:5 - (ae-forgotten-export) The symbol "ErgoManifestEntryType_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:718:5 - (ae-forgotten-export) The symbol "Ergocctx_CharterInputType_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:739:5 - (ae-forgotten-export) The symbol "ErgoNodeOperatorSettings_2" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:760:5 - (ae-forgotten-export) The symbol "Ergodgd_DataSrc" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1040:5 - (ae-forgotten-export) The symbol "DredNodeState" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1060:5 - (ae-forgotten-export) The symbol "TimeLike_2" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1155:5 - (ae-forgotten-export) The symbol "DelegateDatum_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1155:11 - (ae-forgotten-export) The symbol "DelegateDatum$capoStoredDataLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1156:9 - (ae-forgotten-export) The symbol "DelegateDatum$Cip68RefTokenLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1157:9 - (ae-forgotten-export) The symbol "DelegationDetailLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1320:11 - (ae-forgotten-export) The symbol "ManifestActivity$addingEntryLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1320:11 - (ae-forgotten-export) The symbol "ManifestActivity$forkingThreadTokenLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1320:11 - (ae-forgotten-export) The symbol "ManifestActivity$burningThreadTokenLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1322:9 - (ae-forgotten-export) The symbol "ManifestActivity$updatingEntryLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1622:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivity_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1622:11 - (ae-forgotten-export) The symbol "DelegateRoleLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1622:11 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewSpendDelegateLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1623:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$CreatingDelegateLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1628:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewMintDelegateLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1629:9 - (ae-forgotten-export) The symbol "ManifestActivityLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1704:5 - (ae-forgotten-export) The symbol "DelegateRoleHelperNested_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1858:5 - (ae-forgotten-export) The symbol "ManifestActivityHelperNested_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1884:9 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$ReplacingMeLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:1986:9 - (ae-forgotten-export) The symbol "SpendingActivity$ValidatingNodeLike" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2150:5 - (ae-forgotten-export) The symbol "DelegateRole_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2351:5 - (ae-forgotten-export) The symbol "ActivityDelegateRoleHelperNested_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2860:5 - (ae-forgotten-export) The symbol "DelegateActivity_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2860:11 - (ae-forgotten-export) The symbol "SpendingActivityLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2860:11 - (ae-forgotten-export) The symbol "MintingActivityLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2860:11 - (ae-forgotten-export) The symbol "BurningActivityLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2860:11 - (ae-forgotten-export) The symbol "DelegateActivity$UpdatingDelegatedDataLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2861:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivityLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2862:9 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2866:9 - (ae-forgotten-export) The symbol "DelegateActivity$CreatingDelegatedDataLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2868:9 - (ae-forgotten-export) The symbol "DelegateActivity$DeletingDelegatedDataLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2868:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivityHelperNested_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2884:5 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityHelperNested_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2900:5 - (ae-forgotten-export) The symbol "SpendingActivityHelperNested_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2916:5 - (ae-forgotten-export) The symbol "MintingActivityHelperNested_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:2932:5 - (ae-forgotten-export) The symbol "BurningActivityHelperNested_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:3061:5 - (ae-forgotten-export) The symbol "PendingDelegateAction_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:3061:11 - (ae-forgotten-export) The symbol "PendingDelegateAction$ReplaceLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:3062:9 - (ae-forgotten-export) The symbol "PendingDelegateAction$AddLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:3280:11 - (ae-forgotten-export) The symbol "ManifestEntryType$DelegateThreadsLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:3282:9 - (ae-forgotten-export) The symbol "ManifestEntryType$DgDataPolicyLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:3384:9 - (ae-forgotten-export) The symbol "PendingCharterChange$otherManifestChangeLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:3430:11 - (ae-forgotten-export) The symbol "cctx_CharterInputType$InputLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:3432:9 - (ae-forgotten-export) The symbol "cctx_CharterInputType$RefInputLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:3599:5 - (ae-forgotten-export) The symbol "dgd_DataSrc" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.bridge.ts:3599:11 - (ae-forgotten-export) The symbol "dgd_DataSrc$BothLike" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:101:5 - (ae-forgotten-export) The symbol "AnyData_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:117:5 - (ae-forgotten-export) The symbol "ErgoAnyData_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:130:5 - (ae-forgotten-export) The symbol "AnyDataLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:228:1 - (ae-forgotten-export) The symbol "DredNodeState_2" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:247:13 - (ae-forgotten-export) The symbol "TimeLike" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:279:1 - (ae-forgotten-export) The symbol "NodeDetails_2" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:326:5 - (ae-forgotten-export) The symbol "ErgoDredNodeState_2" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:327:5 - (ae-forgotten-export) The symbol "ErgoNodeDetails" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:327:5 - (ae-forgotten-export) The symbol "ErgoNodeDetails_2" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:390:5 - (ae-forgotten-export) The symbol "NodeRegistrationDataLike" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:430:13 - (ae-forgotten-export) The symbol "DelegateDatum$Cip68RefToken_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:431:13 - (ae-forgotten-export) The symbol "DelegationDetail_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:433:13 - (ae-forgotten-export) The symbol "DelegateDatum$capoStoredData_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:493:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$CreatingDelegate_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:625:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewSpendDelegate_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:663:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewMintDelegate_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:701:1 - (ae-forgotten-export) The symbol "ManifestActivity$updatingEntry_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:739:1 - (ae-forgotten-export) The symbol "ManifestActivity$addingEntry_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:777:1 - (ae-forgotten-export) The symbol "ManifestActivity$forkingThreadToken_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:815:1 - (ae-forgotten-export) The symbol "ManifestActivity$burningThreadToken_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:888:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$updatingEntry_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:889:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$addingEntry_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:890:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$forkingThreadToken_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:891:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$burningThreadToken_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:971:13 - (ae-forgotten-export) The symbol "ManifestActivity_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:982:13 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$CreatingDelegate_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:987:13 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:988:13 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$forcingNewMintDelegate_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1042:1 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$ReplacingMe_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1100:13 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$Ergo$ReplacingMe_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1148:1 - (ae-forgotten-export) The symbol "SpendingActivity$ValidatingNode" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1224:13 - (ae-forgotten-export) The symbol "SpendingActivity$Ergo$ValidatingNode" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1394:1 - (ae-forgotten-export) The symbol "DelegateActivity$CreatingDelegatedData_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1432:1 - (ae-forgotten-export) The symbol "DelegateActivity$UpdatingDelegatedData_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1470:1 - (ae-forgotten-export) The symbol "DelegateActivity$DeletingDelegatedData_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1544:13 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1546:13 - (ae-forgotten-export) The symbol "SpendingActivity_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1548:13 - (ae-forgotten-export) The symbol "MintingActivity_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1550:13 - (ae-forgotten-export) The symbol "BurningActivity_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1576:13 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$CreatingDelegatedData_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1577:13 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$UpdatingDelegatedData_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1578:13 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$DeletingDelegatedData_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1639:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Add_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1680:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Replace_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1741:13 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Add_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1743:13 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Replace_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1977:13 - (ae-forgotten-export) The symbol "ManifestEntryType$DgDataPolicy_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1978:13 - (ae-forgotten-export) The symbol "ManifestEntryType$DelegateThreads_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1991:13 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DgDataPolicy_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:1992:13 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DelegateThreads_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2028:5 - (ae-forgotten-export) The symbol "ManifestEntryType_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2057:5 - (ae-forgotten-export) The symbol "ManifestEntryTypeLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2137:13 - (ae-forgotten-export) The symbol "PendingCharterChange$otherManifestChange_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2147:13 - (ae-forgotten-export) The symbol "ErgoPendingDelegateChange_7" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2149:13 - (ae-forgotten-export) The symbol "PendingCharterChange$Ergo$otherManifestChange_7" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2181:5 - (ae-forgotten-export) The symbol "RelativeDelegateLink_7" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2187:5 - (ae-forgotten-export) The symbol "CapoManifestEntry_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2188:5 - (ae-forgotten-export) The symbol "PendingCharterChange_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2202:5 - (ae-forgotten-export) The symbol "ErgoRelativeDelegateLink_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2208:5 - (ae-forgotten-export) The symbol "ErgoCapoManifestEntry_7" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2209:5 - (ae-forgotten-export) The symbol "ErgoPendingCharterChange_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2220:5 - (ae-forgotten-export) The symbol "RelativeDelegateLinkLike_5" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2226:5 - (ae-forgotten-export) The symbol "CapoManifestEntryLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2227:5 - (ae-forgotten-export) The symbol "PendingCharterChangeLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2283:5 - (ae-forgotten-export) The symbol "CapoDatum$CharterData_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2298:5 - (ae-forgotten-export) The symbol "CapoDatum$Ergo$CharterData_6" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2310:5 - (ae-forgotten-export) The symbol "CapoDatum$CharterDataLike_4" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2349:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$RefInput_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2350:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Input_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2361:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Ergo$RefInput_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2362:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Ergo$Input_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2395:5 - (ae-forgotten-export) The symbol "cctx_CharterInputType_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2422:5 - (ae-forgotten-export) The symbol "cctx_CharterInputTypeLike_3" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2507:13 - (ae-forgotten-export) The symbol "ErgoNodeOperatorSettingsV1_2" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2539:5 - (ae-forgotten-export) The symbol "NodeOperatorSettings_2" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2564:5 - (ae-forgotten-export) The symbol "NodeOperatorSettingsLike" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2592:1 - (ae-forgotten-export) The symbol "dgd_DataSrc$Both" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2663:13 - (ae-forgotten-export) The symbol "dgd_DataSrc$Ergo$Both" needs to be exported by the entry point index.d.ts
-// src/nodeRegistry/NodeRegistry.typeInfo.ts:2729:5 - (ae-forgotten-export) The symbol "dgd_DataSrcLike" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:132:5 - (ae-forgotten-export) The symbol "DelegateDatumHelper_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:140:5 - (ae-forgotten-export) The symbol "ErgoDelegateDatum_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:148:5 - (ae-forgotten-export) The symbol "DelegateActivityHelper_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:151:5 - (ae-forgotten-export) The symbol "ProtocolSettingsPolicyDataBridgeReader" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:161:7 - (ae-forgotten-export) The symbol "NodeOperatorSettingsHelper_2" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:165:7 - (ae-forgotten-export) The symbol "NeighborhoodSettingsHelper_2" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:173:7 - (ae-forgotten-export) The symbol "DelegateRoleHelper_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:177:7 - (ae-forgotten-export) The symbol "ManifestActivityHelper_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:181:7 - (ae-forgotten-export) The symbol "CapoLifecycleActivityHelper_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:185:7 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityHelper_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:189:7 - (ae-forgotten-export) The symbol "SpendingActivityHelper_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:193:7 - (ae-forgotten-export) The symbol "MintingActivityHelper_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:197:7 - (ae-forgotten-export) The symbol "BurningActivityHelper_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:205:7 - (ae-forgotten-export) The symbol "PendingDelegateActionHelper_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:209:7 - (ae-forgotten-export) The symbol "ManifestEntryTypeHelper_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:213:7 - (ae-forgotten-export) The symbol "PendingCharterChangeHelper_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:217:7 - (ae-forgotten-export) The symbol "cctx_CharterInputTypeHelper_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:311:7 - (ae-forgotten-export) The symbol "CapoCtxLike_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:369:5 - (ae-forgotten-export) The symbol "CapoCtx_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:610:5 - (ae-forgotten-export) The symbol "ErgoDelegateActivity_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:694:5 - (ae-forgotten-export) The symbol "Ergocctx_CharterInputType_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:962:11 - (ae-forgotten-export) The symbol "NodeOperatorSettingsV1Like_2" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1024:11 - (ae-forgotten-export) The symbol "NeighborhoodSettingsV1Like_2" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1083:5 - (ae-forgotten-export) The symbol "DelegateDatum_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1083:11 - (ae-forgotten-export) The symbol "DelegateDatum$capoStoredDataLike_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1084:9 - (ae-forgotten-export) The symbol "DelegateDatum$Cip68RefTokenLike_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1085:9 - (ae-forgotten-export) The symbol "DelegationDetailLike_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1248:11 - (ae-forgotten-export) The symbol "ManifestActivity$addingEntryLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1248:11 - (ae-forgotten-export) The symbol "ManifestActivity$forkingThreadTokenLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1248:11 - (ae-forgotten-export) The symbol "ManifestActivity$burningThreadTokenLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1250:9 - (ae-forgotten-export) The symbol "ManifestActivity$updatingEntryLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1550:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivity_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1550:11 - (ae-forgotten-export) The symbol "DelegateRoleLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1550:11 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewSpendDelegateLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1551:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$CreatingDelegateLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1556:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewMintDelegateLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1557:9 - (ae-forgotten-export) The symbol "ManifestActivityLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1632:5 - (ae-forgotten-export) The symbol "DelegateRoleHelperNested_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1786:5 - (ae-forgotten-export) The symbol "ManifestActivityHelperNested_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:1812:9 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$ReplacingMeLike_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2028:5 - (ae-forgotten-export) The symbol "DelegateRole_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2229:5 - (ae-forgotten-export) The symbol "ActivityDelegateRoleHelperNested_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2669:5 - (ae-forgotten-export) The symbol "DelegateActivity_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2669:11 - (ae-forgotten-export) The symbol "SpendingActivityLike_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2669:11 - (ae-forgotten-export) The symbol "MintingActivityLike_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2669:11 - (ae-forgotten-export) The symbol "BurningActivityLike_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2669:11 - (ae-forgotten-export) The symbol "DelegateActivity$UpdatingDelegatedDataLike_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2670:9 - (ae-forgotten-export) The symbol "CapoLifecycleActivityLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2671:9 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityLike_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2675:9 - (ae-forgotten-export) The symbol "DelegateActivity$CreatingDelegatedDataLike_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2677:9 - (ae-forgotten-export) The symbol "DelegateActivity$DeletingDelegatedDataLike_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2677:5 - (ae-forgotten-export) The symbol "CapoLifecycleActivityHelperNested_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2693:5 - (ae-forgotten-export) The symbol "DelegateLifecycleActivityHelperNested_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2709:5 - (ae-forgotten-export) The symbol "SpendingActivityHelperNested_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2725:5 - (ae-forgotten-export) The symbol "MintingActivityHelperNested_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2741:5 - (ae-forgotten-export) The symbol "BurningActivityHelperNested_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2870:5 - (ae-forgotten-export) The symbol "PendingDelegateAction_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2870:11 - (ae-forgotten-export) The symbol "PendingDelegateAction$ReplaceLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:2871:9 - (ae-forgotten-export) The symbol "PendingDelegateAction$AddLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:3089:11 - (ae-forgotten-export) The symbol "ManifestEntryType$DelegateThreadsLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:3091:9 - (ae-forgotten-export) The symbol "ManifestEntryType$DgDataPolicyLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:3192:9 - (ae-forgotten-export) The symbol "PendingDelegateChangeLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:3193:9 - (ae-forgotten-export) The symbol "PendingCharterChange$otherManifestChangeLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:3202:5 - (ae-forgotten-export) The symbol "PendingDelegateActionLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:3239:11 - (ae-forgotten-export) The symbol "cctx_CharterInputType$InputLike_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.bridge.ts:3241:9 - (ae-forgotten-export) The symbol "cctx_CharterInputType$RefInputLike_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:101:5 - (ae-forgotten-export) The symbol "AnyData_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:117:5 - (ae-forgotten-export) The symbol "ErgoAnyData_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:130:5 - (ae-forgotten-export) The symbol "AnyDataLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:203:1 - (ae-forgotten-export) The symbol "NodeOperatorSettingsV1" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:257:13 - (ae-forgotten-export) The symbol "ErgoNodeOperatorSettingsV1" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:303:1 - (ae-forgotten-export) The symbol "NeighborhoodSettingsV1" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:354:13 - (ae-forgotten-export) The symbol "ErgoNeighborhoodSettingsV1" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:388:5 - (ae-forgotten-export) The symbol "NodeOperatorSettings" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:389:5 - (ae-forgotten-export) The symbol "NeighborhoodSettings" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:405:5 - (ae-forgotten-export) The symbol "ErgoNodeOperatorSettings" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:406:5 - (ae-forgotten-export) The symbol "ErgoNeighborhoodSettings" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:419:5 - (ae-forgotten-export) The symbol "NodeOperatorSettingsLike_2" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:420:5 - (ae-forgotten-export) The symbol "NeighborhoodSettingsLike_2" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:439:5 - (ae-forgotten-export) The symbol "ProtocolSettings" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:468:5 - (ae-forgotten-export) The symbol "ProtocolSettingsLike" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:508:13 - (ae-forgotten-export) The symbol "DelegateDatum$Cip68RefToken_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:509:13 - (ae-forgotten-export) The symbol "DelegationDetail_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:511:13 - (ae-forgotten-export) The symbol "DelegateDatum$capoStoredData_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:521:13 - (ae-forgotten-export) The symbol "DelegateDatum$Ergo$Cip68RefToken_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:522:13 - (ae-forgotten-export) The symbol "ErgoDelegationDetail_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:524:13 - (ae-forgotten-export) The symbol "DelegateDatum$Ergo$capoStoredData_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:571:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$CreatingDelegate_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:703:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewSpendDelegate_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:741:1 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$forcingNewMintDelegate_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:779:1 - (ae-forgotten-export) The symbol "ManifestActivity$updatingEntry_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:817:1 - (ae-forgotten-export) The symbol "ManifestActivity$addingEntry_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:855:1 - (ae-forgotten-export) The symbol "ManifestActivity$forkingThreadToken_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:893:1 - (ae-forgotten-export) The symbol "ManifestActivity$burningThreadToken_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:966:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$updatingEntry_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:967:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$addingEntry_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:968:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$forkingThreadToken_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:969:13 - (ae-forgotten-export) The symbol "ManifestActivity$Ergo$burningThreadToken_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1049:13 - (ae-forgotten-export) The symbol "ManifestActivity_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1060:13 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$CreatingDelegate_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1062:13 - (ae-forgotten-export) The symbol "ErgoDelegateRole_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1065:13 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1066:13 - (ae-forgotten-export) The symbol "CapoLifecycleActivity$Ergo$forcingNewMintDelegate_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1067:13 - (ae-forgotten-export) The symbol "ErgoManifestActivity_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1120:1 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$ReplacingMe_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1178:13 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity$Ergo$ReplacingMe_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1394:1 - (ae-forgotten-export) The symbol "DelegateActivity$CreatingDelegatedData_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1432:1 - (ae-forgotten-export) The symbol "DelegateActivity$UpdatingDelegatedData_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1470:1 - (ae-forgotten-export) The symbol "DelegateActivity$DeletingDelegatedData_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1544:13 - (ae-forgotten-export) The symbol "DelegateLifecycleActivity_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1546:13 - (ae-forgotten-export) The symbol "SpendingActivity_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1548:13 - (ae-forgotten-export) The symbol "MintingActivity_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1550:13 - (ae-forgotten-export) The symbol "BurningActivity_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1566:13 - (ae-forgotten-export) The symbol "ErgoCapoLifecycleActivity_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1568:13 - (ae-forgotten-export) The symbol "ErgoDelegateLifecycleActivity_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1570:13 - (ae-forgotten-export) The symbol "ErgoSpendingActivity_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1572:13 - (ae-forgotten-export) The symbol "ErgoMintingActivity_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1574:13 - (ae-forgotten-export) The symbol "ErgoBurningActivity_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1576:13 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$CreatingDelegatedData_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1577:13 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$UpdatingDelegatedData_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1578:13 - (ae-forgotten-export) The symbol "DelegateActivity$Ergo$DeletingDelegatedData_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1639:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Add_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1680:1 - (ae-forgotten-export) The symbol "PendingDelegateAction$Replace_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1741:13 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Add_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1743:13 - (ae-forgotten-export) The symbol "PendingDelegateAction$Ergo$Replace_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1831:5 - (ae-forgotten-export) The symbol "ErgoPendingDelegateAction_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1977:13 - (ae-forgotten-export) The symbol "ManifestEntryType$DgDataPolicy_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1978:13 - (ae-forgotten-export) The symbol "ManifestEntryType$DelegateThreads_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1991:13 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DgDataPolicy_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:1992:13 - (ae-forgotten-export) The symbol "ManifestEntryType$Ergo$DelegateThreads_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2028:5 - (ae-forgotten-export) The symbol "ManifestEntryType_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2044:5 - (ae-forgotten-export) The symbol "ErgoManifestEntryType_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2057:5 - (ae-forgotten-export) The symbol "ManifestEntryTypeLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2135:13 - (ae-forgotten-export) The symbol "PendingDelegateChange_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2137:13 - (ae-forgotten-export) The symbol "PendingCharterChange$otherManifestChange_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2147:13 - (ae-forgotten-export) The symbol "ErgoPendingDelegateChange_9" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2149:13 - (ae-forgotten-export) The symbol "PendingCharterChange$Ergo$otherManifestChange_9" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2181:5 - (ae-forgotten-export) The symbol "RelativeDelegateLink_9" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2187:5 - (ae-forgotten-export) The symbol "CapoManifestEntry_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2188:5 - (ae-forgotten-export) The symbol "PendingCharterChange_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2202:5 - (ae-forgotten-export) The symbol "ErgoRelativeDelegateLink_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2208:5 - (ae-forgotten-export) The symbol "ErgoCapoManifestEntry_9" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2209:5 - (ae-forgotten-export) The symbol "ErgoPendingCharterChange_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2220:5 - (ae-forgotten-export) The symbol "RelativeDelegateLinkLike_7" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2226:5 - (ae-forgotten-export) The symbol "CapoManifestEntryLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2227:5 - (ae-forgotten-export) The symbol "PendingCharterChangeLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2283:5 - (ae-forgotten-export) The symbol "CapoDatum$CharterData_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2298:5 - (ae-forgotten-export) The symbol "CapoDatum$Ergo$CharterData_8" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2310:5 - (ae-forgotten-export) The symbol "CapoDatum$CharterDataLike_6" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2349:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$RefInput_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2350:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Input_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2361:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Ergo$RefInput_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2362:13 - (ae-forgotten-export) The symbol "cctx_CharterInputType$Ergo$Input_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2395:5 - (ae-forgotten-export) The symbol "cctx_CharterInputType_5" needs to be exported by the entry point index.d.ts
-// src/settings/ProtocolSettings.typeInfo.ts:2422:5 - (ae-forgotten-export) The symbol "cctx_CharterInputTypeLike_5" needs to be exported by the entry point index.d.ts
+// .api-extractor-temp/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts:561:5 - (ae-forgotten-export) The symbol "ErgoNeighborhoodState" needs to be exported by the entry point index.d.ts
+// .api-extractor-temp/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts:562:5 - (ae-forgotten-export) The symbol "ErgoAppInfo" needs to be exported by the entry point index.d.ts
+// .api-extractor-temp/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts:563:5 - (ae-forgotten-export) The symbol "ErgoNodeOpsInfo" needs to be exported by the entry point index.d.ts
+// .api-extractor-temp/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts:564:5 - (ae-forgotten-export) The symbol "ErgoUpdateInfo" needs to be exported by the entry point index.d.ts
+// .api-extractor-temp/src/nodeRegistry/NodeRegistry.typeInfo.d.ts:241:5 - (ae-forgotten-export) The symbol "ErgoDredNodeState" needs to be exported by the entry point index.d.ts
+// .api-extractor-temp/src/nodeRegistry/NodeRegistry.typeInfo.d.ts:242:5 - (ae-forgotten-export) The symbol "ErgoNodeDetails" needs to be exported by the entry point index.d.ts
+// .api-extractor-temp/src/settings/ProtocolSettings.typeInfo.d.ts:332:5 - (ae-forgotten-export) The symbol "ErgoNodeOperatorSettings" needs to be exported by the entry point index.d.ts
+// .api-extractor-temp/src/settings/ProtocolSettings.typeInfo.d.ts:333:5 - (ae-forgotten-export) The symbol "ErgoNeighborhoodSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

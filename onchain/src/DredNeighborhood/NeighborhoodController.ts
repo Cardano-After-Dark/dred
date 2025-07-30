@@ -31,6 +31,9 @@ export type PartialPartialData<T extends AnyDataTemplate<any, any>> = Partial<{
 // export type partialMinimalData<T extends AnyDataTemplate<any, any>> =
 //     PartialPartialData<minimalData<T>>;
 
+/**
+ * @public
+ */
 export class NeighborhoodController extends DelegatedDataContract<
     ErgoNeighborhoodData,
     NeighborhoodDataLike

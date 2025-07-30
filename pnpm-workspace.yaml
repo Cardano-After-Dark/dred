@@ -16,11 +16,11 @@ packages:
 overrides:
   "@donecollectively/stellar-contracts": "$@donecollectively/stellar-contracts"
   # ^ merge the resolution of this package so it will resolve as a transitive dependency to ONE package.
-  # vv 👁️use local override for stellar-contracts/tokenomics local dev, commenting out the first override ^^
-  # "stellar-tokenomics": "file:../stellar-tokenomics"
+  # vv 👁️ use local override for stellar-contracts/tokenomics local dev, commenting out the first override ^^
   #  "@donecollectively/stellar-contracts": "file:../stellar-contracts"
   #          use this vvv instead of ^ for rapid iteration of stellar-contracts (see package.json notes too)
   # "@donecollectively/stellar-contracts": "../stellar-contracts"
+  # "stellar-tokenomics": "../stellar-tokenomics"
   # 👁️  ^^ don't check it in with these local overrides
   "react": "$react"
   "react-dom": "$react-dom"

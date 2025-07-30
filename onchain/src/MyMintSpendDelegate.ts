@@ -12,6 +12,9 @@ import { STokMintDelegate } from "stellar-tokenomics";
 import MyMintSpendDelegateBundle from "./MyMintSpendDelegate.hlb.js";
 import MyMintSpendDelegateDataBridge from "./MyMintSpendDelegate.bridge.js";
 
+/**
+ * @public
+ */
 export class MyMintSpendDelegate extends STokMintDelegate {
     get delegateName() {
         return "MyMintSpendDelegate";

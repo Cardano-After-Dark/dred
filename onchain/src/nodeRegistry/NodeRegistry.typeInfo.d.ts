@@ -31,7 +31,10 @@ import type {
     // BytesLike,
  } from "@helios-lang/codec-utils";
 
- type TimeLike = IntLike;
+/**
+ * @public
+ */
+export type TimeLike = IntLike;
  
         
 import type {
@@ -174,77 +177,49 @@ export interface DelegationDetailLike {
 
 
 
-/**
- * A strong type for the canonical form of NodeOperatorSettingsV1
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOperatorSettingsV1 instead.
- * @public
- */
-export interface NodeOperatorSettingsV1 {
-    expectedHeartbeatInterval: /*minStructField*/ bigint
-    requiredNodeUptime: /*minStructField*/ number
-    minValidations: /*minStructField*/ bigint
-    minNodeRegistrationFee: /*minStructField*/ Value
-    minNodeOperatorStake: /*minStructField*/ Value
-}
-
-
-/**
- * An ergonomic, though less strictly-safe form of NodeOperatorSettingsV1
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeOperatorSettingsV1Like type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-export type ErgoNodeOperatorSettingsV1 = NodeOperatorSettingsV1/*like canon-other*/
-
-/**
- * A strong type for the permissive form of NodeOperatorSettingsV1
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-export interface NodeOperatorSettingsV1Like {
-    expectedHeartbeatInterval: /*minStructField*/ IntLike
-    requiredNodeUptime: /*minStructField*/ number
-    minValidations: /*minStructField*/ IntLike
-    minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
-    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
-}
-
-
-
 
             /**
             * @internal
             */
-            export type NodeOperatorSettingsMeta = EnumTypeMeta<
-    {module: "NodeOperatorSettings", enumName: "NodeOperatorSettings"}, {
-        V1: singleEnumVariantMeta<NodeOperatorSettingsMeta, "V1",
-            "Constr#0", "singletonField", /* implied wrapper { s: ... } for singleVariantField */ 
-			NodeOperatorSettingsV1   , "noSpecialFlags"
+            export type DredNodeStateMeta = EnumTypeMeta<
+    {module: "NodeRegistrationData", enumName: "DredNodeState"}, {
+        NeedsValidation: singleEnumVariantMeta<DredNodeStateMeta, "NeedsValidation",
+            "Constr#0", "singletonField", /* implied wrapper { validators: ... } for singleVariantField */ 
+			Array<number[]>   , "noSpecialFlags"
+        >,
+        Active: singleEnumVariantMeta<DredNodeStateMeta, "Active",
+            "Constr#1", "singletonField", /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ 
+			number   , "noSpecialFlags"
+        >,
+        NeedsHeartbeats: singleEnumVariantMeta<DredNodeStateMeta, "NeedsHeartbeats",
+            "Constr#2", "singletonField", /* implied wrapper { validators: ... } for singleVariantField */ 
+			Array<number[]>   , "noSpecialFlags"
+        >,
+        Inactive: singleEnumVariantMeta<DredNodeStateMeta, "Inactive",
+            "Constr#3", "tagOnly", tagOnly, "noSpecialFlags"
         >
     }
 >;
 
 
 /**
- * NodeOperatorSettings enum variants
+ * DredNodeState enum variants
  * 
  * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the NodeOperatorSettings enum type
+ * supporting the **4 variant(s)** of the DredNodeState enum type
  * 
- * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
+ * - **Note**: Stellar Contracts provides a higher-level `DredNodeStateHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-export type NodeOperatorSettings = 
-        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
-			NodeOperatorSettingsV1    /*minEnumVariant*/ }
+export type DredNodeState = 
+        | { NeedsValidation: /* implied wrapper { validators: ... } for singleVariantField */ 
+			Array<number[]>    /*minEnumVariant*/ }
+        | { Active: /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ 
+			number    /*minEnumVariant*/ }
+        | { NeedsHeartbeats: /* implied wrapper { validators: ... } for singleVariantField */ 
+			Array<number[]>    /*minEnumVariant*/ }
+        | { Inactive: tagOnly /*minEnumVariant*/ }
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -253,18 +228,15 @@ export type NodeOperatorSettings =
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export type ErgoNodeOperatorSettings = IntersectedEnum<
-        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
-			ErgoNodeOperatorSettingsV1    /*minEnumVariant*/ }
->
+export type ErgoDredNodeState = IntersectedEnum<DredNodeState/*like canon enum*/>
 
 /**
- * NodeOperatorSettings enum variants (permissive)
+ * DredNodeState enum variants (permissive)
  * 
  * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the NodeOperatorSettings enum type
+ * for creating any of the **4 variant(s)** of the DredNodeState enum type
  * 
- * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
+ * - **Note**: Stellar Contracts provides a higher-level `DredNodeStateHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
@@ -272,160 +244,113 @@ export type ErgoNodeOperatorSettings = IntersectedEnum<
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-export type NodeOperatorSettingsLike = IntersectedEnum<
-        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
-			NodeOperatorSettingsV1Like    /*minEnumVariant*/ }
+export type DredNodeStateLike = IntersectedEnum<
+        | { NeedsValidation: /* implied wrapper { validators: ... } for singleVariantField */ 
+			Array<number[]>    /*minEnumVariant*/ }
+        | { Active: /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ 
+			TimeLike    /*minEnumVariant*/ }
+        | { NeedsHeartbeats: /* implied wrapper { validators: ... } for singleVariantField */ 
+			Array<number[]>    /*minEnumVariant*/ }
+        | { Inactive: tagOnly /*minEnumVariant*/ }
 >
 
 /**
- * A strong type for the canonical form of NeighborhoodSettingsV1
+ * A strong type for the canonical form of NodeDetails
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNeighborhoodSettingsV1 instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeDetails instead.
  * @public
  */
-export interface NeighborhoodSettingsV1 {
-    minRegistrationFee: /*minStructField*/ Value
-    minNbhStake: /*minStructField*/ Value
+export interface NodeDetails {
+    address: /*minStructField*/ string
+    port: /*minStructField*/ bigint
+    pubKey: /*minStructField*/ PubKey
+    pubKeyHash: /*minStructField*/ PubKeyHash
 }
 
 
 /**
- * An ergonomic, though less strictly-safe form of NeighborhoodSettingsV1
+ * An ergonomic, though less strictly-safe form of NodeDetails
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NeighborhoodSettingsV1Like type,
+ * conversion to on-chain use.  For creating such data, use the NodeDetailsLike type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-export type ErgoNeighborhoodSettingsV1 = NeighborhoodSettingsV1/*like canon-other*/
+export type ErgoNodeDetails = NodeDetails/*like canon-other*/
 
 /**
- * A strong type for the permissive form of NeighborhoodSettingsV1
+ * A strong type for the permissive form of NodeDetails
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export interface NeighborhoodSettingsV1Like {
-    minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
-    minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+export interface NodeDetailsLike {
+    address: /*minStructField*/ string
+    port: /*minStructField*/ IntLike
+    pubKey: /*minStructField*/ PubKey | string | number[]
+    pubKeyHash: /*minStructField*/ PubKeyHash | string | number[]
 }
 
 
 
-
-            /**
-            * @internal
-            */
-            export type NeighborhoodSettingsMeta = EnumTypeMeta<
-    {module: "NeighborhoodSettings", enumName: "NeighborhoodSettings"}, {
-        V1: singleEnumVariantMeta<NeighborhoodSettingsMeta, "V1",
-            "Constr#0", "singletonField", /* implied wrapper { s: ... } for singleVariantField */ 
-			NeighborhoodSettingsV1   , "noSpecialFlags"
-        >
-    }
->;
-
-
 /**
- * NeighborhoodSettings enum variants
- * 
- * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the NeighborhoodSettings enum type
- * 
- * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-export type NeighborhoodSettings = 
-        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
-			NeighborhoodSettingsV1    /*minEnumVariant*/ }
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-export type ErgoNeighborhoodSettings = IntersectedEnum<
-        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
-			ErgoNeighborhoodSettingsV1    /*minEnumVariant*/ }
->
-
-/**
- * NeighborhoodSettings enum variants (permissive)
- * 
- * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the NeighborhoodSettings enum type
- * 
- * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are 
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-export type NeighborhoodSettingsLike = IntersectedEnum<
-        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
-			NeighborhoodSettingsV1Like    /*minEnumVariant*/ }
->
-
-/**
- * A strong type for the canonical form of ProtocolSettings
+ * A strong type for the canonical form of NodeRegistrationData
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoProtocolSettings instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeRegistrationData instead.
  * @public
  */
-export interface ProtocolSettings {
+export interface NodeRegistrationData {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
-    nodeOpSettings: /*minStructField*/ NodeOperatorSettings
-    nbhSettings: /*minStructField*/ NeighborhoodSettings
+    memberToken: /*minStructField*/ string
+    state: /*minStructField*/ DredNodeState
+    nodeDetails: /*minStructField*/ NodeDetails
 }
 
 
 /**
- * An ergonomic, though less strictly-safe form of ProtocolSettings
+ * An ergonomic, though less strictly-safe form of NodeRegistrationData
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ProtocolSettingsLike type,
+ * conversion to on-chain use.  For creating such data, use the NodeRegistrationDataLike type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-export type ErgoProtocolSettings = {
+export type ErgoNodeRegistrationData = {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
-    nodeOpSettings: /*minStructField*/ ErgoNodeOperatorSettings
-    nbhSettings: /*minStructField*/ ErgoNeighborhoodSettings
+    memberToken: /*minStructField*/ string
+    state: /*minStructField*/ ErgoDredNodeState
+    nodeDetails: /*minStructField*/ ErgoNodeDetails
 }
 
 
 /**
- * A strong type for the permissive form of ProtocolSettings
+ * A strong type for the permissive form of NodeRegistrationData
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export interface ProtocolSettingsLike {
+export interface NodeRegistrationDataLike {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
-    nodeOpSettings: /*minStructField*/ NodeOperatorSettingsLike
-    nbhSettings: /*minStructField*/ NeighborhoodSettingsLike
+    memberToken: /*minStructField*/ string
+    state: /*minStructField*/ DredNodeStateLike
+    nodeDetails: /*minStructField*/ NodeDetailsLike
 }
 
 
 /**
- * expresses the essential fields needed for initiating creation of a ProtocolSettings
+ * expresses the essential fields needed for initiating creation of a NodeRegistrationData
  * @public
  */
-export type minimalProtocolSettings = minimalData<ProtocolSettingsLike>
+export type minimalNodeRegistrationData = minimalData<NodeRegistrationDataLike>
 
 /**
  * A strong type for the canonical form of DelegateDatum$capoStoredData
@@ -436,7 +361,7 @@ export type minimalProtocolSettings = minimalData<ProtocolSettingsLike>
  * @public
  */
 export interface DelegateDatum$capoStoredData {
-    data: ProtocolSettings  /*minVariantField*/ ,
+    data: NodeRegistrationData  /*minVariantField*/ ,
     version: bigint  /*minVariantField*/ ,
     otherDetails: UplcData  /*minVariantField*/ 
 }
@@ -452,7 +377,7 @@ export interface DelegateDatum$capoStoredData {
  * @public
  */
 export type DelegateDatum$Ergo$capoStoredData = {
-    data: ErgoProtocolSettings  /*minVariantField*/ ,
+    data: ErgoNodeRegistrationData  /*minVariantField*/ ,
     version: bigint  /*minVariantField*/ ,
     otherDetails: UplcData  /*minVariantField*/ 
 }
@@ -465,7 +390,7 @@ export type DelegateDatum$Ergo$capoStoredData = {
  * @public
  */
 export interface DelegateDatum$capoStoredDataLike {
-    data: ProtocolSettingsLike  /*minVariantField*/ ,
+    data: NodeRegistrationDataLike  /*minVariantField*/ ,
     version: IntLike  /*minVariantField*/ ,
     otherDetails: UplcData  /*minVariantField*/ 
 }
@@ -477,7 +402,7 @@ export interface DelegateDatum$capoStoredDataLike {
             * @internal
             */
             export type DelegateDatumMeta = EnumTypeMeta<
-    {module: "ProtocolSettingsPolicy", enumName: "DelegateDatum"}, {
+    {module: "DredNodeRegistryPolicy", enumName: "DelegateDatum"}, {
         Cip68RefToken: singleEnumVariantMeta<DelegateDatumMeta, "Cip68RefToken",
             "Constr#0", 
             "fields", DelegateDatum$Cip68RefToken, "noSpecialFlags"
@@ -1200,14 +1125,68 @@ export type DelegateLifecycleActivityLike = IntersectedEnum<
         | { ValidatingSettings: tagOnly /*minEnumVariant*/ }
 >
 
+/**
+ * A strong type for the canonical form of SpendingActivity$ValidatingNode
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see SpendingActivity$Ergo$ValidatingNode instead.
+ * @public
+ */
+export interface SpendingActivity$ValidatingNode {
+    id: number[]  /*minVariantField*/ ,
+    validatorId: number[]  /*minVariantField*/ 
+}
+
+
+/**
+ * An ergonomic, though less strictly-safe form of SpendingActivity$ValidatingNode
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the SpendingActivity$ValidatingNodeLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+export type SpendingActivity$Ergo$ValidatingNode = SpendingActivity$ValidatingNode  /*ergo like-canonical-this-variant*/
+
+/**
+ * A strong type for the permissive form of SpendingActivity$ValidatingNode
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+export interface SpendingActivity$ValidatingNodeLike {
+    id: number[]  /*minVariantField*/ ,
+    validatorId: number[]  /*minVariantField*/ 
+}
+
+
+
 
             /**
             * @internal
             */
             export type SpendingActivityMeta = EnumTypeMeta<
-    {module: "ProtocolSettingsPolicy", enumName: "SpendingActivity"}, {
+    {module: "DredNodeRegistryPolicy", enumName: "SpendingActivity"}, {
         UpdatingRecord: singleEnumVariantMeta<SpendingActivityMeta, "UpdatingRecord",
             "Constr#0", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]   , "noSpecialFlags"
+        >,
+        ValidatingNode: singleEnumVariantMeta<SpendingActivityMeta, "ValidatingNode",
+            "Constr#1", 
+            "fields", SpendingActivity$ValidatingNode, "noSpecialFlags"
+        >,
+        ActivatingNode: singleEnumVariantMeta<SpendingActivityMeta, "ActivatingNode",
+            "Constr#2", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]   , "noSpecialFlags"
+        >,
+        ReportingInactiveNode: singleEnumVariantMeta<SpendingActivityMeta, "ReportingInactiveNode",
+            "Constr#3", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]   , "noSpecialFlags"
+        >,
+        RefutingInactivity: singleEnumVariantMeta<SpendingActivityMeta, "RefutingInactivity",
+            "Constr#4", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
 			number[]   , "noSpecialFlags"
         >
     }
@@ -1218,7 +1197,7 @@ export type DelegateLifecycleActivityLike = IntersectedEnum<
  * SpendingActivity enum variants
  * 
  * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the SpendingActivity enum type
+ * supporting the **5 variant(s)** of the SpendingActivity enum type
  * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -1226,6 +1205,13 @@ export type DelegateLifecycleActivityLike = IntersectedEnum<
  */
 export type SpendingActivity = 
         | { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { ValidatingNode: SpendingActivity$ValidatingNode /*minEnumVariant*/ }
+        | { ActivatingNode: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { ReportingInactiveNode: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { RefutingInactivity: /* implied wrapper { id: ... } for singleVariantField */ 
 			number[]    /*minEnumVariant*/ }
 
 /**
@@ -1235,13 +1221,23 @@ export type SpendingActivity =
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-export type ErgoSpendingActivity = IntersectedEnum<SpendingActivity/*like canon enum*/>
+export type ErgoSpendingActivity = IntersectedEnum<
+        | { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { ValidatingNode: SpendingActivity$Ergo$ValidatingNode /*minEnumVariant*/ }
+        | { ActivatingNode: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { ReportingInactiveNode: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { RefutingInactivity: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+>
 
 /**
  * SpendingActivity enum variants (permissive)
  * 
  * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the SpendingActivity enum type
+ * for creating any of the **5 variant(s)** of the SpendingActivity enum type
  * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -1254,6 +1250,13 @@ export type ErgoSpendingActivity = IntersectedEnum<SpendingActivity/*like canon 
 export type SpendingActivityLike = IntersectedEnum<
         | { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
 			number[]    /*minEnumVariant*/ }
+        | { ValidatingNode: SpendingActivity$ValidatingNodeLike /*minEnumVariant*/ }
+        | { ActivatingNode: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { ReportingInactiveNode: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
+        | { RefutingInactivity: /* implied wrapper { id: ... } for singleVariantField */ 
+			number[]    /*minEnumVariant*/ }
 >
 
 
@@ -1261,7 +1264,7 @@ export type SpendingActivityLike = IntersectedEnum<
             * @internal
             */
             export type MintingActivityMeta = EnumTypeMeta<
-    {module: "ProtocolSettingsPolicy", enumName: "MintingActivity"}, {
+    {module: "DredNodeRegistryPolicy", enumName: "MintingActivity"}, {
         CreatingRecord: singleEnumVariantMeta<MintingActivityMeta, "CreatingRecord",
             "Constr#0", "singletonField", /* implied wrapper { seed: ... } for singleVariantField */ 
 			TxOutputId   , "isSeededActivity"
@@ -1317,7 +1320,7 @@ export type MintingActivityLike = IntersectedEnum<
             * @internal
             */
             export type BurningActivityMeta = EnumTypeMeta<
-    {module: "ProtocolSettingsPolicy", enumName: "BurningActivity"}, {
+    {module: "DredNodeRegistryPolicy", enumName: "BurningActivity"}, {
         DeletingRecord: singleEnumVariantMeta<BurningActivityMeta, "DeletingRecord",
             "Constr#0", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
 			number[]   , "noSpecialFlags"
@@ -1487,7 +1490,7 @@ export interface DelegateActivity$DeletingDelegatedDataLike {
             * @internal
             */
             export type DelegateActivityMeta = EnumTypeMeta<
-    {module: "ProtocolSettingsPolicy", enumName: "DelegateActivity"}, {
+    {module: "DredNodeRegistryPolicy", enumName: "DelegateActivity"}, {
         CapoLifecycleActivities: singleEnumVariantMeta<DelegateActivityMeta, "CapoLifecycleActivities",
             "Constr#0", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
 			CapoLifecycleActivity   , "noSpecialFlags"
@@ -2423,4 +2426,319 @@ export interface CapoCtxLike {
 }
 
 
+
+/**
+ * A strong type for the canonical form of NodeOperatorSettingsV1
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOperatorSettingsV1 instead.
+ * @public
+ */
+export interface NodeOperatorSettingsV1 {
+    expectedHeartbeatInterval: /*minStructField*/ bigint
+    requiredNodeUptime: /*minStructField*/ number
+    minValidations: /*minStructField*/ bigint
+    minNodeRegistrationFee: /*minStructField*/ Value
+    minNodeOperatorStake: /*minStructField*/ Value
+}
+
+
+/**
+ * An ergonomic, though less strictly-safe form of NodeOperatorSettingsV1
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the NodeOperatorSettingsV1Like type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+export type ErgoNodeOperatorSettingsV1 = NodeOperatorSettingsV1/*like canon-other*/
+
+/**
+ * A strong type for the permissive form of NodeOperatorSettingsV1
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+export interface NodeOperatorSettingsV1Like {
+    expectedHeartbeatInterval: /*minStructField*/ IntLike
+    requiredNodeUptime: /*minStructField*/ number
+    minValidations: /*minStructField*/ IntLike
+    minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+}
+
+
+
+
+            /**
+            * @internal
+            */
+            export type NodeOperatorSettingsMeta = EnumTypeMeta<
+    {module: "NodeOperatorSettings", enumName: "NodeOperatorSettings"}, {
+        V1: singleEnumVariantMeta<NodeOperatorSettingsMeta, "V1",
+            "Constr#0", "singletonField", /* implied wrapper { s: ... } for singleVariantField */ 
+			NodeOperatorSettingsV1   , "noSpecialFlags"
+        >
+    }
+>;
+
+
+/**
+ * NodeOperatorSettings enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the NodeOperatorSettings enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+export type NodeOperatorSettings = 
+        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+			NodeOperatorSettingsV1    /*minEnumVariant*/ }
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+export type ErgoNodeOperatorSettings = IntersectedEnum<
+        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+			ErgoNodeOperatorSettingsV1    /*minEnumVariant*/ }
+>
+
+/**
+ * NodeOperatorSettings enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the NodeOperatorSettings enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+export type NodeOperatorSettingsLike = IntersectedEnum<
+        | { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+			NodeOperatorSettingsV1Like    /*minEnumVariant*/ }
+>
+
+/**
+ * A strong type for the canonical form of AbstractSettingsForNodeOperator
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoAbstractSettingsForNodeOperator instead.
+ * @public
+ */
+export interface AbstractSettingsForNodeOperator {
+    nodeOpSettings: /*minStructField*/ NodeOperatorSettings
+}
+
+
+/**
+ * An ergonomic, though less strictly-safe form of AbstractSettingsForNodeOperator
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the AbstractSettingsForNodeOperatorLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+export type ErgoAbstractSettingsForNodeOperator = {
+    nodeOpSettings: /*minStructField*/ ErgoNodeOperatorSettings
+}
+
+
+/**
+ * A strong type for the permissive form of AbstractSettingsForNodeOperator
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+export interface AbstractSettingsForNodeOperatorLike {
+    nodeOpSettings: /*minStructField*/ NodeOperatorSettingsLike
+}
+
+
+
+/**
+ * A strong type for the canonical form of dgd_DataSrc$Both
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see dgd_DataSrc$Ergo$Both instead.
+ * @public
+ */
+export interface dgd_DataSrc$Both {
+    utxo: TxInput  /*minVariantField*/ ,
+    txo: TxOutput  /*minVariantField*/ 
+}
+
+
+/**
+ * An ergonomic, though less strictly-safe form of dgd_DataSrc$Both
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the dgd_DataSrc$BothLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+export type dgd_DataSrc$Ergo$Both = dgd_DataSrc$Both  /*ergo like-canonical-this-variant*/
+
+/**
+ * A strong type for the permissive form of dgd_DataSrc$Both
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+export interface dgd_DataSrc$BothLike {
+    utxo: TxInput  /*minVariantField*/ ,
+    txo: TxOutput  /*minVariantField*/ 
+}
+
+
+
+
+            /**
+            * @internal
+            */
+            export type dgd_DataSrcMeta = EnumTypeMeta<
+    {module: "CapoHelpers", enumName: "dgd_DataSrc"}, {
+        Unk: singleEnumVariantMeta<dgd_DataSrcMeta, "Unk",
+            "Constr#0", "tagOnly", tagOnly, "noSpecialFlags"
+        >,
+        Input: singleEnumVariantMeta<dgd_DataSrcMeta, "Input",
+            "Constr#1", "singletonField", /* implied wrapper { utxo: ... } for singleVariantField */ 
+			TxInput   , "noSpecialFlags"
+        >,
+        Output: singleEnumVariantMeta<dgd_DataSrcMeta, "Output",
+            "Constr#2", "singletonField", /* implied wrapper { txo: ... } for singleVariantField */ 
+			TxOutput   , "noSpecialFlags"
+        >,
+        Both: singleEnumVariantMeta<dgd_DataSrcMeta, "Both",
+            "Constr#3", 
+            "fields", dgd_DataSrc$Both, "noSpecialFlags"
+        >
+    }
+>;
+
+
+/**
+ * dgd_DataSrc enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **4 variant(s)** of the dgd_DataSrc enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `dgd_DataSrcHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+export type dgd_DataSrc = 
+        | { Unk: tagOnly /*minEnumVariant*/ }
+        | { Input: /* implied wrapper { utxo: ... } for singleVariantField */ 
+			TxInput    /*minEnumVariant*/ }
+        | { Output: /* implied wrapper { txo: ... } for singleVariantField */ 
+			TxOutput    /*minEnumVariant*/ }
+        | { Both: dgd_DataSrc$Both /*minEnumVariant*/ }
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+export type Ergodgd_DataSrc = IntersectedEnum<
+        | { Unk: tagOnly /*minEnumVariant*/ }
+        | { Input: /* implied wrapper { utxo: ... } for singleVariantField */ 
+			TxInput    /*minEnumVariant*/ }
+        | { Output: /* implied wrapper { txo: ... } for singleVariantField */ 
+			TxOutput    /*minEnumVariant*/ }
+        | { Both: dgd_DataSrc$Ergo$Both /*minEnumVariant*/ }
+>
+
+/**
+ * dgd_DataSrc enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **4 variant(s)** of the dgd_DataSrc enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `dgd_DataSrcHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+export type dgd_DataSrcLike = IntersectedEnum<
+        | { Unk: tagOnly /*minEnumVariant*/ }
+        | { Input: /* implied wrapper { utxo: ... } for singleVariantField */ 
+			TxInput    /*minEnumVariant*/ }
+        | { Output: /* implied wrapper { txo: ... } for singleVariantField */ 
+			TxOutput    /*minEnumVariant*/ }
+        | { Both: dgd_DataSrc$BothLike /*minEnumVariant*/ }
+>
+
+/**
+ * A strong type for the canonical form of DgDataDetails
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoDgDataDetails instead.
+ * @public
+ */
+export interface DgDataDetails {
+    dataSrc: /*minStructField*/ dgd_DataSrc
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    mph: /*minStructField*/ MintingPolicyHash
+}
+
+
+/**
+ * An ergonomic, though less strictly-safe form of DgDataDetails
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the DgDataDetailsLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+export type ErgoDgDataDetails = {
+    dataSrc: /*minStructField*/ Ergodgd_DataSrc
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    mph: /*minStructField*/ MintingPolicyHash
+}
+
+
+/**
+ * A strong type for the permissive form of DgDataDetails
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+export interface DgDataDetailsLike {
+    dataSrc: /*minStructField*/ dgd_DataSrcLike
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    mph: /*minStructField*/ MintingPolicyHash | string | number[]
+}
+
+
+/**
+ * expresses the essential fields needed for initiating creation of a DgDataDetails
+ * @public
+ */
+export type minimalDgDataDetails = minimalData<DgDataDetailsLike>
 
