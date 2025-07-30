@@ -6,80 +6,34 @@ const ReactMarkdown = React.Fragment;
 export default function DocumentItem() {
     return (
         <div>
-                <h2>MyMintSpendDelegate</h2>
+                <h2>DredCapoProviderRaw</h2>
                     <ReactMarkdown>
                         {
-                            "\n"
+                            "component for providing the DredCapo context to the app\n\n"
                         }
                     </ReactMarkdown>
 
             <p></p>
 
-        
+        <ReactMarkdown> {
+            "\n\ndApps shouldn't need to use this component directly. Instead, use the DredCapoProvider component, and use useCapoDappProvider() and/or dredCapoSignals to access the state of the DredCapo.\n\n\n"
+        }</ReactMarkdown>
       
-            <p>
-                <b>Instance properties: </b>
-                                <a href="#dataBridgeClass"><var>dataBridgeClass</var></a>, &nbsp;
-                    <a href="#delegateName"><var>delegateName</var></a>
-            </p>
          <p>
             <b>Instance methods: </b>
-                    <a href="#scriptBundle"><var>scriptBundle()</var></a>
+                    <a href="#getStartedMessage"><var>getStartedMessage()</var></a>
         </p>
 
 
 
-    <h3>Instance properties</h3>
-    <div className="prose">
-        <a id="dataBridgeClass"></a>
-
-            <div>
-        <h4 style={{display: "inline-block"}}>    {
-              "dataBridgeClass"}&nbsp;&nbsp;</h4>
-        <ReactMarkdown>
-            {
-                ""
-            }
-        </ReactMarkdown>
-    </div>
-
-
-            <pre><code lang="typescript">
-{"dataBridgeClass: "}{"typeof "}<a href="#MyMintSpendDelegateDataBridge">{"MyMintSpendDelegateDataBridge"}</a>{";"}
-            </code></pre>
-    
-    </div>
-    
-
-<div className="prose">
-        <a id="delegateName"></a>
-
-            <div>
-        <h4 style={{display: "inline-block"}}>   readonly {
-              "delegateName"}&nbsp;&nbsp;</h4>
-        <ReactMarkdown>
-            {
-                ""
-            }
-        </ReactMarkdown>
-    </div>
-
-
-            <pre><code lang="typescript">
-{"get delegateName(): "}{"string"}{";"}
-            </code></pre>
-    
-    </div>
-    
-
 
     <h3>Instance methods</h3>
         <div className="prose">
-        <a id="scriptBundle"></a>
+        <a id="getStartedMessage"></a>
 
             <div>
         <h4 style={{display: "inline-block"}}>    {
-              "scriptBundle"}()&nbsp;&nbsp;</h4>
+              "getStartedMessage"}()&nbsp;&nbsp;</h4>
         <ReactMarkdown>
             {
                 ""
@@ -89,7 +43,7 @@ export default function DocumentItem() {
 
 
             <pre><code lang="typescript">
-{"scriptBundle(): "}<a href="#CapoDelegateBundle">{"CapoDelegateBundle"}</a>{";"}
+{"getStartedMessage(): "}{"string"}{";"}
             </code></pre>
     
     </div>
@@ -226,12 +180,6 @@ export default function DocumentItem() {
 
 
             <p>see also: @donecollectively/stellar-contracts!hasGovAuthority:type</p>
-
-
-            <p>see also: dred-network-registry!~MyMintSpendDelegateDataBridge:class</p>
-
-
-            <p>see also: @donecollectively/stellar-contracts!CapoDelegateBundle:class</p>
 
 
         </div>
