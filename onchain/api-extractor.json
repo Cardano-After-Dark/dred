@@ -61,8 +61,8 @@
      * local files for library1.
      */
     "bundledPackages": [
-        "@donecollectively/stellar-contracts",
-        "stellar-tokenomics",
+        // "@donecollectively/stellar-contracts",
+        // "stellar-tokenomics",
         "dred-network-registry"
     ],
   
@@ -219,7 +219,7 @@
        *
        * DEFAULT VALUE: "false"
        */
-      "includeForgottenExports": true
+      "includeForgottenExports": false
   
       /**
        * The base URL where the project's source code can be viewed on a website such as GitHub or

@@ -1,6 +1,6 @@
 {
     "name": "dred-network-registry",
-    "version": "0.5.4",
+    "version": "0.5.5",
     "description": "Onchain registry for DRED decentralized realtime messaging",
     "keywords": [],
     "author": "Cardano After Dark",

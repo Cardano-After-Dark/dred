@@ -9,6 +9,10 @@ import DredCapoBundle from 'dred-network-registry/contracts-preprod/DredCapo.hlb
 import MyMintSpendDelegateBundle from 'dred-network-registry/contracts-preprod/MyMintSpendDelegate.hlb';
 import NodeRegistryBundle from 'dred-network-registry/contracts-preprod/NodeRegistry.hlb';
 import NeighborhoodRegistryBundle from 'dred-network-registry/contracts-preprod/NeighborhoodRegistry.hlb';
+import { signal, effect, computed } from '@preact/signals-react';
+import React from 'react';
+import { CapoDAppProvider } from '@donecollectively/stellar-contracts/ui';
+import { DredCapo as DredCapo$1 } from 'dred-network-registry';
 
 class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
   static isAbstract = false;
@@ -27214,7 +27218,7 @@ class NodeRegistryController extends DelegatedDataContract {
   }
   async mkTxnUpdatingNodeRegistration(txnName, item, options, initialTcx) {
     const tcx0 = initialTcx || this.mkTcx(
-      "registering dred node"
+      "update node registration"
     );
     const withMemberToken = options.withMemberToken ?? true;
     const tcx1 = withMemberToken ? await this.capo.mkTxnWithMemberInfo(void 0, tcx0) : tcx0;
@@ -38025,5 +38029,148 @@ class DredCapo extends StellarTokenomicsCapo {
   }
 }
 
-export { DredCapo, MyMintSpendDelegate, NeighborhoodController, NodeRegistryController, ProtocolSettingsController };
+const coreSignals = {
+  network: signal(void 0),
+  wallet: signal(void 0),
+  // use useCapoDappProvider instead; these weren't working the way we needed
+  provider: signal(void 0),
+  capo: signal(void 0),
+  dAppStatus: signal(void 0),
+  userInfo: signal(void 0),
+  failedTxns: signal([]),
+  // userBalance: signal<Value | undefined>(undefined),
+  userAddresses: signal(void 0)
+};
+effect(() => {
+  const userInfo = coreSignals.userInfo.value;
+  const wallet = userInfo?.wallet;
+  if (userInfo?.connectingWallet) {
+    coreSignals.userAddresses.value = void 0;
+  } else if (wallet) {
+    wallet.usedAddresses.then((addrs) => {
+      coreSignals.userAddresses.value = addrs;
+    });
+  }
+});
+const computedSignals = {
+  userAddress: computed(() => {
+    const addresses = coreSignals.userAddresses?.value;
+    return addresses?.[0];
+  }),
+  // capo: computed<DredCapo | undefined>(() => {
+  //     const provider = coreSignals.provider.value
+  //     if (!provider) return undefined
+  //     return provider.capo
+  // }),
+  isConnected: computed(() => {
+    return !!coreSignals.userInfo.value?.wallet;
+  }),
+  // userBalance: computed(() => {
+  //     const info = signals.userInfo.value
+  //     return info?.balance || 0
+  // }),
+  statusMessage: computed(() => {
+    const status = coreSignals.dAppStatus.value;
+    return status?.message;
+  }),
+  shouldKeepMessage: computed(() => {
+    const status = coreSignals.dAppStatus.value;
+    return status?.keepOnscreen || false;
+  }),
+  messageClearTime: computed(() => {
+    const status = coreSignals.dAppStatus.value;
+    return status?.clearAfter;
+  }),
+  isError: computed(() => {
+    const status = coreSignals.dAppStatus.value;
+    return status?.isError || false;
+  }),
+  moreInstructions: computed(() => {
+    const status = coreSignals.dAppStatus.value;
+    return status?.moreInstructions;
+  }),
+  nextAction: computed(() => {
+    const status = coreSignals.dAppStatus.value;
+    if (!status?.nextAction) return void 0;
+    return {
+      key: status.nextAction.key,
+      label: status.nextAction.label,
+      trigger: status.nextAction.trigger
+    };
+  }),
+  progress: computed(() => {
+    const status = coreSignals.dAppStatus.value;
+    if (!status?.progressBar) return null;
+    return {
+      label: typeof status.progressBar === "string" ? status.progressBar : void 0,
+      percent: status.progressPercent,
+      isActive: !!status.progressBar
+    };
+  }),
+  hasFailedTxns: computed(() => {
+    return coreSignals.failedTxns.value.length > 0;
+  }),
+  lastFailedTxn: computed(() => {
+    const txns = coreSignals.failedTxns.value;
+    return txns[txns.length - 1];
+  })
+};
+const dredCapoSignals = {
+  ...coreSignals,
+  ...computedSignals
+};
+const dredCapoUpdaters = {
+  updateNetwork: (network) => {
+    coreSignals.network.value = network;
+  },
+  updateWalletHandle: (handle) => {
+    coreSignals.wallet.value = handle;
+  },
+  // why does it sometimes show up ok, but not all the time?
+  updateProvider: (provider) => {
+    coreSignals.provider.value = provider;
+    coreSignals.capo.value = provider?.capo;
+  },
+  updateDAppStatus: (status) => {
+    coreSignals.dAppStatus.value = status;
+  },
+  updateUserInfo: (info) => {
+    coreSignals.userInfo.value = info;
+  },
+  addFailedTxn: (txn) => {
+    coreSignals.failedTxns.value = [...coreSignals.failedTxns.value, txn];
+  }
+};
+
+class DredCapoProviderRaw extends CapoDAppProvider {
+  getStartedMessage() {
+    return "Welcome to the Dred Operator Network. Register a staking vault to get started as a node operator or token-holder";
+  }
+}
+const bfPreprodKey = "preprodwj3I80hV2evfb5pVuPqhcM14pX4kLYJD";
+function DredCapoProvider({
+  children,
+  bfPreprodKey: propKey
+}) {
+  const apiKey = propKey ?? bfPreprodKey;
+  return /* @__PURE__ */ React.createElement(
+    DredCapoProviderRaw,
+    {
+      targetNetwork: "preprod",
+      blockfrostKey: apiKey,
+      capoClass: DredCapo$1,
+      hydra: false,
+      dAppName: "Dred Operator Network",
+      onNetwork: dredCapoUpdaters.updateNetwork,
+      onWalletChange: dredCapoUpdaters.updateWalletHandle,
+      onSubmitError: dredCapoUpdaters.addFailedTxn,
+      onStatusChange: dredCapoUpdaters.updateDAppStatus,
+      onUserInfo: dredCapoUpdaters.updateUserInfo,
+      onContextChange: dredCapoUpdaters.updateProvider
+    },
+    children
+  );
+}
+
+export { DredCapo, DredCapoProvider, MyMintSpendDelegate, NeighborhoodController, NodeRegistryController, ProtocolSettingsController, dredCapoSignals, dredCapoUpdaters };
 //# sourceMappingURL=index.mjs.map
