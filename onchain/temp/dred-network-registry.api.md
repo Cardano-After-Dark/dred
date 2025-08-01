@@ -4,25 +4,201 @@
 
 ```ts
 
+import type { AbstractSettingsForNeighborhood } from './NeighborhoodRegistry.typeInfo.js';
+import type { AbstractSettingsForNeighborhoodLike } from './NeighborhoodRegistry.typeInfo.js';
+import type { AbstractSettingsForNodeOperator } from './NodeRegistry.typeInfo.js';
+import type { AbstractSettingsForNodeOperatorLike } from './NodeRegistry.typeInfo.js';
 import type { Address } from '@helios-lang/ledger';
+import type { AnyData as AnyData_2 } from './NodeRegistry.typeInfo.js';
+import type { AnyData as AnyData_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { AnyData as AnyData_4 } from './ProtocolSettings.typeInfo.js';
+import type { AnyDataLike as AnyDataLike_2 } from './NodeRegistry.typeInfo.js';
+import type { AnyDataLike as AnyDataLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { AnyDataLike as AnyDataLike_4 } from './ProtocolSettings.typeInfo.js';
 import { anyState } from '@donecollectively/stellar-contracts';
+import type { AppInfo } from './NeighborhoodRegistry.typeInfo.js';
+import type { AppInfoLike } from './NeighborhoodRegistry.typeInfo.js';
 import type { AssetClass } from '@helios-lang/ledger';
 import type { basicDelegateMap } from '@donecollectively/stellar-contracts';
+import type { BurningActivityLike as BurningActivityLike_2 } from './NodeRegistry.typeInfo.js';
+import type { BurningActivityLike as BurningActivityLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { BurningActivityLike as BurningActivityLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoCtx as CapoCtx_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoCtx as CapoCtx_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoCtx as CapoCtx_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoCtxLike as CapoCtxLike_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoCtxLike as CapoCtxLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoCtxLike as CapoCtxLike_4 } from './ProtocolSettings.typeInfo.js';
 import { CapoDAppProvider } from '@donecollectively/stellar-contracts/ui';
 import type { CapoDappStatus } from '@donecollectively/stellar-contracts/ui';
+import type { CapoDatum$CharterDataLike as CapoDatum$CharterDataLike_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoDatum$CharterDataLike as CapoDatum$CharterDataLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoDatum$CharterDataLike as CapoDatum$CharterDataLike_4 } from './ProtocolSettings.typeInfo.js';
 import { CapoDelegateBundle } from '@donecollectively/stellar-contracts';
 import type { CapoHeliosBundle } from '@donecollectively/stellar-contracts';
+import type { CapoLifecycleActivity$CreatingDelegateLike as CapoLifecycleActivity$CreatingDelegateLike_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoLifecycleActivity$CreatingDelegateLike as CapoLifecycleActivity$CreatingDelegateLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoLifecycleActivity$CreatingDelegateLike as CapoLifecycleActivity$CreatingDelegateLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoLifecycleActivity$forcingNewMintDelegateLike as CapoLifecycleActivity$forcingNewMintDelegateLike_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoLifecycleActivity$forcingNewMintDelegateLike as CapoLifecycleActivity$forcingNewMintDelegateLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoLifecycleActivity$forcingNewMintDelegateLike as CapoLifecycleActivity$forcingNewMintDelegateLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoLifecycleActivity$forcingNewSpendDelegateLike as CapoLifecycleActivity$forcingNewSpendDelegateLike_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoLifecycleActivity$forcingNewSpendDelegateLike as CapoLifecycleActivity$forcingNewSpendDelegateLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoLifecycleActivity$forcingNewSpendDelegateLike as CapoLifecycleActivity$forcingNewSpendDelegateLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoLifecycleActivity as CapoLifecycleActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoLifecycleActivity as CapoLifecycleActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoLifecycleActivity as CapoLifecycleActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoLifecycleActivityLike as CapoLifecycleActivityLike_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoLifecycleActivityLike as CapoLifecycleActivityLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoLifecycleActivityLike as CapoLifecycleActivityLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoManifestEntry as CapoManifestEntry_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoManifestEntry as CapoManifestEntry_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoManifestEntry as CapoManifestEntry_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoManifestEntryLike as CapoManifestEntryLike_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoManifestEntryLike as CapoManifestEntryLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoManifestEntryLike as CapoManifestEntryLike_4 } from './ProtocolSettings.typeInfo.js';
 import type { CardanoClient } from '@helios-lang/tx-utils';
 import { Cast } from '@helios-lang/contract-utils';
+import type { cctx_CharterInputType$InputLike as cctx_CharterInputType$InputLike_2 } from './NodeRegistry.typeInfo.js';
+import type { cctx_CharterInputType$InputLike as cctx_CharterInputType$InputLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { cctx_CharterInputType$InputLike as cctx_CharterInputType$InputLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { cctx_CharterInputType$RefInputLike as cctx_CharterInputType$RefInputLike_2 } from './NodeRegistry.typeInfo.js';
+import type { cctx_CharterInputType$RefInputLike as cctx_CharterInputType$RefInputLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { cctx_CharterInputType$RefInputLike as cctx_CharterInputType$RefInputLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { cctx_CharterInputType as cctx_CharterInputType_2 } from './NodeRegistry.typeInfo.js';
+import type { cctx_CharterInputType as cctx_CharterInputType_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { cctx_CharterInputType as cctx_CharterInputType_4 } from './ProtocolSettings.typeInfo.js';
+import type { cctx_CharterInputTypeLike as cctx_CharterInputTypeLike_2 } from './NodeRegistry.typeInfo.js';
+import type { cctx_CharterInputTypeLike as cctx_CharterInputTypeLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { cctx_CharterInputTypeLike as cctx_CharterInputTypeLike_4 } from './ProtocolSettings.typeInfo.js';
 import type { CharterData } from '@donecollectively/stellar-contracts';
 import type { Cip30Wallet } from '@helios-lang/tx-utils';
 import { ContractDataBridge } from '@donecollectively/stellar-contracts';
 import type { DappUserInfo } from '@donecollectively/stellar-contracts/ui';
 import { DataBridgeReaderClass } from '@donecollectively/stellar-contracts';
+import type { DelegateActivity$CreatingDelegatedDataLike as DelegateActivity$CreatingDelegatedDataLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateActivity$CreatingDelegatedDataLike as DelegateActivity$CreatingDelegatedDataLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateActivity$CreatingDelegatedDataLike as DelegateActivity$CreatingDelegatedDataLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateActivity$DeletingDelegatedDataLike as DelegateActivity$DeletingDelegatedDataLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateActivity$DeletingDelegatedDataLike as DelegateActivity$DeletingDelegatedDataLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateActivity$DeletingDelegatedDataLike as DelegateActivity$DeletingDelegatedDataLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateActivity$UpdatingDelegatedDataLike as DelegateActivity$UpdatingDelegatedDataLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateActivity$UpdatingDelegatedDataLike as DelegateActivity$UpdatingDelegatedDataLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateActivity$UpdatingDelegatedDataLike as DelegateActivity$UpdatingDelegatedDataLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateActivity as DelegateActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateActivity as DelegateActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateActivity as DelegateActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateDatum$capoStoredDataLike as DelegateDatum$capoStoredDataLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateDatum$capoStoredDataLike as DelegateDatum$capoStoredDataLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateDatum$capoStoredDataLike as DelegateDatum$capoStoredDataLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateDatum$Cip68RefTokenLike as DelegateDatum$Cip68RefTokenLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateDatum$Cip68RefTokenLike as DelegateDatum$Cip68RefTokenLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateDatum$Cip68RefTokenLike as DelegateDatum$Cip68RefTokenLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateDatum$Ergo$capoStoredData as DelegateDatum$Ergo$capoStoredData_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateDatum$Ergo$capoStoredData as DelegateDatum$Ergo$capoStoredData_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateDatum$Ergo$capoStoredData as DelegateDatum$Ergo$capoStoredData_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateDatum$Ergo$Cip68RefToken as DelegateDatum$Ergo$Cip68RefToken_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateDatum$Ergo$Cip68RefToken as DelegateDatum$Ergo$Cip68RefToken_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateDatum$Ergo$Cip68RefToken as DelegateDatum$Ergo$Cip68RefToken_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateDatum as DelegateDatum_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateDatum as DelegateDatum_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateDatum as DelegateDatum_4 } from './ProtocolSettings.typeInfo.js';
 import { DelegatedDataContract } from '@donecollectively/stellar-contracts';
+import type { DelegateLifecycleActivity$ReplacingMeLike as DelegateLifecycleActivity$ReplacingMeLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateLifecycleActivity$ReplacingMeLike as DelegateLifecycleActivity$ReplacingMeLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateLifecycleActivity$ReplacingMeLike as DelegateLifecycleActivity$ReplacingMeLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateLifecycleActivity as DelegateLifecycleActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateLifecycleActivity as DelegateLifecycleActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateLifecycleActivity as DelegateLifecycleActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateLifecycleActivityLike as DelegateLifecycleActivityLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateLifecycleActivityLike as DelegateLifecycleActivityLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateLifecycleActivityLike as DelegateLifecycleActivityLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateRole as DelegateRole_3 } from './NodeRegistry.typeInfo.js';
+import type { DelegateRole as DelegateRole_4 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateRole as DelegateRole_5 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateRoleLike as DelegateRoleLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateRoleLike as DelegateRoleLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateRoleLike as DelegateRoleLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegationDetail as DelegationDetail_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegationDetail as DelegationDetail_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegationDetail as DelegationDetail_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegationDetailLike as DelegationDetailLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegationDetailLike as DelegationDetailLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegationDetailLike as DelegationDetailLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { dgd_DataSrc$BothLike } from './NodeRegistry.typeInfo.js';
+import type { dgd_DataSrc$BothLike as dgd_DataSrc$BothLike_2 } from './NeighborhoodRegistry.typeInfo.js';
+import type { dgd_DataSrc } from './NodeRegistry.typeInfo.js';
+import type { dgd_DataSrc as dgd_DataSrc_2 } from './NeighborhoodRegistry.typeInfo.js';
+import type { dgd_DataSrcLike } from './NodeRegistry.typeInfo.js';
+import type { dgd_DataSrcLike as dgd_DataSrcLike_2 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DgDataDetails } from './NodeRegistry.typeInfo.js';
+import type { DgDataDetails as DgDataDetails_2 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DgDataDetailsLike } from './NodeRegistry.typeInfo.js';
+import type { DgDataDetailsLike as DgDataDetailsLike_2 } from './NeighborhoodRegistry.typeInfo.js';
 import type { DgDataUpdateOptions } from '@donecollectively/stellar-contracts';
+import type { DredNodeState } from './NodeRegistry.typeInfo.js';
+import type { DredNodeStateLike } from './NodeRegistry.typeInfo.js';
 import { EnumBridge } from '@donecollectively/stellar-contracts';
-import type { EnumTypeMeta } from '@donecollectively/stellar-contracts';
+import type { ErgoBurningActivity as ErgoBurningActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoBurningActivity as ErgoBurningActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoBurningActivity as ErgoBurningActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoCapoLifecycleActivity as ErgoCapoLifecycleActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoCapoLifecycleActivity as ErgoCapoLifecycleActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoCapoLifecycleActivity as ErgoCapoLifecycleActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { Ergocctx_CharterInputType as Ergocctx_CharterInputType_2 } from './NodeRegistry.typeInfo.js';
+import type { Ergocctx_CharterInputType as Ergocctx_CharterInputType_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { Ergocctx_CharterInputType as Ergocctx_CharterInputType_4 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoDelegateActivity as ErgoDelegateActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoDelegateActivity as ErgoDelegateActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoDelegateActivity as ErgoDelegateActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoDelegateDatum as ErgoDelegateDatum_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoDelegateDatum as ErgoDelegateDatum_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoDelegateDatum as ErgoDelegateDatum_4 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoDelegateLifecycleActivity as ErgoDelegateLifecycleActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoDelegateLifecycleActivity as ErgoDelegateLifecycleActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoDelegateLifecycleActivity as ErgoDelegateLifecycleActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoDelegateRole as ErgoDelegateRole_3 } from './NodeRegistry.typeInfo.js';
+import type { ErgoDelegateRole as ErgoDelegateRole_4 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoDelegateRole as ErgoDelegateRole_5 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoDelegationDetail as ErgoDelegationDetail_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoDelegationDetail as ErgoDelegationDetail_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoDelegationDetail as ErgoDelegationDetail_4 } from './ProtocolSettings.typeInfo.js';
+import type { Ergodgd_DataSrc } from './NodeRegistry.typeInfo.js';
+import type { Ergodgd_DataSrc as Ergodgd_DataSrc_2 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoDredNodeState } from './NodeRegistry.typeInfo.js';
+import type { ErgoFeeSource } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoManifestActivity as ErgoManifestActivity_3 } from './NodeRegistry.typeInfo.js';
+import type { ErgoManifestActivity as ErgoManifestActivity_4 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoManifestActivity as ErgoManifestActivity_5 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoManifestEntryType as ErgoManifestEntryType_3 } from './NodeRegistry.typeInfo.js';
+import type { ErgoManifestEntryType as ErgoManifestEntryType_4 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoManifestEntryType as ErgoManifestEntryType_5 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoMintingActivity as ErgoMintingActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoMintingActivity as ErgoMintingActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoMintingActivity as ErgoMintingActivity_4 } from './ProtocolSettings.typeInfo.js';
+import { ErgoNeighborhoodData } from './DredNeighborhood/NeighborhoodRegistry.typeInfo.js';
+import type { ErgoNeighborhoodData as ErgoNeighborhoodData_2 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoNeighborhoodSettings } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoNeighborhoodSettings as ErgoNeighborhoodSettings_2 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoNeighborhoodState } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoNodeOperatorSettings } from './NodeRegistry.typeInfo.js';
+import type { ErgoNodeOperatorSettings as ErgoNodeOperatorSettings_2 } from './ProtocolSettings.typeInfo.js';
+import { ErgoNodeRegistrationData } from './nodeRegistry/NodeRegistry.typeInfo.js';
+import type { ErgoNodeRegistrationData as ErgoNodeRegistrationData_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoPendingCharterChange as ErgoPendingCharterChange_3 } from './NodeRegistry.typeInfo.js';
+import type { ErgoPendingCharterChange as ErgoPendingCharterChange_4 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoPendingCharterChange as ErgoPendingCharterChange_5 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoPendingDelegateAction as ErgoPendingDelegateAction_3 } from './NodeRegistry.typeInfo.js';
+import type { ErgoPendingDelegateAction as ErgoPendingDelegateAction_4 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoPendingDelegateAction as ErgoPendingDelegateAction_5 } from './ProtocolSettings.typeInfo.js';
+import { ErgoProtocolSettings } from './settings/ProtocolSettings.typeInfo.js';
+import type { ErgoRevenueModel } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoSpendingActivity as ErgoSpendingActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoSpendingActivity as ErgoSpendingActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoSpendingActivity as ErgoSpendingActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoSubscriptionFeeFrequency } from './NeighborhoodRegistry.typeInfo.js';
+import type { FeeSource } from './NeighborhoodRegistry.typeInfo.js';
+import type { FeeSourceLike } from './NeighborhoodRegistry.typeInfo.js';
 import type { FoundDatumUtxo } from '@donecollectively/stellar-contracts';
 import { hasCharterRef } from '@donecollectively/stellar-contracts';
 import { hasGovAuthority } from '@donecollectively/stellar-contracts';
@@ -36,25 +212,133 @@ import type { IntersectedEnum } from '@donecollectively/stellar-contracts';
 import type { IntLike } from '@helios-lang/codec-utils';
 import { isActivity } from '@donecollectively/stellar-contracts';
 import { JustAnEnum } from '@donecollectively/stellar-contracts';
-import type { minimalData } from '@donecollectively/stellar-contracts';
+import type { ManifestActivity$addingEntryLike as ManifestActivity$addingEntryLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestActivity$addingEntryLike as ManifestActivity$addingEntryLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestActivity$addingEntryLike as ManifestActivity$addingEntryLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestActivity$burningThreadTokenLike as ManifestActivity$burningThreadTokenLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestActivity$burningThreadTokenLike as ManifestActivity$burningThreadTokenLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestActivity$burningThreadTokenLike as ManifestActivity$burningThreadTokenLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestActivity$forkingThreadTokenLike as ManifestActivity$forkingThreadTokenLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestActivity$forkingThreadTokenLike as ManifestActivity$forkingThreadTokenLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestActivity$forkingThreadTokenLike as ManifestActivity$forkingThreadTokenLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestActivity$updatingEntryLike as ManifestActivity$updatingEntryLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestActivity$updatingEntryLike as ManifestActivity$updatingEntryLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestActivity$updatingEntryLike as ManifestActivity$updatingEntryLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestActivity as ManifestActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestActivity as ManifestActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestActivity as ManifestActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestActivityLike as ManifestActivityLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestActivityLike as ManifestActivityLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestActivityLike as ManifestActivityLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestEntryType$DelegateThreadsLike as ManifestEntryType$DelegateThreadsLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestEntryType$DelegateThreadsLike as ManifestEntryType$DelegateThreadsLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestEntryType$DelegateThreadsLike as ManifestEntryType$DelegateThreadsLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestEntryType$DgDataPolicyLike as ManifestEntryType$DgDataPolicyLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestEntryType$DgDataPolicyLike as ManifestEntryType$DgDataPolicyLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestEntryType$DgDataPolicyLike as ManifestEntryType$DgDataPolicyLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestEntryType as ManifestEntryType_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestEntryType as ManifestEntryType_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestEntryType as ManifestEntryType_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestEntryTypeLike as ManifestEntryTypeLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestEntryTypeLike as ManifestEntryTypeLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestEntryTypeLike as ManifestEntryTypeLike_4 } from './ProtocolSettings.typeInfo.js';
+import { minimalNeighborhoodData } from './DredNeighborhood/NeighborhoodRegistry.typeInfo.js';
+import type { minimalNeighborhoodData as minimalNeighborhoodData_2 } from './NeighborhoodRegistry.typeInfo.js';
+import { minimalNodeRegistrationData } from './nodeRegistry/NodeRegistry.typeInfo.js';
+import type { minimalNodeRegistrationData as minimalNodeRegistrationData_2 } from './NodeRegistry.typeInfo.js';
+import type { minimalProtocolSettings } from './ProtocolSettings.typeInfo.js';
+import type { minimalProtocolSettings as minimalProtocolSettings_2 } from './settings/ProtocolSettings.typeInfo.js';
+import type { MintingActivityLike as MintingActivityLike_2 } from './NodeRegistry.typeInfo.js';
+import type { MintingActivityLike as MintingActivityLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { MintingActivityLike as MintingActivityLike_4 } from './ProtocolSettings.typeInfo.js';
 import type { MintingPolicyHash } from '@helios-lang/ledger';
+import { NeighborhoodData } from './DredNeighborhood/NeighborhoodRegistry.typeInfo.js';
+import type { NeighborhoodData as NeighborhoodData_2 } from './NeighborhoodRegistry.typeInfo.js';
+import type { NeighborhoodDataLike } from './NeighborhoodRegistry.typeInfo.js';
+import type { NeighborhoodSettingsLike } from './NeighborhoodRegistry.typeInfo.js';
+import type { NeighborhoodSettingsLike as NeighborhoodSettingsLike_2 } from './ProtocolSettings.typeInfo.js';
+import type { NeighborhoodSettingsV1 } from './NeighborhoodRegistry.typeInfo.js';
+import type { NeighborhoodSettingsV1 as NeighborhoodSettingsV1_2 } from './ProtocolSettings.typeInfo.js';
+import type { NeighborhoodSettingsV1Like } from './NeighborhoodRegistry.typeInfo.js';
+import type { NeighborhoodSettingsV1Like as NeighborhoodSettingsV1Like_2 } from './ProtocolSettings.typeInfo.js';
+import type { NeighborhoodState } from './NeighborhoodRegistry.typeInfo.js';
+import type { NeighborhoodStateLike } from './NeighborhoodRegistry.typeInfo.js';
+import type { NodeDetails } from './NodeRegistry.typeInfo.js';
+import type { NodeDetailsLike } from './NodeRegistry.typeInfo.js';
+import type { NodeOperatorSettingsLike } from './NodeRegistry.typeInfo.js';
+import type { NodeOperatorSettingsLike as NodeOperatorSettingsLike_2 } from './ProtocolSettings.typeInfo.js';
+import type { NodeOperatorSettingsV1 } from './NodeRegistry.typeInfo.js';
+import type { NodeOperatorSettingsV1 as NodeOperatorSettingsV1_2 } from './ProtocolSettings.typeInfo.js';
+import type { NodeOperatorSettingsV1Like } from './NodeRegistry.typeInfo.js';
+import type { NodeOperatorSettingsV1Like as NodeOperatorSettingsV1Like_2 } from './ProtocolSettings.typeInfo.js';
+import type { NodeOpsInfo } from './NeighborhoodRegistry.typeInfo.js';
+import type { NodeOpsInfoLike } from './NeighborhoodRegistry.typeInfo.js';
+import { NodeRegistrationData } from './nodeRegistry/NodeRegistry.typeInfo.js';
+import type { NodeRegistrationData as NodeRegistrationData_2 } from './NodeRegistry.typeInfo.js';
+import type { NodeRegistrationDataLike } from './NodeRegistry.typeInfo.js';
+import type { PendingCharterChange$otherManifestChangeLike as PendingCharterChange$otherManifestChangeLike_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingCharterChange$otherManifestChangeLike as PendingCharterChange$otherManifestChangeLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingCharterChange$otherManifestChangeLike as PendingCharterChange$otherManifestChangeLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { PendingCharterChange as PendingCharterChange_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingCharterChange as PendingCharterChange_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingCharterChange as PendingCharterChange_4 } from './ProtocolSettings.typeInfo.js';
+import type { PendingDelegateAction$AddLike as PendingDelegateAction$AddLike_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingDelegateAction$AddLike as PendingDelegateAction$AddLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingDelegateAction$AddLike as PendingDelegateAction$AddLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { PendingDelegateAction$ReplaceLike as PendingDelegateAction$ReplaceLike_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingDelegateAction$ReplaceLike as PendingDelegateAction$ReplaceLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingDelegateAction$ReplaceLike as PendingDelegateAction$ReplaceLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { PendingDelegateAction as PendingDelegateAction_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingDelegateAction as PendingDelegateAction_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingDelegateAction as PendingDelegateAction_4 } from './ProtocolSettings.typeInfo.js';
+import type { PendingDelegateActionLike as PendingDelegateActionLike_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingDelegateActionLike as PendingDelegateActionLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingDelegateActionLike as PendingDelegateActionLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { PendingDelegateChange as PendingDelegateChange_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingDelegateChange as PendingDelegateChange_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingDelegateChange as PendingDelegateChange_4 } from './ProtocolSettings.typeInfo.js';
+import type { PendingDelegateChangeLike as PendingDelegateChangeLike_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingDelegateChangeLike as PendingDelegateChangeLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingDelegateChangeLike as PendingDelegateChangeLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ProtocolSettings } from './settings/ProtocolSettings.typeInfo.js';
+import type { ProtocolSettings as ProtocolSettings_2 } from './ProtocolSettings.typeInfo.js';
+import type { ProtocolSettingsLike } from './ProtocolSettings.typeInfo.js';
 import type { PubKey } from '@helios-lang/ledger';
 import type { PubKeyHash } from '@helios-lang/ledger';
 import { default as React_2 } from 'react';
 import { ReadonlySignal } from '@preact/signals-core';
+import type { RelativeDelegateLink as RelativeDelegateLink_3 } from './NodeRegistry.typeInfo.js';
+import type { RelativeDelegateLink as RelativeDelegateLink_4 } from './NeighborhoodRegistry.typeInfo.js';
+import type { RelativeDelegateLink as RelativeDelegateLink_5 } from './ProtocolSettings.typeInfo.js';
+import type { RelativeDelegateLinkLike as RelativeDelegateLinkLike_2 } from './NodeRegistry.typeInfo.js';
+import type { RelativeDelegateLinkLike as RelativeDelegateLinkLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { RelativeDelegateLinkLike as RelativeDelegateLinkLike_4 } from './ProtocolSettings.typeInfo.js';
 import { ReqtsMap } from '@donecollectively/stellar-contracts';
+import type { RevenueModel$TransactionBasedLike } from './NeighborhoodRegistry.typeInfo.js';
+import type { RevenueModel } from './NeighborhoodRegistry.typeInfo.js';
+import type { RevenueModelLike } from './NeighborhoodRegistry.typeInfo.js';
 import type { ScriptHash } from '@helios-lang/ledger';
 import { SeedActivity } from '@donecollectively/stellar-contracts';
 import { Signal } from '@preact/signals-core';
-import type { singleEnumVariantMeta } from '@donecollectively/stellar-contracts';
+import type { SpendingActivity$ValidatingNodeLike } from './NodeRegistry.typeInfo.js';
+import type { SpendingActivity as SpendingActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { SpendingActivity as SpendingActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { SpendingActivityLike as SpendingActivityLike_2 } from './NodeRegistry.typeInfo.js';
+import type { SpendingActivityLike as SpendingActivityLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { SpendingActivityLike as SpendingActivityLike_4 } from './ProtocolSettings.typeInfo.js';
 import { StellarTokenomicsCapo } from 'stellar-tokenomics';
 import { StellarTxnContext } from '@donecollectively/stellar-contracts';
 import { STokMintDelegate } from 'stellar-tokenomics';
+import type { SubscriptionFeeFrequency } from './NeighborhoodRegistry.typeInfo.js';
+import type { SubscriptionFeeFrequencyLike } from './NeighborhoodRegistry.typeInfo.js';
 import { tagOnly } from '@donecollectively/stellar-contracts';
 import type { TxDescription } from '@donecollectively/stellar-contracts';
 import { TxInput } from '@helios-lang/ledger';
 import type { TxOutput } from '@helios-lang/ledger';
 import type { TxOutputId } from '@helios-lang/ledger';
+import type * as types from './NodeRegistry.typeInfo.js';
+import type { UpdateInfo } from './NeighborhoodRegistry.typeInfo.js';
+import type { UpdateInfoLike } from './NeighborhoodRegistry.typeInfo.js';
 import type { UplcData } from '@helios-lang/uplc';
 import { UserActionMap } from '@donecollectively/stellar-contracts/ui';
 import type { ValidatorHash } from '@helios-lang/ledger';
@@ -69,12 +353,11 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
     // (undocumented)
     get defaultFeatureFlags(): DredCapoFeatures;
     findNbhRegistryEntries(): Promise<FoundDatumUtxo<ErgoNeighborhoodData, unknown>[]>;
-    // Warning: (ae-forgotten-export) The symbol "ErgoNodeRegistrationData_2" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "ErgoNodeRegistrationData_3" needs to be exported by the entry point index.d.ts
     findNodeOpEntries(options: {
         charterData: CharterData;
         capoUtxos?: TxInput[];
-    }): Promise<FoundDatumUtxo<ErgoNodeRegistrationData_2, unknown>[]>;
-    // Warning: (ae-forgotten-export) The symbol "ProtocolSettings" needs to be exported by the entry point index.d.ts
+    }): Promise<FoundDatumUtxo<ErgoNodeRegistrationData_3, unknown>[]>;
     findSettingsInfo(options: {
         charterData: CharterData;
         capoUtxos?: TxInput[];
@@ -90,8 +373,7 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
     getSpendDelegate(charterData?: CapoDatum$Ergo$CharterData): Promise<MyMintSpendDelegate>;
     // @internal
     initDelegateRoles(): basicDelegateMap<any>;
-    // Warning: (ae-forgotten-export) The symbol "minimalProtocolSettings" needs to be exported by the entry point index.d.ts
-    mkInitialSettings(): Promise<minimalProtocolSettings>;
+    mkInitialSettings(): Promise<minimalProtocolSettings_2>;
     // (undocumented)
     requirements(): ReqtsMap<"Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants" | "has custom settings for protocol parameters" | "can update the settings" | "Provides a Node Operator registry, in which node operators can maintain their node registrations", "Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants"> & ReqtsMap<"Provides a single entry point dApps can use to get tokenomics for their project" | "Uses the Capo (leader) to gather tokenomics-related contracts together" | "Defines a tokenomics minting delegate" | "Has a settings data structure where tokenomics plugins can store protocol parameters" | "issues 'membership card' tokens to participants" | "Can upgrade the Settings data" | "the settings data can be updated to have new details if backward compatible" | "Can find membership card tokens for participants", never>;
     // (undocumented)
@@ -130,43 +412,15 @@ export const dredCapoUpdaters: {
     addFailedTxn: (txn: TxDescription<any, "built">) => void;
 };
 
-// @public
-export type ErgoNeighborhoodData = {
-    id: number[];
-    type: string;
-    memberToken: string;
-    state: ErgoNeighborhoodState;
-    appInfo: ErgoAppInfo;
-    opsInfo: ErgoNodeOpsInfo;
-    updateInfo: /*minStructField*/ ErgoUpdateInfo | undefined;
-};
+export { ErgoNeighborhoodData }
 
-// @public
-export type ErgoNodeRegistrationData = {
-    id: number[];
-    type: string;
-    memberToken: string;
-    state: ErgoDredNodeState;
-    nodeDetails: ErgoNodeDetails;
-};
+export { ErgoNodeRegistrationData }
 
-// @public
-export type ErgoProtocolSettings = {
-    id: number[];
-    type: string;
-    nodeOpSettings: ErgoNodeOperatorSettings;
-    nbhSettings: ErgoNeighborhoodSettings;
-};
+export { ErgoProtocolSettings }
 
-// Warning: (ae-forgotten-export) The symbol "NeighborhoodDataLike" needs to be exported by the entry point index.d.ts
-//
-// @public
-export type minimalNeighborhoodData = minimalData<NeighborhoodDataLike>;
+export { minimalNeighborhoodData }
 
-// Warning: (ae-forgotten-export) The symbol "NodeRegistrationDataLike" needs to be exported by the entry point index.d.ts
-//
-// @public
-export type minimalNodeRegistrationData = minimalData<NodeRegistrationDataLike>;
+export { minimalNodeRegistrationData }
 
 // @public (undocumented)
 export class MyMintSpendDelegate extends STokMintDelegate {
@@ -181,7 +435,7 @@ export class MyMintSpendDelegate extends STokMintDelegate {
 }
 
 // @public (undocumented)
-export class NeighborhoodController extends DelegatedDataContract<ErgoNeighborhoodData, NeighborhoodDataLike> {
+export class NeighborhoodController extends DelegatedDataContract<ErgoNeighborhoodData_2, NeighborhoodDataLike> {
     // (undocumented)
     get capo(): DredCapo;
     // Warning: (ae-forgotten-export) The symbol "NeighborhoodPolicyDataBridge" needs to be exported by the entry point index.d.ts
@@ -191,13 +445,13 @@ export class NeighborhoodController extends DelegatedDataContract<ErgoNeighborho
     // (undocumented)
     get delegateName(): string;
     // (undocumented)
-    exampleData(): minimalNeighborhoodData;
+    exampleData(): minimalNeighborhoodData_2;
     // (undocumented)
     idPrefix: "nbhd";
     // (undocumented)
-    mkTxnRegisteringNeighborhood(this: NeighborhoodController, nbhReg: minimalNeighborhoodData, initialTcx?: StellarTxnContext): Promise<hasUutContext<"recordId" | "nbhd"> & StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo & hasCharterRef>;
+    mkTxnRegisteringNeighborhood(this: NeighborhoodController, nbhReg: minimalNeighborhoodData_2, initialTcx?: StellarTxnContext): Promise<hasUutContext<"recordId" | "nbhd"> & StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo & hasCharterRef>;
     // (undocumented)
-    mkTxnUpdatingNeighborhood(this: NeighborhoodController, txnName: string, nbh: FoundDatumUtxo<ErgoNeighborhoodData | NeighborhoodData>, options: Omit<DgDataUpdateOptions<NeighborhoodDataLike>, "activity"> & {
+    mkTxnUpdatingNeighborhood(this: NeighborhoodController, txnName: string, nbh: FoundDatumUtxo<ErgoNeighborhoodData_2 | NeighborhoodData_2>, options: Omit<DgDataUpdateOptions<NeighborhoodDataLike>, "activity"> & {
         activity?: DgDataUpdateOptions<NeighborhoodDataLike>["activity"];
     }, initialTcx?: StellarTxnContext): Promise<StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo>;
     // (undocumented)
@@ -208,54 +462,14 @@ export class NeighborhoodController extends DelegatedDataContract<ErgoNeighborho
     scriptBundle(): any;
 }
 
-// @public
-export interface NeighborhoodData {
-    // Warning: (ae-forgotten-export) The symbol "AppInfo" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    appInfo: AppInfo;
-    // (undocumented)
-    id: number[];
-    // (undocumented)
-    memberToken: string;
-    // Warning: (ae-forgotten-export) The symbol "NodeOpsInfo" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    opsInfo: NodeOpsInfo;
-    // Warning: (ae-forgotten-export) The symbol "NeighborhoodState" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    state: NeighborhoodState;
-    // (undocumented)
-    type: string;
-    // Warning: (ae-forgotten-export) The symbol "UpdateInfo" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    updateInfo: /*minStructField*/ UpdateInfo | undefined;
-}
+export { NeighborhoodData }
 
-// @public
-export interface NodeRegistrationData {
-    // (undocumented)
-    id: number[];
-    // (undocumented)
-    memberToken: string;
-    // Warning: (ae-forgotten-export) The symbol "NodeDetails" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    nodeDetails: NodeDetails;
-    // Warning: (ae-forgotten-export) The symbol "DredNodeState" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    state: DredNodeState;
-    // (undocumented)
-    type: string;
-}
+export { NodeRegistrationData }
 
 // @public (undocumented)
-export class NodeRegistryController extends DelegatedDataContract<ErgoNodeRegistrationData, NodeRegistrationDataLike> {
+export class NodeRegistryController extends DelegatedDataContract<ErgoNodeRegistrationData_2, NodeRegistrationDataLike> {
     // (undocumented)
-    addValidatorRef(tcx: StellarTxnContext<anyState>, validatorReg: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>): StellarTxnContext<anyState>;
+    addValidatorRef(tcx: StellarTxnContext<anyState>, validatorReg: FoundDatumUtxo<NodeRegistrationData_2 | ErgoNodeRegistrationData_2, any>): StellarTxnContext<anyState>;
     // (undocumented)
     get capo(): DredCapo;
     // Warning: (ae-forgotten-export) The symbol "DredNodeRegistryPolicyDataBridge" needs to be exported by the entry point index.d.ts
@@ -265,23 +479,23 @@ export class NodeRegistryController extends DelegatedDataContract<ErgoNodeRegist
     // (undocumented)
     get delegateName(): string;
     // (undocumented)
-    exampleData(): minimalNodeRegistrationData;
+    exampleData(): minimalNodeRegistrationData_2;
     // (undocumented)
     idPrefix: "dredNode";
     // (undocumented)
-    mkTxnActivatingNode(item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, options?: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
+    mkTxnActivatingNode(item: FoundDatumUtxo<NodeRegistrationData_2 | ErgoNodeRegistrationData_2, any>, options?: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
         activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"];
     }, initialTcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
     // (undocumented)
-    mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData, initialTcx?: StellarTxnContext): Promise<hasUutContext<"recordId" | "dredNode"> & StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo & hasSettingsRef<any, any> & hasCharterRef>;
+    mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData_2, initialTcx?: StellarTxnContext): Promise<hasUutContext<"recordId" | "dredNode"> & StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo & hasSettingsRef<any, any> & hasCharterRef>;
     // (undocumented)
-    mkTxnUpdatingNodeRegistration(txnName: string, item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
+    mkTxnUpdatingNodeRegistration(txnName: string, item: FoundDatumUtxo<NodeRegistrationData_2 | ErgoNodeRegistrationData_2, any>, options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
         activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"];
         withMemberToken?: boolean;
     }, initialTcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
     // (undocumented)
-    mkTxnValidatingNode(txnName: string, item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity" | "updatedFields"> & {
-        validatorReg: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>;
+    mkTxnValidatingNode(txnName: string, item: FoundDatumUtxo<NodeRegistrationData_2 | ErgoNodeRegistrationData_2, any>, options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity" | "updatedFields"> & {
+        validatorReg: FoundDatumUtxo<NodeRegistrationData_2 | ErgoNodeRegistrationData_2, any>;
     }, initialTcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
     // (undocumented)
     get recordTypeName(): string;
@@ -291,10 +505,8 @@ export class NodeRegistryController extends DelegatedDataContract<ErgoNodeRegist
     scriptBundle(): any;
 }
 
-// Warning: (ae-forgotten-export) The symbol "ProtocolSettingsLike" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
-export class ProtocolSettingsController extends DelegatedDataContract<ProtocolSettings, ProtocolSettingsLike> {
+export class ProtocolSettingsController extends DelegatedDataContract<ProtocolSettings_2, ProtocolSettingsLike> {
     // (undocumented)
     get capo(): DredCapo;
     // Warning: (ae-forgotten-export) The symbol "ProtocolSettingsPolicyDataBridge" needs to be exported by the entry point index.d.ts
@@ -315,17 +527,6 @@ export class ProtocolSettingsController extends DelegatedDataContract<ProtocolSe
     // (undocumented)
     scriptBundle(): any;
 }
-
-// Warnings were encountered during analysis:
-//
-// .api-extractor-temp/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts:561:5 - (ae-forgotten-export) The symbol "ErgoNeighborhoodState" needs to be exported by the entry point index.d.ts
-// .api-extractor-temp/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts:562:5 - (ae-forgotten-export) The symbol "ErgoAppInfo" needs to be exported by the entry point index.d.ts
-// .api-extractor-temp/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts:563:5 - (ae-forgotten-export) The symbol "ErgoNodeOpsInfo" needs to be exported by the entry point index.d.ts
-// .api-extractor-temp/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts:564:5 - (ae-forgotten-export) The symbol "ErgoUpdateInfo" needs to be exported by the entry point index.d.ts
-// .api-extractor-temp/src/nodeRegistry/NodeRegistry.typeInfo.d.ts:241:5 - (ae-forgotten-export) The symbol "ErgoDredNodeState" needs to be exported by the entry point index.d.ts
-// .api-extractor-temp/src/nodeRegistry/NodeRegistry.typeInfo.d.ts:242:5 - (ae-forgotten-export) The symbol "ErgoNodeDetails" needs to be exported by the entry point index.d.ts
-// .api-extractor-temp/src/settings/ProtocolSettings.typeInfo.d.ts:332:5 - (ae-forgotten-export) The symbol "ErgoNodeOperatorSettings" needs to be exported by the entry point index.d.ts
-// .api-extractor-temp/src/settings/ProtocolSettings.typeInfo.d.ts:333:5 - (ae-forgotten-export) The symbol "ErgoNeighborhoodSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
