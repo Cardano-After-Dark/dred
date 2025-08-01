@@ -1,22 +1,198 @@
+import type { AbstractSettingsForNeighborhood } from './NeighborhoodRegistry.typeInfo.js';
+import type { AbstractSettingsForNeighborhoodLike } from './NeighborhoodRegistry.typeInfo.js';
+import type { AbstractSettingsForNodeOperator } from './NodeRegistry.typeInfo.js';
+import type { AbstractSettingsForNodeOperatorLike } from './NodeRegistry.typeInfo.js';
 import type { Address } from '@helios-lang/ledger';
+import type { AnyData as AnyData_2 } from './NodeRegistry.typeInfo.js';
+import type { AnyData as AnyData_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { AnyData as AnyData_4 } from './ProtocolSettings.typeInfo.js';
+import type { AnyDataLike as AnyDataLike_2 } from './NodeRegistry.typeInfo.js';
+import type { AnyDataLike as AnyDataLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { AnyDataLike as AnyDataLike_4 } from './ProtocolSettings.typeInfo.js';
 import { anyState } from '@donecollectively/stellar-contracts';
+import type { AppInfo } from './NeighborhoodRegistry.typeInfo.js';
+import type { AppInfoLike } from './NeighborhoodRegistry.typeInfo.js';
 import type { AssetClass } from '@helios-lang/ledger';
 import type { basicDelegateMap } from '@donecollectively/stellar-contracts';
+import type { BurningActivityLike as BurningActivityLike_2 } from './NodeRegistry.typeInfo.js';
+import type { BurningActivityLike as BurningActivityLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { BurningActivityLike as BurningActivityLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoCtx as CapoCtx_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoCtx as CapoCtx_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoCtx as CapoCtx_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoCtxLike as CapoCtxLike_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoCtxLike as CapoCtxLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoCtxLike as CapoCtxLike_4 } from './ProtocolSettings.typeInfo.js';
 import { CapoDAppProvider } from '@donecollectively/stellar-contracts/ui';
 import type { CapoDappStatus } from '@donecollectively/stellar-contracts/ui';
+import type { CapoDatum$CharterDataLike as CapoDatum$CharterDataLike_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoDatum$CharterDataLike as CapoDatum$CharterDataLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoDatum$CharterDataLike as CapoDatum$CharterDataLike_4 } from './ProtocolSettings.typeInfo.js';
 import { CapoDelegateBundle } from '@donecollectively/stellar-contracts';
 import type { CapoHeliosBundle } from '@donecollectively/stellar-contracts';
+import type { CapoLifecycleActivity$CreatingDelegateLike as CapoLifecycleActivity$CreatingDelegateLike_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoLifecycleActivity$CreatingDelegateLike as CapoLifecycleActivity$CreatingDelegateLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoLifecycleActivity$CreatingDelegateLike as CapoLifecycleActivity$CreatingDelegateLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoLifecycleActivity$forcingNewMintDelegateLike as CapoLifecycleActivity$forcingNewMintDelegateLike_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoLifecycleActivity$forcingNewMintDelegateLike as CapoLifecycleActivity$forcingNewMintDelegateLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoLifecycleActivity$forcingNewMintDelegateLike as CapoLifecycleActivity$forcingNewMintDelegateLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoLifecycleActivity$forcingNewSpendDelegateLike as CapoLifecycleActivity$forcingNewSpendDelegateLike_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoLifecycleActivity$forcingNewSpendDelegateLike as CapoLifecycleActivity$forcingNewSpendDelegateLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoLifecycleActivity$forcingNewSpendDelegateLike as CapoLifecycleActivity$forcingNewSpendDelegateLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoLifecycleActivity as CapoLifecycleActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoLifecycleActivity as CapoLifecycleActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoLifecycleActivity as CapoLifecycleActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoLifecycleActivityLike as CapoLifecycleActivityLike_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoLifecycleActivityLike as CapoLifecycleActivityLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoLifecycleActivityLike as CapoLifecycleActivityLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoManifestEntry as CapoManifestEntry_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoManifestEntry as CapoManifestEntry_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoManifestEntry as CapoManifestEntry_4 } from './ProtocolSettings.typeInfo.js';
+import type { CapoManifestEntryLike as CapoManifestEntryLike_2 } from './NodeRegistry.typeInfo.js';
+import type { CapoManifestEntryLike as CapoManifestEntryLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { CapoManifestEntryLike as CapoManifestEntryLike_4 } from './ProtocolSettings.typeInfo.js';
 import type { CardanoClient } from '@helios-lang/tx-utils';
 import { Cast } from '@helios-lang/contract-utils';
+import type { cctx_CharterInputType$InputLike as cctx_CharterInputType$InputLike_2 } from './NodeRegistry.typeInfo.js';
+import type { cctx_CharterInputType$InputLike as cctx_CharterInputType$InputLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { cctx_CharterInputType$InputLike as cctx_CharterInputType$InputLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { cctx_CharterInputType$RefInputLike as cctx_CharterInputType$RefInputLike_2 } from './NodeRegistry.typeInfo.js';
+import type { cctx_CharterInputType$RefInputLike as cctx_CharterInputType$RefInputLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { cctx_CharterInputType$RefInputLike as cctx_CharterInputType$RefInputLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { cctx_CharterInputType as cctx_CharterInputType_2 } from './NodeRegistry.typeInfo.js';
+import type { cctx_CharterInputType as cctx_CharterInputType_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { cctx_CharterInputType as cctx_CharterInputType_4 } from './ProtocolSettings.typeInfo.js';
+import type { cctx_CharterInputTypeLike as cctx_CharterInputTypeLike_2 } from './NodeRegistry.typeInfo.js';
+import type { cctx_CharterInputTypeLike as cctx_CharterInputTypeLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { cctx_CharterInputTypeLike as cctx_CharterInputTypeLike_4 } from './ProtocolSettings.typeInfo.js';
 import type { CharterData } from '@donecollectively/stellar-contracts';
 import type { Cip30Wallet } from '@helios-lang/tx-utils';
 import { ContractDataBridge } from '@donecollectively/stellar-contracts';
 import type { DappUserInfo } from '@donecollectively/stellar-contracts/ui';
 import { DataBridgeReaderClass } from '@donecollectively/stellar-contracts';
+import type { DelegateActivity$CreatingDelegatedDataLike as DelegateActivity$CreatingDelegatedDataLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateActivity$CreatingDelegatedDataLike as DelegateActivity$CreatingDelegatedDataLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateActivity$CreatingDelegatedDataLike as DelegateActivity$CreatingDelegatedDataLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateActivity$DeletingDelegatedDataLike as DelegateActivity$DeletingDelegatedDataLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateActivity$DeletingDelegatedDataLike as DelegateActivity$DeletingDelegatedDataLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateActivity$DeletingDelegatedDataLike as DelegateActivity$DeletingDelegatedDataLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateActivity$UpdatingDelegatedDataLike as DelegateActivity$UpdatingDelegatedDataLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateActivity$UpdatingDelegatedDataLike as DelegateActivity$UpdatingDelegatedDataLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateActivity$UpdatingDelegatedDataLike as DelegateActivity$UpdatingDelegatedDataLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateActivity as DelegateActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateActivity as DelegateActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateActivity as DelegateActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateDatum$capoStoredDataLike as DelegateDatum$capoStoredDataLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateDatum$capoStoredDataLike as DelegateDatum$capoStoredDataLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateDatum$capoStoredDataLike as DelegateDatum$capoStoredDataLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateDatum$Cip68RefTokenLike as DelegateDatum$Cip68RefTokenLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateDatum$Cip68RefTokenLike as DelegateDatum$Cip68RefTokenLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateDatum$Cip68RefTokenLike as DelegateDatum$Cip68RefTokenLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateDatum$Ergo$capoStoredData as DelegateDatum$Ergo$capoStoredData_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateDatum$Ergo$capoStoredData as DelegateDatum$Ergo$capoStoredData_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateDatum$Ergo$capoStoredData as DelegateDatum$Ergo$capoStoredData_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateDatum$Ergo$Cip68RefToken as DelegateDatum$Ergo$Cip68RefToken_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateDatum$Ergo$Cip68RefToken as DelegateDatum$Ergo$Cip68RefToken_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateDatum$Ergo$Cip68RefToken as DelegateDatum$Ergo$Cip68RefToken_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateDatum as DelegateDatum_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateDatum as DelegateDatum_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateDatum as DelegateDatum_4 } from './ProtocolSettings.typeInfo.js';
 import { DelegatedDataContract } from '@donecollectively/stellar-contracts';
+import type { DelegateLifecycleActivity$ReplacingMeLike as DelegateLifecycleActivity$ReplacingMeLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateLifecycleActivity$ReplacingMeLike as DelegateLifecycleActivity$ReplacingMeLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateLifecycleActivity$ReplacingMeLike as DelegateLifecycleActivity$ReplacingMeLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateLifecycleActivity as DelegateLifecycleActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateLifecycleActivity as DelegateLifecycleActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateLifecycleActivity as DelegateLifecycleActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateLifecycleActivityLike as DelegateLifecycleActivityLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateLifecycleActivityLike as DelegateLifecycleActivityLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateLifecycleActivityLike as DelegateLifecycleActivityLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateRole as DelegateRole_3 } from './NodeRegistry.typeInfo.js';
+import type { DelegateRole as DelegateRole_4 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateRole as DelegateRole_5 } from './ProtocolSettings.typeInfo.js';
+import type { DelegateRoleLike as DelegateRoleLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegateRoleLike as DelegateRoleLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegateRoleLike as DelegateRoleLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegationDetail as DelegationDetail_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegationDetail as DelegationDetail_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegationDetail as DelegationDetail_4 } from './ProtocolSettings.typeInfo.js';
+import type { DelegationDetailLike as DelegationDetailLike_2 } from './NodeRegistry.typeInfo.js';
+import type { DelegationDetailLike as DelegationDetailLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DelegationDetailLike as DelegationDetailLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { dgd_DataSrc$BothLike } from './NodeRegistry.typeInfo.js';
+import type { dgd_DataSrc$BothLike as dgd_DataSrc$BothLike_2 } from './NeighborhoodRegistry.typeInfo.js';
+import type { dgd_DataSrc } from './NodeRegistry.typeInfo.js';
+import type { dgd_DataSrc as dgd_DataSrc_2 } from './NeighborhoodRegistry.typeInfo.js';
+import type { dgd_DataSrcLike } from './NodeRegistry.typeInfo.js';
+import type { dgd_DataSrcLike as dgd_DataSrcLike_2 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DgDataDetails } from './NodeRegistry.typeInfo.js';
+import type { DgDataDetails as DgDataDetails_2 } from './NeighborhoodRegistry.typeInfo.js';
+import type { DgDataDetailsLike } from './NodeRegistry.typeInfo.js';
+import type { DgDataDetailsLike as DgDataDetailsLike_2 } from './NeighborhoodRegistry.typeInfo.js';
 import type { DgDataUpdateOptions } from '@donecollectively/stellar-contracts';
+import type { DredNodeState } from './NodeRegistry.typeInfo.js';
+import type { DredNodeStateLike } from './NodeRegistry.typeInfo.js';
 import { EnumBridge } from '@donecollectively/stellar-contracts';
-import type { EnumTypeMeta } from '@donecollectively/stellar-contracts';
+import type { ErgoBurningActivity as ErgoBurningActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoBurningActivity as ErgoBurningActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoBurningActivity as ErgoBurningActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoCapoLifecycleActivity as ErgoCapoLifecycleActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoCapoLifecycleActivity as ErgoCapoLifecycleActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoCapoLifecycleActivity as ErgoCapoLifecycleActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { Ergocctx_CharterInputType as Ergocctx_CharterInputType_2 } from './NodeRegistry.typeInfo.js';
+import type { Ergocctx_CharterInputType as Ergocctx_CharterInputType_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { Ergocctx_CharterInputType as Ergocctx_CharterInputType_4 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoDelegateActivity as ErgoDelegateActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoDelegateActivity as ErgoDelegateActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoDelegateActivity as ErgoDelegateActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoDelegateDatum as ErgoDelegateDatum_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoDelegateDatum as ErgoDelegateDatum_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoDelegateDatum as ErgoDelegateDatum_4 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoDelegateLifecycleActivity as ErgoDelegateLifecycleActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoDelegateLifecycleActivity as ErgoDelegateLifecycleActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoDelegateLifecycleActivity as ErgoDelegateLifecycleActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoDelegateRole as ErgoDelegateRole_3 } from './NodeRegistry.typeInfo.js';
+import type { ErgoDelegateRole as ErgoDelegateRole_4 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoDelegateRole as ErgoDelegateRole_5 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoDelegationDetail as ErgoDelegationDetail_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoDelegationDetail as ErgoDelegationDetail_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoDelegationDetail as ErgoDelegationDetail_4 } from './ProtocolSettings.typeInfo.js';
+import type { Ergodgd_DataSrc } from './NodeRegistry.typeInfo.js';
+import type { Ergodgd_DataSrc as Ergodgd_DataSrc_2 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoDredNodeState } from './NodeRegistry.typeInfo.js';
+import type { ErgoFeeSource } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoManifestActivity as ErgoManifestActivity_3 } from './NodeRegistry.typeInfo.js';
+import type { ErgoManifestActivity as ErgoManifestActivity_4 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoManifestActivity as ErgoManifestActivity_5 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoManifestEntryType as ErgoManifestEntryType_3 } from './NodeRegistry.typeInfo.js';
+import type { ErgoManifestEntryType as ErgoManifestEntryType_4 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoManifestEntryType as ErgoManifestEntryType_5 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoMintingActivity as ErgoMintingActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoMintingActivity as ErgoMintingActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoMintingActivity as ErgoMintingActivity_4 } from './ProtocolSettings.typeInfo.js';
+import { ErgoNeighborhoodData } from './DredNeighborhood/NeighborhoodRegistry.typeInfo.js';
+import type { ErgoNeighborhoodData as ErgoNeighborhoodData_2 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoNeighborhoodSettings } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoNeighborhoodSettings as ErgoNeighborhoodSettings_2 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoNeighborhoodState } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoNodeOperatorSettings } from './NodeRegistry.typeInfo.js';
+import type { ErgoNodeOperatorSettings as ErgoNodeOperatorSettings_2 } from './ProtocolSettings.typeInfo.js';
+import { ErgoNodeRegistrationData } from './nodeRegistry/NodeRegistry.typeInfo.js';
+import type { ErgoNodeRegistrationData as ErgoNodeRegistrationData_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoPendingCharterChange as ErgoPendingCharterChange_3 } from './NodeRegistry.typeInfo.js';
+import type { ErgoPendingCharterChange as ErgoPendingCharterChange_4 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoPendingCharterChange as ErgoPendingCharterChange_5 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoPendingDelegateAction as ErgoPendingDelegateAction_3 } from './NodeRegistry.typeInfo.js';
+import type { ErgoPendingDelegateAction as ErgoPendingDelegateAction_4 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoPendingDelegateAction as ErgoPendingDelegateAction_5 } from './ProtocolSettings.typeInfo.js';
+import { ErgoProtocolSettings } from './settings/ProtocolSettings.typeInfo.js';
+import type { ErgoRevenueModel } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoSpendingActivity as ErgoSpendingActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { ErgoSpendingActivity as ErgoSpendingActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ErgoSpendingActivity as ErgoSpendingActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { ErgoSubscriptionFeeFrequency } from './NeighborhoodRegistry.typeInfo.js';
+import type { FeeSource } from './NeighborhoodRegistry.typeInfo.js';
+import type { FeeSourceLike } from './NeighborhoodRegistry.typeInfo.js';
 import type { FoundDatumUtxo } from '@donecollectively/stellar-contracts';
 import { hasCharterRef } from '@donecollectively/stellar-contracts';
 import { hasGovAuthority } from '@donecollectively/stellar-contracts';
@@ -30,73 +206,137 @@ import type { IntersectedEnum } from '@donecollectively/stellar-contracts';
 import type { IntLike } from '@helios-lang/codec-utils';
 import { isActivity } from '@donecollectively/stellar-contracts';
 import { JustAnEnum } from '@donecollectively/stellar-contracts';
-import type { minimalData } from '@donecollectively/stellar-contracts';
+import type { ManifestActivity$addingEntryLike as ManifestActivity$addingEntryLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestActivity$addingEntryLike as ManifestActivity$addingEntryLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestActivity$addingEntryLike as ManifestActivity$addingEntryLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestActivity$burningThreadTokenLike as ManifestActivity$burningThreadTokenLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestActivity$burningThreadTokenLike as ManifestActivity$burningThreadTokenLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestActivity$burningThreadTokenLike as ManifestActivity$burningThreadTokenLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestActivity$forkingThreadTokenLike as ManifestActivity$forkingThreadTokenLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestActivity$forkingThreadTokenLike as ManifestActivity$forkingThreadTokenLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestActivity$forkingThreadTokenLike as ManifestActivity$forkingThreadTokenLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestActivity$updatingEntryLike as ManifestActivity$updatingEntryLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestActivity$updatingEntryLike as ManifestActivity$updatingEntryLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestActivity$updatingEntryLike as ManifestActivity$updatingEntryLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestActivity as ManifestActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestActivity as ManifestActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestActivity as ManifestActivity_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestActivityLike as ManifestActivityLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestActivityLike as ManifestActivityLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestActivityLike as ManifestActivityLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestEntryType$DelegateThreadsLike as ManifestEntryType$DelegateThreadsLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestEntryType$DelegateThreadsLike as ManifestEntryType$DelegateThreadsLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestEntryType$DelegateThreadsLike as ManifestEntryType$DelegateThreadsLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestEntryType$DgDataPolicyLike as ManifestEntryType$DgDataPolicyLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestEntryType$DgDataPolicyLike as ManifestEntryType$DgDataPolicyLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestEntryType$DgDataPolicyLike as ManifestEntryType$DgDataPolicyLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestEntryType as ManifestEntryType_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestEntryType as ManifestEntryType_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestEntryType as ManifestEntryType_4 } from './ProtocolSettings.typeInfo.js';
+import type { ManifestEntryTypeLike as ManifestEntryTypeLike_2 } from './NodeRegistry.typeInfo.js';
+import type { ManifestEntryTypeLike as ManifestEntryTypeLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { ManifestEntryTypeLike as ManifestEntryTypeLike_4 } from './ProtocolSettings.typeInfo.js';
+import { minimalNeighborhoodData } from './DredNeighborhood/NeighborhoodRegistry.typeInfo.js';
+import type { minimalNeighborhoodData as minimalNeighborhoodData_2 } from './NeighborhoodRegistry.typeInfo.js';
+import { minimalNodeRegistrationData } from './nodeRegistry/NodeRegistry.typeInfo.js';
+import type { minimalNodeRegistrationData as minimalNodeRegistrationData_2 } from './NodeRegistry.typeInfo.js';
+import type { minimalProtocolSettings } from './ProtocolSettings.typeInfo.js';
+import type { minimalProtocolSettings as minimalProtocolSettings_2 } from './settings/ProtocolSettings.typeInfo.js';
+import type { MintingActivityLike as MintingActivityLike_2 } from './NodeRegistry.typeInfo.js';
+import type { MintingActivityLike as MintingActivityLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { MintingActivityLike as MintingActivityLike_4 } from './ProtocolSettings.typeInfo.js';
 import type { MintingPolicyHash } from '@helios-lang/ledger';
+import { NeighborhoodData } from './DredNeighborhood/NeighborhoodRegistry.typeInfo.js';
+import type { NeighborhoodData as NeighborhoodData_2 } from './NeighborhoodRegistry.typeInfo.js';
+import type { NeighborhoodDataLike } from './NeighborhoodRegistry.typeInfo.js';
+import type { NeighborhoodSettingsLike } from './NeighborhoodRegistry.typeInfo.js';
+import type { NeighborhoodSettingsLike as NeighborhoodSettingsLike_2 } from './ProtocolSettings.typeInfo.js';
+import type { NeighborhoodSettingsV1 } from './NeighborhoodRegistry.typeInfo.js';
+import type { NeighborhoodSettingsV1 as NeighborhoodSettingsV1_2 } from './ProtocolSettings.typeInfo.js';
+import type { NeighborhoodSettingsV1Like } from './NeighborhoodRegistry.typeInfo.js';
+import type { NeighborhoodSettingsV1Like as NeighborhoodSettingsV1Like_2 } from './ProtocolSettings.typeInfo.js';
+import type { NeighborhoodState } from './NeighborhoodRegistry.typeInfo.js';
+import type { NeighborhoodStateLike } from './NeighborhoodRegistry.typeInfo.js';
+import type { NodeDetails } from './NodeRegistry.typeInfo.js';
+import type { NodeDetailsLike } from './NodeRegistry.typeInfo.js';
+import type { NodeOperatorSettingsLike } from './NodeRegistry.typeInfo.js';
+import type { NodeOperatorSettingsLike as NodeOperatorSettingsLike_2 } from './ProtocolSettings.typeInfo.js';
+import type { NodeOperatorSettingsV1 } from './NodeRegistry.typeInfo.js';
+import type { NodeOperatorSettingsV1 as NodeOperatorSettingsV1_2 } from './ProtocolSettings.typeInfo.js';
+import type { NodeOperatorSettingsV1Like } from './NodeRegistry.typeInfo.js';
+import type { NodeOperatorSettingsV1Like as NodeOperatorSettingsV1Like_2 } from './ProtocolSettings.typeInfo.js';
+import type { NodeOpsInfo } from './NeighborhoodRegistry.typeInfo.js';
+import type { NodeOpsInfoLike } from './NeighborhoodRegistry.typeInfo.js';
+import { NodeRegistrationData } from './nodeRegistry/NodeRegistry.typeInfo.js';
+import type { NodeRegistrationData as NodeRegistrationData_2 } from './NodeRegistry.typeInfo.js';
+import type { NodeRegistrationDataLike } from './NodeRegistry.typeInfo.js';
+import type { PendingCharterChange$otherManifestChangeLike as PendingCharterChange$otherManifestChangeLike_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingCharterChange$otherManifestChangeLike as PendingCharterChange$otherManifestChangeLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingCharterChange$otherManifestChangeLike as PendingCharterChange$otherManifestChangeLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { PendingCharterChange as PendingCharterChange_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingCharterChange as PendingCharterChange_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingCharterChange as PendingCharterChange_4 } from './ProtocolSettings.typeInfo.js';
+import type { PendingDelegateAction$AddLike as PendingDelegateAction$AddLike_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingDelegateAction$AddLike as PendingDelegateAction$AddLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingDelegateAction$AddLike as PendingDelegateAction$AddLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { PendingDelegateAction$ReplaceLike as PendingDelegateAction$ReplaceLike_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingDelegateAction$ReplaceLike as PendingDelegateAction$ReplaceLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingDelegateAction$ReplaceLike as PendingDelegateAction$ReplaceLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { PendingDelegateAction as PendingDelegateAction_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingDelegateAction as PendingDelegateAction_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingDelegateAction as PendingDelegateAction_4 } from './ProtocolSettings.typeInfo.js';
+import type { PendingDelegateActionLike as PendingDelegateActionLike_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingDelegateActionLike as PendingDelegateActionLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingDelegateActionLike as PendingDelegateActionLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { PendingDelegateChange as PendingDelegateChange_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingDelegateChange as PendingDelegateChange_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingDelegateChange as PendingDelegateChange_4 } from './ProtocolSettings.typeInfo.js';
+import type { PendingDelegateChangeLike as PendingDelegateChangeLike_2 } from './NodeRegistry.typeInfo.js';
+import type { PendingDelegateChangeLike as PendingDelegateChangeLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { PendingDelegateChangeLike as PendingDelegateChangeLike_4 } from './ProtocolSettings.typeInfo.js';
+import type { ProtocolSettings } from './settings/ProtocolSettings.typeInfo.js';
+import type { ProtocolSettings as ProtocolSettings_2 } from './ProtocolSettings.typeInfo.js';
+import type { ProtocolSettingsLike } from './ProtocolSettings.typeInfo.js';
 import type { PubKey } from '@helios-lang/ledger';
 import type { PubKeyHash } from '@helios-lang/ledger';
 import { default as React_2 } from 'react';
 import { ReadonlySignal } from '@preact/signals-core';
+import type { RelativeDelegateLink as RelativeDelegateLink_3 } from './NodeRegistry.typeInfo.js';
+import type { RelativeDelegateLink as RelativeDelegateLink_4 } from './NeighborhoodRegistry.typeInfo.js';
+import type { RelativeDelegateLink as RelativeDelegateLink_5 } from './ProtocolSettings.typeInfo.js';
+import type { RelativeDelegateLinkLike as RelativeDelegateLinkLike_2 } from './NodeRegistry.typeInfo.js';
+import type { RelativeDelegateLinkLike as RelativeDelegateLinkLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { RelativeDelegateLinkLike as RelativeDelegateLinkLike_4 } from './ProtocolSettings.typeInfo.js';
 import { ReqtsMap } from '@donecollectively/stellar-contracts';
+import type { RevenueModel$TransactionBasedLike } from './NeighborhoodRegistry.typeInfo.js';
+import type { RevenueModel } from './NeighborhoodRegistry.typeInfo.js';
+import type { RevenueModelLike } from './NeighborhoodRegistry.typeInfo.js';
 import type { ScriptHash } from '@helios-lang/ledger';
 import { SeedActivity } from '@donecollectively/stellar-contracts';
 import { Signal } from '@preact/signals-core';
-import type { singleEnumVariantMeta } from '@donecollectively/stellar-contracts';
+import type { SpendingActivity$ValidatingNodeLike } from './NodeRegistry.typeInfo.js';
+import type { SpendingActivity as SpendingActivity_2 } from './NodeRegistry.typeInfo.js';
+import type { SpendingActivity as SpendingActivity_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { SpendingActivityLike as SpendingActivityLike_2 } from './NodeRegistry.typeInfo.js';
+import type { SpendingActivityLike as SpendingActivityLike_3 } from './NeighborhoodRegistry.typeInfo.js';
+import type { SpendingActivityLike as SpendingActivityLike_4 } from './ProtocolSettings.typeInfo.js';
 import { StellarTokenomicsCapo } from 'stellar-tokenomics';
 import { StellarTxnContext } from '@donecollectively/stellar-contracts';
 import { STokMintDelegate } from 'stellar-tokenomics';
+import type { SubscriptionFeeFrequency } from './NeighborhoodRegistry.typeInfo.js';
+import type { SubscriptionFeeFrequencyLike } from './NeighborhoodRegistry.typeInfo.js';
 import { tagOnly } from '@donecollectively/stellar-contracts';
 import type { TxDescription } from '@donecollectively/stellar-contracts';
 import { TxInput } from '@helios-lang/ledger';
 import type { TxOutput } from '@helios-lang/ledger';
 import type { TxOutputId } from '@helios-lang/ledger';
+import type * as types from './NodeRegistry.typeInfo.js';
+import type { UpdateInfo } from './NeighborhoodRegistry.typeInfo.js';
+import type { UpdateInfoLike } from './NeighborhoodRegistry.typeInfo.js';
 import type { UplcData } from '@helios-lang/uplc';
 import { UserActionMap } from '@donecollectively/stellar-contracts/ui';
 import type { ValidatorHash } from '@helios-lang/ledger';
 import type { Value } from '@helios-lang/ledger';
-
-/**
- * A strong type for the canonical form of AbstractSettingsForNeighborhood
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoAbstractSettingsForNeighborhood instead.
- * @public
- */
-declare interface AbstractSettingsForNeighborhood {
-    NeighborhoodSettings: NeighborhoodSettings_2;
-}
-
-/**
- * A strong type for the permissive form of AbstractSettingsForNeighborhood
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface AbstractSettingsForNeighborhoodLike {
-    NeighborhoodSettings: NeighborhoodSettingsLike;
-}
-
-/**
- * A strong type for the canonical form of AbstractSettingsForNodeOperator
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoAbstractSettingsForNodeOperator instead.
- * @public
- */
-declare interface AbstractSettingsForNodeOperator {
-    nodeOpSettings: NodeOperatorSettings_2;
-}
-
-/**
- * A strong type for the permissive form of AbstractSettingsForNodeOperator
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface AbstractSettingsForNodeOperatorLike {
-    nodeOpSettings: NodeOperatorSettingsLike;
-}
 
 /**
  * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
@@ -436,45 +676,6 @@ declare interface AnyData {
 }
 
 /**
- * A strong type for the canonical form of AnyData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoAnyData instead.
- * @public
- */
-declare interface AnyData_2 {
-    id: number[];
-    type: string;
-}
-
-/**
- * A strong type for the canonical form of AnyData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoAnyData instead.
- * @public
- */
-declare interface AnyData_3 {
-    id: number[];
-    type: string;
-}
-
-/**
- * A strong type for the canonical form of AnyData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoAnyData instead.
- * @public
- */
-declare interface AnyData_4 {
-    id: number[];
-    type: string;
-}
-
-/**
  * A strong type for the permissive form of AnyData
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
@@ -483,67 +684,6 @@ declare interface AnyData_4 {
 declare interface AnyDataLike {
     id: number[];
     type: string;
-}
-
-/**
- * A strong type for the permissive form of AnyData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface AnyDataLike_2 {
-    id: number[];
-    type: string;
-}
-
-/**
- * A strong type for the permissive form of AnyData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface AnyDataLike_3 {
-    id: number[];
-    type: string;
-}
-
-/**
- * A strong type for the permissive form of AnyData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface AnyDataLike_4 {
-    id: number[];
-    type: string;
-}
-
-/**
- * A strong type for the canonical form of AppInfo
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoAppInfo instead.
- * @public
- */
-declare interface AppInfo {
-    url: string;
-    revenueModel: Array<RevenueModel>;
-    name: string;
-    description: string;
-}
-
-/**
- * A strong type for the permissive form of AppInfo
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface AppInfoLike {
-    url: string;
-    revenueModel: Array<RevenueModelLike>;
-    name: string;
-    description: string;
 }
 
 /**
@@ -558,48 +698,6 @@ declare interface AppInfoLike {
  */
 declare type BurningActivity = {
     _placeholder1BA: number[];
-};
-
-/**
- * BurningActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the BurningActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `BurningActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type BurningActivity_2 = {
-    DeletingRecord: number[];
-};
-
-/**
- * BurningActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the BurningActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `BurningActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type BurningActivity_3 = {
-    DeletingRecord: number[];
-};
-
-/**
- * BurningActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the BurningActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `BurningActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type BurningActivity_4 = {
-    DeletingRecord: number[];
 };
 
 /**
@@ -801,70 +899,6 @@ declare type BurningActivityLike = IntersectedEnum<{
 }>;
 
 /**
- * BurningActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the BurningActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `BurningActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type BurningActivityLike_2 = IntersectedEnum<{
-    DeletingRecord: number[];
-}>;
-
-/**
- * BurningActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the BurningActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `BurningActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type BurningActivityLike_3 = IntersectedEnum<{
-    DeletingRecord: number[];
-}>;
-
-/**
- * BurningActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the BurningActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `BurningActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type BurningActivityLike_4 = IntersectedEnum<{
-    DeletingRecord: number[];
-}>;
-
-/**
- * @internal
- */
-declare type BurningActivityMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "BurningActivity";
-}, {
-    DeletingRecord: singleEnumVariantMeta<BurningActivityMeta, "DeletingRecord", "Constr#0", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ number[], "noSpecialFlags">;
-}>;
-
-/**
  * A strong type for the canonical form of CapoCtx
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -878,45 +912,6 @@ declare interface CapoCtx {
 }
 
 /**
- * A strong type for the canonical form of CapoCtx
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoCapoCtx instead.
- * @public
- */
-declare interface CapoCtx_2 {
-    mph: MintingPolicyHash;
-    charter: cctx_CharterInputType_2;
-}
-
-/**
- * A strong type for the canonical form of CapoCtx
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoCapoCtx instead.
- * @public
- */
-declare interface CapoCtx_3 {
-    mph: MintingPolicyHash;
-    charter: cctx_CharterInputType_3;
-}
-
-/**
- * A strong type for the canonical form of CapoCtx
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoCapoCtx instead.
- * @public
- */
-declare interface CapoCtx_4 {
-    mph: MintingPolicyHash;
-    charter: cctx_CharterInputType_4;
-}
-
-/**
  * A strong type for the permissive form of CapoCtx
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
@@ -925,39 +920,6 @@ declare interface CapoCtx_4 {
 declare interface CapoCtxLike {
     mph: /*minStructField*/ MintingPolicyHash | string | number[];
     charter: cctx_CharterInputTypeLike;
-}
-
-/**
- * A strong type for the permissive form of CapoCtx
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoCtxLike_2 {
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-    charter: cctx_CharterInputTypeLike_2;
-}
-
-/**
- * A strong type for the permissive form of CapoCtx
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoCtxLike_3 {
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-    charter: cctx_CharterInputTypeLike_3;
-}
-
-/**
- * A strong type for the permissive form of CapoCtx
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoCtxLike_4 {
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-    charter: cctx_CharterInputTypeLike_4;
 }
 
 /**
@@ -980,63 +942,6 @@ declare interface CapoDatum$CharterData {
 }
 
 /**
- * A strong type for the canonical form of CapoDatum$CharterData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoDatum$Ergo$CharterData instead.
- * @public
- */
-declare interface CapoDatum$CharterData_2 {
-    spendDelegateLink: RelativeDelegateLink_3;
-    spendInvariants: Array<RelativeDelegateLink_3>;
-    otherNamedDelegates: Map<string, RelativeDelegateLink_3>;
-    mintDelegateLink: RelativeDelegateLink_3;
-    mintInvariants: Array<RelativeDelegateLink_3>;
-    govAuthorityLink: RelativeDelegateLink_3;
-    manifest: Map<string, CapoManifestEntry_2>;
-    pendingChanges: Array<PendingCharterChange_2>;
-}
-
-/**
- * A strong type for the canonical form of CapoDatum$CharterData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoDatum$Ergo$CharterData instead.
- * @public
- */
-declare interface CapoDatum$CharterData_3 {
-    spendDelegateLink: RelativeDelegateLink_4;
-    spendInvariants: Array<RelativeDelegateLink_4>;
-    otherNamedDelegates: Map<string, RelativeDelegateLink_4>;
-    mintDelegateLink: RelativeDelegateLink_4;
-    mintInvariants: Array<RelativeDelegateLink_4>;
-    govAuthorityLink: RelativeDelegateLink_4;
-    manifest: Map<string, CapoManifestEntry_3>;
-    pendingChanges: Array<PendingCharterChange_3>;
-}
-
-/**
- * A strong type for the canonical form of CapoDatum$CharterData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoDatum$Ergo$CharterData instead.
- * @public
- */
-declare interface CapoDatum$CharterData_4 {
-    spendDelegateLink: RelativeDelegateLink_5;
-    spendInvariants: Array<RelativeDelegateLink_5>;
-    otherNamedDelegates: Map<string, RelativeDelegateLink_5>;
-    mintDelegateLink: RelativeDelegateLink_5;
-    mintInvariants: Array<RelativeDelegateLink_5>;
-    govAuthorityLink: RelativeDelegateLink_5;
-    manifest: Map<string, CapoManifestEntry_4>;
-    pendingChanges: Array<PendingCharterChange_4>;
-}
-
-/**
  * A strong type for the permissive form of CapoDatum$CharterData
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
@@ -1051,57 +956,6 @@ declare interface CapoDatum$CharterDataLike {
     govAuthorityLink: RelativeDelegateLinkLike;
     manifest: Map<string, CapoManifestEntryLike>;
     pendingChanges: Array<PendingCharterChangeLike>;
-}
-
-/**
- * A strong type for the permissive form of CapoDatum$CharterData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoDatum$CharterDataLike_2 {
-    spendDelegateLink: RelativeDelegateLinkLike_2;
-    spendInvariants: Array<RelativeDelegateLinkLike_2>;
-    otherNamedDelegates: Map<string, RelativeDelegateLinkLike_2>;
-    mintDelegateLink: RelativeDelegateLinkLike_2;
-    mintInvariants: Array<RelativeDelegateLinkLike_2>;
-    govAuthorityLink: RelativeDelegateLinkLike_2;
-    manifest: Map<string, CapoManifestEntryLike_2>;
-    pendingChanges: Array<PendingCharterChangeLike_2>;
-}
-
-/**
- * A strong type for the permissive form of CapoDatum$CharterData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoDatum$CharterDataLike_3 {
-    spendDelegateLink: RelativeDelegateLinkLike_3;
-    spendInvariants: Array<RelativeDelegateLinkLike_3>;
-    otherNamedDelegates: Map<string, RelativeDelegateLinkLike_3>;
-    mintDelegateLink: RelativeDelegateLinkLike_3;
-    mintInvariants: Array<RelativeDelegateLinkLike_3>;
-    govAuthorityLink: RelativeDelegateLinkLike_3;
-    manifest: Map<string, CapoManifestEntryLike_3>;
-    pendingChanges: Array<PendingCharterChangeLike_3>;
-}
-
-/**
- * A strong type for the permissive form of CapoDatum$CharterData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoDatum$CharterDataLike_4 {
-    spendDelegateLink: RelativeDelegateLinkLike_4;
-    spendInvariants: Array<RelativeDelegateLinkLike_4>;
-    otherNamedDelegates: Map<string, RelativeDelegateLinkLike_4>;
-    mintDelegateLink: RelativeDelegateLinkLike_4;
-    mintInvariants: Array<RelativeDelegateLinkLike_4>;
-    govAuthorityLink: RelativeDelegateLinkLike_4;
-    manifest: Map<string, CapoManifestEntryLike_4>;
-    pendingChanges: Array<PendingCharterChangeLike_4>;
 }
 
 /**
@@ -1145,66 +999,6 @@ declare type CapoDatum$Ergo$CharterData_2 = {
 };
 
 /**
- * An ergonomic, though less strictly-safe form of CapoDatum$CharterData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoDatum$CharterDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoDatum$Ergo$CharterData_3 = {
-    spendDelegateLink: ErgoRelativeDelegateLink_3;
-    spendInvariants: Array<ErgoRelativeDelegateLink_3>;
-    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink_3>;
-    mintDelegateLink: ErgoRelativeDelegateLink_3;
-    mintInvariants: Array<ErgoRelativeDelegateLink_3>;
-    govAuthorityLink: ErgoRelativeDelegateLink_3;
-    manifest: Map<string, ErgoCapoManifestEntry_3>;
-    pendingChanges: Array<ErgoPendingCharterChange_3>;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of CapoDatum$CharterData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoDatum$CharterDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoDatum$Ergo$CharterData_4 = {
-    spendDelegateLink: ErgoRelativeDelegateLink_4;
-    spendInvariants: Array<ErgoRelativeDelegateLink_4>;
-    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink_4>;
-    mintDelegateLink: ErgoRelativeDelegateLink_4;
-    mintInvariants: Array<ErgoRelativeDelegateLink_4>;
-    govAuthorityLink: ErgoRelativeDelegateLink_4;
-    manifest: Map<string, ErgoCapoManifestEntry_4>;
-    pendingChanges: Array<ErgoPendingCharterChange_4>;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of CapoDatum$CharterData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoDatum$CharterDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoDatum$Ergo$CharterData_5 = {
-    spendDelegateLink: ErgoRelativeDelegateLink_5;
-    spendInvariants: Array<ErgoRelativeDelegateLink_5>;
-    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink_5>;
-    mintDelegateLink: ErgoRelativeDelegateLink_5;
-    mintInvariants: Array<ErgoRelativeDelegateLink_5>;
-    govAuthorityLink: ErgoRelativeDelegateLink_5;
-    manifest: Map<string, ErgoCapoManifestEntry_5>;
-    pendingChanges: Array<ErgoPendingCharterChange_5>;
-};
-
-/**
  * A strong type for the canonical form of CapoLifecycleActivity$CreatingDelegate
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -1213,45 +1007,6 @@ declare type CapoDatum$Ergo$CharterData_5 = {
  * @public
  */
 declare interface CapoLifecycleActivity$CreatingDelegate {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
- * A strong type for the canonical form of CapoLifecycleActivity$CreatingDelegate
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$CreatingDelegate instead.
- * @public
- */
-declare interface CapoLifecycleActivity$CreatingDelegate_2 {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
- * A strong type for the canonical form of CapoLifecycleActivity$CreatingDelegate
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$CreatingDelegate instead.
- * @public
- */
-declare interface CapoLifecycleActivity$CreatingDelegate_3 {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
- * A strong type for the canonical form of CapoLifecycleActivity$CreatingDelegate
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$CreatingDelegate instead.
- * @public
- */
-declare interface CapoLifecycleActivity$CreatingDelegate_4 {
     seed: TxOutputId;
     purpose: string;
 }
@@ -1268,39 +1023,6 @@ declare interface CapoLifecycleActivity$CreatingDelegateLike {
 }
 
 /**
- * A strong type for the permissive form of CapoLifecycleActivity$CreatingDelegate
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoLifecycleActivity$CreatingDelegateLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
- * A strong type for the permissive form of CapoLifecycleActivity$CreatingDelegate
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoLifecycleActivity$CreatingDelegateLike_3 {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
- * A strong type for the permissive form of CapoLifecycleActivity$CreatingDelegate
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoLifecycleActivity$CreatingDelegateLike_4 {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$CreatingDelegate
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -1310,39 +1032,6 @@ declare interface CapoLifecycleActivity$CreatingDelegateLike_4 {
  * @public
  */
 declare type CapoLifecycleActivity$Ergo$CreatingDelegate = CapoLifecycleActivity$CreatingDelegate;
-
-/**
- * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$CreatingDelegate
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$CreatingDelegateLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoLifecycleActivity$Ergo$CreatingDelegate_2 = CapoLifecycleActivity$CreatingDelegate_2;
-
-/**
- * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$CreatingDelegate
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$CreatingDelegateLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoLifecycleActivity$Ergo$CreatingDelegate_3 = CapoLifecycleActivity$CreatingDelegate_3;
-
-/**
- * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$CreatingDelegate
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$CreatingDelegateLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoLifecycleActivity$Ergo$CreatingDelegate_4 = CapoLifecycleActivity$CreatingDelegate_4;
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewMintDelegate
@@ -1356,39 +1045,6 @@ declare type CapoLifecycleActivity$Ergo$CreatingDelegate_4 = CapoLifecycleActivi
 declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate = CapoLifecycleActivity$forcingNewMintDelegate;
 
 /**
- * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewMintDelegate
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$forcingNewMintDelegateLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_2 = CapoLifecycleActivity$forcingNewMintDelegate_2;
-
-/**
- * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewMintDelegate
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$forcingNewMintDelegateLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_3 = CapoLifecycleActivity$forcingNewMintDelegate_3;
-
-/**
- * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewMintDelegate
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$forcingNewMintDelegateLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_4 = CapoLifecycleActivity$forcingNewMintDelegate_4;
-
-/**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewSpendDelegate
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -1398,39 +1054,6 @@ declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_4 = CapoLifecycle
  * @public
  */
 declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate = CapoLifecycleActivity$forcingNewSpendDelegate;
-
-/**
- * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewSpendDelegate
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$forcingNewSpendDelegateLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_2 = CapoLifecycleActivity$forcingNewSpendDelegate_2;
-
-/**
- * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewSpendDelegate
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$forcingNewSpendDelegateLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_3 = CapoLifecycleActivity$forcingNewSpendDelegate_3;
-
-/**
- * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewSpendDelegate
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoLifecycleActivity$forcingNewSpendDelegateLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_4 = CapoLifecycleActivity$forcingNewSpendDelegate_4;
 
 /**
  * A strong type for the canonical form of CapoLifecycleActivity$forcingNewMintDelegate
@@ -1446,84 +1069,12 @@ declare interface CapoLifecycleActivity$forcingNewMintDelegate {
 }
 
 /**
- * A strong type for the canonical form of CapoLifecycleActivity$forcingNewMintDelegate
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$forcingNewMintDelegate instead.
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewMintDelegate_2 {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
- * A strong type for the canonical form of CapoLifecycleActivity$forcingNewMintDelegate
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$forcingNewMintDelegate instead.
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewMintDelegate_3 {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
- * A strong type for the canonical form of CapoLifecycleActivity$forcingNewMintDelegate
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$forcingNewMintDelegate instead.
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewMintDelegate_4 {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
  * A strong type for the permissive form of CapoLifecycleActivity$forcingNewMintDelegate
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewMintDelegateLike {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
- * A strong type for the permissive form of CapoLifecycleActivity$forcingNewMintDelegate
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
- * A strong type for the permissive form of CapoLifecycleActivity$forcingNewMintDelegate
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_3 {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
- * A strong type for the permissive form of CapoLifecycleActivity$forcingNewMintDelegate
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_4 {
     seed: TxOutputId | string;
     purpose: string;
 }
@@ -1542,84 +1093,12 @@ declare interface CapoLifecycleActivity$forcingNewSpendDelegate {
 }
 
 /**
- * A strong type for the canonical form of CapoLifecycleActivity$forcingNewSpendDelegate
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$forcingNewSpendDelegate instead.
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewSpendDelegate_2 {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
- * A strong type for the canonical form of CapoLifecycleActivity$forcingNewSpendDelegate
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$forcingNewSpendDelegate instead.
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewSpendDelegate_3 {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
- * A strong type for the canonical form of CapoLifecycleActivity$forcingNewSpendDelegate
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see CapoLifecycleActivity$Ergo$forcingNewSpendDelegate instead.
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewSpendDelegate_4 {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
  * A strong type for the permissive form of CapoLifecycleActivity$forcingNewSpendDelegate
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
- * A strong type for the permissive form of CapoLifecycleActivity$forcingNewSpendDelegate
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
- * A strong type for the permissive form of CapoLifecycleActivity$forcingNewSpendDelegate
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike_3 {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
- * A strong type for the permissive form of CapoLifecycleActivity$forcingNewSpendDelegate
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike_4 {
     seed: TxOutputId | string;
     purpose: string;
 }
@@ -1648,84 +1127,6 @@ declare type CapoLifecycleActivity = {
     forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegate;
 } | {
     updatingManifest: ManifestActivity;
-};
-
-/**
- * CapoLifecycleActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type CapoLifecycleActivity_2 = {
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegate_2;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRole_3;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegate_2;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegate_2;
-} | {
-    updatingManifest: ManifestActivity_2;
-};
-
-/**
- * CapoLifecycleActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type CapoLifecycleActivity_3 = {
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegate_3;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRole_4;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegate_3;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegate_3;
-} | {
-    updatingManifest: ManifestActivity_3;
-};
-
-/**
- * CapoLifecycleActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type CapoLifecycleActivity_4 = {
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegate_4;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRole_5;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegate_4;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegate_4;
-} | {
-    updatingManifest: ManifestActivity_4;
 };
 
 /**
@@ -3159,112 +2560,6 @@ declare type CapoLifecycleActivityLike = IntersectedEnum<{
 }>;
 
 /**
- * CapoLifecycleActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type CapoLifecycleActivityLike_2 = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_2;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRoleLike_2;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_2;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_2;
-} | {
-    updatingManifest: ManifestActivityLike_2;
-}>;
-
-/**
- * CapoLifecycleActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type CapoLifecycleActivityLike_3 = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_3;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRoleLike_3;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_3;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_3;
-} | {
-    updatingManifest: ManifestActivityLike_3;
-}>;
-
-/**
- * CapoLifecycleActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type CapoLifecycleActivityLike_4 = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_4;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRoleLike_4;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_4;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_4;
-} | {
-    updatingManifest: ManifestActivityLike_4;
-}>;
-
-/**
- * @internal
- */
-declare type CapoLifecycleActivityMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "CapoLifecycleActivity";
-}, {
-    CreatingDelegate: singleEnumVariantMeta<CapoLifecycleActivityMeta, "CreatingDelegate", "Constr#0", "fields", CapoLifecycleActivity$CreatingDelegate_2, "isSeededActivity">;
-    queuePendingChange: singleEnumVariantMeta<CapoLifecycleActivityMeta, "queuePendingChange", "Constr#1", "tagOnly", tagOnly, "noSpecialFlags">;
-    removePendingChange: singleEnumVariantMeta<CapoLifecycleActivityMeta, "removePendingChange", "Constr#2", "singletonField", /* implied wrapper { role: ... } for singleVariantField */ DelegateRole_3, "noSpecialFlags">;
-    commitPendingChanges: singleEnumVariantMeta<CapoLifecycleActivityMeta, "commitPendingChanges", "Constr#3", "tagOnly", tagOnly, "noSpecialFlags">;
-    forcingNewSpendDelegate: singleEnumVariantMeta<CapoLifecycleActivityMeta, "forcingNewSpendDelegate", "Constr#4", "fields", CapoLifecycleActivity$forcingNewSpendDelegate_2, "isSeededActivity">;
-    forcingNewMintDelegate: singleEnumVariantMeta<CapoLifecycleActivityMeta, "forcingNewMintDelegate", "Constr#5", "fields", CapoLifecycleActivity$forcingNewMintDelegate_2, "isSeededActivity">;
-    updatingManifest: singleEnumVariantMeta<CapoLifecycleActivityMeta, "updatingManifest", "Constr#6", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ ManifestActivity_2, "noSpecialFlags">;
-}>;
-
-/**
  * A strong type for the canonical form of CapoManifestEntry
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -3279,48 +2574,6 @@ declare interface CapoManifestEntry {
 }
 
 /**
- * A strong type for the canonical form of CapoManifestEntry
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoCapoManifestEntry instead.
- * @public
- */
-declare interface CapoManifestEntry_2 {
-    entryType: ManifestEntryType_2;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
-}
-
-/**
- * A strong type for the canonical form of CapoManifestEntry
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoCapoManifestEntry instead.
- * @public
- */
-declare interface CapoManifestEntry_3 {
-    entryType: ManifestEntryType_3;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
-}
-
-/**
- * A strong type for the canonical form of CapoManifestEntry
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoCapoManifestEntry instead.
- * @public
- */
-declare interface CapoManifestEntry_4 {
-    entryType: ManifestEntryType_4;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
-}
-
-/**
  * A strong type for the permissive form of CapoManifestEntry
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
@@ -3328,42 +2581,6 @@ declare interface CapoManifestEntry_4 {
  */
 declare interface CapoManifestEntryLike {
     entryType: ManifestEntryTypeLike;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
-}
-
-/**
- * A strong type for the permissive form of CapoManifestEntry
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoManifestEntryLike_2 {
-    entryType: ManifestEntryTypeLike_2;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
-}
-
-/**
- * A strong type for the permissive form of CapoManifestEntry
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoManifestEntryLike_3 {
-    entryType: ManifestEntryTypeLike_3;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
-}
-
-/**
- * A strong type for the permissive form of CapoManifestEntry
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface CapoManifestEntryLike_4 {
-    entryType: ManifestEntryTypeLike_4;
     tokenName: number[];
     mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
 }
@@ -3383,48 +2600,6 @@ declare type cctx_CharterInputType$Ergo$Input = {
 };
 
 /**
- * An ergonomic, though less strictly-safe form of cctx_CharterInputType$Input
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the cctx_CharterInputType$InputLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type cctx_CharterInputType$Ergo$Input_2 = {
-    datum: CapoDatum$Ergo$CharterData_3;
-    utxo: TxInput;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of cctx_CharterInputType$Input
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the cctx_CharterInputType$InputLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type cctx_CharterInputType$Ergo$Input_3 = {
-    datum: CapoDatum$Ergo$CharterData_4;
-    utxo: TxInput;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of cctx_CharterInputType$Input
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the cctx_CharterInputType$InputLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type cctx_CharterInputType$Ergo$Input_4 = {
-    datum: CapoDatum$Ergo$CharterData_5;
-    utxo: TxInput;
-};
-
-/**
  * An ergonomic, though less strictly-safe form of cctx_CharterInputType$RefInput
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -3435,48 +2610,6 @@ declare type cctx_CharterInputType$Ergo$Input_4 = {
  */
 declare type cctx_CharterInputType$Ergo$RefInput = {
     datum: CapoDatum$Ergo$CharterData_2;
-    utxo: TxInput;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of cctx_CharterInputType$RefInput
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the cctx_CharterInputType$RefInputLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type cctx_CharterInputType$Ergo$RefInput_2 = {
-    datum: CapoDatum$Ergo$CharterData_3;
-    utxo: TxInput;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of cctx_CharterInputType$RefInput
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the cctx_CharterInputType$RefInputLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type cctx_CharterInputType$Ergo$RefInput_3 = {
-    datum: CapoDatum$Ergo$CharterData_4;
-    utxo: TxInput;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of cctx_CharterInputType$RefInput
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the cctx_CharterInputType$RefInputLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type cctx_CharterInputType$Ergo$RefInput_4 = {
-    datum: CapoDatum$Ergo$CharterData_5;
     utxo: TxInput;
 };
 
@@ -3494,45 +2627,6 @@ declare interface cctx_CharterInputType$Input {
 }
 
 /**
- * A strong type for the canonical form of cctx_CharterInputType$Input
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see cctx_CharterInputType$Ergo$Input instead.
- * @public
- */
-declare interface cctx_CharterInputType$Input_2 {
-    datum: CapoDatum$CharterData_2;
-    utxo: TxInput;
-}
-
-/**
- * A strong type for the canonical form of cctx_CharterInputType$Input
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see cctx_CharterInputType$Ergo$Input instead.
- * @public
- */
-declare interface cctx_CharterInputType$Input_3 {
-    datum: CapoDatum$CharterData_3;
-    utxo: TxInput;
-}
-
-/**
- * A strong type for the canonical form of cctx_CharterInputType$Input
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see cctx_CharterInputType$Ergo$Input instead.
- * @public
- */
-declare interface cctx_CharterInputType$Input_4 {
-    datum: CapoDatum$CharterData_4;
-    utxo: TxInput;
-}
-
-/**
  * A strong type for the permissive form of cctx_CharterInputType$Input
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
@@ -3540,39 +2634,6 @@ declare interface cctx_CharterInputType$Input_4 {
  */
 declare interface cctx_CharterInputType$InputLike {
     datum: CapoDatum$CharterDataLike;
-    utxo: TxInput;
-}
-
-/**
- * A strong type for the permissive form of cctx_CharterInputType$Input
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface cctx_CharterInputType$InputLike_2 {
-    datum: CapoDatum$CharterDataLike_2;
-    utxo: TxInput;
-}
-
-/**
- * A strong type for the permissive form of cctx_CharterInputType$Input
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface cctx_CharterInputType$InputLike_3 {
-    datum: CapoDatum$CharterDataLike_3;
-    utxo: TxInput;
-}
-
-/**
- * A strong type for the permissive form of cctx_CharterInputType$Input
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface cctx_CharterInputType$InputLike_4 {
-    datum: CapoDatum$CharterDataLike_4;
     utxo: TxInput;
 }
 
@@ -3590,45 +2651,6 @@ declare interface cctx_CharterInputType$RefInput {
 }
 
 /**
- * A strong type for the canonical form of cctx_CharterInputType$RefInput
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see cctx_CharterInputType$Ergo$RefInput instead.
- * @public
- */
-declare interface cctx_CharterInputType$RefInput_2 {
-    datum: CapoDatum$CharterData_2;
-    utxo: TxInput;
-}
-
-/**
- * A strong type for the canonical form of cctx_CharterInputType$RefInput
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see cctx_CharterInputType$Ergo$RefInput instead.
- * @public
- */
-declare interface cctx_CharterInputType$RefInput_3 {
-    datum: CapoDatum$CharterData_3;
-    utxo: TxInput;
-}
-
-/**
- * A strong type for the canonical form of cctx_CharterInputType$RefInput
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see cctx_CharterInputType$Ergo$RefInput instead.
- * @public
- */
-declare interface cctx_CharterInputType$RefInput_4 {
-    datum: CapoDatum$CharterData_4;
-    utxo: TxInput;
-}
-
-/**
  * A strong type for the permissive form of cctx_CharterInputType$RefInput
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
@@ -3636,39 +2658,6 @@ declare interface cctx_CharterInputType$RefInput_4 {
  */
 declare interface cctx_CharterInputType$RefInputLike {
     datum: CapoDatum$CharterDataLike;
-    utxo: TxInput;
-}
-
-/**
- * A strong type for the permissive form of cctx_CharterInputType$RefInput
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface cctx_CharterInputType$RefInputLike_2 {
-    datum: CapoDatum$CharterDataLike_2;
-    utxo: TxInput;
-}
-
-/**
- * A strong type for the permissive form of cctx_CharterInputType$RefInput
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface cctx_CharterInputType$RefInputLike_3 {
-    datum: CapoDatum$CharterDataLike_3;
-    utxo: TxInput;
-}
-
-/**
- * A strong type for the permissive form of cctx_CharterInputType$RefInput
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface cctx_CharterInputType$RefInputLike_4 {
-    datum: CapoDatum$CharterDataLike_4;
     utxo: TxInput;
 }
 
@@ -3688,60 +2677,6 @@ declare type cctx_CharterInputType = {
     RefInput: cctx_CharterInputType$RefInput;
 } | {
     Input: cctx_CharterInputType$Input;
-};
-
-/**
- * cctx_CharterInputType enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the cctx_CharterInputType enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `cctx_CharterInputTypeHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type cctx_CharterInputType_2 = {
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$RefInput_2;
-} | {
-    Input: cctx_CharterInputType$Input_2;
-};
-
-/**
- * cctx_CharterInputType enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the cctx_CharterInputType enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `cctx_CharterInputTypeHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type cctx_CharterInputType_3 = {
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$RefInput_3;
-} | {
-    Input: cctx_CharterInputType$Input_3;
-};
-
-/**
- * cctx_CharterInputType enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the cctx_CharterInputType enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `cctx_CharterInputTypeHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type cctx_CharterInputType_4 = {
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$RefInput_4;
-} | {
-    Input: cctx_CharterInputType$Input_4;
 };
 
 /**
@@ -3914,84 +2849,6 @@ declare type cctx_CharterInputTypeLike = IntersectedEnum<{
     Input: cctx_CharterInputType$InputLike;
 }>;
 
-/**
- * cctx_CharterInputType enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **3 variant(s)** of the cctx_CharterInputType enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `cctx_CharterInputTypeHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type cctx_CharterInputTypeLike_2 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$RefInputLike_2;
-} | {
-    Input: cctx_CharterInputType$InputLike_2;
-}>;
-
-/**
- * cctx_CharterInputType enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **3 variant(s)** of the cctx_CharterInputType enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `cctx_CharterInputTypeHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type cctx_CharterInputTypeLike_3 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$RefInputLike_3;
-} | {
-    Input: cctx_CharterInputType$InputLike_3;
-}>;
-
-/**
- * cctx_CharterInputType enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **3 variant(s)** of the cctx_CharterInputType enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `cctx_CharterInputTypeHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type cctx_CharterInputTypeLike_4 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$RefInputLike_4;
-} | {
-    Input: cctx_CharterInputType$InputLike_4;
-}>;
-
-/**
- * @internal
- */
-declare type cctx_CharterInputTypeMeta = EnumTypeMeta<{
-    module: "CapoHelpers";
-    enumName: "cctx_CharterInputType";
-}, {
-    Unk: singleEnumVariantMeta<cctx_CharterInputTypeMeta, "Unk", "Constr#0", "tagOnly", tagOnly, "noSpecialFlags">;
-    RefInput: singleEnumVariantMeta<cctx_CharterInputTypeMeta, "RefInput", "Constr#1", "fields", cctx_CharterInputType$RefInput_2, "noSpecialFlags">;
-    Input: singleEnumVariantMeta<cctx_CharterInputTypeMeta, "Input", "Constr#2", "fields", cctx_CharterInputType$Input_2, "noSpecialFlags">;
-}>;
-
 declare const computedSignals: {
     userAddress: ReadonlySignal<Address | undefined>;
     isConnected: ReadonlySignal<boolean>;
@@ -4039,84 +2896,12 @@ declare interface DelegateActivity$CreatingDelegatedData {
 }
 
 /**
- * A strong type for the canonical form of DelegateActivity$CreatingDelegatedData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateActivity$Ergo$CreatingDelegatedData instead.
- * @public
- */
-declare interface DelegateActivity$CreatingDelegatedData_2 {
-    seed: TxOutputId;
-    dataType: string;
-}
-
-/**
- * A strong type for the canonical form of DelegateActivity$CreatingDelegatedData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateActivity$Ergo$CreatingDelegatedData instead.
- * @public
- */
-declare interface DelegateActivity$CreatingDelegatedData_3 {
-    seed: TxOutputId;
-    dataType: string;
-}
-
-/**
- * A strong type for the canonical form of DelegateActivity$CreatingDelegatedData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateActivity$Ergo$CreatingDelegatedData instead.
- * @public
- */
-declare interface DelegateActivity$CreatingDelegatedData_4 {
-    seed: TxOutputId;
-    dataType: string;
-}
-
-/**
  * A strong type for the permissive form of DelegateActivity$CreatingDelegatedData
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
 declare interface DelegateActivity$CreatingDelegatedDataLike {
-    seed: TxOutputId | string;
-    dataType: string;
-}
-
-/**
- * A strong type for the permissive form of DelegateActivity$CreatingDelegatedData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateActivity$CreatingDelegatedDataLike_2 {
-    seed: TxOutputId | string;
-    dataType: string;
-}
-
-/**
- * A strong type for the permissive form of DelegateActivity$CreatingDelegatedData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateActivity$CreatingDelegatedDataLike_3 {
-    seed: TxOutputId | string;
-    dataType: string;
-}
-
-/**
- * A strong type for the permissive form of DelegateActivity$CreatingDelegatedData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateActivity$CreatingDelegatedDataLike_4 {
     seed: TxOutputId | string;
     dataType: string;
 }
@@ -4135,84 +2920,12 @@ declare interface DelegateActivity$DeletingDelegatedData {
 }
 
 /**
- * A strong type for the canonical form of DelegateActivity$DeletingDelegatedData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateActivity$Ergo$DeletingDelegatedData instead.
- * @public
- */
-declare interface DelegateActivity$DeletingDelegatedData_2 {
-    dataType: string;
-    recId: number[];
-}
-
-/**
- * A strong type for the canonical form of DelegateActivity$DeletingDelegatedData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateActivity$Ergo$DeletingDelegatedData instead.
- * @public
- */
-declare interface DelegateActivity$DeletingDelegatedData_3 {
-    dataType: string;
-    recId: number[];
-}
-
-/**
- * A strong type for the canonical form of DelegateActivity$DeletingDelegatedData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateActivity$Ergo$DeletingDelegatedData instead.
- * @public
- */
-declare interface DelegateActivity$DeletingDelegatedData_4 {
-    dataType: string;
-    recId: number[];
-}
-
-/**
  * A strong type for the permissive form of DelegateActivity$DeletingDelegatedData
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
 declare interface DelegateActivity$DeletingDelegatedDataLike {
-    dataType: string;
-    recId: number[];
-}
-
-/**
- * A strong type for the permissive form of DelegateActivity$DeletingDelegatedData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateActivity$DeletingDelegatedDataLike_2 {
-    dataType: string;
-    recId: number[];
-}
-
-/**
- * A strong type for the permissive form of DelegateActivity$DeletingDelegatedData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateActivity$DeletingDelegatedDataLike_3 {
-    dataType: string;
-    recId: number[];
-}
-
-/**
- * A strong type for the permissive form of DelegateActivity$DeletingDelegatedData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateActivity$DeletingDelegatedDataLike_4 {
     dataType: string;
     recId: number[];
 }
@@ -4229,39 +2942,6 @@ declare interface DelegateActivity$DeletingDelegatedDataLike_4 {
 declare type DelegateActivity$Ergo$CreatingDelegatedData = DelegateActivity$CreatingDelegatedData;
 
 /**
- * An ergonomic, though less strictly-safe form of DelegateActivity$CreatingDelegatedData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateActivity$CreatingDelegatedDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateActivity$Ergo$CreatingDelegatedData_2 = DelegateActivity$CreatingDelegatedData_2;
-
-/**
- * An ergonomic, though less strictly-safe form of DelegateActivity$CreatingDelegatedData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateActivity$CreatingDelegatedDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateActivity$Ergo$CreatingDelegatedData_3 = DelegateActivity$CreatingDelegatedData_3;
-
-/**
- * An ergonomic, though less strictly-safe form of DelegateActivity$CreatingDelegatedData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateActivity$CreatingDelegatedDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateActivity$Ergo$CreatingDelegatedData_4 = DelegateActivity$CreatingDelegatedData_4;
-
-/**
  * An ergonomic, though less strictly-safe form of DelegateActivity$DeletingDelegatedData
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -4273,39 +2953,6 @@ declare type DelegateActivity$Ergo$CreatingDelegatedData_4 = DelegateActivity$Cr
 declare type DelegateActivity$Ergo$DeletingDelegatedData = DelegateActivity$DeletingDelegatedData;
 
 /**
- * An ergonomic, though less strictly-safe form of DelegateActivity$DeletingDelegatedData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateActivity$DeletingDelegatedDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateActivity$Ergo$DeletingDelegatedData_2 = DelegateActivity$DeletingDelegatedData_2;
-
-/**
- * An ergonomic, though less strictly-safe form of DelegateActivity$DeletingDelegatedData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateActivity$DeletingDelegatedDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateActivity$Ergo$DeletingDelegatedData_3 = DelegateActivity$DeletingDelegatedData_3;
-
-/**
- * An ergonomic, though less strictly-safe form of DelegateActivity$DeletingDelegatedData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateActivity$DeletingDelegatedDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateActivity$Ergo$DeletingDelegatedData_4 = DelegateActivity$DeletingDelegatedData_4;
-
-/**
  * An ergonomic, though less strictly-safe form of DelegateActivity$UpdatingDelegatedData
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -4315,39 +2962,6 @@ declare type DelegateActivity$Ergo$DeletingDelegatedData_4 = DelegateActivity$De
  * @public
  */
 declare type DelegateActivity$Ergo$UpdatingDelegatedData = DelegateActivity$UpdatingDelegatedData;
-
-/**
- * An ergonomic, though less strictly-safe form of DelegateActivity$UpdatingDelegatedData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateActivity$UpdatingDelegatedDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateActivity$Ergo$UpdatingDelegatedData_2 = DelegateActivity$UpdatingDelegatedData_2;
-
-/**
- * An ergonomic, though less strictly-safe form of DelegateActivity$UpdatingDelegatedData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateActivity$UpdatingDelegatedDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateActivity$Ergo$UpdatingDelegatedData_3 = DelegateActivity$UpdatingDelegatedData_3;
-
-/**
- * An ergonomic, though less strictly-safe form of DelegateActivity$UpdatingDelegatedData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateActivity$UpdatingDelegatedDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateActivity$Ergo$UpdatingDelegatedData_4 = DelegateActivity$UpdatingDelegatedData_4;
 
 /**
  * A strong type for the canonical form of DelegateActivity$UpdatingDelegatedData
@@ -4363,84 +2977,12 @@ declare interface DelegateActivity$UpdatingDelegatedData {
 }
 
 /**
- * A strong type for the canonical form of DelegateActivity$UpdatingDelegatedData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateActivity$Ergo$UpdatingDelegatedData instead.
- * @public
- */
-declare interface DelegateActivity$UpdatingDelegatedData_2 {
-    dataType: string;
-    recId: number[];
-}
-
-/**
- * A strong type for the canonical form of DelegateActivity$UpdatingDelegatedData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateActivity$Ergo$UpdatingDelegatedData instead.
- * @public
- */
-declare interface DelegateActivity$UpdatingDelegatedData_3 {
-    dataType: string;
-    recId: number[];
-}
-
-/**
- * A strong type for the canonical form of DelegateActivity$UpdatingDelegatedData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateActivity$Ergo$UpdatingDelegatedData instead.
- * @public
- */
-declare interface DelegateActivity$UpdatingDelegatedData_4 {
-    dataType: string;
-    recId: number[];
-}
-
-/**
  * A strong type for the permissive form of DelegateActivity$UpdatingDelegatedData
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
 declare interface DelegateActivity$UpdatingDelegatedDataLike {
-    dataType: string;
-    recId: number[];
-}
-
-/**
- * A strong type for the permissive form of DelegateActivity$UpdatingDelegatedData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateActivity$UpdatingDelegatedDataLike_2 {
-    dataType: string;
-    recId: number[];
-}
-
-/**
- * A strong type for the permissive form of DelegateActivity$UpdatingDelegatedData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateActivity$UpdatingDelegatedDataLike_3 {
-    dataType: string;
-    recId: number[];
-}
-
-/**
- * A strong type for the permissive form of DelegateActivity$UpdatingDelegatedData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateActivity$UpdatingDelegatedDataLike_4 {
     dataType: string;
     recId: number[];
 }
@@ -4471,96 +3013,6 @@ declare type DelegateActivity = {
     UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedData;
 } | {
     DeletingDelegatedData: DelegateActivity$DeletingDelegatedData;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-};
-
-/**
- * DelegateActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **9 variant(s)** of the DelegateActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type DelegateActivity_2 = {
-    CapoLifecycleActivities: CapoLifecycleActivity_2;
-} | {
-    DelegateLifecycleActivities: DelegateLifecycleActivity_2;
-} | {
-    SpendingActivities: SpendingActivity_2;
-} | {
-    MintingActivities: MintingActivity_2;
-} | {
-    BurningActivities: BurningActivity_2;
-} | {
-    CreatingDelegatedData: DelegateActivity$CreatingDelegatedData_2;
-} | {
-    UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedData_2;
-} | {
-    DeletingDelegatedData: DelegateActivity$DeletingDelegatedData_2;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-};
-
-/**
- * DelegateActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **9 variant(s)** of the DelegateActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type DelegateActivity_3 = {
-    CapoLifecycleActivities: CapoLifecycleActivity_3;
-} | {
-    DelegateLifecycleActivities: DelegateLifecycleActivity_3;
-} | {
-    SpendingActivities: SpendingActivity_3;
-} | {
-    MintingActivities: MintingActivity_3;
-} | {
-    BurningActivities: BurningActivity_3;
-} | {
-    CreatingDelegatedData: DelegateActivity$CreatingDelegatedData_3;
-} | {
-    UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedData_3;
-} | {
-    DeletingDelegatedData: DelegateActivity$DeletingDelegatedData_3;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-};
-
-/**
- * DelegateActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **9 variant(s)** of the DelegateActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type DelegateActivity_4 = {
-    CapoLifecycleActivities: CapoLifecycleActivity_4;
-} | {
-    DelegateLifecycleActivities: DelegateLifecycleActivity_4;
-} | {
-    SpendingActivities: SpendingActivity_4;
-} | {
-    MintingActivities: MintingActivity_4;
-} | {
-    BurningActivities: BurningActivity_4;
-} | {
-    CreatingDelegatedData: DelegateActivity$CreatingDelegatedData_4;
-} | {
-    UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedData_4;
-} | {
-    DeletingDelegatedData: DelegateActivity$DeletingDelegatedData_4;
 } | {
     MultipleDelegateActivities: Array<UplcData>;
 };
@@ -4978,58 +3430,6 @@ declare class DelegateActivityHelper_4 extends EnumBridge<isActivity> {
 }
 
 /**
- * DelegateActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **9 variant(s)** of the DelegateActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type DelegateActivityLike = IntersectedEnum<{
-    CapoLifecycleActivities: CapoLifecycleActivityLike_2;
-} | {
-    DelegateLifecycleActivities: DelegateLifecycleActivityLike_2;
-} | {
-    SpendingActivities: SpendingActivityLike_2;
-} | {
-    MintingActivities: MintingActivityLike_2;
-} | {
-    BurningActivities: BurningActivityLike_2;
-} | {
-    CreatingDelegatedData: DelegateActivity$CreatingDelegatedDataLike_2;
-} | {
-    UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedDataLike_2;
-} | {
-    DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike_2;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-}>;
-
-/**
- * @internal
- */
-declare type DelegateActivityMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "DelegateActivity";
-}, {
-    CapoLifecycleActivities: singleEnumVariantMeta<DelegateActivityMeta, "CapoLifecycleActivities", "Constr#0", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ CapoLifecycleActivity_2, "noSpecialFlags">;
-    DelegateLifecycleActivities: singleEnumVariantMeta<DelegateActivityMeta, "DelegateLifecycleActivities", "Constr#1", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ DelegateLifecycleActivity_2, "noSpecialFlags">;
-    SpendingActivities: singleEnumVariantMeta<DelegateActivityMeta, "SpendingActivities", "Constr#2", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ SpendingActivity_2, "noSpecialFlags">;
-    MintingActivities: singleEnumVariantMeta<DelegateActivityMeta, "MintingActivities", "Constr#3", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ MintingActivity_2, "noSpecialFlags">;
-    BurningActivities: singleEnumVariantMeta<DelegateActivityMeta, "BurningActivities", "Constr#4", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ BurningActivity_2, "noSpecialFlags">;
-    CreatingDelegatedData: singleEnumVariantMeta<DelegateActivityMeta, "CreatingDelegatedData", "Constr#5", "fields", DelegateActivity$CreatingDelegatedData_2, "isSeededActivity">;
-    UpdatingDelegatedData: singleEnumVariantMeta<DelegateActivityMeta, "UpdatingDelegatedData", "Constr#6", "fields", DelegateActivity$UpdatingDelegatedData_2, "noSpecialFlags">;
-    DeletingDelegatedData: singleEnumVariantMeta<DelegateActivityMeta, "DeletingDelegatedData", "Constr#7", "fields", DelegateActivity$DeletingDelegatedData_2, "noSpecialFlags">;
-    MultipleDelegateActivities: singleEnumVariantMeta<DelegateActivityMeta, "MultipleDelegateActivities", "Constr#8", "singletonField", /* implied wrapper { activities: ... } for singleVariantField */ Array<UplcData>, "noSpecialFlags">;
-}>;
-
-/**
  * A strong type for the canonical form of DelegateDatum$capoStoredData
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -5044,48 +3444,6 @@ declare interface DelegateDatum$capoStoredData {
 }
 
 /**
- * A strong type for the canonical form of DelegateDatum$capoStoredData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateDatum$Ergo$capoStoredData instead.
- * @public
- */
-declare interface DelegateDatum$capoStoredData_2 {
-    data: NodeRegistrationData;
-    version: bigint;
-    otherDetails: UplcData;
-}
-
-/**
- * A strong type for the canonical form of DelegateDatum$capoStoredData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateDatum$Ergo$capoStoredData instead.
- * @public
- */
-declare interface DelegateDatum$capoStoredData_3 {
-    data: NeighborhoodData;
-    version: bigint;
-    otherDetails: UplcData;
-}
-
-/**
- * A strong type for the canonical form of DelegateDatum$capoStoredData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateDatum$Ergo$capoStoredData instead.
- * @public
- */
-declare interface DelegateDatum$capoStoredData_4 {
-    data: ProtocolSettings;
-    version: bigint;
-    otherDetails: UplcData;
-}
-
-/**
  * A strong type for the permissive form of DelegateDatum$capoStoredData
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
@@ -5093,42 +3451,6 @@ declare interface DelegateDatum$capoStoredData_4 {
  */
 declare interface DelegateDatum$capoStoredDataLike {
     data: AnyDataLike;
-    version: IntLike;
-    otherDetails: UplcData;
-}
-
-/**
- * A strong type for the permissive form of DelegateDatum$capoStoredData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateDatum$capoStoredDataLike_2 {
-    data: NodeRegistrationDataLike;
-    version: IntLike;
-    otherDetails: UplcData;
-}
-
-/**
- * A strong type for the permissive form of DelegateDatum$capoStoredData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateDatum$capoStoredDataLike_3 {
-    data: NeighborhoodDataLike;
-    version: IntLike;
-    otherDetails: UplcData;
-}
-
-/**
- * A strong type for the permissive form of DelegateDatum$capoStoredData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateDatum$capoStoredDataLike_4 {
-    data: ProtocolSettingsLike;
     version: IntLike;
     otherDetails: UplcData;
 }
@@ -5148,48 +3470,6 @@ declare interface DelegateDatum$Cip68RefToken {
 }
 
 /**
- * A strong type for the canonical form of DelegateDatum$Cip68RefToken
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateDatum$Ergo$Cip68RefToken instead.
- * @public
- */
-declare interface DelegateDatum$Cip68RefToken_2 {
-    cip68meta: AnyData_2;
-    cip68version: bigint;
-    otherDetails: UplcData;
-}
-
-/**
- * A strong type for the canonical form of DelegateDatum$Cip68RefToken
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateDatum$Ergo$Cip68RefToken instead.
- * @public
- */
-declare interface DelegateDatum$Cip68RefToken_3 {
-    cip68meta: AnyData_3;
-    cip68version: bigint;
-    otherDetails: UplcData;
-}
-
-/**
- * A strong type for the canonical form of DelegateDatum$Cip68RefToken
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateDatum$Ergo$Cip68RefToken instead.
- * @public
- */
-declare interface DelegateDatum$Cip68RefToken_4 {
-    cip68meta: AnyData_4;
-    cip68version: bigint;
-    otherDetails: UplcData;
-}
-
-/**
  * A strong type for the permissive form of DelegateDatum$Cip68RefToken
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
@@ -5197,42 +3477,6 @@ declare interface DelegateDatum$Cip68RefToken_4 {
  */
 declare interface DelegateDatum$Cip68RefTokenLike {
     cip68meta: AnyDataLike;
-    cip68version: IntLike;
-    otherDetails: UplcData;
-}
-
-/**
- * A strong type for the permissive form of DelegateDatum$Cip68RefToken
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateDatum$Cip68RefTokenLike_2 {
-    cip68meta: AnyDataLike_2;
-    cip68version: IntLike;
-    otherDetails: UplcData;
-}
-
-/**
- * A strong type for the permissive form of DelegateDatum$Cip68RefToken
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateDatum$Cip68RefTokenLike_3 {
-    cip68meta: AnyDataLike_3;
-    cip68version: IntLike;
-    otherDetails: UplcData;
-}
-
-/**
- * A strong type for the permissive form of DelegateDatum$Cip68RefToken
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateDatum$Cip68RefTokenLike_4 {
-    cip68meta: AnyDataLike_4;
     cip68version: IntLike;
     otherDetails: UplcData;
 }
@@ -5253,51 +3497,6 @@ declare type DelegateDatum$Ergo$capoStoredData = {
 };
 
 /**
- * An ergonomic, though less strictly-safe form of DelegateDatum$capoStoredData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateDatum$capoStoredDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateDatum$Ergo$capoStoredData_2 = {
-    data: ErgoNodeRegistrationData;
-    version: bigint;
-    otherDetails: UplcData;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of DelegateDatum$capoStoredData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateDatum$capoStoredDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateDatum$Ergo$capoStoredData_3 = {
-    data: ErgoNeighborhoodData;
-    version: bigint;
-    otherDetails: UplcData;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of DelegateDatum$capoStoredData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateDatum$capoStoredDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateDatum$Ergo$capoStoredData_4 = {
-    data: ErgoProtocolSettings;
-    version: bigint;
-    otherDetails: UplcData;
-};
-
-/**
  * An ergonomic, though less strictly-safe form of DelegateDatum$Cip68RefToken
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -5308,51 +3507,6 @@ declare type DelegateDatum$Ergo$capoStoredData_4 = {
  */
 declare type DelegateDatum$Ergo$Cip68RefToken = {
     cip68meta: ErgoAnyData;
-    cip68version: bigint;
-    otherDetails: UplcData;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of DelegateDatum$Cip68RefToken
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateDatum$Cip68RefTokenLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateDatum$Ergo$Cip68RefToken_2 = {
-    cip68meta: ErgoAnyData_2;
-    cip68version: bigint;
-    otherDetails: UplcData;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of DelegateDatum$Cip68RefToken
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateDatum$Cip68RefTokenLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateDatum$Ergo$Cip68RefToken_3 = {
-    cip68meta: ErgoAnyData_3;
-    cip68version: bigint;
-    otherDetails: UplcData;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of DelegateDatum$Cip68RefToken
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateDatum$Cip68RefTokenLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateDatum$Ergo$Cip68RefToken_4 = {
-    cip68meta: ErgoAnyData_4;
     cip68version: bigint;
     otherDetails: UplcData;
 };
@@ -5373,60 +3527,6 @@ declare type DelegateDatum = {
     IsDelegation: DelegationDetail;
 } | {
     capoStoredData: DelegateDatum$capoStoredData;
-};
-
-/**
- * DelegateDatum enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the DelegateDatum enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateDatumHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type DelegateDatum_2 = {
-    Cip68RefToken: DelegateDatum$Cip68RefToken_2;
-} | {
-    IsDelegation: DelegationDetail_2;
-} | {
-    capoStoredData: DelegateDatum$capoStoredData_2;
-};
-
-/**
- * DelegateDatum enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the DelegateDatum enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateDatumHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type DelegateDatum_3 = {
-    Cip68RefToken: DelegateDatum$Cip68RefToken_3;
-} | {
-    IsDelegation: DelegationDetail_3;
-} | {
-    capoStoredData: DelegateDatum$capoStoredData_3;
-};
-
-/**
- * DelegateDatum enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the DelegateDatum enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateDatumHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type DelegateDatum_4 = {
-    Cip68RefToken: DelegateDatum$Cip68RefToken_4;
-} | {
-    IsDelegation: DelegationDetail_4;
-} | {
-    capoStoredData: DelegateDatum$capoStoredData_4;
 };
 
 /**
@@ -5602,40 +3702,6 @@ declare class DelegateDatumHelper_4 extends EnumBridge<JustAnEnum> {
 }
 
 /**
- * DelegateDatum enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **3 variant(s)** of the DelegateDatum enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateDatumHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type DelegateDatumLike = IntersectedEnum<{
-    Cip68RefToken: DelegateDatum$Cip68RefTokenLike_2;
-} | {
-    IsDelegation: DelegationDetailLike_2;
-} | {
-    capoStoredData: DelegateDatum$capoStoredDataLike_2;
-}>;
-
-/**
- * @internal
- */
-declare type DelegateDatumMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "DelegateDatum";
-}, {
-    Cip68RefToken: singleEnumVariantMeta<DelegateDatumMeta, "Cip68RefToken", "Constr#0", "fields", DelegateDatum$Cip68RefToken_2, "noSpecialFlags">;
-    IsDelegation: singleEnumVariantMeta<DelegateDatumMeta, "IsDelegation", "Constr#1", "singletonField", /* implied wrapper { dd: ... } for singleVariantField */ DelegationDetail_2, "noSpecialFlags">;
-    capoStoredData: singleEnumVariantMeta<DelegateDatumMeta, "capoStoredData", "Constr#2", "fields", DelegateDatum$capoStoredData_2, "noSpecialFlags">;
-}>;
-
-/**
  * An ergonomic, though less strictly-safe form of DelegateLifecycleActivity$ReplacingMe
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -5647,39 +3713,6 @@ declare type DelegateDatumMeta = EnumTypeMeta<{
 declare type DelegateLifecycleActivity$Ergo$ReplacingMe = DelegateLifecycleActivity$ReplacingMe;
 
 /**
- * An ergonomic, though less strictly-safe form of DelegateLifecycleActivity$ReplacingMe
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateLifecycleActivity$ReplacingMeLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateLifecycleActivity$Ergo$ReplacingMe_2 = DelegateLifecycleActivity$ReplacingMe_2;
-
-/**
- * An ergonomic, though less strictly-safe form of DelegateLifecycleActivity$ReplacingMe
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateLifecycleActivity$ReplacingMeLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateLifecycleActivity$Ergo$ReplacingMe_3 = DelegateLifecycleActivity$ReplacingMe_3;
-
-/**
- * An ergonomic, though less strictly-safe form of DelegateLifecycleActivity$ReplacingMe
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegateLifecycleActivity$ReplacingMeLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type DelegateLifecycleActivity$Ergo$ReplacingMe_4 = DelegateLifecycleActivity$ReplacingMe_4;
-
-/**
  * A strong type for the canonical form of DelegateLifecycleActivity$ReplacingMe
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -5688,45 +3721,6 @@ declare type DelegateLifecycleActivity$Ergo$ReplacingMe_4 = DelegateLifecycleAct
  * @public
  */
 declare interface DelegateLifecycleActivity$ReplacingMe {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
- * A strong type for the canonical form of DelegateLifecycleActivity$ReplacingMe
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateLifecycleActivity$Ergo$ReplacingMe instead.
- * @public
- */
-declare interface DelegateLifecycleActivity$ReplacingMe_2 {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
- * A strong type for the canonical form of DelegateLifecycleActivity$ReplacingMe
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateLifecycleActivity$Ergo$ReplacingMe instead.
- * @public
- */
-declare interface DelegateLifecycleActivity$ReplacingMe_3 {
-    seed: TxOutputId;
-    purpose: string;
-}
-
-/**
- * A strong type for the canonical form of DelegateLifecycleActivity$ReplacingMe
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see DelegateLifecycleActivity$Ergo$ReplacingMe instead.
- * @public
- */
-declare interface DelegateLifecycleActivity$ReplacingMe_4 {
     seed: TxOutputId;
     purpose: string;
 }
@@ -5743,39 +3737,6 @@ declare interface DelegateLifecycleActivity$ReplacingMeLike {
 }
 
 /**
- * A strong type for the permissive form of DelegateLifecycleActivity$ReplacingMe
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateLifecycleActivity$ReplacingMeLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
- * A strong type for the permissive form of DelegateLifecycleActivity$ReplacingMe
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateLifecycleActivity$ReplacingMeLike_3 {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
- * A strong type for the permissive form of DelegateLifecycleActivity$ReplacingMe
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegateLifecycleActivity$ReplacingMeLike_4 {
-    seed: TxOutputId | string;
-    purpose: string;
-}
-
-/**
  * DelegateLifecycleActivity enum variants
  *
  * @remarks - expresses the essential raw data structures
@@ -5787,60 +3748,6 @@ declare interface DelegateLifecycleActivity$ReplacingMeLike_4 {
  */
 declare type DelegateLifecycleActivity = {
     ReplacingMe: DelegateLifecycleActivity$ReplacingMe;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-};
-
-/**
- * DelegateLifecycleActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the DelegateLifecycleActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateLifecycleActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type DelegateLifecycleActivity_2 = {
-    ReplacingMe: DelegateLifecycleActivity$ReplacingMe_2;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-};
-
-/**
- * DelegateLifecycleActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the DelegateLifecycleActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateLifecycleActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type DelegateLifecycleActivity_3 = {
-    ReplacingMe: DelegateLifecycleActivity$ReplacingMe_3;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-};
-
-/**
- * DelegateLifecycleActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the DelegateLifecycleActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateLifecycleActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type DelegateLifecycleActivity_4 = {
-    ReplacingMe: DelegateLifecycleActivity$ReplacingMe_4;
 } | {
     Retiring: tagOnly;
 } | {
@@ -6454,84 +4361,6 @@ declare type DelegateLifecycleActivityLike = IntersectedEnum<{
 }>;
 
 /**
- * DelegateLifecycleActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **3 variant(s)** of the DelegateLifecycleActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateLifecycleActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type DelegateLifecycleActivityLike_2 = IntersectedEnum<{
-    ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_2;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-}>;
-
-/**
- * DelegateLifecycleActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **3 variant(s)** of the DelegateLifecycleActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateLifecycleActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type DelegateLifecycleActivityLike_3 = IntersectedEnum<{
-    ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_3;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-}>;
-
-/**
- * DelegateLifecycleActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **3 variant(s)** of the DelegateLifecycleActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateLifecycleActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type DelegateLifecycleActivityLike_4 = IntersectedEnum<{
-    ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_4;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-}>;
-
-/**
- * @internal
- */
-declare type DelegateLifecycleActivityMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "DelegateLifecycleActivity";
-}, {
-    ReplacingMe: singleEnumVariantMeta<DelegateLifecycleActivityMeta, "ReplacingMe", "Constr#0", "fields", DelegateLifecycleActivity$ReplacingMe_2, "isSeededActivity">;
-    Retiring: singleEnumVariantMeta<DelegateLifecycleActivityMeta, "Retiring", "Constr#1", "tagOnly", tagOnly, "noSpecialFlags">;
-    ValidatingSettings: singleEnumVariantMeta<DelegateLifecycleActivityMeta, "ValidatingSettings", "Constr#2", "tagOnly", tagOnly, "noSpecialFlags">;
-}>;
-
-/**
  * DelegateRole enum variants
  *
  * @remarks - expresses the essential raw data structures
@@ -6570,90 +4399,6 @@ declare type DelegateRole = {
  * @public
  */
 declare type DelegateRole_2 = {
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-};
-
-/**
- * DelegateRole enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **8 variant(s)** of the DelegateRole enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type DelegateRole_3 = {
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-};
-
-/**
- * DelegateRole enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **8 variant(s)** of the DelegateRole enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type DelegateRole_4 = {
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-};
-
-/**
- * DelegateRole enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **8 variant(s)** of the DelegateRole enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type DelegateRole_5 = {
     MintDgt: tagOnly;
 } | {
     SpendDgt: tagOnly;
@@ -7216,119 +4961,6 @@ declare type DelegateRoleLike = IntersectedEnum<{
 }>;
 
 /**
- * DelegateRole enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **8 variant(s)** of the DelegateRole enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type DelegateRoleLike_2 = IntersectedEnum<{
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-}>;
-
-/**
- * DelegateRole enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **8 variant(s)** of the DelegateRole enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type DelegateRoleLike_3 = IntersectedEnum<{
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-}>;
-
-/**
- * DelegateRole enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **8 variant(s)** of the DelegateRole enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type DelegateRoleLike_4 = IntersectedEnum<{
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-}>;
-
-/**
- * @internal
- */
-declare type DelegateRoleMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "DelegateRole";
-}, {
-    MintDgt: singleEnumVariantMeta<DelegateRoleMeta, "MintDgt", "Constr#0", "tagOnly", tagOnly, "noSpecialFlags">;
-    SpendDgt: singleEnumVariantMeta<DelegateRoleMeta, "SpendDgt", "Constr#1", "tagOnly", tagOnly, "noSpecialFlags">;
-    MintInvariant: singleEnumVariantMeta<DelegateRoleMeta, "MintInvariant", "Constr#2", "tagOnly", tagOnly, "noSpecialFlags">;
-    SpendInvariant: singleEnumVariantMeta<DelegateRoleMeta, "SpendInvariant", "Constr#3", "tagOnly", tagOnly, "noSpecialFlags">;
-    DgDataPolicy: singleEnumVariantMeta<DelegateRoleMeta, "DgDataPolicy", "Constr#4", "singletonField", /* implied wrapper { name: ... } for singleVariantField */ string, "noSpecialFlags">;
-    OtherNamedDgt: singleEnumVariantMeta<DelegateRoleMeta, "OtherNamedDgt", "Constr#5", "singletonField", /* implied wrapper { name: ... } for singleVariantField */ string, "noSpecialFlags">;
-    BothMintAndSpendDgt: singleEnumVariantMeta<DelegateRoleMeta, "BothMintAndSpendDgt", "Constr#6", "tagOnly", tagOnly, "noSpecialFlags">;
-    HandledByCapoOnly: singleEnumVariantMeta<DelegateRoleMeta, "HandledByCapoOnly", "Constr#7", "tagOnly", tagOnly, "noSpecialFlags">;
-}>;
-
-/**
  * A strong type for the canonical form of DelegationDetail
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -7337,48 +4969,6 @@ declare type DelegateRoleMeta = EnumTypeMeta<{
  * @public
  */
 declare interface DelegationDetail {
-    capoAddr: Address;
-    mph: MintingPolicyHash;
-    tn: number[];
-}
-
-/**
- * A strong type for the canonical form of DelegationDetail
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoDelegationDetail instead.
- * @public
- */
-declare interface DelegationDetail_2 {
-    capoAddr: Address;
-    mph: MintingPolicyHash;
-    tn: number[];
-}
-
-/**
- * A strong type for the canonical form of DelegationDetail
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoDelegationDetail instead.
- * @public
- */
-declare interface DelegationDetail_3 {
-    capoAddr: Address;
-    mph: MintingPolicyHash;
-    tn: number[];
-}
-
-/**
- * A strong type for the canonical form of DelegationDetail
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoDelegationDetail instead.
- * @public
- */
-declare interface DelegationDetail_4 {
     capoAddr: Address;
     mph: MintingPolicyHash;
     tn: number[];
@@ -7395,152 +4985,6 @@ declare interface DelegationDetailLike {
     mph: /*minStructField*/ MintingPolicyHash | string | number[];
     tn: number[];
 }
-
-/**
- * A strong type for the permissive form of DelegationDetail
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegationDetailLike_2 {
-    capoAddr: /*minStructField*/ Address | string;
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-    tn: number[];
-}
-
-/**
- * A strong type for the permissive form of DelegationDetail
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegationDetailLike_3 {
-    capoAddr: /*minStructField*/ Address | string;
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-    tn: number[];
-}
-
-/**
- * A strong type for the permissive form of DelegationDetail
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DelegationDetailLike_4 {
-    capoAddr: /*minStructField*/ Address | string;
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-    tn: number[];
-}
-
-/**
- * A strong type for the canonical form of dgd_DataSrc$Both
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see dgd_DataSrc$Ergo$Both instead.
- * @public
- */
-declare interface dgd_DataSrc$Both {
-    utxo: TxInput;
-    txo: TxOutput;
-}
-
-/**
- * A strong type for the canonical form of dgd_DataSrc$Both
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see dgd_DataSrc$Ergo$Both instead.
- * @public
- */
-declare interface dgd_DataSrc$Both_2 {
-    utxo: TxInput;
-    txo: TxOutput;
-}
-
-/**
- * A strong type for the permissive form of dgd_DataSrc$Both
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface dgd_DataSrc$BothLike {
-    utxo: TxInput;
-    txo: TxOutput;
-}
-
-/**
- * A strong type for the permissive form of dgd_DataSrc$Both
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface dgd_DataSrc$BothLike_2 {
-    utxo: TxInput;
-    txo: TxOutput;
-}
-
-/**
- * An ergonomic, though less strictly-safe form of dgd_DataSrc$Both
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the dgd_DataSrc$BothLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type dgd_DataSrc$Ergo$Both = dgd_DataSrc$Both;
-
-/**
- * An ergonomic, though less strictly-safe form of dgd_DataSrc$Both
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the dgd_DataSrc$BothLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type dgd_DataSrc$Ergo$Both_2 = dgd_DataSrc$Both_2;
-
-/**
- * dgd_DataSrc enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **4 variant(s)** of the dgd_DataSrc enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `dgd_DataSrcHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type dgd_DataSrc = {
-    Unk: tagOnly;
-} | {
-    Input: TxInput;
-} | {
-    Output: TxOutput;
-} | {
-    Both: dgd_DataSrc$Both;
-};
-
-/**
- * dgd_DataSrc enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **4 variant(s)** of the dgd_DataSrc enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `dgd_DataSrcHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type dgd_DataSrc_2 = {
-    Unk: tagOnly;
-} | {
-    Input: TxInput;
-} | {
-    Output: TxOutput;
-} | {
-    Both: dgd_DataSrc$Both_2;
-};
 
 /**
  * Helper class for generating UplcData for variants of the ***dgd_DataSrc*** enum type.
@@ -7619,123 +5063,6 @@ declare class dgd_DataSrcHelper_2 extends EnumBridge<JustAnEnum> {
 }
 
 /**
- * dgd_DataSrc enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **4 variant(s)** of the dgd_DataSrc enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `dgd_DataSrcHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type dgd_DataSrcLike = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    Input: TxInput;
-} | {
-    Output: TxOutput;
-} | {
-    Both: dgd_DataSrc$BothLike;
-}>;
-
-/**
- * dgd_DataSrc enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **4 variant(s)** of the dgd_DataSrc enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `dgd_DataSrcHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type dgd_DataSrcLike_2 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    Input: TxInput;
-} | {
-    Output: TxOutput;
-} | {
-    Both: dgd_DataSrc$BothLike_2;
-}>;
-
-/**
- * @internal
- */
-declare type dgd_DataSrcMeta = EnumTypeMeta<{
-    module: "CapoHelpers";
-    enumName: "dgd_DataSrc";
-}, {
-    Unk: singleEnumVariantMeta<dgd_DataSrcMeta, "Unk", "Constr#0", "tagOnly", tagOnly, "noSpecialFlags">;
-    Input: singleEnumVariantMeta<dgd_DataSrcMeta, "Input", "Constr#1", "singletonField", /* implied wrapper { utxo: ... } for singleVariantField */ TxInput, "noSpecialFlags">;
-    Output: singleEnumVariantMeta<dgd_DataSrcMeta, "Output", "Constr#2", "singletonField", /* implied wrapper { txo: ... } for singleVariantField */ TxOutput, "noSpecialFlags">;
-    Both: singleEnumVariantMeta<dgd_DataSrcMeta, "Both", "Constr#3", "fields", dgd_DataSrc$Both, "noSpecialFlags">;
-}>;
-
-/**
- * A strong type for the canonical form of DgDataDetails
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoDgDataDetails instead.
- * @public
- */
-declare interface DgDataDetails {
-    dataSrc: dgd_DataSrc;
-    id: number[];
-    type: string;
-    mph: MintingPolicyHash;
-}
-
-/**
- * A strong type for the canonical form of DgDataDetails
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoDgDataDetails instead.
- * @public
- */
-declare interface DgDataDetails_2 {
-    dataSrc: dgd_DataSrc_2;
-    id: number[];
-    type: string;
-    mph: MintingPolicyHash;
-}
-
-/**
- * A strong type for the permissive form of DgDataDetails
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DgDataDetailsLike {
-    dataSrc: dgd_DataSrcLike;
-    id: number[];
-    type: string;
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-}
-
-/**
- * A strong type for the permissive form of DgDataDetails
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface DgDataDetailsLike_2 {
-    dataSrc: dgd_DataSrcLike_2;
-    id: number[];
-    type: string;
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-}
-
-/**
  * @public
  */
 export declare class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> {
@@ -7775,7 +5102,7 @@ export declare class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFe
     /**
      * Creates the initial settings for the capo
      */
-    mkInitialSettings(): Promise<minimalProtocolSettings>;
+    mkInitialSettings(): Promise<minimalProtocolSettings_2>;
     /**
      * Finds all the node-registration records
      * @remarks
@@ -7785,7 +5112,7 @@ export declare class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFe
     findNodeOpEntries(options: {
         charterData: CharterData;
         capoUtxos?: TxInput[];
-    }): Promise<FoundDatumUtxo<ErgoNodeRegistrationData_2, unknown>[]>;
+    }): Promise<FoundDatumUtxo<ErgoNodeRegistrationData_3, unknown>[]>;
     /**
      * Finds all the neighborhood-registration records
      */
@@ -8290,7 +5617,7 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
     ᱺᱺNodeDetailsCast: Cast<NodeDetails, NodeDetailsLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNodeRegistrationDataCast: Cast<NodeRegistrationData, NodeRegistrationDataLike>;
+    ᱺᱺNodeRegistrationDataCast: Cast<NodeRegistrationData_2, NodeRegistrationDataLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink_3, RelativeDelegateLinkLike_2>;
@@ -8305,7 +5632,7 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
     ᱺᱺCapoCtxCast: Cast<CapoCtx_2, CapoCtxLike_2>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNodeOperatorSettingsV1Cast: Cast<NodeOperatorSettingsV1_2, NodeOperatorSettingsV1Like>;
+    ᱺᱺNodeOperatorSettingsV1Cast: Cast<NodeOperatorSettingsV1, NodeOperatorSettingsV1Like>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺAbstractSettingsForNodeOperatorCast: Cast<AbstractSettingsForNodeOperator, AbstractSettingsForNodeOperatorLike>;
@@ -8549,7 +5876,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NodeOperatorSettings(d: UplcData): ErgoNodeOperatorSettings_2;
+    NodeOperatorSettings(d: UplcData): ErgoNodeOperatorSettings;
     /**
      * reads UplcData *known to fit the **dgd_DataSrc*** enum type,
      * for the BasicDelegate script.
@@ -8624,7 +5951,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NodeRegistrationData(d: UplcData): NodeRegistrationData;
+    NodeRegistrationData(d: UplcData): NodeRegistrationData_2;
     /**
      * reads UplcData *known to fit the **RelativeDelegateLink*** struct type,
      * for the BasicDelegate script.
@@ -8699,7 +6026,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NodeOperatorSettingsV1(d: UplcData): NodeOperatorSettingsV1_2;
+    NodeOperatorSettingsV1(d: UplcData): NodeOperatorSettingsV1;
     /**
      * reads UplcData *known to fit the **AbstractSettingsForNodeOperator*** struct type,
      * for the BasicDelegate script.
@@ -8731,26 +6058,6 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      */
     DgDataDetails(d: UplcData): DgDataDetails;
 }
-
-/**
- * DredNodeState enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **4 variant(s)** of the DredNodeState enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DredNodeStateHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type DredNodeState = {
-    NeedsValidation: Array<number[]>;
-} | {
-    Active: number;
-} | {
-    NeedsHeartbeats: Array<number[]>;
-} | {
-    Inactive: tagOnly;
-};
 
 /**
  * DredNodeState enum variants
@@ -8793,7 +6100,7 @@ declare class DredNodeStateHelper extends EnumBridge<JustAnEnum> {
     /**
      * generates  UplcData for ***"NodeRegistrationData::DredNodeState.Active"***
      */
-    Active(lastHeartbeat: TimeLike_2): UplcData;
+    Active(lastHeartbeat: TimeLike): UplcData;
     /**
      * generates  UplcData for ***"NodeRegistrationData::DredNodeState.NeedsHeartbeats"***
      */
@@ -8804,56 +6111,6 @@ declare class DredNodeStateHelper extends EnumBridge<JustAnEnum> {
      */
     get Inactive(): UplcData;
 }
-
-/**
- * DredNodeState enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **4 variant(s)** of the DredNodeState enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `DredNodeStateHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type DredNodeStateLike = IntersectedEnum<{
-    NeedsValidation: Array<number[]>;
-} | {
-    Active: TimeLike;
-} | {
-    NeedsHeartbeats: Array<number[]>;
-} | {
-    Inactive: tagOnly;
-}>;
-
-/**
- * @internal
- */
-declare type DredNodeStateMeta = EnumTypeMeta<{
-    module: "NodeRegistrationData";
-    enumName: "DredNodeState";
-}, {
-    NeedsValidation: singleEnumVariantMeta<DredNodeStateMeta, "NeedsValidation", "Constr#0", "singletonField", /* implied wrapper { validators: ... } for singleVariantField */ Array<number[]>, "noSpecialFlags">;
-    Active: singleEnumVariantMeta<DredNodeStateMeta, "Active", "Constr#1", "singletonField", /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ number, "noSpecialFlags">;
-    NeedsHeartbeats: singleEnumVariantMeta<DredNodeStateMeta, "NeedsHeartbeats", "Constr#2", "singletonField", /* implied wrapper { validators: ... } for singleVariantField */ Array<number[]>, "noSpecialFlags">;
-    Inactive: singleEnumVariantMeta<DredNodeStateMeta, "Inactive", "Constr#3", "tagOnly", tagOnly, "noSpecialFlags">;
-}>;
-
-/**
- * An ergonomic, though less strictly-safe form of AbstractSettingsForNodeOperator
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the AbstractSettingsForNodeOperatorLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoAbstractSettingsForNodeOperator = {
-    nodeOpSettings: ErgoNodeOperatorSettings_2;
-};
 
 /**
  * An ergonomic, though less strictly-safe form of AnyData
@@ -8867,55 +6124,6 @@ declare type ErgoAbstractSettingsForNodeOperator = {
 declare type ErgoAnyData = AnyData;
 
 /**
- * An ergonomic, though less strictly-safe form of AnyData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the AnyDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoAnyData_2 = AnyData_2;
-
-/**
- * An ergonomic, though less strictly-safe form of AnyData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the AnyDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoAnyData_3 = AnyData_3;
-
-/**
- * An ergonomic, though less strictly-safe form of AnyData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the AnyDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoAnyData_4 = AnyData_4;
-
-/**
- * An ergonomic, though less strictly-safe form of AppInfo
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the AppInfoLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoAppInfo = {
-    url: string;
-    revenueModel: Array<ErgoRevenueModel>;
-    name: string;
-    description: string;
-};
-
-/**
  * ergonomic type enabling easy access to values converted from the on-chain form
  * @remarks
  * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
@@ -8923,47 +6131,6 @@ declare type ErgoAppInfo = {
  * @public
  */
 declare type ErgoBurningActivity = IntersectedEnum<BurningActivity>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoBurningActivity_2 = IntersectedEnum<BurningActivity_2>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoBurningActivity_3 = IntersectedEnum<BurningActivity_3>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoBurningActivity_4 = IntersectedEnum<BurningActivity_4>;
-
-/**
- * An ergonomic, though less strictly-safe form of CapoCtx
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoCtxLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoCapoCtx = {
-    mph: MintingPolicyHash;
-    charter: Ergocctx_CharterInputType_2;
-};
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -8986,75 +6153,6 @@ declare type ErgoCapoLifecycleActivity = IntersectedEnum<{
     forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate;
 } | {
     updatingManifest: ErgoManifestActivity_2;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoCapoLifecycleActivity_2 = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate_2;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: ErgoDelegateRole_3;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_2;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate_2;
-} | {
-    updatingManifest: ErgoManifestActivity_3;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoCapoLifecycleActivity_3 = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate_3;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: ErgoDelegateRole_4;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_3;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate_3;
-} | {
-    updatingManifest: ErgoManifestActivity_4;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoCapoLifecycleActivity_4 = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate_4;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: ErgoDelegateRole_5;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_4;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate_4;
-} | {
-    updatingManifest: ErgoManifestActivity_5;
 }>;
 
 /**
@@ -9088,51 +6186,6 @@ declare type ErgoCapoManifestEntry_2 = {
 };
 
 /**
- * An ergonomic, though less strictly-safe form of CapoManifestEntry
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoManifestEntryLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoCapoManifestEntry_3 = {
-    entryType: ErgoManifestEntryType_3;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of CapoManifestEntry
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoManifestEntryLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoCapoManifestEntry_4 = {
-    entryType: ErgoManifestEntryType_4;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of CapoManifestEntry
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the CapoManifestEntryLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoCapoManifestEntry_5 = {
-    entryType: ErgoManifestEntryType_5;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
-};
-
-/**
  * ergonomic type enabling easy access to values converted from the on-chain form
  * @remarks
  * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
@@ -9145,51 +6198,6 @@ declare type Ergocctx_CharterInputType = IntersectedEnum<{
     RefInput: cctx_CharterInputType$Ergo$RefInput;
 } | {
     Input: cctx_CharterInputType$Ergo$Input;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type Ergocctx_CharterInputType_2 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$Ergo$RefInput_2;
-} | {
-    Input: cctx_CharterInputType$Ergo$Input_2;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type Ergocctx_CharterInputType_3 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$Ergo$RefInput_3;
-} | {
-    Input: cctx_CharterInputType$Ergo$Input_3;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type Ergocctx_CharterInputType_4 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$Ergo$RefInput_4;
-} | {
-    Input: cctx_CharterInputType$Ergo$Input_4;
 }>;
 
 /**
@@ -9226,87 +6234,6 @@ declare type ErgoDelegateActivity = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateActivity_2 = IntersectedEnum<{
-    CapoLifecycleActivities: ErgoCapoLifecycleActivity_2;
-} | {
-    DelegateLifecycleActivities: ErgoDelegateLifecycleActivity_2;
-} | {
-    SpendingActivities: ErgoSpendingActivity_2;
-} | {
-    MintingActivities: ErgoMintingActivity_2;
-} | {
-    BurningActivities: ErgoBurningActivity_2;
-} | {
-    CreatingDelegatedData: DelegateActivity$Ergo$CreatingDelegatedData_2;
-} | {
-    UpdatingDelegatedData: DelegateActivity$Ergo$UpdatingDelegatedData_2;
-} | {
-    DeletingDelegatedData: DelegateActivity$Ergo$DeletingDelegatedData_2;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoDelegateActivity_3 = IntersectedEnum<{
-    CapoLifecycleActivities: ErgoCapoLifecycleActivity_3;
-} | {
-    DelegateLifecycleActivities: ErgoDelegateLifecycleActivity_3;
-} | {
-    SpendingActivities: ErgoSpendingActivity_3;
-} | {
-    MintingActivities: ErgoMintingActivity_3;
-} | {
-    BurningActivities: ErgoBurningActivity_3;
-} | {
-    CreatingDelegatedData: DelegateActivity$Ergo$CreatingDelegatedData_3;
-} | {
-    UpdatingDelegatedData: DelegateActivity$Ergo$UpdatingDelegatedData_3;
-} | {
-    DeletingDelegatedData: DelegateActivity$Ergo$DeletingDelegatedData_3;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoDelegateActivity_4 = IntersectedEnum<{
-    CapoLifecycleActivities: ErgoCapoLifecycleActivity_4;
-} | {
-    DelegateLifecycleActivities: ErgoDelegateLifecycleActivity_4;
-} | {
-    SpendingActivities: ErgoSpendingActivity_4;
-} | {
-    MintingActivities: ErgoMintingActivity_4;
-} | {
-    BurningActivities: ErgoBurningActivity_4;
-} | {
-    CreatingDelegatedData: DelegateActivity$Ergo$CreatingDelegatedData_4;
-} | {
-    UpdatingDelegatedData: DelegateActivity$Ergo$UpdatingDelegatedData_4;
-} | {
-    DeletingDelegatedData: DelegateActivity$Ergo$DeletingDelegatedData_4;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
 declare type ErgoDelegateDatum = IntersectedEnum<{
     Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken;
 } | {
@@ -9322,98 +6249,8 @@ declare type ErgoDelegateDatum = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateDatum_2 = IntersectedEnum<{
-    Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_2;
-} | {
-    IsDelegation: ErgoDelegationDetail_2;
-} | {
-    capoStoredData: DelegateDatum$Ergo$capoStoredData_2;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoDelegateDatum_3 = IntersectedEnum<{
-    Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_3;
-} | {
-    IsDelegation: ErgoDelegationDetail_3;
-} | {
-    capoStoredData: DelegateDatum$Ergo$capoStoredData_3;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoDelegateDatum_4 = IntersectedEnum<{
-    Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_4;
-} | {
-    IsDelegation: ErgoDelegationDetail_4;
-} | {
-    capoStoredData: DelegateDatum$Ergo$capoStoredData_4;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
 declare type ErgoDelegateLifecycleActivity = IntersectedEnum<{
     ReplacingMe: DelegateLifecycleActivity$Ergo$ReplacingMe;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoDelegateLifecycleActivity_2 = IntersectedEnum<{
-    ReplacingMe: DelegateLifecycleActivity$Ergo$ReplacingMe_2;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoDelegateLifecycleActivity_3 = IntersectedEnum<{
-    ReplacingMe: DelegateLifecycleActivity$Ergo$ReplacingMe_3;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoDelegateLifecycleActivity_4 = IntersectedEnum<{
-    ReplacingMe: DelegateLifecycleActivity$Ergo$ReplacingMe_4;
 } | {
     Retiring: tagOnly;
 } | {
@@ -9439,33 +6276,6 @@ declare type ErgoDelegateRole = IntersectedEnum<DelegateRole>;
 declare type ErgoDelegateRole_2 = IntersectedEnum<DelegateRole_2>;
 
 /**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoDelegateRole_3 = IntersectedEnum<DelegateRole_3>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoDelegateRole_4 = IntersectedEnum<DelegateRole_4>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoDelegateRole_5 = IntersectedEnum<DelegateRole_5>;
-
-/**
  * An ergonomic, though less strictly-safe form of DelegationDetail
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -9477,98 +6287,6 @@ declare type ErgoDelegateRole_5 = IntersectedEnum<DelegateRole_5>;
 declare type ErgoDelegationDetail = DelegationDetail;
 
 /**
- * An ergonomic, though less strictly-safe form of DelegationDetail
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegationDetailLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoDelegationDetail_2 = DelegationDetail_2;
-
-/**
- * An ergonomic, though less strictly-safe form of DelegationDetail
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegationDetailLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoDelegationDetail_3 = DelegationDetail_3;
-
-/**
- * An ergonomic, though less strictly-safe form of DelegationDetail
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DelegationDetailLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoDelegationDetail_4 = DelegationDetail_4;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type Ergodgd_DataSrc = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    Input: TxInput;
-} | {
-    Output: TxOutput;
-} | {
-    Both: dgd_DataSrc$Ergo$Both;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type Ergodgd_DataSrc_2 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    Input: TxInput;
-} | {
-    Output: TxOutput;
-} | {
-    Both: dgd_DataSrc$Ergo$Both_2;
-}>;
-
-/**
- * An ergonomic, though less strictly-safe form of DgDataDetails
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the DgDataDetailsLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoDgDataDetails = {
-    dataSrc: Ergodgd_DataSrc;
-    id: number[];
-    type: string;
-    mph: MintingPolicyHash;
-};
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoDredNodeState = IntersectedEnum<DredNodeState>;
-
-/**
  * ergonomic type enabling easy access to values converted from the on-chain form
  * @remarks
  * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
@@ -9576,15 +6294,6 @@ declare type ErgoDredNodeState = IntersectedEnum<DredNodeState>;
  * @public
  */
 declare type ErgoDredNodeState_2 = IntersectedEnum<DredNodeState_2/*like canon enum*/>
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoFeeSource = IntersectedEnum<FeeSource>;
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9622,63 +6331,6 @@ declare type ErgoManifestActivity_2 = IntersectedEnum<{
     forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_2;
 } | {
     burningThreadToken: ManifestActivity$Ergo$burningThreadToken_2;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoManifestActivity_3 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$Ergo$updatingEntry_3;
-} | {
-    addingEntry: ManifestActivity$Ergo$addingEntry_3;
-} | {
-    forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_3;
-} | {
-    burningThreadToken: ManifestActivity$Ergo$burningThreadToken_3;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoManifestActivity_4 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$Ergo$updatingEntry_4;
-} | {
-    addingEntry: ManifestActivity$Ergo$addingEntry_4;
-} | {
-    forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_4;
-} | {
-    burningThreadToken: ManifestActivity$Ergo$burningThreadToken_4;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoManifestActivity_5 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$Ergo$updatingEntry_5;
-} | {
-    addingEntry: ManifestActivity$Ergo$addingEntry_5;
-} | {
-    forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_5;
-} | {
-    burningThreadToken: ManifestActivity$Ergo$burningThreadToken_5;
 }>;
 
 /**
@@ -9726,163 +6378,9 @@ declare type ErgoManifestEntryType_2 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoManifestEntryType_3 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_3;
-} | {
-    DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_3;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoManifestEntryType_4 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_4;
-} | {
-    DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_4;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoManifestEntryType_5 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_5;
-} | {
-    DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_5;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
 declare type ErgoMintingActivity = IntersectedEnum<MintingActivity>;
 
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoMintingActivity_2 = IntersectedEnum<MintingActivity_2>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoMintingActivity_3 = IntersectedEnum<MintingActivity_3>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoMintingActivity_4 = IntersectedEnum<MintingActivity_4>;
-
-/**
- * An ergonomic, though less strictly-safe form of NeighborhoodData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NeighborhoodDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-export declare type ErgoNeighborhoodData = {
-    id: number[];
-    type: string;
-    memberToken: string;
-    state: ErgoNeighborhoodState;
-    appInfo: ErgoAppInfo;
-    opsInfo: ErgoNodeOpsInfo;
-    updateInfo: /*minStructField*/ ErgoUpdateInfo | undefined;
-};
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoNeighborhoodSettings = IntersectedEnum<{
-    V1: ErgoNeighborhoodSettingsV1;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoNeighborhoodSettings_2 = IntersectedEnum<{
-    V1: ErgoNeighborhoodSettingsV1_2;
-}>;
-
-/**
- * An ergonomic, though less strictly-safe form of NeighborhoodSettingsV1
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NeighborhoodSettingsV1Like type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoNeighborhoodSettingsV1 = NeighborhoodSettingsV1;
-
-/**
- * An ergonomic, though less strictly-safe form of NeighborhoodSettingsV1
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NeighborhoodSettingsV1Like type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoNeighborhoodSettingsV1_2 = NeighborhoodSettingsV1_2;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoNeighborhoodState = IntersectedEnum<NeighborhoodState>;
+export { ErgoNeighborhoodData }
 
 /**
  * An ergonomic, though less strictly-safe form of NodeDetails
@@ -9893,73 +6391,9 @@ declare type ErgoNeighborhoodState = IntersectedEnum<NeighborhoodState>;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoNodeDetails = NodeDetails;
+declare type ErgoNodeDetails = NodeDetails_2
 
-/**
- * An ergonomic, though less strictly-safe form of NodeDetails
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeDetailsLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoNodeDetails_2 = NodeDetails_2
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoNodeOperatorSettings = IntersectedEnum<{
-    V1: ErgoNodeOperatorSettingsV1;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoNodeOperatorSettings_2 = IntersectedEnum<{
-    V1: ErgoNodeOperatorSettingsV1_2;
-}>;
-
-/**
- * An ergonomic, though less strictly-safe form of NodeOperatorSettingsV1
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeOperatorSettingsV1Like type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoNodeOperatorSettingsV1 = NodeOperatorSettingsV1;
-
-/**
- * An ergonomic, though less strictly-safe form of NodeOperatorSettingsV1
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeOperatorSettingsV1Like type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoNodeOperatorSettingsV1_2 = NodeOperatorSettingsV1_2;
-
-/**
- * An ergonomic, though less strictly-safe form of NodeOpsInfo
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeOpsInfoLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoNodeOpsInfo = NodeOpsInfo;
+export { ErgoNodeRegistrationData }
 
 /**
  * An ergonomic, though less strictly-safe form of NodeRegistrationData
@@ -9970,29 +6404,12 @@ declare type ErgoNodeOpsInfo = NodeOpsInfo;
  * or the on-chain data-building helpers instead.
  * @public
  */
-export declare type ErgoNodeRegistrationData = {
-    id: number[];
-    type: string;
-    memberToken: string;
-    state: ErgoDredNodeState;
-    nodeDetails: ErgoNodeDetails;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of NodeRegistrationData
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeRegistrationDataLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoNodeRegistrationData_2 = {
+declare type ErgoNodeRegistrationData_3 = {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
     state: /*minStructField*/ ErgoDredNodeState_2
-    nodeDetails: /*minStructField*/ ErgoNodeDetails_2
+    nodeDetails: /*minStructField*/ ErgoNodeDetails
 }
 
 /**
@@ -10028,45 +6445,6 @@ declare type ErgoPendingCharterChange_2 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoPendingCharterChange_3 = IntersectedEnum<{
-    delegateChange: ErgoPendingDelegateChange_3;
-} | {
-    otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_3;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoPendingCharterChange_4 = IntersectedEnum<{
-    delegateChange: ErgoPendingDelegateChange_4;
-} | {
-    otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_4;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoPendingCharterChange_5 = IntersectedEnum<{
-    delegateChange: ErgoPendingDelegateChange_5;
-} | {
-    otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_5;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
 declare type ErgoPendingDelegateAction = IntersectedEnum<{
     Add: PendingDelegateAction$Ergo$Add;
 } | {
@@ -10088,51 +6466,6 @@ declare type ErgoPendingDelegateAction_2 = IntersectedEnum<{
     Remove: tagOnly;
 } | {
     Replace: PendingDelegateAction$Ergo$Replace_2;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoPendingDelegateAction_3 = IntersectedEnum<{
-    Add: PendingDelegateAction$Ergo$Add_3;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Ergo$Replace_3;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoPendingDelegateAction_4 = IntersectedEnum<{
-    Add: PendingDelegateAction$Ergo$Add_4;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Ergo$Replace_4;
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoPendingDelegateAction_5 = IntersectedEnum<{
-    Add: PendingDelegateAction$Ergo$Add_5;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Ergo$Replace_5;
 }>;
 
 /**
@@ -10165,66 +6498,7 @@ declare type ErgoPendingDelegateChange_2 = {
     dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_2 | undefined;
 };
 
-/**
- * An ergonomic, though less strictly-safe form of PendingDelegateChange
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingDelegateChangeLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoPendingDelegateChange_3 = {
-    action: ErgoPendingDelegateAction_3;
-    role: ErgoDelegateRole_3;
-    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_3 | undefined;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of PendingDelegateChange
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingDelegateChangeLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoPendingDelegateChange_4 = {
-    action: ErgoPendingDelegateAction_4;
-    role: ErgoDelegateRole_4;
-    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_4 | undefined;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of PendingDelegateChange
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingDelegateChangeLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoPendingDelegateChange_5 = {
-    action: ErgoPendingDelegateAction_5;
-    role: ErgoDelegateRole_5;
-    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_5 | undefined;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of ProtocolSettings
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ProtocolSettingsLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-export declare type ErgoProtocolSettings = {
-    id: number[];
-    type: string;
-    nodeOpSettings: ErgoNodeOperatorSettings;
-    nbhSettings: ErgoNeighborhoodSettings;
-};
+export { ErgoProtocolSettings }
 
 /**
  * An ergonomic, though less strictly-safe form of RelativeDelegateLink
@@ -10249,52 +6523,6 @@ declare type ErgoRelativeDelegateLink = RelativeDelegateLink;
 declare type ErgoRelativeDelegateLink_2 = RelativeDelegateLink_2;
 
 /**
- * An ergonomic, though less strictly-safe form of RelativeDelegateLink
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the RelativeDelegateLinkLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoRelativeDelegateLink_3 = RelativeDelegateLink_3;
-
-/**
- * An ergonomic, though less strictly-safe form of RelativeDelegateLink
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the RelativeDelegateLinkLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoRelativeDelegateLink_4 = RelativeDelegateLink_4;
-
-/**
- * An ergonomic, though less strictly-safe form of RelativeDelegateLink
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the RelativeDelegateLinkLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoRelativeDelegateLink_5 = RelativeDelegateLink_5;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoRevenueModel = IntersectedEnum<{
-    TransactionBased: RevenueModel$Ergo$TransactionBased;
-} | {
-    Subscription: Array<ErgoSubscriptionFeeFrequency>;
-}>;
-
-/**
  * ergonomic type enabling easy access to values converted from the on-chain form
  * @remarks
  * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
@@ -10302,79 +6530,6 @@ declare type ErgoRevenueModel = IntersectedEnum<{
  * @public
  */
 declare type ErgoSpendingActivity = IntersectedEnum<SpendingActivity>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoSpendingActivity_2 = IntersectedEnum<{
-    UpdatingRecord: number[];
-} | {
-    ValidatingNode: SpendingActivity$Ergo$ValidatingNode;
-} | {
-    ActivatingNode: number[];
-} | {
-    ReportingInactiveNode: number[];
-} | {
-    RefutingInactivity: number[];
-}>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoSpendingActivity_3 = IntersectedEnum<SpendingActivity_3>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoSpendingActivity_4 = IntersectedEnum<SpendingActivity_4>;
-
-/**
- * ergonomic type enabling easy access to values converted from the on-chain form
- * @remarks
- * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
- * Nested enums are also merged in this ergonomic way.
- * @public
- */
-declare type ErgoSubscriptionFeeFrequency = IntersectedEnum<SubscriptionFeeFrequency>;
-
-/**
- * An ergonomic, though less strictly-safe form of UpdateInfo
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the UpdateInfoLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ErgoUpdateInfo = UpdateInfo;
-
-/**
- * FeeSource enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **2 variant(s)** of the FeeSource enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `FeeSourceHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type FeeSource = {
-    EndUser: tagOnly;
-} | {
-    SponsorContract: ScriptHash;
-};
 
 /**
  * Helper class for generating UplcData for variants of the ***FeeSource*** enum type.
@@ -10399,26 +6554,6 @@ declare class FeeSourceHelper extends EnumBridge<JustAnEnum> {
      */
     SponsorContract(sponsorContract: ScriptHash | string | number[]): UplcData;
 }
-
-/**
- * FeeSource enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **2 variant(s)** of the FeeSource enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `FeeSourceHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type FeeSourceLike = IntersectedEnum<{
-    EndUser: tagOnly;
-} | {
-    SponsorContract: /* implied wrapper { sponsorContract: ... } for singleVariantField */ ScriptHash | string | number[];
-}>;
 
 /**
  * A strong type for the canonical form of ManifestActivity$addingEntry
@@ -10447,84 +6582,12 @@ declare interface ManifestActivity$addingEntry_2 {
 }
 
 /**
- * A strong type for the canonical form of ManifestActivity$addingEntry
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$addingEntry instead.
- * @public
- */
-declare interface ManifestActivity$addingEntry_3 {
-    key: string;
-    tokenName: number[];
-}
-
-/**
- * A strong type for the canonical form of ManifestActivity$addingEntry
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$addingEntry instead.
- * @public
- */
-declare interface ManifestActivity$addingEntry_4 {
-    key: string;
-    tokenName: number[];
-}
-
-/**
- * A strong type for the canonical form of ManifestActivity$addingEntry
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$addingEntry instead.
- * @public
- */
-declare interface ManifestActivity$addingEntry_5 {
-    key: string;
-    tokenName: number[];
-}
-
-/**
  * A strong type for the permissive form of ManifestActivity$addingEntry
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
 declare interface ManifestActivity$addingEntryLike {
-    key: string;
-    tokenName: number[];
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$addingEntry
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$addingEntryLike_2 {
-    key: string;
-    tokenName: number[];
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$addingEntry
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$addingEntryLike_3 {
-    key: string;
-    tokenName: number[];
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$addingEntry
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$addingEntryLike_4 {
     key: string;
     tokenName: number[];
 }
@@ -10556,84 +6619,12 @@ declare interface ManifestActivity$burningThreadToken_2 {
 }
 
 /**
- * A strong type for the canonical form of ManifestActivity$burningThreadToken
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$burningThreadToken instead.
- * @public
- */
-declare interface ManifestActivity$burningThreadToken_3 {
-    key: string;
-    burnedThreadCount: bigint;
-}
-
-/**
- * A strong type for the canonical form of ManifestActivity$burningThreadToken
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$burningThreadToken instead.
- * @public
- */
-declare interface ManifestActivity$burningThreadToken_4 {
-    key: string;
-    burnedThreadCount: bigint;
-}
-
-/**
- * A strong type for the canonical form of ManifestActivity$burningThreadToken
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$burningThreadToken instead.
- * @public
- */
-declare interface ManifestActivity$burningThreadToken_5 {
-    key: string;
-    burnedThreadCount: bigint;
-}
-
-/**
  * A strong type for the permissive form of ManifestActivity$burningThreadToken
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
 declare interface ManifestActivity$burningThreadTokenLike {
-    key: string;
-    burnedThreadCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$burningThreadToken
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$burningThreadTokenLike_2 {
-    key: string;
-    burnedThreadCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$burningThreadToken
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$burningThreadTokenLike_3 {
-    key: string;
-    burnedThreadCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$burningThreadToken
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$burningThreadTokenLike_4 {
     key: string;
     burnedThreadCount: IntLike;
 }
@@ -10661,39 +6652,6 @@ declare type ManifestActivity$Ergo$addingEntry = ManifestActivity$addingEntry;
 declare type ManifestActivity$Ergo$addingEntry_2 = ManifestActivity$addingEntry_2;
 
 /**
- * An ergonomic, though less strictly-safe form of ManifestActivity$addingEntry
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$addingEntryLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$addingEntry_3 = ManifestActivity$addingEntry_3;
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestActivity$addingEntry
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$addingEntryLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$addingEntry_4 = ManifestActivity$addingEntry_4;
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestActivity$addingEntry
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$addingEntryLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$addingEntry_5 = ManifestActivity$addingEntry_5;
-
-/**
  * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -10714,39 +6672,6 @@ declare type ManifestActivity$Ergo$burningThreadToken = ManifestActivity$burning
  * @public
  */
 declare type ManifestActivity$Ergo$burningThreadToken_2 = ManifestActivity$burningThreadToken_2;
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$burningThreadTokenLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$burningThreadToken_3 = ManifestActivity$burningThreadToken_3;
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$burningThreadTokenLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$burningThreadToken_4 = ManifestActivity$burningThreadToken_4;
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$burningThreadTokenLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$burningThreadToken_5 = ManifestActivity$burningThreadToken_5;
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
@@ -10771,39 +6696,6 @@ declare type ManifestActivity$Ergo$forkingThreadToken = ManifestActivity$forking
 declare type ManifestActivity$Ergo$forkingThreadToken_2 = ManifestActivity$forkingThreadToken_2;
 
 /**
- * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$forkingThreadTokenLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$forkingThreadToken_3 = ManifestActivity$forkingThreadToken_3;
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$forkingThreadTokenLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$forkingThreadToken_4 = ManifestActivity$forkingThreadToken_4;
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$forkingThreadTokenLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$forkingThreadToken_5 = ManifestActivity$forkingThreadToken_5;
-
-/**
  * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -10824,39 +6716,6 @@ declare type ManifestActivity$Ergo$updatingEntry = ManifestActivity$updatingEntr
  * @public
  */
 declare type ManifestActivity$Ergo$updatingEntry_2 = ManifestActivity$updatingEntry_2;
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$updatingEntryLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$updatingEntry_3 = ManifestActivity$updatingEntry_3;
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$updatingEntryLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$updatingEntry_4 = ManifestActivity$updatingEntry_4;
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestActivity$updatingEntryLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestActivity$Ergo$updatingEntry_5 = ManifestActivity$updatingEntry_5;
 
 /**
  * A strong type for the canonical form of ManifestActivity$forkingThreadToken
@@ -10885,84 +6744,12 @@ declare interface ManifestActivity$forkingThreadToken_2 {
 }
 
 /**
- * A strong type for the canonical form of ManifestActivity$forkingThreadToken
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$forkingThreadToken instead.
- * @public
- */
-declare interface ManifestActivity$forkingThreadToken_3 {
-    key: string;
-    newThreadCount: bigint;
-}
-
-/**
- * A strong type for the canonical form of ManifestActivity$forkingThreadToken
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$forkingThreadToken instead.
- * @public
- */
-declare interface ManifestActivity$forkingThreadToken_4 {
-    key: string;
-    newThreadCount: bigint;
-}
-
-/**
- * A strong type for the canonical form of ManifestActivity$forkingThreadToken
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$forkingThreadToken instead.
- * @public
- */
-declare interface ManifestActivity$forkingThreadToken_5 {
-    key: string;
-    newThreadCount: bigint;
-}
-
-/**
  * A strong type for the permissive form of ManifestActivity$forkingThreadToken
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
 declare interface ManifestActivity$forkingThreadTokenLike {
-    key: string;
-    newThreadCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$forkingThreadToken
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$forkingThreadTokenLike_2 {
-    key: string;
-    newThreadCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$forkingThreadToken
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$forkingThreadTokenLike_3 {
-    key: string;
-    newThreadCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$forkingThreadToken
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$forkingThreadTokenLike_4 {
     key: string;
     newThreadCount: IntLike;
 }
@@ -10994,84 +6781,12 @@ declare interface ManifestActivity$updatingEntry_2 {
 }
 
 /**
- * A strong type for the canonical form of ManifestActivity$updatingEntry
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$updatingEntry instead.
- * @public
- */
-declare interface ManifestActivity$updatingEntry_3 {
-    key: string;
-    tokenName: number[];
-}
-
-/**
- * A strong type for the canonical form of ManifestActivity$updatingEntry
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$updatingEntry instead.
- * @public
- */
-declare interface ManifestActivity$updatingEntry_4 {
-    key: string;
-    tokenName: number[];
-}
-
-/**
- * A strong type for the canonical form of ManifestActivity$updatingEntry
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestActivity$Ergo$updatingEntry instead.
- * @public
- */
-declare interface ManifestActivity$updatingEntry_5 {
-    key: string;
-    tokenName: number[];
-}
-
-/**
  * A strong type for the permissive form of ManifestActivity$updatingEntry
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
 declare interface ManifestActivity$updatingEntryLike {
-    key: string;
-    tokenName: number[];
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$updatingEntry
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$updatingEntryLike_2 {
-    key: string;
-    tokenName: number[];
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$updatingEntry
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$updatingEntryLike_3 {
-    key: string;
-    tokenName: number[];
-}
-
-/**
- * A strong type for the permissive form of ManifestActivity$updatingEntry
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestActivity$updatingEntryLike_4 {
     key: string;
     tokenName: number[];
 }
@@ -11096,72 +6811,6 @@ declare type ManifestActivity = {
     forkingThreadToken: ManifestActivity$forkingThreadToken_2;
 } | {
     burningThreadToken: ManifestActivity$burningThreadToken_2;
-};
-
-/**
- * ManifestActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **5 variant(s)** of the ManifestActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type ManifestActivity_2 = {
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntry_3;
-} | {
-    addingEntry: ManifestActivity$addingEntry_3;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadToken_3;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadToken_3;
-};
-
-/**
- * ManifestActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **5 variant(s)** of the ManifestActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type ManifestActivity_3 = {
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntry_4;
-} | {
-    addingEntry: ManifestActivity$addingEntry_4;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadToken_4;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadToken_4;
-};
-
-/**
- * ManifestActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **5 variant(s)** of the ManifestActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type ManifestActivity_4 = {
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntry_5;
-} | {
-    addingEntry: ManifestActivity$addingEntry_5;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadToken_5;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadToken_5;
 };
 
 /**
@@ -11707,98 +7356,6 @@ declare type ManifestActivityLike = IntersectedEnum<{
 }>;
 
 /**
- * ManifestActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **5 variant(s)** of the ManifestActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type ManifestActivityLike_2 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntryLike_2;
-} | {
-    addingEntry: ManifestActivity$addingEntryLike_2;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadTokenLike_2;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadTokenLike_2;
-}>;
-
-/**
- * ManifestActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **5 variant(s)** of the ManifestActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type ManifestActivityLike_3 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntryLike_3;
-} | {
-    addingEntry: ManifestActivity$addingEntryLike_3;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadTokenLike_3;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadTokenLike_3;
-}>;
-
-/**
- * ManifestActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **5 variant(s)** of the ManifestActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type ManifestActivityLike_4 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntryLike_4;
-} | {
-    addingEntry: ManifestActivity$addingEntryLike_4;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadTokenLike_4;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadTokenLike_4;
-}>;
-
-/**
- * @internal
- */
-declare type ManifestActivityMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "ManifestActivity";
-}, {
-    retiringEntry: singleEnumVariantMeta<ManifestActivityMeta, "retiringEntry", "Constr#0", "singletonField", /* implied wrapper { key: ... } for singleVariantField */ string, "noSpecialFlags">;
-    updatingEntry: singleEnumVariantMeta<ManifestActivityMeta, "updatingEntry", "Constr#1", "fields", ManifestActivity$updatingEntry_3, "noSpecialFlags">;
-    addingEntry: singleEnumVariantMeta<ManifestActivityMeta, "addingEntry", "Constr#2", "fields", ManifestActivity$addingEntry_3, "noSpecialFlags">;
-    forkingThreadToken: singleEnumVariantMeta<ManifestActivityMeta, "forkingThreadToken", "Constr#3", "fields", ManifestActivity$forkingThreadToken_3, "noSpecialFlags">;
-    burningThreadToken: singleEnumVariantMeta<ManifestActivityMeta, "burningThreadToken", "Constr#4", "fields", ManifestActivity$burningThreadToken_3, "noSpecialFlags">;
-}>;
-
-/**
  * A strong type for the canonical form of ManifestEntryType$DelegateThreads
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -11812,45 +7369,6 @@ declare interface ManifestEntryType$DelegateThreads {
 }
 
 /**
- * A strong type for the canonical form of ManifestEntryType$DelegateThreads
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DelegateThreads instead.
- * @public
- */
-declare interface ManifestEntryType$DelegateThreads_2 {
-    role: DelegateRole_3;
-    refCount: bigint;
-}
-
-/**
- * A strong type for the canonical form of ManifestEntryType$DelegateThreads
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DelegateThreads instead.
- * @public
- */
-declare interface ManifestEntryType$DelegateThreads_3 {
-    role: DelegateRole_4;
-    refCount: bigint;
-}
-
-/**
- * A strong type for the canonical form of ManifestEntryType$DelegateThreads
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DelegateThreads instead.
- * @public
- */
-declare interface ManifestEntryType$DelegateThreads_4 {
-    role: DelegateRole_5;
-    refCount: bigint;
-}
-
-/**
  * A strong type for the permissive form of ManifestEntryType$DelegateThreads
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
@@ -11858,39 +7376,6 @@ declare interface ManifestEntryType$DelegateThreads_4 {
  */
 declare interface ManifestEntryType$DelegateThreadsLike {
     role: DelegateRoleLike;
-    refCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestEntryType$DelegateThreads
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestEntryType$DelegateThreadsLike_2 {
-    role: DelegateRoleLike_2;
-    refCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestEntryType$DelegateThreads
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestEntryType$DelegateThreadsLike_3 {
-    role: DelegateRoleLike_3;
-    refCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestEntryType$DelegateThreads
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestEntryType$DelegateThreadsLike_4 {
-    role: DelegateRoleLike_4;
     refCount: IntLike;
 }
 
@@ -11909,48 +7394,6 @@ declare interface ManifestEntryType$DgDataPolicy {
 }
 
 /**
- * A strong type for the canonical form of ManifestEntryType$DgDataPolicy
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DgDataPolicy instead.
- * @public
- */
-declare interface ManifestEntryType$DgDataPolicy_2 {
-    policyLink: RelativeDelegateLink_3;
-    idPrefix: string;
-    refCount: bigint;
-}
-
-/**
- * A strong type for the canonical form of ManifestEntryType$DgDataPolicy
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DgDataPolicy instead.
- * @public
- */
-declare interface ManifestEntryType$DgDataPolicy_3 {
-    policyLink: RelativeDelegateLink_4;
-    idPrefix: string;
-    refCount: bigint;
-}
-
-/**
- * A strong type for the canonical form of ManifestEntryType$DgDataPolicy
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ManifestEntryType$Ergo$DgDataPolicy instead.
- * @public
- */
-declare interface ManifestEntryType$DgDataPolicy_4 {
-    policyLink: RelativeDelegateLink_5;
-    idPrefix: string;
-    refCount: bigint;
-}
-
-/**
  * A strong type for the permissive form of ManifestEntryType$DgDataPolicy
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
@@ -11958,42 +7401,6 @@ declare interface ManifestEntryType$DgDataPolicy_4 {
  */
 declare interface ManifestEntryType$DgDataPolicyLike {
     policyLink: RelativeDelegateLinkLike;
-    idPrefix: string;
-    refCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestEntryType$DgDataPolicy
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestEntryType$DgDataPolicyLike_2 {
-    policyLink: RelativeDelegateLinkLike_2;
-    idPrefix: string;
-    refCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestEntryType$DgDataPolicy
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestEntryType$DgDataPolicyLike_3 {
-    policyLink: RelativeDelegateLinkLike_3;
-    idPrefix: string;
-    refCount: IntLike;
-}
-
-/**
- * A strong type for the permissive form of ManifestEntryType$DgDataPolicy
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ManifestEntryType$DgDataPolicyLike_4 {
-    policyLink: RelativeDelegateLinkLike_4;
     idPrefix: string;
     refCount: IntLike;
 }
@@ -12023,48 +7430,6 @@ declare type ManifestEntryType$Ergo$DelegateThreads = {
  */
 declare type ManifestEntryType$Ergo$DelegateThreads_2 = {
     role: ErgoDelegateRole_2;
-    refCount: bigint;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestEntryType$DelegateThreads
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestEntryType$DelegateThreadsLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestEntryType$Ergo$DelegateThreads_3 = {
-    role: ErgoDelegateRole_3;
-    refCount: bigint;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestEntryType$DelegateThreads
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestEntryType$DelegateThreadsLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestEntryType$Ergo$DelegateThreads_4 = {
-    role: ErgoDelegateRole_4;
-    refCount: bigint;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestEntryType$DelegateThreads
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestEntryType$DelegateThreadsLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestEntryType$Ergo$DelegateThreads_5 = {
-    role: ErgoDelegateRole_5;
     refCount: bigint;
 };
 
@@ -12099,51 +7464,6 @@ declare type ManifestEntryType$Ergo$DgDataPolicy_2 = {
 };
 
 /**
- * An ergonomic, though less strictly-safe form of ManifestEntryType$DgDataPolicy
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestEntryType$DgDataPolicyLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestEntryType$Ergo$DgDataPolicy_3 = {
-    policyLink: ErgoRelativeDelegateLink_3;
-    idPrefix: string;
-    refCount: bigint;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestEntryType$DgDataPolicy
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestEntryType$DgDataPolicyLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestEntryType$Ergo$DgDataPolicy_4 = {
-    policyLink: ErgoRelativeDelegateLink_4;
-    idPrefix: string;
-    refCount: bigint;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of ManifestEntryType$DgDataPolicy
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the ManifestEntryType$DgDataPolicyLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type ManifestEntryType$Ergo$DgDataPolicy_5 = {
-    policyLink: ErgoRelativeDelegateLink_5;
-    idPrefix: string;
-    refCount: bigint;
-};
-
-/**
  * ManifestEntryType enum variants
  *
  * @remarks - expresses the essential raw data structures
@@ -12159,72 +7479,6 @@ declare type ManifestEntryType = {
     DgDataPolicy: ManifestEntryType$DgDataPolicy;
 } | {
     DelegateThreads: ManifestEntryType$DelegateThreads;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-};
-
-/**
- * ManifestEntryType enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **5 variant(s)** of the ManifestEntryType enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type ManifestEntryType_2 = {
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicy_2;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreads_2;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-};
-
-/**
- * ManifestEntryType enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **5 variant(s)** of the ManifestEntryType enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type ManifestEntryType_3 = {
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicy_3;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreads_3;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-};
-
-/**
- * ManifestEntryType enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **5 variant(s)** of the ManifestEntryType enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type ManifestEntryType_4 = {
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicy_4;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreads_4;
 } | {
     MerkleMembership: tagOnly;
 } | {
@@ -12457,127 +7711,9 @@ declare type ManifestEntryTypeLike = IntersectedEnum<{
     MerkleStateRoot: tagOnly;
 }>;
 
-/**
- * ManifestEntryType enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **5 variant(s)** of the ManifestEntryType enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type ManifestEntryTypeLike_2 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicyLike_2;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreadsLike_2;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
+export { minimalNeighborhoodData }
 
-/**
- * ManifestEntryType enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **5 variant(s)** of the ManifestEntryType enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type ManifestEntryTypeLike_3 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicyLike_3;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreadsLike_3;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
-
-/**
- * ManifestEntryType enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **5 variant(s)** of the ManifestEntryType enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type ManifestEntryTypeLike_4 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicyLike_4;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreadsLike_4;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
-
-/**
- * @internal
- */
-declare type ManifestEntryTypeMeta = EnumTypeMeta<{
-    module: "CapoHelpers";
-    enumName: "ManifestEntryType";
-}, {
-    NamedTokenRef: singleEnumVariantMeta<ManifestEntryTypeMeta, "NamedTokenRef", "Constr#0", "tagOnly", tagOnly, "noSpecialFlags">;
-    DgDataPolicy: singleEnumVariantMeta<ManifestEntryTypeMeta, "DgDataPolicy", "Constr#1", "fields", ManifestEntryType$DgDataPolicy_2, "noSpecialFlags">;
-    DelegateThreads: singleEnumVariantMeta<ManifestEntryTypeMeta, "DelegateThreads", "Constr#2", "fields", ManifestEntryType$DelegateThreads_2, "noSpecialFlags">;
-    MerkleMembership: singleEnumVariantMeta<ManifestEntryTypeMeta, "MerkleMembership", "Constr#3", "tagOnly", tagOnly, "noSpecialFlags">;
-    MerkleStateRoot: singleEnumVariantMeta<ManifestEntryTypeMeta, "MerkleStateRoot", "Constr#4", "tagOnly", tagOnly, "noSpecialFlags">;
-}>;
-
-/**
- * expresses the essential fields needed for initiating creation of a AnyData
- * @public
- */
-declare type minimalAnyData = minimalData<AnyDataLike_2>;
-
-/**
- * expresses the essential fields needed for initiating creation of a DgDataDetails
- * @public
- */
-declare type minimalDgDataDetails = minimalData<DgDataDetailsLike>;
-
-/**
- * expresses the essential fields needed for initiating creation of a NeighborhoodData
- * @public
- */
-export declare type minimalNeighborhoodData = minimalData<NeighborhoodDataLike>;
-
-/**
- * expresses the essential fields needed for initiating creation of a NodeRegistrationData
- * @public
- */
-export declare type minimalNodeRegistrationData = minimalData<NodeRegistrationDataLike>;
-
-/**
- * expresses the essential fields needed for initiating creation of a ProtocolSettings
- * @public
- */
-declare type minimalProtocolSettings = minimalData<ProtocolSettingsLike>;
+export { minimalNodeRegistrationData }
 
 /**
  * MintingActivity enum variants
@@ -12593,48 +7729,6 @@ declare type MintingActivity = {
     MintingParticipantToken: TxOutputId;
 } | {
     MintingFungibleTokens: number[];
-};
-
-/**
- * MintingActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the MintingActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type MintingActivity_2 = {
-    CreatingRecord: TxOutputId;
-};
-
-/**
- * MintingActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the MintingActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type MintingActivity_3 = {
-    CreatingRecord: TxOutputId;
-};
-
-/**
- * MintingActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the MintingActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type MintingActivity_4 = {
-    CreatingRecord: TxOutputId;
 };
 
 /**
@@ -13058,70 +8152,6 @@ declare type MintingActivityLike = IntersectedEnum<{
     MintingParticipantToken: /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId | string;
 } | {
     MintingFungibleTokens: number[];
-}>;
-
-/**
- * MintingActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the MintingActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type MintingActivityLike_2 = IntersectedEnum<{
-    CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId | string;
-}>;
-
-/**
- * MintingActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the MintingActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type MintingActivityLike_3 = IntersectedEnum<{
-    CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId | string;
-}>;
-
-/**
- * MintingActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the MintingActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type MintingActivityLike_4 = IntersectedEnum<{
-    CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId | string;
-}>;
-
-/**
- * @internal
- */
-declare type MintingActivityMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "MintingActivity";
-}, {
-    CreatingRecord: singleEnumVariantMeta<MintingActivityMeta, "CreatingRecord", "Constr#0", "singletonField", /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId, "isSeededActivity">;
 }>;
 
 /**
@@ -13594,54 +8624,22 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
 /**
  * @public
  */
-export declare class NeighborhoodController extends DelegatedDataContract<ErgoNeighborhoodData, NeighborhoodDataLike> {
+export declare class NeighborhoodController extends DelegatedDataContract<ErgoNeighborhoodData_2, NeighborhoodDataLike> {
     dataBridgeClass: typeof NeighborhoodPolicyDataBridge;
     scriptBundle(): any;
     idPrefix: "nbhd";
     get delegateName(): string;
     get recordTypeName(): string;
-    exampleData(): minimalNeighborhoodData;
+    exampleData(): minimalNeighborhoodData_2;
     get capo(): DredCapo;
-    mkTxnRegisteringNeighborhood(this: NeighborhoodController, nbhReg: minimalNeighborhoodData, initialTcx?: StellarTxnContext): Promise<hasUutContext<"recordId" | "nbhd"> & StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo & hasCharterRef>;
-    mkTxnUpdatingNeighborhood(this: NeighborhoodController, txnName: string, nbh: FoundDatumUtxo<ErgoNeighborhoodData | NeighborhoodData>, options: Omit<DgDataUpdateOptions<NeighborhoodDataLike>, "activity"> & {
+    mkTxnRegisteringNeighborhood(this: NeighborhoodController, nbhReg: minimalNeighborhoodData_2, initialTcx?: StellarTxnContext): Promise<hasUutContext<"recordId" | "nbhd"> & StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo & hasCharterRef>;
+    mkTxnUpdatingNeighborhood(this: NeighborhoodController, txnName: string, nbh: FoundDatumUtxo<ErgoNeighborhoodData_2 | NeighborhoodData_2>, options: Omit<DgDataUpdateOptions<NeighborhoodDataLike>, "activity"> & {
         activity?: DgDataUpdateOptions<NeighborhoodDataLike>["activity"];
     }, initialTcx?: StellarTxnContext): Promise<StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo>;
     requirements(): ReqtsMap<never, never>;
 }
 
-/**
- * A strong type for the canonical form of NeighborhoodData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNeighborhoodData instead.
- * @public
- */
-export declare interface NeighborhoodData {
-    id: number[];
-    type: string;
-    memberToken: string;
-    state: NeighborhoodState;
-    appInfo: AppInfo;
-    opsInfo: NodeOpsInfo;
-    updateInfo: /*minStructField*/ UpdateInfo | undefined;
-}
-
-/**
- * A strong type for the permissive form of NeighborhoodData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface NeighborhoodDataLike {
-    id: number[];
-    type: string;
-    memberToken: string;
-    state: NeighborhoodStateLike;
-    appInfo: AppInfoLike;
-    opsInfo: NodeOpsInfoLike;
-    updateInfo: /*minStructField*/ UpdateInfoLike | undefined;
-}
+export { NeighborhoodData }
 
 /**
  * GENERATED data bridge for **BasicDelegate** script (defined in class ***NeighborhoodRegistryBundle***)
@@ -13902,7 +8900,7 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     ᱺᱺUpdateInfoCast: Cast<UpdateInfo, UpdateInfoLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNeighborhoodDataCast: Cast<NeighborhoodData, NeighborhoodDataLike>;
+    ᱺᱺNeighborhoodDataCast: Cast<NeighborhoodData_2, NeighborhoodDataLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink_4, RelativeDelegateLinkLike_3>;
@@ -13917,7 +8915,7 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     ᱺᱺCapoCtxCast: Cast<CapoCtx_3, CapoCtxLike_3>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNeighborhoodSettingsV1Cast: Cast<NeighborhoodSettingsV1_2, NeighborhoodSettingsV1Like>;
+    ᱺᱺNeighborhoodSettingsV1Cast: Cast<NeighborhoodSettingsV1, NeighborhoodSettingsV1Like>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺAbstractSettingsForNeighborhoodCast: Cast<AbstractSettingsForNeighborhood, AbstractSettingsForNeighborhoodLike>;
@@ -14206,7 +9204,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NeighborhoodSettings(d: UplcData): ErgoNeighborhoodSettings_2;
+    NeighborhoodSettings(d: UplcData): ErgoNeighborhoodSettings;
     /**
      * reads UplcData *known to fit the **dgd_DataSrc*** enum type,
      * for the BasicDelegate script.
@@ -14311,7 +9309,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NeighborhoodData(d: UplcData): NeighborhoodData;
+    NeighborhoodData(d: UplcData): NeighborhoodData_2;
     /**
      * reads UplcData *known to fit the **RelativeDelegateLink*** struct type,
      * for the BasicDelegate script.
@@ -14386,7 +9384,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NeighborhoodSettingsV1(d: UplcData): NeighborhoodSettingsV1_2;
+    NeighborhoodSettingsV1(d: UplcData): NeighborhoodSettingsV1;
     /**
      * reads UplcData *known to fit the **AbstractSettingsForNeighborhood*** struct type,
      * for the BasicDelegate script.
@@ -14420,34 +9418,6 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
 }
 
 /**
- * NeighborhoodSettings enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the NeighborhoodSettings enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type NeighborhoodSettings = {
-    V1: NeighborhoodSettingsV1;
-};
-
-/**
- * NeighborhoodSettings enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the NeighborhoodSettings enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type NeighborhoodSettings_2 = {
-    V1: NeighborhoodSettingsV1_2;
-};
-
-/**
  * Helper class for generating UplcData for variants of the ***NeighborhoodSettings*** enum type.
  * @public
  * @remarks
@@ -14457,7 +9427,7 @@ declare class NeighborhoodSettingsHelper extends EnumBridge<JustAnEnum> {
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
-        V1: NeighborhoodSettingsV1_2;
+        V1: NeighborhoodSettingsV1;
     }, {
         V1: NeighborhoodSettingsV1Like;
     }>;
@@ -14493,7 +9463,7 @@ declare class NeighborhoodSettingsHelper_2 extends EnumBridge<JustAnEnum> {
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
-        V1: NeighborhoodSettingsV1;
+        V1: NeighborhoodSettingsV1_2;
     }, {
         V1: NeighborhoodSettingsV1Like_2;
     }>;
@@ -14518,136 +9488,6 @@ declare class NeighborhoodSettingsHelper_2 extends EnumBridge<JustAnEnum> {
         }[];
     }): UplcData;
 }
-
-/**
- * NeighborhoodSettings enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the NeighborhoodSettings enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type NeighborhoodSettingsLike = IntersectedEnum<{
-    V1: NeighborhoodSettingsV1Like;
-}>;
-
-/**
- * NeighborhoodSettings enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the NeighborhoodSettings enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type NeighborhoodSettingsLike_2 = IntersectedEnum<{
-    V1: NeighborhoodSettingsV1Like_2;
-}>;
-
-/**
- * A strong type for the canonical form of NeighborhoodSettingsV1
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNeighborhoodSettingsV1 instead.
- * @public
- */
-declare interface NeighborhoodSettingsV1 {
-    minRegistrationFee: Value;
-    minNbhStake: Value;
-}
-
-/**
- * A strong type for the canonical form of NeighborhoodSettingsV1
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNeighborhoodSettingsV1 instead.
- * @public
- */
-declare interface NeighborhoodSettingsV1_2 {
-    minRegistrationFee: Value;
-    minNbhStake: Value;
-}
-
-/**
- * A strong type for the permissive form of NeighborhoodSettingsV1
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface NeighborhoodSettingsV1Like {
-    minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-    minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-}
-
-/**
- * A strong type for the permissive form of NeighborhoodSettingsV1
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface NeighborhoodSettingsV1Like_2 {
-    minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-    minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-}
-
-/**
- * NeighborhoodState enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **5 variant(s)** of the NeighborhoodState enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodStateHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type NeighborhoodState = {
-    Preproduction: tagOnly;
-} | {
-    Active: tagOnly;
-} | {
-    UpdatePending: tagOnly;
-} | {
-    UpdateDisputed: tagOnly;
-} | {
-    Retired: tagOnly;
-};
 
 /**
  * Helper class for generating UplcData for variants of the ***NeighborhoodState*** enum type.
@@ -14693,47 +9533,6 @@ declare class NeighborhoodStateHelper extends EnumBridge<JustAnEnum> {
 }
 
 /**
- * NeighborhoodState enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **5 variant(s)** of the NeighborhoodState enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodStateHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type NeighborhoodStateLike = IntersectedEnum<{
-    Preproduction: tagOnly;
-} | {
-    Active: tagOnly;
-} | {
-    UpdatePending: tagOnly;
-} | {
-    UpdateDisputed: tagOnly;
-} | {
-    Retired: tagOnly;
-}>;
-
-/**
- * A strong type for the canonical form of NodeDetails
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeDetails instead.
- * @public
- */
-declare interface NodeDetails {
-    address: string;
-    port: bigint;
-    pubKey: PubKey;
-    pubKeyHash: PubKeyHash;
-}
-
-/**
  * A strong type for the canonical form of NodeDetails
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -14749,47 +9548,6 @@ declare interface NodeDetails_2 {
 }
 
 /**
- * A strong type for the permissive form of NodeDetails
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface NodeDetailsLike {
-    address: string;
-    port: IntLike;
-    pubKey: /*minStructField*/ PubKey | string | number[];
-    pubKeyHash: /*minStructField*/ PubKeyHash | string | number[];
-}
-
-/**
- * NodeOperatorSettings enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the NodeOperatorSettings enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type NodeOperatorSettings = {
-    V1: NodeOperatorSettingsV1;
-};
-
-/**
- * NodeOperatorSettings enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the NodeOperatorSettings enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type NodeOperatorSettings_2 = {
-    V1: NodeOperatorSettingsV1_2;
-};
-
-/**
  * Helper class for generating UplcData for variants of the ***NodeOperatorSettings*** enum type.
  * @public
  * @remarks
@@ -14799,7 +9557,7 @@ declare class NodeOperatorSettingsHelper extends EnumBridge<JustAnEnum> {
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
-        V1: NodeOperatorSettingsV1_2;
+        V1: NodeOperatorSettingsV1;
     }, {
         V1: NodeOperatorSettingsV1Like;
     }>;
@@ -14838,7 +9596,7 @@ declare class NodeOperatorSettingsHelper_2 extends EnumBridge<JustAnEnum> {
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
-        V1: NodeOperatorSettingsV1;
+        V1: NodeOperatorSettingsV1_2;
     }, {
         V1: NodeOperatorSettingsV1Like_2;
     }>;
@@ -14867,223 +9625,31 @@ declare class NodeOperatorSettingsHelper_2 extends EnumBridge<JustAnEnum> {
     }): UplcData;
 }
 
-/**
- * NodeOperatorSettings enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the NodeOperatorSettings enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type NodeOperatorSettingsLike = IntersectedEnum<{
-    V1: NodeOperatorSettingsV1Like;
-}>;
-
-/**
- * NodeOperatorSettings enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the NodeOperatorSettings enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type NodeOperatorSettingsLike_2 = IntersectedEnum<{
-    V1: NodeOperatorSettingsV1Like_2;
-}>;
-
-/**
- * @internal
- */
-declare type NodeOperatorSettingsMeta = EnumTypeMeta<{
-    module: "NodeOperatorSettings";
-    enumName: "NodeOperatorSettings";
-}, {
-    V1: singleEnumVariantMeta<NodeOperatorSettingsMeta, "V1", "Constr#0", "singletonField", /* implied wrapper { s: ... } for singleVariantField */ NodeOperatorSettingsV1_2, "noSpecialFlags">;
-}>;
-
-/**
- * A strong type for the canonical form of NodeOperatorSettingsV1
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOperatorSettingsV1 instead.
- * @public
- */
-declare interface NodeOperatorSettingsV1 {
-    expectedHeartbeatInterval: bigint;
-    requiredNodeUptime: number;
-    minValidations: bigint;
-    minNodeRegistrationFee: Value;
-    minNodeOperatorStake: Value;
-}
-
-/**
- * A strong type for the canonical form of NodeOperatorSettingsV1
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOperatorSettingsV1 instead.
- * @public
- */
-declare interface NodeOperatorSettingsV1_2 {
-    expectedHeartbeatInterval: bigint;
-    requiredNodeUptime: number;
-    minValidations: bigint;
-    minNodeRegistrationFee: Value;
-    minNodeOperatorStake: Value;
-}
-
-/**
- * A strong type for the permissive form of NodeOperatorSettingsV1
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface NodeOperatorSettingsV1Like {
-    expectedHeartbeatInterval: IntLike;
-    requiredNodeUptime: number;
-    minValidations: IntLike;
-    minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-}
-
-/**
- * A strong type for the permissive form of NodeOperatorSettingsV1
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface NodeOperatorSettingsV1Like_2 {
-    expectedHeartbeatInterval: IntLike;
-    requiredNodeUptime: number;
-    minValidations: IntLike;
-    minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-}
-
-/**
- * A strong type for the canonical form of NodeOpsInfo
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOpsInfo instead.
- * @public
- */
-declare interface NodeOpsInfo {
-    minNodes: bigint;
-    maxNodes: bigint;
-    minNodeOperatorStake: Value;
-    minUptime: bigint;
-}
-
-/**
- * A strong type for the permissive form of NodeOpsInfo
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface NodeOpsInfoLike {
-    minNodes: IntLike;
-    maxNodes: IntLike;
-    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-    minUptime: IntLike;
-}
-
-/**
- * A strong type for the canonical form of NodeRegistrationData
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeRegistrationData instead.
- * @public
- */
-export declare interface NodeRegistrationData {
-    id: number[];
-    type: string;
-    memberToken: string;
-    state: DredNodeState;
-    nodeDetails: NodeDetails;
-}
-
-/**
- * A strong type for the permissive form of NodeRegistrationData
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface NodeRegistrationDataLike {
-    id: number[];
-    type: string;
-    memberToken: string;
-    state: DredNodeStateLike;
-    nodeDetails: NodeDetailsLike;
-}
+export { NodeRegistrationData }
 
 /**
  * @public
  */
-export declare class NodeRegistryController extends DelegatedDataContract<ErgoNodeRegistrationData, NodeRegistrationDataLike> {
+export declare class NodeRegistryController extends DelegatedDataContract<ErgoNodeRegistrationData_2, NodeRegistrationDataLike> {
     dataBridgeClass: typeof DredNodeRegistryPolicyDataBridge;
     scriptBundle(): any;
     idPrefix: "dredNode";
     get delegateName(): string;
     get recordTypeName(): string;
-    exampleData(): minimalNodeRegistrationData;
+    exampleData(): minimalNodeRegistrationData_2;
     get capo(): DredCapo;
-    mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData, initialTcx?: StellarTxnContext): Promise<hasUutContext<"recordId" | "dredNode"> & StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo & hasSettingsRef<any, any> & hasCharterRef>;
-    mkTxnActivatingNode(item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, options?: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
+    mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData_2, initialTcx?: StellarTxnContext): Promise<hasUutContext<"recordId" | "dredNode"> & StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo & hasSettingsRef<any, any> & hasCharterRef>;
+    mkTxnActivatingNode(item: FoundDatumUtxo<NodeRegistrationData_2 | ErgoNodeRegistrationData_2, any>, options?: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
         activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"];
     }, initialTcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
-    mkTxnUpdatingNodeRegistration(txnName: string, item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
+    mkTxnUpdatingNodeRegistration(txnName: string, item: FoundDatumUtxo<NodeRegistrationData_2 | ErgoNodeRegistrationData_2, any>, options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
         activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"];
         withMemberToken?: boolean;
     }, initialTcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
-    mkTxnValidatingNode(txnName: string, item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity" | "updatedFields"> & {
-        validatorReg: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>;
+    mkTxnValidatingNode(txnName: string, item: FoundDatumUtxo<NodeRegistrationData_2 | ErgoNodeRegistrationData_2, any>, options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity" | "updatedFields"> & {
+        validatorReg: FoundDatumUtxo<NodeRegistrationData_2 | ErgoNodeRegistrationData_2, any>;
     }, initialTcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
-    addValidatorRef(tcx: StellarTxnContext<anyState>, validatorReg: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>): StellarTxnContext<anyState>;
+    addValidatorRef(tcx: StellarTxnContext<anyState>, validatorReg: FoundDatumUtxo<NodeRegistrationData_2 | ErgoNodeRegistrationData_2, any>): StellarTxnContext<anyState>;
     requirements(): ReqtsMap<never, never>;
 }
 
@@ -15116,48 +9682,6 @@ declare type PendingCharterChange$Ergo$otherManifestChange_2 = {
 };
 
 /**
- * An ergonomic, though less strictly-safe form of PendingCharterChange$otherManifestChange
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingCharterChange$otherManifestChangeLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type PendingCharterChange$Ergo$otherManifestChange_3 = {
-    activity: ErgoManifestActivity_3;
-    remainingDelegateValidations: Array<ErgoDelegateRole_3>;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of PendingCharterChange$otherManifestChange
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingCharterChange$otherManifestChangeLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type PendingCharterChange$Ergo$otherManifestChange_4 = {
-    activity: ErgoManifestActivity_4;
-    remainingDelegateValidations: Array<ErgoDelegateRole_4>;
-};
-
-/**
- * An ergonomic, though less strictly-safe form of PendingCharterChange$otherManifestChange
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingCharterChange$otherManifestChangeLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type PendingCharterChange$Ergo$otherManifestChange_5 = {
-    activity: ErgoManifestActivity_5;
-    remainingDelegateValidations: Array<ErgoDelegateRole_5>;
-};
-
-/**
  * A strong type for the canonical form of PendingCharterChange$otherManifestChange
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -15171,45 +9695,6 @@ declare interface PendingCharterChange$otherManifestChange {
 }
 
 /**
- * A strong type for the canonical form of PendingCharterChange$otherManifestChange
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see PendingCharterChange$Ergo$otherManifestChange instead.
- * @public
- */
-declare interface PendingCharterChange$otherManifestChange_2 {
-    activity: ManifestActivity_2;
-    remainingDelegateValidations: Array<DelegateRole_3>;
-}
-
-/**
- * A strong type for the canonical form of PendingCharterChange$otherManifestChange
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see PendingCharterChange$Ergo$otherManifestChange instead.
- * @public
- */
-declare interface PendingCharterChange$otherManifestChange_3 {
-    activity: ManifestActivity_3;
-    remainingDelegateValidations: Array<DelegateRole_4>;
-}
-
-/**
- * A strong type for the canonical form of PendingCharterChange$otherManifestChange
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see PendingCharterChange$Ergo$otherManifestChange instead.
- * @public
- */
-declare interface PendingCharterChange$otherManifestChange_4 {
-    activity: ManifestActivity_4;
-    remainingDelegateValidations: Array<DelegateRole_5>;
-}
-
-/**
  * A strong type for the permissive form of PendingCharterChange$otherManifestChange
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
@@ -15218,39 +9703,6 @@ declare interface PendingCharterChange$otherManifestChange_4 {
 declare interface PendingCharterChange$otherManifestChangeLike {
     activity: ManifestActivityLike;
     remainingDelegateValidations: Array<DelegateRoleLike>;
-}
-
-/**
- * A strong type for the permissive form of PendingCharterChange$otherManifestChange
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingCharterChange$otherManifestChangeLike_2 {
-    activity: ManifestActivityLike_2;
-    remainingDelegateValidations: Array<DelegateRoleLike_2>;
-}
-
-/**
- * A strong type for the permissive form of PendingCharterChange$otherManifestChange
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingCharterChange$otherManifestChangeLike_3 {
-    activity: ManifestActivityLike_3;
-    remainingDelegateValidations: Array<DelegateRoleLike_3>;
-}
-
-/**
- * A strong type for the permissive form of PendingCharterChange$otherManifestChange
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingCharterChange$otherManifestChangeLike_4 {
-    activity: ManifestActivityLike_4;
-    remainingDelegateValidations: Array<DelegateRoleLike_4>;
 }
 
 /**
@@ -15267,54 +9719,6 @@ declare type PendingCharterChange = {
     delegateChange: PendingDelegateChange;
 } | {
     otherManifestChange: PendingCharterChange$otherManifestChange;
-};
-
-/**
- * PendingCharterChange enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **2 variant(s)** of the PendingCharterChange enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type PendingCharterChange_2 = {
-    delegateChange: PendingDelegateChange_2;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChange_2;
-};
-
-/**
- * PendingCharterChange enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **2 variant(s)** of the PendingCharterChange enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type PendingCharterChange_3 = {
-    delegateChange: PendingDelegateChange_3;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChange_3;
-};
-
-/**
- * PendingCharterChange enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **2 variant(s)** of the PendingCharterChange enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type PendingCharterChange_4 = {
-    delegateChange: PendingDelegateChange_4;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChange_4;
 };
 
 /**
@@ -15466,77 +9870,6 @@ declare type PendingCharterChangeLike = IntersectedEnum<{
 }>;
 
 /**
- * PendingCharterChange enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **2 variant(s)** of the PendingCharterChange enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type PendingCharterChangeLike_2 = IntersectedEnum<{
-    delegateChange: PendingDelegateChangeLike_2;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChangeLike_2;
-}>;
-
-/**
- * PendingCharterChange enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **2 variant(s)** of the PendingCharterChange enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type PendingCharterChangeLike_3 = IntersectedEnum<{
-    delegateChange: PendingDelegateChangeLike_3;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChangeLike_3;
-}>;
-
-/**
- * PendingCharterChange enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **2 variant(s)** of the PendingCharterChange enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type PendingCharterChangeLike_4 = IntersectedEnum<{
-    delegateChange: PendingDelegateChangeLike_4;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChangeLike_4;
-}>;
-
-/**
- * @internal
- */
-declare type PendingCharterChangeMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "PendingCharterChange";
-}, {
-    delegateChange: singleEnumVariantMeta<PendingCharterChangeMeta, "delegateChange", "Constr#0", "singletonField", /* implied wrapper { change: ... } for singleVariantField */ PendingDelegateChange_2, "noSpecialFlags">;
-    otherManifestChange: singleEnumVariantMeta<PendingCharterChangeMeta, "otherManifestChange", "Constr#1", "fields", PendingCharterChange$otherManifestChange_2, "noSpecialFlags">;
-}>;
-
-/**
  * A strong type for the canonical form of PendingDelegateAction$Add
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -15565,90 +9898,12 @@ declare interface PendingDelegateAction$Add_2 {
 }
 
 /**
- * A strong type for the canonical form of PendingDelegateAction$Add
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see PendingDelegateAction$Ergo$Add instead.
- * @public
- */
-declare interface PendingDelegateAction$Add_3 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
-}
-
-/**
- * A strong type for the canonical form of PendingDelegateAction$Add
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see PendingDelegateAction$Ergo$Add instead.
- * @public
- */
-declare interface PendingDelegateAction$Add_4 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
-}
-
-/**
- * A strong type for the canonical form of PendingDelegateAction$Add
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see PendingDelegateAction$Ergo$Add instead.
- * @public
- */
-declare interface PendingDelegateAction$Add_5 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
-}
-
-/**
  * A strong type for the permissive form of PendingDelegateAction$Add
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
 declare interface PendingDelegateAction$AddLike {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
-}
-
-/**
- * A strong type for the permissive form of PendingDelegateAction$Add
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingDelegateAction$AddLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
-}
-
-/**
- * A strong type for the permissive form of PendingDelegateAction$Add
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingDelegateAction$AddLike_3 {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
-}
-
-/**
- * A strong type for the permissive form of PendingDelegateAction$Add
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingDelegateAction$AddLike_4 {
     seed: TxOutputId | string;
     purpose: string;
     idPrefix: string;
@@ -15677,39 +9932,6 @@ declare type PendingDelegateAction$Ergo$Add = PendingDelegateAction$Add;
 declare type PendingDelegateAction$Ergo$Add_2 = PendingDelegateAction$Add_2;
 
 /**
- * An ergonomic, though less strictly-safe form of PendingDelegateAction$Add
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingDelegateAction$AddLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type PendingDelegateAction$Ergo$Add_3 = PendingDelegateAction$Add_3;
-
-/**
- * An ergonomic, though less strictly-safe form of PendingDelegateAction$Add
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingDelegateAction$AddLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type PendingDelegateAction$Ergo$Add_4 = PendingDelegateAction$Add_4;
-
-/**
- * An ergonomic, though less strictly-safe form of PendingDelegateAction$Add
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingDelegateAction$AddLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type PendingDelegateAction$Ergo$Add_5 = PendingDelegateAction$Add_5;
-
-/**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -15730,39 +9952,6 @@ declare type PendingDelegateAction$Ergo$Replace = PendingDelegateAction$Replace;
  * @public
  */
 declare type PendingDelegateAction$Ergo$Replace_2 = PendingDelegateAction$Replace_2;
-
-/**
- * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingDelegateAction$ReplaceLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type PendingDelegateAction$Ergo$Replace_3 = PendingDelegateAction$Replace_3;
-
-/**
- * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingDelegateAction$ReplaceLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type PendingDelegateAction$Ergo$Replace_4 = PendingDelegateAction$Replace_4;
-
-/**
- * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the PendingDelegateAction$ReplaceLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type PendingDelegateAction$Ergo$Replace_5 = PendingDelegateAction$Replace_5;
 
 /**
  * A strong type for the canonical form of PendingDelegateAction$Replace
@@ -15795,105 +9984,12 @@ declare interface PendingDelegateAction$Replace_2 {
 }
 
 /**
- * A strong type for the canonical form of PendingDelegateAction$Replace
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see PendingDelegateAction$Ergo$Replace instead.
- * @public
- */
-declare interface PendingDelegateAction$Replace_3 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass;
-}
-
-/**
- * A strong type for the canonical form of PendingDelegateAction$Replace
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see PendingDelegateAction$Ergo$Replace instead.
- * @public
- */
-declare interface PendingDelegateAction$Replace_4 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass;
-}
-
-/**
- * A strong type for the canonical form of PendingDelegateAction$Replace
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see PendingDelegateAction$Ergo$Replace instead.
- * @public
- */
-declare interface PendingDelegateAction$Replace_5 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass;
-}
-
-/**
  * A strong type for the permissive form of PendingDelegateAction$Replace
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
 declare interface PendingDelegateAction$ReplaceLike {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-        mph: MintingPolicyHash | string | number[];
-        tokenName: string | number[];
-    };
-}
-
-/**
- * A strong type for the permissive form of PendingDelegateAction$Replace
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingDelegateAction$ReplaceLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-        mph: MintingPolicyHash | string | number[];
-        tokenName: string | number[];
-    };
-}
-
-/**
- * A strong type for the permissive form of PendingDelegateAction$Replace
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingDelegateAction$ReplaceLike_3 {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-        mph: MintingPolicyHash | string | number[];
-        tokenName: string | number[];
-    };
-}
-
-/**
- * A strong type for the permissive form of PendingDelegateAction$Replace
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingDelegateAction$ReplaceLike_4 {
     seed: TxOutputId | string;
     purpose: string;
     idPrefix: string;
@@ -15919,60 +10015,6 @@ declare type PendingDelegateAction = {
     Remove: tagOnly;
 } | {
     Replace: PendingDelegateAction$Replace_2;
-};
-
-/**
- * PendingDelegateAction enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the PendingDelegateAction enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type PendingDelegateAction_2 = {
-    Add: PendingDelegateAction$Add_3;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Replace_3;
-};
-
-/**
- * PendingDelegateAction enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the PendingDelegateAction enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type PendingDelegateAction_3 = {
-    Add: PendingDelegateAction$Add_4;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Replace_4;
-};
-
-/**
- * PendingDelegateAction enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the PendingDelegateAction enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type PendingDelegateAction_4 = {
-    Add: PendingDelegateAction$Add_5;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Replace_5;
 };
 
 /**
@@ -16506,84 +10548,6 @@ declare type PendingDelegateActionLike = IntersectedEnum<{
 }>;
 
 /**
- * PendingDelegateAction enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **3 variant(s)** of the PendingDelegateAction enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type PendingDelegateActionLike_2 = IntersectedEnum<{
-    Add: PendingDelegateAction$AddLike_2;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$ReplaceLike_2;
-}>;
-
-/**
- * PendingDelegateAction enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **3 variant(s)** of the PendingDelegateAction enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type PendingDelegateActionLike_3 = IntersectedEnum<{
-    Add: PendingDelegateAction$AddLike_3;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$ReplaceLike_3;
-}>;
-
-/**
- * PendingDelegateAction enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **3 variant(s)** of the PendingDelegateAction enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type PendingDelegateActionLike_4 = IntersectedEnum<{
-    Add: PendingDelegateAction$AddLike_4;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$ReplaceLike_4;
-}>;
-
-/**
- * @internal
- */
-declare type PendingDelegateActionMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "PendingDelegateAction";
-}, {
-    Add: singleEnumVariantMeta<PendingDelegateActionMeta, "Add", "Constr#0", "fields", PendingDelegateAction$Add_3, "isSeededActivity">;
-    Remove: singleEnumVariantMeta<PendingDelegateActionMeta, "Remove", "Constr#1", "tagOnly", tagOnly, "noSpecialFlags">;
-    Replace: singleEnumVariantMeta<PendingDelegateActionMeta, "Replace", "Constr#2", "fields", PendingDelegateAction$Replace_3, "isSeededActivity">;
-}>;
-
-/**
  * A strong type for the canonical form of PendingDelegateChange
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -16595,48 +10559,6 @@ declare interface PendingDelegateChange {
     action: PendingDelegateAction;
     role: DelegateRole_2;
     dgtLink: /*minStructField*/ RelativeDelegateLink_2 | undefined;
-}
-
-/**
- * A strong type for the canonical form of PendingDelegateChange
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoPendingDelegateChange instead.
- * @public
- */
-declare interface PendingDelegateChange_2 {
-    action: PendingDelegateAction_2;
-    role: DelegateRole_3;
-    dgtLink: /*minStructField*/ RelativeDelegateLink_3 | undefined;
-}
-
-/**
- * A strong type for the canonical form of PendingDelegateChange
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoPendingDelegateChange instead.
- * @public
- */
-declare interface PendingDelegateChange_3 {
-    action: PendingDelegateAction_3;
-    role: DelegateRole_4;
-    dgtLink: /*minStructField*/ RelativeDelegateLink_4 | undefined;
-}
-
-/**
- * A strong type for the canonical form of PendingDelegateChange
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoPendingDelegateChange instead.
- * @public
- */
-declare interface PendingDelegateChange_4 {
-    action: PendingDelegateAction_4;
-    role: DelegateRole_5;
-    dgtLink: /*minStructField*/ RelativeDelegateLink_5 | undefined;
 }
 
 /**
@@ -16652,60 +10574,9 @@ declare interface PendingDelegateChangeLike {
 }
 
 /**
- * A strong type for the permissive form of PendingDelegateChange
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface PendingDelegateChangeLike_2 {
-    action: PendingDelegateActionLike_2;
-    role: DelegateRoleLike_2;
-    dgtLink: /*minStructField*/ RelativeDelegateLinkLike_2 | undefined;
-}
-
-/**
- * A strong type for the permissive form of PendingDelegateChange
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingDelegateChangeLike_3 {
-    action: PendingDelegateActionLike_3;
-    role: DelegateRoleLike_3;
-    dgtLink: /*minStructField*/ RelativeDelegateLinkLike_3 | undefined;
-}
-
-/**
- * A strong type for the permissive form of PendingDelegateChange
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface PendingDelegateChangeLike_4 {
-    action: PendingDelegateActionLike_4;
-    role: DelegateRoleLike_4;
-    dgtLink: /*minStructField*/ RelativeDelegateLinkLike_4 | undefined;
-}
-
-/**
- * A strong type for the canonical form of ProtocolSettings
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoProtocolSettings instead.
- * @public
- */
-declare interface ProtocolSettings {
-    id: number[];
-    type: string;
-    nodeOpSettings: NodeOperatorSettings;
-    nbhSettings: NeighborhoodSettings;
-}
-
-/**
- * @public
- */
-export declare class ProtocolSettingsController extends DelegatedDataContract<ProtocolSettings, ProtocolSettingsLike> {
+export declare class ProtocolSettingsController extends DelegatedDataContract<ProtocolSettings_2, ProtocolSettingsLike> {
     dataBridgeClass: typeof ProtocolSettingsPolicyDataBridge;
     scriptBundle(): any;
     get capo(): DredCapo;
@@ -16718,19 +10589,6 @@ export declare class ProtocolSettingsController extends DelegatedDataContract<Pr
      */
     initialSettingsData(): Promise<minimalProtocolSettings>;
     exampleData(): minimalProtocolSettings;
-}
-
-/**
- * A strong type for the permissive form of ProtocolSettings
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface ProtocolSettingsLike {
-    id: number[];
-    type: string;
-    nodeOpSettings: NodeOperatorSettingsLike_2;
-    nbhSettings: NeighborhoodSettingsLike_2;
 }
 
 /**
@@ -16939,13 +10797,13 @@ declare class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
     ᱺᱺDelegationDetailCast: Cast<DelegationDetail_4, DelegationDetailLike_4>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNodeOperatorSettingsV1Cast: Cast<NodeOperatorSettingsV1, NodeOperatorSettingsV1Like_2>;
+    ᱺᱺNodeOperatorSettingsV1Cast: Cast<NodeOperatorSettingsV1_2, NodeOperatorSettingsV1Like_2>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNeighborhoodSettingsV1Cast: Cast<NeighborhoodSettingsV1, NeighborhoodSettingsV1Like_2>;
+    ᱺᱺNeighborhoodSettingsV1Cast: Cast<NeighborhoodSettingsV1_2, NeighborhoodSettingsV1Like_2>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺProtocolSettingsCast: Cast<ProtocolSettings, ProtocolSettingsLike>;
+    ᱺᱺProtocolSettingsCast: Cast<ProtocolSettings_2, ProtocolSettingsLike>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺRelativeDelegateLinkCast: Cast<RelativeDelegateLink_5, RelativeDelegateLinkLike_4>;
@@ -16980,7 +10838,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NodeOperatorSettings(d: UplcData): ErgoNodeOperatorSettings;
+    NodeOperatorSettings(d: UplcData): ErgoNodeOperatorSettings_2;
     /**
      * reads UplcData *known to fit the **NeighborhoodSettings*** enum type,
      * for the BasicDelegate script.
@@ -16995,7 +10853,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NeighborhoodSettings(d: UplcData): ErgoNeighborhoodSettings;
+    NeighborhoodSettings(d: UplcData): ErgoNeighborhoodSettings_2;
     datum: (d: UplcData) => Partial<{
         Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_4;
         IsDelegation: ErgoDelegationDetail_4;
@@ -17240,7 +11098,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NodeOperatorSettingsV1(d: UplcData): NodeOperatorSettingsV1;
+    NodeOperatorSettingsV1(d: UplcData): NodeOperatorSettingsV1_2;
     /**
      * reads UplcData *known to fit the **NeighborhoodSettingsV1*** struct type,
      * for the BasicDelegate script.
@@ -17255,7 +11113,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NeighborhoodSettingsV1(d: UplcData): NeighborhoodSettingsV1;
+    NeighborhoodSettingsV1(d: UplcData): NeighborhoodSettingsV1_2;
     /**
      * reads UplcData *known to fit the **ProtocolSettings*** struct type,
      * for the BasicDelegate script.
@@ -17270,7 +11128,7 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    ProtocolSettings(d: UplcData): ProtocolSettings;
+    ProtocolSettings(d: UplcData): ProtocolSettings_2;
     /**
      * reads UplcData *known to fit the **RelativeDelegateLink*** struct type,
      * for the BasicDelegate script.
@@ -17362,48 +11220,6 @@ declare interface RelativeDelegateLink_2 {
 }
 
 /**
- * A strong type for the canonical form of RelativeDelegateLink
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoRelativeDelegateLink instead.
- * @public
- */
-declare interface RelativeDelegateLink_3 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined;
-    config: number[];
-}
-
-/**
- * A strong type for the canonical form of RelativeDelegateLink
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoRelativeDelegateLink instead.
- * @public
- */
-declare interface RelativeDelegateLink_4 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined;
-    config: number[];
-}
-
-/**
- * A strong type for the canonical form of RelativeDelegateLink
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoRelativeDelegateLink instead.
- * @public
- */
-declare interface RelativeDelegateLink_5 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined;
-    config: number[];
-}
-
-/**
  * A strong type for the permissive form of RelativeDelegateLink
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
@@ -17414,111 +11230,6 @@ declare interface RelativeDelegateLinkLike {
     delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
     config: number[];
 }
-
-/**
- * A strong type for the permissive form of RelativeDelegateLink
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface RelativeDelegateLinkLike_2 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
-    config: number[];
-}
-
-/**
- * A strong type for the permissive form of RelativeDelegateLink
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface RelativeDelegateLinkLike_3 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
-    config: number[];
-}
-
-/**
- * A strong type for the permissive form of RelativeDelegateLink
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface RelativeDelegateLinkLike_4 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
-    config: number[];
-}
-
-/**
- * An ergonomic, though less strictly-safe form of RevenueModel$TransactionBased
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the RevenueModel$TransactionBasedLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type RevenueModel$Ergo$TransactionBased = {
-    minTxFee: Value;
-    maxTxFee: Value | undefined;
-    chargeTo: ErgoFeeSource;
-};
-
-/**
- * A strong type for the canonical form of RevenueModel$TransactionBased
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see RevenueModel$Ergo$TransactionBased instead.
- * @public
- */
-declare interface RevenueModel$TransactionBased {
-    minTxFee: Value;
-    maxTxFee: Value | undefined;
-    chargeTo: FeeSource;
-}
-
-/**
- * A strong type for the permissive form of RevenueModel$TransactionBased
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface RevenueModel$TransactionBasedLike {
-    minTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-    maxTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[] | undefined;
-    chargeTo: FeeSourceLike;
-}
-
-/**
- * RevenueModel enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **2 variant(s)** of the RevenueModel enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `RevenueModelHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type RevenueModel = {
-    TransactionBased: RevenueModel$TransactionBased;
-} | {
-    Subscription: Array<SubscriptionFeeFrequency>;
-};
 
 /**
  * Helper class for generating UplcData for variants of the ***RevenueModel*** enum type.
@@ -17561,61 +11272,6 @@ declare class RevenueModelHelper extends EnumBridge<JustAnEnum> {
 }
 
 /**
- * RevenueModel enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **2 variant(s)** of the RevenueModel enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `RevenueModelHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type RevenueModelLike = IntersectedEnum<{
-    TransactionBased: RevenueModel$TransactionBasedLike;
-} | {
-    Subscription: Array<SubscriptionFeeFrequencyLike>;
-}>;
-
-/**
- * An ergonomic, though less strictly-safe form of SpendingActivity$ValidatingNode
- * @remarks
- * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
- * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the SpendingActivity$ValidatingNodeLike type,
- * or the on-chain data-building helpers instead.
- * @public
- */
-declare type SpendingActivity$Ergo$ValidatingNode = SpendingActivity$ValidatingNode;
-
-/**
- * A strong type for the canonical form of SpendingActivity$ValidatingNode
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see SpendingActivity$Ergo$ValidatingNode instead.
- * @public
- */
-declare interface SpendingActivity$ValidatingNode {
-    id: number[];
-    validatorId: number[];
-}
-
-/**
- * A strong type for the permissive form of SpendingActivity$ValidatingNode
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface SpendingActivity$ValidatingNodeLike {
-    id: number[];
-    validatorId: number[];
-}
-
-/**
  * SpendingActivity enum variants
  *
  * @remarks - expresses the essential raw data structures
@@ -17627,58 +11283,6 @@ declare interface SpendingActivity$ValidatingNodeLike {
  */
 declare type SpendingActivity = {
     _placeholder1SA: number[];
-};
-
-/**
- * SpendingActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **5 variant(s)** of the SpendingActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type SpendingActivity_2 = {
-    UpdatingRecord: number[];
-} | {
-    ValidatingNode: SpendingActivity$ValidatingNode;
-} | {
-    ActivatingNode: number[];
-} | {
-    ReportingInactiveNode: number[];
-} | {
-    RefutingInactivity: number[];
-};
-
-/**
- * SpendingActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **2 variant(s)** of the SpendingActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type SpendingActivity_3 = {
-    UpdatingRecord: number[];
-} | {
-    ActivatingNeighborhood: number[];
-};
-
-/**
- * SpendingActivity enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **1 variant(s)** of the SpendingActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type SpendingActivity_4 = {
-    UpdatingRecord: number[];
 };
 
 /**
@@ -17954,102 +11558,6 @@ declare type SpendingActivityLike = IntersectedEnum<{
 }>;
 
 /**
- * SpendingActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **5 variant(s)** of the SpendingActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type SpendingActivityLike_2 = IntersectedEnum<{
-    UpdatingRecord: number[];
-} | {
-    ValidatingNode: SpendingActivity$ValidatingNodeLike;
-} | {
-    ActivatingNode: number[];
-} | {
-    ReportingInactiveNode: number[];
-} | {
-    RefutingInactivity: number[];
-}>;
-
-/**
- * SpendingActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **2 variant(s)** of the SpendingActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type SpendingActivityLike_3 = IntersectedEnum<{
-    UpdatingRecord: number[];
-} | {
-    ActivatingNeighborhood: number[];
-}>;
-
-/**
- * SpendingActivity enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **1 variant(s)** of the SpendingActivity enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
- * @public
- */
-declare type SpendingActivityLike_4 = IntersectedEnum<{
-    UpdatingRecord: number[];
-}>;
-
-/**
- * @internal
- */
-declare type SpendingActivityMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "SpendingActivity";
-}, {
-    UpdatingRecord: singleEnumVariantMeta<SpendingActivityMeta, "UpdatingRecord", "Constr#0", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ number[], "noSpecialFlags">;
-    ValidatingNode: singleEnumVariantMeta<SpendingActivityMeta, "ValidatingNode", "Constr#1", "fields", SpendingActivity$ValidatingNode, "noSpecialFlags">;
-    ActivatingNode: singleEnumVariantMeta<SpendingActivityMeta, "ActivatingNode", "Constr#2", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ number[], "noSpecialFlags">;
-    ReportingInactiveNode: singleEnumVariantMeta<SpendingActivityMeta, "ReportingInactiveNode", "Constr#3", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ number[], "noSpecialFlags">;
-    RefutingInactivity: singleEnumVariantMeta<SpendingActivityMeta, "RefutingInactivity", "Constr#4", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ number[], "noSpecialFlags">;
-}>;
-
-/**
- * SubscriptionFeeFrequency enum variants
- *
- * @remarks - expresses the essential raw data structures
- * supporting the **3 variant(s)** of the SubscriptionFeeFrequency enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `SubscriptionFeeFrequencyHelper` class
- *     for generating UPLC data for this enum type
- * @public
- */
-declare type SubscriptionFeeFrequency = {
-    Epoch: Value;
-} | {
-    Monthly: Value;
-} | {
-    Yearly: Value;
-};
-
-/**
  * Helper class for generating UplcData for variants of the ***SubscriptionFeeFrequency*** enum type.
  * @public
  * @remarks
@@ -18114,250 +11622,8 @@ declare class SubscriptionFeeFrequencyHelper extends EnumBridge<JustAnEnum> {
 }
 
 /**
- * SubscriptionFeeFrequency enum variants (permissive)
- *
- * @remarks - expresses the allowable data structure
- * for creating any of the **3 variant(s)** of the SubscriptionFeeFrequency enum type
- *
- * - **Note**: Stellar Contracts provides a higher-level `SubscriptionFeeFrequencyHelper` class
- *     for generating UPLC data for this enum type
- *
- * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
- * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type SubscriptionFeeFrequencyLike = IntersectedEnum<{
-    Epoch: /* implied wrapper { fee: ... } for singleVariantField */ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-} | {
-    Monthly: /* implied wrapper { fee: ... } for singleVariantField */ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-} | {
-    Yearly: /* implied wrapper { fee: ... } for singleVariantField */ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-}>;
-
 declare type TimeLike = IntLike;
-
-/**
- * @public
- */
-declare type TimeLike_2 = IntLike;
-
-declare namespace types {
-    export {
-        AnyData_2 as AnyData,
-        ErgoAnyData_2 as ErgoAnyData,
-        AnyDataLike_2 as AnyDataLike,
-        minimalAnyData,
-        DelegateDatum$Cip68RefToken_2 as DelegateDatum$Cip68RefToken,
-        DelegateDatum$Ergo$Cip68RefToken_2 as DelegateDatum$Ergo$Cip68RefToken,
-        DelegateDatum$Cip68RefTokenLike_2 as DelegateDatum$Cip68RefTokenLike,
-        DelegationDetail_2 as DelegationDetail,
-        ErgoDelegationDetail_2 as ErgoDelegationDetail,
-        DelegationDetailLike_2 as DelegationDetailLike,
-        DredNodeStateMeta,
-        DredNodeState,
-        ErgoDredNodeState,
-        DredNodeStateLike,
-        NodeDetails,
-        ErgoNodeDetails,
-        NodeDetailsLike,
-        NodeRegistrationData,
-        ErgoNodeRegistrationData,
-        NodeRegistrationDataLike,
-        minimalNodeRegistrationData,
-        DelegateDatum$capoStoredData_2 as DelegateDatum$capoStoredData,
-        DelegateDatum$Ergo$capoStoredData_2 as DelegateDatum$Ergo$capoStoredData,
-        DelegateDatum$capoStoredDataLike_2 as DelegateDatum$capoStoredDataLike,
-        DelegateDatumMeta,
-        DelegateDatum_2 as DelegateDatum,
-        ErgoDelegateDatum_2 as ErgoDelegateDatum,
-        DelegateDatumLike,
-        CapoLifecycleActivity$CreatingDelegate_2 as CapoLifecycleActivity$CreatingDelegate,
-        CapoLifecycleActivity$Ergo$CreatingDelegate_2 as CapoLifecycleActivity$Ergo$CreatingDelegate,
-        CapoLifecycleActivity$CreatingDelegateLike_2 as CapoLifecycleActivity$CreatingDelegateLike,
-        DelegateRoleMeta,
-        DelegateRole_3 as DelegateRole,
-        ErgoDelegateRole_3 as ErgoDelegateRole,
-        DelegateRoleLike_2 as DelegateRoleLike,
-        CapoLifecycleActivity$forcingNewSpendDelegate_2 as CapoLifecycleActivity$forcingNewSpendDelegate,
-        CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_2 as CapoLifecycleActivity$Ergo$forcingNewSpendDelegate,
-        CapoLifecycleActivity$forcingNewSpendDelegateLike_2 as CapoLifecycleActivity$forcingNewSpendDelegateLike,
-        CapoLifecycleActivity$forcingNewMintDelegate_2 as CapoLifecycleActivity$forcingNewMintDelegate,
-        CapoLifecycleActivity$Ergo$forcingNewMintDelegate_2 as CapoLifecycleActivity$Ergo$forcingNewMintDelegate,
-        CapoLifecycleActivity$forcingNewMintDelegateLike_2 as CapoLifecycleActivity$forcingNewMintDelegateLike,
-        ManifestActivity$updatingEntry_3 as ManifestActivity$updatingEntry,
-        ManifestActivity$Ergo$updatingEntry_3 as ManifestActivity$Ergo$updatingEntry,
-        ManifestActivity$updatingEntryLike_2 as ManifestActivity$updatingEntryLike,
-        ManifestActivity$addingEntry_3 as ManifestActivity$addingEntry,
-        ManifestActivity$Ergo$addingEntry_3 as ManifestActivity$Ergo$addingEntry,
-        ManifestActivity$addingEntryLike_2 as ManifestActivity$addingEntryLike,
-        ManifestActivity$forkingThreadToken_3 as ManifestActivity$forkingThreadToken,
-        ManifestActivity$Ergo$forkingThreadToken_3 as ManifestActivity$Ergo$forkingThreadToken,
-        ManifestActivity$forkingThreadTokenLike_2 as ManifestActivity$forkingThreadTokenLike,
-        ManifestActivity$burningThreadToken_3 as ManifestActivity$burningThreadToken,
-        ManifestActivity$Ergo$burningThreadToken_3 as ManifestActivity$Ergo$burningThreadToken,
-        ManifestActivity$burningThreadTokenLike_2 as ManifestActivity$burningThreadTokenLike,
-        ManifestActivityMeta,
-        ManifestActivity_2 as ManifestActivity,
-        ErgoManifestActivity_3 as ErgoManifestActivity,
-        ManifestActivityLike_2 as ManifestActivityLike,
-        CapoLifecycleActivityMeta,
-        CapoLifecycleActivity_2 as CapoLifecycleActivity,
-        ErgoCapoLifecycleActivity_2 as ErgoCapoLifecycleActivity,
-        CapoLifecycleActivityLike_2 as CapoLifecycleActivityLike,
-        DelegateLifecycleActivity$ReplacingMe_2 as DelegateLifecycleActivity$ReplacingMe,
-        DelegateLifecycleActivity$Ergo$ReplacingMe_2 as DelegateLifecycleActivity$Ergo$ReplacingMe,
-        DelegateLifecycleActivity$ReplacingMeLike_2 as DelegateLifecycleActivity$ReplacingMeLike,
-        DelegateLifecycleActivityMeta,
-        DelegateLifecycleActivity_2 as DelegateLifecycleActivity,
-        ErgoDelegateLifecycleActivity_2 as ErgoDelegateLifecycleActivity,
-        DelegateLifecycleActivityLike_2 as DelegateLifecycleActivityLike,
-        SpendingActivity$ValidatingNode,
-        SpendingActivity$Ergo$ValidatingNode,
-        SpendingActivity$ValidatingNodeLike,
-        SpendingActivityMeta,
-        SpendingActivity_2 as SpendingActivity,
-        ErgoSpendingActivity_2 as ErgoSpendingActivity,
-        SpendingActivityLike_2 as SpendingActivityLike,
-        MintingActivityMeta,
-        MintingActivity_2 as MintingActivity,
-        ErgoMintingActivity_2 as ErgoMintingActivity,
-        MintingActivityLike_2 as MintingActivityLike,
-        BurningActivityMeta,
-        BurningActivity_2 as BurningActivity,
-        ErgoBurningActivity_2 as ErgoBurningActivity,
-        BurningActivityLike_2 as BurningActivityLike,
-        DelegateActivity$CreatingDelegatedData_2 as DelegateActivity$CreatingDelegatedData,
-        DelegateActivity$Ergo$CreatingDelegatedData_2 as DelegateActivity$Ergo$CreatingDelegatedData,
-        DelegateActivity$CreatingDelegatedDataLike_2 as DelegateActivity$CreatingDelegatedDataLike,
-        DelegateActivity$UpdatingDelegatedData_2 as DelegateActivity$UpdatingDelegatedData,
-        DelegateActivity$Ergo$UpdatingDelegatedData_2 as DelegateActivity$Ergo$UpdatingDelegatedData,
-        DelegateActivity$UpdatingDelegatedDataLike_2 as DelegateActivity$UpdatingDelegatedDataLike,
-        DelegateActivity$DeletingDelegatedData_2 as DelegateActivity$DeletingDelegatedData,
-        DelegateActivity$Ergo$DeletingDelegatedData_2 as DelegateActivity$Ergo$DeletingDelegatedData,
-        DelegateActivity$DeletingDelegatedDataLike_2 as DelegateActivity$DeletingDelegatedDataLike,
-        DelegateActivityMeta,
-        DelegateActivity_2 as DelegateActivity,
-        ErgoDelegateActivity_2 as ErgoDelegateActivity,
-        DelegateActivityLike,
-        PendingDelegateAction$Add_3 as PendingDelegateAction$Add,
-        PendingDelegateAction$Ergo$Add_3 as PendingDelegateAction$Ergo$Add,
-        PendingDelegateAction$AddLike_2 as PendingDelegateAction$AddLike,
-        PendingDelegateAction$Replace_3 as PendingDelegateAction$Replace,
-        PendingDelegateAction$Ergo$Replace_3 as PendingDelegateAction$Ergo$Replace,
-        PendingDelegateAction$ReplaceLike_2 as PendingDelegateAction$ReplaceLike,
-        PendingDelegateActionMeta,
-        PendingDelegateAction_2 as PendingDelegateAction,
-        ErgoPendingDelegateAction_3 as ErgoPendingDelegateAction,
-        PendingDelegateActionLike_2 as PendingDelegateActionLike,
-        RelativeDelegateLink_3 as RelativeDelegateLink,
-        ErgoRelativeDelegateLink_3 as ErgoRelativeDelegateLink,
-        RelativeDelegateLinkLike_2 as RelativeDelegateLinkLike,
-        PendingDelegateChange_2 as PendingDelegateChange,
-        ErgoPendingDelegateChange_3 as ErgoPendingDelegateChange,
-        PendingDelegateChangeLike_2 as PendingDelegateChangeLike,
-        ManifestEntryType$DgDataPolicy_2 as ManifestEntryType$DgDataPolicy,
-        ManifestEntryType$Ergo$DgDataPolicy_3 as ManifestEntryType$Ergo$DgDataPolicy,
-        ManifestEntryType$DgDataPolicyLike_2 as ManifestEntryType$DgDataPolicyLike,
-        ManifestEntryType$DelegateThreads_2 as ManifestEntryType$DelegateThreads,
-        ManifestEntryType$Ergo$DelegateThreads_3 as ManifestEntryType$Ergo$DelegateThreads,
-        ManifestEntryType$DelegateThreadsLike_2 as ManifestEntryType$DelegateThreadsLike,
-        ManifestEntryTypeMeta,
-        ManifestEntryType_2 as ManifestEntryType,
-        ErgoManifestEntryType_3 as ErgoManifestEntryType,
-        ManifestEntryTypeLike_2 as ManifestEntryTypeLike,
-        CapoManifestEntry_2 as CapoManifestEntry,
-        ErgoCapoManifestEntry_3 as ErgoCapoManifestEntry,
-        CapoManifestEntryLike_2 as CapoManifestEntryLike,
-        PendingCharterChange$otherManifestChange_2 as PendingCharterChange$otherManifestChange,
-        PendingCharterChange$Ergo$otherManifestChange_3 as PendingCharterChange$Ergo$otherManifestChange,
-        PendingCharterChange$otherManifestChangeLike_2 as PendingCharterChange$otherManifestChangeLike,
-        PendingCharterChangeMeta,
-        PendingCharterChange_2 as PendingCharterChange,
-        ErgoPendingCharterChange_3 as ErgoPendingCharterChange,
-        PendingCharterChangeLike_2 as PendingCharterChangeLike,
-        CapoDatum$CharterData_2 as CapoDatum$CharterData,
-        CapoDatum$Ergo$CharterData_3 as CapoDatum$Ergo$CharterData,
-        CapoDatum$CharterDataLike_2 as CapoDatum$CharterDataLike,
-        cctx_CharterInputType$RefInput_2 as cctx_CharterInputType$RefInput,
-        cctx_CharterInputType$Ergo$RefInput_2 as cctx_CharterInputType$Ergo$RefInput,
-        cctx_CharterInputType$RefInputLike_2 as cctx_CharterInputType$RefInputLike,
-        cctx_CharterInputType$Input_2 as cctx_CharterInputType$Input,
-        cctx_CharterInputType$Ergo$Input_2 as cctx_CharterInputType$Ergo$Input,
-        cctx_CharterInputType$InputLike_2 as cctx_CharterInputType$InputLike,
-        cctx_CharterInputTypeMeta,
-        cctx_CharterInputType_2 as cctx_CharterInputType,
-        Ergocctx_CharterInputType_2 as Ergocctx_CharterInputType,
-        cctx_CharterInputTypeLike_2 as cctx_CharterInputTypeLike,
-        CapoCtx_2 as CapoCtx,
-        ErgoCapoCtx,
-        CapoCtxLike_2 as CapoCtxLike,
-        NodeOperatorSettingsV1_2 as NodeOperatorSettingsV1,
-        ErgoNodeOperatorSettingsV1_2 as ErgoNodeOperatorSettingsV1,
-        NodeOperatorSettingsV1Like,
-        NodeOperatorSettingsMeta,
-        NodeOperatorSettings_2 as NodeOperatorSettings,
-        ErgoNodeOperatorSettings_2 as ErgoNodeOperatorSettings,
-        NodeOperatorSettingsLike,
-        AbstractSettingsForNodeOperator,
-        ErgoAbstractSettingsForNodeOperator,
-        AbstractSettingsForNodeOperatorLike,
-        dgd_DataSrc$Both,
-        dgd_DataSrc$Ergo$Both,
-        dgd_DataSrc$BothLike,
-        dgd_DataSrcMeta,
-        dgd_DataSrc,
-        Ergodgd_DataSrc,
-        dgd_DataSrcLike,
-        DgDataDetails,
-        ErgoDgDataDetails,
-        DgDataDetailsLike,
-        minimalDgDataDetails
-    }
-}
-
-/**
- * A strong type for the canonical form of UpdateInfo
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoUpdateInfo instead.
- * @public
- */
-declare interface UpdateInfo {
-    name: string;
-    description: string;
-    url: string;
-}
-
-/**
- * A strong type for the permissive form of UpdateInfo
- * @remarks
- * The field types enable implicit conversion from various allowable input types (including the canonical form).
- * @public
- */
-declare interface UpdateInfoLike {
-    name: string;
-    description: string;
-    url: string;
-}
 
 export { }

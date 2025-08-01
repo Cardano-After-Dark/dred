@@ -310,7 +310,7 @@
                 {
                   "kind": "Reference",
                   "text": "ErgoNeighborhoodData",
-                  "canonicalReference": "dred-network-registry!ErgoNeighborhoodData:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -390,7 +390,7 @@
                 {
                   "kind": "Reference",
                   "text": "ErgoNodeRegistrationData",
-                  "canonicalReference": "dred-network-registry!~ErgoNodeRegistrationData_2:type"
+                  "canonicalReference": "dred-network-registry!~ErgoNodeRegistrationData_3:type"
                 },
                 {
                   "kind": "Content",
@@ -479,7 +479,7 @@
                 {
                   "kind": "Reference",
                   "text": "ErgoProtocolSettings",
-                  "canonicalReference": "dred-network-registry!ErgoProtocolSettings:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -488,7 +488,7 @@
                 {
                   "kind": "Reference",
                   "text": "ProtocolSettings",
-                  "canonicalReference": "dred-network-registry!~ProtocolSettings:interface"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -865,7 +865,7 @@
                 {
                   "kind": "Reference",
                   "text": "minimalProtocolSettings",
-                  "canonicalReference": "dred-network-registry!~minimalProtocolSettings:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -1371,236 +1371,6 @@
           }
         },
         {
-          "kind": "TypeAlias",
-          "canonicalReference": "dred-network-registry!ErgoNeighborhoodData:type",
-          "docComment": "/**\n * An ergonomic, though less strictly-safe form of NeighborhoodData\n *\n * @remarks\n *\n * This type can use enums expressed as merged unions of the enum variants. You might think of this type as being \"read-only\", in that it's possible to create data with this type that would not be suitable for conversion to on-chain use. For creating such data, use the NeighborhoodDataLike type, or the on-chain data-building helpers instead.\n *\n * @public\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type ErgoNeighborhoodData = "
-            },
-            {
-              "kind": "Content",
-              "text": "{\n    id: number[];\n    type: string;\n    memberToken: string;\n    state: "
-            },
-            {
-              "kind": "Reference",
-              "text": "ErgoNeighborhoodState",
-              "canonicalReference": "dred-network-registry!~ErgoNeighborhoodState:type"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    appInfo: "
-            },
-            {
-              "kind": "Reference",
-              "text": "ErgoAppInfo",
-              "canonicalReference": "dred-network-registry!~ErgoAppInfo:type"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    opsInfo: "
-            },
-            {
-              "kind": "Reference",
-              "text": "ErgoNodeOpsInfo",
-              "canonicalReference": "dred-network-registry!~ErgoNodeOpsInfo:type"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    updateInfo: /*minStructField*/ "
-            },
-            {
-              "kind": "Reference",
-              "text": "ErgoUpdateInfo",
-              "canonicalReference": "dred-network-registry!~ErgoUpdateInfo:type"
-            },
-            {
-              "kind": "Content",
-              "text": " | undefined;\n}"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": ".api-extractor-temp/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts",
-          "releaseTag": "Public",
-          "name": "ErgoNeighborhoodData",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 10
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "dred-network-registry!ErgoNodeRegistrationData:type",
-          "docComment": "/**\n * An ergonomic, though less strictly-safe form of NodeRegistrationData\n *\n * @remarks\n *\n * This type can use enums expressed as merged unions of the enum variants. You might think of this type as being \"read-only\", in that it's possible to create data with this type that would not be suitable for conversion to on-chain use. For creating such data, use the NodeRegistrationDataLike type, or the on-chain data-building helpers instead.\n *\n * @public\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type ErgoNodeRegistrationData = "
-            },
-            {
-              "kind": "Content",
-              "text": "{\n    id: number[];\n    type: string;\n    memberToken: string;\n    state: "
-            },
-            {
-              "kind": "Reference",
-              "text": "ErgoDredNodeState",
-              "canonicalReference": "dred-network-registry!~ErgoDredNodeState:type"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    nodeDetails: "
-            },
-            {
-              "kind": "Reference",
-              "text": "ErgoNodeDetails",
-              "canonicalReference": "dred-network-registry!~ErgoNodeDetails:type"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n}"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": ".api-extractor-temp/src/nodeRegistry/NodeRegistry.typeInfo.d.ts",
-          "releaseTag": "Public",
-          "name": "ErgoNodeRegistrationData",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 6
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "dred-network-registry!ErgoProtocolSettings:type",
-          "docComment": "/**\n * An ergonomic, though less strictly-safe form of ProtocolSettings\n *\n * @remarks\n *\n * This type can use enums expressed as merged unions of the enum variants. You might think of this type as being \"read-only\", in that it's possible to create data with this type that would not be suitable for conversion to on-chain use. For creating such data, use the ProtocolSettingsLike type, or the on-chain data-building helpers instead.\n *\n * @public\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type ErgoProtocolSettings = "
-            },
-            {
-              "kind": "Content",
-              "text": "{\n    id: number[];\n    type: string;\n    nodeOpSettings: "
-            },
-            {
-              "kind": "Reference",
-              "text": "ErgoNodeOperatorSettings",
-              "canonicalReference": "dred-network-registry!~ErgoNodeOperatorSettings:type"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    nbhSettings: "
-            },
-            {
-              "kind": "Reference",
-              "text": "ErgoNeighborhoodSettings",
-              "canonicalReference": "dred-network-registry!~ErgoNeighborhoodSettings:type"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n}"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": ".api-extractor-temp/src/settings/ProtocolSettings.typeInfo.d.ts",
-          "releaseTag": "Public",
-          "name": "ErgoProtocolSettings",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 6
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "dred-network-registry!minimalNeighborhoodData:type",
-          "docComment": "/**\n * expresses the essential fields needed for initiating creation of a NeighborhoodData\n *\n * @public\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type minimalNeighborhoodData = "
-            },
-            {
-              "kind": "Reference",
-              "text": "minimalData",
-              "canonicalReference": "@donecollectively/stellar-contracts!minimalData:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<"
-            },
-            {
-              "kind": "Reference",
-              "text": "NeighborhoodDataLike",
-              "canonicalReference": "dred-network-registry!~NeighborhoodDataLike:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": ".api-extractor-temp/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts",
-          "releaseTag": "Public",
-          "name": "minimalNeighborhoodData",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "dred-network-registry!minimalNodeRegistrationData:type",
-          "docComment": "/**\n * expresses the essential fields needed for initiating creation of a NodeRegistrationData\n *\n * @public\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type minimalNodeRegistrationData = "
-            },
-            {
-              "kind": "Reference",
-              "text": "minimalData",
-              "canonicalReference": "@donecollectively/stellar-contracts!minimalData:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<"
-            },
-            {
-              "kind": "Reference",
-              "text": "NodeRegistrationDataLike",
-              "canonicalReference": "dred-network-registry!~NodeRegistrationDataLike:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": ".api-extractor-temp/src/nodeRegistry/NodeRegistry.typeInfo.d.ts",
-          "releaseTag": "Public",
-          "name": "minimalNodeRegistrationData",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
           "kind": "Class",
           "canonicalReference": "dred-network-registry!MyMintSpendDelegate:class",
           "docComment": "/**\n * @public\n */\n",
@@ -1750,7 +1520,7 @@
             {
               "kind": "Reference",
               "text": "ErgoNeighborhoodData",
-              "canonicalReference": "dred-network-registry!ErgoNeighborhoodData:type"
+              "canonicalReference": "!unknown"
             },
             {
               "kind": "Content",
@@ -1759,7 +1529,7 @@
             {
               "kind": "Reference",
               "text": "NeighborhoodDataLike",
-              "canonicalReference": "dred-network-registry!~NeighborhoodDataLike:interface"
+              "canonicalReference": "!unknown"
             },
             {
               "kind": "Content",
@@ -1884,7 +1654,7 @@
                 {
                   "kind": "Reference",
                   "text": "minimalNeighborhoodData",
-                  "canonicalReference": "dred-network-registry!minimalNeighborhoodData:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -1955,7 +1725,7 @@
                 {
                   "kind": "Reference",
                   "text": "minimalNeighborhoodData",
-                  "canonicalReference": "dred-network-registry!minimalNeighborhoodData:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -2114,7 +1884,7 @@
                 {
                   "kind": "Reference",
                   "text": "ErgoNeighborhoodData",
-                  "canonicalReference": "dred-network-registry!ErgoNeighborhoodData:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -2123,7 +1893,7 @@
                 {
                   "kind": "Reference",
                   "text": "NeighborhoodData",
-                  "canonicalReference": "dred-network-registry!NeighborhoodData:interface"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -2154,7 +1924,7 @@
                 {
                   "kind": "Reference",
                   "text": "NeighborhoodDataLike",
-                  "canonicalReference": "dred-network-registry!~NeighborhoodDataLike:interface"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -2172,7 +1942,7 @@
                 {
                   "kind": "Reference",
                   "text": "NeighborhoodDataLike",
-                  "canonicalReference": "dred-network-registry!~NeighborhoodDataLike:interface"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -2404,376 +2174,6 @@
           "implementsTokenRanges": []
         },
         {
-          "kind": "Interface",
-          "canonicalReference": "dred-network-registry!NeighborhoodData:interface",
-          "docComment": "/**\n * A strong type for the canonical form of NeighborhoodData\n *\n * @remarks\n *\n * Note that any enum fields in this type are expressed as a disjoint union of the enum variants. Processing enum data conforming to this type can be a bit of a pain. For a more ergonomic, though less strictly-safe form of this type, see ErgoNeighborhoodData instead.\n *\n * @public\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export interface NeighborhoodData "
-            }
-          ],
-          "fileUrlPath": ".api-extractor-temp/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts",
-          "releaseTag": "Public",
-          "name": "NeighborhoodData",
-          "preserveMemberOrder": false,
-          "members": [
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NeighborhoodData#appInfo:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "appInfo: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "AppInfo",
-                  "canonicalReference": "dred-network-registry!~AppInfo:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "appInfo",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NeighborhoodData#id:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "id: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "number[]"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "id",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NeighborhoodData#memberToken:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "memberToken: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "string"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "memberToken",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NeighborhoodData#opsInfo:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "opsInfo: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "NodeOpsInfo",
-                  "canonicalReference": "dred-network-registry!~NodeOpsInfo:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "opsInfo",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NeighborhoodData#state:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "state: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "NeighborhoodState",
-                  "canonicalReference": "dred-network-registry!~NeighborhoodState:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "state",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NeighborhoodData#type:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "type: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "string"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "type",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NeighborhoodData#updateInfo:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "updateInfo: /*minStructField*/ "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "UpdateInfo",
-                  "canonicalReference": "dred-network-registry!~UpdateInfo:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": " | undefined"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "updateInfo",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 3
-              }
-            }
-          ],
-          "extendsTokenRanges": []
-        },
-        {
-          "kind": "Interface",
-          "canonicalReference": "dred-network-registry!NodeRegistrationData:interface",
-          "docComment": "/**\n * A strong type for the canonical form of NodeRegistrationData\n *\n * @remarks\n *\n * Note that any enum fields in this type are expressed as a disjoint union of the enum variants. Processing enum data conforming to this type can be a bit of a pain. For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeRegistrationData instead.\n *\n * @public\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export interface NodeRegistrationData "
-            }
-          ],
-          "fileUrlPath": ".api-extractor-temp/src/nodeRegistry/NodeRegistry.typeInfo.d.ts",
-          "releaseTag": "Public",
-          "name": "NodeRegistrationData",
-          "preserveMemberOrder": false,
-          "members": [
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NodeRegistrationData#id:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "id: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "number[]"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "id",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NodeRegistrationData#memberToken:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "memberToken: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "string"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "memberToken",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NodeRegistrationData#nodeDetails:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "nodeDetails: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "NodeDetails",
-                  "canonicalReference": "dred-network-registry!~NodeDetails:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "nodeDetails",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NodeRegistrationData#state:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "state: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "DredNodeState",
-                  "canonicalReference": "dred-network-registry!~DredNodeState:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "state",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NodeRegistrationData#type:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "type: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "string"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "type",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            }
-          ],
-          "extendsTokenRanges": []
-        },
-        {
           "kind": "Class",
           "canonicalReference": "dred-network-registry!NodeRegistryController:class",
           "docComment": "/**\n * @public\n */\n",
@@ -2794,7 +2194,7 @@
             {
               "kind": "Reference",
               "text": "ErgoNodeRegistrationData",
-              "canonicalReference": "dred-network-registry!ErgoNodeRegistrationData:type"
+              "canonicalReference": "!unknown"
             },
             {
               "kind": "Content",
@@ -2803,7 +2203,7 @@
             {
               "kind": "Reference",
               "text": "NodeRegistrationDataLike",
-              "canonicalReference": "dred-network-registry!~NodeRegistrationDataLike:interface"
+              "canonicalReference": "!unknown"
             },
             {
               "kind": "Content",
@@ -2863,7 +2263,7 @@
                 {
                   "kind": "Reference",
                   "text": "NodeRegistrationData",
-                  "canonicalReference": "dred-network-registry!NodeRegistrationData:interface"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -2872,7 +2272,7 @@
                 {
                   "kind": "Reference",
                   "text": "ErgoNodeRegistrationData",
-                  "canonicalReference": "dred-network-registry!ErgoNodeRegistrationData:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3043,7 +2443,7 @@
                 {
                   "kind": "Reference",
                   "text": "minimalNodeRegistrationData",
-                  "canonicalReference": "dred-network-registry!minimalNodeRegistrationData:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3114,7 +2514,7 @@
                 {
                   "kind": "Reference",
                   "text": "NodeRegistrationData",
-                  "canonicalReference": "dred-network-registry!NodeRegistrationData:interface"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3123,7 +2523,7 @@
                 {
                   "kind": "Reference",
                   "text": "ErgoNodeRegistrationData",
-                  "canonicalReference": "dred-network-registry!ErgoNodeRegistrationData:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3154,7 +2554,7 @@
                 {
                   "kind": "Reference",
                   "text": "NodeRegistrationDataLike",
-                  "canonicalReference": "dred-network-registry!~NodeRegistrationDataLike:interface"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3172,7 +2572,7 @@
                 {
                   "kind": "Reference",
                   "text": "NodeRegistrationDataLike",
-                  "canonicalReference": "dred-network-registry!~NodeRegistrationDataLike:interface"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3295,7 +2695,7 @@
                 {
                   "kind": "Reference",
                   "text": "minimalNodeRegistrationData",
-                  "canonicalReference": "dred-network-registry!minimalNodeRegistrationData:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3454,7 +2854,7 @@
                 {
                   "kind": "Reference",
                   "text": "NodeRegistrationData",
-                  "canonicalReference": "dred-network-registry!NodeRegistrationData:interface"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3463,7 +2863,7 @@
                 {
                   "kind": "Reference",
                   "text": "ErgoNodeRegistrationData",
-                  "canonicalReference": "dred-network-registry!ErgoNodeRegistrationData:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3494,7 +2894,7 @@
                 {
                   "kind": "Reference",
                   "text": "NodeRegistrationDataLike",
-                  "canonicalReference": "dred-network-registry!~NodeRegistrationDataLike:interface"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3512,7 +2912,7 @@
                 {
                   "kind": "Reference",
                   "text": "NodeRegistrationDataLike",
-                  "canonicalReference": "dred-network-registry!~NodeRegistrationDataLike:interface"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3651,7 +3051,7 @@
                 {
                   "kind": "Reference",
                   "text": "NodeRegistrationData",
-                  "canonicalReference": "dred-network-registry!NodeRegistrationData:interface"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3660,7 +3060,7 @@
                 {
                   "kind": "Reference",
                   "text": "ErgoNodeRegistrationData",
-                  "canonicalReference": "dred-network-registry!ErgoNodeRegistrationData:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3691,7 +3091,7 @@
                 {
                   "kind": "Reference",
                   "text": "NodeRegistrationDataLike",
-                  "canonicalReference": "dred-network-registry!~NodeRegistrationDataLike:interface"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3709,7 +3109,7 @@
                 {
                   "kind": "Reference",
                   "text": "NodeRegistrationData",
-                  "canonicalReference": "dred-network-registry!NodeRegistrationData:interface"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3718,7 +3118,7 @@
                 {
                   "kind": "Reference",
                   "text": "ErgoNodeRegistrationData",
-                  "canonicalReference": "dred-network-registry!ErgoNodeRegistrationData:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -3957,7 +3357,7 @@
             {
               "kind": "Reference",
               "text": "ProtocolSettings",
-              "canonicalReference": "dred-network-registry!~ProtocolSettings:interface"
+              "canonicalReference": "!unknown"
             },
             {
               "kind": "Content",
@@ -3966,7 +3366,7 @@
             {
               "kind": "Reference",
               "text": "ProtocolSettingsLike",
-              "canonicalReference": "dred-network-registry!~ProtocolSettingsLike:interface"
+              "canonicalReference": "!unknown"
             },
             {
               "kind": "Content",
@@ -4091,7 +3491,7 @@
                 {
                   "kind": "Reference",
                   "text": "minimalProtocolSettings",
-                  "canonicalReference": "dred-network-registry!~minimalProtocolSettings:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
@@ -4162,7 +3562,7 @@
                 {
                   "kind": "Reference",
                   "text": "minimalProtocolSettings",
-                  "canonicalReference": "dred-network-registry!~minimalProtocolSettings:type"
+                  "canonicalReference": "!unknown"
                 },
                 {
                   "kind": "Content",
