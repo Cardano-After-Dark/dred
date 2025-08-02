@@ -2,6 +2,7 @@ import type { Address } from '@helios-lang/ledger';
 import { anyState } from '@donecollectively/stellar-contracts';
 import type { AssetClass } from '@helios-lang/ledger';
 import type { basicDelegateMap } from '@donecollectively/stellar-contracts';
+import { bytesToHex } from '@helios-lang/codec-utils';
 import { CapoDAppProvider } from '@donecollectively/stellar-contracts/ui';
 import type { CapoDappStatus } from '@donecollectively/stellar-contracts/ui';
 import { CapoDelegateBundle } from '@donecollectively/stellar-contracts';
@@ -25,11 +26,16 @@ import { hasSeed } from '@donecollectively/stellar-contracts';
 import { hasSeedUtxo } from '@donecollectively/stellar-contracts';
 import type { hasSettingsRef } from '@donecollectively/stellar-contracts';
 import { hasUutContext } from '@donecollectively/stellar-contracts';
+import { hexToBytes } from '@helios-lang/codec-utils';
 import { InlineTxOutputDatum } from '@helios-lang/ledger';
 import type { IntersectedEnum } from '@donecollectively/stellar-contracts';
 import type { IntLike } from '@helios-lang/codec-utils';
 import { isActivity } from '@donecollectively/stellar-contracts';
 import { JustAnEnum } from '@donecollectively/stellar-contracts';
+import { makeBlockfrostV0Client } from '@helios-lang/tx-utils';
+import { makeRandomRootPrivateKey } from '@helios-lang/tx-utils';
+import { makeRootPrivateKey } from '@helios-lang/tx-utils';
+import { makeSimpleWallet } from '@helios-lang/tx-utils';
 import type { minimalData } from '@donecollectively/stellar-contracts';
 import type { MintingPolicyHash } from '@helios-lang/ledger';
 import type { PubKey } from '@helios-lang/ledger';
@@ -863,6 +869,8 @@ declare type BurningActivityMeta = EnumTypeMeta<{
 }, {
     DeletingRecord: singleEnumVariantMeta<BurningActivityMeta, "DeletingRecord", "Constr#0", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ number[], "noSpecialFlags">;
 }>;
+
+export { bytesToHex }
 
 /**
  * A strong type for the canonical form of CapoCtx
@@ -10419,6 +10427,16 @@ declare type FeeSourceLike = IntersectedEnum<{
 } | {
     SponsorContract: /* implied wrapper { sponsorContract: ... } for singleVariantField */ ScriptHash | string | number[];
 }>;
+
+export { hexToBytes }
+
+export { makeBlockfrostV0Client }
+
+export { makeRandomRootPrivateKey }
+
+export { makeRootPrivateKey }
+
+export { makeSimpleWallet }
 
 /**
  * A strong type for the canonical form of ManifestActivity$addingEntry
