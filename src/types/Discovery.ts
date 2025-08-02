@@ -1,8 +1,8 @@
 import { EventEmitter } from "eventemitter3";
-import { NbhId } from "./ChannelSubscriptions.js";
-import { devMessage, DredEvent } from "./DredEvents.js";
-import { DredHostDetails } from "./DredHosts.js";
-import { connnectionSettings } from "./DredHosts.js";
+import type { NbhId } from "./ChannelSubscriptions.js";
+import { devMessage, type DredEvent } from "./DredEvents.js";
+import type { DredHostDetails } from "./DredHosts.js";
+import type { connnectionSettings } from "./DredHosts.js";
 import { contextLogger } from "@poshplum/utils";
 
 export interface discovery {

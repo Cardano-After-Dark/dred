@@ -5,12 +5,11 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import compression from "compression";
 
-import { Redis, RedisOptions } from "ioredis";
+import { Redis, type RedisOptions } from "ioredis";
 import { nanoid } from "nanoid";
 import type { Application } from "express";
 
-//@ts-expect-error
-import { RedisChannels } from "../redis/streams";
+import { RedisChannels } from "../redis/streams/index.js";
 
 import { colors } from "../picocolors/picocolors.js";
 const {
@@ -44,24 +43,24 @@ const {
     isColorSupported,
 } = colors;
 
-import { DredClient, DredClientArgs } from "../client/DredClient.js";
+import { DredClient, type DredClientArgs } from "../client/DredClient.js";
 import { RedisSet } from "../redis/RedisSet.js";
-import { Subscriber } from "../Subscriber.js";
+import { type Subscriber } from "../Subscriber.js";
 import {
     JSONValueAdapter,
     RedisHash,
     StringValueAdapter,
-    ValueAdapter,
+    type ValueAdapter,
 } from "../redis/RedisHash.js";
-import { ChannelOptions } from "../types/ChannelOptions.js";
+import { type ChannelOptions } from "../types/ChannelOptions.js";
 import { StringNacl } from "../util/StringNacl.js";
-import { Discovery } from "../types/Discovery.js";
-import { DredHostDetails } from "../types/DredHosts.js";
+import { type Discovery } from "../types/Discovery.js";
+import { type DredHostDetails } from "../types/DredHosts.js";
 import {
-    ChanId,
-    SubscriptionList,
-    NbhId,
-    ChannelSubOptions,
+    type ChanId,
+    type SubscriptionList,
+    type NbhId,
+    type ChannelSubOptions,
 } from "../types/ChannelSubscriptions.js";
 import { asyncDelay, autobind } from "@poshplum/utils";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
@@ -1230,10 +1229,10 @@ export class DredServer {
 export async function createServer(options: DredServerArgs, serverId: string, serverDb: number) {
     const server = new DredServer(options, serverId, serverDb);
     const { api, redis } = server;
-    api.set("redis", redis);
+    api.set("redis", redis!);
 
     api.use(express.json({}));
-    const messagesInChannel = new RedisSet(redis);
+    const messagesInChannel = new RedisSet(redis!);
 
     return server;
 }

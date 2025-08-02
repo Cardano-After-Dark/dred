@@ -1,4 +1,3 @@
-import dts from "rollup-plugin-dts";
 import esbuild from "rollup-plugin-esbuild";
 import externals from "rollup-plugin-node-externals";
 import resolve from "@rollup/plugin-node-resolve";

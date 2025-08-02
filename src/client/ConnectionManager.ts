@@ -1,25 +1,25 @@
 import { autobind, StateMachine, zonedLogger } from "@poshplum/utils";
 import { EventEmitter } from "eventemitter3";
 
-import { Discovery, ConnectionThresholds } from "../types/Discovery.js";
+import { Discovery, type ConnectionThresholds } from "../types/Discovery.js";
 import {
-    ChanId,
-    SubscriptionListenerMap,
-    NbhId,
+    type ChanId,
+    type SubscriptionListenerMap,
+    type NbhId,
     ChannelSubscriptionListener,
-    DredChannelMessage,
-    SubscriptionList,
+    type DredChannelMessage,
+    type SubscriptionList,
 } from "../types/ChannelSubscriptions.js";
-import { DredHostDetails, connnectionSettings } from "../types/DredHosts.js";
-import { devMessage, DredError, DredEvent } from "../types/DredEvents.js";
+import { type DredHostDetails, type connnectionSettings } from "../types/DredHosts.js";
+import { devMessage, type DredError, type DredEvent } from "../types/DredEvents.js";
 
-import { ConnectionEvent, HostConnection } from "./HostConnection.js";
+import { type ConnectionEvent, HostConnection } from "./HostConnection.js";
 import { colors } from "../picocolors/picocolors.js";
 const {
     cyan,
     dim,
 } = colors;
-import {
+import type {
     ConnectionState,
     ConnectionManagerOptions,
     PromisedHostDetails,
@@ -27,7 +27,7 @@ import {
 } from "../types/PeerDiscovery.js";
 import { asyncDelay } from "../util/asyncDelay.js";
 import { fetcher } from "./fetcher.js";
-import { DredMessage } from "./DredClient.js";
+import { type DredMessage } from "./DredClient.js";
 
 //!!! todo zw3w737: it has a way of posting the same unique message to multiple servers,
 //     ... and for that message to converge across them all.

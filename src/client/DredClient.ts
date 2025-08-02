@@ -27,26 +27,32 @@ import { asyncDelay, autobind, StateMachine, zonedLogger } from "@poshplum/utils
 
 import { ConnectionManager } from "./ConnectionManager.js";
 
-import { ChannelOptions } from "../types/ChannelOptions.js";
-import { Subscriber } from "../Subscriber.js";
+import { type ChannelOptions } from "../types/ChannelOptions.js";
+import { type Subscriber } from "../Subscriber.js";
 import { StringNacl } from "../util/StringNacl.js";
-import { connnectionSettings, DredHostDetails } from "../types/DredHosts.js";
-import { ConnectionThresholds, Discovery } from "../types/Discovery.js";
+import { type connnectionSettings, type DredHostDetails } from "../types/DredHosts.js";
+import { type ConnectionThresholds, type Discovery } from "../types/Discovery.js";
 import { NeighborhoodDiscovery } from "../peers/NeighborhoodDiscovery.js";
 import { HostConnection } from "./HostConnection.js";
 import {
-    ChanId,
-    SubscriptionListenerMap,
+    type ChanId,
+    type SubscriptionListenerMap,
     ChannelSubscriptionListener,
-    NbhId,
-    DredChannelMessage,
+    type NbhId,
+    type DredChannelMessage,
 } from "../types/ChannelSubscriptions.js";
-import { devMessage, DredError, DredEvent } from "../types/DredEvents.js";
+import { devMessage, type DredError, type DredEvent } from "../types/DredEvents.js";
 
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
+/**
+ * @public
+ */
 export type DredMessageListener = (dcm: DredChannelMessage & DredMessage) => void;
 
+/**
+ * @public
+ */
 export type SubscriberMap = {
     [k: ChanId]: DredMessageListener;
 };
@@ -56,6 +62,9 @@ export type SubscriberMap = {
 //     // event: DredMessage,
 // }
 
+/**
+ * @public
+ */
 export type DredMessage = {
     type: string;
     msg: string;
@@ -63,31 +72,47 @@ export type DredMessage = {
     ocid?: string;
     // [key: string]: string | undefined,
 };
+
+/**
+ * @public
+ */
 export type EncryptedDredMessage = DredMessage & {
     msg: "encrypted";
     encryptedMsg: string;
 };
 
+/**
+ * @public
+ */
 export type ClientState = DredEvent & {
     nbh: NbhId;
     channels: ChanId[];
     status: string;
 };
 
+/**
+ * @public
+ */
 export type eventHasChannels = DredEvent & {
     nbh: NbhId;
     channels: ChanId[];
 };
 
+/**
+ * @public
+ */
 export type eventChannelInfo = DredEvent & {
     nbh: NbhId;
     channel: ChanId;
 };
 
-// eventemitter3 has a bit of an odd approach on event types,
-// with a wrapping tuple type needed for each event.
-// The tuple type is the type of the args-list for the event,
-// which is typically just one arg, but CAN have multiple args instead.
+/**
+ * Type for event-emitter, with args-types for the listener on each event-name.
+ * 
+ * The args types are a tuple type, typically indicating a single arg for the event.
+ * @public
+ */
+
 export interface ClientEvents {
     needsNeighborhood: [DredEvent & { nbhs: NbhId[] }];
     hasChannels: [eventHasChannels];
@@ -99,6 +124,9 @@ export interface ClientEvents {
     error: [DredError];
 }
 
+/**
+ * @public
+ */
 export interface DredClientArgs {
     waitFor: keyof ConnectionThresholds;
     neighborhood: NbhId;
@@ -107,7 +135,7 @@ export interface DredClientArgs {
     connectionSettings?: Partial<connnectionSettings>;
 }
 type serverId = string;
-type connectionMap = Map<serverId, HostConnection>;
+// type connectionMap = Map<serverId, HostConnection>;
 type subscriberMap = Map<string, Array<Subscriber>>;
 const nbhChannelList = "_chans";
 const nbhAuthInfo = "_auth";
@@ -187,7 +215,8 @@ let instanceCount = 1;
  *
  * Alternatively, the client can provide per-channel message-handlers,
  * which are called for messages received from specific channels.
- * Use client.subscribeToChannels({[chanId]: handler}) to set up per-channel handlers.
+ * Use client.subscribeToChannels(\{[chanId]: handler\}) to set up per-channel handlers.
+ * @public
  */
 export class DredClient extends StateMachine.withDefinition(clientStates, "client") {
     args: DredClientArgs;

@@ -1,5 +1,3 @@
-import { join } from "path";
-
 export function twoModulesOut(name) {
     return {
         output: [

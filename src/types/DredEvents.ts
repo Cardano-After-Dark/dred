@@ -1,7 +1,5 @@
 import { EventEmitter } from "eventemitter3";
 
-// import { MarkRequired } from "ts-essentials";
-
 
 //! it makes these available for in-package development,
 //  but they're not really intended to be used by external developers,
@@ -10,8 +8,10 @@ export const eventMeaning = Symbol("?meaning?");
 export const devMessage = Symbol("?developer?");
 // export const emitterHelp = Symbol("?emitter?");
 
-export type stringMap<T> = Record<string, T>
-export type HelpText = stringMap<string>
+export type HelpText = Record<string, string>
+/**
+ * @public
+ */
 export interface DredEvent {
     //! it does not necessarily represent in-channel message events,
     //   but can indicate operational events occuring before or outside the scope of a channel 
@@ -33,6 +33,9 @@ export interface DredEvent {
     //  developers to use for interpretation or guidance around the event.  It is
     //  structured as a symbol so that the information is easy to see but difficult
     //  to re-present to end users.
+    /**
+     * @internal
+     */
     [devMessage]: string | string[];
 
     //! it allows additional untyped entries
@@ -42,6 +45,9 @@ export interface DredEvent {
 
 
 
+/**
+ * @public
+ */
 export interface DredError extends DredEvent {
     reason: string | Error
     [key: string]: any;

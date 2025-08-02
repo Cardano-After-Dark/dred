@@ -1,21 +1,43 @@
 import type { DredMessage, DredMessageListener } from "../client/DredClient.js";
 import type { ConnectionEvent } from "../client/HostConnection.js";
 
+/**
+ * @public
+ */
 export type ChanId = string;
+/**
+ * @public
+ */
 export type MsgId = string;
+/**
+ * @public
+ */
 export type NbhId = string;
 
+/**
+ * @public
+ */
 export type SubscriptionList = ChannelSubOptions[]
+/**
+ * @public
+ */
 export type SubscriptionListenerMap = Record<string, ChannelSubscriptionListener>
 
+/**
+ * @public
+ */
 export interface ChannelSubEvents {
     activity: [DredChannelMessage]
     "channel:message": [DredChannelMessage]
 }
 
-//! represents a configuration for monitoring a specific channel
-//! it includes alt-values for optional attributes for developers to easily see 
-//  the default behavior if the attribute is omitted
+/**
+ * Represents a configuration for monitoring a specific channel
+ * @remarks
+ * It includes alt-values for optional attributes for developers to easily see 
+ * the default behavior if the attribute is omitted
+ * @public
+ */
 export interface ChannelSubOptions {
     neighborhood: NbhId,
     channel: ChanId
@@ -34,6 +56,9 @@ export interface ChannelSubOptions {
 
 
 type DredMsgData = string;
+/**
+ * @public
+ */
 export type DredChannelMessage = ConnectionEvent &  {
     message: "msg received in chan"
     neighborhood: NbhId,
@@ -44,6 +69,9 @@ export type DredChannelMessage = ConnectionEvent &  {
     ts: Date,
 }
 
+/**
+ * @public
+ */
 export class ChannelSubscriptionListener {
     options: ChannelSubOptions;
     recentMsgs!: Set<MsgId>;

@@ -1,7 +1,7 @@
 import { DredClient } from "../client/DredClient.js";
 import { DredServer } from "./DredServer.js";
-import { DredHostDetails } from "../types/DredHosts.js";
-import { ChanId } from "../types/ChannelSubscriptions.js";
+import { type DredHostDetails } from "../types/DredHosts.js";
+import { type ChanId } from "../types/ChannelSubscriptions.js";
 
 /**
  * Handles all replication logic for the home server.
@@ -248,7 +248,7 @@ class PeerReplicationHandler {
         try {
             this.homeServer.log(`📡 Subscribing to _chans meta-channel on peer ${this.peerHost.serverId}`);
             this.homeServer.log(`🏘️ Peer client neighborhood: '${this.peerClient.neighborhood}'`);
-            this.homeServer.log(`📊 Peer client status: ${this.peerClient.status}`);
+            this.homeServer.log(`📊 Peer client status: ${this.peerClient.currentState}`);
             
             await this.peerClient.subscribeToChannels({
                 '_chans': async (message) => {

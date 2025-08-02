@@ -1,4 +1,4 @@
-import { ChannelMember } from "./ChannelMember";
+import { type ChannelMember } from "./ChannelMember.js";
 
 export type ClientChannelState = {
     options: ChannelOptions;

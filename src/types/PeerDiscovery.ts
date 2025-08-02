@@ -1,5 +1,5 @@
-import { connnectionSettings, DredHostDetails } from "./DredHosts.js";
-import { ConnectionThresholds, Discovery } from "./Discovery.js";
+import type { connnectionSettings, DredHostDetails } from "./DredHosts.js";
+import type { ConnectionThresholds, Discovery } from "./Discovery.js";
 
 // export type unusedPeerSettings = {
 //     hostName: String;

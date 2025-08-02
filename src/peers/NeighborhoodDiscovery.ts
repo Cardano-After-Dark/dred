@@ -1,22 +1,22 @@
 import {
     GenericSigner,
     TxBatcher,
-    TxBatcherOptions,
+    type TxBatcherOptions,
     bytesToText,
     environment,
 } from "@donecollectively/stellar-contracts";
-import { NbhId } from "../types/ChannelSubscriptions.js";
+import type { NbhId } from "../types/ChannelSubscriptions.js";
 import {
-    ConnectionThresholds,
+    type ConnectionThresholds,
     Discovery,
-    findingDredHosts,
-    GenericDiscoveryOptions,
-    promisedConnectionThresholds,
+    type findingDredHosts,
+    type GenericDiscoveryOptions,
+    type promisedConnectionThresholds,
 } from "../types/Discovery.js";
 import {
     DredCapo,
     NodeRegistryController,
-    NodeRegistrationData,
+    type NodeRegistrationData,
     makeBlockfrostV0Client,    
     makeRandomRootPrivateKey,
     bytesToHex,
@@ -24,8 +24,11 @@ import {
     makeSimpleWallet,
     hexToBytes,
 } from "dred-network-registry";
-import { DredHostDetails } from "../types/DredHosts.js";
+import type { DredHostDetails } from "../types/DredHosts.js";
 
+/**
+ * @public
+ */
 export class NeighborhoodDiscovery extends Discovery {
     capo!: DredCapo;
     registryController!: NodeRegistryController;

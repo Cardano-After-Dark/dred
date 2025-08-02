@@ -1,6 +1,4 @@
-import dts from "rollup-plugin-dts";
 import esbuild from "rollup-plugin-esbuild";
-// import typescript from "rollup-plugin-ts";
 import externals from "rollup-plugin-node-externals";
 
 // used for finding modules to bundle, using Node's resolution algo
@@ -8,7 +6,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import { twoModulesOut } from "../../rollup.lib.js";
 import alias from "@rollup/plugin-alias";
 
-import packageJson from "./package.json" assert { type: 'json' };
+import packageJson from "./package.json" with { type: 'json' };
 const name = packageJson.main.replace(/\.js$/, "");
 
 const browserBundledModules = [
@@ -86,15 +84,15 @@ export default [
         ...twoModulesOut(`${name}`),
     }),
 
-    browserBundle({
-        plugins: [
-            dts({
-                tsconfig: "tsconfig.browser.json",
-            }),
-        ],
-        output: {
-            file: `${name}.d.ts`,
-            format: "es",
-        },
-    }),
+    // browserBundle({
+    //     plugins: [
+    //         dts({
+    //             tsconfig: "tsconfig.browser.json",
+    //         }),
+    //     ],
+    //     output: {
+    //         file: `${name}.d.ts`,
+    //         format: "es",
+    //     },
+    // }),
 ];

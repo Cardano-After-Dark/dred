@@ -27,7 +27,7 @@
 import { DredClient } from "../client/DredClient.js";
 import { Discovery } from "../types/Discovery.js";
 import { DredServer } from "./DredServer.js";
-import { DredHostDetails } from "../types/DredHosts.js";
+import { type DredHostDetails } from "../types/DredHosts.js";
 
 export class DredReplicator{
 
