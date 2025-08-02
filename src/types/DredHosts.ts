@@ -5,6 +5,7 @@ export interface DredHostDetails {
     insecure?: boolean;
     family?: any;
     publicKey?: string;
+    pubKeyHash?: string;
 }
 
 export type connnectionSettings = {

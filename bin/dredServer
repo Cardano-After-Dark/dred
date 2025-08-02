@@ -1,13 +1,21 @@
+import dotenv from 'dotenv/config'
+
+import { NeighborhoodDiscovery } from "../src/peers/NeighborhoodDiscovery.js";
 import { StaticHostDiscovery } from "../src/peers/StaticHostDiscovery.js"
 import { createServer } from "../src/server/DredServer.js";
 import { asyncDelay } from "../src/util/asyncDelay.js";
+import path from 'node:path';
 
 //!!!! todo: read config from a JSON file 
 
 init();
 async function init() {
-    const discovery = new StaticHostDiscovery({});
-    const hosts = discovery.hosts;
+    const nbh = process.env.NEIGHBORHOOD || "dred-dev";
+    const discovery = await NeighborhoodDiscovery.forNeighborhood(nbh)
+    await new Promise((resolve) => {
+        discovery.events.once("hosts:ready", resolve)            
+    })
+    const hosts = discovery.hosts
     const firstHost = hosts?.[0];
     if (!firstHost) {
         throw new Error("No hosts found");
@@ -15,7 +23,7 @@ async function init() {
     console.log("Dred server starting on host", firstHost);
     const server = await createServer({ 
         discovery ,
-        neighborhood: process.env.NEIGHBORHOOD || "dred-dev",
+        neighborhood: nbh || "dred-dev",
         waitFor: "healthy",        
         // connectionSettings: {
 
