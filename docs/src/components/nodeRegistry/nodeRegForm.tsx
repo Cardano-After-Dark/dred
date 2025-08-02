@@ -980,9 +980,8 @@ function getPathValue(
   path: string,
 ) {
   const parts = path.split(".");
-  let value = rec;
+  let value = rec as any;
   for (const part of parts) {
-    //@ts-expect-error accessing generic string index
     value = value[part];
   }
   return value.toString();
