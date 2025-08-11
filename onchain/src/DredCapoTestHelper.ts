@@ -18,9 +18,12 @@ import {
     type UutName,
 } from "@donecollectively/stellar-contracts";
 
+// this
 import { DredCapo } from "./DredCapo.js";
 
 import { vi } from "vitest";
+
+// import types as needed
 import type { hasMemberToken } from "stellar-tokenomics";
 import type { 
     minimalNodeRegistrationData, 

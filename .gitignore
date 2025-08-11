@@ -6,3 +6,8 @@ config/keys/
 devdb
 docs/out/
 docs/.next/
+
+# Analysis folders with sensitive information
+.ai/**/team-ssh-keys.private
+.ai/**/servers.private
+.ai/**/*.private
