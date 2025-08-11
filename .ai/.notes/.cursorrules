@@ -1,0 +1,45 @@
+# DRED Project Context & Rules
+
+## Project Overview
+- **Name**: DRED - Distributed messaging system
+- **Architecture**: Node.js server with Redis backend, WebSocket connections
+- **Language**: TypeScript (strict mode)
+- **Testing**: Jest with integration tests
+
+## Key Components
+- **Client**: `src/client/` - WebSocket client implementation
+- **Server**: `src/server/` - Express server with WebSocket handling
+- **Replication**: `src/server/DredReplicator.ts` - Message replication between servers
+- **Peer Discovery**: `src/peers/` - Network peer discovery mechanisms
+- **Redis**: `src/redis/` - Redis data structures and operations
+- **Types**: `src/types/` - TypeScript type definitions
+
+## Technology Stack
+- Node.js with Express.js
+- TypeScript (strict mode enabled)
+- Redis for message storage and pub/sub
+- WebSockets for real-time communication
+- Jest for testing
+- Docker for deployment
+
+## Coding Standards
+- **TypeScript**: Explicit return types, interface over type for objects
+- **Error Handling**: Use Result<T, E> pattern, structured logging
+- **Code Organization**: One class per file, barrel exports, tests in __tests__/
+- **Testing**: Unit tests required, integration tests for complex workflows
+
+## Common Patterns
+- **Message Flow**: Client → Server → Redis → Replication
+- **Peer Discovery**: Multicast → Static configuration → Connection
+- **Channel Management**: Creation, subscription, cleanup with Redis
+- **Connection Management**: WebSocket with automatic reconnection
+
+## Session Workflow
+1. **Discussion Phase**: Analyze requirements thoroughly before implementation
+2. **Implementation Phase**: Only implement after discussion is complete
+3. **Documentation**: Update session files with decisions and changes
+
+## File Organization
+- `.ai/sessions/x01/`, `.ai/sessions/x02/` - Session management folders
+- `.notes/` - Private notes folder (ignored by Cursor)
+- Source code follows standard Node.js/TypeScript structure 
