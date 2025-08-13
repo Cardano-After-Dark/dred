@@ -115,18 +115,37 @@ export class NeighborhoodDiscovery extends Discovery {
             charterData,
           });
     
-        console.log(hosts.map(h => h.data!));
-        this.logger.info(`^ found ${hosts.length} hosts in neighborhood ${this.neighborhood}`);
-        return nodeEntries.map((h) => {
-            const details : DredHostDetails = {
-                address: h.data!.nodeDetails.address,
-                port: h.data!.nodeDetails.port,
-                serverId: bytesToText(h.data!.id),                
-                publicKey: h.data!.nodeDetails.pubKey.toString(),
-                pubKeyHash: h.data!.nodeDetails.pubKeyHash.toString(),
-            };
-            return details;
-        });
+            console.log(hosts.map(h => h.data!));
+    this.logger.info(`^ found ${hosts.length} hosts in neighborhood ${this.neighborhood}`);
+    
+    // Map node entries to DredHostDetails
+    const allNodes = nodeEntries.map((h) => {
+        const details : DredHostDetails = {
+            address: h.data!.nodeDetails.address,
+            port: h.data!.nodeDetails.port,
+            serverId: bytesToText(h.data!.id),                
+            publicKey: h.data!.nodeDetails.pubKey.toString(),
+            pubKeyHash: h.data!.nodeDetails.pubKeyHash.toString(),
+        };
+        return details;
+    });
+
+    // Filter out self if DRED_NODE_ID is specified
+    const nodeId = process.env.DRED_NODE_ID;
+    if (nodeId) {
+        this.logger.info(`Filtering out self-node with ID: ${nodeId}`);
+        const filteredNodes = allNodes.filter(node => node.serverId !== nodeId);
+        this.logger.info(`Before filtering: ${allNodes.length} nodes, After filtering: ${filteredNodes.length} nodes`);
+        
+        if (filteredNodes.length === allNodes.length) {
+            this.logger.warn(`DRED_NODE_ID "${nodeId}" not found in discovered nodes. Available nodes: ${allNodes.map(n => n.serverId).join(', ')}`);
+        }
+        
+        return filteredNodes;
+    } else {
+        this.logger.info("No DRED_NODE_ID specified, returning all discovered nodes");
+        return allNodes;
+    }
     }
 
     async getConnectionThresholds(): promisedConnectionThresholds {
