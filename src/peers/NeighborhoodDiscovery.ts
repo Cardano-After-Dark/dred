@@ -118,7 +118,6 @@ export class NeighborhoodDiscovery extends Discovery {
             console.log(hosts.map(h => h.data!));
     this.logger.info(`^ found ${hosts.length} hosts in neighborhood ${this.neighborhood}`);
     
-    // Map node entries to DredHostDetails
     const allNodes = nodeEntries.map((h) => {
         const details : DredHostDetails = {
             address: h.data!.nodeDetails.address,
@@ -130,23 +129,16 @@ export class NeighborhoodDiscovery extends Discovery {
         return details;
     });
 
-    // Filter out self if DRED_NODE_ID is specified
+    // Filter out self to prevent self-replication (uses DRED_NODE_ID environment variable)
     const nodeId = process.env.DRED_NODE_ID;
     if (nodeId) {
-        this.logger.info(`Filtering out self-node with ID: ${nodeId}`);
         const filteredNodes = allNodes.filter(node => node.serverId !== nodeId);
-        this.logger.info(`Before filtering: ${allNodes.length} nodes, After filtering: ${filteredNodes.length} nodes`);
-        
-        if (filteredNodes.length === allNodes.length) {
-            this.logger.warn(`DRED_NODE_ID "${nodeId}" not found in discovered nodes. Available nodes: ${allNodes.map(n => n.serverId).join(', ')}`);
-        }
-        
+        this.logger.info(`Filtered out self-node: ${allNodes.length} -> ${filteredNodes.length} hosts`);
         return filteredNodes;
-    } else {
-        this.logger.info("No DRED_NODE_ID specified, returning all discovered nodes");
-        return allNodes;
     }
-    }
+    
+    return allNodes;
+}
 
     async getConnectionThresholds(): promisedConnectionThresholds {
         //!!! todo: revisit this, perhaps with neighborhood-specific preferences found in discovery,
