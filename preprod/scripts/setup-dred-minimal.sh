@@ -92,6 +92,7 @@ DRED_HOST=0.0.0.0
 NODE_ENV=production
 LOGGING=default:info
 DRED_NODE_ID=${DRED_NODE_ID}
+BF_API_KEY=${BF_API_KEY:-YOUR_BLOCKFROST_API_KEY_HERE}
 ENVEOF
 
 echo "🔧 Server identified as: $DRED_NODE_ID"
@@ -113,7 +114,8 @@ module.exports = {
       DRED_PORT: '3029',
       DRED_HOST: '0.0.0.0',
       LOGGING: 'default:info',
-      DRED_NODE_ID: '${DRED_NODE_ID}'
+      DRED_NODE_ID: '${DRED_NODE_ID}',
+      BF_API_KEY: '${BF_API_KEY:-YOUR_BLOCKFROST_API_KEY_HERE}'
     }
   }]
 };

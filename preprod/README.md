@@ -16,7 +16,21 @@ This will:
 - Configure `DRED_NODE_ID` automatically 
 - Build and start DRED with the self-identification fix
 
-### 2. Test the Self-Identification Fix
+### 2. Add Blockfrost API Key (Required)
+
+```bash
+cd preprod
+./scripts/fix-api-key.sh 217.154.34.155 preprodXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+This will:
+- Add your Blockfrost API key to the server
+- Restart DRED with the new configuration
+- Enable on-chain discovery functionality
+
+**Get your API key at: https://blockfrost.io** (select 'Preprod' testnet)
+
+### 3. Test the Self-Identification Fix
 
 ```bash
 make test-self-id uk
@@ -24,11 +38,11 @@ make test-self-id uk
 
 This will:
 - Check that `DRED_NODE_ID` is configured
-- Look for self-filtering messages in the logs
+- Look for self-filtering messages in the logs  
 - Test API connectivity
 - Provide debugging commands
 
-### 3. Update to Latest Changes
+### 4. Update to Latest Changes
 
 ```bash
 make dred-redeploy uk
@@ -80,6 +94,9 @@ make dred-logs uk      # View logs
 make test-self-id uk   # Test the fix
 make dred-redeploy uk  # Update code
 
+# API key setup
+./scripts/fix-api-key.sh 217.154.34.155 preprodXXXXX  # Add Blockfrost key
+
 # Full setup (if needed)
 make setup-devops uk   # Create devops user
 make setup-infra uk    # Install infrastructure
@@ -100,6 +117,7 @@ DRED_HOST=0.0.0.0
 NODE_ENV=production
 LOGGING=default:info
 DRED_NODE_ID=preprod-hostname-ip  # AUTO-GENERATED
+BF_API_KEY=preprodXXXXXXXXXXXXXX   # BLOCKFROST API KEY
 ```
 
 ### Servers
@@ -120,6 +138,11 @@ The self-identification fix should prevent this issue:
 4. Logs show: "Filtered out self-node: X -> Y hosts"
 
 ### Troubleshooting
+
+**Error: required env variable BF_API_KEY is not set**
+- Get Blockfrost API key: https://blockfrost.io (select 'Preprod')
+- Add key: `./scripts/fix-api-key.sh 217.154.34.155 preprodXXXXX`
+- Check logs: `make dred-logs uk`
 
 **No filtering messages?**
 - Check `DRED_NODE_ID` is set: `make test-self-id uk`
