@@ -22,13 +22,6 @@ pnpm test client                     # Client functionality
 pnpm test keyexchange                # Key exchange protocols
 pnpm test:streams                    # Redis streams (yarn)
 
-## Recently used
-
-```bash
-LOGGING=1 pnpm test replication | pnpm exec pino-pretty
-LOGGING=1 pnpm test self-identification | pnpm exec pino-pretty
-```
-
 ## Setup
 
 - Redis: `scripts/setupEnvironment` or `docker-compose up redis`
@@ -39,16 +32,24 @@ LOGGING=1 pnpm test self-identification | pnpm exec pino-pretty
 
 ### Replication
 
+```bash
+LOGGING=1 pnpm test replication | pnpm exec pino-pretty
+```
+
 Tests cross-server message replication using StaticHostDiscovery with multiple servers:
 
 - Creates 3 test servers (ports 53032 - 53034) with local shared Redis
 - Validates message flow between servers and deduplication
 - Tests replication setup, cleanup, and Redis integration
 
-- Success: 5 tests pass, `✅ Successfully subscribed`, `📥/📤 REPLICATION`, `❌ DEDUP SKIP`
+- Success: 5 tests pass, `✅ Successfully subscribed`, `📥/📤 REPLICATION`, `❌ DEDUP SKIP`, `Replication setup complete`, `Replication cleanup complete`
 - Expected: "Connection is closed" warnings during cleanup
 
 ### Self-Identification
+
+```bash
+LOGGING=1 pnpm test self-identification | pnpm exec pino-pretty
+```
 
 Tests on-chain discovery self-filtering to prevent servers from replicating with `DRED_NODE_ID`
 
@@ -87,7 +88,7 @@ lsof -ti:53032,53033,53034 | xargs kill -9
 
 `Timeout of 10000ms exceeded`
 
-Solution: Check Redis coontainer is running and responsive
+Solution: Check Redis container is running and responsive
 
 ```bash
 redis-cli ping  # Should return "PONG"
