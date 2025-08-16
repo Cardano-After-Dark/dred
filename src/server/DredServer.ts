@@ -371,7 +371,7 @@ export class DredServer {
             this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));
         if (!myInfo) throw new Error(`can't identify my own info`);
         const { port, address } = myInfo;
-        this.listener = this.api.listen(port, address);
+        this.listener = this.api.listen(Number(port), address);
         this.log(`server '${this.serverId}' listening at ${address}:${port}`);
         return this.listener;
         // express

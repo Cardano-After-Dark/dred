@@ -48,7 +48,7 @@ export class NeighborhoodDiscovery extends Discovery {
 
     async initHostDiscovery() {
 
-        // See also: environment.CARDANO_NETWORK;
+        // For clients we need to fully use environment.CARDANO_NETWORK, etc.;
         const network = process.env.CARDANO_NETWORK;
         // console.log(process.env)
         const bfKey = process.env.BF_API_KEY 
