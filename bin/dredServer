@@ -20,7 +20,7 @@ async function init(
     })
     const hosts = discovery.hosts
     const matchingHost = hosts?.find(host => 
-        host.address === serverAddress && host.port === serverPort
+        host.address === serverAddress && parseInt(host.port) === parseInt(serverPort)
     );
 
     console.log("Dred nbh", nbh);
