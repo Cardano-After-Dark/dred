@@ -22,6 +22,10 @@ async function init(
     const matchingHost = hosts?.find(host => 
         host.address === serverAddress && host.port === serverPort
     );
+
+    console.log("Dred nbh", nbh);
+    console.log("Dred serverAddress", serverAddress);
+    console.log("Dred serverPort", serverPort);
     
     if (!matchingHost) {
         const availableHosts = hosts?.map(h => `${h.address}:${h.port} (${h.serverId})`).join(', ') || 'none';
