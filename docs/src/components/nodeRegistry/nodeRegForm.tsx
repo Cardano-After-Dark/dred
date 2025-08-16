@@ -971,7 +971,7 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
   }
   mkFieldId(fn: string, index?: number): string {
     const idx = index || (index === 0 ? 0 : "");
-    return `${fn}.${index || ""}`;
+    return `${fn}.${idx}`;
   }
 }
 
