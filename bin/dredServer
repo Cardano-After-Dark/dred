@@ -14,7 +14,14 @@ async function init() {
         const nbh = process.env.NEIGHBORHOOD || "dred-dev";
         const serverAddress = process.env.SERVER_IP || "0.0.0.0";
         const serverPort = process.env.DRED_PORT || "3029";
+
+        console.log("🚀 Starting DRED server initialization...");
+        console.log("📡 About to call NeighborhoodDiscovery.forNeighborhood:", nbh);
+        
         const discovery = await NeighborhoodDiscovery.forNeighborhood(nbh)
+        
+        console.log("✅ NeighborhoodDiscovery completed, waiting for hosts:ready");
+
         await new Promise((resolve) => {
             discovery.events.once("hosts:ready", resolve)            
         })
