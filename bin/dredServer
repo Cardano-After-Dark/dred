@@ -22,9 +22,18 @@ async function init() {
         
         console.log("✅ NeighborhoodDiscovery completed, waiting for hosts:ready");
 
-        await new Promise((resolve) => {
+        const hostsReadyPromise = new Promise((resolve) => {
             discovery.events.once("hosts:ready", resolve)            
-        })
+        });
+        
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error("hosts:ready timeout after 30s")), 30000);
+        });
+        
+        await Promise.race([hostsReadyPromise, timeoutPromise]);
+
+        console.log("✅ hosts:ready event received");
+
         const hosts = discovery.hosts
         const matchingHost = hosts?.find(host => 
             host.address === serverAddress && parseInt(host.port) === parseInt(serverPort)
