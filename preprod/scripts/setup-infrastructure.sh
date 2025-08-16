@@ -43,7 +43,7 @@ set -e
 
 echo "🔧 Installing essential packages..."
 sudo apt update -qq
-sudo apt install -y curl wget git build-essential redis-tools >/dev/null 2>&1
+sudo apt install -y curl wget git build-essential redis-tools yarn >/dev/null 2>&1
 
 echo "🐳 Installing Docker..."
 if ! command -v docker >/dev/null 2>&1; then
