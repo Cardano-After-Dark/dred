@@ -48,7 +48,7 @@ log_info "DRED_NODE_ID: $NODE_ID"
 
 # Check PM2 environment
 log_step "Checking PM2 environment variables..."
-if ssh devops@"$SERVER_IP" "pm2 show dred | grep -q DRED_NODE_ID"; then
+if ssh devops@"$SERVER_IP" "pm2 env 0 | grep -q DRED_NODE_ID"; then
     log_info "DRED_NODE_ID configured in PM2"
 else
     log_warning "DRED_NODE_ID may not be in PM2 environment"

@@ -44,9 +44,6 @@ help:
 	@echo "  make dred-logs [server]       # View DRED logs (50 lines)"
 	@echo "  make test-self-id [server]    # Test self-identification fix"
 	@echo ""
-	@echo "API Key Setup:"
-	@echo "  ./scripts/fix-api-key.sh [server_ip] [api_key]  # Add Blockfrost API key"
-	@echo ""
 	@echo "Server Operations:"
 	@echo "  make connect [server]         # Connect to server"
 	@echo "  make test [server]            # Test server connectivity"
@@ -173,6 +170,9 @@ list:
 	@echo "Available servers:"
 	@echo "  US ($(US))"
 	@echo "  DE ($(DE))"
+	@echo "  UK ($(UK))"
+
+# Server names are handled dynamically above 
 	@echo "  UK ($(UK))"
 
 # Server names are handled dynamically above 

@@ -83,19 +83,31 @@ SERVER_NAME=$(hostname -s 2>/dev/null || echo "unknown")
 SERVER_IP=$(hostname -I | awk '{print $1}' 2>/dev/null || echo "127.0.0.1")
 
 # Generate a unique node ID for this server
-DRED_NODE_ID="preprod-${SERVER_NAME}-${SERVER_IP}"
+# DRED_NODE_ID="preprod-${SERVER_NAME}-${SERVER_IP}"
+BF_API_KEY=preprodB0ntxMUrqIeNgLlUvDqLxzQtGvXkfA5s #YOUR-API-KEY-HERE
+DRED_NODE_ID=preprod-us #DRED NODE ID
+CARDANO_NETWORK=preprod
+
 
 cat > .env << ENVEOF
 REDIS_URL=redis://localhost:6379
 DRED_PORT=3029
 DRED_HOST=0.0.0.0
+SERVER_IP=${SERVER_IP}
 NODE_ENV=production
 LOGGING=default:info
 DRED_NODE_ID=${DRED_NODE_ID}
-BF_API_KEY=${BF_API_KEY:-YOUR_BLOCKFROST_API_KEY_HERE}
+BF_API_KEY=${BF_API_KEY}
+CARDANO_NETWORK=preprod
 ENVEOF
 
 echo "🔧 Server identified as: $DRED_NODE_ID"
+
+echo "🔧 Server using blockfrost API: $BF_API_KEY"
+
+echo "🔧 Server using cardano network: $CARDANO_NETWORK"
+
+echo "🔧 Server IP: $SERVER_IP"
 
 echo "🔧 Creating PM2 config (S00 pattern)..."
 cat > ecosystem.config.cjs << PM2EOF
@@ -115,9 +127,11 @@ module.exports = {
       DRED_HOST: '0.0.0.0',
       LOGGING: 'default:info',
       DRED_NODE_ID: '${DRED_NODE_ID}',
-      BF_API_KEY: '${BF_API_KEY:-YOUR_BLOCKFROST_API_KEY_HERE}'
+      BF_API_KEY: '${BF_API_KEY}',
+      CARDANO_NETWORK: '${CARDANO_NETWORK}',
+      SERVER_IP: '${SERVER_IP}'
     }
-  }]
+  }]    
 };
 PM2EOF
 

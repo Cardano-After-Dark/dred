@@ -49,7 +49,7 @@ echo "2. Create devops user with sudo access"
 echo "3. Configure SSH security"
 echo ""
 
-# Copy SSH keys
+# Copy SSH keys from local to remote
 if ! scp team-ssh-keys.private root@"$SERVER_IP":~/team-keys.txt; then
     log_error "Failed to copy SSH keys"
     exit 1
