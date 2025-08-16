@@ -38,7 +38,7 @@ async function init(
     const server = await createServer({ 
         discovery ,
         neighborhood: nbh || "dred-dev",
-        waitFor: "healthy",        
+        waitFor: "minimal",//"healthy",        // boostrapping problem: I need to start at least the first server to be able to connect others
         // connectionSettings: {
 
         // }
