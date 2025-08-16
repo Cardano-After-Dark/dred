@@ -78,7 +78,7 @@ const defaultRegData: minimalNodeRegistrationData = {
   state: { NeedsValidation: [] },
   nodeDetails: {
     address: "11.22.33.44",
-    port: 8080,
+    port: 3029,
     // pubKey: "",
     pubKey: "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
     pubKeyHash: "‹computed›",
