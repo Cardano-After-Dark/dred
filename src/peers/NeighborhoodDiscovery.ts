@@ -47,9 +47,11 @@ export class NeighborhoodDiscovery extends Discovery {
     }
 
     async initHostDiscovery() {
-        const network = environment.CARDANO_NETWORK;
+
+        // See also: environment.CARDANO_NETWORK;
+        const network = process.env.CARDANO_NETWORK;
         // console.log(process.env)
-        const bfKey = environment.BF_API_KEY 
+        const bfKey = process.env.BF_API_KEY 
         if (!bfKey) throw new Error("required env variable BF_API_KEY is not set");
         if (!network) throw new Error("required env variable CARDANO_NETWORK is not set");
 
