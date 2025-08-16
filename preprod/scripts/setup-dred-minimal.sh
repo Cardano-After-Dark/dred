@@ -87,6 +87,8 @@ SERVER_IP=$(hostname -I | awk '{print $1}' 2>/dev/null || echo "127.0.0.1")
 BF_API_KEY=preprodB0ntxMUrqIeNgLlUvDqLxzQtGvXkfA5s #YOUR-API-KEY-HERE
 DRED_NODE_ID=preprod-us #DRED NODE ID
 CARDANO_NETWORK=preprod
+LOGGING=discovery:debug
+#default:info,dred-client:debug,dred-client:state:warn,default:info,REPLicator:info,REPLicant:info
 
 
 cat > .env << ENVEOF
@@ -95,7 +97,7 @@ DRED_PORT=3029
 DRED_HOST=0.0.0.0
 SERVER_IP=${SERVER_IP}
 NODE_ENV=production
-LOGGING=default:info
+LOGGING=${LOGGING}
 DRED_NODE_ID=${DRED_NODE_ID}
 BF_API_KEY=${BF_API_KEY}
 CARDANO_NETWORK=preprod
@@ -125,7 +127,7 @@ module.exports = {
       REDIS_URL: 'redis://localhost:6379',
       DRED_PORT: '3029',
       DRED_HOST: '0.0.0.0',
-      LOGGING: 'default:info',
+      LOGGING: '${LOGGING}',
       DRED_NODE_ID: '${DRED_NODE_ID}',
       BF_API_KEY: '${BF_API_KEY}',
       CARDANO_NETWORK: '${CARDANO_NETWORK}',
