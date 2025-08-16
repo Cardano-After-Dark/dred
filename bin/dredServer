@@ -9,42 +9,51 @@ import path from 'node:path';
 //!!!! todo: read config from a JSON file 
 
 init();
-async function init(
-    nbh = process.env.NEIGHBORHOOD || "dred-dev",
-    serverAddress = process.env.SERVER_IP || "0.0.0.0",
-    serverPort = process.env.DRED_PORT || "3029"
-) {
-    const discovery = await NeighborhoodDiscovery.forNeighborhood(nbh)
-    await new Promise((resolve) => {
-        discovery.events.once("hosts:ready", resolve)            
-    })
-    const hosts = discovery.hosts
-    const matchingHost = hosts?.find(host => 
-        host.address === serverAddress && parseInt(host.port) === parseInt(serverPort)
-    );
-
-    console.log("Dred nbh", nbh);
-    console.log("Dred serverAddress", serverAddress);
-    console.log("Dred serverPort", serverPort);
+async function init() {
+    try{
+        const nbh = process.env.NEIGHBORHOOD || "dred-dev";
+        const serverAddress = process.env.SERVER_IP || "0.0.0.0";
+        const serverPort = process.env.DRED_PORT || "3029";
+        const discovery = await NeighborhoodDiscovery.forNeighborhood(nbh)
+        await new Promise((resolve) => {
+            discovery.events.once("hosts:ready", resolve)            
+        })
+        const hosts = discovery.hosts
+        const matchingHost = hosts?.find(host => 
+            host.address === serverAddress && parseInt(host.port) === parseInt(serverPort)
+        );
     
-    if (!matchingHost) {
-        const availableHosts = hosts?.map(h => `${h.address}:${h.port} (${h.serverId})`).join(', ') || 'none';
-        throw new Error(`No host found matching server address ${serverAddress}:${serverPort}. Available hosts: ${availableHosts}`);
+        console.log("Dred nbh", nbh);
+        console.log("Dred serverAddress", serverAddress);
+        console.log("Dred serverPort", serverPort);
+        
+        if (!matchingHost) {
+            const availableHosts = hosts?.map(h => `${h.address}:${h.port} (${h.serverId})`).join(', ') || 'none';
+            throw new Error(`No host found matching server address ${serverAddress}:${serverPort}. Available hosts: ${availableHosts}`);
+        }
+        
+        // Shows the whole host object, incl address and port
+        console.log("Dred server starting on host", matchingHost);
+        
+        const server = await createServer({ 
+            discovery ,
+            neighborhood: nbh || "dred-dev",
+            waitFor: "minimal",//"healthy",        // boostrapping problem: I need to start at least the first server to be able to connect others
+            // connectionSettings: {
+    
+            // }
+        }, matchingHost.serverId, 0);
+    
+        console.log("Dred server created", server);
+    
+        const { port, address } = matchingHost;
+        await server.listen();
+
+    } catch (error) {
+        console.error("❌ DRED startup error:", error.message);
+        console.error("❌ Stack trace:", error.stack);
+        process.exit(1);
     }
-    
-    // Shows the whole host object, incl address and port
-    console.log("Dred server starting on host", matchingHost);
-    
-    const server = await createServer({ 
-        discovery ,
-        neighborhood: nbh || "dred-dev",
-        waitFor: "minimal",//"healthy",        // boostrapping problem: I need to start at least the first server to be able to connect others
-        // connectionSettings: {
-
-        // }
-    }, matchingHost.serverId, 0);
-    const { port, address } = matchingHost;
-    await server.listen();
 
     // console.log(`Dred server listening on port ${port}`);
 }
