@@ -3,15 +3,28 @@ set -e
 
 # Minimal DRED Setup Script - Based on S00 Success
 # IDEMPOTENT: Safe to run multiple times
-# Usage: ./setup-dred-minimal.sh <server_ip>
+# Usage: ./setup-dred-minimal.sh <server_ip> <server_name>
 
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <server_ip>"
-    echo "Example: $0 217.154.34.155"
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <server_ip> <server_name>"
+    echo "Example: $0 217.154.34.155 UK"
     exit 1
 fi
 
 SERVER_IP="$1"
+SERVER_NAME="$2"
+
+# Load server-specific configuration
+CONFIG_FILE="$(dirname "$0")/../config/$(echo "$SERVER_NAME" | tr '[:upper:]' '[:lower:]').env"
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "❌ Configuration file not found: $CONFIG_FILE"
+    echo "Available configurations:"
+    ls -1 "$(dirname "$0")/../config/"*.env 2>/dev/null || echo "  No configuration files found"
+    exit 1
+fi
+
+echo "📋 Loading configuration from: $CONFIG_FILE"
+source "$CONFIG_FILE"
 
 # Color output
 GREEN='\033[0;32m'
@@ -44,8 +57,15 @@ log_info "Prerequisites verified"
 
 # Execute setup on server
 log_step "Setting up DRED (idempotent)..."
-ssh devops@"$SERVER_IP" << 'EOF'
+ssh devops@"$SERVER_IP" << EOF
 set -e
+
+# Set configuration variables from config file
+export BF_API_KEY="$BF_API_KEY"
+export DRED_NODE_ID="$DRED_NODE_ID"
+export CARDANO_NETWORK="$CARDANO_NETWORK"
+export LOGGING="$LOGGING"
+export SERVER_IP="$SERVER_IP"
 
 echo "🔧 IDEMPOTENT CLEANUP: Stopping existing DRED..."
 pm2 stop dred 2>/dev/null || true
@@ -78,17 +98,11 @@ else
 fi
 
 echo "🔧 Creating environment file..."
-# Determine DRED_NODE_ID based on server hostname/IP
-SERVER_NAME=$(hostname -s 2>/dev/null || echo "unknown")
-SERVER_IP=$(hostname -I | awk '{print $1}' 2>/dev/null || echo "127.0.0.1")
-
-# Generate a unique node ID for this server
-# DRED_NODE_ID="preprod-${SERVER_NAME}-${SERVER_IP}"
-BF_API_KEY=preprodB0ntxMUrqIeNgLlUvDqLxzQtGvXkfA5s #YOUR-API-KEY-HERE
-DRED_NODE_ID=preprod-us #DRED NODE ID
-CARDANO_NETWORK=preprod
-LOGGING=discovery:debug
-#default:info,dred-client:debug,dred-client:state:warn,default:info,REPLicator:info,REPLicant:info
+# Configuration variables loaded from config file:
+# - BF_API_KEY: Blockfrost API key for Cardano network access
+# - DRED_NODE_ID: Unique identifier for this server instance  
+# - CARDANO_NETWORK: Cardano network (preprod/mainnet)
+# - LOGGING: Log level configuration
 
 
 cat > .env << ENVEOF
@@ -100,7 +114,7 @@ NODE_ENV=production
 LOGGING=${LOGGING}
 DRED_NODE_ID=${DRED_NODE_ID}
 BF_API_KEY=${BF_API_KEY}
-CARDANO_NETWORK=preprod
+CARDANO_NETWORK=${CARDANO_NETWORK}
 ENVEOF
 
 echo "🔧 Server identified as: $DRED_NODE_ID"

@@ -97,7 +97,7 @@ setup-dred:
 		exit 1; \
 	fi
 	@echo "Setting up DRED on $(call get_server_name,$(SERVER))"
-	@./scripts/setup-dred-minimal.sh $(call get_server_ip,$(SERVER))
+	@./scripts/setup-dred-minimal.sh $(call get_server_ip,$(SERVER)) $(call get_server_name,$(SERVER))
 
 # =============================================================================
 # DRED MANAGEMENT
