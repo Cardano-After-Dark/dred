@@ -80,7 +80,11 @@ export class StaticHostDiscovery extends Discovery {
         this.hosts = hosts || StaticHostDiscovery.defaultHosts();
     }
     async initHostDiscovery() {
-        this.setupDefaultHosts();
+        // Only setup default hosts if no custom hosts were provided
+        if (!this.hosts || this.hosts.length === 0) {
+            this.setupDefaultHosts();
+        }
+        // Custom hosts are already set in constructor
     }
 
     toJSON() {
