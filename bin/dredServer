@@ -30,6 +30,7 @@ async function init() {
                     address: "74.208.13.84",
                     port: "3029", 
                     serverId: "preprod-us",
+                    insecure: true,  // Use HTTP instead of HTTPS
                     publicKey: "temp-key-1",
                     pubKeyHash: "temp-hash-1"
                 },
@@ -37,6 +38,7 @@ async function init() {
                     address: "217.154.34.155",
                     port: "3029",
                     serverId: "preprod-uk", 
+                    insecure: true,  // Use HTTP instead of HTTPS
                     publicKey: "temp-key-2",
                     pubKeyHash: "temp-hash-2"
                 }
