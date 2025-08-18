@@ -212,6 +212,15 @@ export class DredServer {
             //! it allows clients to subscribe to many channels and receive notification about updates in any of them
             this.listenOnChannels(...args);
         });
+        
+        // Admin endpoints
+        this.api.post("/admin/start-replication", (...args) => {
+            this.adminStartReplication(...args);
+        });
+        this.api.get("/admin/replication-status", (...args) => {
+            this.adminReplicationStatus(...args);
+        });
+        
         this.api.use(this.resultLogger);
     }
 
@@ -362,8 +371,12 @@ export class DredServer {
 
         // Setup replication after all basic server setup is complete
         // at this point, "_chans" and "_auth" channels are already created
-        // TODO: Enable after servers are stable - bootstrap timing issue
-        // await this.setupReplication();
+        // TODO we should restore this at some point
+        // see https://discord.com/channels/891363866775261275/913447653826773012/1380756651166011443
+        //  await this.setupReplication();
+        // this.setupReplication();
+        // to solve the bootstrap problem, we need to start at least one server to be able to connect others
+        // NOTE: Replication is now started manually via /admin/start-replication endpoint
 
         const myInfo = (this.myServerInfo =
             this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));
@@ -1222,6 +1235,75 @@ export class DredServer {
             notifyConsumerError(res, sub.channel, consumeError as Error);
         }
     }
+
+    // Admin endpoints for replication management
+    adminStartReplication: express.RequestHandler = async (req, res, next) => {
+        try {
+            if (this.replicator) {
+                this.warn("Replication already running");
+                res.json({ 
+                    status: "already_running", 
+                    message: "Replication is already active",
+                    replicatorExists: true
+                });
+                return next();
+            }
+
+            this.log("Starting replication via admin endpoint...");
+            await this.setupReplication();
+            
+            this.log("Replication started successfully via admin endpoint");
+            res.json({ 
+                status: "started", 
+                message: "Replication started successfully",
+                replicatorExists: !!this.replicator
+            });
+        } catch (error: any) {
+            this.warn("Failed to start replication via admin endpoint:", error.message);
+            res.status(500).json({ 
+                status: "error", 
+                message: "Failed to start replication",
+                error: error.message
+            });
+        }
+        next();
+    };
+
+    adminReplicationStatus: express.RequestHandler = async (req, res, next) => {
+        try {
+            const isActive = !!this.replicator && this.replicator.isInitialized();
+            const replicatorExists = !!this.replicator;
+            
+            // Get discovery info
+            const discoveryHosts = this.discovery?.hosts || [];
+            const myServerId = this.serverId;
+            const peerCount = discoveryHosts.filter(h => h.serverId !== myServerId).length;
+            
+            res.json({
+                status: "ok",
+                replication: {
+                    active: isActive,
+                    replicatorExists,
+                    serverId: myServerId,
+                    discoveredPeers: peerCount,
+                    discoveryType: this.discovery.constructor.name,
+                    hosts: discoveryHosts.map(h => ({ 
+                        serverId: h.serverId, 
+                        address: h.address, 
+                        port: h.port 
+                    }))
+                }
+            });
+        } catch (error: any) {
+            this.warn("Error getting replication status:", error.message);
+            res.status(500).json({ 
+                status: "error", 
+                message: "Failed to get replication status",
+                error: error.message
+            });
+        }
+        next();
+    };
 }
 
 export async function createServer(options: DredServerArgs, serverId: string, serverDb: number) {
