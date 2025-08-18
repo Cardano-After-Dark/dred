@@ -362,7 +362,8 @@ export class DredServer {
 
         // Setup replication after all basic server setup is complete
         // at this point, "_chans" and "_auth" channels are already created
-        await this.setupReplication();
+        // TODO: Enable after servers are stable - bootstrap timing issue
+        // await this.setupReplication();
 
         const myInfo = (this.myServerInfo =
             this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));
