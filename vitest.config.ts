@@ -7,6 +7,10 @@ console.log({__dirname});
 export default defineConfig({
   test: {
     environment: 'node',
+    // env: {
+    //   BF_API_KEY: 'preprodB0ntx....',
+    //   CARDANO_NETWORK: 'preprod'
+    // },
     include: ['src/**/*.test.ts'],
     exclude: ['**/node_modules/**', 'dist/**', 'src/redis/streams/**'],
     mockReset: true,

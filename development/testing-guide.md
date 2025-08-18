@@ -15,6 +15,9 @@ LOGGING=1 pnpm test [pattern] | pnpm exec pino-pretty
 Note: you can use more detailed logging options, see examples below
 
 ```bash
+# debug testing for all, verbose, good when writing tests
+LOGGING=default:debug pnpm test preprod | pnpm exec pino-pretty
+# tailored logging per class
 LOGGING=dred-client:debug,dred-client:state:warn,default:info,REPLicator:info,REPLicant:info pnpm test -- replication | pino-pretty | grep -v zonedLogger
 LOGGING=dred-client:state:warn,default:debug pnpm test replication | pnpm exec pino-pretty
 LOGGING=discovery:debug #your commands..

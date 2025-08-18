@@ -362,10 +362,7 @@ export class DredServer {
 
         // Setup replication after all basic server setup is complete
         // at this point, "_chans" and "_auth" channels are already created
-        // TODO we should restore this at some point
-        // see https://discord.com/channels/891363866775261275/913447653826773012/1380756651166011443
-        //  await this.setupReplication();
-        // this.setupReplication();
+        await this.setupReplication();
 
         const myInfo = (this.myServerInfo =
             this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));
