@@ -33,35 +33,50 @@ curl -X POST http://217.154.34.155:3029/admin/start-replication | jq
 ```
 
 ### Terminal 3: Run Replication Test
+
+**Option A: Simple VPS Test (Recommended for demo)**
 ```bash
-# Full replication verification test
+# Minimal, clean test - assumes servers online, starts replication, tests US → UK
+pnpm test vps | pnpm exec pino-pretty
+```
+
+**Option B: Full Infrastructure Test**
+```bash
+# Full replication verification test with more comprehensive checks
 pnpm test preprod | pnpm exec pino-pretty
 ```
 
-**Note**: This verifies actual replication using WebSocket clients. There may be some cleanup messages at the end, but the replication success is clearly visible!
+**Note**: Option A is cleaner for demos. Option B verifies more but has more verbose output.
 
 ## Expected Results
 
-The replication test verifies:
+### VPS Test (Option A) - Clean Output
+Look for these key success indicators:
+- `🌐 Starting VPS Replication Test`
+- `🔄 Starting replication on US server...`
+- `🔄 Starting replication on UK server...`
+- `✅ Replication started on both servers`
+- `🔗 Connecting clients...`
+- `✅ Test setup complete`
+- `📤 Client A sending message to US server...`
+- `📥 Client B (UK) received: [message]`
+- `🎉 SUCCESS: Message replicated from US to UK!`
+- `🎉🎉🎉 VPS REPLICATION TEST PASSED! 🎉🎉🎉`
+
+### Full Test (Option B) - Comprehensive Verification
 - ✅ **Server Health**: Both US and UK servers responding
 - ✅ **WebSocket Clients**: Connected to both servers
 - ✅ **Message Replication**: US → UK and UK → US replication 
 - ✅ **Live Verification**: Messages received via WebSocket subscriptions
 
-## Key Output Indicators
-
-**Focus on the important success messages:**
+**Key indicators:**
 - `🌐 Starting VPS replication tests`
-- `✅ Test environment ready`
 - `📤 Sending replication test message to US: "REPLICATION TEST: US to UK"`
 - `📥 UK client received message: us-uk-[timestamp]`
 - `🎉 SUCCESS: US → UK REPLICATION VERIFIED!`
-- `📤 Sending replication test message to UK: "REPLICATION TEST: UK to US"`
-- `📥 US client received message: uk-us-[timestamp]`
-- `🎉 SUCCESS: UK → US REPLICATION VERIFIED!`
 - `🎉🎉🎉 DRED REPLICATION DEMO COMPLETE! 🎉🎉🎉`
 
-**Note**: You may see some cleanup messages at the end - focus on the clear replication success indicators above!
+**Note**: Option B may show cleanup messages at the end - focus on the clear success indicators above!
 
 ## Troubleshooting
 
