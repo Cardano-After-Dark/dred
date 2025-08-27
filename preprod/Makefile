@@ -46,7 +46,7 @@ help:
 	@echo ""
 	@echo "Server Operations:"
 	@echo "  make connect [server]         # Connect to server"
-	@echo "  make test [server]            # Test server connectivity"
+	@echo "  make test [server]            # Test server connectivity + env vars"
 	@echo "  make list                     # List available servers"
 	@echo ""
 	@echo "Examples:"
@@ -60,7 +60,7 @@ help:
 	@echo "  UK ($(UK))"
 
 # Handle server parameter (case insensitive)
-ifneq (,$(filter setup-devops setup-infra setup-dred dred-redeploy test connect dred-logs dred-status test-self-id,$(MAKECMDGOALS)))
+ifneq (,$(filter setup-devops setup-infra setup-dred dred-redeploy test connect dred-logs dred-status test-self-id verify-nbh,$(MAKECMDGOALS)))
     SERVER := $(word 2,$(MAKECMDGOALS))
     $(eval $(SERVER):;@:)
 endif

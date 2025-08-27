@@ -65,6 +65,7 @@ export BF_API_KEY="$BF_API_KEY"
 export DRED_NODE_ID="$DRED_NODE_ID"
 export CARDANO_NETWORK="$CARDANO_NETWORK"
 export LOGGING="$LOGGING"
+export USE_STATIC_DISCOVERY="$USE_STATIC_DISCOVERY"
 export SERVER_IP="$SERVER_IP"
 
 echo "🔧 IDEMPOTENT CLEANUP: Stopping existing DRED..."
@@ -103,6 +104,7 @@ echo "🔧 Creating environment file..."
 # - DRED_NODE_ID: Unique identifier for this server instance  
 # - CARDANO_NETWORK: Cardano network (preprod/mainnet)
 # - LOGGING: Log level configuration
+# - USE_STATIC_DISCOVERY: Discovery method (false=NeighborhoodDiscovery, true=StaticHostDiscovery)
 
 
 cat > .env << ENVEOF
@@ -115,6 +117,7 @@ LOGGING=${LOGGING}
 DRED_NODE_ID=${DRED_NODE_ID}
 BF_API_KEY=${BF_API_KEY}
 CARDANO_NETWORK=${CARDANO_NETWORK}
+USE_STATIC_DISCOVERY=${USE_STATIC_DISCOVERY}
 ENVEOF
 
 echo "🔧 Server identified as: $DRED_NODE_ID"
@@ -122,6 +125,8 @@ echo "🔧 Server identified as: $DRED_NODE_ID"
 echo "🔧 Server using blockfrost API: $BF_API_KEY"
 
 echo "🔧 Server using cardano network: $CARDANO_NETWORK"
+
+echo "🔧 Server discovery method: USE_STATIC_DISCOVERY=$USE_STATIC_DISCOVERY"
 
 echo "🔧 Server IP: $SERVER_IP"
 
@@ -145,6 +150,7 @@ module.exports = {
       DRED_NODE_ID: '${DRED_NODE_ID}',
       BF_API_KEY: '${BF_API_KEY}',
       CARDANO_NETWORK: '${CARDANO_NETWORK}',
+      USE_STATIC_DISCOVERY: '${USE_STATIC_DISCOVERY}',
       SERVER_IP: '${SERVER_IP}'
     }
   }]    
