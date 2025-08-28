@@ -25,10 +25,11 @@ log_warn() { echo -e "${YELLOW}⚠ $1${NC}"; }
 # Get server name for display
 SERVER_NAME=$(echo $SERVER_IP | sed 's/74.208.13.84/US/; s/85.215.215.192/DE/; s/217.154.34.155/UK/')
 
-echo "Testing $SERVER_NAME server ($SERVER_IP)..."
+echo "🌐 Testing $SERVER_NAME server ($SERVER_IP)..."
+echo "=============================="
 
 # Test SSH connection
-if ssh -o ConnectTimeout=5 -o BatchMode=yes "$SSH_USER@$SERVER_IP" "echo 'SSH OK'" 2>/dev/null; then
+if ssh -o ConnectTimeout=5 -o BatchMode=yes -o LogLevel=ERROR "$SSH_USER@$SERVER_IP" "exit 0" 2>/dev/null; then
     log_info "SSH connection successful"
 else
     log_error "SSH connection failed"
@@ -36,30 +37,7 @@ else
     exit 1
 fi
 
-# Test environment variables
-echo -e "\n🔧 Environment Variables:"
-echo "========================="
-ssh -o ConnectTimeout=5 "$SSH_USER@$SERVER_IP" << 'EOF'
-cd dred 2>/dev/null || { echo "❌ DRED directory not found"; exit 1; }
-
-echo "📋 Key Configuration Variables:"
-if [ -f .env ]; then
-    echo "   DRED_NODE_ID: $(grep DRED_NODE_ID .env | cut -d= -f2 || echo 'NOT SET')"
-    echo "   CARDANO_NETWORK: $(grep CARDANO_NETWORK .env | cut -d= -f2 || echo 'NOT SET')"
-    echo "   DRED_PORT: $(grep DRED_PORT .env | cut -d= -f2 || echo 'NOT SET')"
-    echo "   USE_STATIC_DISCOVERY: $(grep USE_STATIC_DISCOVERY .env | cut -d= -f2 || echo 'NOT SET')"
-    echo "   SERVER_IP: $(grep SERVER_IP .env | cut -d= -f2 || echo 'NOT SET')"
-else
-    echo "❌ .env file not found"
-fi
-
-echo -e "\n📊 PM2 Process Status:"
-pm2 status 2>/dev/null | grep -E "(dred|Status)" || echo "❌ PM2 not running or DRED process not found"
-EOF
-
-# Test DRED server connectivity
-echo -e "\n🌐 DRED Server Connectivity:"
-echo "=============================="
+# Test DRED server connectivity first
 if command -v curl >/dev/null 2>&1; then
     if curl -s --connect-timeout 3 "http://$SERVER_IP:3029/channels" >/dev/null 2>&1; then
         log_info "DRED server responding on port 3029"
@@ -79,5 +57,35 @@ else
         log_warn "DRED port 3029 not accessible"
     fi
 fi
+
+echo ""
+echo "🔧 Key Environment Variables:"
+echo "========================="
+
+# Get environment variables and PM2 status
+{
+ssh -o ConnectTimeout=5 -o LogLevel=QUIET -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o UpdateHostKeys=no -o BatchMode=yes -T "$SSH_USER@$SERVER_IP" 'bash -s' << 'EOF'
+cd dred 2>/dev/null || { echo "❌ DRED directory not found"; exit 1; }
+
+echo "📋 Key Configuration Variables:"
+if [ -f .env ]; then
+    echo "   DRED_NODE_ID: $(grep DRED_NODE_ID .env | cut -d= -f2 || echo 'NOT SET')"
+    echo "   CARDANO_NETWORK: $(grep CARDANO_NETWORK .env | cut -d= -f2 || echo 'NOT SET')"
+    echo "   DRED_PORT: $(grep DRED_PORT .env | cut -d= -f2 || echo 'NOT SET')"
+    echo "   USE_STATIC_DISCOVERY: $(grep USE_STATIC_DISCOVERY .env | cut -d= -f2 || echo 'NOT SET')"
+    echo "   SERVER_IP: $(grep SERVER_IP .env | cut -d= -f2 || echo 'NOT SET')"
+else
+    echo "❌ .env file not found"
+fi
+
+echo ""
+echo "📊 PM2 Process Status:"
+if command -v pm2 >/dev/null 2>&1; then
+    pm2 status 2>/dev/null | grep -E "dred" | head -1 || echo "❌ DRED process not found in PM2"
+else
+    echo "❌ PM2 not installed"
+fi
+EOF
+} | grep -v -E "Welcome to Ubuntu|Documentation:|Management:|Support:|System information|System load:|Usage of|Memory usage:|Swap usage:|Strictly confined|just raised|https://|Expanded Security|updates can be applied|To see these|Enable ESM|See https://|or run:|^\s*\*|^\s*$" | grep -v "System restart required"
 
 echo "" 
