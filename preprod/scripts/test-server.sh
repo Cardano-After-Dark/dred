@@ -156,7 +156,7 @@ echo "📊 PM2 Process Status:"
 {
 ssh -o ConnectTimeout=5 -o LogLevel=QUIET -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o UpdateHostKeys=no -o BatchMode=yes -T "$SSH_USER@$SERVER_IP" 'bash -s' << 'EOF'
 if command -v pm2 >/dev/null 2>&1; then
-    pm2 status 2>/dev/null | grep -E "dred" | head -1 || echo "❌ DRED process not found in PM2"
+    pm2 status 2>/dev/null || echo "❌ PM2 not running"
 else
     echo "❌ PM2 not installed"
 fi
