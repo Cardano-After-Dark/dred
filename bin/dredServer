@@ -12,7 +12,7 @@ init();
 async function init() {
     try{
         const nbh = process.env.NEIGHBORHOOD || "dred-dev";
-        const serverAddress = process.env.SERVER_IP || "0.0.0.0";
+        const serverAddress = process.env.DRED_HOST || "0.0.0.0";
         const serverPort = process.env.DRED_PORT || "3029";
 
         console.log("🚀 Starting DRED server initialization...");
