@@ -90,8 +90,8 @@ execute_pm2_command() {
                 echo "Executing: ssh $SSH_USER@$SERVER_IP \"pm2 logs dred --lines $lines --nostream | grep -i -E '$grep_pattern' || true\""
                 ssh "$SSH_USER@$SERVER_IP" "pm2 logs dred --lines $lines --nostream | grep -i -E '$grep_pattern' || true"
             else
-                echo "Executing: ssh $SSH_USER@$SERVER_IP \"pm2 logs dred --lines $lines\""
-                ssh "$SSH_USER@$SERVER_IP" "pm2 logs dred --lines $lines"
+                echo "Executing: ssh $SSH_USER@$SERVER_IP \"pm2 logs dred --lines $lines --nostream\""
+                ssh "$SSH_USER@$SERVER_IP" "pm2 logs dred --lines $lines --nostream"
             fi
             ;;
         "restart")
