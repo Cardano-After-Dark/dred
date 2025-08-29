@@ -18,7 +18,7 @@ async function init() {
         console.log("🚀 Starting DRED server initialization...");
         
         // TEMPORARY FIX: Use static discovery to avoid on-chain bootstrap issues
-        const useStaticDiscovery = process.env.USE_STATIC_DISCOVERY !== 'false';
+        const useStaticDiscovery = process.env.USE_STATIC_DISCOVERY || false;
         
         let discovery;
         if (useStaticDiscovery) {
