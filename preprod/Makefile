@@ -63,6 +63,10 @@ help:
 ifneq (,$(filter setup-devops setup-infra setup-dred dred-redeploy test connect dred-logs dred-status test-self-id verify-nbh,$(MAKECMDGOALS)))
     SERVER := $(word 2,$(MAKECMDGOALS))
     $(eval $(SERVER):;@:)
+    # For test command, handle additional arguments
+    ifneq (,$(filter test,$(MAKECMDGOALS)))
+        $(eval $(wordlist 3,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS)):;@:)
+    endif
 endif
 
 # =============================================================================
@@ -159,11 +163,11 @@ connect:
 .PHONY: test
 test:
 	@if [ -z "$(SERVER)" ]; then \
-		echo "Usage: make test [server]"; \
+		echo "Usage: make test [server] [command] [args...]"; \
 		echo "Available servers: us, de, uk"; \
 		exit 1; \
 	fi
-	@./scripts/test-server.sh $(call get_server_ip,$(SERVER))
+	@./scripts/test-server.sh $(call get_server_ip,$(SERVER)) $(filter-out test $(SERVER),$(MAKECMDGOALS))
 
 .PHONY: list
 list:
@@ -172,7 +176,4 @@ list:
 	@echo "  DE ($(DE))"
 	@echo "  UK ($(UK))"
 
-# Server names are handled dynamically above 
-	@echo "  UK ($(UK))"
-
-# Server names are handled dynamically above 
+ 
