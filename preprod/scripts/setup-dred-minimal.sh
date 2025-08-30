@@ -79,7 +79,10 @@ rm -rf dred
 echo "🔧 FRESH START: Cloning DRED..."
 git clone https://github.com/Cardano-After-Dark/dred.git dred
 cd dred
-git checkout feature/onchain-nbh-discovery
+# git checkout feature/onchain-nbh-discovery
+git checkout feature/onchain-replication-m2
+
+
 
 echo "🔧 Installing dependencies..."
 pnpm install
