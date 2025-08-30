@@ -227,6 +227,8 @@ export class DredServer {
     constructor(args: DredServerArgs, serverId: string, redisDb: number) {
         this.args = args;
         const loggerName = `dred`;
+
+        console.log(`=== Setting up logger for ${loggerName} with serverId ${serverId}`);
         this.logger = zonedLogger(loggerName, {
             serverId,
             loggerId: serverId,
@@ -235,11 +237,16 @@ export class DredServer {
             //     _message: `(env LOGGING=${logging})`,
             // },
         });
+        console.log(`=== Logger setup complete for ${loggerName} with serverId ${serverId}`);
 
         this.serverId = serverId;
         this.discovery = DredClient.resolveDiscovery(args);
         // const t= express()
+
+        console.log(`=== Logging server info for ${loggerName} with serverId ${serverId}`);
         this.log(`+server '${serverId}'`, this.discovery, null, 2);
+        console.log(`=== Creating express server for ${loggerName} with serverId ${serverId}`);
+
         this.api = this.createExpressServer();
         // const t= express();
 
