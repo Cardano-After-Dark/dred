@@ -230,7 +230,7 @@ export class DredServer {
 
         console.log(`=== Setting up logger for ${loggerName} with serverId ${serverId}`);
         this.logger = zonedLogger(loggerName, {
-            serverId,
+            // serverId, // causes errors! //
             loggerId: serverId,
             // levels: {
             //     [loggerName]: logging ? "info" : "warn",
@@ -244,8 +244,8 @@ export class DredServer {
         // const t= express()
 
         console.log(`=== Logging server info for ${loggerName} with serverId ${serverId}`);
-        this.log(`+server '${serverId}'`, this.discovery, null, 2);
-        console.log(`=== Creating express server for ${loggerName} with serverId ${serverId}`);
+        // this.log(`+server '${serverId}'`, this.discovery, null, 2); // causes errors! //
+        console.log(`===Creating express server for ${loggerName} with serverId ${serverId}`);
 
         this.api = this.createExpressServer();
         // const t= express();
