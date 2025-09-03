@@ -20,7 +20,7 @@ services:
       - ./letsencrypt:/etc/letsencrypt   # Persist certificates
       - ./nginx-ssl:/etc/nginx/ssl       # Persist SSL config
       - ./redis-data:/var/lib/redis      # Persist Redis data
-      - ./logs:/var/log                  # Persist Logs
+      #- ./logs:/var/log                  # Persist Logs
       - ./keystore:/dred/keystore        # Persist Keys
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1
