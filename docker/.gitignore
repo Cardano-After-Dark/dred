@@ -1,0 +1,15 @@
+# Ignore environment file
+.env
+
+# Ignore Let's Encrypt certificates and folder
+letsencrypt/
+letsencrypt/**
+
+# Ignore log files and folder
+logs/
+logs/**
+
+# Ignore Nginx SSL files and folder
+nginx-ssl/
+nginx-ssl/**
+
