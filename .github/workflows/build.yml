@@ -39,9 +39,9 @@ jobs:
       redis:
         image: redis:latest
         options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
+          --health-cmd "redis-cli ping | grep PONG || exit 1"
+          --health-interval 30s
+          --health-timeout 3s
           --health-retries 5
         ports:
           - 6379:6379
