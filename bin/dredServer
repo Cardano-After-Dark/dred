@@ -12,8 +12,11 @@ init();
 async function init() {
     try{
         const nbh = process.env.NEIGHBORHOOD || "dred-dev";
-        const serverAddress = process.env.DRED_HOST || "0.0.0.0";
-        const serverPort = process.env.DRED_PORT || "3029";
+        const serverAddress = process.env.HOST_DOMAIN;
+        if (!serverAddress) {
+            throw new Error ("Environment variable 'HOST_DOMAIN' is required but not set.");
+        }
+        const serverPort = process.env.HOST_PORT ? Number(process.env.HOST_PORT) : 443;
 
         console.log("🚀 Starting DRED server initialization...");
         
@@ -65,7 +68,7 @@ async function init() {
 
         const hosts = discovery.hosts
         const matchingHost = hosts?.find(host => 
-            host.address === serverAddress && parseInt(host.port) === parseInt(serverPort)
+            host.address === serverAddress && Number(host.port) === serverPort
         );
     
         console.log("Dred nbh", nbh);
@@ -91,7 +94,7 @@ async function init() {
     
         console.log("Dred server created", server);
     
-        const { port, address } = matchingHost;
+        // const { port, address } = matchingHost;
         await server.listen();
 
     } catch (error) {
