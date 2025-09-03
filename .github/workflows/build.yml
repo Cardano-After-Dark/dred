@@ -34,6 +34,18 @@ jobs:
     runs-on: ubuntu-latest
     # Skip this job if both events occur - run only for PR event in this case
     if: github.event_name != 'push' || !github.event.pull_request
+
+    services:
+      redis:
+        image: redis:latest
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+          
     steps:
       # Check out the repository code
       - name: Checkout repository
