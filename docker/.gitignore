@@ -13,3 +13,6 @@ logs/**
 nginx-ssl/
 nginx-ssl/**
 
+# Ignore keystore files and folder
+keystore/
+keystore/**
