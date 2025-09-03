@@ -239,7 +239,7 @@ export class DredServer {
         this.serverId = serverId;
         this.discovery = DredClient.resolveDiscovery(args);
         // const t= express()
-        this.log(`+server '${serverId}'`, this.discovery, null, 2);
+        this.log(`+server '${serverId}': '${this.discovery}'`);
         this.api = this.createExpressServer();
         // const t= express();
 
@@ -378,11 +378,18 @@ export class DredServer {
         // to solve the bootstrap problem, we need to start at least one server to be able to connect others
         // NOTE: Replication is now started manually via /admin/start-replication endpoint
 
-        const myInfo = (this.myServerInfo =
-            this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));
-        if (!myInfo) throw new Error(`can't identify my own info`);
-        const { port, address } = myInfo;
-        this.listener = this.api.listen(Number(port), address);
+        // const myInfo = (this.myServerInfo =
+        //     this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));
+        // if (!myInfo) throw new Error(`can't identify my own info`);
+        // const { port, address } = myInfo;
+
+        // Override the default dred host and port by setting the equivalent environment variables:
+        // process.env.DRED_HOST for the address
+        // process.env.DRED_PORT for the port
+        const address: string = process.env.DRED_HOST || "127.0.0.1";
+        const port: number = process.env.DRED_PORT ? Number(process.env.DRED_PORT) : 3029;
+
+        this.listener = this.api.listen(port, address);
         this.log(`server '${this.serverId}' listening at ${address}:${port}`);
         return this.listener;
         // express
