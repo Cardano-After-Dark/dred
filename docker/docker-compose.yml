@@ -13,14 +13,14 @@ services:
     environment:
       - HOST_DOMAIN=${HOST_DOMAIN}         # Domain for LetsEncrypt SSL certificate
       - EMAIL=admin@${HOST_DOMAIN}         # Email for LetsEncrypt SSL certificate
-      - NODE_ENV=production                # Todo: Check if needed
-      - CARDANO_NETWORK=${CARDANO_NETWORK} # {preview,preprod,mainnet}
+      - NODE_ENV=production                # Node Environment
+      - CARDANO_NETWORK=${CARDANO_NETWORK} # Use one out of {preview,preprod,mainnet}
       - BF_API_KEY=${BF_API_KEY}           # Blockfrost API Key
     volumes:
       - ./letsencrypt:/etc/letsencrypt   # Persist certificates
       - ./nginx-ssl:/etc/nginx/ssl       # Persist SSL config
       - ./redis-data:/var/lib/redis      # Persist Redis data
-      #- ./logs:/var/log                  # Persist Logs
+      - ./logs:/var/log                  # Persist Logs
       - ./keystore:/dred/keystore        # Persist Keys
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1

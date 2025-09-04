@@ -48,6 +48,10 @@ RUN mkdir -p /dred/keystore /etc/nginx/ssl /var/www/certbot
 
 # Create logs directory
 RUN mkdir -p /var/log/dred /var/log/nginx /var/log/redis
+
+# Give Redis an existing writable file 
+RUN touch /var/log/redis/redis.log
+
 WORKDIR /dred
 
 # Copy built app and pnpm lockfile
