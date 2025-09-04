@@ -50,7 +50,7 @@ RUN mkdir -p /dred/keystore /etc/nginx/ssl /var/www/certbot
 RUN mkdir -p /var/log/dred /var/log/nginx /var/log/redis
 
 # Give Redis an existing writable file 
-RUN touch /var/log/redis/redis.log
+RUN touch /var/log/redis/redis-server.log
 
 WORKDIR /dred
 
@@ -105,6 +105,7 @@ RUN echo $'module.exports = {\n\
       name: "redis", \n\
       script: "redis-server", \n\
       args: ["/etc/redis.conf"], \n\
+      log_file: "/var/log/redis/redis-server.log", \n\
       interpreter: "none", \n\
       autorestart: true, \n\
       watch: false, \n\
