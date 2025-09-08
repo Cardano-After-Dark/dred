@@ -227,8 +227,8 @@ export class DredServer {
     constructor(args: DredServerArgs, serverId: string, redisDb: number) {
         this.args = args;
         const loggerName = `dred`;
-
-        console.log(`=== Setting up logger for ${loggerName} with serverId ${serverId}`);
+        
+        
         this.logger = zonedLogger(loggerName, {
             // serverId, // causes errors! //
             loggerId: serverId,
@@ -237,15 +237,15 @@ export class DredServer {
             //     _message: `(env LOGGING=${logging})`,
             // },
         });
-        console.log(`=== Logger setup complete for ${loggerName} with serverId ${serverId}`);
+        this.log(`=== Logger setup complete for ${loggerName} with serverId ${serverId}`);
 
         this.serverId = serverId;
         this.discovery = DredClient.resolveDiscovery(args);
         // const t= express()
 
-        console.log(`=== Logging server info for ${loggerName} with serverId ${serverId}`);
-        // this.log(`+server '${serverId}'`, this.discovery, null, 2); // causes errors! //
-        console.log(`===Creating express server for ${loggerName} with serverId ${serverId}`);
+        
+        this.log(`+server '${serverId}'`, this.discovery);
+        // console.log(`===Creating express server for ${loggerName} with serverId ${serverId}`);
 
         this.api = this.createExpressServer();
         // const t= express();
@@ -322,6 +322,7 @@ export class DredServer {
     }
 
     async pendingSetup() {
+        await this.ensureDefaultChannels();
         return this.setupPending;
     }
     private setupPending?: Promise<any>;
@@ -381,7 +382,7 @@ export class DredServer {
         // TODO we should restore this at some point
         // see https://discord.com/channels/891363866775261275/913447653826773012/1380756651166011443
         //  await this.setupReplication();
-        // this.setupReplication();
+        
         // to solve the bootstrap problem, we need to start at least one server to be able to connect others
         // NOTE: Replication is now started manually via /admin/start-replication endpoint
 
@@ -391,10 +392,17 @@ export class DredServer {
         const { port, address } = myInfo;
         this.listener = this.api.listen(Number(port), address);
         this.log(`server '${this.serverId}' listening at ${address}:${port}`);
+
+        this.log(`=== Setting up replication for ${this.serverId}`);
+        // this.setupReplication();
+
+        this.log(`=== Returning listener for ${this.serverId}`);
         return this.listener;
         // express
         //       listen(port: number, hostname: string, backlog: number, callback?: () => void): http.Server;
         //       listen(port: number, hostname: string, callback?: () => void): http.Server;
+
+        
     }
 
 
@@ -525,6 +533,7 @@ export class DredServer {
     // ------------------------------------------------------------
     
     async setupReplication() {
+        
         if (this.replicator) {
             this.warn("Replication already setup");
             return; // Idempotent - safe to call multiple times
@@ -565,8 +574,10 @@ export class DredServer {
     }
 
     async cleanupReplication(): Promise<void> {
+        this.log(` -- start cleanupReplication ${this.serverId}`);
         if (!this.replicator) {
-            this.warn("Replication not setup");
+            debugger;
+            this.warn(" === Replication not setup");
             return; // Idempotent - safe to call multiple times
         }
         this.warn(`${this.serverId} Starting replication cleanup...`);
@@ -586,6 +597,7 @@ export class DredServer {
             this.warn(`${this.serverId} Nullifying replicator reference`);
             this.replicator = undefined; // Always nullify, even on error
         }
+        this.log(` -- cleanupReplication ${this.serverId} complete`);
     }
 
     async reset(reconnect?: boolean, finalCleanup?: (r?: Redis) => any) {

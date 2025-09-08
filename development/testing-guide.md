@@ -32,6 +32,13 @@ LOGGING=default:info pnpm test preprod | pnpm exec pino-pretty
 LOGGING=dred-client:debug,dred-client:state:warn,default:info,REPLicator:info,REPLicant:info pnpm test -- replication | pino-pretty | grep -v zonedLogger
 LOGGING=dred-client:state:warn,default:debug pnpm test replication | pnpm exec pino-pretty
 LOGGING=discovery:debug #your commands..
+
+
+
+LOGGING=dred-client:debug,dred-client:state:warn,default:info,REPLicator:info,REPLicant:info,testServer:debug pnpm test replication | pnpm exec pino-pretty
+
+# TO DEBUG!
+LOGGING=default:debug pnpm testing:debug replication | pnpm exec pino-pretty   
 ```
 
 # Test suites

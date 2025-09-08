@@ -73,7 +73,7 @@ export const testLogger = zonedLogger("test", {color: yellow.start, levels: {def
 
 beforeAll(async () => {
     const startTime = Math.round(Date.now() / 1000);
-    console.log("isColorSupported", isColorSupported);
+    testLogger.info("isColorSupported", isColorSupported);
     await monitor?.monitor((err, monitor) => {
         monitor!.on("monitor", (time, args, source, database) => {
             const now = Date.now()
@@ -109,14 +109,27 @@ beforeAll(async () => {
 beforeEach(async () => {
     testLogger.debug("beforeEach: resetting redis and channels");
     for (const server of servers) {
+        // this is to raze the state of the redis DB --> predictable state for tests
         await server.redis?.flushdb();
         await server.reset();
         // testLogger.debug("beforeEach: establishing default channels");
         await server.pendingSetup();
+        // setTimeout(() => {
+        //     server.setupReplication();
+        // }, 1000);
+        // server.setupReplication();
         // server.listen();
     }
     testLogger.info("  ---- did reset redis with default channels in beforeEach");
     testLogger.info("  -------------------      -----------------    --------------------")
+
+
+    // probably we need to setup replication once we have confirmation the servers are listening
+    for (const server of servers) {
+        testLogger.debug(" ==== beforeEach: SETTING UP REPLICATION in TEST for server", server.serverId);
+        await server.setupReplication();
+    }
+
 });
 
 afterEach(async () => {

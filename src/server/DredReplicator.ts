@@ -172,7 +172,7 @@ export class Replicant{
         this.log(`${this.name} starting initialization`);
         
         // creates a new DredClient
-        this.repClient = this.homeServer.mkClient(this.targetHost.serverId, {}, false); // false = not server managed
+        this.repClient = this.homeServer.mkClient(this.targetHost.serverId, {name: `from-${this.homeServer.serverId}-to-${this.targetHost.serverId}`}, false); // false = not server managed
         await this.repClient.generateKey();
 
         /** FIXME: we cannot set the neighborhood here, yet
@@ -422,7 +422,11 @@ export class Replicant{
         this.warn(`${this.name} cleaning up`);
         
         if (this.repClient) {
-            this.warn(`${this.name} nullifying client reference (testServer will handle disconnect)`);
+            
+            // TODO: check if the client is connected before trying to disconnect
+            // this.repClient.disconnect();
+
+            this.warn(`${this.name} nullifying client reference (testServer will also try to disconnect clients)`);
             // Don't try to clear subscriptions - DredClient subscription setter is incomplete
             // Just nullify our reference and let testServer handle full client disconnect
             this.repClient = null;
