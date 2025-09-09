@@ -36,10 +36,25 @@ LOGGING=discovery:debug #your commands..
 
 
 LOGGING=dred-client:debug,dred-client:state:warn,default:info,REPLicator:info,REPLicant:info,testServer:debug pnpm test replication | pnpm exec pino-pretty
-
-# TO DEBUG!
-LOGGING=default:debug pnpm testing:debug replication | pnpm exec pino-pretty   
 ```
+
+## Testing Repl
+
+LOGGING=default:debug pnpm test replication | pnpm exec pino-pretty
+
+## Debugging
+
+Open chrome, go to chrome://inspect, and click on `Open dedicated DevTools for Node`
+
+```
+# launch in debug mode
+LOGGING=default:debug pnpm testing:debug replication | pnpm exec pino-pretty
+   
+```
+
+Then, chrome debugger stops on all the debug statements.
+
+
 
 # Test suites
 pnpm test replication                # Cross-server replication
