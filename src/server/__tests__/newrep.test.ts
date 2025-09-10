@@ -17,7 +17,7 @@ const CHANNEL_NAME = "news";
 const REPLICATION_TIMEOUT = 2000;
 const SETUP_DELAY = 100;
 
-describe("Message Replication", () => {
+describe("Message Replication - NO, THIS IS THE NEW TEST", () => {
     let test: {
         agent: SuperTestWithHost<Test>;
         app?: Express;

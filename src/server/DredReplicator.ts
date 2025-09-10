@@ -28,6 +28,29 @@ import { DredClient } from "../client/DredClient.js";
 import { Discovery } from "../types/Discovery.js";
 import { DredServer } from "./DredServer.js";
 import { type DredHostDetails } from "../types/DredHosts.js";
+import { zonedLogger } from "@poshplum/utils";
+
+import {colors} from "../picocolors/picocolors.js";
+const {
+    bgBlackBright,
+    blue,
+    blueBright,
+    green,
+    greenBright,
+    red,
+    redBright,
+    yellow,
+    yellowBright,
+
+    isColorSupported,
+    bgBlack,
+    magenta,
+    magentaBright
+} = colors;
+
+const rlog = zonedLogger("replicator", {
+    color: yellow.start, levels: {default: "info"}
+});
 
 export class DredReplicator{
 
@@ -53,7 +76,8 @@ export class DredReplicator{
     
     constructor(homeServer: DredServer, discovery: Discovery) {
         this.name = `DredReplicator-[${homeServer.serverId}]`;
-        console.log(`constructor: [${this.name}]`);
+        
+        rlog.debug(`DredReplicator constructor: [${this.name}]`);
         this.homeServer = homeServer;
         this.discovery = discovery;
 
