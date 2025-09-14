@@ -633,7 +633,7 @@ export class RedisChannels {
                 currentId = "$";
             }
 
-            while (true) {
+            while (!this.closing) {
                 const result = [];
                 let data;
 
@@ -668,10 +668,15 @@ export class RedisChannels {
                 }
                 // We have a time out
                 if (data === null) {
+                    if(this.closing) {
+                        this.logger.debug(" -- consuming: closing");
+                        return
+                    }
                     // If we are using XREAD we should check if the stream exist.
                     // Otherwise a consumer will not finish after a delete stream
                     // operation and a timeout.
                     if (this._workInTeam === false) {
+                        //
                         await this._consumers[tunnel[tun.CONSUMER]][
                             tun.CONNECTION
                         ].xinfo(["STREAM", tunnel[tun.KEY]]);

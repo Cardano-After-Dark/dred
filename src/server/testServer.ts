@@ -107,7 +107,9 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+    // infra running
     testLogger.debug("beforeEach: resetting redis and channels");
+    debugger
     for (const server of servers) {
         // this is to raze the state of the redis DB --> predictable state for tests
         await server.redis?.flushdb();
@@ -122,7 +124,7 @@ beforeEach(async () => {
     }
     testLogger.info("  ---- did reset redis with default channels in beforeEach");
     testLogger.info("  -------------------      -----------------    --------------------")
-
+    
 
     // probably we need to setup replication once we have confirmation the servers are listening
     for (const server of servers) {
@@ -136,7 +138,8 @@ beforeEach(async () => {
 afterEach(async () => {
     testLogger.debug("afterEach: cleaning up");
     
-    // FIRST: Clean up replication before touching individual clients
+    // 1 Clean up replication first (have their own clients)
+    testLogger.debug("afterEach: phase 1 - cleaning up replication");
     for (const server of servers) {
         try {
             testLogger.debug("afterEach: cleaning up replication for server", server.serverId);
@@ -146,50 +149,44 @@ afterEach(async () => {
         }
     }
     
-    // SECOND: Clean up replicator-owned clients (they should already be cleaned by replication cleanup)
-    testLogger.debug("afterEach: cleaning up replicator clients");
-    for (const client of replicatorClientCleanupList) {
+    // 2 Disconnect all clients, wait for disconnection to complete
+    testLogger.debug("afterEach: phase 2 - disconnecting clients");
+    const allClients = [...clientCleanupList, ...replicatorClientCleanupList];
+    
+    // Disconnect all clients
+    for (const client of allClients) {
         try {
-            // Defensive disconnect - these should already be disconnected by replicator cleanup
+            testLogger.debug(`afterEach: disconnecting client ${client.clientid || 'unknown'}`);
             client.disconnect();
         } catch (error) {
-            testLogger.debug(`afterEach: replicator client disconnect error (likely already disconnected): ${error}`);
+            testLogger.debug(`afterEach: client disconnect error: ${error}`);
         }
     }
-    replicatorClientCleanupList = [];
     
-    // THIRD: Clean up server-managed clients
-    testLogger.debug("afterEach: cleaning up server-managed clients");
-    for (const client of clientCleanupList) {
-        try {
-            // Defensive disconnect - ignore if already disconnected
-            client.disconnect();
-        } catch (error) {
-            testLogger.debug(`afterEach: client disconnect error (likely already disconnected): ${error}`);
-        }
-    }
-    clientCleanupList = [];
+    // CRITICAL: Wait for all async disconnect operations to complete
+    testLogger.debug("afterEach: waiting for disconnect operations to complete");
+    await new Promise(resolve => setTimeout(resolve, 100)); // Give time for abort signals to process
     
-    // FOURTH: Reset servers (without replication cleanup since we already did it)
+    // Clear client lists
+    clientCleanupList.length = 0;
+    replicatorClientCleanupList.length = 0;
+    
+    // 3: safe to reset servers and flush Redis
+    testLogger.debug("afterEach: phase 3 - resetting servers");
     for (const server of servers) {
         const redis = server?.redis;
         if (redis) {
             testLogger.debug("afterEach: resetting server", server.myServerInfo?.port);
-
+            
             await server.reset(true, (redis) => {
                 testLogger.debug("afterEach: flushing redis");
-                redis?.flushdb("SYNC")
+                redis?.flushdb("SYNC");
                 testLogger.debug("afterEach: done flushing redis");
             });
-            // await  server.close();
         }
     }
+    
     testLogger.info("  ---- cleanup done in afterEach");
-
-    // const stream = redis.scanStream();
-    // stream.on("data", (resultKeys) => {
-
-    // });
 });
 afterAll(async () => {
     // debugger
@@ -226,7 +223,8 @@ export async function testSetup() {
             server.serverId,
             i
         );
-         
+        //
+         // here
         await s.listen();
         servers.push(s);
     }

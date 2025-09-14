@@ -179,6 +179,8 @@ export class HostConnection extends StateMachine.withDefinition(
     private scheduledRetry?: ReturnType<typeof setTimeout>;
     private logger: Logger;
     private _status!: string; // assigned by state-machine
+    private _destroyed = false; // Flag to track if connection is being destroyed
+    private _disconnecting = false; // Flag to track if disconnection is in progress
     //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
     set currentState(v: string) {
         this._status = v;
@@ -186,6 +188,23 @@ export class HostConnection extends StateMachine.withDefinition(
     //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
     get currentState() {
         return this._status;
+    }
+
+    // Override transition method to add defensive error handling
+    async transition(event: string, ...args: any[]): Promise<any> {
+        try {
+            // Call the parent transition method
+            const result = await super.transition(event, ...args);
+            this.logger?.debug(`transition ${event} completed successfully for ${this.host?.serverId || 'unknown'}`);
+            return result;
+        } catch (error) {
+            // Log the error but don't let it become an unhandled promise rejection
+            const msg = `Error during transition ${event} for ${this.host?.serverId || 'unknown'}: ${error}`;
+            this.logger?.warn(msg);
+            
+            // Don't rethrow - this prevents unhandled promise rejections
+            return null;
+        }
     }
 
     elapsedTime(this: HostConnection): number {
@@ -240,10 +259,22 @@ export class HostConnection extends StateMachine.withDefinition(
         );
     }
     disconnect(reason: string) {
+        // Set disconnecting flag to prevent race conditions
+        if (this._disconnecting) {
+            this.logger?.debug(`disconnect() called but already disconnecting for ${this.host?.serverId || 'unknown'}`);
+            return;
+        }
+        
+        this._disconnecting = true;
+        this.logger?.debug(`disconnect() starting for ${this.host?.serverId || 'unknown'}: ${reason}`);
+        
         //!!! todo: cancel any pending stream with ReadableStream.cancel()
 
         if (this.abortController) this.abortController.abort(`disconnect(): ${reason}`);
         this.stopRetries();
+        
+        // Mark as destroyed after disconnect operations
+        this._destroyed = true;
     }
     stopRetries() {
         if (this.scheduledRetry) clearTimeout(this.scheduledRetry);
@@ -312,9 +343,18 @@ export class HostConnection extends StateMachine.withDefinition(
 
         this.abortController = new AbortController();
         const { signal } = this.abortController;
-        signal.addEventListener("abort", () => {
+        const abortHandler = () => {
+            // Check if we're already disconnecting to avoid race conditions
+            if (this._disconnecting || this._destroyed) {
+                this.logger?.debug(`abort signal fired but already disconnecting/destroyed for ${this.host?.serverId || 'unknown'}`);
+                return;
+            }
+            
+            this.logger?.debug(`abort signal fired for ${this.host?.serverId || 'unknown'}`);
             this.transition("abort");
-        });
+        };
+        
+        signal.addEventListener("abort", abortHandler);
         const myself = (this.connecting = new Promise((res, rej) => {
             let aborted = false;
             const channelSubs = {};
