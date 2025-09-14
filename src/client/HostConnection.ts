@@ -351,7 +351,14 @@ export class HostConnection extends StateMachine.withDefinition(
             }
             
             this.logger?.debug(`abort signal fired for ${this.host?.serverId || 'unknown'}`);
-            this.transition("abort");
+            
+            // Randall's suggestion: wrap transition in try-catch for safety
+            try {
+                this.transition("abort");
+            } catch (error) {
+                this.logger?.warn(`Error during abort transition for ${this.host?.serverId || 'unknown'}: ${error}`);
+                // Don't rethrow - prevents unhandled promise rejection
+            }
         };
         
         signal.addEventListener("abort", abortHandler);

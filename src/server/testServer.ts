@@ -163,9 +163,8 @@ afterEach(async () => {
         }
     }
     
-    // CRITICAL: Wait for all async disconnect operations to complete
-    testLogger.debug("afterEach: waiting for disconnect operations to complete");
-    await new Promise(resolve => setTimeout(resolve, 100)); // Give time for abort signals to process
+    // Note: Removed sleep - try-catch in abort handlers should handle any remaining race conditions
+    testLogger.debug("afterEach: disconnect operations initiated");
     
     // Clear client lists
     clientCleanupList.length = 0;
