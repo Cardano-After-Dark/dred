@@ -190,23 +190,6 @@ export class HostConnection extends StateMachine.withDefinition(
         return this._status;
     }
 
-    // Override transition method to add defensive error handling
-    async transition(event: string, ...args: any[]): Promise<any> {
-        try {
-            // Call the parent transition method
-            const result = await super.transition(event, ...args);
-            this.logger?.debug(`transition ${event} completed successfully for ${this.host?.serverId || 'unknown'}`);
-            return result;
-        } catch (error) {
-            // Log the error but don't let it become an unhandled promise rejection
-            const msg = `Error during transition ${event} for ${this.host?.serverId || 'unknown'}: ${error}`;
-            this.logger?.warn(msg);
-            
-            // Don't rethrow - this prevents unhandled promise rejections
-            return null;
-        }
-    }
-
     elapsedTime(this: HostConnection): number {
         const now = new Date();
         return now.getTime() - this.startTime;
@@ -344,20 +327,23 @@ export class HostConnection extends StateMachine.withDefinition(
         this.abortController = new AbortController();
         const { signal } = this.abortController;
         const abortHandler = () => {
-            // Check if we're already disconnecting to avoid race conditions
+            // Prevent race condition during cleanup
             if (this._disconnecting || this._destroyed) {
-                this.logger?.debug(`abort signal fired but already disconnecting/destroyed for ${this.host?.serverId || 'unknown'}`);
                 return;
             }
             
-            this.logger?.debug(`abort signal fired for ${this.host?.serverId || 'unknown'}`);
-            
-            // Randall's suggestion: wrap transition in try-catch for safety
+            // Randall's approach: context-aware error handling
             try {
                 this.transition("abort");
             } catch (error) {
-                this.logger?.warn(`Error during abort transition for ${this.host?.serverId || 'unknown'}: ${error}`);
-                // Don't rethrow - prevents unhandled promise rejection
+                // Double-check: suppress errors during shutdown scenarios
+                if (this._disconnecting || this._destroyed) {
+                    // Expected during cleanup - suppress silently
+                    return;
+                }
+                // Unexpected error during normal operation - log for debugging
+                this.logger?.warn(`Unexpected abort transition error: ${error}`);
+                // Don't rethrow - prevents unhandled promise rejection in any case
             }
         };
         
