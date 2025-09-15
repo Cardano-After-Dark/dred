@@ -71,31 +71,7 @@ export const redisLogger3 = zonedLogger("redis", {
 });
 export const testLogger = zonedLogger("test", {color: yellow.start, levels: {default: "info"}});
 
-// Minimal approach: prevent Redis shutdown errors from being reported by Vitest
-const originalConsoleError = console.error;
-console.error = (...args) => {
-    const message = args.join(' ');
-    // Suppress Redis connection errors during test cleanup
-    if (message.includes('Connection is closed') && 
-        message.includes('ioredis/built/redis/event_handler.js')) {
-        return; // Silently suppress
-    }
-    originalConsoleError.apply(console, args);
-};
-
-// Also patch process error handlers for zones
-const originalProcessEmit = process.emit;
-process.emit = function(event, error, ...args) {
-    if (event === 'uncaughtException' || event === 'unhandledRejection') {
-        if (error && error.message && error.message.includes('Connection is closed') && 
-            (error.stack?.includes('ioredis/built/redis/event_handler.js') || 
-             error.stack?.includes('zoned-cls'))) {
-            testLogger.debug(`Suppressed Redis shutdown error: ${error.message}`);
-            return true; // Indicate the event was handled
-        }
-    }
-    return originalProcessEmit.call(this, event, error, ...args);
-};
+// Minimal approach: fix Redis cleanup timing issues at the source
 
 beforeAll(async () => {
     const startTime = Math.round(Date.now() / 1000);
@@ -189,9 +165,9 @@ afterEach(async () => {
         }
     }
     
-    // Wait for async disconnect operations to complete
+    // Brief wait for async disconnect operations to complete
     testLogger.debug("afterEach: waiting for disconnect operations to complete");
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 20));
     
     // Clear client lists
     clientCleanupList.length = 0;
@@ -232,8 +208,8 @@ afterAll(async () => {
             testLogger.warn(`Unexpected error during server shutdown: ${error}`);
         }
     }
-    // Small delay to ensure all async operations complete before test framework exits
-    await new Promise(resolve => setTimeout(resolve, 50));
+    // Brief delay to ensure all async operations complete before test framework exits
+    await new Promise(resolve => setTimeout(resolve, 20));
 });
 
 export async function testSetup() {

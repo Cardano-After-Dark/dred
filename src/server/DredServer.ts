@@ -606,9 +606,12 @@ export class DredServer {
         // Cleanup replication client first
         await this.cleanupReplication();
 
+        // Wait for channel cleanup to complete fully
         await this.channelConn.cleanup().catch(warning.bind(this, "channelConn.cleanup()"));
-        // await this.channelConn.this?.redis?.quit().catch(warning.bind(this,"channelConn.redis.quit()"));
-        // this.channelConn?.redis?.disconnect();
+        
+        // Small delay to ensure all Redis operations from channel cleanup complete
+        await new Promise(resolve => setTimeout(resolve, 10));
+        
         finalCleanup?.(this.redis);
         this.resetting = true;
         await this.redis?.quit().catch(warning.bind(this, "redis.quit()"));
