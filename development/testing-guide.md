@@ -40,7 +40,15 @@ LOGGING=dred-client:debug,dred-client:state:warn,default:info,REPLicator:info,RE
 
 ## Testing Repl
 
-LOGGING=default:debug pnpm test replication | pnpm exec pino-pretty
+```
+LOGGING=default:debug pnpm test newrep | pnpm exec pino-pretty
+```
+
+## Testing Manual Replication
+
+```
+DISABLE_AUTO_REPLICATION=true LOGGING=default:debug pnpm test replication | pnpm exec pino-pretty
+```
 
 ## Debugging
 
@@ -58,7 +66,7 @@ Then, chrome debugger stops on all the debug statements.
 
 # Test suites
 pnpm test replication                # Cross-server replication
-pnpm test self-identification        # On-chain discovery self-filtering
+<!-- pnpm test self-identification        # On-chain discovery self-filtering  -->
 pnpm test channels                   # Channel management
 pnpm test messages                   # Message handling  
 pnpm test redis                      # Redis operations

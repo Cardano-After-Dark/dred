@@ -221,7 +221,7 @@ describe("Message Replication", () => {
         it.only("should replicate messages between all three servers", async () => {
             // Setup replication on all servers
             for (const server of [dred1, dred2, dred3]) {
-                // await server.setupReplication();
+                await server.setupReplication();
             }
 
             const clientMessage: TestMessage = {
@@ -230,20 +230,27 @@ describe("Message Replication", () => {
             };
 
             let c2Received = 0;
-
             let CHANNEL_NAME = "news";
 
-            c2.subscribeToChannels({
-                [CHANNEL_NAME]:(message) => {
+            // CRITICAL: Set up c2 subscription BEFORE sending message
+            // The client must be subscribed and ready to receive messages before replication occurs.
+            // Without await here, the subscription setup is asynchronous and the client may miss 
+            // the replicated message, causing the test to fail intermittently.
+            await c2.subscribeToChannels({
+                [CHANNEL_NAME]: (message) => {
                     testLogger.warn(`📥 CLIENT c2 received: ${message.msg}`);
                     expect(message).toMatchObject(clientMessage);
                     c2Received++;
                 }
             });
 
+            // Wait for subscription to be fully established across WebSocket connections
+            await asyncDelay(100);
+
             const clientResponse = await c1.postMessage(CHANNEL_NAME, clientMessage);
             testLogger.warn(`📤 CLIENT c1 sent: ${clientMessage.msg}`);
 
+            // Wait for replication to complete
             await asyncDelay(2000);
 
             expect(c2Received).toBe(1);
@@ -275,7 +282,7 @@ describe("Message Replication", () => {
         it("should replicate messages between all three servers", async () => {
             // Setup replication on all servers
             for (const server of [dred1, dred2, dred3]) {
-                // await server.setupReplication();
+                await server.setupReplication();
             }
 
             const clientMessage: TestMessage = {
@@ -312,7 +319,7 @@ describe("Message Replication", () => {
         it("should replicate from any server to all others", async () => {
             // Setup replication on all servers
             for (const server of [dred1, dred2, dred3]) {
-                // await server.setupReplication();
+                await server.setupReplication();
             }
 
             const messageFromServer2: TestMessage = {

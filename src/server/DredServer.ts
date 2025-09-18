@@ -532,8 +532,11 @@ export class DredServer {
     // }
     // ------------------------------------------------------------
     
+    private isAutoReplicationDisabled(): boolean {
+        return process.env.DISABLE_AUTO_REPLICATION === 'true';
+    }
+
     async setupReplication() {
-        
         if (this.replicator) {
             this.warn("Replication already setup");
             return; // Idempotent - safe to call multiple times
