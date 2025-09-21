@@ -377,24 +377,26 @@ export class DredServer {
     async listen() {
         await this.setupPending;
 
-        // Setup replication after all basic server setup is complete
-        // at this point, "_chans" and "_auth" channels are already created
-        // TODO we should restore this at some point
-        // see https://discord.com/channels/891363866775261275/913447653826773012/1380756651166011443
-        //  await this.setupReplication();
-        
-        // to solve the bootstrap problem, we need to start at least one server to be able to connect others
-        // NOTE: Replication is now started manually via /admin/start-replication endpoint
-
         const myInfo = (this.myServerInfo =
-            this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));
+            this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));//
         if (!myInfo) throw new Error(`can't identify my own info`);
         const { port, address } = myInfo;
+        // docker problem: do we need to listen to 0.0.0.0 instead of the address (which comes from the discovery service)
+        // --> myServerInfo should give us the internal address and port, not the external address and port (ssl termination)
+        // in test, we don't want to listen to 0.0.0.0 
         this.listener = this.api.listen(Number(port), address);
         this.log(`server '${this.serverId}' listening at ${address}:${port}`);
 
-        this.log(`=== Setting up replication for ${this.serverId}`);
-        // this.setupReplication();
+        // Setup replication after all basic server setup is complete
+        // at this point, "_chans" and "_auth" channels are already created
+        if (!this.isAutoReplicationDisabled()) {
+            this.warn(`🚀 AUTO-REPLICATION ENABLED FOR ${this.serverId.toUpperCase()}`);
+            // Start replication in background, non-blocking
+            this.startAutoReplication();
+        } else {
+            this.warn(`⚠️  AUTO-REPLICATION DISABLED FOR ${this.serverId.toUpperCase()} (DISABLE_AUTO_REPLICATION=true)`);
+            this.warn(`   Use POST /admin/start-replication to start manually`);
+        }
 
         this.log(`=== Returning listener for ${this.serverId}`);
         return this.listener;
@@ -532,6 +534,7 @@ export class DredServer {
     // }
     // ------------------------------------------------------------
     
+    // when env var is set to true, auto replication is disabled
     private isAutoReplicationDisabled(): boolean {
         return process.env.DISABLE_AUTO_REPLICATION === 'true';
     }
@@ -543,7 +546,7 @@ export class DredServer {
         }
         this.warn(`${this.serverId} Starting replication setup...`);
         try {
-            await asyncDelay(1000);
+            await asyncDelay(1000);// maybe we can just skip this
             this.warn(`${this.serverId} Creating replicator...`);
             this.replicator = new DredReplicator(this, this.discovery);
             this.warn(`${this.serverId} Initializing replicator...`);
@@ -574,6 +577,53 @@ export class DredServer {
             this.warn(`${this.serverId} Failed to setup replication - nullified replicator`);
             throw error; // Re-throw if caller needs to handle
         }
+    }
+
+    /**
+     * Start auto-replication in background, non-blocking with retry logic
+     */
+    private startAutoReplication(): void {
+        this.warn(`🔄 STARTING AUTO-REPLICATION FOR ${this.serverId.toUpperCase()} (BACKGROUND)`);
+        
+        // Run in background - don't await, don't block server startup
+        this.performAutoReplicationSetup()
+            .then(() => {
+                this.warn(`✅ AUTO-REPLICATION SUCCESS FOR ${this.serverId.toUpperCase()}`);
+                this.warn(`🎯 REPLICATION IS NOW READY FOR ${this.serverId.toUpperCase()}`);
+                // TODO: Later we'll emit replication readiness event here
+            })
+            .catch((error) => {
+                this.warn(`❌ AUTO-REPLICATION FAILED FOR ${this.serverId.toUpperCase()}: ${error.message}`);
+                this.warn(`🔄 WILL RETRY AUTO-REPLICATION IN 1 MINUTE FOR ${this.serverId.toUpperCase()}`);
+                this.scheduleReplicationRetry();
+            });
+    }
+
+    /**
+     * Perform the actual replication setup with detailed logging
+     */
+    private async performAutoReplicationSetup(): Promise<void> {
+        this.warn(`🔧 PERFORMING AUTO-REPLICATION SETUP FOR ${this.serverId.toUpperCase()}`);
+        
+        try {
+            await this.setupReplication();
+            this.warn(`🎉 AUTO-REPLICATION SETUP COMPLETED FOR ${this.serverId.toUpperCase()}`);
+        } catch (error: any) {
+            this.warn(`💥 AUTO-REPLICATION SETUP ERROR FOR ${this.serverId.toUpperCase()}: ${error.message}`);
+            throw error; // Re-throw for retry logic
+        }
+    }
+
+    /**
+     * Schedule a retry of replication setup after 1 minute
+     */
+    private scheduleReplicationRetry(): void {
+        this.warn(`⏰ SCHEDULING REPLICATION RETRY FOR ${this.serverId.toUpperCase()} IN 60 SECONDS`);
+        
+        setTimeout(() => {
+            this.warn(`🔄 RETRYING AUTO-REPLICATION FOR ${this.serverId.toUpperCase()} (AFTER 1 MINUTE WAIT)`);
+            this.startAutoReplication();
+        }, 60000); // 1 minute
     }
 
     async cleanupReplication(): Promise<void> {
@@ -626,6 +676,25 @@ export class DredServer {
         if (doReconnect) {
             this.setupRedis(this.redisUrl);
             this.resetting = false;
+            
+            // Restart auto-replication after reset if it was enabled
+            if (!this.isAutoReplicationDisabled()) {
+                this.warn(`🔄 RESTARTING AUTO-REPLICATION AFTER RESET FOR ${this.serverId.toUpperCase()}`);
+                // Wait for setupPending to complete, then start replication
+                if (this.setupPending) {
+                    this.setupPending.then(() => {
+                        this.startAutoReplication();
+                    }).catch((error) => {
+                        this.warn(`❌ FAILED TO RESTART AUTO-REPLICATION AFTER RESET FOR ${this.serverId.toUpperCase()}: ${error.message}`);
+                    });
+                } else {
+                    // If no setupPending, start immediately
+                    this.startAutoReplication();
+                }
+            } else {
+                this.warn(`⚠️  AUTO-REPLICATION REMAINS DISABLED AFTER RESET FOR ${this.serverId.toUpperCase()}`);
+            }
+            
             return this.setupPending;
         }
         function warning(this: DredServer, activityName) {

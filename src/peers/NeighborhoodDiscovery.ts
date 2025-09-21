@@ -23,6 +23,7 @@ import {
     makeRootPrivateKey,
     makeSimpleWallet,
     hexToBytes,
+    type ErgoNodeRegistrationData,
 } from "dred-network-registry";
 import type { DredHostDetails } from "../types/DredHosts.js";
 
@@ -33,6 +34,17 @@ export class NeighborhoodDiscovery extends Discovery {
     capo!: DredCapo;
     registryController!: NodeRegistryController;
     neighborhood?: NbhId;
+    
+    async myServerInfo(serverId: string): Promise<DredHostDetails | undefined> {
+        // return this.getHostList().then(hosts => hosts.find(h => h.serverId === serverId));
+        return {
+            address: "0.0.0.0",
+            port: "3029",
+            serverId: process.env.DRED_NODE_ID || "UNKNOWN-NODE-ID",
+            publicKey: "publicKey",
+            pubKeyHash: "pubKeyHash",
+        }
+    }
 
     static async forNeighborhood(n: string) {
         const discovery = new this({ neighborhood: n });
@@ -122,18 +134,21 @@ export class NeighborhoodDiscovery extends Discovery {
     
     const allNodes = nodeEntries.map((h) => {
         const details : DredHostDetails = {
+            
             address: h.data!.nodeDetails.address,
             port: h.data!.nodeDetails.port,
             serverId: bytesToText(h.data!.id),                
             publicKey: h.data!.nodeDetails.pubKey.toString(),
             pubKeyHash: h.data!.nodeDetails.pubKeyHash.toString(),
         };
+
         return details;
     });
 
     // Filter out self to prevent self-replication (uses DRED_NODE_ID environment variable)
     const nodeId = process.env.DRED_NODE_ID;
     if (nodeId) {
+
         const filteredNodes = allNodes.filter(node => node.serverId !== nodeId);
         this.logger.info(`Filtered out self-node: ${allNodes.length} -> ${filteredNodes.length} hosts`);
         return filteredNodes;

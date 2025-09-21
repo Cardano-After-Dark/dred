@@ -65,17 +65,20 @@ async function init() {
 
         const hosts = discovery.hosts
         const matchingHost = hosts?.find(host => 
-            host.address === serverAddress && parseInt(host.port) === parseInt(serverPort)
+            host.serverId === process.env.DRED_NODE_ID
+            // host.address === serverAddress && parseInt(host.port) === parseInt(serverPort)
         );
     
         console.log("Dred nbh", nbh);
         console.log("Dred serverAddress", serverAddress);
         console.log("Dred serverPort", serverPort);
-        
-        if (!matchingHost) {
-            const availableHosts = hosts?.map(h => `${h.address}:${h.port} (${h.serverId})`).join(', ') || 'none';
-            throw new Error(`No host found matching server address ${serverAddress}:${serverPort}. Available hosts: ${availableHosts}`);
-        }
+        // problem: matching on server address instead of matching on node id
+        // if (!matchingHost) {
+        //     const availableHosts = hosts?.map(h => `${h.address}:${h.port} (${h.serverId})`).join(', ') || 'none';
+        //     throw new Error(`No host found matching server id ${process.env.DRED_NODE_ID} among ${availableHosts}`);
+        //     // const availableHosts = hosts?.map(h => `${h.address}:${h.port} (${h.serverId})`).join(', ') || 'none';
+        //     // throw new Error(`No host found matching server address ${serverAddress}:${serverPort}. Available hosts: ${availableHosts}`);
+        // }
         
         // Shows the whole host object, incl address and port
         console.log("Dred server starting on host", matchingHost);
