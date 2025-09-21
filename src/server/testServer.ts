@@ -29,6 +29,14 @@ import { AddressInfo } from "net";
 
 import { createServer, DredServer } from "./DredServer.js";
 import { DredClient } from "../client/DredClient.js";
+
+/**
+ * Disable auto-replication for tests in this file
+ * Call this at the top of test files that need auto-replication disabled
+ */
+export function disableAutoReplication() {
+    process.env.DISABLE_AUTO_REPLICATION = 'true';
+}
 import { asyncDelay } from "../util/asyncDelay.js";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import { DredHostDetails } from "../types/DredHosts.js";
@@ -111,6 +119,15 @@ beforeAll(async () => {
 beforeEach(async () => {
     // infra running
     testLogger.debug("beforeEach: resetting redis and channels");
+    
+    // 1. STOP replication on all servers first
+    testLogger.debug("beforeEach: phase 1 - cleaning up replication");
+    for (const server of servers) {
+        testLogger.debug("beforeEach: cleaning up replication for server", server.serverId);
+        await server.cleanupReplication();
+    }
+    
+    // 2. RESET Redis and servers (existing logic)
     debugger
     for (const server of servers) {
         // this is to raze the state of the redis DB --> predictable state for tests
@@ -118,21 +135,14 @@ beforeEach(async () => {
         await server.reset();
         // testLogger.debug("beforeEach: establishing default channels");
         await server.pendingSetup();
-        // setTimeout(() => {
-        //     server.setupReplication();
-        // }, 1000);
-        // server.setupReplication();
-        // server.listen();
     }
     testLogger.info("  ---- did reset redis with default channels in beforeEach");
     testLogger.info("  -------------------      -----------------    --------------------")
     
-
-    // probably we need to setup replication once we have confirmation the servers are listening
+    // 3. RESTART replication on all servers
     for (const server of servers) {
         testLogger.debug(" ==== beforeEach: SETTING UP REPLICATION in TEST for server", server.serverId);
-        // COMMENTED OUT FOR NOW TO AVOID THE REPLICATION SETUP ISSUE 
-        // await server.setupReplication();
+        await server.setupReplication();
     }
 
 });

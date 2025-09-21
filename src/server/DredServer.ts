@@ -571,31 +571,23 @@ export class DredServer {
     }
 
     /**
-     * Start auto-replication in background with configurable startup delay
+     * Start auto-replication in background immediately
      */
     private startAutoReplication(): void {
-        const startupDelaySeconds = parseInt(process.env.REPLICATION_STARTUP_DELAY_SECONDS || "10");
-        const startupDelayMs = startupDelaySeconds * 1000;
-
-        this.warn(`🔄 AUTO-REPLICATION SCHEDULED FOR ${this.serverId.toUpperCase()} IN ${startupDelaySeconds}s`);
+        this.warn(`🔄 STARTING AUTO-REPLICATION FOR ${this.serverId.toUpperCase()} (BACKGROUND)`);
         
-        // Wait for startup delay, then begin replication
-        setTimeout(() => {
-            this.warn(`🔄 STARTING AUTO-REPLICATION FOR ${this.serverId.toUpperCase()} (BACKGROUND)`);
-            
-            // Run in background - don't await, don't block server startup
-            this.performAutoReplicationSetup()
-                .then(() => {
-                    this.warn(`✅ AUTO-REPLICATION SUCCESS FOR ${this.serverId.toUpperCase()}`);
-                    this.warn(`🎯 REPLICATION IS NOW READY FOR ${this.serverId.toUpperCase()}`);
-                    // TODO: Later we'll emit replication readiness event here
-                })
-                .catch((error) => {
-                    this.warn(`❌ AUTO-REPLICATION FAILED FOR ${this.serverId.toUpperCase()}: ${error.message}`);
-                    this.warn(`🔄 WILL RETRY AUTO-REPLICATION IN 1 MINUTE FOR ${this.serverId.toUpperCase()}`);
-                    this.scheduleReplicationRetry();
-                });
-        }, startupDelayMs);
+        // Run in background - don't await, don't block server startup
+        this.performAutoReplicationSetup()
+            .then(() => {
+                this.warn(`✅ AUTO-REPLICATION SUCCESS FOR ${this.serverId.toUpperCase()}`);
+                this.warn(`🎯 REPLICATION IS NOW READY FOR ${this.serverId.toUpperCase()}`);
+                // TODO: Later we'll emit replication readiness event here
+            })
+            .catch((error) => {
+                this.warn(`❌ AUTO-REPLICATION FAILED FOR ${this.serverId.toUpperCase()}: ${error.message}`);
+                this.warn(`🔄 WILL RETRY AUTO-REPLICATION IN 1 MINUTE FOR ${this.serverId.toUpperCase()}`);
+                this.scheduleReplicationRetry();
+            });
     }
 
     /**

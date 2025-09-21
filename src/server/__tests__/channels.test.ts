@@ -2,6 +2,9 @@
 // These are now global due to globals: true in vitest.config.ts
 import { beforeAll, vi, expect, describe, it } from "vitest";
 
+// Uncomment the line below to disable auto-replication for this test file
+// disableAutoReplication();
+
 // import request from 'supertest';
 import { Express } from "express";
 import { SuperTestWithHost, Test } from "supertest";
@@ -12,7 +15,7 @@ const { sign } = nacl;
 import util from "tweetnacl-util";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
-import { testSetup } from "../testServer.js";
+import { testSetup, disableAutoReplication } from "../testServer.js";
 import { DredServer } from "../DredServer.js";
 import { asyncDelay } from "../../util/asyncDelay.js";
 import {

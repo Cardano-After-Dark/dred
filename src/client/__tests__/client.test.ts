@@ -1,10 +1,13 @@
 // These are now global due to globals: true in vitest.config.ts
 import { beforeAll, vi, describe, it, expect } from "vitest";
 
+// Uncomment the line below to disable auto-replication for this test file
+// disableAutoReplication();
+
 import express from "express";
 import { DredServer } from "../../server/DredServer";
 import { DredClient } from "../../client/DredClient";
-import { testSetup } from "../../server/testServer";
+import { testSetup, disableAutoReplication } from "../../server/testServer";
 import { asyncDelay } from "../../util/asyncDelay";
 
 import type {JsonMessagePayload} from "../../types/JsonMessagePayload";
