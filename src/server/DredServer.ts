@@ -300,10 +300,7 @@ export class DredServer {
             },
             channels: { log: this.logger },
         });
-        
-        // Temporarily disable auto channel setup to test server startup
-        this.log("📦 Redis setup complete, skipping auto channel setup for now");
-        // this.ensureDefaultChannels();
+        this.ensureDefaultChannels();
     }
 
     //! it has a mockable function for starting the express server
@@ -574,23 +571,31 @@ export class DredServer {
     }
 
     /**
-     * Start auto-replication in background, non-blocking with retry logic
+     * Start auto-replication in background with configurable startup delay
      */
     private startAutoReplication(): void {
-        this.warn(`🔄 STARTING AUTO-REPLICATION FOR ${this.serverId.toUpperCase()} (BACKGROUND)`);
+        const startupDelaySeconds = parseInt(process.env.REPLICATION_STARTUP_DELAY_SECONDS || "10");
+        const startupDelayMs = startupDelaySeconds * 1000;
+
+        this.warn(`🔄 AUTO-REPLICATION SCHEDULED FOR ${this.serverId.toUpperCase()} IN ${startupDelaySeconds}s`);
         
-        // Run in background - don't await, don't block server startup
-        this.performAutoReplicationSetup()
-            .then(() => {
-                this.warn(`✅ AUTO-REPLICATION SUCCESS FOR ${this.serverId.toUpperCase()}`);
-                this.warn(`🎯 REPLICATION IS NOW READY FOR ${this.serverId.toUpperCase()}`);
-                // TODO: Later we'll emit replication readiness event here
-            })
-            .catch((error) => {
-                this.warn(`❌ AUTO-REPLICATION FAILED FOR ${this.serverId.toUpperCase()}: ${error.message}`);
-                this.warn(`🔄 WILL RETRY AUTO-REPLICATION IN 1 MINUTE FOR ${this.serverId.toUpperCase()}`);
-                this.scheduleReplicationRetry();
-            });
+        // Wait for startup delay, then begin replication
+        setTimeout(() => {
+            this.warn(`🔄 STARTING AUTO-REPLICATION FOR ${this.serverId.toUpperCase()} (BACKGROUND)`);
+            
+            // Run in background - don't await, don't block server startup
+            this.performAutoReplicationSetup()
+                .then(() => {
+                    this.warn(`✅ AUTO-REPLICATION SUCCESS FOR ${this.serverId.toUpperCase()}`);
+                    this.warn(`🎯 REPLICATION IS NOW READY FOR ${this.serverId.toUpperCase()}`);
+                    // TODO: Later we'll emit replication readiness event here
+                })
+                .catch((error) => {
+                    this.warn(`❌ AUTO-REPLICATION FAILED FOR ${this.serverId.toUpperCase()}: ${error.message}`);
+                    this.warn(`🔄 WILL RETRY AUTO-REPLICATION IN 1 MINUTE FOR ${this.serverId.toUpperCase()}`);
+                    this.scheduleReplicationRetry();
+                });
+        }, startupDelayMs);
     }
 
     /**
@@ -622,10 +627,10 @@ export class DredServer {
 
     /**
      * Start periodic status logging based on STATUS_INTERVAL_SECONDS environment variable
-     * Default: 10 seconds, Range: 1-1000 seconds, 0 or negative = disabled
+     * Default: 2 seconds, Range: 1-1000 seconds, 0 or negative = disabled
      */
     private startPeriodicStatusLogging(): void {
-        const intervalSeconds = parseInt(process.env.STATUS_INTERVAL_SECONDS || "10");
+        const intervalSeconds = parseInt(process.env.STATUS_INTERVAL_SECONDS || "2");
         
         if (intervalSeconds <= 0 || intervalSeconds > 1000) {
             this.log(`📊 Periodic status logging disabled (STATUS_INTERVAL_SECONDS=${intervalSeconds})`);
@@ -665,7 +670,7 @@ export class DredServer {
             
             // Get basic server info
             const status = this.listener ? "RUNNING" : "STOPPED";
-            const replicationStatus = this.replicator ? "ACTIVE" : "INACTIVE";
+            const replicationStatus = this.replicator ? "ENABLED" : "DISABLED";
             
             // Get discovery info
             const discoveredPeers = this.discovery?.hosts?.length || 0;
@@ -741,7 +746,7 @@ export class DredServer {
             // Restart auto-replication after reset if it was enabled
             if (!this.isAutoReplicationDisabled()) {
                 this.warn(`🔄 RESTARTING AUTO-REPLICATION AFTER RESET FOR ${this.serverId.toUpperCase()}`);
-                // Wait for setupPending to complete, then start replication
+                // Wait for setupPending to complete, then start replication (with delay)
                 if (this.setupPending) {
                     this.setupPending.then(() => {
                         this.startAutoReplication();
@@ -749,7 +754,7 @@ export class DredServer {
                         this.warn(`❌ FAILED TO RESTART AUTO-REPLICATION AFTER RESET FOR ${this.serverId.toUpperCase()}: ${error.message}`);
                     });
                 } else {
-                    // If no setupPending, start immediately
+                    // If no setupPending, start immediately (with delay)
                     this.startAutoReplication();
                 }
             } else {
