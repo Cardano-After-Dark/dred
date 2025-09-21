@@ -161,6 +161,9 @@ export class DredServer {
     // Optional replicator, to be initialized only when replication is enabled
     replicator?: DredReplicator;
 
+    // Periodic status logging
+    private statusLoggingTimer?: NodeJS.Timeout;
+
     resetting = false;
     get nbh() {
         return this.args.neighborhood;
@@ -241,15 +244,9 @@ export class DredServer {
 
         this.serverId = serverId;
         this.discovery = DredClient.resolveDiscovery(args);
-        // const t= express()
-
-        
-        this.log(`+server '${serverId}'`, this.discovery);
-        // console.log(`===Creating express server for ${loggerName} with serverId ${serverId}`);
+        this.log(`+server '${serverId}' with discovery type: ${this.discovery.constructor.name}`);
 
         this.api = this.createExpressServer();
-        // const t= express();
-
         const redisUrl = (this.redisUrl = process.env.REDIS_URL || "redis://localhost:6379");
 
         this.listener = null;
@@ -264,26 +261,19 @@ export class DredServer {
 
         // this.channelConn._log.error = console.error.bind(console);
         this.clientArgs = args;
-
         this.setupExpressHandlers();
     }
 
     setupRedis(url: string | undefined) {
         if (this.redis) throw new Error(`redis connection is already set up`);
-        // redis.subscribe(...).on("message", (event) => {
-        //     for (const peer of peers) {
-        //         peer.addEvent(event)
-        //     }
-        // })
-
-        //!!! todo: use configured Redis connection details
+        
         this.log(`Setting up Redis connection: ${url || "default"}, db: ${this.redisDb}`);
-        // console.log(`REDIS_URL ${url}`);
+        
         const options: RedisOptions = {
             db: this.redisDb,
-
             // keyPrefix: `${this.nbh}::`  //!!! todo vet this technique.
         };
+        
         if (url) {
             this.redis = new Redis(url, options);
         } else {
@@ -299,12 +289,9 @@ export class DredServer {
 
         const log = zonedLogger("dred-stream", {
             loggerId: this.serverId,
-            // color: black.start +bgCyanBright.start// green.start
-            // color: green.start
             color: bgBlack.start + white.start
         });
 
-        //!!! todo: allows the application name to override 'dred' setting in channel names created in Redis
         this.channelConn = new RedisChannels({
             application: `${this.nbh}::`,
             redis: {
@@ -313,7 +300,10 @@ export class DredServer {
             },
             channels: { log: this.logger },
         });
-        this.ensureDefaultChannels();
+        
+        // Temporarily disable auto channel setup to test server startup
+        this.log("📦 Redis setup complete, skipping auto channel setup for now");
+        // this.ensureDefaultChannels();
     }
 
     //! it has a mockable function for starting the express server
@@ -399,6 +389,10 @@ export class DredServer {
         }
 
         this.log(`=== Returning listener for ${this.serverId}`);
+        
+        // Start periodic status logging if enabled
+        this.startPeriodicStatusLogging();
+        
         return this.listener;
         // express
         //       listen(port: number, hostname: string, backlog: number, callback?: () => void): http.Server;
@@ -626,6 +620,73 @@ export class DredServer {
         }, 60000); // 1 minute
     }
 
+    /**
+     * Start periodic status logging based on STATUS_INTERVAL_SECONDS environment variable
+     * Default: 10 seconds, Range: 1-1000 seconds, 0 or negative = disabled
+     */
+    private startPeriodicStatusLogging(): void {
+        const intervalSeconds = parseInt(process.env.STATUS_INTERVAL_SECONDS || "10");
+        
+        if (intervalSeconds <= 0 || intervalSeconds > 1000) {
+            this.log(`📊 Periodic status logging disabled (STATUS_INTERVAL_SECONDS=${intervalSeconds})`);
+            return;
+        }
+
+        const intervalMs = intervalSeconds * 1000;
+        this.log(`📊 Starting periodic status logging every ${intervalSeconds} seconds`);
+        
+        this.statusLoggingTimer = setInterval(() => {
+            this.logPeriodicStatus();
+        }, intervalMs);
+        
+        // Don't keep the process alive just for status logging
+        this.statusLoggingTimer.unref();
+    }
+
+    /**
+     * Stop periodic status logging
+     */
+    private stopPeriodicStatusLogging(): void {
+        if (this.statusLoggingTimer) {
+            clearInterval(this.statusLoggingTimer);
+            this.statusLoggingTimer = undefined;
+            this.log(`📊 Stopped periodic status logging`);
+        }
+    }
+
+    /**
+     * Log current server status
+     */
+    private async logPeriodicStatus(): Promise<void> {
+        try {
+            const now = new Date().toISOString();
+            const uptime = process.uptime();
+            const uptimeFormatted = `${Math.floor(uptime / 3600)}h ${Math.floor((uptime % 3600) / 60)}m ${Math.floor(uptime % 60)}s`;
+            
+            // Get basic server info
+            const status = this.listener ? "RUNNING" : "STOPPED";
+            const replicationStatus = this.replicator ? "ACTIVE" : "INACTIVE";
+            
+            // Get discovery info
+            const discoveredPeers = this.discovery?.hosts?.length || 0;
+            const discoveryType = this.discovery?.constructor.name || "Unknown";
+            
+            // Get channel count
+            let channelCount = 0;
+            try {
+                const channels = await this.channelList.keys();
+                channelCount = channels.length;
+            } catch (error) {
+                // Ignore channel count errors
+            }
+
+            this.log(`📊 [${now}] SERVER STATUS: ${status} | Uptime: ${uptimeFormatted} | Replication: ${replicationStatus} | Peers: ${discoveredPeers} | Channels: ${channelCount} | Discovery: ${discoveryType}`);
+            
+        } catch (error) {
+            this.warn(`📊 Error logging periodic status: ${error}`);
+        }
+    }
+
     async cleanupReplication(): Promise<void> {
         this.log(` -- start cleanupReplication ${this.serverId}`);
         if (!this.replicator) {
@@ -709,6 +770,9 @@ export class DredServer {
 
         // Cleanup replication client
         await this.cleanupReplication();
+        
+        // Stop periodic status logging
+        this.stopPeriodicStatusLogging();
 
         this.reset(false);
         this.listener?.close();

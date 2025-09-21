@@ -64,24 +64,20 @@ async function init() {
         }
 
         const hosts = discovery.hosts
-        const matchingHost = hosts?.find(host => 
-            host.serverId === process.env.DRED_NODE_ID
-            // host.address === serverAddress && parseInt(host.port) === parseInt(serverPort)
-        );
-    
+        
+        // Get our own server info from discovery (not from filtered hosts list)
+        const myServerInfo = await discovery.myServerInfo(process.env.DRED_NODE_ID || "unknown");
+        
         console.log("Dred nbh", nbh);
         console.log("Dred serverAddress", serverAddress);
         console.log("Dred serverPort", serverPort);
-        // problem: matching on server address instead of matching on node id
-        // if (!matchingHost) {
-        //     const availableHosts = hosts?.map(h => `${h.address}:${h.port} (${h.serverId})`).join(', ') || 'none';
-        //     throw new Error(`No host found matching server id ${process.env.DRED_NODE_ID} among ${availableHosts}`);
-        //     // const availableHosts = hosts?.map(h => `${h.address}:${h.port} (${h.serverId})`).join(', ') || 'none';
-        //     // throw new Error(`No host found matching server address ${serverAddress}:${serverPort}. Available hosts: ${availableHosts}`);
-        // }
+        console.log("Dred myServerInfo", myServerInfo);
+        console.log("Dred discovered peer hosts", hosts?.length || 0);
         
-        // Shows the whole host object, incl address and port
-        console.log("Dred server starting on host", matchingHost);
+        if (!myServerInfo) {
+            const availableHosts = hosts?.map(h => `${h.address}:${h.port} (${h.serverId})`).join(', ') || 'none';
+            throw new Error(`Could not get my server info for node ID ${process.env.DRED_NODE_ID}. Discovered peer hosts: ${availableHosts}`);
+        }
         
         const server = await createServer({ 
             discovery ,
@@ -90,11 +86,29 @@ async function init() {
             // connectionSettings: {
     
             // }
-        }, matchingHost.serverId, 0);
+        }, myServerInfo.serverId, 0);
     
         console.log("Dred server created", server);
     
-        const { port, address } = matchingHost;
+        // Add graceful shutdown handlers
+        const gracefulShutdown = async (signal) => {
+            console.log(`\n🛑 Received ${signal}. Shutting down gracefully...`);
+            try {
+                await server.close();
+                console.log("✅ Server closed successfully");
+                process.exit(0);
+            } catch (error) {
+                console.error("❌ Error during shutdown:", error);
+                process.exit(1);
+            }
+        };
+
+        // Handle different shutdown signals
+        process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+        process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+        process.on('SIGQUIT', () => gracefulShutdown('SIGQUIT'));
+
+        const { port, address } = myServerInfo;
         await server.listen();
 
     } catch (error) {
