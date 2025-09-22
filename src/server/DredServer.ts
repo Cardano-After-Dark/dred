@@ -622,7 +622,7 @@ export class DredServer {
      * Default: 2 seconds, Range: 1-1000 seconds, 0 or negative = disabled
      */
     private startPeriodicStatusLogging(): void {
-        const intervalSeconds = parseInt(process.env.STATUS_INTERVAL_SECONDS || "2");
+        const intervalSeconds = parseInt(process.env.STATUS_INTERVAL_SECONDS || "5");
         
         if (intervalSeconds <= 0 || intervalSeconds > 1000) {
             this.log(`📊 Periodic status logging disabled (STATUS_INTERVAL_SECONDS=${intervalSeconds})`);
@@ -652,35 +652,100 @@ export class DredServer {
     }
 
     /**
+     * Check if debug logging is enabled
+     */
+    private isDebugLoggingEnabled(): boolean {
+        return process.env.LOGGING?.includes('debug') || 
+               process.env.DEBUG === '1' || 
+               process.env.DEBUG === 'true';
+    }
+
+    /**
      * Log current server status
      */
     private async logPeriodicStatus(): Promise<void> {
         try {
-            const now = new Date().toISOString();
             const uptime = process.uptime();
             const uptimeFormatted = `${Math.floor(uptime / 3600)}h ${Math.floor((uptime % 3600) / 60)}m ${Math.floor(uptime % 60)}s`;
             
-            // Get basic server info
-            const status = this.listener ? "RUNNING" : "STOPPED";
-            const replicationStatus = this.replicator ? "ENABLED" : "DISABLED";
+            // Get replication status with details
+            let replicationStatus = "DISABLED";
+            let activePeers = 0;
+            let totalPeers = 0;
             
-            // Get discovery info
-            const discoveredPeers = this.discovery?.hosts?.length || 0;
-            const discoveryType = this.discovery?.constructor.name || "Unknown";
+            if (this.replicator) {
+                totalPeers = this.discovery?.hosts?.filter(h => h.serverId !== this.serverId).length || 0;
+                activePeers = this.replicator.getActiveReplicants ? this.replicator.getActiveReplicants().length : 0;
+                replicationStatus = `ENABLED (${activePeers}/${totalPeers})`;
+            }
             
             // Get channel count
             let channelCount = 0;
             try {
-                const channels = await this.channelList.keys();
+                const channels = await this.channelList.keys() as string[];
                 channelCount = channels.length;
             } catch (error) {
-                // Ignore channel count errors
+                // Ignore channel errors, keep 0
             }
 
-            this.log(`📊 [${now}] SERVER STATUS: ${status} | Uptime: ${uptimeFormatted} | Replication: ${replicationStatus} | Peers: ${discoveredPeers} | Channels: ${channelCount} | Discovery: ${discoveryType}`);
+            // Compact format for regular logging
+            this.log(`📊 Uptime: ${uptimeFormatted} | Replication: ${replicationStatus} | Channels: ${channelCount}`);
+            
+            // Extended debug format (only when DEBUG logging is enabled)
+            if (this.isDebugLoggingEnabled()) {
+                await this.logExtendedStatus(activePeers, totalPeers);
+            }
             
         } catch (error) {
             this.warn(`📊 Error logging periodic status: ${error}`);
+        }
+    }
+
+    /**
+     * Log extended status with peer connection details (debug mode only)
+     */
+    private async logExtendedStatus(activePeers: number, totalPeers: number): Promise<void> {
+        try {
+            if (!this.replicator || !this.discovery?.hosts) {
+                return;
+            }
+
+            const allPeers = this.discovery.hosts.filter(h => h.serverId !== this.serverId);
+            const activeReplicants = this.replicator.getActiveReplicants ? this.replicator.getActiveReplicants() : [];
+            
+            // Get connected peers
+            const connectedPeers = activeReplicants.map(rep => {
+                const targetHost = rep.getTargetHost();
+                return `${targetHost.serverId.slice(-8)}@${targetHost.address}:${targetHost.port}`;
+            });
+            
+            // Get non-connected peers
+            const connectedServerIds = new Set(activeReplicants.map(rep => rep.getTargetHost().serverId));
+            const nonConnectedPeers = allPeers
+                .filter(h => !connectedServerIds.has(h.serverId))
+                .map(h => `${h.serverId.slice(-8)}@${h.address}:${h.port}`);
+
+            // Get channel details
+            let channels: string[] = [];
+            try {
+                channels = await this.channelList.keys() as string[];
+            } catch (error) {
+                // Ignore channel errors
+            }
+
+            // Single multi-line extended status message
+            const extendedStatus = [
+                "🔍 EXTENDED STATUS:",
+                `   Connected peers (${connectedPeers.length}): [${connectedPeers.join(', ') || 'none'}]`,
+                `   Non-connected peers (${nonConnectedPeers.length}): [${nonConnectedPeers.join(', ') || 'none'}]`,
+                `   Channels: [${channels.join(', ') || 'none'}]`
+            ].join('\n');
+            // Log as INFO but only when debug mode is enabled
+            // This ensures it shows up in the logs when requested
+            this.log(extendedStatus);
+            
+        } catch (error) {
+            this.warn(`🔍 Error logging extended status: ${error}`);
         }
     }
 

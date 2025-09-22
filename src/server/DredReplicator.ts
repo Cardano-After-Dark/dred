@@ -66,6 +66,13 @@ export class DredReplicator{
         return this.initialized;
     }
 
+    /**
+     * Get replicants that are successfully connected/active
+     */
+    getActiveReplicants(): Replicant[] {
+        return this.replicants.filter(replicant => replicant.isActive());
+    }
+
     log(message: string, ...args: any[]) {
         this.homeServer.log(`${DredReplicator._logHeader} ${message}`, ...args);
     }
@@ -184,6 +191,65 @@ export class Replicant{
         this.name = `Replicant-[${homeServer.serverId}]-[${targetHost.serverId}]`;
         this.repClient = null;
         this.log(`constructor: ${this.name}`);
+    }
+
+    /**
+     * Get the target host details
+     */
+    getTargetHost(): DredHostDetails {
+        return this.targetHost;
+    }
+
+    /**
+     * Check if this replicant is active (has a connected client)
+     */
+    isActive(): boolean {
+        // A replicant is considered active if:
+        // 1. It has a repClient
+        // 2. The repClient's connection manager has active connections
+        if (!this.repClient) {
+            return false;
+        }
+        
+        try {
+            const connManager = this.repClient.connManager;
+            if (!connManager) {
+                return false;
+            }
+            
+            // Check if there are any "active" connections in the connection manager
+            // This is the proper way to determine if the client is actually connected
+            return this.hasActiveConnections(connManager);
+        } catch (error) {
+            return false;
+        }
+    }
+
+    /**
+     * Check if the connection manager has any active connections
+     */
+    private hasActiveConnections(connManager: any): boolean {
+        try {
+            // Access the private connStatus map to check for "active" connections
+            const connStatus = (connManager as any).connStatus;
+            if (!connStatus) {
+                return false;
+            }
+            
+            // Check if any connection has "active" status
+            for (const [conn, status] of connStatus.entries()) {
+                const graveyard = (connManager as any).graveyard;
+                if (graveyard && graveyard.has(conn)) {
+                    continue; // Skip graveyard connections
+                }
+                if (status === "active") {
+                    return true;
+                }
+            }
+            return false;
+        } catch (error) {
+            return false;
+        }
     }
 
     async initialize() {
