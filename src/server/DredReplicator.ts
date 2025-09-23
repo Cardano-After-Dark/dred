@@ -104,13 +104,26 @@ export class DredReplicator{
         // NOTE: the discovery is already filtering by neighborhood
         const hosts = await this.discovery.getHostList();
         const otherHosts = hosts.filter((host) => host.serverId !== this.homeServer.serverId);
+        // Create all replicants first
         for (const host of otherHosts) {
             // handle replication from a single target server to the home server
             const repClient = new Replicant(this, this.homeServer, host);
-            await repClient.initialize();
             // Store replicant for cleanup
             this.replicants.push(repClient);
         }
+
+        // Start all connection loops in parallel (non-blocking)
+        this.replicants.forEach((replicant) => {
+            try {
+                // Start connection loop asynchronously - don't await
+                replicant.startConnectionLoop();
+            } catch (error) {
+                this.warn(`Failed to start connection loop for replicant: ${error}`);
+            }
+        });
+
+        // Don't wait for connections to complete - let them retry in background
+        this.log(`${this.name} started ${this.replicants.length} connection loops in parallel`);
 
         this.log(`${this.name} initialized`);
     }
@@ -161,6 +174,16 @@ export class DredReplicator{
 }
 
 /**
+ * Simple retry state for connection attempts
+ */
+interface SimpleRetryState {
+    lastAttemptTime?: Date;
+    nextRetryTime?: Date;
+    isRetrying: boolean;
+    retryTimer?: NodeJS.Timeout;
+}
+
+/**
  * Replicant is a class that handles replication to a single target server.
  * It is responsible for:
  *  - subscribing to all channels in the target server which are also in the home server
@@ -175,6 +198,7 @@ export class Replicant{
     private targetHost: DredHostDetails;
     private name: string;
     private repClient: DredClient | null;
+    private retryState: SimpleRetryState;
 
     log(message: string, ...args: any[]) {
         this.homeServer.log(`${Replicant._logHeader} ${message}`, ...args);
@@ -190,7 +214,17 @@ export class Replicant{
         this.targetHost = targetHost;
         this.name = `Replicant-[${homeServer.serverId}]-[${targetHost.serverId}]`;
         this.repClient = null;
+        this.retryState = {
+            isRetrying: false
+        };
         this.log(`constructor: ${this.name}`);
+    }
+
+    /**
+     * Get a human-readable name for logging
+     */
+    private getReadableName(): string {
+        return `Replicant[${this.targetHost.address}:${this.targetHost.port}]`;
     }
 
     /**
@@ -230,81 +264,210 @@ export class Replicant{
      */
     private hasActiveConnections(connManager: any): boolean {
         try {
-            // Access the private connStatus map to check for "active" connections
-            const connStatus = (connManager as any).connStatus;
-            if (!connStatus) {
-                return false;
-            }
-            
-            // Check if any connection has "active" status
-            for (const [conn, status] of connStatus.entries()) {
-                const graveyard = (connManager as any).graveyard;
-                if (graveyard && graveyard.has(conn)) {
-                    continue; // Skip graveyard connections
+            // Simple approach: if we have a repClient and it was successfully established, consider it active
+            if (this.repClient) {
+                const clientConnManager = (this.repClient as any).connManager;
+                
+                // Check if the client's connection manager has active connections
+                if (clientConnManager) {
+                    const clientConnStatus = (clientConnManager as any).connStatus;
+                    if (clientConnStatus && clientConnStatus.size > 0) {
+                        for (const [conn, status] of clientConnStatus.entries()) {
+                            const graveyard = (clientConnManager as any).graveyard;
+                            if (graveyard && graveyard.has(conn)) {
+                                continue; // Skip graveyard connections
+                            }
+                            if (status === "active") {
+                                return true;
+                            }
+                        }
+                    }
                 }
-                if (status === "active") {
+                
+                // If we have a repClient that was successfully created and hasn't been cleaned up,
+                // and we're not in a retry state, assume it's active
+                if (!this.retryState.isRetrying) {
                     return true;
                 }
             }
+            
             return false;
         } catch (error) {
             return false;
         }
     }
 
-    async initialize() {
-        this.log(`${this.name} initializing`);
-        if(this.repClient !== null) {
-            this.warn(`${this.name} already initialized`);
+    /**
+     * Start the connection loop with retry logic (non-blocking)
+     */
+    startConnectionLoop(): void {
+        this.log(`${this.name} starting connection loop`);
+        
+        if (this.repClient !== null) {
+            this.warn(`${this.name} already has a client, cleaning up first`);
+            // Don't await cleanup - do it asynchronously
+            this.cleanup().then(() => {
+                this.attemptConnection();
+            }).catch((error) => {
+                this.warn(`${this.name} cleanup failed, proceeding with connection attempt: ${error}`);
+                this.attemptConnection();
+            });
+        } else {
+            // Start the connection attempt asynchronously
+            this.attemptConnection();
+        }
+    }
+
+    /**
+     * Attempt to establish connection and set up replication (async, non-blocking)
+     */
+    private async attemptConnection(): Promise<void> {
+        try {
+            this.log(`${this.getReadableName()} attempting connection to ${this.targetHost.address}:${this.targetHost.port}`);
+            this.retryState.lastAttemptTime = new Date();
+            
+            // Check if target server is available first (with timeout)
+            const isAvailable = await this.checkServerAvailability();
+            if (!isAvailable) {
+                this.log(`${this.getReadableName()} server not reachable, skipping DRED client attempt`);
+                throw new Error(`Target server ${this.targetHost.serverId} is not available`);
+            }
+            
+            this.log(`${this.getReadableName()} server is reachable, creating DRED client connection`);
+            
+            // Create client and attempt connection with timeout
+            this.repClient = this.homeServer.mkClient(this.targetHost.serverId, {
+                name: `from-${this.homeServer.serverId}-to-${this.targetHost.serverId}`
+            }, false); // false = not server managed
+            
+            // Set max listeners to prevent memory leak warnings on various components
+            if (this.repClient) {
+                const connManager = (this.repClient as any).connManager;
+                if (connManager && connManager.setMaxListeners) {
+                    connManager.setMaxListeners(20);
+                }
+                
+                // Also set on the client itself if it supports it
+                if (this.repClient.setMaxListeners) {
+                    this.repClient.setMaxListeners(20);
+                }
+            }
+            
+            // Add timeout to the entire DRED client connection process
+            const connectionPromise = this.performConnection();
+            const timeoutPromise = new Promise<never>((_, reject) => {
+                setTimeout(() => reject(new Error('DRED client connection timeout after 10 seconds')), 10000);
+            });
+            
+            await Promise.race([connectionPromise, timeoutPromise]);
+            
+            // Connection successful - reset retry state
+            this.resetRetryState();
+            this.log(`${this.getReadableName()} ✅ DRED client connection established successfully`);
+            
+        } catch (error) {
+            this.warn(`${this.getReadableName()} connection attempt failed: ${error}`);
+            
+            // Clean up failed client
+            if (this.repClient) {
+                try {
+                    this.repClient.disconnect();
+                } catch (cleanupError) {
+                    // Ignore cleanup errors
+                }
+                this.repClient = null;
+            }
+            
+            // Schedule retry
+            this.scheduleRetry();
+        }
+    }
+
+    /**
+     * Check if the target server is available with a simple HTTP GET /channels
+     */
+    private async checkServerAvailability(): Promise<boolean> {
+        try {
+            this.log(`${this.getReadableName()} checking server availability via GET /channels`);
+            
+            const url = `https://${this.targetHost.address}:${this.targetHost.port}/channels`;
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+            
+            const response = await fetch(url, { 
+                method: 'GET',
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (response.ok) {
+                this.log(`${this.getReadableName()} ✅ GET /channels succeeded (${response.status})`);
+                return true;
+            } else {
+                this.log(`${this.getReadableName()} ❌ GET /channels failed with status ${response.status}`);
+                return false;
+            }
+            
+        } catch (error) {
+            this.log(`${this.getReadableName()} ❌ GET /channels failed: ${error}`);
+            return false;
+        }
+    }
+
+    /**
+     * Perform the actual connection setup (called with timeout)
+     */
+    private async performConnection(): Promise<void> {
+        if (!this.repClient) {
+            throw new Error('Client not initialized');
+        }
+
+        await this.repClient.generateKey();
+        
+        // Get channels from both servers and find intersection
+        const commonChannels = await this.findCommonChannels();
+        this.log(`${this.name} common channels: ${commonChannels.join(', ')}`);
+        
+        // Subscribe to common channels with replication handlers
+        await this.subscribeToCommonChannels(commonChannels);
+    }
+
+    /**
+     * Schedule a retry attempt after the configured interval
+     */
+    private scheduleRetry(): void {
+        if (this.retryState.isRetrying) {
+            this.log(`${this.getReadableName()} retry already scheduled`);
             return;
         }
         
-        this.log(`${this.name} starting initialization`);
+        const retryIntervalSeconds = parseInt(process.env.REPLICATION_RETRY_INTERVAL_SECONDS || '60', 10);
+        const retryIntervalMs = retryIntervalSeconds * 1000;
         
-        // creates a new DredClient
-        this.repClient = this.homeServer.mkClient(this.targetHost.serverId, {name: `from-${this.homeServer.serverId}-to-${this.targetHost.serverId}`}, false); // false = not server managed
-        await this.repClient.generateKey();
-
-        /** FIXME: we cannot set the neighborhood here, yet
-         * TODO: when neighborhood fixed, fix this
-        // this.log(`${this.name} client created, setting neighborhood to: '${this.homeServer.nbh}'`);
-        // Set the same neighborhood as the home server
-        //this.repClient.setNeighborhood(this.homeServer.nbh);
-        // this.log(`${this.name} neighborhood set, client state: '${this.repClient.currentState}'`);
-        */
-
-        // Wait for client to reach ready state and discover channels
-        // do not enable this otherwise we will wait forever
-        // await this.waitForClientReady();
-
-        this.log(`${this.name} client ready (I guess)`);
-
-        // Get channels from both servers and find intersection
-        const commonChannels = await this.findCommonChannels();
-
-        this.log(`${this.name} common channels: ${commonChannels.join(', ')}`);
-
-        // eslint-disable-next-line no-debugger
-        //debugger
-
-        // Subscribe to common channels with replication handlers
-        await this.subscribeToCommonChannels(commonChannels);
-
-        this.log(`${this.name} initialization complete`);
-
-        // this.targetHost.
-
-        // TODO: subscribe to all channels in the target server which are also in the home server
-        // TODO: replicate the messages to the home server
-        // TODO: listen to the home server for new channels
-        // TODO: replicate the messages to the target server
+        this.retryState.isRetrying = true;
+        this.retryState.nextRetryTime = new Date(Date.now() + retryIntervalMs);
         
+        this.log(`${this.getReadableName()} scheduling retry in ${retryIntervalSeconds} seconds`);
+        
+        this.retryState.retryTimer = setTimeout(() => {
+            this.log(`${this.getReadableName()} retry timer triggered, attempting connection`);
+            this.attemptConnection();
+        }, retryIntervalMs);
+    }
 
-        // TODO: implement initialization logic
-        // 1. subscribe to all channels in the target server which are also in the home server
-        // 2. replicate the messages to the home server
-        // 3. listen to the home server for new channels
-        // 4. replicate the messages to the target server
+    /**
+     * Reset retry state after successful connection
+     */
+    private resetRetryState(): void {
+        if (this.retryState.retryTimer) {
+            clearTimeout(this.retryState.retryTimer);
+            this.retryState.retryTimer = undefined;
+        }
+        
+        this.retryState.isRetrying = false;
+        this.retryState.nextRetryTime = undefined;
+        this.log(`${this.getReadableName()} retry state reset`);
     }
 
     private async findCommonChannels(): Promise<string[]> {
@@ -510,6 +673,17 @@ export class Replicant{
      */
     async cleanup(): Promise<void> {
         this.warn(`${this.name} cleaning up`);
+        
+        // Clear any pending retry timers
+        if (this.retryState.retryTimer) {
+            clearTimeout(this.retryState.retryTimer);
+            this.retryState.retryTimer = undefined;
+            this.warn(`${this.name} cleared retry timer`);
+        }
+        
+        // Reset retry state
+        this.retryState.isRetrying = false;
+        this.retryState.nextRetryTime = undefined;
         
         if (this.repClient) {
             
