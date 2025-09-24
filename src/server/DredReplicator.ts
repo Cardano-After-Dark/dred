@@ -199,13 +199,17 @@ export class Replicant{
     private name: string;
     private repClient: DredClient | null;
     private retryState: SimpleRetryState;
+    private targetLogId: string;
 
     log(message: string, ...args: any[]) {
-        this.homeServer.log(`${Replicant._logHeader} ${message}`, ...args);
+        // Use a simulated "replication" facility with target as loggerId
+        // This mimics what Randall wanted: facility 'replication' with target-server-id as loggerId
+        this.homeServer.log(`[replication:${this.targetLogId}] ${message}`, ...args);
     }
 
     warn(message: string, ...args: any[]) {
-        this.homeServer.warn(`${Replicant._logHeader} ${message}`, ...args);
+        // Use a simulated "replication" facility with target as loggerId
+        this.homeServer.warn(`[replication:${this.targetLogId}] ${message}`, ...args);
     }
 
     constructor(replicator: DredReplicator, homeServer: DredServer, targetHost: DredHostDetails) {
@@ -217,6 +221,10 @@ export class Replicant{
         this.retryState = {
             isRetrying: false
         };
+        
+        // Store target info for logging
+        this.targetLogId = `${this.targetHost.address}:${this.targetHost.port}`;
+        
         this.log(`constructor: ${this.name}`);
     }
 
@@ -323,17 +331,14 @@ export class Replicant{
      */
     private async attemptConnection(): Promise<void> {
         try {
-            this.log(`${this.getReadableName()} attempting connection to ${this.targetHost.address}:${this.targetHost.port}`);
             this.retryState.lastAttemptTime = new Date();
             
             // Check if target server is available first (with timeout)
             const isAvailable = await this.checkServerAvailability();
             if (!isAvailable) {
-                this.log(`${this.getReadableName()} server not reachable, skipping DRED client attempt`);
+                // Error message already logged in checkServerAvailability with semantic format
                 throw new Error(`Target server ${this.targetHost.serverId} is not available`);
             }
-            
-            this.log(`${this.getReadableName()} server is reachable, creating DRED client connection`);
             
             // Create client and attempt connection with timeout
             this.repClient = this.homeServer.mkClient(this.targetHost.serverId, {
@@ -348,8 +353,8 @@ export class Replicant{
                 }
                 
                 // Also set on the client itself if it supports it
-                if (this.repClient.setMaxListeners) {
-                    this.repClient.setMaxListeners(20);
+                if ((this.repClient as any).setMaxListeners) {
+                    (this.repClient as any).setMaxListeners(20);
                 }
             }
             
@@ -363,10 +368,10 @@ export class Replicant{
             
             // Connection successful - reset retry state
             this.resetRetryState();
-            this.log(`${this.getReadableName()} ✅ DRED client connection established successfully`);
+            this.log(`✅ replication connection established`);
             
         } catch (error) {
-            this.warn(`${this.getReadableName()} connection attempt failed: ${error}`);
+            // Error already logged in checkServerAvailability with semantic format
             
             // Clean up failed client
             if (this.repClient) {
@@ -388,8 +393,6 @@ export class Replicant{
      */
     private async checkServerAvailability(): Promise<boolean> {
         try {
-            this.log(`${this.getReadableName()} checking server availability via GET /channels`);
-            
             const url = `https://${this.targetHost.address}:${this.targetHost.port}/channels`;
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
@@ -402,15 +405,19 @@ export class Replicant{
             clearTimeout(timeoutId);
             
             if (response.ok) {
-                this.log(`${this.getReadableName()} ✅ GET /channels succeeded (${response.status})`);
                 return true;
             } else {
-                this.log(`${this.getReadableName()} ❌ GET /channels failed with status ${response.status}`);
+                this.log(`can't yet replicate from server ${this.targetHost.address}:${this.targetHost.port}: HTTP ${response.status} - will retry`);
                 return false;
             }
             
         } catch (error) {
-            this.log(`${this.getReadableName()} ❌ GET /channels failed: ${error}`);
+            // Extract meaningful error information
+            const errorType = error instanceof Error ? error.name : 'Error';
+            const errorMsg = error instanceof Error ? error.message : String(error);
+            
+            // Use semantic error message as Randall suggested
+            this.log(`can't yet replicate from server ${this.targetHost.address}:${this.targetHost.port}: ${errorType} - will retry`);
             return false;
         }
     }
@@ -438,7 +445,6 @@ export class Replicant{
      */
     private scheduleRetry(): void {
         if (this.retryState.isRetrying) {
-            this.log(`${this.getReadableName()} retry already scheduled`);
             return;
         }
         
@@ -448,10 +454,7 @@ export class Replicant{
         this.retryState.isRetrying = true;
         this.retryState.nextRetryTime = new Date(Date.now() + retryIntervalMs);
         
-        this.log(`${this.getReadableName()} scheduling retry in ${retryIntervalSeconds} seconds`);
-        
         this.retryState.retryTimer = setTimeout(() => {
-            this.log(`${this.getReadableName()} retry timer triggered, attempting connection`);
             this.attemptConnection();
         }, retryIntervalMs);
     }
@@ -467,7 +470,6 @@ export class Replicant{
         
         this.retryState.isRetrying = false;
         this.retryState.nextRetryTime = undefined;
-        this.log(`${this.getReadableName()} retry state reset`);
     }
 
     private async findCommonChannels(): Promise<string[]> {
