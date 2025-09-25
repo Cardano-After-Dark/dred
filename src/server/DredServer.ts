@@ -229,7 +229,6 @@ export class DredServer {
         this.args = args;
         const loggerName = `dred`;
         
-        
         this.logger = zonedLogger(loggerName, {
             loggerId: serverId,
             // levels: {
@@ -364,6 +363,7 @@ export class DredServer {
             this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));//
         if (!myInfo) throw new Error(`can't identify my own info`);
         const { port, address } = myInfo;
+
         this.listener = this.api.listen(Number(port), address);
         this.log(`server '${this.serverId}' listening at ${address}:${port}`);
 
@@ -513,13 +513,12 @@ export class DredServer {
         }
         this.warn(`${this.serverId} Starting replication setup...`);
         try {
-            await asyncDelay(1000);// maybe we can just skip this
+            // await asyncDelay(1000);// maybe we can just skip this
             this.warn(`${this.serverId} Creating replicator...`);
             this.replicator = new DredReplicator(this, this.discovery);
             this.warn(`${this.serverId} Initializing replicator...`);
             await this.replicator.initialize();
             this.warn(`${this.serverId} Replication setup complete - replicator exists: ${!!this.replicator}`);
-
         } catch (error: any) {
             // Cleanup on failure
             this.warn(`${this.serverId} ERROR during replication setup: ${error}`);
@@ -551,7 +550,6 @@ export class DredServer {
      * Schedule a retry of replication setup after 1 minute
      */
     private scheduleReplicationRetry(): void {
-        
         setTimeout(() => {
             this.warn(`🔄 Retrying replication (waited 1m)`);
             this.startReplicating();
