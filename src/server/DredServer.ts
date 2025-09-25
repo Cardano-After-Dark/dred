@@ -676,8 +676,7 @@ export class DredServer {
             // Get channel count
             let channelCount = 0;
             try {
-                const channels = await this.channelList.keys() as string[];
-                channelCount = channels.length;
+                channelCount = await this.channelList.size();
             } catch (error) {
                 // Ignore channel errors, keep 0
             }
