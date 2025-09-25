@@ -220,13 +220,35 @@ afterAll(async () => {
     await new Promise((resolve) => setTimeout(resolve, 20));
 });
 
+type SetupDetails = {
+    agent: SuperTestWithHost<Test>;
+    app?: Express;
+    server: DredServer;
+    client: DredClient;
+    servers: DredServer[];
+    testLogger: ReturnType<typeof zonedLogger>;
+}
+
+let setupDetails: SetupDetails | Promise<SetupDetails> | undefined = undefined;
+
 export async function testSetup() {
+    if (setupDetails) {
+        return setupDetails;
+    }
+    setupDetails = initializeTestServers();
+    return setupDetails.then((details) => {
+        setupDetails = details;
+        return details;
+    });
+}
+
+export async function initializeTestServers() : Promise<SetupDetails> {
     const hosts: DredHostDetails[] = [
         { serverId: "first", address: "localhost", port: "53032", insecure: true },
         { serverId: "second", address: "localhost", port: "53033", insecure: true },
         { serverId: "third", address: "localhost", port: "53034", insecure: true },
     ];
-    let i = 0;
+    let i = 1;
     const neighborhood = "dredTestNbh";
     for (const server of hosts) {
         //! creates a separate discovery agent for each server; each one uses the same full list of hosts.
@@ -234,7 +256,6 @@ export async function testSetup() {
             hosts,
             neighborhood,
         }).reset(hosts);
-        i++;
         const s = await createServer(
             {
                 discovery,
@@ -243,10 +264,9 @@ export async function testSetup() {
                 // Always preserve StaticHostDiscovery, set neighborhood separately if needed
             },
             server.serverId,
-            i
+            i++,
         );
-        //
-         // here
+
         await s.listen();
         servers.push(s);
     }
