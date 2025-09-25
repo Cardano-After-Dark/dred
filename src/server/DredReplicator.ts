@@ -427,8 +427,6 @@ export class Replicant{
                 this.warn(`HTTP error: ${response.status}: ${response.statusText}`)
                 this.warn(`can't yet replicate from ${this.targetHost.address}:${this.targetHost.port} - will retry`);
                 return false;
-            }
-            
             }            
         } catch (error:any) {
             this.warn(error.cause.message || error.message)
