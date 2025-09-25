@@ -362,11 +362,24 @@ export class Replicant{
                 }
             }
             
+            let success = false
             // Add timeout to the entire DRED client connection process
-            const connectionPromise = this.performConnection();
-            const timeoutPromise = new Promise<never>((_, reject) => {
-                setTimeout(() => reject(new Error('DRED client connection timeout after 10 seconds')), 10000);
+            const connectionPromise = this.performConnection().then(() => {
+                success = true;
             });
+            asyncDelay(1000).then(() => {
+                // VERY special case - normally we'd just log.
+                // show a message, but only if it didn't quickly get connected.
+                if (! success) {
+                    this.warn("Replicator trying to connect ...");
+                }
+            })
+
+            const timeoutPromise =  new Promise<never>((_, reject) => {
+                setTimeout(() => {
+                    reject(new Error('DRED client connection timeout after 10 seconds'))
+                }, 10000);
+            });        
             
             await Promise.race([connectionPromise, timeoutPromise]);
             
