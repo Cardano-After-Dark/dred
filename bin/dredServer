@@ -47,9 +47,9 @@ async function init() {
             discovery = new StaticHostDiscovery({ hosts: knownHosts });
             console.log("✅ StaticHostDiscovery created with", knownHosts.length, "hosts");
         } else {
-            console.log("📡 About to call NeighborhoodDiscovery.forNeighborhood:", nbh);
+            console.log("📡 Using NeighborhoodDiscovery", nbh);
             discovery = await NeighborhoodDiscovery.forNeighborhood(nbh);
-            console.log("✅ NeighborhoodDiscovery completed, waiting for hosts:ready");
+            console.log("... NeighborhoodDiscovery:waiting for hosts:ready");
 
             const hostsReadyPromise = new Promise((resolve) => {
                 discovery.events.once("hosts:ready", resolve)            
@@ -75,20 +75,16 @@ async function init() {
         console.log("Dred discovered peer hosts", hosts?.length || 0);
         
         if (!myServerInfo) {
-            const availableHosts = hosts?.map(h => `${h.address}:${h.port} (${h.serverId})`).join(', ') || 'none';
-            throw new Error(`Could not get my server info for node ID ${process.env.DRED_NODE_ID}. Discovered peer hosts: ${availableHosts}`);
+            const availableHosts = hosts?.map(h => `${h.serverId} at ${h.address}:${h.port}`).join("\n") || 'none';
+            throw new Error(`Failed identifying server ${process.env.DRED_NODE_ID}. Discovered peer hosts: \n${availableHosts}`);
         }
         
         const server = await createServer({ 
             discovery ,
             neighborhood: nbh || "dred-dev",
-            waitFor: "minimal",//"healthy",        // boostrapping problem: I need to start at least the first server to be able to connect others
-            // connectionSettings: {
-    
-            // }
+            waitFor: "minimal",//"healthy", 
         }, myServerInfo.serverId, 0);
     
-        console.log("Dred server created", server);
     
         // Add graceful shutdown handlers
         const gracefulShutdown = async (signal) => {
@@ -112,8 +108,7 @@ async function init() {
         await server.listen();
 
     } catch (error) {
-        console.error("❌ DRED startup error:", error.message);
-        console.error("❌ Stack trace:", error.stack);
+        console.error("\n\nDred startup failed:", error.message, error.stack);
         process.exit(1);
     }
 

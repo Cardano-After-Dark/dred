@@ -137,19 +137,19 @@ beforeEach(async () => {
         await server.pendingSetup();
     }
     testLogger.info("  ---- did reset redis with default channels in beforeEach");
-    testLogger.info("  -------------------      -----------------    --------------------")
     
     // 3. RESTART replication on all servers
     for (const server of servers) {
         testLogger.debug(" ==== beforeEach: SETTING UP REPLICATION in TEST for server", server.serverId);
         await server.setupReplication();
     }
+    testLogger.progress("----------------------- before test -----------------------");
 
 });
 
 afterEach(async () => {
-    testLogger.debug("afterEach: cleaning up");
-    
+    testLogger.progress("----------------------- after test ------------------------");
+
     // 1 Clean up replication first (have their own clients)
     testLogger.debug("afterEach: phase 1 - cleaning up replication");
     for (const server of servers) {

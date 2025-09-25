@@ -6,7 +6,9 @@ import cors from "cors";
 import compression from "compression";
 
 import { Redis, type RedisOptions } from "ioredis";
-import { nanoid } from "nanoid";
+import { customAlphabet } from "nanoid";
+const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
+
 import type { Application } from "express";
 
 import { RedisChannels } from "../redis/streams/index.js";
@@ -233,14 +235,12 @@ export class DredServer {
         
         
         this.logger = zonedLogger(loggerName, {
-            // serverId, // causes errors! //
             loggerId: serverId,
             // levels: {
             //     [loggerName]: logging ? "info" : "warn",
             //     _message: `(env LOGGING=${logging})`,
             // },
         });
-        this.log(`=== Logger setup complete for ${loggerName} with serverId ${serverId}`);
 
         this.serverId = serverId;
         this.discovery = DredClient.resolveDiscovery(args);
@@ -377,15 +377,13 @@ export class DredServer {
         // Setup replication after all basic server setup is complete
         // at this point, "_chans" and "_auth" channels are already created
         if (!this.isAutoReplicationDisabled()) {
-            this.warn(`🚀 AUTO-REPLICATION ENABLED FOR ${this.serverId.toUpperCase()}`);
             // Start replication in background, non-blocking
             this.startAutoReplication();
         } else {
-            this.warn(`⚠️  AUTO-REPLICATION DISABLED FOR ${this.serverId.toUpperCase()} (DISABLE_AUTO_REPLICATION=true)`);
+            this.warn(`⚠️ replication not starting: REPLICATION=false)`);
             this.warn(`   Use POST /admin/start-replication to start manually`);
         }
 
-        this.log(`=== Returning listener for ${this.serverId}`);
         
         // Start periodic status logging if enabled
         this.startPeriodicStatusLogging();
@@ -579,13 +577,10 @@ export class DredServer {
         // Run in background - don't await, don't block server startup
         this.performAutoReplicationSetup()
             .then(() => {
-                this.warn(`✅ AUTO-REPLICATION SUCCESS FOR ${this.serverId.toUpperCase()}`);
-                this.warn(`🎯 REPLICATION IS NOW READY FOR ${this.serverId.toUpperCase()}`);
-                // TODO: Later we'll emit replication readiness event here
+                this.log(`✅ Replication setup ok`);
             })
             .catch((error) => {
-                this.warn(`❌ AUTO-REPLICATION FAILED FOR ${this.serverId.toUpperCase()}: ${error.message}`);
-                this.warn(`🔄 WILL RETRY AUTO-REPLICATION IN 1 MINUTE FOR ${this.serverId.toUpperCase()}`);
+                this.warn(`❌ Replication setup failed (will retry): ${error.message}`);
                 this.scheduleReplicationRetry();
             });
     }
@@ -609,10 +604,9 @@ export class DredServer {
      * Schedule a retry of replication setup after 1 minute
      */
     private scheduleReplicationRetry(): void {
-        this.warn(`⏰ SCHEDULING REPLICATION RETRY FOR ${this.serverId.toUpperCase()} IN 60 SECONDS`);
         
         setTimeout(() => {
-            this.warn(`🔄 RETRYING AUTO-REPLICATION FOR ${this.serverId.toUpperCase()} (AFTER 1 MINUTE WAIT)`);
+            this.warn(`🔄 Retrying replication (waited 1m)`);
             this.startAutoReplication();
         }, 60000); // 1 minute
     }
@@ -750,13 +744,12 @@ export class DredServer {
     }
 
     async cleanupReplication(): Promise<void> {
-        this.log(` -- start cleanupReplication ${this.serverId}`);
+        this.debug(`start cleanupReplication`);
         if (!this.replicator) {
             debugger;
             this.warn(" === Replication not setup");
             return; // Idempotent - safe to call multiple times
         }
-        this.warn(`${this.serverId} Starting replication cleanup...`);
         try {
             // Add timeout to prevent hanging during cleanup
             await Promise.race([
@@ -770,7 +763,7 @@ export class DredServer {
             this.warn(`${this.serverId} Error during replication cleanup: ${error}`);
             // Continue cleanup even if error occurs
         } finally {
-            this.warn(`${this.serverId} Nullifying replicator reference`);
+            // this.warn(`${this.serverId} Nullifying replicator reference`);
             this.replicator = undefined; // Always nullify, even on error
         }
         this.log(` -- cleanupReplication ${this.serverId} complete`);
@@ -802,20 +795,20 @@ export class DredServer {
             
             // Restart auto-replication after reset if it was enabled
             if (!this.isAutoReplicationDisabled()) {
-                this.warn(`🔄 RESTARTING AUTO-REPLICATION AFTER RESET FOR ${this.serverId.toUpperCase()}`);
+                this.warn(`🔄 Restarting replication after reset`);
                 // Wait for setupPending to complete, then start replication (with delay)
                 if (this.setupPending) {
                     this.setupPending.then(() => {
                         this.startAutoReplication();
                     }).catch((error) => {
-                        this.warn(`❌ FAILED TO RESTART AUTO-REPLICATION AFTER RESET FOR ${this.serverId.toUpperCase()}: ${error.message}`);
+                        this.warn(`❌ Replication restart failed:${error.message}`);
                     });
                 } else {
                     // If no setupPending, start immediately (with delay)
                     this.startAutoReplication();
                 }
             } else {
-                this.warn(`⚠️  AUTO-REPLICATION REMAINS DISABLED AFTER RESET FOR ${this.serverId.toUpperCase()}`);
+                this.warn(`⚠️  Replication remains DISABLED after reset`);
             }
             
             return this.setupPending;
@@ -899,6 +892,9 @@ export class DredServer {
     }
     warn(a1: string, ...args: any[]) {
         this.logger.warn(a1, ...args);
+    }
+    debug(a1: string, ...args: any[]) {
+        this.logger.debug(a1, ...args);
     }
 
     async logInfo(): Promise<string> {

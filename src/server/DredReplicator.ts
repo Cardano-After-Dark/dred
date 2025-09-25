@@ -31,6 +31,8 @@ import { type DredHostDetails } from "../types/DredHosts.js";
 import { zonedLogger } from "@poshplum/utils";
 
 import {colors} from "../picocolors/picocolors.js";
+import { asyncDelay } from "../util/asyncDelay.js";
+import { customAlphabet } from "nanoid";
 const {
     bgBlackBright,
     blue,
@@ -47,18 +49,12 @@ const {
     magenta,
     magentaBright
 } = colors;
-
-const rlog = zonedLogger("replicator", {
-    color: yellow.start, levels: {default: "info"}
-});
+const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
 
 export class DredReplicator{
-
-    private static _logHeader = "[REPLicator]";
-    private name: string;
+    logger: ReturnType<typeof zonedLogger>
     private readonly homeServer: DredServer;
     private readonly discovery: Discovery;
-    // Track replicants for cleanup
     private replicants: Replicant[] = [];
     private initialized: boolean = false;
 
@@ -74,17 +70,26 @@ export class DredReplicator{
     }
 
     log(message: string, ...args: any[]) {
-        this.homeServer.log(`${DredReplicator._logHeader} ${message}`, ...args);
+        this.logger.info(message, ...args);
     }
 
     warn(message: string, ...args: any[]) {
-        this.homeServer.warn(`${DredReplicator._logHeader} ${message}`, ...args);
+        this.logger.warn(message, ...args);
+    }
+    debug(message: string, ...args: any[]) {
+        this.logger.debug(message, ...args);
     }
     
     constructor(homeServer: DredServer, discovery: Discovery) {
-        this.name = `DredReplicator-[${homeServer.serverId}]`;
-        
-        rlog.debug(`DredReplicator constructor: [${this.name}]`);
+        const serverDb = homeServer.redisDb
+        const dbInfo = serverDb ? `[${serverDb}]-` : ""
+        const name = `${nanoid(3)}${dbInfo}`;
+
+        this.logger = zonedLogger("replicator", {
+            color: yellow.start,
+            //  levels: {default: "info"},
+            loggerId: name
+        });
         this.homeServer = homeServer;
         this.discovery = discovery;
 
@@ -94,11 +99,11 @@ export class DredReplicator{
 
     async initialize() {
         if(this.initialized) {
-            this.warn(`${this.name} already initialized`);
+            this.warn(`already initialized`);
             return;
         }
         this.initialized = true;
-        this.log(`${this.name} initializing`);
+        this.log(`initializing`);
 
         
         // NOTE: the discovery is already filtering by neighborhood
@@ -123,23 +128,23 @@ export class DredReplicator{
         });
 
         // Don't wait for connections to complete - let them retry in background
-        this.log(`${this.name} started ${this.replicants.length} connection loops in parallel`);
+        this.log(`started ${this.replicants.length} connection loops in parallel`);
 
-        this.log(`${this.name} initialized`);
+        this.log(`initialized`);
     }
 
     async cleanup() {
         if(!this.initialized) {
-            this.warn(`${this.name} not initialized`);
+            this.warn(`not initialized`);
             return;
         }
         
-        this.warn(`Cleaning up ${this.name} with ${this.replicants.length} replicants`);
+        this.warn(`Cleaning up ${this.replicants.length} replicants`);
         
         // Clean up all replicants - wait for all but continue on errors
         const results = await Promise.allSettled(
             this.replicants.map((replicant, index) => {
-                this.warn(`${this.name} cleaning up replicant ${index}`);
+                // this.debug(`cleaning up replicant ${index}`);
                 return replicant.cleanup();
             })
         );
@@ -147,15 +152,13 @@ export class DredReplicator{
         // Log any failures but don't throw
         results.forEach((result, index) => {
             if (result.status === 'rejected') {
-                this.warn(`${this.name} Error cleaning up replicant ${index}: ${result.reason}`);
-            } else {
-                this.warn(`${this.name} Successfully cleaned up replicant ${index}`);
+                this.warn(`Error cleaning up replicant ${index}: ${result.reason}`);
             }
         });
         
         this.replicants = [];
         this.initialized = false;
-        this.warn(`${this.name} cleanup complete`);
+        this.warn(`cleanup complete`);
     }
 
     // // true when message with this ocid was already processed for this channel
@@ -191,7 +194,6 @@ interface SimpleRetryState {
  *  - listening to the home server for new channels
  */
 export class Replicant{
-
     private static _logHeader = "[REPLicant]";
     private replicator: DredReplicator;
     private homeServer: DredServer;
@@ -199,35 +201,37 @@ export class Replicant{
     private name: string;
     private repClient: DredClient | null;
     private retryState: SimpleRetryState;
-    private targetLogId: string;
+    logger: ReturnType<typeof zonedLogger>
 
     log(message: string, ...args: any[]) {
         // Use a simulated "replication" facility with target as loggerId
         // This mimics what Randall wanted: facility 'replication' with target-server-id as loggerId
-        this.homeServer.log(`[replication:${this.targetLogId}] ${message}`, ...args);
+        this.logger.info(message, ...args);
     }
 
     warn(message: string, ...args: any[]) {
         // Use a simulated "replication" facility with target as loggerId
-        this.homeServer.warn(`[replication:${this.targetLogId}] ${message}`, ...args);
+        this.logger.warn(message, ...args);
     }
 
     constructor(replicator: DredReplicator, homeServer: DredServer, targetHost: DredHostDetails) {
         this.replicator = replicator;
         this.homeServer = homeServer;
         this.targetHost = targetHost;
-        this.name = `Replicant-[${homeServer.serverId}]-[${targetHost.serverId}]`;
+        const serverDb = homeServer.redisDb
+        const dbInfo = serverDb ? `${nanoid(2)}[${serverDb}]-` : ""
+        const target = targetHost.serverId.replace(/^dredNode-/, "") || targetHost.address
+        this.name = `${dbInfo}from-${target}`;
+        this.logger = zonedLogger("replicant", {
+            loggerId: this.name,
+            color: blue.start
+        });
         this.repClient = null;
         this.retryState = {
             isRetrying: false
         };
-        
-        // Store target info for logging
-        this.targetLogId = `${this.targetHost.address}:${this.targetHost.port}`;
-        
-        this.log(`constructor: ${this.name}`);
     }
-
+    
     /**
      * Get a human-readable name for logging
      */
@@ -407,17 +411,15 @@ export class Replicant{
             if (response.ok) {
                 return true;
             } else {
-                this.log(`can't yet replicate from server ${this.targetHost.address}:${this.targetHost.port}: HTTP ${response.status} - will retry`);
+                this.warn(`HTTP error: ${response.status}: ${response.statusText}`)
+                this.warn(`can't yet replicate from ${this.targetHost.address}:${this.targetHost.port} - will retry`);
                 return false;
             }
             
-        } catch (error) {
-            // Extract meaningful error information
-            const errorType = error instanceof Error ? error.name : 'Error';
-            const errorMsg = error instanceof Error ? error.message : String(error);
-            
-            // Use semantic error message as Randall suggested
-            this.log(`can't yet replicate from server ${this.targetHost.address}:${this.targetHost.port}: ${errorType} - will retry`);
+            }            
+        } catch (error:any) {
+            this.warn(error.cause.message || error.message)
+            this.warn(`can't yet replicate from ${this.targetHost.address}:${this.targetHost.port} - will retry`);
             return false;
         }
     }
@@ -471,21 +473,24 @@ export class Replicant{
         this.retryState.isRetrying = false;
         this.retryState.nextRetryTime = undefined;
     }
+    debug(message: string, ...args: any[]) {
+        this.logger.debug(message, ...args);
+    }
 
     private async findCommonChannels(): Promise<string[]> {
         // Trigger channel discovery if not already done
         if (!this.repClient!.channels || this.repClient!.channels.length === 0) {
-            this.log(`Triggering channel discovery for ${this.targetHost.serverId}`);
+            this.debug(`Triggering channel discovery for ${this.targetHost.serverId}`);
             this.repClient!.channels = await this.repClient!.connManager.getChannelList();
         }
         
         // Get channels from target server (via replication client)
         const targetChannels = this.repClient!.channels;
-        this.log(`Target server ${this.targetHost.serverId} has channels: [${targetChannels.join(', ')}]`);
+        this.debug(`${this.targetHost.serverId} channels: [${targetChannels.join(', ')}]`);
         
         // Get channels from home server
         const homeChannels = await this.homeServer.channelList.keys() as string[];
-        this.log(`Home server has channels: [${homeChannels.join(', ')}]`);
+        this.debug(`my channels: [${homeChannels.join(', ')}]`);
         
         // Find intersection (channels that exist on both servers)
         const commonChannels = targetChannels.filter(channel => 
@@ -520,11 +525,11 @@ export class Replicant{
             };
         }
         
-        this.warn(`🔔 REPLICATION: Subscribing to ${channels.length} channels on target server ${this.targetHost.serverId}...`);
+        this.warn(`🔔 REPLICATION: Subscribing to ${channels.length} channels`);
 
         await this.repClient!.subscribeToChannels(subscriptionMap);
 
-        this.warn(`✅ Successfully subscribed to ${channels.length} channels on target server ${this.targetHost.serverId}`);
+        this.warn(`✅ Successfully subscribed to ${channels.length} channels`);
     }
 
     /**
@@ -674,13 +679,13 @@ export class Replicant{
      * TestServer owns client lifecycle, so we just nullify our reference.
      */
     async cleanup(): Promise<void> {
-        this.warn(`${this.name} cleaning up`);
+        this.debug(`cleaning up replicant`);
         
         // Clear any pending retry timers
         if (this.retryState.retryTimer) {
             clearTimeout(this.retryState.retryTimer);
             this.retryState.retryTimer = undefined;
-            this.warn(`${this.name} cleared retry timer`);
+            this.debug(`cleared retry timer`);
         }
         
         // Reset retry state
@@ -692,13 +697,12 @@ export class Replicant{
             // TODO: check if the client is connected before trying to disconnect
             // this.repClient.disconnect();
 
-            this.warn(`${this.name} nullifying client reference (testServer will also try to disconnect clients)`);
+            this.debug(`${this.name} nullifying client reference (testServer will also try to disconnect clients)`);
             // Don't try to clear subscriptions - DredClient subscription setter is incomplete
             // Just nullify our reference and let testServer handle full client disconnect
             this.repClient = null;
-            this.warn(`${this.name} client reference nullified`);
         }
         
-        this.warn(`${this.name} cleanup complete`);
+        this.log(`cleanup complete`);
     }
 }
