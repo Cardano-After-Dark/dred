@@ -218,10 +218,6 @@ export class DredServer {
             this.listenOnChannels(...args);
         });
         
-        // Admin endpoints
-        this.api.post("/admin/start-replication", (...args) => {
-            this.adminStartReplication(...args);
-        });
         this.api.get("/admin/replication-status", (...args) => {
             this.adminReplicationStatus(...args);
         });
@@ -378,7 +374,6 @@ export class DredServer {
             this.startReplicating();
         } else {
             this.warn(`⚠️ replication not starting: REPLICATION=false)`);
-            this.warn(`   Use POST /admin/start-replication to start manually`);
         }
         
         this.startPeriodicStatusLogging();
