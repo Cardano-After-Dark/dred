@@ -1,9 +1,9 @@
 // import { expect, jest, test } from "@jest/globals";
 // These are now global due to globals: true in vitest.config.ts
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from "vitest";
-import {zonedLogger} from "@poshplum/utils"
+import { zonedLogger } from "@poshplum/utils";
 
-import {colors} from "../picocolors/picocolors.js";
+import { colors } from "../picocolors/picocolors.js";
 const {
     bgBlackBright,
     blue,
@@ -18,14 +18,14 @@ const {
     isColorSupported,
     bgBlack,
     magenta,
-    magentaBright
+    magentaBright,
 } = colors;
 
-import { Express } from "express";
+import type { Express } from "express";
 import { Server } from "http";
-import supertest from "supertest";
+import supertest, { type SuperTestWithHost, type Test } from "supertest";
 import { Redis } from "ioredis";
-import { AddressInfo } from "net";
+import type { AddressInfo } from "net";
 
 import { createServer, DredServer } from "./DredServer.js";
 import { DredClient } from "../client/DredClient.js";
@@ -35,11 +35,11 @@ import { DredClient } from "../client/DredClient.js";
  * Call this at the top of test files that need auto-replication disabled
  */
 export function disableAutoReplication() {
-    process.env.DISABLE_AUTO_REPLICATION = 'true';
+    process.env.DISABLE_AUTO_REPLICATION = "true";
 }
 import { asyncDelay } from "../util/asyncDelay.js";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
-import { DredHostDetails } from "../types/DredHosts.js";
+import type { DredHostDetails } from "../types/DredHosts.js";
 import { once } from "events";
 
 if (process.env.VITEST_TIMEOUT) {
@@ -66,18 +66,18 @@ if (!monitor) {
 
 // export loggers for use in tests
 export const redisLogger1 = zonedLogger("redis", {
-    color: blueBright.start+bgBlack.start,
+    color: blueBright.start + bgBlack.start,
     loggerId: "mon1",
 });
 export const redisLogger2 = zonedLogger("redis", {
-    color: greenBright.start+bgBlack.start,
+    color: greenBright.start + bgBlack.start,
     loggerId: "mon2",
 });
 export const redisLogger3 = zonedLogger("redis", {
-    color: magentaBright.start+bgBlack.start,
+    color: magentaBright.start + bgBlack.start,
     loggerId: "mon3",
 });
-export const testLogger = zonedLogger("test", {color: yellow.start, levels: {default: "info"}});
+export const testLogger = zonedLogger("test", { color: yellow.start, levels: { default: "info" } });
 
 // Minimal approach: fix Redis cleanup timing issues at the source
 
@@ -86,32 +86,30 @@ beforeAll(async () => {
     testLogger.info("isColorSupported", isColorSupported);
     await monitor?.monitor((err, monitor) => {
         monitor!.on("monitor", (time, args, source, database) => {
-            const now = Date.now()
-            const [s, ms6] = time.split(".")
-            const ms3 = Math.round(parseInt(ms6.slice(0, 4))/10)
-            const didHappenAt = parseInt(s)*1000 + ms3
-            const offset = (didHappenAt - now)
-            const offsetStr = offset < 0 ? redBright(`${offset}ms `): ""
+            const now = Date.now();
+            const [s, ms6] = time.split(".");
+            const ms3 = Math.round(parseInt(ms6.slice(0, 4)) / 10);
+            const didHappenAt = parseInt(s) * 1000 + ms3;
+            const offset = didHappenAt - now;
+            const offsetStr = offset < 0 ? redBright(`${offset}ms `) : "";
             const [ip, port] = source.split(":");
-            let argsDisplay = ""
+            let argsDisplay = "";
             // process args two at a time, adding blue(keys) and green(values) with strings quoted
             for (let i = 0; i < args.length; i += 2) {
                 const value =
                     "undefined" == typeof args[i + 1]
                         ? ""
                         : "string" == typeof args[i + 1]
-                        ? `"${greenBright(args[i + 1])}"`
-                        : greenBright(args[i + 1]);
+                          ? `"${greenBright(args[i + 1])}"`
+                          : greenBright(args[i + 1]);
                 argsDisplay += ` ${`${args[i]}`} ${value}`;
             }
             const logger = {
                 1: redisLogger1,
                 2: redisLogger2,
                 3: redisLogger3,
-            }[parseInt(database)]!.child({time: didHappenAt});
-            logger.trace(
-                `${offsetStr} :${port}>${argsDisplay}`
-            );
+            }[parseInt(database)]!.child({ time: didHappenAt });
+            logger.trace(`${offsetStr} :${port}>${argsDisplay}`);
         });
     });
 });
@@ -204,7 +202,7 @@ afterAll(async () => {
     // debugger
     monitor?.disconnect();
     for (const server of servers) {
-        testLogger.debug("closing server", server.myServerInfo?.port)
+        testLogger.debug("closing server", server.myServerInfo?.port);
         try {
             await server.reset(false);
         } catch (error) {
@@ -219,7 +217,7 @@ afterAll(async () => {
         }
     }
     // Brief delay to ensure all async operations complete before test framework exits
-    await new Promise(resolve => setTimeout(resolve, 20));
+    await new Promise((resolve) => setTimeout(resolve, 20));
 });
 
 export async function testSetup() {

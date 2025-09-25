@@ -6,8 +6,8 @@ import { beforeAll, vi, expect, describe, it } from "vitest";
 // disableAutoReplication();
 
 // import request from 'supertest';
-import { Express } from "express";
-import { SuperTestWithHost, Test } from "supertest";
+import type { Express } from "express";
+import type { SuperTestWithHost, Test } from "supertest";
 import { DredClient } from "../../client/DredClient.js";
 
 import nacl from "tweetnacl";
@@ -18,7 +18,7 @@ const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 import { testSetup, disableAutoReplication } from "../testServer.js";
 import { DredServer } from "../DredServer.js";
 import { asyncDelay } from "../../util/asyncDelay.js";
-import {
+import type {
     Key,
     KeyExchanger,
     KeyExchangerDerivationProof,
