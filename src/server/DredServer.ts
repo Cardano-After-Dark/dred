@@ -368,9 +368,6 @@ export class DredServer {
             this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));//
         if (!myInfo) throw new Error(`can't identify my own info`);
         const { port, address } = myInfo;
-        // docker problem: do we need to listen to 0.0.0.0 instead of the address (which comes from the discovery service)
-        // --> myServerInfo should give us the internal address and port, not the external address and port (ssl termination)
-        // in test, we don't want to listen to 0.0.0.0 
         this.listener = this.api.listen(Number(port), address);
         this.log(`server '${this.serverId}' listening at ${address}:${port}`);
 
@@ -387,20 +384,8 @@ export class DredServer {
         this.startPeriodicStatusLogging();
         
         return this.listener;
-        // express
-        //       listen(port: number, hostname: string, backlog: number, callback?: () => void): http.Server;
-        //       listen(port: number, hostname: string, callback?: () => void): http.Server;
-
-        
     }
 
-
-    // ------------------------------------------------------------
-    // Solution to avoid duplicate messages (replication)
-    // ------------------------------------------------------------
-
-    // knownMessages = new RedisSet(this.redis!.duplicate()); // removed in favor of lazy initialization
-    
     /**
      * Known message set. Lazily initialized to avoid undefined errors.
     */
@@ -540,22 +525,6 @@ export class DredServer {
             await this.replicator.initialize();
             this.warn(`${this.serverId} Replication setup complete - replicator exists: ${!!this.replicator}`);
 
-            // const hosts = await this.discovery.getHostList();
-            // const otherHosts = hosts.filter(host => host.serverId !== this.serverId);
-
-            // if (otherHosts.length === 0) {
-            //     this.log("No other hosts found for replication");
-            //     return;
-            // }
-
-            // for (const host of otherHosts) {
-            //     const replicant = new Replicant(this, host);
-            //     await replicant.initialize();
-            // }
-
-            // this.replicationClient = new ReplicationClient(this);
-            // await this.replicationClient.initialize(otherHosts);
-            // this.log(`Replication setup complete with ${otherHosts.length} peer servers`);
         } catch (error: any) {
             // Cleanup on failure
             this.warn(`${this.serverId} ERROR during replication setup: ${error}`);

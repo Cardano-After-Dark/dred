@@ -111,14 +111,14 @@ async function setupReplicationClients(): Promise<void> {
     const discovery = createStaticDiscovery();
     
     usClient = new DredClient({
-        waitFor: "connected",
+        waitFor: "minimal",
         neighborhood: "preprod-test",
         discovery,
         name: "us-test-client"
     });
     
     ukClient = new DredClient({
-        waitFor: "connected", 
+        waitFor: "minimal",
         neighborhood: "preprod-test",
         discovery,
         name: "uk-test-client"

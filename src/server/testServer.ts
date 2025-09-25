@@ -117,16 +117,15 @@ beforeAll(async () => {
 beforeEach(async () => {
     // infra running
     testLogger.debug("beforeEach: resetting redis and channels");
-    
+
     // 1. STOP replication on all servers first
     testLogger.debug("beforeEach: phase 1 - cleaning up replication");
     for (const server of servers) {
         testLogger.debug("beforeEach: cleaning up replication for server", server.serverId);
         await server.cleanupReplication();
     }
-    
+
     // 2. RESET Redis and servers (existing logic)
-    debugger
     for (const server of servers) {
         // this is to raze the state of the redis DB --> predictable state for tests
         await server.redis?.flushdb();
@@ -158,36 +157,36 @@ afterEach(async () => {
             testLogger.debug(`afterEach: replication cleanup error: ${error}`);
         }
     }
-    
+
     // 2 Disconnect all clients, wait for disconnection to complete
     testLogger.debug("afterEach: phase 2 - disconnecting clients");
     const allClients = [...clientCleanupList, ...replicatorClientCleanupList];
-    
+
     // Disconnect all clients
     for (const client of allClients) {
         try {
-            testLogger.debug(`afterEach: disconnecting client ${client.clientid || 'unknown'}`);
+            testLogger.debug(`afterEach: disconnecting client ${client.clientid || "unknown"}`);
             client.disconnect();
         } catch (error) {
             testLogger.debug(`afterEach: client disconnect error: ${error}`);
         }
     }
-    
+
     // Brief wait for async disconnect operations to complete
     testLogger.debug("afterEach: waiting for disconnect operations to complete");
-    await new Promise(resolve => setTimeout(resolve, 20));
-    
+    await new Promise((resolve) => setTimeout(resolve, 20));
+
     // Clear client lists
     clientCleanupList.length = 0;
     replicatorClientCleanupList.length = 0;
-    
+
     // 3: safe to reset servers and flush Redis
     testLogger.debug("afterEach: phase 3 - resetting servers");
     for (const server of servers) {
         const redis = server?.redis;
         if (redis) {
             testLogger.debug("afterEach: resetting server", server.myServerInfo?.port);
-            
+
             await server.reset(true, (redis) => {
                 testLogger.debug("afterEach: flushing redis");
                 redis?.flushdb("SYNC");
@@ -195,7 +194,7 @@ afterEach(async () => {
             });
         }
     }
-    
+
     testLogger.info("  ---- cleanup done in afterEach");
 });
 afterAll(async () => {
@@ -206,10 +205,13 @@ afterAll(async () => {
         try {
             await server.reset(false);
         } catch (error) {
-            // Expected during test shutdown - suppress Redis connection errors
-            if (error.message?.includes('Connection is closed') || 
-                error.message?.includes('Connection is not established')) {
-                // Suppress known Redis shutdown errors silently
+            // Expected during test shutdown:
+            if (
+                error instanceof Error &&
+                (error.message?.includes("Connection is closed") ||
+                    error.message?.includes("Connection is not established"))
+            ) {
+                // Suppress known Redis shutdown errors:
                 return;
             }
             // Unexpected error - log for debugging
