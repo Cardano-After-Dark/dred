@@ -37,9 +37,13 @@ export class NeighborhoodDiscovery extends Discovery {
     
     async myServerInfo(serverId: string): Promise<DredHostDetails | undefined> {
         // return this.getHostList().then(hosts => hosts.find(h => h.serverId === serverId));
+
+        const address: string = process.env.LISTEN_ADDRESS || "127.0.0.1";
+        const port: number = process.env.LISTEN_PORT ? Number(process.env.LISTEN_PORT) : 3029;
+
         return {
-            address: "0.0.0.0",
-            port: "3029",
+            address: address,
+            port: port,
             serverId: process.env.DRED_NODE_ID || "UNKNOWN-NODE-ID",
             publicKey: "publicKey",
             pubKeyHash: "pubKeyHash",
