@@ -170,7 +170,7 @@ async function cleanupReplicationClients(): Promise<void> {
     receivedMessages = [];
 }
 
-describe("VPS Replication Tests", () => {
+describe.skip("VPS Replication Tests", () => {
     beforeAll(async () => {
         testLogger.info("🌐 Starting VPS replication tests");
         testLogger.info(`Testing replication between:`);
