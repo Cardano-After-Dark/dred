@@ -179,6 +179,8 @@ export class HostConnection extends StateMachine.withDefinition(
     private scheduledRetry?: ReturnType<typeof setTimeout>;
     private logger: Logger;
     private _status!: string; // assigned by state-machine
+    private _destroyed = false; // Flag to track if connection is being destroyed
+    private _disconnecting = false; // Flag to track if disconnection is in progress
     //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
     set currentState(v: string) {
         this._status = v;
@@ -240,10 +242,22 @@ export class HostConnection extends StateMachine.withDefinition(
         );
     }
     disconnect(reason: string) {
+        // Set disconnecting flag to prevent race conditions
+        if (this._disconnecting) {
+            this.logger?.debug(`disconnect() called but already disconnecting for ${this.host?.serverId || 'unknown'}`);
+            return;
+        }
+        
+        this._disconnecting = true;
+        this.logger?.debug(`disconnect() starting for ${this.host?.serverId || 'unknown'}: ${reason}`);
+        
         //!!! todo: cancel any pending stream with ReadableStream.cancel()
 
         if (this.abortController) this.abortController.abort(`disconnect(): ${reason}`);
         this.stopRetries();
+        
+        // Mark as destroyed after disconnect operations
+        this._destroyed = true;
     }
     stopRetries() {
         if (this.scheduledRetry) clearTimeout(this.scheduledRetry);
@@ -312,9 +326,28 @@ export class HostConnection extends StateMachine.withDefinition(
 
         this.abortController = new AbortController();
         const { signal } = this.abortController;
-        signal.addEventListener("abort", () => {
-            this.transition("abort");
-        });
+        const abortHandler = () => {
+            // Prevent race condition during cleanup
+            if (this._disconnecting || this._destroyed) {
+                return;
+            }
+            
+            // Randall's approach: context-aware error handling
+            try {
+                this.transition("abort");
+            } catch (error) {
+                // Double-check: suppress errors during shutdown scenarios
+                if (this._disconnecting || this._destroyed) {
+                    // Expected during cleanup - suppress silently
+                    return;
+                }
+                // Unexpected error during normal operation - log for debugging
+                this.logger?.warn(`Unexpected abort transition error: ${error}`);
+                // Don't rethrow - prevents unhandled promise rejection in any case
+            }
+        };
+        
+        signal.addEventListener("abort", abortHandler);
         const myself = (this.connecting = new Promise((res, rej) => {
             let aborted = false;
             const channelSubs = {};

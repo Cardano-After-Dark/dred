@@ -28,6 +28,7 @@ import type {
 import { asyncDelay } from "../util/asyncDelay.js";
 import { fetcher } from "./fetcher.js";
 import { type DredMessage } from "./DredClient.js";
+import { disconnect } from "process";
 
 //!!! todo zw3w737: it has a way of posting the same unique message to multiple servers,
 //     ... and for that message to converge across them all.
@@ -139,6 +140,7 @@ const connectionManagerStates = {
         },
         partial: "partiallyConnected",
         replaceSubs: "replacingSubs",
+        disconnected: "disconnected",
     },
     partiallyConnected: {
         onEntry(this: cm) {

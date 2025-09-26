@@ -60,6 +60,14 @@ export class RedisHash<KEYTYPE extends { toString(): string }, VALUETYPE = strin
             return this.redis.call("HKEYS", hName);
     }
 
+    async size(hashName?: string) {
+        if (this.abstract && !hashName)
+            throw new Error(`abstract RedisHash requires hashName in arg1`);
+
+        const hName = hashName || this.hashName;
+        return this.redis.hlen(hName);
+    }
+
     async set(key: KEYTYPE, value: VALUETYPE, hashName?: string) {
         if (this.abstract && !hashName)
             throw new Error(`abstract RedisHash requires hashName in arg3`);

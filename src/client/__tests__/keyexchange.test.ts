@@ -1,4 +1,9 @@
 import { describe, it, expect } from "vitest";
+
+// Uncomment the line below to disable auto-replication for this test file
+// import { disableAutoReplication } from "../../server/testServer.js";
+// disableAutoReplication();
+
 import { KeyExchanger, KeyExchangerDerivationProof } from "../../KeyExchanger";
 import nacl from "tweetnacl";
 const { sign } = nacl;

@@ -6,7 +6,9 @@ import cors from "cors";
 import compression from "compression";
 
 import { Redis, type RedisOptions } from "ioredis";
-import { nanoid } from "nanoid";
+import { customAlphabet } from "nanoid";
+const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
+
 import type { Application } from "express";
 
 import { RedisChannels } from "../redis/streams/index.js";
@@ -161,6 +163,9 @@ export class DredServer {
     // Optional replicator, to be initialized only when replication is enabled
     replicator?: DredReplicator;
 
+    // Periodic status logging
+    private statusLoggingTimer?: NodeJS.Timeout;
+
     resetting = false;
     get nbh() {
         return this.args.neighborhood;
@@ -213,10 +218,6 @@ export class DredServer {
             this.listenOnChannels(...args);
         });
         
-        // Admin endpoints
-        this.api.post("/admin/start-replication", (...args) => {
-            this.adminStartReplication(...args);
-        });
         this.api.get("/admin/replication-status", (...args) => {
             this.adminReplicationStatus(...args);
         });
@@ -227,8 +228,8 @@ export class DredServer {
     constructor(args: DredServerArgs, serverId: string, redisDb: number) {
         this.args = args;
         const loggerName = `dred`;
+        
         this.logger = zonedLogger(loggerName, {
-            serverId,
             loggerId: serverId,
             // levels: {
             //     [loggerName]: logging ? "info" : "warn",
@@ -237,12 +238,11 @@ export class DredServer {
         });
 
         this.serverId = serverId;
-        this.discovery = DredClient.resolveDiscovery(args);
-        // const t= express()
-        // this.log(`+server '${serverId}' with discovery type: ${this.discovery.constructor.name}`);
-        this.api = this.createExpressServer();
-        // const t= express();
 
+        this.api = this.createExpressServer();
+        // this.log(`+server '${serverId}' with discovery type: ${this.discovery.constructor.name}`);
+
+        this.api = this.createExpressServer();
         const redisUrl = (this.redisUrl = process.env.REDIS_URL || "redis://localhost:6379");
 
         this.listener = null;
@@ -257,26 +257,19 @@ export class DredServer {
 
         // this.channelConn._log.error = console.error.bind(console);
         this.clientArgs = args;
-
         this.setupExpressHandlers();
     }
 
     setupRedis(url: string | undefined) {
         if (this.redis) throw new Error(`redis connection is already set up`);
-        // redis.subscribe(...).on("message", (event) => {
-        //     for (const peer of peers) {
-        //         peer.addEvent(event)
-        //     }
-        // })
-
-        //!!! todo: use configured Redis connection details
+        
         this.log(`Setting up Redis connection: ${url || "default"}, db: ${this.redisDb}`);
-        // console.log(`REDIS_URL ${url}`);
+        
         const options: RedisOptions = {
             db: this.redisDb,
-
             // keyPrefix: `${this.nbh}::`  //!!! todo vet this technique.
         };
+        
         if (url) {
             this.redis = new Redis(url, options);
         } else {
@@ -292,12 +285,9 @@ export class DredServer {
 
         const log = zonedLogger("dred-stream", {
             loggerId: this.serverId,
-            // color: black.start +bgCyanBright.start// green.start
-            // color: green.start
             color: bgBlack.start + white.start
         });
 
-        //!!! todo: allows the application name to override 'dred' setting in channel names created in Redis
         this.channelConn = new RedisChannels({
             application: `${this.nbh}::`,
             redis: {
@@ -315,6 +305,7 @@ export class DredServer {
     }
 
     async pendingSetup() {
+        await this.ensureDefaultChannels();
         return this.setupPending;
     }
     private setupPending?: Promise<any>;
@@ -390,7 +381,7 @@ export class DredServer {
         
         return this.listener;
     }
-    
+
     /**
      * Known message set
     */
@@ -511,6 +502,11 @@ export class DredServer {
     // }
     // ------------------------------------------------------------
     
+    // when env var is set to true, auto replication is disabled
+    private isReplicationDisabled(): boolean {
+        return process.env.REPLICATION === 'false';
+    }
+
     async setupReplication() {
         if (this.replicator) {
             this.warn("Replication already setup");
@@ -518,29 +514,12 @@ export class DredServer {
         }
         this.warn(`${this.serverId} Starting replication setup...`);
         try {
-            await asyncDelay(1000);
+            // await asyncDelay(1000);// maybe we can just skip this
             this.warn(`${this.serverId} Creating replicator...`);
             this.replicator = new DredReplicator(this, this.discovery);
             this.warn(`${this.serverId} Initializing replicator...`);
             await this.replicator.initialize();
             this.warn(`${this.serverId} Replication setup complete - replicator exists: ${!!this.replicator}`);
-
-            // const hosts = await this.discovery.getHostList();
-            // const otherHosts = hosts.filter(host => host.serverId !== this.serverId);
-
-            // if (otherHosts.length === 0) {
-            //     this.log("No other hosts found for replication");
-            //     return;
-            // }
-
-            // for (const host of otherHosts) {
-            //     const replicant = new Replicant(this, host);
-            //     await replicant.initialize();
-            // }
-
-            // this.replicationClient = new ReplicationClient(this);
-            // await this.replicationClient.initialize(otherHosts);
-            // this.log(`Replication setup complete with ${otherHosts.length} peer servers`);
         } catch (error: any) {
             // Cleanup on failure
             this.warn(`${this.serverId} ERROR during replication setup: ${error}`);
@@ -551,12 +530,171 @@ export class DredServer {
         }
     }
 
+    /**
+     * Start auto-replication in background immediately
+     */
+    private startReplicating(): void {
+        this.warn(`🔄 STARTING AUTO-REPLICATION FOR ${this.serverId.toUpperCase()} (BACKGROUND)`);
+        
+        // Run in background - don't await, don't block server startup
+        this.setupReplication()
+            .then(() => {
+                this.log(`✅ Replication setup ok`);
+            })
+            .catch((error) => {
+                this.warn(`❌ Replication setup failed (will retry): ${error.message}`);
+                this.scheduleReplicationRetry();
+            });
+    }
+
+    /**
+     * Schedule a retry of replication setup after 1 minute
+     */
+    private scheduleReplicationRetry(): void {
+        setTimeout(() => {
+            this.warn(`🔄 Retrying replication (waited 1m)`);
+            this.startReplicating();
+        }, 60000); // 1 minute
+    }
+
+    /**
+     * Start periodic status logging based on STATUS_INTERVAL_SECONDS environment variable
+     * Default: 2 seconds, Range: 1-1000 seconds, 0 or negative = disabled
+     */
+    private startPeriodicStatusLogging(): void {
+        const intervalSeconds = parseInt(process.env.STATUS_INTERVAL_SECONDS || "5");
+        
+        if (intervalSeconds <= 0 || intervalSeconds > 1000) {
+            this.log(`📊 Periodic status logging disabled (STATUS_INTERVAL_SECONDS=${intervalSeconds})`);
+            return;
+        }
+
+        const intervalMs = intervalSeconds * 1000;
+        this.log(`📊 Starting periodic status logging every ${intervalSeconds} seconds`);
+        
+        this.statusLoggingTimer = setInterval(() => {
+            this.statusLogging();
+        }, intervalMs)
+        
+        // Don't keep the process alive just for status logging
+        this.statusLoggingTimer.unref();
+    }
+
+    /**
+     * Stop periodic status logging
+     */
+    private stopPeriodicStatusLogging(): void {
+        if (this.statusLoggingTimer) {
+            clearInterval(this.statusLoggingTimer);
+            this.statusLoggingTimer = undefined;
+            this.log(`📊 Stopped periodic status logging`);
+        }
+    }
+
+    /**
+     * Check if debug logging is enabled
+     */
+    private isDebugLoggingEnabled(): boolean {
+        return process.env.LOGGING?.includes('debug') || 
+               process.env.DEBUG === '1' || 
+               process.env.DEBUG === 'true';
+    }
+
+    /**
+     * Logs current server status
+     */
+    private async statusLogging(): Promise<void> {
+        try {
+            const uptime = process.uptime();
+            const uptimeFormatted = `${Math.floor(uptime / 3600)}h ${Math.floor((uptime % 3600) / 60)}m ${Math.floor(uptime % 60)}s`;
+            
+            // Get replication status with details
+            let replicationStatus = "DISABLED";
+            let activePeers = 0;
+            let totalPeers = 0;
+            
+            if (this.replicator) {
+                totalPeers = this.discovery?.hosts?.filter(h => h.serverId !== this.serverId).length || 0;
+                activePeers = this.replicator.getActiveReplicants ? this.replicator.getActiveReplicants().length : 0;
+                replicationStatus = `ENABLED (${activePeers}/${totalPeers})`;
+            }
+            
+            // Get channel count
+            let channelCount = 0;
+            try {
+                channelCount = await this.channelList.size();
+            } catch (error) {
+                // Ignore channel errors, keep 0
+            }
+
+            // Compact format for regular logging
+            this.log(`📊 Uptime: ${uptimeFormatted} | Replication: ${replicationStatus} | Channels: ${channelCount}`);
+            
+            // Extended debug format (only when DEBUG logging is enabled)
+            if (this.isDebugLoggingEnabled()) {
+                await this.logExtendedStatus(activePeers, totalPeers);
+            }
+            
+        } catch (error) {
+            this.warn(`📊 Error logging periodic status: ${error}`);
+        }
+    }
+
+    /**
+     * Log extended status with peer connection details (debug mode only)
+     */
+    private async logExtendedStatus(activePeers: number, totalPeers: number): Promise<void> {
+        try {
+            if (!this.replicator || !this.discovery?.hosts) {
+                return;
+            }
+
+            const allPeers = this.discovery.hosts.filter(h => h.serverId !== this.serverId);
+            const activeReplicants = this.replicator.getActiveReplicants ? this.replicator.getActiveReplicants() : [];
+            
+            // Get connected peers
+            const connectedPeers = activeReplicants.map(rep => {
+                const targetHost = rep.getTargetHost();
+                return `${targetHost.serverId.slice(-8)}@${targetHost.address}:${targetHost.port}`;
+            });
+            
+            // Get non-connected peers
+            const connectedServerIds = new Set(activeReplicants.map(rep => rep.getTargetHost().serverId));
+            const nonConnectedPeers = allPeers
+                .filter(h => !connectedServerIds.has(h.serverId))
+                .map(h => `${h.serverId.slice(-8)}@${h.address}:${h.port}`);
+
+            // Get channel details
+            let channels: string[] = [];
+            try {
+                channels = await this.channelList.keys() as string[];
+            } catch (error) {
+                // Ignore channel errors
+            }
+
+            // Single multi-line extended status message
+            const extendedStatus = [
+                "🔍 EXTENDED STATUS:",
+                `   Connected peers (${connectedPeers.length}): [${connectedPeers.join(', ') || 'none'}]`,
+                `   Non-connected peers (${nonConnectedPeers.length}): [${nonConnectedPeers.join(', ') || 'none'}]`,
+                `   Channels: [${channels.join(', ') || 'none'}]`
+            ].join('\n');
+            // Log as INFO but only when debug mode is enabled
+            // This ensures it shows up in the logs when requested
+            this.log(extendedStatus);
+            
+        } catch (error) {
+            this.warn(`🔍 Error logging extended status: ${error}`);
+        }
+    }
+
     async cleanupReplication(): Promise<void> {
+        this.debug(`start cleanupReplication`);
         if (!this.replicator) {
-            this.warn("Replication not setup");
+            debugger;
+            this.warn(" === Replication not setup");
             return; // Idempotent - safe to call multiple times
         }
-        this.warn(`${this.serverId} Starting replication cleanup...`);
         try {
             // Add timeout to prevent hanging during cleanup
             await Promise.race([
@@ -570,9 +708,10 @@ export class DredServer {
             this.warn(`${this.serverId} Error during replication cleanup: ${error}`);
             // Continue cleanup even if error occurs
         } finally {
-            this.warn(`${this.serverId} Nullifying replicator reference`);
+            // this.warn(`${this.serverId} Nullifying replicator reference`);
             this.replicator = undefined; // Always nullify, even on error
         }
+        this.log(` -- cleanupReplication ${this.serverId} complete`);
     }
 
     async reset(reconnect?: boolean, finalCleanup?: (r?: Redis) => any) {
@@ -581,9 +720,12 @@ export class DredServer {
         // Cleanup replication client first
         await this.cleanupReplication();
 
+        // Wait for channel cleanup to complete fully
         await this.channelConn.cleanup().catch(warning.bind(this, "channelConn.cleanup()"));
-        // await this.channelConn.this?.redis?.quit().catch(warning.bind(this,"channelConn.redis.quit()"));
-        // this.channelConn?.redis?.disconnect();
+        
+        // Small delay to ensure all Redis operations from channel cleanup complete
+        await new Promise(resolve => setTimeout(resolve, 10));
+        
         finalCleanup?.(this.redis);
         this.resetting = true;
         await this.redis?.quit().catch(warning.bind(this, "redis.quit()"));
@@ -595,6 +737,25 @@ export class DredServer {
         if (doReconnect) {
             this.setupRedis(this.redisUrl);
             this.resetting = false;
+            
+            // Restart replication after reset if it was enabled
+            if (!this.isReplicationDisabled()) {
+                this.warn(`🔄 Restarting replication after reset`);
+                // Wait for setupPending to complete, then start replication (with delay)
+                if (this.setupPending) {
+                    this.setupPending.then(() => {
+                        this.startReplicating()
+                    }).catch((error) => {
+                        this.warn(`❌ Replication restart failed:${error.message}`);
+                    });
+                } else {
+                    // If no setupPending, start immediately
+                    this.startReplicating();
+                }
+            } else {
+                this.warn(`⚠️  Replication remains DISABLED after reset`);
+            }
+            
             return this.setupPending;
         }
         function warning(this: DredServer, activityName) {
@@ -609,6 +770,9 @@ export class DredServer {
 
         // Cleanup replication client
         await this.cleanupReplication();
+        
+        // Stop periodic status logging
+        this.stopPeriodicStatusLogging();
 
         this.reset(false);
         this.listener?.close();
@@ -673,6 +837,9 @@ export class DredServer {
     }
     warn(a1: string, ...args: any[]) {
         this.logger.warn(a1, ...args);
+    }
+    debug(a1: string, ...args: any[]) {
+        this.logger.debug(a1, ...args);
     }
 
     async logInfo(): Promise<string> {

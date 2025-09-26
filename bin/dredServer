@@ -87,7 +87,6 @@ async function init() {
             neighborhood: nbh || "dred-dev",
             waitFor: "minimal",//"healthy", 
         }, myServerInfo.serverId, 0);
-    
         console.log("Dred server created", server);
     
         // Add graceful shutdown handlers
@@ -112,8 +111,7 @@ async function init() {
         await server.listen();
 
     } catch (error) {
-        console.error("❌ DRED startup error:", error.message);
-        console.error("❌ Stack trace:", error.stack);
+        console.error("\n\nDred startup failed:", error.message, error.stack);
         process.exit(1);
     }
 

@@ -32,11 +32,41 @@ LOGGING=default:info pnpm test preprod | pnpm exec pino-pretty
 LOGGING=dred-client:debug,dred-client:state:warn,default:info,REPLicator:info,REPLicant:info pnpm test -- replication | pino-pretty | grep -v zonedLogger
 LOGGING=dred-client:state:warn,default:debug pnpm test replication | pnpm exec pino-pretty
 LOGGING=discovery:debug #your commands..
+
+
+
+LOGGING=dred-client:debug,dred-client:state:warn,default:info,REPLicator:info,REPLicant:info,testServer:debug pnpm test replication | pnpm exec pino-pretty
 ```
+
+## Testing Repl
+
+```
+LOGGING=default:debug pnpm test newrep | pnpm exec pino-pretty
+```
+
+## Testing Manual Replication
+
+```
+DISABLE_AUTO_REPLICATION=true LOGGING=default:debug pnpm test replication | pnpm exec pino-pretty
+```
+
+## Debugging
+
+Open chrome, go to chrome://inspect, and click on `Open dedicated DevTools for Node`
+
+```
+# launch in debug mode
+LOGGING=default:debug pnpm testing:debug replication | pnpm exec pino-pretty
+   
+```
+
+Then, chrome debugger stops on all the debug statements.
+
+
 
 # Test suites
 pnpm test replication                # Cross-server replication
-pnpm test self-identification        # On-chain discovery self-filtering
+<!-- pnpm test self-identification        # On-chain discovery self-filtering  -->
 pnpm test channels                   # Channel management
 pnpm test messages                   # Message handling  
 pnpm test redis                      # Redis operations
