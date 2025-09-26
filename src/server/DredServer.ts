@@ -239,7 +239,7 @@ export class DredServer {
         this.serverId = serverId;
         this.discovery = DredClient.resolveDiscovery(args);
         // const t= express()
-        this.log(`+server '${serverId}': '${this.discovery}'`);
+        // this.log(`+server '${serverId}' with discovery type: ${this.discovery.constructor.name}`);
         this.api = this.createExpressServer();
         // const t= express();
 
@@ -369,43 +369,30 @@ export class DredServer {
     async listen() {
         await this.setupPending;
 
+        const myInfo = (this.myServerInfo =
+            this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));//
+        if (!myInfo) throw new Error(`can't identify my own info`);
+        const { port, address } = myInfo;
+
+        this.listener = this.api.listen(Number(port), address);
+        this.log(`server '${this.serverId}' listening at ${address}:${port}`);
+
         // Setup replication after all basic server setup is complete
         // at this point, "_chans" and "_auth" channels are already created
-        // TODO we should restore this at some point
-        // see https://discord.com/channels/891363866775261275/913447653826773012/1380756651166011443
-        //  await this.setupReplication();
-        // this.setupReplication();
-        // to solve the bootstrap problem, we need to start at least one server to be able to connect others
-        // NOTE: Replication is now started manually via /admin/start-replication endpoint
-
-        // const myInfo = (this.myServerInfo =
-        //     this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));
-        // if (!myInfo) throw new Error(`can't identify my own info`);
-        // const { port, address } = myInfo;
-
-        // Override the default dred host and port by setting the equivalent environment variables:
-        // process.env.DRED_HOST for the address
-        // process.env.DRED_PORT for the port
-        const address: string = process.env.DRED_HOST || "127.0.0.1";
-        const port: number = process.env.DRED_PORT ? Number(process.env.DRED_PORT) : 3029;
-
-        this.listener = this.api.listen(port, address);
-        this.log(`server '${this.serverId}' listening at ${address}:${port}`);
+        if (!this.isReplicationDisabled()) {
+            // Start replication in background, non-blocking
+            this.startReplicating();
+        } else {
+            this.warn(`⚠️ replication not starting: REPLICATION=false)`);
+        }
+        
+        this.startPeriodicStatusLogging();
+        
         return this.listener;
-        // express
-        //       listen(port: number, hostname: string, backlog: number, callback?: () => void): http.Server;
-        //       listen(port: number, hostname: string, callback?: () => void): http.Server;
     }
-
-
-    // ------------------------------------------------------------
-    // Solution to avoid duplicate messages (replication)
-    // ------------------------------------------------------------
-
-    // knownMessages = new RedisSet(this.redis!.duplicate()); // removed in favor of lazy initialization
     
     /**
-     * Known message set. Lazily initialized to avoid undefined errors.
+     * Known message set
     */
    get knownMessages(): RedisSet {
        if (!this._knownMessages) {

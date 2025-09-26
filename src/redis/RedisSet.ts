@@ -3,9 +3,10 @@ import { Redis } from "ioredis";
 type keyType = "_abstract" | string;
 
 /**
- * A wrapper around the Redis set data type, offering SISMENBER, SADD, SREM
+ * A wrapper around the Redis set data type
  *
- * NOTE: In the futurewe might want to use the Redis set data type directly, to use proper parameters.
+ * NOTE: In the future we might want to use the Redis
+ * set data type directly, to use proper parameters.
  * e.g. `redis.sadd(setName || this.key, key)` instead of `redis.call("SADD", setName || this.key, key)`
  * see: https://redis.io/docs/latest/commands/sadd/
  */

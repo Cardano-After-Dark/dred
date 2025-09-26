@@ -7,52 +7,52 @@ import { asyncDelay } from "../src/util/asyncDelay.js";
 import path from 'node:path';
 
 //!!!! todo: read config from a JSON file 
-
+const config = {
+    // discovery: {
+    //      type: "static" // or "nbh"
+    //      neighborhood: "nbh-XXXXYYYYZZZZ"
+    // staticHosts: [ // for static discovery only
+    //     {
+    //         address: "74.208.13.84",
+    //         port: 3029, 
+    //         serverId: "preprod-us",
+    //         insecure: true,  // Use HTTP instead of HTTPS
+    //         publicKey: "temp-key-1",
+    //         pubKeyHash: "temp-hash-1"
+    //     },
+    //     {
+    //         address: "217.154.34.155",
+    //         port: 3029,
+    //         serverId: "preprod-uk", 
+    //         insecure: true,  // Use HTTP instead of HTTPS
+    //         publicKey: "temp-key-2",
+    //         pubKeyHash: "temp-hash-2"
+    //     }
+    // }
+    replication: {
+        enabled: true,
+        retryInterval: 60000, // 1 minute
+    }
+}
 init();
 async function init() {
     try{
-        const nbh = process.env.NEIGHBORHOOD || "dred-dev";
-        const serverAddress = process.env.HOST_DOMAIN;
-        if (!serverAddress) {
-            throw new Error ("Environment variable 'HOST_DOMAIN' is required but not set.");
-        }
-        const serverPort = process.env.HOST_PORT ? Number(process.env.HOST_PORT) : 443;
+        const nbh = config.discovery?.neighborhood || process.env.NEIGHBORHOOD || "dred-dev";
+        const serverAddress = process.env.LISTEN_ADDRESS || "0.0.0.0";
+        const serverPort = process.env.LISTEN_PORT || "3029";
 
         console.log("🚀 Starting DRED server initialization...");
         
-        // TEMPORARY FIX: Use static discovery to avoid on-chain bootstrap issues
-        const useStaticDiscovery = process.env.USE_STATIC_DISCOVERY || false;
-        
         let discovery;
-        if (useStaticDiscovery) {
-            console.log("📡 Using StaticHostDiscovery (temporary fix for bootstrap)");
-            
-            // Define known preprod hosts
-            const knownHosts = [
-                {
-                    address: "74.208.13.84",
-                    port: 3029, 
-                    serverId: "preprod-us",
-                    insecure: true,  // Use HTTP instead of HTTPS
-                    publicKey: "temp-key-1",
-                    pubKeyHash: "temp-hash-1"
-                },
-                {
-                    address: "217.154.34.155",
-                    port: 3029,
-                    serverId: "preprod-uk", 
-                    insecure: true,  // Use HTTP instead of HTTPS
-                    publicKey: "temp-key-2",
-                    pubKeyHash: "temp-hash-2"
-                }
-            ];
-            
-            discovery = new StaticHostDiscovery({ hosts: knownHosts });
-            console.log("✅ StaticHostDiscovery created with", knownHosts.length, "hosts");
+        if (config.discovery?.type === "static") {
+            const {staticHosts} = config.discovery;
+            console.log("Using static host discovery from config file");
+            discovery = new StaticHostDiscovery({ hosts: staticHosts });
+            console.log("✅ StaticHostDiscovery created with", staticHosts.length, "hosts");
         } else {
-            console.log("📡 About to call NeighborhoodDiscovery.forNeighborhood:", nbh);
+            console.log("📡 Using NeighborhoodDiscovery", nbh);
             discovery = await NeighborhoodDiscovery.forNeighborhood(nbh);
-            console.log("✅ NeighborhoodDiscovery completed, waiting for hosts:ready");
+            console.log("... NeighborhoodDiscovery:waiting for hosts:ready");
 
             const hostsReadyPromise = new Promise((resolve) => {
                 discovery.events.once("hosts:ready", resolve)            
@@ -67,34 +67,48 @@ async function init() {
         }
 
         const hosts = discovery.hosts
-        const matchingHost = hosts?.find(host => 
-            host.address === serverAddress && Number(host.port) === serverPort
-        );
-    
+        
+        // Get our own server info from discovery (not from filtered hosts list)
+        const myServerInfo = await discovery.myServerInfo(process.env.DRED_NODE_ID || "unknown");
+        
         console.log("Dred nbh", nbh);
         console.log("Dred serverAddress", serverAddress);
         console.log("Dred serverPort", serverPort);
+        console.log("Dred myServerInfo", myServerInfo);
+        console.log("Dred discovered peer hosts", hosts?.length || 0);
         
-        if (!matchingHost) {
-            const availableHosts = hosts?.map(h => `${h.address}:${h.port} (${h.serverId})`).join(', ') || 'none';
-            throw new Error(`No host found matching server address ${serverAddress}:${serverPort}. Available hosts: ${availableHosts}`);
+        if (!myServerInfo) {
+            const availableHosts = hosts?.map(h => `${h.serverId} at ${h.address}:${h.port}`).join("\n") || 'none';
+            throw new Error(`Failed identifying server ${process.env.DRED_NODE_ID}. Discovered peer hosts: \n${availableHosts}`);
         }
-        
-        // Shows the whole host object, incl address and port
-        console.log("Dred server starting on host", matchingHost);
         
         const server = await createServer({ 
             discovery ,
             neighborhood: nbh || "dred-dev",
-            waitFor: "minimal",//"healthy",        // boostrapping problem: I need to start at least the first server to be able to connect others
-            // connectionSettings: {
-    
-            // }
-        }, matchingHost.serverId, 0);
+            waitFor: "minimal",//"healthy", 
+        }, myServerInfo.serverId, 0);
     
         console.log("Dred server created", server);
     
-        // const { port, address } = matchingHost;
+        // Add graceful shutdown handlers
+        const gracefulShutdown = async (signal) => {
+            console.log(`\n🛑 Received ${signal}. Shutting down gracefully...`);
+            try {
+                await server.close();
+                console.log("✅ Server closed successfully");
+                process.exit(0);
+            } catch (error) {
+                console.error("❌ Error during shutdown:", error);
+                process.exit(1);
+            }
+        };
+
+        // Handle different shutdown signals
+        process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+        process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+        process.on('SIGQUIT', () => gracefulShutdown('SIGQUIT'));
+
+        const { port, address } = myServerInfo;
         await server.listen();
 
     } catch (error) {
