@@ -1,3 +1,4 @@
+
 /**
  * The DredReplicator(Mgr) class handles replication logic for a single Dred Server within a given neighborhood.
  *
@@ -256,6 +257,8 @@ export class Replicant{
         // Create subscription map with replication handlers
         const subscriptionMap: Record<string, (msg: any) => void> = {};
         
+        // todo: use a single listener for all the messages, instead of one per channel
+        //    detect the channel from its args.
         for (const channel of channels) {
             subscriptionMap[channel] = (message) => {
                 this.warn(`📥 REPLICATION: Message detected from ${this.targetHost.serverId} in channel '${channel}' (${message.mid})`);
