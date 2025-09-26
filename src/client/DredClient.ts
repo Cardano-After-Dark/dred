@@ -146,7 +146,7 @@ type dred = DredClient;
 //! it runs onEntry() and predicate() hooks always in context
 //    of the machine's context-object, which is a DredClient.
 const clientStates = {
-    logLevel: "warn",
+    // logLevel: "warn",
     default: {
         //! it automatically advances to next states, when it can make progress
         async onEntry(this: dred) {
