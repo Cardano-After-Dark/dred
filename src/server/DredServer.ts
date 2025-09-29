@@ -133,6 +133,7 @@ type DredServerArgs = DredClientArgs & {
     neighborhood: string;
     api?: express.Application;
     serverDb?: number;
+    replicate?: boolean;
 };
 
 //!!! todo: augment to support a list of nbh's, with req details for nbh selection
@@ -226,7 +227,8 @@ export class DredServer {
     }
 
     constructor(args: DredServerArgs, serverId: string, redisDb: number) {
-        this.args = args;
+        const { replicate = true } = args;
+        this.args = { ...args, replicate };
         const loggerName = `dred`;
         
         this.logger = zonedLogger(loggerName, {
@@ -370,11 +372,11 @@ export class DredServer {
 
         // Setup replication after all basic server setup is complete
         // at this point, "_chans" and "_auth" channels are already created
-        if (!this.isReplicationDisabled()) {
+        if (this.args.replicate) {
             // Start replication in background, non-blocking
             this.startReplicating();
-        } else {
-            this.warn(`⚠️ replication not starting: REPLICATION=false)`);
+        } else if (process.env.NODE_ENV !== "test") {
+            this.warn(`⚠️ replication disabled (via REPLICATION=false)`);
         }
         
         this.startPeriodicStatusLogging();
@@ -501,11 +503,6 @@ export class DredServer {
     //     return id;
     // }
     // ------------------------------------------------------------
-    
-    // when env var is set to true, auto replication is disabled
-    private isReplicationDisabled(): boolean {
-        return process.env.REPLICATION === 'false';
-    }
 
     async setupReplication() {
         if (this.replicator) {
@@ -739,23 +736,24 @@ export class DredServer {
             this.resetting = false;
             
             // Restart replication after reset if it was enabled
-            if (!this.isReplicationDisabled()) {
-                this.warn(`🔄 Restarting replication after reset`);
-                // Wait for setupPending to complete, then start replication (with delay)
-                if (this.setupPending) {
-                    this.setupPending.then(() => {
-                        this.startReplicating()
-                    }).catch((error) => {
-                        this.warn(`❌ Replication restart failed:${error.message}`);
-                    });
-                } else {
-                    // If no setupPending, start immediately
-                    this.startReplicating();
-                }
+            if (this.args.replicate) {
+                // this.warn(`🔄 Restarting replication after reset`);
+                // // Wait for setupPending to complete, then start replication (with delay)
+                // if (this.setupPending) {
+                //     this.setupPending.then(() => {
+                //         this.startReplicating()
+                //     }).catch((error) => {
+                //         this.warn(`❌ Replication restart failed:${error.message}`);
+                //     });
+                // } else {
+                //     // If no setupPending, start immediately
+                //     this.startReplicating();
+                // }
             } else {
-                this.warn(`⚠️  Replication remains DISABLED after reset`);
+                // test environment normally restarts replication "manually", right after the reset() calls are all done.
+                // this.warn(`⚠️  Replication remains DISABLED after reset`);
             }
-            
+
             return this.setupPending;
         }
         function warning(this: DredServer, activityName) {
@@ -1396,39 +1394,6 @@ export class DredServer {
             notifyConsumerError(res, sub.channel, consumeError as Error);
         }
     }
-
-    // Admin endpoints for replication management
-    adminStartReplication: express.RequestHandler = async (req, res, next) => {
-        try {
-            if (this.replicator) {
-                this.warn("Replication already running");
-                res.json({ 
-                    status: "already_running", 
-                    message: "Replication is already active",
-                    replicatorExists: true
-                });
-                return next();
-            }
-
-            this.log("Starting replication via admin endpoint...");
-            await this.setupReplication();
-            
-            this.log("Replication started successfully via admin endpoint");
-            res.json({ 
-                status: "started", 
-                message: "Replication started successfully",
-                replicatorExists: !!this.replicator
-            });
-        } catch (error: any) {
-            this.warn("Failed to start replication via admin endpoint:", error.message);
-            res.status(500).json({ 
-                status: "error", 
-                message: "Failed to start replication",
-                error: error.message
-            });
-        }
-        next();
-    };
 
     adminReplicationStatus: express.RequestHandler = async (req, res, next) => {
         try {

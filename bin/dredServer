@@ -86,6 +86,7 @@ async function init() {
             discovery ,
             neighborhood: nbh || "dred-dev",
             waitFor: "minimal",//"healthy", 
+            replicate: process.env.REPLICATION === "false" ? false : true,
         }, myServerInfo.serverId, 0);
         console.log("Dred server created", server);
     
@@ -112,6 +113,7 @@ async function init() {
 
     } catch (error) {
         console.error("\n\nDred startup failed:", error.message, error.stack);
+
         process.exit(1);
     }
 

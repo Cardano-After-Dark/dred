@@ -7,7 +7,7 @@ import { beforeAll, vi, describe, it, expect } from "vitest";
 import express from "express";
 import { DredServer } from "../../server/DredServer";
 import { DredClient } from "../../client/DredClient";
-import { testSetup, disableAutoReplication } from "../../server/testServer";
+import { testSetup } from "../../server/testServer";
 import { asyncDelay } from "../../util/asyncDelay";
 
 import type {JsonMessagePayload} from "../../types/JsonMessagePayload";

@@ -3,7 +3,7 @@ import { beforeAll, afterAll, beforeEach, afterEach, describe, it, expect } from
 // Uncomment the line below to disable auto-replication for this test file
 // disableAutoReplication();
 
-import { testSetup, disableAutoReplication } from "../testServer.js";
+import { testSetup } from "../testServer.js";
 import { DredServer } from "../DredServer.js";
 import { asyncDelay } from "../../util/asyncDelay.js";
 

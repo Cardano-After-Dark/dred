@@ -15,7 +15,7 @@ const { sign } = nacl;
 import util from "tweetnacl-util";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
-import { testSetup, disableAutoReplication } from "../testServer.js";
+import { testSetup } from "../testServer.js";
 import { DredServer } from "../DredServer.js";
 import { asyncDelay } from "../../util/asyncDelay.js";
 import type {

@@ -1,11 +1,11 @@
 import { beforeAll, afterAll, describe, it, vi, expect } from "vitest";
-import request, { SuperTestWithHost, Test } from "supertest";
-import { Express } from "express";
+import request, { type SuperTestWithHost, type Test } from "supertest";
+import { type Express } from "express";
 
 // Uncomment the line below to disable auto-replication for this test file
 // disableAutoReplication();
 
-import { testSetup, disableAutoReplication } from "../testServer.js";
+import { testSetup } from "../testServer.js";
 import { DredClient } from "../../client/DredClient.js";
 import { DredServer } from "../DredServer.js";
 import { asyncDelay } from "../../util/asyncDelay.js";

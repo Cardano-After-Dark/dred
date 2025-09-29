@@ -30,13 +30,6 @@ import type { AddressInfo } from "net";
 import { createServer, DredServer } from "./DredServer.js";
 import { DredClient } from "../client/DredClient.js";
 
-/**
- * Disable auto-replication for tests in this file
- * Call this at the top of test files that need auto-replication disabled
- */
-export function disableAutoReplication() {
-    process.env.DISABLE_AUTO_REPLICATION = "true";
-}
 import { asyncDelay } from "../util/asyncDelay.js";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import type { DredHostDetails } from "../types/DredHosts.js";
@@ -269,6 +262,7 @@ export async function initializeTestServers() : Promise<SetupDetails> {
                 discovery,
                 waitFor: "minimal",
                 neighborhood: neighborhood,
+                replicate: false,
                 // Always preserve StaticHostDiscovery, set neighborhood separately if needed
             },
             server.serverId,
