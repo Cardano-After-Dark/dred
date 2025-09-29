@@ -284,7 +284,7 @@ export class DredServer {
 
         const log = zonedLogger("dred-stream", {
             loggerId: this.serverId,
-            color: bgBlack.start + white.start
+            color: bgBlack.start + white.start,
         });
 
         this.channelConn = new RedisChannels({
@@ -347,9 +347,9 @@ export class DredServer {
         const stream = await streams.use(channel);
 
         //!!! revisit this with a more specific plan : )
-        await streams.produce(stream, "first event in this channel", { 
+        await streams.produce(stream, "first event in this channel", {
             type: "channel:genesis",
-            ocid: `${channel}:genesis`
+            ocid: `${channel}:genesis`,
         });
         const o = { channelId: channel, ...options };
         this.channelCreated(channel, o);
@@ -360,7 +360,7 @@ export class DredServer {
         await this.setupPending;
 
         const myInfo = (this.myServerInfo =
-            this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));//
+            this.myServerInfo || (await this.discovery.myServerInfo(this.serverId))); //
         if (!myInfo) throw new Error(`can't identify my own info`);
         const { port, address } = myInfo;
 
@@ -375,19 +375,22 @@ export class DredServer {
         } else if (process.env.NODE_ENV !== "test") {
             this.warn(`⚠️ replication disabled (via REPLICATION=false)`);
         }
-        
+
         this.startPeriodicStatusLogging();
-        
+
         return this.listener;
     }
 
     /**
-     * Known message set
-    */
-   get knownMessages(): RedisSet {
-       if (!this._knownMessages) {
-           // Use a specific key name for the deduplication set instead of abstract
-           this._knownMessages = new RedisSet(this.redis!.duplicate(), `${this.nbh}::knownMessages`);
+     * Known message set.
+     */
+    get knownMessages(): RedisSet {
+        if (!this._knownMessages) {
+            // Use a specific key name for the deduplication set instead of abstract
+            this._knownMessages = new RedisSet(
+                this.redis!.duplicate(),
+                `${this.nbh}::knownMessages`,
+            );
         }
         return this._knownMessages;
     }
@@ -395,10 +398,10 @@ export class DredServer {
 
     /**
      * Ensure a message is processed only once. Use it to avoid duplicate messages.
-     * 
-     * Always await this method to prevent race conditions and blockings. 
-     * 
-     * 
+     *
+     * Always await this method to prevent race conditions and blockings.
+     *
+     *
      * @param channel channel name
      * @param msgId ocid
      * @param msg message content
@@ -406,38 +409,49 @@ export class DredServer {
      * @returns message id if published, undefined if duplicate
      */
     async ensureMessageProcessedOnce(
-        channel: string, 
-        msgId: string, 
-        msg: string, 
-        messageDetails?: any
+        channel: string,
+        msgId: string,
+        msg: string,
+        messageDetails?: any,
     ): Promise<string | undefined> {
         try {
             // composite key to ensure uniqueness across channels
             const deduplicationKey = `${channel}:::${msgId}`;
-            
+
             // DEBUG: Add detailed logging
             this.warn(`🔍 DEDUP CHECK [${this.serverId}] checking: ${deduplicationKey}`);
-            
+
             // Check if we've already processed this exact message
             const alreadyProcessed = await this.knownMessages.has(deduplicationKey);
-            
-            this.warn(`🔍 DEDUP RESULT [${this.serverId}] ${deduplicationKey} -> already processed: ${alreadyProcessed}`);
-            
+
+            this.warn(
+                `🔍 DEDUP RESULT [${this.serverId}] ${deduplicationKey} -> already processed: ${alreadyProcessed}`,
+            );
+
             if (alreadyProcessed) {
-                this.warn(`❌ DEDUP SKIP [${this.serverId}] Duplicate message detected, skipping: ${deduplicationKey}`);
+                this.warn(
+                    `❌ DEDUP SKIP [${this.serverId}] Duplicate message detected, skipping: ${deduplicationKey}`,
+                );
                 return undefined; // Signal that message was not posted (duplicate)
             }
-            
+
             // Mark message as being processed (BEFORE actually posting to prevent race conditions)
             await this.knownMessages.add(deduplicationKey);
-            this.warn(`✅ DEDUP ADD [${this.serverId}] Added to known messages: ${deduplicationKey}`);
-            
+            this.warn(
+                `✅ DEDUP ADD [${this.serverId}] Added to known messages: ${deduplicationKey}`,
+            );
+
             // Actually post the message to the channel
-            const publishedMessageId = await this.publishMessageToChannel(channel, msg, messageDetails);
-            
-            this.warn(`✅ DEDUP PUBLISH [${this.serverId}] Message successfully deduplicated and posted: ${deduplicationKey} -> ${publishedMessageId}`);
+            const publishedMessageId = await this.publishMessageToChannel(
+                channel,
+                msg,
+                messageDetails,
+            );
+
+            this.warn(
+                `✅ DEDUP PUBLISH [${this.serverId}] Message successfully deduplicated and posted: ${deduplicationKey} -> ${publishedMessageId}`,
+            );
             return publishedMessageId;
-            
         } catch (error) {
             // If we fail after marking as processed, we have a problem - log it
             this.warn(`Error in message deduplication for ${channel}:::${msgId}:`, error);
@@ -446,23 +460,27 @@ export class DredServer {
     }
 
     /**
-     * Publish a message directly without dedup. 
+     * Publish a message directly without dedup.
      * Always await this method to prevent blocking caller and ensure message is published.
-     * 
+     *
      * @returns id of the published message
      */
     async publishMessageToChannel(
-        channelId: string, 
-        msg: string, 
-        messageDetails: any = {}
+        channelId: string,
+        msg: string,
+        messageDetails: any = {},
     ): Promise<string> {
         try {
             // Get channel producer for this server
             const producer = await this.mkChannelProducer(channelId);
-            
+
             // Produce the message on the channel with provided details
-            const publishedMessageId = await this.channelConn.produce(producer, msg, messageDetails);
-            
+            const publishedMessageId = await this.channelConn.produce(
+                producer,
+                msg,
+                messageDetails,
+            );
+
             this.trace(`Message published to channel ${channelId}: ${publishedMessageId}`);
             return publishedMessageId;
             
@@ -473,10 +491,8 @@ export class DredServer {
     }
 
     async clearMessageDeduplicationCache(olderThanMs?: number): Promise<void> {
-        // TODO: implement time-based cleanup if needed, useful for testing or reset 
+        // TODO: implement time-based cleanup if needed, useful for testing or reset
     }
-
-
 
     // async ensureMessageProcessedOnce(channel: string, msgId, msg: string) {
     //     // create composite key to avoid duplicates
@@ -488,15 +504,14 @@ export class DredServer {
     //     this.actuallyPost(channel, msg)
     // }
 
-    
     // async actuallyPost(channelId: string,msg: string, messageDetails: any) {
-        
+
     //     // Get channel producer for home server
     //     const producer = await this.mkChannelProducer(channelId);
-        
+
     //     // Produce the replicated message on the home server
     //     const id = await this.channelConn.produce(producer, msg, messageDetails);
-        
+
     //     return id;
     // }
     // ------------------------------------------------------------
@@ -556,7 +571,7 @@ export class DredServer {
      */
     private startPeriodicStatusLogging(): void {
         const intervalSeconds = parseInt(process.env.STATUS_INTERVAL_SECONDS || "5");
-        
+
         if (intervalSeconds <= 0 || intervalSeconds > 1000) {
             this.ops(
                 `📊 Periodic status logging disabled (STATUS_INTERVAL_SECONDS=${intervalSeconds})`,
@@ -590,9 +605,11 @@ export class DredServer {
      * Check if debug logging is enabled
      */
     private isDebugLoggingEnabled(): boolean {
-        return process.env.LOGGING?.includes('debug') || 
-               process.env.DEBUG === '1' || 
-               process.env.DEBUG === 'true';
+        return (
+            process.env.LOGGING?.includes("debug") ||
+            process.env.DEBUG === "1" ||
+            process.env.DEBUG === "true"
+        );
     }
 
     /**
@@ -602,18 +619,22 @@ export class DredServer {
         try {
             const uptime = process.uptime();
             const uptimeFormatted = `${Math.floor(uptime / 3600)}h ${Math.floor((uptime % 3600) / 60)}m ${Math.floor(uptime % 60)}s`;
-            
+
             // Get replication status with details
             let replicationStatus = "DISABLED";
             let activePeers = 0;
             let totalPeers = 0;
+
             
             if (this.replicator) {
-                totalPeers = this.discovery?.hosts?.filter(h => h.serverId !== this.serverId).length || 0;
-                activePeers = this.replicator.getActiveReplicants ? this.replicator.getActiveReplicants().length : 0;
+                totalPeers =
+                    this.discovery?.hosts?.filter((h) => h.serverId !== this.serverId).length || 0;
+                activePeers = this.replicator.getActiveReplicants
+                    ? this.replicator.getActiveReplicants().length
+                    : 0;
                 replicationStatus = `ENABLED (${activePeers}/${totalPeers})`;
             }
-            
+
             // Get channel count
             let channelCount = 0;
             try {
@@ -646,25 +667,29 @@ export class DredServer {
                 return;
             }
 
-            const allPeers = this.discovery.hosts.filter(h => h.serverId !== this.serverId);
-            const activeReplicants = this.replicator.getActiveReplicants ? this.replicator.getActiveReplicants() : [];
-            
+            const allPeers = this.discovery.hosts.filter((h) => h.serverId !== this.serverId);
+            const activeReplicants = this.replicator.getActiveReplicants
+                ? this.replicator.getActiveReplicants()
+                : [];
+
             // Get connected peers
-            const connectedPeers = activeReplicants.map(rep => {
+            const connectedPeers = activeReplicants.map((rep) => {
                 const targetHost = rep.getTargetHost();
                 return `${targetHost.serverId.slice(-8)}@${targetHost.address}:${targetHost.port}`;
             });
-            
+
             // Get non-connected peers
-            const connectedServerIds = new Set(activeReplicants.map(rep => rep.getTargetHost().serverId));
+            const connectedServerIds = new Set(
+                activeReplicants.map((rep) => rep.getTargetHost().serverId),
+            );
             const nonConnectedPeers = allPeers
-                .filter(h => !connectedServerIds.has(h.serverId))
-                .map(h => `${h.serverId.slice(-8)}@${h.address}:${h.port}`);
+                .filter((h) => !connectedServerIds.has(h.serverId))
+                .map((h) => `${h.serverId.slice(-8)}@${h.address}:${h.port}`);
 
             // Get channel details
             let channels: string[] = [];
             try {
-                channels = await this.channelList.keys() as string[];
+                channels = (await this.channelList.keys()) as string[];
             } catch (error) {
                 // Ignore channel errors
             }
@@ -715,10 +740,11 @@ export class DredServer {
 
         // Wait for channel cleanup to complete fully
         await this.channelConn.cleanup().catch(warning.bind(this, "channelConn.cleanup()"));
+
         
         // Small delay to ensure all Redis operations from channel cleanup complete
-        await new Promise(resolve => setTimeout(resolve, 10));
-        
+        await new Promise((resolve) => setTimeout(resolve, 10));
+
         finalCleanup?.(this.redis);
         this.resetting = true;
         await this.redis?.quit().catch(warning.bind(this, "redis.quit()"));
@@ -730,7 +756,7 @@ export class DredServer {
         if (doReconnect) {
             this.setupRedis(this.redisUrl);
             this.resetting = false;
-            
+
             // Restart replication after reset if it was enabled
             if (this.args.replicate) {
                 // this.warn(`🔄 Restarting replication after reset`);
@@ -764,7 +790,7 @@ export class DredServer {
 
         // Cleanup replication client
         await this.cleanupReplication();
-        
+
         // Stop periodic status logging
         this.stopPeriodicStatusLogging();
 
@@ -787,17 +813,17 @@ export class DredServer {
     }
 
     /**
-     * Create a DredClient instance, but does not generate a key. 
+     * Create a DredClient instance, but does not generate a key.
      * Note: The caller should call generateKey() after creating the client.
-     * 
+     *
      * @param serverSelection - The server ID to connect to.
      * @param clientArgs - Additional client configuration options.
      * @param serverManaged - Whether the client is managed by the server (affects cleanup).
      * @returns A DredClient instance.
      */
     mkClient(
-            serverSelection: string, 
-            clientArgs: Partial<DredClientArgs> = {}, 
+        serverSelection: string,
+        clientArgs: Partial<DredClientArgs> = {}
             serverManaged: boolean = true
     ): DredClient {
         const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
@@ -1214,7 +1240,12 @@ export class DredServer {
             });
         } else {
             // Use deduplication system to prevent replication loops
-            const id = await this.ensureMessageProcessedOnce(channelId, moreDetails.ocid, msg, moreDetails);
+            const id = await this.ensureMessageProcessedOnce(
+                channelId,
+                moreDetails.ocid,
+                msg,
+                moreDetails,
+            );
             if (id) {
                 res.json({ id, status: "created", ocid: moreDetails.ocid });
             } else {
@@ -1407,12 +1438,12 @@ export class DredServer {
         try {
             const isActive = !!this.replicator && this.replicator.isInitialized();
             const replicatorExists = !!this.replicator;
-            
+
             // Get discovery info
             const discoveryHosts = this.discovery?.hosts || [];
             const myServerId = this.serverId;
-            const peerCount = discoveryHosts.filter(h => h.serverId !== myServerId).length;
-            
+            const peerCount = discoveryHosts.filter((h) => h.serverId !== myServerId).length;
+
             res.json({
                 status: "ok",
                 replication: {
@@ -1421,19 +1452,19 @@ export class DredServer {
                     serverId: myServerId,
                     discoveredPeers: peerCount,
                     discoveryType: this.discovery.constructor.name,
-                    hosts: discoveryHosts.map(h => ({ 
-                        serverId: h.serverId, 
-                        address: h.address, 
-                        port: h.port 
-                    }))
-                }
+                    hosts: discoveryHosts.map((h) => ({
+                        serverId: h.serverId,
+                        address: h.address,
+                        port: h.port,
+                    })),
+                },
             });
         } catch (error: any) {
             this.warn("Error getting replication status:", error.message);
-            res.status(500).json({ 
-                status: "error", 
+            res.status(500).json({
+                status: "error",
                 message: "Failed to get replication status",
-                error: error.message
+                error: error.message,
             });
         }
         next();
