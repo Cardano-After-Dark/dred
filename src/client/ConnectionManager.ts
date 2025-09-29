@@ -124,7 +124,7 @@ const connectionManagerStates = {
         sufficient: "healthy",
     },
     connecting: {
-        onEntry(this: cm) {
+        async onEntry(this: cm) {
             this.events.emit("connecting", {
                 message: "establishing connections to neighborhood hosts",
                 [devMessage]: [
@@ -151,7 +151,7 @@ const connectionManagerStates = {
         partial: "partiallyConnected",
     },
     healthy: {
-        onEntry(this: cm) {
+        async onEntry(this: cm) {
             //@ts-expect-error - until state-machine provides us an indicator of previous state
             if (this.previousState) throw new Error("hurray, we can change this next line");
             const previousState = this.currentState as string;
@@ -191,7 +191,7 @@ const connectionManagerStates = {
         updatedHostList: "connecting",
     },
     degraded: {
-        onEntry(this: cm) {
+        async onEntry(this: cm) {
             this.events.emit("connect:minimal", {
                 message: "...trying to improve neighborhood connectivity",
                 altMessageRealtime: "messages may be delayed",
@@ -210,7 +210,7 @@ const connectionManagerStates = {
         updatedHostList: "connecting",
     },
     disconnecting: {
-        onEntry(this: cm) {
+        async onEntry(this: cm) {
             this.events.emit("disconnecting", {
                 message: "disconnecting from neighborhood hosts",
                 [devMessage]: [`disconnecting on request (probably from client object)`],
