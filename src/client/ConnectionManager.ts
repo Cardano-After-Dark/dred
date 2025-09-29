@@ -536,6 +536,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
         return new Promise<HostConnection>((resolve, reject) => {
             let timeout: boolean;
             replacement.events.once("connected", ({ connection }) => {
+                this.logger.debug("replaceHostConnection: connected to new host");
                 const oldConnection = replacingConn;
                 //! if it completes quickly, the original connection is seamlessly replaced in the active-connections list
                 oldConnection?.replacedBy(replacement);
@@ -547,7 +548,10 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
                 if (!timeout) {
                     timeout = false;
+                    this.logger.progress("replaceHostConnection: resolving new connection");
                     resolve(replacement);
+                } else {
+                    this.logger.debug("replaceHostConnection: NOT resolving new connection after timeout");
                 }
             });
             //! if the new connection doesn't connect promptly, it...
@@ -558,9 +562,11 @@ export class ConnectionManager extends StateMachine.withDefinition(
             asyncDelay(this.connectionSettings.connectionWaitTimeMs).then(() => {
                 this.moveConnTo(replacement, "pending");
                 const oldConnection = replacingConn;
+                this.logger.debug("replaceHostConnection: moving old connection to obsolete");
                 oldConnection && this.moveConnTo(oldConnection, "obsolete");
                 if (timeout !== false) {
                     timeout = true;
+                    this.logger.progress("replaceHostConnection: resolving new connection after timeout");
                     resolve(replacement);
                 }
             });

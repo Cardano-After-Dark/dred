@@ -283,7 +283,8 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         return (this.events = this.events || new EventEmitter<ClientEvents>());
     }
 
-    log(a1: string, ...args: any[]) {
+    
+    info(a1: string, ...args: any[]) {
         this.logger.info(a1, ...args);
     }
     warn(a1: string, ...args: any[]) {

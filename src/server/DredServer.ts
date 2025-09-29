@@ -262,8 +262,8 @@ export class DredServer {
     setupRedis(url: string | undefined) {
         if (this.redis) throw new Error(`redis connection is already set up`);
         
-        this.log(`Setting up Redis connection: ${url || "default"}, db: ${this.redisDb}`);
-        
+
+        this.progress(`Setting up Redis connection: ${url || "default"}, db: ${this.redisDb}`);
         const options: RedisOptions = {
             db: this.redisDb,
             // keyPrefix: `${this.nbh}::`  //!!! todo vet this technique.
@@ -332,7 +332,7 @@ export class DredServer {
         const streams = this.channelConn;
         if (!streams) {
             if (this.resetting) {
-                this.logger.warn(
+                this.warn(
                     "ignoring continuing channel setup for %s while racing with a subsequent reset!",
                 );
                 return;
@@ -365,7 +365,7 @@ export class DredServer {
         const { port, address } = myInfo;
 
         this.listener = this.api.listen(Number(port), address);
-        this.log(`server '${this.serverId}' listening at ${address}:${port}`);
+        this.info(`listening at ${address}:${port}`);
 
         // Setup replication after all basic server setup is complete
         // at this point, "_chans" and "_auth" channels are already created
@@ -463,7 +463,7 @@ export class DredServer {
             // Produce the message on the channel with provided details
             const publishedMessageId = await this.channelConn.produce(producer, msg, messageDetails);
             
-            this.log(`Message published to channel ${channelId}: ${publishedMessageId}`);
+            this.trace(`Message published to channel ${channelId}: ${publishedMessageId}`);
             return publishedMessageId;
             
         } catch (error) {
@@ -503,23 +503,22 @@ export class DredServer {
 
     async setupReplication() {
         if (this.replicator) {
-            this.warn("Replication already setup");
+            this.info("skipping extra setupReplication()");
             return; // Idempotent - safe to call multiple times
         }
-        this.warn(`${this.serverId} Starting replication setup...`);
+        this.progress(`replication setup`);
         try {
             // await asyncDelay(1000);// maybe we can just skip this
-            this.warn(`${this.serverId} Creating replicator...`);
+            // this.warn(`${this.serverId} Creating replicator...`);
             this.replicator = new DredReplicator(this, this.discovery);
-            this.warn(`${this.serverId} Initializing replicator...`);
-            await this.replicator.initialize();
-            this.warn(`${this.serverId} Replication setup complete - replicator exists: ${!!this.replicator}`);
+            // this.warn(`${this.serverId} Initializing replicator...`);
+            await this.replicator.initialize();            
+            // this.warn(`${this.serverId} Replication setup complete - replicator exists: ${!!this.replicator}`);
         } catch (error: any) {
             // Cleanup on failure
-            this.warn(`${this.serverId} ERROR during replication setup: ${error}`);
-            this.warn(`${this.serverId} ERROR stack:`, error.stack);
+            this.logger.error(`during replication setup: `, error.stack);
             this.replicator = undefined;
-            this.warn(`${this.serverId} Failed to setup replication - nullified replicator`);
+            // this.warn(`${this.serverId} Failed to setup replication - nullified replicator`);
             throw error; // Re-throw if caller needs to handle
         }
     }
@@ -528,15 +527,15 @@ export class DredServer {
      * Start auto-replication in background immediately
      */
     private startReplicating(): void {
-        this.warn(`🔄 STARTING AUTO-REPLICATION FOR ${this.serverId.toUpperCase()} (BACKGROUND)`);
-        
+        // this.warn(`🔄 STARTING AUTO-REPLICATION FOR ${this.serverId.toUpperCase()} (BACKGROUND)`);
+
         // Run in background - don't await, don't block server startup
         this.setupReplication()
             .then(() => {
-                this.log(`✅ Replication setup ok`);
+                this.progress(`✅ Replication setup ok`);
             })
             .catch((error) => {
-                this.warn(`❌ Replication setup failed (will retry): ${error.message}`);
+                this.logger.error(`❌ Replication setup failed (will retry): ${error.message}`);
                 this.scheduleReplicationRetry();
             });
     }
@@ -559,17 +558,19 @@ export class DredServer {
         const intervalSeconds = parseInt(process.env.STATUS_INTERVAL_SECONDS || "5");
         
         if (intervalSeconds <= 0 || intervalSeconds > 1000) {
-            this.log(`📊 Periodic status logging disabled (STATUS_INTERVAL_SECONDS=${intervalSeconds})`);
+            this.ops(
+                `📊 Periodic status logging disabled (STATUS_INTERVAL_SECONDS=${intervalSeconds})`,
+            );
             return;
         }
 
         const intervalMs = intervalSeconds * 1000;
-        this.log(`📊 Starting periodic status logging every ${intervalSeconds} seconds`);
-        
+        this.ops(`📊 Starting periodic status logging every ${intervalSeconds} seconds`);
+
         this.statusLoggingTimer = setInterval(() => {
             this.statusLogging();
-        }, intervalMs)
-        
+        }, intervalMs);
+
         // Don't keep the process alive just for status logging
         this.statusLoggingTimer.unref();
     }
@@ -581,7 +582,7 @@ export class DredServer {
         if (this.statusLoggingTimer) {
             clearInterval(this.statusLoggingTimer);
             this.statusLoggingTimer = undefined;
-            this.log(`📊 Stopped periodic status logging`);
+            this.ops(`📊 Stopped periodic status logging`);
         }
     }
 
@@ -622,8 +623,10 @@ export class DredServer {
             }
 
             // Compact format for regular logging
-            this.log(`📊 Uptime: ${uptimeFormatted} | Replication: ${replicationStatus} | Channels: ${channelCount}`);
-            
+            this.ops(
+                `📊 Uptime: ${uptimeFormatted} | Replication: ${replicationStatus} | Channels: ${channelCount}`,
+            );
+
             // Extended debug format (only when DEBUG logging is enabled)
             if (this.isDebugLoggingEnabled()) {
                 await this.logExtendedStatus(activePeers, totalPeers);
@@ -669,14 +672,12 @@ export class DredServer {
             // Single multi-line extended status message
             const extendedStatus = [
                 "🔍 EXTENDED STATUS:",
-                `   Connected peers (${connectedPeers.length}): [${connectedPeers.join(', ') || 'none'}]`,
-                `   Non-connected peers (${nonConnectedPeers.length}): [${nonConnectedPeers.join(', ') || 'none'}]`,
-                `   Channels: [${channels.join(', ') || 'none'}]`
-            ].join('\n');
-            // Log as INFO but only when debug mode is enabled
-            // This ensures it shows up in the logs when requested
-            this.log(extendedStatus);
-            
+                `   Connected peers (${connectedPeers.length}): [${connectedPeers.join(", ") || "none"}]`,
+                `   Non-connected peers (${nonConnectedPeers.length}): [${nonConnectedPeers.join(", ") || "none"}]`,
+                `   Channels: [${channels.join(", ") || "none"}]`,
+            ].join("\n");
+
+            this.info(extendedStatus);
         } catch (error) {
             this.warn(`🔍 Error logging extended status: ${error}`);
         }
@@ -685,21 +686,19 @@ export class DredServer {
     async cleanupReplication(): Promise<void> {
         this.debug(`start cleanupReplication`);
         if (!this.replicator) {
-            debugger;
-            this.warn(" === Replication not setup");
+            this.progress("replication not active; no cleanup needed");
             return; // Idempotent - safe to call multiple times
         }
         try {
             // Add timeout to prevent hanging during cleanup
             await Promise.race([
                 this.replicator.cleanup(),
-                new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error("Replication cleanup timeout")), 5000)
-                )
+                new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error("Replication cleanup timeout")), 5000),
+                ),
             ]);
-            this.warn(`${this.serverId} Replication cleanup complete`);
-        } catch (error) {
-            this.warn(`${this.serverId} Error during replication cleanup: ${error}`);
+        } catch (error: any) {
+            this.logger.error(`during replication cleanup:`, error.stack);
             // Continue cleanup even if error occurs
         } finally {
             // this.warn(`${this.serverId} Nullifying replicator reference`);
@@ -709,7 +708,7 @@ export class DredServer {
     }
 
     async reset(reconnect?: boolean, finalCleanup?: (r?: Redis) => any) {
-        this.log("server: reset()");
+        this.progress("server: reset()");
 
         // Cleanup replication client first
         await this.cleanupReplication();
@@ -827,14 +826,27 @@ export class DredServer {
         return client;
     }
 
-    log(a1: string, ...args: any[]) {
+    // just use `info`
+    // log(a1: string, ...args: any[]) {
+    //     this.logger.info(a1, ...args);
+    // }
+    info(a1: string, ...args: any[]) {
         this.logger.info(a1, ...args);
     }
     warn(a1: string, ...args: any[]) {
         this.logger.warn(a1, ...args);
     }
+    progress(a1: string, ...args: any[]) {
+        this.logger.progress(a1, ...args);
+    }
+    ops(a1: string, ...args: any[]) {
+        this.logger.ops(a1, ...args);
+    }
     debug(a1: string, ...args: any[]) {
         this.logger.debug(a1, ...args);
+    }
+    trace(a1: string, ...args: any[]) {
+        this.logger.trace(a1, ...args);
     }
 
     async logInfo(): Promise<string> {
@@ -1006,7 +1018,7 @@ export class DredServer {
         const streams = this.channelConn;
         const chans = await streams.use("_chans");
 
-        this.log("channelCreated", channel, options);
+        this.progress("channelCreated", channel, options);
         //! it emits a channel-created event in the _chans meta-channel.
         //   applications with interest in such things can subscribe to that
         //   channel to get the news
@@ -1047,8 +1059,7 @@ export class DredServer {
 
         //! trying to join an expired channel produces an error
         if (opts.expiresAt && now > opts.expiresAt) {
-            this.warn(`Join failed: Channel ${channelId} is expired`);
-            this.log(
+            this.warn(`Join failed: Channel ${channelId} is expired\n`+
                 `expiration '${opts.expiresAt.getTime() % 100000}, now '${now.getTime() % 100000}`,
             );
             res.status(422).json({
@@ -1082,10 +1093,10 @@ export class DredServer {
             overMemberLimit = false;
             approvedVerifier = myId;
 
-            this.log("owner-approved join");
+            this.info("owner-approved join");
         } else if ("member" == opts.approveJoins && (opts.members || []).includes(myId)) {
             //! a member can join someone by pubKey if approveJoins: member
-            this.log("member-approved join");
+            this.info("member-approved join");
             approvedVerifier = myId;
         } else if (opts.allowJoining) {
             //! a non-member can join themself if allowJoining is true and approveJoins is "open"
@@ -1104,7 +1115,7 @@ export class DredServer {
                 //!!! todo: join requests, when not open, are simple messages in the channel,
                 //!    which clients can read, prompting members or owner to issue an approval.
             } else {
-                this.log("self-join");
+                this.info("self-join");
                 approvedVerifier = myId;
             }
         }
@@ -1162,7 +1173,7 @@ export class DredServer {
 
     postMessageInChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
-        this.log("postMessageInChannel", channelId);
+        this.info("postMessageInChannel", channelId);
         const found = await this.channelList.has(channelId);
         if (!found) {
             res.status(404).json({
@@ -1175,7 +1186,7 @@ export class DredServer {
         //!!! todo y0w9cvr: it refuses to post plain-text messages into encrypted channels
         //     see also todo zfnsmq8
 
-        this.log("server: postMessage", message);
+        this.info("server: postMessage", message);
         const tunnelProducer = await this.mkChannelProducer(channelId);
         const { msg, _type, _data, ...moreDetails } = message;
 
@@ -1235,7 +1246,7 @@ export class DredServer {
         res.contentType("application/ndjson");
         res.useChunkedEncodingByDefault = false;
         // res.setHeader("x-hi", "there");
-        this.log("listening for", subscriptions);
+        this.info("listening for", subscriptions);
         //!!! todo: it validates authorization as appropriate for each requested channel
 
         const sendUpdate: changeFeedUpdater = (...messages) => {
@@ -1252,7 +1263,7 @@ export class DredServer {
         //! it sends heartbeat signals every so often to clients
         //!!! todo: heartbeat interval can be configured
         const timer = setInterval(() => {
-            this.log("server: client <- heartbeat");
+            this.info("server: client <- heartbeat");
             sendUpdate({ type: "heartbeat" });
         }, timerInterval);
         timer.unref(); //! the heartbeat-timer never blocks the process from exiting when it's otherwise done
@@ -1309,7 +1320,7 @@ export class DredServer {
                 });
             }
 
-            this.logger.debug("  -- listening one: ", sub.channel);
+            this.debug("  -- listening one: ", sub.channel);
             const subscriber = await this.listenOneChannel(
                 res,
                 sub,

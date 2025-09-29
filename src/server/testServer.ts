@@ -75,8 +75,9 @@ export const testLogger = zonedLogger("test", { color: yellow.start, levels: { d
 // Minimal approach: fix Redis cleanup timing issues at the source
 
 beforeAll(async () => {
+    testLogger.info("-- beforeAll()");
     const startTime = Math.round(Date.now() / 1000);
-    testLogger.info("isColorSupported", isColorSupported);
+    // testLogger.info("isColorSupported", isColorSupported);
     await monitor?.monitor((err, monitor) => {
         monitor!.on("monitor", (time, args, source, database) => {
             const now = Date.now();
@@ -105,11 +106,12 @@ beforeAll(async () => {
             logger.trace(`${offsetStr} :${port}>${argsDisplay}`);
         });
     });
+    testLogger.info("================== done beforeAll()");
 });
 
 beforeEach(async () => {
     // infra running
-    testLogger.debug("beforeEach: resetting redis and channels");
+    testLogger.progress("  --- beforeEach(): resetting redis and channels");
 
     // 1. STOP replication on all servers first
     testLogger.debug("beforeEach: phase 1 - cleaning up replication");
@@ -126,18 +128,15 @@ beforeEach(async () => {
         // testLogger.debug("beforeEach: establishing default channels");
         await server.pendingSetup();
     }
-    testLogger.info("  ---- did reset redis with default channels in beforeEach");
+    testLogger.progress("  --- did reset redis with default channels in beforeEach");
 
+    testLogger.progress("beforeEach() starting replication")
     // XXXXXXXXXXX reset() already does this
     // ?????? or, let reset() only do disconnecting, while this does the reconnecting.
     // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     
     // 3. RESTART replication on all servers
     for (const server of servers) {
-        testLogger.debug(
-            " ==== beforeEach: SETTING UP REPLICATION in TEST for server",
-            server.serverId,
-        );
         await server.setupReplication();
     }
     testLogger.progress("----------------------- before test -----------------------");
@@ -300,6 +299,8 @@ export async function initializeTestServers() : Promise<SetupDetails> {
     const agent = supertest.agent(app);
     const client = server.mkClient("first"); //new DredClient({ ...addr, insecure: true });
     await client.generateKey();
+
+    testLogger.info("================== initializeTestServers() done");
 
     return { agent, app, server, client, servers, testLogger };
 }
