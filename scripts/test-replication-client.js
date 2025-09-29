@@ -1,12 +1,9 @@
 #!/usr/bin/env node
 /**
- * Simple DRED client to test message replication
+ * Simple DRED replication test client
  * 
- * This script:
- * 1. Connects to the REMOTE DRED server (de.pp.node-01.dred.network:443)
- * 2. Sends a test message to the 'news' channel
- * 3. The message should be replicated FROM remote TO your local server
- * 4. Check local server logs for replication messages
+ * Tests message replication by connecting to a remote DRED server,
+ * sending a message, and verifying it gets replicated to the local server.
  * 
  * Usage: node scripts/test-replication-client.js
  */
@@ -14,107 +11,154 @@
 import { DredClient, StaticHostDiscovery } from "../src/client/dist/dred-client-nodejs.mjs";
 import { zonedLogger } from "@poshplum/utils";
 
+// =============================================================================
+// CONFIGURATION - Change these variables to test different servers
+// =============================================================================
+
+// Server configurations (from preprod/config/ and preprod/servers.conf)
+const SERVERS = {
+    DE: {
+        name: "DE (Germany)",
+        address: "de.pp.node-01.dred.network",
+        port: 443,
+        serverId: "dredNode-170647b99511", // From your server logs
+        nodeId: "preprod-de"
+    },
+    US: {
+        name: "US (United States)", 
+        address: "74.208.13.84",
+        port: 3029,
+        serverId: "dredNode-efb4a5ae1206", // Estimated from discovery logs
+        nodeId: "preprod-us"
+    },
+    UK: {
+        name: "UK (United Kingdom)",
+        address: "217.154.34.155", 
+        port: 3029,
+        serverId: "dredNode-10d84498548a", // Estimated from discovery logs
+        nodeId: "preprod-uk"
+    }
+};
+
+// =============================================================================
+// SELECT TARGET SERVER - Uncomment ONE of these
+// =============================================================================
+
+const TARGET_SERVER = SERVERS.DE;  // ✅ Currently working server
+// const TARGET_SERVER = SERVERS.US;  // 🔄 Switch to US server
+// const TARGET_SERVER = SERVERS.UK;  // 🔄 Switch to UK server
+
+// Test configuration
+const TEST_CONFIG = {
+    neighborhood: "dred-dev",
+    channel: "news", // Channel to send message to
+    timeout: 30, // Seconds to wait for client ready
+    message: {
+        type: "replication-test",
+        content: "Hello from replication test!"
+    }
+};
+
+// =============================================================================
+// TEST CLIENT IMPLEMENTATION
+// =============================================================================
+
 async function testReplication() {
-    // Create logger following guidelines: unique loggerId, no ANSI codes in messages
     const logger = zonedLogger("test-client", {
         loggerId: "replication-test",
-        color: "\x1b[36m" // cyan color for logger itself, not messages
+        color: "\u001b[36m"
     });
     
-    logger.info("Starting replication test client", {
-        target: "de.pp.node-01.dred.network:443",
-        channel: "news",
-        neighborhood: "dred-dev"
+    logger.info("Starting replication test", {
+        target: `${TARGET_SERVER.name} (${TARGET_SERVER.address}:${TARGET_SERVER.port})`,
+        channel: TEST_CONFIG.channel,
+        neighborhood: TEST_CONFIG.neighborhood
     });
     
     try {
-        // Create client connecting to REMOTE server
+        // Create client (simpler approach like replication tests)
         const client = new DredClient({
             discovery: new StaticHostDiscovery({
-                hosts: [{ 
-                    address: "de.pp.node-01.dred.network", 
-                    port: 443, 
-                    serverId: "dredNode-170647b99511" // Remote server ID from your logs
+                hosts: [{
+                    address: TARGET_SERVER.address,
+                    port: TARGET_SERVER.port,
+                    serverId: TARGET_SERVER.serverId
                 }]
             }),
-            neighborhood: "dred-dev", // Your neighborhood from logs
-            waitFor: "ready" // Wait for client to be ready
+            neighborhood: TEST_CONFIG.neighborhood
         });
 
-        logger.info("Creating DRED client for remote server", {
-            host: "de.pp.node-01.dred.network",
-            port: 443,
-            serverId: "dredNode-170647b99511"
-        });
-        
-        // Generate key for the client (required before use)
+        logger.info("Client created, generating key");
         await client.generateKey();
-        
-        logger.info("Client key generated, waiting for ready state", {
-            currentState: client.state
+
+        // Wait for ready state (simplified)
+        logger.info("Waiting for client to be ready", {
+            currentState: client.state,
+            timeout: `${TEST_CONFIG.timeout}s`
         });
 
-        // Wait for client to reach ready state
         let attempts = 0;
-        const maxAttempts = 30; // 30 seconds max
-        while (client.state !== "ready" && attempts < maxAttempts) {
+        while (client.state !== "ready" && attempts < TEST_CONFIG.timeout) {
             await new Promise(resolve => setTimeout(resolve, 1000));
             attempts++;
-            logger.info("Waiting for client ready state", {
-                currentState: client.state,
-                attempt: attempts,
-                maxAttempts: maxAttempts
-            });
+            
+            if (attempts % 5 === 0) { // Log every 5 seconds
+                logger.info("Still waiting for ready state", {
+                    currentState: client.state,
+                    elapsed: `${attempts}s`,
+                    remaining: `${TEST_CONFIG.timeout - attempts}s`
+                });
+            }
         }
 
         if (client.state !== "ready") {
-            throw new Error(`Client failed to reach ready state after ${maxAttempts} seconds. Current state: ${client.state}`);
+            throw new Error(`Client failed to reach ready state after ${TEST_CONFIG.timeout}s. Current state: ${client.state}`);
         }
 
-        logger.info("Client is ready", {
+        logger.info("Client ready, sending test message", {
             state: client.state,
-            channels: client.channels || []
+            channels: client.channels || [],
+            target: `${TARGET_SERVER.name}`
         });
 
-        // Generate test message with structured data
+        // Send test message (like replication tests)
         const testId = Math.random().toString(36).substr(2, 9);
         const testMessage = {
-            type: "replication-test",
+            type: TEST_CONFIG.message.type,
             msg: JSON.stringify({
-                content: "Hello from replication test!",
+                content: TEST_CONFIG.message.content,
                 timestamp: new Date().toISOString(),
-                testId: testId
+                testId: testId,
+                source: "test-client",
+                target: TARGET_SERVER.name
             })
         };
 
-        logger.info("Sending test message to remote server", {
-            channel: "news",
-            messageType: testMessage.type,
+        logger.info("Sending message to remote server", {
+            channel: TEST_CONFIG.channel,
             testId: testId,
-            timestamp: new Date().toISOString()
+            messageType: testMessage.type
         });
         
-        await client.postMessage("news", testMessage);
+        const response = await client.postMessage(TEST_CONFIG.channel, testMessage);
         
-        logger.info("Message sent to remote server successfully", {
-            channel: "news",
+        logger.info("Message sent successfully", {
             testId: testId,
-            expectedReplication: "Check local server logs for replication from dredNode-170647b99511"
+            response: response,
+            expectation: "Check local server logs for replication message"
         });
         
-        // Wait a moment before closing
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        logger.info("Test completed, disconnecting", {
+        logger.info("Test completed successfully", {
+            server: TARGET_SERVER.name,
             testId: testId,
-            duration: "~3 seconds"
+            instruction: "Look for replication logs in your local DRED server"
         });
         
     } catch (error) {
         logger.error("Test failed", {
             error: error.message,
             errorType: error.name,
-            stack: error.stack,
+            server: TARGET_SERVER.name,
             phase: "replication-test"
         });
         process.exit(1);
@@ -123,10 +167,8 @@ async function testReplication() {
     process.exit(0);
 }
 
-// Handle graceful shutdown - use structured logging
-const shutdownLogger = zonedLogger("test-client", {
-    loggerId: "shutdown"
-});
+// Graceful shutdown handlers
+const shutdownLogger = zonedLogger("test-client", { loggerId: "shutdown" });
 
 process.on('SIGINT', () => {
     shutdownLogger.info("Test interrupted by user", {
@@ -138,18 +180,15 @@ process.on('SIGINT', () => {
 
 process.on('SIGTERM', () => {
     shutdownLogger.info("Test terminated", {
-        signal: "SIGTERM",
+        signal: "SIGTERM", 
         reason: "system_termination"
     });
     process.exit(0);
 });
 
-// Run the test - use structured logging for unhandled errors
-const errorLogger = zonedLogger("test-client", {
-    loggerId: "unhandled-error"
-});
-
+// Run the test
 testReplication().catch(error => {
+    const errorLogger = zonedLogger("test-client", { loggerId: "unhandled-error" });
     errorLogger.fatal("Unhandled error in test execution", {
         error: error.message,
         errorType: error.name,
