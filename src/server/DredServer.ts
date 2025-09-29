@@ -245,7 +245,7 @@ export class DredServer {
         const redisUrl = (this.redisUrl = process.env.REDIS_URL || "redis://localhost:6379");
 
         this.listener = null;
-        this.verifier = new StringNacl(undefined, this);
+        this.verifier = new StringNacl(undefined, this.logger);
         this.producers = new Map();
         this.subscribers = new Map();
         this.redisDb = redisDb || 0;
