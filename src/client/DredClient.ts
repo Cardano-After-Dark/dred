@@ -47,7 +47,7 @@ const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 /**
  * @public
  */
-export type DredMessageListener = (dcm: DredChannelMessage & DredMessage) => void;
+export type DredMessageListener = (dcm: FullDredMessage) => void;
 
 /**
  * @public
@@ -60,6 +60,10 @@ export type SubscriberMap = {
 //     channel: ChanId,
 //     // event: DredMessage,
 // }
+
+export type FullDredMessage = ConnectionEvent & DredChannelMessage & DredMessage & {
+    encryptedMsg?: string;
+};
 
 /**
  * @public
