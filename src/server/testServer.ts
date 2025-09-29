@@ -38,9 +38,8 @@ if (process.env.VITEST_TIMEOUT) {
     console.log("using vitest timeout override", process.env.VITEST_TIMEOUT);
     vi.setConfig({ testTimeout: parseInt(process.env.VITEST_TIMEOUT) });
 } else if (process.env.JEST_TIMEOUT) {
-    // For backward compatibility
-    console.log("using jest timeout override", process.env.JEST_TIMEOUT);
-    vi.setConfig({ testTimeout: parseInt(process.env.JEST_TIMEOUT) });
+    throw new Error("use VITEST_TIMEOUT, not JEST_TIMEOUT");
+}
 
 export class TestDredServer extends DredServer {
     /**
