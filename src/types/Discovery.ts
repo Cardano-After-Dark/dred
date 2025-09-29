@@ -94,13 +94,6 @@ export abstract class Discovery implements discovery {
     }    
 }
 
-
-export type ConnectionManagerOptions = {
-    discovery: Discovery;
-    waitFor: ThresholdChoice,
-    connectionSettings: connnectionSettings
-};
-
 export type ConnectionThresholds = {
     minimal: number;
     healthy: number;
