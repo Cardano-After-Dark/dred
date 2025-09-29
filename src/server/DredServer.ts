@@ -66,7 +66,6 @@ import {
 import { asyncDelay, autobind } from "@poshplum/utils";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import { zonedLogger } from "@poshplum/utils";
-import { ReplicationClient } from "./ReplicationClient.js";
 import { DredReplicator } from "./DredReplicator.js";
 
 const logging = parseInt(process.env.LOGGING || "0");
@@ -158,7 +157,6 @@ export class DredServer {
     serverId: string;
     myServerInfo?: DredHostDetails;
     logger: ReturnType<typeof zonedLogger>;
-    // replicationClient?: ReplicationClient;
 
     // Optional replicator, to be initialized only when replication is enabled
     replicator?: DredReplicator;
