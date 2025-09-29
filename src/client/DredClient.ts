@@ -269,16 +269,21 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
         const discovery = (this.constructor as typeof DredClient).resolveDiscovery(args);
         this.discovery = discovery;
-        this.connManager = new ConnectionManager({
-            discovery,
-            waitFor: this.args.waitFor,
-            connectionSettings: this.args.connectionSettings || {},
-            clientid,
-        });
+        this.connManager = this.mkConnectionManager();
         this.transition("default");
         //!!! make this test-only
         // this.insecure = insecure;
     }
+
+    mkConnectionManager() {
+        return new ConnectionManager({
+            discovery: this.discovery,
+            waitFor: this.args.waitFor,
+            connectionSettings: this.args.connectionSettings || {},
+            clientid: this.clientid,
+        });
+    }
+    
     private ensureEmitterExists() {
         return (this.events = this.events || new EventEmitter<ClientEvents>());
     }
