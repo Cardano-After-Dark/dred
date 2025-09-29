@@ -31,7 +31,7 @@ import { StringNacl } from "../util/StringNacl.js";
 import { type connnectionSettings, type DredHostDetails } from "../types/DredHosts.js";
 import { type ConnectionThresholds, type Discovery } from "../types/Discovery.js";
 import { NeighborhoodDiscovery } from "../peers/NeighborhoodDiscovery.js";
-import { HostConnection } from "./HostConnection.js";
+import { HostConnection, type ConnectionEvent } from "./HostConnection.js";
 import {
     type ChanId,
     type SubscriptionListenerMap,
@@ -507,7 +507,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
         if (path[0] !== "/") path = `/${path}`;
 
-        let host = (await this.discovery.getHostList())[0];
+        let host = this.discovery.hosts?.[0] || (await this.discovery.getHostList())[0];
         const proto = host.insecure ? "http" : "https";
         const shortServer = `${host.address}:${host.port}`;
         const url = `${proto}://${shortServer}${path}`;
