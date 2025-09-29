@@ -215,11 +215,11 @@ export class DredServer {
             //! it allows clients to subscribe to many channels and receive notification about updates in any of them
             this.listenOnChannels(...args);
         });
-        
+
         this.api.get("/admin/replication-status", (...args) => {
             this.adminReplicationStatus(...args);
         });
-        
+
         this.api.use(this.resultLogger);
     }
 
@@ -227,7 +227,7 @@ export class DredServer {
         const { replicate = true } = args;
         this.args = { ...args, replicate };
         const loggerName = `dred`;
-        
+
         this.logger = zonedLogger(loggerName, {
             loggerId: serverId,
             // levels: {
@@ -237,8 +237,8 @@ export class DredServer {
         });
 
         this.serverId = serverId;
+        this.discovery = DredClient.resolveDiscovery(args);
 
-        this.api = this.createExpressServer();
         // this.log(`+server '${serverId}' with discovery type: ${this.discovery.constructor.name}`);
 
         this.api = this.createExpressServer();
@@ -261,14 +261,14 @@ export class DredServer {
 
     setupRedis(url: string | undefined) {
         if (this.redis) throw new Error(`redis connection is already set up`);
-        
 
         this.progress(`Setting up Redis connection: ${url || "default"}, db: ${this.redisDb}`);
+
         const options: RedisOptions = {
             db: this.redisDb,
             // keyPrefix: `${this.nbh}::`  //!!! todo vet this technique.
         };
-        
+
         if (url) {
             this.redis = new Redis(url, options);
         } else {
