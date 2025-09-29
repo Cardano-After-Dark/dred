@@ -89,7 +89,7 @@ const connectionManagerStates = {
                         listener: ({
                             channel, mid, ocid, message, details, neighborhood, connection,
                         }) => {
-                            this.logger.info("    🐞  _chans: ", {
+                            this.info("    🐞  _chans: ", {
                                 channel, mid, ocid, message, details, neighborhood, //connection,
                             });
                         },
@@ -313,6 +313,25 @@ export class ConnectionManager extends StateMachine.withDefinition(
         // })
     }
 
+    warn(message: string, ...args: any[]) {
+        this.logger.warn(message, ...args);
+    }
+
+    info(message: string, ...args: any[]) {
+        this.logger.info(message, ...args);
+    }
+    progress(message: string, ...args: any[]) {
+        this.logger.progress(message, ...args);
+    }
+
+    debug(message: string, ...args: any[]) {
+        this.logger.debug(message, ...args);
+    }
+
+    trace(message: string, ...args: any[]) {
+        this.logger.trace(message, ...args);
+    }
+
     @autobind
     async setHostList({ hosts: newHosts }: { hosts: DredHostDetails[] }) {
         if (this.hosts) {
@@ -397,19 +416,19 @@ export class ConnectionManager extends StateMachine.withDefinition(
     async setSubscriptions(subs: SubscriptionListenerMap) {
         if (this.channelSubs) return this.replaceSubscriptions(subs);
 
-        this.logger.info("setSubscriptions: setting first channel subscriptions", Object.keys(subs));
+        this.info("setSubscriptions: setting first channel subscriptions", Object.keys(subs));
         this.channelSubs = subs;
         if (!this.hosts) {
             if (this.discovery.hosts?.length) {
                 this.hosts = this.discovery.hosts;
             } else {
-                this.logger.info("setSubscriptions: waiting for hosts:ready from discovery");
+                this.info("setSubscriptions: waiting for hosts:ready from discovery");
                 await new Promise((resolve) => this.discovery.events.once("hosts:ready", resolve));
-                this.logger.info("setSubscriptions: discovery: hosts:ready - excellent!");
+                this.info("setSubscriptions: discovery: hosts:ready - excellent!");
             }
         }
         if (this.currentState == "pendingSetup") {
-            this.logger.debug("setSubscriptions: releasing pendingSetup state");
+            this.debug("setSubscriptions: releasing pendingSetup state");
             this.transition("readyToConnect");
         }
 
@@ -419,8 +438,8 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
     async replaceSubscriptions(subs: SubscriptionListenerMap) {
         const chans = Object.keys(subs)
-        this.logger.debug("replaceSubscriptions: replacing host connections with %d new subscriptions", chans.length);
-        this.logger.trace("new subscriptions:", chans);
+        this.debug("replaceSubscriptions: replacing host connections with %d new subscriptions", chans.length);
+        this.trace("new subscriptions:", chans);
 
         this.lastChannelSubs = this.channelSubs;
         this.channelSubs = subs;
@@ -501,7 +520,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
         const { connection, message: msg } = event;
         //! it records the active state of the connection
         this.moveConnTo(connection, "active");
-        this.logger.info({ summary: `connection to ${connection.host.address}` }, "healthy");
+        this.info({ summary: `connection to ${connection.host.address}` }, "healthy");
 
         //! it does NOT need to trigger event 'replacedBy', because replaceHostConnection() takes that responsibility
 
@@ -511,7 +530,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
     @autobind
     cleanupConnection(event: ConnectionEvent | DredError) {
         const { connection, message } = event;
-        console.log("cleanup: ", connection.host.address, message);
+        this.debug("cleanup: ", connection.host.address, message);
 
         this.moveConnTo(connection, "disconnected");
         this.graveyard.add(connection);
@@ -536,7 +555,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
         return new Promise<HostConnection>((resolve, reject) => {
             let timeout: boolean;
             replacement.events.once("connected", ({ connection }) => {
-                this.logger.debug("replaceHostConnection: connected to new host");
+                this.debug("replaceHostConnection: connected to new host");
                 const oldConnection = replacingConn;
                 //! if it completes quickly, the original connection is seamlessly replaced in the active-connections list
                 oldConnection?.replacedBy(replacement);
@@ -548,10 +567,10 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
                 if (!timeout) {
                     timeout = false;
-                    this.logger.progress("replaceHostConnection: resolving new connection");
+                    this.progress("replaceHostConnection: resolving new connection");
                     resolve(replacement);
                 } else {
-                    this.logger.debug("replaceHostConnection: NOT resolving new connection after timeout");
+                    this.debug("replaceHostConnection: NOT resolving new connection after timeout");
                 }
             });
             //! if the new connection doesn't connect promptly, it...
@@ -562,11 +581,11 @@ export class ConnectionManager extends StateMachine.withDefinition(
             asyncDelay(this.connectionSettings.connectionWaitTimeMs).then(() => {
                 this.moveConnTo(replacement, "pending");
                 const oldConnection = replacingConn;
-                this.logger.debug("replaceHostConnection: moving old connection to obsolete");
+                this.debug("replaceHostConnection: moving old connection to obsolete");
                 oldConnection && this.moveConnTo(oldConnection, "obsolete");
                 if (timeout !== false) {
                     timeout = true;
-                    this.logger.progress("replaceHostConnection: resolving new connection after timeout");
+                    this.progress("replaceHostConnection: resolving new connection after timeout");
                     resolve(replacement);
                 }
             });
