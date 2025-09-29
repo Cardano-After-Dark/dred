@@ -29,7 +29,7 @@ import type { AddressInfo } from "net";
 import { asyncDelay } from "../util/asyncDelay.js";
 
 import { createServer, DredServer } from "./DredServer.js";
-import { DredClient } from "../client/DredClient.js";
+import { DredClient, type DredClientArgs } from "../client/DredClient.js";
 
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import type { DredHostDetails } from "../types/DredHosts.js";
@@ -41,12 +41,109 @@ if (process.env.VITEST_TIMEOUT) {
     // For backward compatibility
     console.log("using jest timeout override", process.env.JEST_TIMEOUT);
     vi.setConfig({ testTimeout: parseInt(process.env.JEST_TIMEOUT) });
+
+export class TestDredServer extends DredServer {
+    /**
+     * Create a DredClient instance, but does not generate a key.
+     * Note: The caller should call generateKey() after creating the client.
+     *
+     * @param serverSelection - The server ID to connect to.
+     * @param clientArgs - Additional client configuration options.
+     * @param serverManaged - Whether the client is managed by the server (affects cleanup).
+     * @returns A DredClient instance.
+     */
+    mkClient(serverSelection: string, clientArgs: Partial<DredClientArgs> = {}): DredClient {
+        if (process.env.NODE_ENV !== "test") {
+            throw new Error("mkClient() is only for use in test environment");
+        }
+
+        const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
+        if (!discovery) throw new Error("discovery is required");
+
+        const oneHost = discovery.hosts!.find((h) => h.serverId === serverSelection);
+        if (!oneHost) {
+            this.logger.error(`server ${serverSelection} not found in discovery`, discovery);
+            throw new Error(`server ${serverSelection} not found in discovery`);
+        }
+        const singleDiscovery = new StaticHostDiscovery({
+            hosts: [oneHost],
+        });
+
+        const client = new DredClient({
+            // name: `${serverSelection || ""}-${clientIndex++}`,
+            ...this.clientArgs,
+            ...clientArgs,
+            neighborhood: this.nbh,
+            discovery: singleDiscovery,
+        });
+
+        return client;
+    }
+
+    async close() {
+        await super.close();
+        this.reset(false);
+    }
+
+    async reset(reconnect?: boolean, finalCleanup?: (r?: Redis) => any) {
+        if (process.env.NODE_ENV !== "test") {
+            throw new Error("reset() is only for use in test environment");
+        }
+        this.progress("server: reset()");
+
+        // Cleanup replication client first
+        await this.cleanupReplication();
+
+        // Wait for channel cleanup to complete fully
+        await this.channelConn.cleanup().catch(warning.bind(this, "channelConn.cleanup()"));
+
+        // Small delay to ensure all Redis operations from channel cleanup complete
+        await new Promise((resolve) => setTimeout(resolve, 10));
+
+        finalCleanup?.(this.redis);
+        this.resetting = true;
+        await this.redis?.quit().catch(warning.bind(this, "redis.quit()"));
+        this.redis?.removeAllListeners();
+        this.channelConn = undefined;
+        this.redis = undefined;
+
+        const doReconnect = reconnect ?? true;
+        if (doReconnect) {
+            this.setupRedis(this.redisUrl);
+            this.resetting = false;
+
+            // Restart replication after reset if it was enabled
+            if (this.args.replicate) {
+                // this.warn(`🔄 Restarting replication after reset`);
+                // // Wait for setupPending to complete, then start replication (with delay)
+                // if (this.setupPending) {
+                //     this.setupPending.then(() => {
+                //         this.startReplicating()
+                //     }).catch((error) => {
+                //         this.warn(`❌ Replication restart failed:${error.message}`);
+                //     });
+                // } else {
+                //     // If no setupPending, start immediately
+                //     this.startReplicating();
+                // }
+            } else {
+                // test environment normally restarts replication "manually", right after the reset() calls are all done.
+                // this.warn(`⚠️  Replication remains DISABLED after reset`);
+            }
+
+            return this.setupPending;
+        }
+        function warning(this: TestDredServer, activityName) {
+            return (e) => {
+                this.warn(`during close: error in ${activityName}:\n\t`, e.message || e);
+            };
+        }
+    }
 }
 
 let app: Express;
-let listener: Server; // http.Server from node interfaces
-let servers: DredServer[] = [];
-let server: DredServer; // a single server that tests can push stuff through by default
+let servers: TestDredServer[] = [];
+let server: TestDredServer; // a single server that tests can push stuff through by default
 let clientCleanupList: Array<DredClient> = [];
 let replicatorClientCleanupList: Array<DredClient> = [];
 
@@ -75,6 +172,7 @@ export const testLogger = zonedLogger("test", { color: yellow.start, levels: { d
 
 beforeAll(async () => {
     testLogger.info("-- beforeAll()");
+    await testSetup();
     const startTime = Math.round(Date.now() / 1000);
     // testLogger.info("isColorSupported", isColorSupported);
     await monitor?.monitor((err, monitor) => {
@@ -192,7 +290,7 @@ afterEach(async () => {
         }
     }
 
-    testLogger.info("  ---- cleanup done in afterEach");
+    testLogger.progress("     =========== done: test cleanup/afterEach() =========== ");
 });
 afterAll(async () => {
     // debugger
@@ -222,9 +320,9 @@ afterAll(async () => {
 type SetupDetails = {
     agent: SuperTestWithHost<Test>;
     app?: Express;
-    server: DredServer;
+    server: TestDredServer;
     client: DredClient;
-    servers: DredServer[];
+    servers: TestDredServer[];
     testLogger: ReturnType<typeof zonedLogger>;
 }
 
@@ -241,7 +339,7 @@ export async function testSetup() {
     });
 }
 
-export async function initializeTestServers() : Promise<SetupDetails> {
+export async function initializeTestServers(): Promise<SetupDetails> {
     const hosts: DredHostDetails[] = [
         { serverId: "first", address: "localhost", port: "53032", insecure: true },
         { serverId: "second", address: "localhost", port: "53033", insecure: true },
@@ -265,10 +363,11 @@ export async function initializeTestServers() : Promise<SetupDetails> {
             },
             server.serverId,
             i++,
+            TestDredServer
         );
 
         await s.listen();
-        servers.push(s);
+        servers.push(s as TestDredServer);
     }
     server = server || servers[0];
     app = app || server.api;
@@ -280,13 +379,8 @@ export async function initializeTestServers() : Promise<SetupDetails> {
         const realMkClient = s.mkClient.bind(s);
         vi.spyOn(s, "mkClient").mockImplementation(function (...args) {
             const client = realMkClient(...args);
-            // Track clients by ownership type
-            const isServerManaged = (client as any)._serverManaged !== false;
-            if (isServerManaged) {
-                clientCleanupList.push(client);
-            } else {
-                replicatorClientCleanupList.push(client);
-            }
+
+            clientCleanupList.push(client);
             return client;
         });
     }
