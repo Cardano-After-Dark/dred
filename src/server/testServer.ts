@@ -26,14 +26,13 @@ import { Server } from "http";
 import supertest, { type SuperTestWithHost, type Test } from "supertest";
 import { Redis } from "ioredis";
 import type { AddressInfo } from "net";
+import { asyncDelay } from "../util/asyncDelay.js";
 
 import { createServer, DredServer } from "./DredServer.js";
 import { DredClient } from "../client/DredClient.js";
 
-import { asyncDelay } from "../util/asyncDelay.js";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import type { DredHostDetails } from "../types/DredHosts.js";
-import { once } from "events";
 
 if (process.env.VITEST_TIMEOUT) {
     console.log("using vitest timeout override", process.env.VITEST_TIMEOUT);

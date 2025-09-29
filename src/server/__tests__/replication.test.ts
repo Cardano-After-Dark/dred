@@ -1,6 +1,7 @@
 import { beforeAll, afterAll, beforeEach, afterEach, describe, it, vi, expect } from "vitest";
-import request, { SuperTestWithHost, Test } from "supertest";
-import { Express } from "express";
+import type { SuperTestWithHost, Test } from "supertest";
+import request from "supertest";
+import type { Express } from "express";
 
 import { zonedLogger } from "@poshplum/utils";
 import { testSetup } from "../testServer.js";

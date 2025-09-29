@@ -25,15 +25,28 @@
  * This class acts as the central coordinator for managing replication within a neighborhood.
  */
 
+import fetch from "cross-fetch";
+import { autobind, zonedLogger } from "@poshplum/utils";
+import { asyncDelay } from "../util/asyncDelay.js";
+import { colors } from "../picocolors/picocolors.js";
+import { nanoid } from "../util/nanoid.js";
+
+import { ConnectionManager } from "../client/ConnectionManager.js";
 import { DredClient } from "../client/DredClient.js";
 import { Discovery } from "../types/Discovery.js";
 import { DredServer } from "./DredServer.js";
-import { type DredHostDetails } from "../types/DredHosts.js";
-import { zonedLogger } from "@poshplum/utils";
+import { EventEmitter } from "eventemitter3";
+import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 
-import {colors} from "../picocolors/picocolors.js";
-import { asyncDelay } from "../util/asyncDelay.js";
-import { nanoid } from "../util/nanoid.js";
+import type {
+    DredClientArgs,
+    DredMessageListener,
+    FullDredMessage,
+} from "../client/DredClient.js";
+import type { DredHostDetails } from "../types/DredHosts.js";
+import type { ConnectionManagerOptions } from "../types/PeerDiscovery.js";
+import type { Logger } from "../types/Logger.js";
+
 const {
     bgBlackBright,
     blue,
@@ -51,8 +64,8 @@ const {
     magentaBright
 } = colors;
 
-export class DredReplicator{
-    logger: ReturnType<typeof zonedLogger>
+export class DredReplicator {
+    logger: Logger
     private readonly homeServer: DredServer;
     private readonly discovery: Discovery;
     private replicants: Replicant[] = [];
