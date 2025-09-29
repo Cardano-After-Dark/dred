@@ -1,11 +1,9 @@
 import fetch from "cross-fetch";
-import { customAlphabet } from "nanoid";
 import nacl from "tweetnacl";
 const { sign } = nacl;
 import util from "tweetnacl-util";
 import type { Response } from "cross-fetch";
 
-const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
 import { colors } from "../picocolors/picocolors.js";
 const {
     bgBlackBright,
@@ -42,6 +40,7 @@ import {
     type DredChannelMessage,
 } from "../types/ChannelSubscriptions.js";
 import { devMessage, type DredError, type DredEvent } from "../types/DredEvents.js";
+import { nanoid } from "../util/nanoid.js";
 
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 

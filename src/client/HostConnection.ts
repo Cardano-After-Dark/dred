@@ -21,7 +21,7 @@ import {
 import { ndjsonStream } from "./betterJsonStream.js";
 import { type DredMessage } from "./DredClient.js";
 import { type Logger } from "../types/Logger.js";
-import { nanoid } from "nanoid";
+import { nanoid } from "../util/nanoid.js";
 
 type conn = HostConnection;
 export interface ConnectionEvent extends DredEvent {

@@ -33,7 +33,7 @@ import { zonedLogger } from "@poshplum/utils";
 
 import {colors} from "../picocolors/picocolors.js";
 import { asyncDelay } from "../util/asyncDelay.js";
-import { customAlphabet } from "nanoid";
+import { nanoid } from "../util/nanoid.js";
 const {
     bgBlackBright,
     blue,
@@ -50,7 +50,6 @@ const {
     magenta,
     magentaBright
 } = colors;
-const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
 
 export class DredReplicator{
     logger: ReturnType<typeof zonedLogger>
@@ -84,7 +83,7 @@ export class DredReplicator{
     constructor(homeServer: DredServer, discovery: Discovery) {
         const serverDb = homeServer.redisDb
         const dbInfo = serverDb ? `[${serverDb}]-` : ""
-        const name = `${nanoid(3)}${dbInfo}`;
+        const name = `${nanoid(4)}${dbInfo}`;
 
         this.logger = zonedLogger("replicator", {
             color: yellow.start,

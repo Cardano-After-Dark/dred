@@ -6,8 +6,7 @@ import cors from "cors";
 import compression from "compression";
 
 import { Redis, type RedisOptions } from "ioredis";
-import { customAlphabet } from "nanoid";
-const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
+import { nanoid } from "../util/nanoid.js";
 
 import type { Application } from "express";
 
