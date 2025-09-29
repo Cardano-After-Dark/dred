@@ -144,7 +144,6 @@ let app: Express;
 let servers: TestDredServer[] = [];
 let server: TestDredServer; // a single server that tests can push stuff through by default
 let clientCleanupList: Array<DredClient> = [];
-let replicatorClientCleanupList: Array<DredClient> = [];
 
 const rootLogger = zonedLogger("root");
 const monitor = process.env.REDIS_MONITOR ? new Redis(6379, "localhost", { db: 9 }) : undefined;
@@ -254,7 +253,7 @@ afterEach(async () => {
 
     // 2 Disconnect all clients, wait for disconnection to complete
     testLogger.debug("afterEach: phase 2 - disconnecting clients");
-    const allClients = [...clientCleanupList, ...replicatorClientCleanupList];
+    const allClients = [...clientCleanupList];
 
     // Disconnect all clients
     for (const client of allClients) {
@@ -272,7 +271,6 @@ afterEach(async () => {
 
     // Clear client lists
     clientCleanupList.length = 0;
-    replicatorClientCleanupList.length = 0;
 
     // 3: safe to reset servers and flush Redis
     testLogger.debug("afterEach: phase 3 - resetting servers");
