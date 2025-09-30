@@ -133,7 +133,8 @@ class InteractiveDredClient {
                 hosts: [{
                     address: server.address,
                     port: server.port,
-                    serverId: server.serverId
+                    serverId: server.serverId,
+                    insecure: !server.ssl  // Use HTTP for non-SSL servers
                 }]
             }),
             neighborhood: "dred-dev"

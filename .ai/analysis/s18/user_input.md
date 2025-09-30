@@ -29,3 +29,4 @@ Deploy current codebase on US server using preprod deployment scripts to test re
 1. Current deployment status vs codebase analysis
 2. 3-command deployment procedure for US server
 3. Updated test client configuration for US target
+

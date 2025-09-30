@@ -58,3 +58,4 @@ curl -s http://74.208.13.84:3029/channels
 
 # 3. If successful, update test client to US server
 ```
+
