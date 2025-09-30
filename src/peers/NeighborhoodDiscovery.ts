@@ -40,6 +40,8 @@ export class NeighborhoodDiscovery extends Discovery {
 
         const address: string = process.env.LISTEN_ADDRESS || "127.0.0.1";
         const port: number = process.env.LISTEN_PORT ? Number(process.env.LISTEN_PORT) : 3029;
+        // Use DRED_USE_INSECURE env var to determine HTTP/HTTPS, default to false (HTTPS)
+        const insecure: boolean = process.env.DRED_USE_INSECURE === 'true';
 
         return {
             address: address,
@@ -47,6 +49,7 @@ export class NeighborhoodDiscovery extends Discovery {
             serverId: process.env.DRED_NODE_ID || "UNKNOWN-NODE-ID",
             publicKey: "publicKey",
             pubKeyHash: "pubKeyHash",
+            insecure: insecure,
         }
     }
 
@@ -136,14 +139,17 @@ export class NeighborhoodDiscovery extends Discovery {
             console.log(hosts.map(h => h.data!));
     this.logger.info(`^ found ${hosts.length} hosts in neighborhood ${this.neighborhood}`);
     
+    // Use DRED_USE_INSECURE env var to determine HTTP/HTTPS for discovered hosts, default to false (HTTPS)
+    const useInsecure: boolean = process.env.DRED_USE_INSECURE === 'true';
+
     const allNodes = nodeEntries.map((h) => {
         const details : DredHostDetails = {
-            
             address: h.data!.nodeDetails.address,
             port: h.data!.nodeDetails.port,
-            serverId: bytesToText(h.data!.id),                
+            serverId: bytesToText(h.data!.id),
             publicKey: h.data!.nodeDetails.pubKey.toString(),
             pubKeyHash: h.data!.nodeDetails.pubKeyHash.toString(),
+            insecure: useInsecure,
         };
 
         return details;

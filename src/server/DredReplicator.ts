@@ -3,11 +3,11 @@
  *
  *  DredRepl(homeServer, targetServer)
  *  targetServer. (channel changed)
- *  - added: is this channel in the home server?
+ *  - added: is this channel in the home server? 
  *   - y: client listen also to that channel
  *   - n (no listen) --> create home server channel (req. all DS in nbh shall have same channels)
- *
- *
+ * 
+ * 
  * In a DredNetwork, a discovery service provides the list of discoverable servers.
  * Among these, a subset of servers forms a neighborhood (nbh).
  * Servers within the same neighborhood are able to replicate messages to each other.
@@ -24,26 +24,15 @@
  * This class acts as the central coordinator for managing replication within a neighborhood.
  */
 
-import fetch from "cross-fetch";
-import { autobind, zonedLogger } from "@poshplum/utils";
-import { asyncDelay } from "../util/asyncDelay.js";
-import { colors } from "../picocolors/picocolors.js";
-import { nanoid } from "../util/nanoid.js";
-
-import { ConnectionManager } from "../client/ConnectionManager.js";
 import { DredClient } from "../client/DredClient.js";
 import { Discovery } from "../types/Discovery.js";
 import { DredServer } from "./DredServer.js";
-import { EventEmitter } from "eventemitter3";
-import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
+import { type DredHostDetails } from "../types/DredHosts.js";
+import { zonedLogger } from "@poshplum/utils";
 
-import type { FullDredMessage } from "../client/DredClient.js";
-import type { DredHostDetails } from "../types/DredHosts.js";
-import type { ConnectionManagerOptions } from "../types/PeerDiscovery.js";
-import type { Logger } from "../types/Logger.js";
-import { ReplicationSourceBookmarks } from "./ReplicationSourceBookmarks.js";
-import type { DredMessage, ReplicatedMessage } from "../types/ChannelSubscriptions.js";
-
+import {colors} from "../picocolors/picocolors.js";
+import { asyncDelay } from "../util/asyncDelay.js";
+import { customAlphabet } from "nanoid";
 const {
     bgBlackBright,
     blue,
@@ -58,11 +47,12 @@ const {
     isColorSupported,
     bgBlack,
     magenta,
-    magentaBright,
+    magentaBright
 } = colors;
+const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
 
-export class DredReplicator {
-    logger: Logger;
+export class DredReplicator{
+    logger: ReturnType<typeof zonedLogger>
     private readonly homeServer: DredServer;
     private readonly discovery: Discovery;
     private replicants: Replicant[] = [];
@@ -76,31 +66,29 @@ export class DredReplicator {
      * Get replicants that are successfully connected/active
      */
     getActiveReplicants(): Replicant[] {
-        return this.replicants.filter((replicant) => replicant.isActive());
+        return this.replicants.filter(replicant => replicant.isActive());
     }
 
     log(message: string, ...args: any[]) {
         this.logger.info(message, ...args);
     }
+
     warn(message: string, ...args: any[]) {
         this.logger.warn(message, ...args);
-    }
-    progress(message: string, ...args: any[]) {
-        this.logger.progress(message, ...args);
     }
     debug(message: string, ...args: any[]) {
         this.logger.debug(message, ...args);
     }
-
+    
     constructor(homeServer: DredServer, discovery: Discovery) {
-        const serverDb = homeServer.redisDb;
-        const dbInfo = serverDb ? `/#${serverDb}` : "";
-        const name = `${nanoid(4)}${dbInfo}`;
+        const serverDb = homeServer.redisDb
+        const dbInfo = serverDb ? `[${serverDb}]-` : ""
+        const name = `${nanoid(3)}${dbInfo}`;
 
         this.logger = zonedLogger("replicator", {
             color: yellow.start,
             //  levels: {default: "info"},
-            loggerId: name,
+            loggerId: name
         });
         this.homeServer = homeServer;
         this.discovery = discovery;
@@ -110,68 +98,67 @@ export class DredReplicator {
     }
 
     async initialize() {
-        if (this.initialized) {
-            this.progress(`already initialized`);
+        if(this.initialized) {
+            this.warn(`already initialized`);
             return;
         }
         this.initialized = true;
-        this.debug(`initializing`);
+        this.log(`initializing`);
 
+        
         // NOTE: the discovery is already filtering by neighborhood
         const hosts = await this.discovery.getHostList();
         const otherHosts = hosts.filter((host) => host.serverId !== this.homeServer.serverId);
-        const readySignals: Promise<void>[] = [];
         // Create all replicants first
         for (const host of otherHosts) {
             // handle replication from a single target server to the home server
-            const replicant = new Replicant(this, this.homeServer, host);
+            const repClient = new Replicant(this, this.homeServer, host);
             // Store replicant for cleanup
-            this.replicants.push(replicant);
-            readySignals.push(
-                new Promise<any>((resolve) => {
-                    replicant.eventEmitter.once("replicator:connected", resolve);
-                }),
-            );
-            try {
-                // Start connection loop in background
-                replicant.startConnectionLoop();
-            } catch (error: any) {
-                this.logger.error(`starting connection loop:`, error.stack);
-            }
+            this.replicants.push(repClient);
         }
-        this.replicantsReady = Promise.all(readySignals);
+
+        // Start all connection loops in parallel (non-blocking)
+        this.replicants.forEach((replicant) => {
+            try {
+                // Start connection loop asynchronously - don't await
+                replicant.startConnectionLoop();
+            } catch (error) {
+                this.warn(`Failed to start connection loop for replicant: ${error}`);
+            }
+        });
 
         // Don't wait for connections to complete - let them retry in background
-        this.progress(`initialized with ${this.replicants.length} replicants`);
+        this.log(`started ${this.replicants.length} connection loops in parallel`);
+
+        this.log(`initialized`);
     }
-    replicantsReady: Promise<void[]> | undefined;
 
     async cleanup() {
-        if (!this.initialized) {
+        if(!this.initialized) {
             this.warn(`not initialized`);
             return;
         }
-
-        this.debug(`cleanup ${this.replicants.length} replicants`);
-
+        
+        this.warn(`Cleaning up ${this.replicants.length} replicants`);
+        
         // Clean up all replicants - wait for all but continue on errors
         const results = await Promise.allSettled(
             this.replicants.map((replicant, index) => {
                 // this.debug(`cleaning up replicant ${index}`);
                 return replicant.cleanup();
-            }),
+            })
         );
-
+        
         // Log any failures but don't throw
         results.forEach((result, index) => {
-            if (result.status === "rejected") {
+            if (result.status === 'rejected') {
                 this.warn(`Error cleaning up replicant ${index}: ${result.reason}`);
             }
         });
-
+        
         this.replicants = [];
         this.initialized = false;
-        this.progress(`cleanup complete`);
+        this.warn(`cleanup complete`);
     }
 
     // // true when message with this ocid was already processed for this channel
@@ -199,10 +186,6 @@ interface SimpleRetryState {
     retryTimer?: NodeJS.Timeout;
 }
 
-type ReplicationEvents = {
-    "replicator:connected": [replicant: Replicant];
-};
-
 /**
  * Replicant is a class that handles replication to a single target server.
  * It is responsible for:
@@ -210,50 +193,50 @@ type ReplicationEvents = {
  *  - replicating the messages from the target server to the home server, while preventing duplicates
  *  - listening to the home server for new channels
  */
-export class Replicant {
+export class Replicant{
+    private static _logHeader = "[REPLicant]";
     private replicator: DredReplicator;
     private homeServer: DredServer;
     private targetHost: DredHostDetails;
     private name: string;
     private repClient: DredClient | null;
     private retryState: SimpleRetryState;
-    logger: Logger;
-    eventEmitter: EventEmitter<ReplicationEvents> = new EventEmitter<ReplicationEvents>();
+    logger: ReturnType<typeof zonedLogger>
+
     log(message: string, ...args: any[]) {
         // Use a simulated "replication" facility with target as loggerId
         // This mimics what Randall wanted: facility 'replication' with target-server-id as loggerId
         this.logger.info(message, ...args);
     }
+
     warn(message: string, ...args: any[]) {
         // Use a simulated "replication" facility with target as loggerId
         this.logger.warn(message, ...args);
-    }
-    progress(message: string, ...args: any[]) {
-        this.logger.progress(message, ...args);
-    }
-    debug(message: string, ...args: any[]) {
-        this.logger.debug(message, ...args);
-    }
-    trace(message: string, ...args: any[]) {
-        this.logger.trace(message, ...args);
     }
 
     constructor(replicator: DredReplicator, homeServer: DredServer, targetHost: DredHostDetails) {
         this.replicator = replicator;
         this.homeServer = homeServer;
         this.targetHost = targetHost;
-        const serverDb = homeServer.redisDb;
-        const dbInfo = serverDb ? `${nanoid(3)}/#${serverDb}-` : "";
-        const target = targetHost.serverId.replace(/^dredNode-/, "") || targetHost.address;
+        const serverDb = homeServer.redisDb
+        const dbInfo = serverDb ? `${nanoid(2)}[${serverDb}]-` : ""
+        const target = targetHost.serverId.replace(/^dredNode-/, "") || targetHost.address
         this.name = `${dbInfo}from-${target}`;
         this.logger = zonedLogger("replicant", {
             loggerId: this.name,
-            color: blue.start,
+            color: blue.start
         });
         this.repClient = null;
         this.retryState = {
-            isRetrying: false,
+            isRetrying: false
         };
+    }
+    
+    /**
+     * Get a human-readable name for logging
+     */
+    private getReadableName(): string {
+        return `Replicant[${this.targetHost.address}:${this.targetHost.port}]`;
     }
 
     /**
@@ -273,13 +256,13 @@ export class Replicant {
         if (!this.repClient) {
             return false;
         }
-
+        
         try {
             const connManager = this.repClient.connManager;
             if (!connManager) {
                 return false;
             }
-
+            
             // Check if there are any "active" connections in the connection manager
             // This is the proper way to determine if the client is actually connected
             return this.hasActiveConnections(connManager);
@@ -296,7 +279,7 @@ export class Replicant {
             // Simple approach: if we have a repClient and it was successfully established, consider it active
             if (this.repClient) {
                 const clientConnManager = (this.repClient as any).connManager;
-
+                
                 // Check if the client's connection manager has active connections
                 if (clientConnManager) {
                     const clientConnStatus = (clientConnManager as any).connStatus;
@@ -312,14 +295,14 @@ export class Replicant {
                         }
                     }
                 }
-
+                
                 // If we have a repClient that was successfully created and hasn't been cleaned up,
                 // and we're not in a retry state, assume it's active
                 if (!this.retryState.isRetrying) {
                     return true;
                 }
             }
-
+            
             return false;
         } catch (error) {
             return false;
@@ -330,21 +313,17 @@ export class Replicant {
      * Start the connection loop with retry logic (non-blocking)
      */
     startConnectionLoop(): void {
-        this.logger.progress(`starting connection loop`);
-
+        this.log(`${this.name} starting connection loop`);
+        
         if (this.repClient !== null) {
             this.warn(`${this.name} already has a client, cleaning up first`);
             // Don't await cleanup - do it asynchronously
-            this.cleanup()
-                .then(() => {
-                    this.attemptConnection();
-                })
-                .catch((error) => {
-                    this.warn(
-                        `${this.name} cleanup failed, proceeding with connection attempt: ${error}`,
-                    );
-                    this.attemptConnection();
-                });
+            this.cleanup().then(() => {
+                this.attemptConnection();
+            }).catch((error) => {
+                this.warn(`${this.name} cleanup failed, proceeding with connection attempt: ${error}`);
+                this.attemptConnection();
+            });
         } else {
             // Start the connection attempt asynchronously
             this.attemptConnection();
@@ -357,45 +336,33 @@ export class Replicant {
     private async attemptConnection(): Promise<void> {
         try {
             this.retryState.lastAttemptTime = new Date();
-
+            
             // Check if target server is available first (with timeout)
             const isAvailable = await this.checkServerAvailability();
             if (!isAvailable) {
                 // Error message already logged in checkServerAvailability with semantic format
                 throw new Error(`Target server ${this.targetHost.serverId} is not available`);
             }
-            const focusedDiscovery = new StaticHostDiscovery({
-                hosts: [this.targetHost],
-                neighborhood: this.homeServer.nbh,
-            });
-
+            
             // Create client and attempt connection with timeout
-            this.repClient = new DredClient({
-                ...this.homeServer.clientArgs,
-                name: this.name,
-                neighborhood: this.homeServer.nbh,
-                discovery: focusedDiscovery,
-                bookmarkStorage: new ReplicationSourceBookmarks(
-                    this.homeServer.serverId,
-                    this.targetHost.serverId,
-                    this.homeServer.redis!,
-                ),
-            });
-
+            this.repClient = this.homeServer.mkClient(this.targetHost.serverId, {
+                name: `from-${this.homeServer.serverId}-to-${this.targetHost.serverId}`
+            }, false); // false = not server managed
+            
             // Set max listeners to prevent memory leak warnings on various components
             if (this.repClient) {
                 const connManager = (this.repClient as any).connManager;
                 if (connManager && connManager.setMaxListeners) {
                     connManager.setMaxListeners(20);
                 }
-
+                
                 // Also set on the client itself if it supports it
                 if ((this.repClient as any).setMaxListeners) {
                     (this.repClient as any).setMaxListeners(20);
                 }
             }
-
-            let success = false;
+            
+            let success = false
             // Add timeout to the entire DRED client connection process
             const connectionPromise = this.performConnection().then(() => {
                 success = true;
@@ -403,31 +370,26 @@ export class Replicant {
             asyncDelay(1000).then(() => {
                 // VERY special case - normally we'd just log.
                 // show a message, but only if it didn't quickly get connected.
-                if (!success) {
+                if (! success) {
                     this.warn("Replicator trying to connect ...");
                 }
-            });
+            })
 
-            const timeoutPromise = new Promise<never>((_, reject) => {
+            const timeoutPromise =  new Promise<never>((_, reject) => {
                 setTimeout(() => {
-                    reject(new Error("DRED client connection timeout after 10 seconds"));
+                    reject(new Error('DRED client connection timeout after 10 seconds'))
                 }, 10000);
-            });
-
+            });        
+            
             await Promise.race([connectionPromise, timeoutPromise]);
-
-            if (!success) {
-                throw new Error("unreachable error");
-            } else {
-                // Connection successful - reset retry state
-                this.resetRetryState();
-                this.eventEmitter.emit("replicator:connected", this);
-
-                this.log(`replicating`);
-            }
+            
+            // Connection successful - reset retry state
+            this.resetRetryState();
+            this.log(`✅ replication connection established`);
+            
         } catch (error) {
             // Error already logged in checkServerAvailability with semantic format
-
+            
             // Clean up failed client
             if (this.repClient) {
                 try {
@@ -437,7 +399,7 @@ export class Replicant {
                 }
                 this.repClient = null;
             }
-
+            
             // Schedule retry
             this.scheduleRetry();
         }
@@ -448,25 +410,15 @@ export class Replicant {
      */
     private async checkServerAvailability(): Promise<boolean> {
         try {
-            let secureProtocol = "https";
-            if (this.targetHost.insecure) {
-                if (process.env.NODE_ENV !== "test") {
-                    throw new Error("insecure replication is only allowed in test environment");
-                }
-                secureProtocol = "http";
-            }
-            const url = `${secureProtocol}://${this.targetHost.address}:${this.targetHost.port}/channels`;
+            // Use HTTP or HTTPS based on the insecure flag
+            const protocol = this.targetHost.insecure ? 'http' : 'https';
+            const url = `${protocol}://${this.targetHost.address}:${this.targetHost.port}/channels`;
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
             const response = await fetch(url, {
-                method: "GET",
-                signal: controller.signal,
-                headers: {
-                    "content-type": "application/json",
-                    accept: "application/json",
-                    clientId: `${this.name}-REPL`,
-                } as HeadersInit,
+                method: 'GET',
+                signal: controller.signal
             });
 
             clearTimeout(timeoutId);
@@ -474,17 +426,13 @@ export class Replicant {
             if (response.ok) {
                 return true;
             } else {
-                this.warn(`HTTP error: ${response.status}: ${response.statusText}`);
-                this.warn(
-                    `can't yet replicate from ${this.targetHost.address}:${this.targetHost.port} - will retry`,
-                );
+                this.warn(`HTTP error: ${response.status}: ${response.statusText}`)
+                this.warn(`can't yet replicate from ${this.targetHost.address}:${this.targetHost.port} - will retry`);
                 return false;
             }
-        } catch (error: any) {
-            this.warn(error.cause.message || error.message);
-            this.warn(
-                `can't yet replicate from ${this.targetHost.address}:${this.targetHost.port} - will retry`,
-            );
+        } catch (error:any) {
+            this.warn(error.cause?.message || error.message)
+            this.warn(`can't yet replicate from ${this.targetHost.address}:${this.targetHost.port} - will retry`);
             return false;
         }
     }
@@ -494,14 +442,15 @@ export class Replicant {
      */
     private async performConnection(): Promise<void> {
         if (!this.repClient) {
-            throw new Error("Client not initialized");
+            throw new Error('Client not initialized');
         }
 
         await this.repClient.generateKey();
-
+        
         // Get channels from both servers and find intersection
         const commonChannels = await this.findCommonChannels();
-
+        this.log(`${this.name} common channels: ${commonChannels.join(', ')}`);
+        
         // Subscribe to common channels with replication handlers
         await this.subscribeToCommonChannels(commonChannels);
     }
@@ -513,18 +462,13 @@ export class Replicant {
         if (this.retryState.isRetrying) {
             return;
         }
-
-        const retryIntervalSeconds = parseInt(
-            process.env.REPLICATION_RETRY_INTERVAL_SECONDS || "60",
-            10,
-        );
-        // in test env, we'll retry every 6 seconds instead by default.  Sorry this looks obscure.
-        const retryIntervalMs =
-            retryIntervalSeconds * (process.env.NODE_ENV === "test" ? 100 : 1000);
-
+        
+        const retryIntervalSeconds = parseInt(process.env.REPLICATION_RETRY_INTERVAL_SECONDS || '60', 10);
+        const retryIntervalMs = retryIntervalSeconds * 1000;
+        
         this.retryState.isRetrying = true;
         this.retryState.nextRetryTime = new Date(Date.now() + retryIntervalMs);
-
+        
         this.retryState.retryTimer = setTimeout(() => {
             this.attemptConnection();
         }, retryIntervalMs);
@@ -538,207 +482,240 @@ export class Replicant {
             clearTimeout(this.retryState.retryTimer);
             this.retryState.retryTimer = undefined;
         }
-
+        
         this.retryState.isRetrying = false;
         this.retryState.nextRetryTime = undefined;
+    }
+    debug(message: string, ...args: any[]) {
+        this.logger.debug(message, ...args);
     }
 
     private async findCommonChannels(): Promise<string[]> {
         // Trigger channel discovery if not already done
         if (!this.repClient!.channels || this.repClient!.channels.length === 0) {
-            this.debug(`finding remote channels`);
+            this.debug(`Triggering channel discovery for ${this.targetHost.serverId}`);
             this.repClient!.channels = await this.repClient!.connManager.getChannelList();
         }
-
+        
         // Get channels from target server (via replication client)
         const targetChannels = this.repClient!.channels;
-        this.trace(`found channels: ${targetChannels.join(", ")}`);
-
+        this.debug(`${this.targetHost.serverId} channels: [${targetChannels.join(', ')}]`);
+        
         // Get channels from home server
-        const homeChannels = (await this.homeServer.channelList.keys()) as string[];
-        this.trace(`my channels: ${homeChannels.join(", ")}`);
-
+        const homeChannels = await this.homeServer.channelList.keys() as string[];
+        this.debug(`my channels: [${homeChannels.join(', ')}]`);
+        
         // Find intersection (channels that exist on both servers)
-        const commonChannels = targetChannels.filter(
-            (channel) => homeChannels.includes(channel) && !channel.startsWith("_"), // Skip meta channels for now
+        const commonChannels = targetChannels.filter(channel => 
+            homeChannels.includes(channel) && 
+            !channel.startsWith('_') // Skip meta channels for now
         );
         
-        this.trace(`common channels: ${commonChannels.join(", ")}`);
-        this.progress(`${commonChannels.length} common channels`);
-
         return commonChannels;
     }
 
     private async subscribeToCommonChannels(channels: string[]): Promise<void> {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        
+        await new Promise(resolve => setTimeout(resolve, 100));
 
         // Connection state check
-        this.logger.ops(`Connection states:
+        this.log(`Connection states:
           - RepClient: ${this.repClient!.currentState}
           - ConnManager: ${this.repClient!.connManager.currentState}
           - Waiting for connection...
           - After wait - RepClient: ${this.repClient!.currentState}, ConnManager: ${this.repClient!.connManager.currentState}`);
+        
+        // Create subscription map with replication handlers
+        const subscriptionMap: Record<string, (msg: any) => void> = {};
+        
+        for (const channel of channels) {
+            subscriptionMap[channel] = (message) => {
+                this.warn(`📥 REPLICATION: Message detected from ${this.targetHost.serverId} in channel '${channel}' (${message.mid})`);
+                const{connection, ...core}=message;
+                this.log(`🎯 REPL MESSAGE from ${this.targetHost.serverId}:`, core);
+                this.handleIncomingMessage(channel, message);
+            };
+        }
+        
+        this.warn(`🔔 REPLICATION: Subscribing to ${channels.length} channels`);
 
-        await this.repClient!.subscribeToChannels({
-            type: "mass",
-            channels,
-            massHandler: this.messageHandler.bind(this),
-        });
+        await this.repClient!.subscribeToChannels(subscriptionMap);
 
-        this.progress(`subscribed to ${channels.length} channels`);
+        this.warn(`✅ Successfully subscribed to ${channels.length} channels`);
     }
 
     /**
      * Handle incoming message from target server to this client attached to the home server
-     * @param channelId
-     * @param message
-     * @returns
+     * @param channelId 
+     * @param message 
+     * @returns 
      */
-    private async messageHandler(inboundMessage: FullDredMessage): Promise<void> {
-        const { mid, channel, ocid } = inboundMessage;
+    private async handleIncomingMessage(channelId: string, message: any): Promise<void> {
         try {
-            this.trace(`received message`, { channel, mid });
-            const messageId = ocid || mid || `${Date.now()}-${Math.random()}`;
+            // eslint-disable-next-line no-debugger
+            debugger
 
+            const sourceId = this.targetHost.serverId;
+            
+            // Message received from target server 
+            this.warn(`📥 REPLICATION: Received message from ${this.targetHost.serverId} -> ${this.homeServer.serverId} in channel '${channelId}' (${message.mid})`);
+            
+            // Extract message details for replication
+            const messageId = message.mid || message.id || `${Date.now()}-${Math.random()}`;
+            const ocid = message.ocid;
+            
             // Skip messages without ocid - they can't be properly deduplicated
             if (!ocid) {
-                this.debug(`Skipping message without ocid`, messageId);
+                this.log(`Skipping message without ocid from ${this.targetHost.serverId} (messageId: ${messageId})`);
                 return;
             }
 
+            
+            
             // CRITICAL: Prevent replication loops
-
-            if (inboundMessage.origSrvId === this.homeServer.serverId) {
-                this.debug(`Skipping message originating from here: %s`, messageId);
-                return;
-            }
-
             // Check if this message already came from replication (has replication metadata)
-            if (inboundMessage.replFrom && inboundMessage.replFrom !== undefined) {
-                this.warn(
-                    `---- UNEXPECTED: Skipping message: already replicated (from ${inboundMessage.replFrom})`,
-                );
-                this.warn(
-                    `TODO: !!! ensure a ring topology doesn't drop messages due to this policy`,
-                );
+            if (message.replicatedFrom && message.replicatedFrom !== undefined) {
+                this.log(`Skipping message: already replicated (from ${message.replicatedFrom})`);
                 return;
             }
 
-            if (!(await this.weHaveChannel(channel, messageId))) {
-                this.warn("dropping message for non-existent channel: %o", { channel, messageId });
-                this.warn(
-                    `TODO: !!! check for a race involving a new channel; ensure we aren't dropping messages`,
-                );
+            // Check if this message originated from the home server
+            if (message.originalServerId === this.homeServer.serverId) {
+                this.log(`Skipping message: originated from home server ${this.homeServer.serverId}`);
+                return;
+            }
+            
+            // Check if we should replicate this message
+            this.log(` >>>>>>>>>>  about to call shouldReplicateMessage: ${channelId} ${messageId}`);
+            if (!await this.shouldReplicateMessage(channelId, messageId)) {
+                this.log(` >>>>>>>>>>  shouldReplicateMessage returned false`);
                 return;
             }
 
-            const {
-                msg,
-                type,
-                "content-type": contentType,
-                encryptedMsg,
-            } = inboundMessage
+            this.log(` >>>>>>>>>>  shouldReplicateMessage returned true`);
 
-            const replicatedMessage: DredMessage & ReplicatedMessage = {
-                // type: message.type || "replicated",'
-                msg,
-                type,
-                "content-type": contentType,
+            // Prepare replicated message
+            const replicatedMessage = {
+                msg: message.msg || message.data,
+                type: message.type || 'replicated',
                 ocid: ocid,
-                encryptedMsg,
-
-                replFrom: this.targetHost.serverId,
-                replAt: new Date().getTime(),
-                origMsgId: messageId,
-                origSrvId: this.targetHost.serverId,
+                replicatedFrom: this.targetHost.serverId,
+                replicatedAt: new Date().toISOString(),
+                originalMessageId: messageId,
+                originalServerId: this.targetHost.serverId,
             };
-
-            await this.addMessage(channel, mid, replicatedMessage);
-        } catch (error: any) {
-            this.logger.error(`while replicating channel '${channel}': `, error.stack);
+            
+            // Replicate to home server
+            await this.replicateToHomeServer(channelId, replicatedMessage);
+            
+            this.log(`Successfully replicated message from ${this.targetHost.serverId} to home server in channel ${channelId}`);
+            
+        } catch (error) {
+            this.warn(`Error handling message from ${this.targetHost.serverId} in channel ${channelId}: ${error}`);
             throw error;
         }
     }
 
     /**
      * Check if the message should be replicated to the home server
-     *
-     *
-     * @param channelId
-     * @param messageId
-     * @returns
+     * 
+     * 
+     * @param channelId 
+     * @param messageId 
+     * @returns 
      */
-    private async weHaveChannel(channelId: string, messageId: string): Promise<boolean> {
+    private async shouldReplicateMessage(channelId: string, messageId: string): Promise<boolean> {
+        this.log(` >>>>>>>>>>  shouldReplicateMessage: ${channelId} ${messageId}`);
+        
         // Check if channel still exists on home server
         const channelExists = await this.homeServer.channelList.has(channelId);
 
-        // NOTE: we might have issues here, as we probably need to trigger the getChannelList()
+        this.log(` >>>>>>>>>>  channelExists: ${channelExists} }`);
+
+        // NOTE: we might have issues here, as we probably need to trigger the getChannelList() 
         // if, so, it is better to have a cache of channels and subscribe to the _chans channel
         // to be notified of new channels
 
         if (!channelExists) {
-            this.debug(
-                `Channel ${channelId} no longer exists on home server, skipping replication`,
-            );
+            this.log(`Channel ${channelId} no longer exists on home server, skipping replication`);
             return false;
         }
-
+        
         // Check if message already processed not needed anymore, we use deduplication
-
+        
         return true;
     }
 
-    private async addMessage(channelId: string, mid: string, messageDetails: DredMessage & ReplicatedMessage): Promise<void> {
+    private async replicateToHomeServer(channelId: string, messageDetails: any): Promise<void> {
         try {
-            // this.warn(`📤 REPLICATION: Publishing to home server '${this.homeServer.serverId}' in channel '${channelId}' (ocid: ${messageDetails.ocid})`);
-
-            const { ocid } = messageDetails
+            this.warn(`📤 REPLICATION: Publishing to home server '${this.homeServer.serverId}' in channel '${channelId}' (ocid: ${messageDetails.ocid})`);
+            
             // Use the DredServer's deduplication system to prevent duplicate messages
             const result = await this.homeServer.ensureMessageProcessedOnce(
                 channelId,
-                ocid!,
+                messageDetails.ocid,
                 messageDetails.msg,
-                messageDetails,
+                messageDetails
             );
-
+            
             if (result) {
-                this.logger.trace(`Message added to local server: ${result}`);
+                this.log(`Message successfully replicated to home server: ${result}`);
             } else {
-                this.debug(`already replicated: ${channelId}/ ${messageDetails.ocid}`);
+                this.log(`Message was a duplicate, not replicated: ${messageDetails.ocid}`);
             }
-            this.repClient?.bookmarkStorage.setBookmark(channelId, mid);
+            
         } catch (error) {
-            this.logger.error(`while adding to channel ${channelId}: ${error}`);
+            this.warn(`Failed to replicate message to home server channel ${channelId}: ${error}`);
             throw error;
         }
     }
+
+    // Unused, not needed but let's keep it here for now
+    // private async waitForClientReady(): Promise<void> {
+    //     return new Promise((resolve) => {
+    //         if (this.repClient!.currentState === 'ready') {
+    //             resolve();
+    //             return;
+    //         }
+            
+    //         this.repClient!.events.once('state:changed', (event) => {
+    //             if (event.status === 'ready') {
+    //                 resolve();
+    //             }
+    //         });
+    //     });
+    // }
 
     /**
      * Clean up replicant resources following ownership pattern.
      * TestServer owns client lifecycle, so we just nullify our reference.
      */
     async cleanup(): Promise<void> {
-        this.trace(`cleaning up replicant`);
-
+        this.debug(`cleaning up replicant`);
+        
         // Clear any pending retry timers
         if (this.retryState.retryTimer) {
             clearTimeout(this.retryState.retryTimer);
             this.retryState.retryTimer = undefined;
             this.debug(`cleared retry timer`);
         }
-
+        
         // Reset retry state
         this.retryState.isRetrying = false;
         this.retryState.nextRetryTime = undefined;
-
+        
         if (this.repClient) {
-            this.repClient.disconnect();
+            
+            // TODO: check if the client is connected before trying to disconnect
+            // this.repClient.disconnect();
 
-            // Doesn't try to clear subscriptions - DredClient subscription setter is incomplete
+            this.debug(`${this.name} nullifying client reference (testServer will also try to disconnect clients)`);
+            // Don't try to clear subscriptions - DredClient subscription setter is incomplete
             // Just nullify our reference and let testServer handle full client disconnect
             this.repClient = null;
         }
-
-        this.progress(`cleanup complete`);
+        
+        this.log(`cleanup complete`);
     }
 }

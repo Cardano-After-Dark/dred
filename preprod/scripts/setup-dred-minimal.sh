@@ -66,11 +66,32 @@ export DRED_NODE_ID="$DRED_NODE_ID"
 export CARDANO_NETWORK="$CARDANO_NETWORK"
 export LOGGING="$LOGGING"
 export USE_STATIC_DISCOVERY="$USE_STATIC_DISCOVERY"
+export DRED_USE_INSECURE="$DRED_USE_INSECURE"
 export SERVER_IP="$SERVER_IP"
 
 echo "🔧 IDEMPOTENT CLEANUP: Stopping existing DRED..."
 pm2 stop dred 2>/dev/null || true
 pm2 delete dred 2>/dev/null || true
+
+echo "🔧 IDEMPOTENT CLEANUP: Checking port 3029..."
+PORT_PIDS=\$(sudo lsof -ti:3029 2>/dev/null || true)
+if [ -n "\$PORT_PIDS" ]; then
+    echo "⚠️  WARNING: Port 3029 is still in use by process(es): \$PORT_PIDS"
+    echo "🔧 Auto-killing processes using port 3029..."
+    for PID in \$PORT_PIDS; do
+        echo "   Killing PID \$PID"
+        sudo kill -9 \$PID 2>/dev/null || true
+    done
+    sleep 2
+    # Verify port is free
+    if sudo lsof -ti:3029 2>/dev/null; then
+        echo "❌ ERROR: Failed to free port 3029"
+        exit 1
+    fi
+    echo "✅ Port 3029 is now free"
+else
+    echo "✅ Port 3029 is free"
+fi
 
 echo "🔧 IDEMPOTENT CLEANUP: Removing existing directory..."
 cd /home/devops
@@ -121,6 +142,7 @@ DRED_NODE_ID=${DRED_NODE_ID}
 BF_API_KEY=${BF_API_KEY}
 CARDANO_NETWORK=${CARDANO_NETWORK}
 USE_STATIC_DISCOVERY=${USE_STATIC_DISCOVERY}
+DRED_USE_INSECURE=${DRED_USE_INSECURE}
 ENVEOF
 
 echo "🔧 Server identified as: $DRED_NODE_ID"
@@ -130,6 +152,8 @@ echo "🔧 Server using blockfrost API: $BF_API_KEY"
 echo "🔧 Server using cardano network: $CARDANO_NETWORK"
 
 echo "🔧 Server discovery method: USE_STATIC_DISCOVERY=$USE_STATIC_DISCOVERY"
+
+echo "🔧 Server HTTP/HTTPS mode: DRED_USE_INSECURE=$DRED_USE_INSECURE"
 
 echo "🔧 Server IP: $SERVER_IP"
 
@@ -154,6 +178,7 @@ module.exports = {
       BF_API_KEY: '${BF_API_KEY}',
       CARDANO_NETWORK: '${CARDANO_NETWORK}',
       USE_STATIC_DISCOVERY: '${USE_STATIC_DISCOVERY}',
+      DRED_USE_INSECURE: '${DRED_USE_INSECURE}',
       SERVER_IP: '${SERVER_IP}'
     }
   }]    
