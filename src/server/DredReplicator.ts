@@ -502,8 +502,12 @@ export class Replicant {
             return;
         }
         
-        const retryIntervalSeconds = parseInt(process.env.REPLICATION_RETRY_INTERVAL_SECONDS || '60', 10);
-        const retryIntervalMs = retryIntervalSeconds * 1000;
+        const retryIntervalSeconds = parseInt(
+            process.env.REPLICATION_RETRY_INTERVAL_SECONDS || "60",
+            10,
+        );
+        // in test env, we'll retry every 6 seconds instead by default.  Sorry this looks obscure.
+        const retryIntervalMs = retryIntervalSeconds * (process.env.NODE_ENV === "test" ? 100 : 1000);
         
         this.retryState.isRetrying = true;
         this.retryState.nextRetryTime = new Date(Date.now() + retryIntervalMs);
