@@ -100,6 +100,10 @@ export type DredChannelMessage = ConnectionEvent & {
     details: any;
     mid: MsgId;
     ts: Date;
+    replFrom?: string;
+    replAt?: number;
+    origSrvId?: string;
+    origMsgId?: string;
 };
 
 // Warning: (ae-forgotten-export) The symbol "DredClient_base" needs to be exported by the entry point index.d.ts
@@ -136,6 +140,8 @@ export class DredClient extends DredClient_base {
     // (undocumented)
     get currentState(): keyof typeof clientStates;
     // (undocumented)
+    debug(a1: string, ...args: any[]): void;
+    // (undocumented)
     disconnect(): void;
     // Warning: (ae-forgotten-export) The symbol "Discovery" needs to be exported by the entry point index.d.ts
     //
@@ -154,29 +160,35 @@ export class DredClient extends DredClient_base {
         debug?: boolean | undefined;
     }): Promise<any>;
     // (undocumented)
+    findSubscription(channelName: string, required?: boolean): ChannelSubscriptionListener | undefined;
+    // (undocumented)
     generateKey(): Promise<void>;
     // (undocumented)
     getNeighborhoods(): Promise<string[]>;
     // (undocumented)
     identity?: nacl_2.SignKeyPair;
     // (undocumented)
+    info(a1: string, ...args: any[]): void;
+    // (undocumented)
     insecure?: boolean;
     // (undocumented)
     instanceNumber: number;
     // (undocumented)
     joinChannel(channelName: string): Promise<any>;
+    // Warning: (ae-forgotten-export) The symbol "Logger_2" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
-    log(a1: string, ...args: any[]): void;
-    // (undocumented)
-    logger: ReturnType<typeof zonedLogger>;
+    logger: Logger_2;
     // (undocumented)
     logInfo(): string;
+    // Warning: (ae-forgotten-export) The symbol "FullChannelsListeners" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
-    messageHandler?: DredMessageListener;
+    mkChannelsListeners(listeners: SimpleChannelsListeners): FullChannelsListeners;
     // (undocumented)
     mkChannelSub(channel: string, listener: DredMessageListener): ChannelSubscriptionListener;
     // (undocumented)
-    mkChannelSubs(smap: SubscriberMap): SubscriptionListenerMap;
+    mkConnectionManager(): ConnectionManager;
     // (undocumented)
     neighborhood: string;
     once<E extends string & keyof ClientEvents>(eventName: E): Promise<ClientEvents[E] extends [infer O1, ...infer more] ? ClientEvents[E] extends [infer SINGLE] ? SINGLE : ClientEvents[E] : void>;
@@ -190,6 +202,8 @@ export class DredClient extends DredClient_base {
     processAuthMsg(m: DredChannelMessage): void;
     // (undocumented)
     processChannelsMsg(m: DredChannelMessage): void;
+    // (undocumented)
+    progress(a1: string, ...args: any[]): void;
     // (undocumented)
     pubKeyString?: string;
     // (undocumented)
@@ -206,18 +220,15 @@ export class DredClient extends DredClient_base {
     //
     // (undocumented)
     subscribers: subscriberMap;
-    subscribeToChannels(channels: ChanId[]): Promise<void>;
+    // Warning: (ae-forgotten-export) The symbol "SimpleChannelsListeners" needs to be exported by the entry point index.d.ts
+    subscribeToChannels(listeners: SimpleChannelsListeners): Promise<void>;
     // (undocumented)
-    subscribeToChannels(channel: ChanId): Promise<void>;
+    subscriptionCache: Record<string, ChannelSubscriptionListener>;
+    set subscriptions(replacement: FullChannelsListeners);
     // (undocumented)
-    subscribeToChannels(smap: SubscriberMap): Promise<void>;
-    set subscriptions(replacement: SubscriptionListenerMap);
+    get subscriptions(): FullChannelsListeners;
     // (undocumented)
-    get subscriptions(): SubscriptionListenerMap;
-    // Warning: (ae-forgotten-export) The symbol "SubscriptionListenerMap" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    _subscriptions?: SubscriptionListenerMap;
+    trace(a1: string, ...args: any[]): void;
     // (undocumented)
     verifySig(s: string, sigBase64: string, keyBase64: string): Promise<boolean>;
     // (undocumented)
@@ -272,8 +283,10 @@ export type DredMessage = {
     ocid?: string;
 };
 
+// Warning: (ae-forgotten-export) The symbol "FullDredMessage" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
-export type DredMessageListener = (dcm: DredChannelMessage & DredMessage) => void;
+export type DredMessageListener = (dcm: FullDredMessage) => void;
 
 // @public (undocumented)
 export type EncryptedDredMessage = DredMessage & {
@@ -315,12 +328,14 @@ export class NeighborhoodDiscovery extends Discovery {
     //
     // (undocumented)
     getConnectionThresholds(): promisedConnectionThresholds;
-    // Warning: (ae-forgotten-export) The symbol "DredHostDetails" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     getHostList(): Promise<DredHostDetails[]>;
     // (undocumented)
     initHostDiscovery(): Promise<void>;
+    // Warning: (ae-forgotten-export) The symbol "DredHostDetails" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    myServerInfo(serverId: string): Promise<DredHostDetails | undefined>;
     // (undocumented)
     neighborhood?: NbhId;
     // Warning: (ae-forgotten-export) The symbol "NodeRegistryController" needs to be exported by the entry point index.d.ts
@@ -363,7 +378,7 @@ export type SubscriberMap = {
 
 // Warnings were encountered during analysis:
 //
-// /home/san/dev/dred/src/types/ChannelSubscriptions.ts:66:5 - (ae-forgotten-export) The symbol "DredMsgData" needs to be exported by the entry point index.d.ts
+// /home/san/dev/dred2/src/types/ChannelSubscriptions.ts:101:5 - (ae-forgotten-export) The symbol "DredMsgData" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

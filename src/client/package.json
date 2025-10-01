@@ -1,6 +1,6 @@
 {
     "name": "@cardano-after-dark/dred-client",
-    "version": "0.7.0",
+    "version": "0.8.0",
     "description": "Distributed event streams for web3 (client)",
     "type": "module",
     "packageManager": "pnpm@10.10.0",

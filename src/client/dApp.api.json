@@ -632,7 +632,7 @@
             },
             {
               "kind": "Content",
-              "text": ";\n}"
+              "text": ";\n    replFrom?: string;\n    replAt?: number;\n    origSrvId?: string;\n    origMsgId?: string;\n}"
             },
             {
               "kind": "Content",
@@ -672,37 +672,6 @@
           "name": "DredClient",
           "preserveMemberOrder": false,
           "members": [
-            {
-              "kind": "Property",
-              "canonicalReference": "@cardano-after-dark/dred-client!DredClient#_subscriptions:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "_subscriptions?: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "SubscriptionListenerMap",
-                  "canonicalReference": "@cardano-after-dark/dred-client!~SubscriptionListenerMap:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": true,
-              "releaseTag": "Public",
-              "name": "_subscriptions",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              },
-              "isStatic": false,
-              "isProtected": false,
-              "isAbstract": false
-            },
             {
               "kind": "Constructor",
               "canonicalReference": "@cardano-after-dark/dred-client!DredClient:constructor(1)",
@@ -1153,6 +1122,70 @@
             },
             {
               "kind": "Method",
+              "canonicalReference": "@cardano-after-dark/dred-client!DredClient#debug:member(1)",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "debug(a1: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", ...args: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "any[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Content",
+                  "text": "void"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 5,
+                "endIndex": 6
+              },
+              "releaseTag": "Public",
+              "isProtected": false,
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "a1",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 2
+                  },
+                  "isOptional": false
+                },
+                {
+                  "parameterName": "args",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 3,
+                    "endIndex": 4
+                  },
+                  "isOptional": false
+                }
+              ],
+              "isOptional": false,
+              "isAbstract": false,
+              "name": "debug"
+            },
+            {
+              "kind": "Method",
               "canonicalReference": "@cardano-after-dark/dred-client!DredClient#disconnect:member(1)",
               "docComment": "",
               "excerptTokens": [
@@ -1390,6 +1423,75 @@
             },
             {
               "kind": "Method",
+              "canonicalReference": "@cardano-after-dark/dred-client!DredClient#findSubscription:member(1)",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "findSubscription(channelName: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", required?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ChannelSubscriptionListener",
+                  "canonicalReference": "@cardano-after-dark/dred-client!~ChannelSubscriptionListener:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | undefined"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 5,
+                "endIndex": 7
+              },
+              "releaseTag": "Public",
+              "isProtected": false,
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "channelName",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 2
+                  },
+                  "isOptional": false
+                },
+                {
+                  "parameterName": "required",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 3,
+                    "endIndex": 4
+                  },
+                  "isOptional": true
+                }
+              ],
+              "isOptional": false,
+              "isAbstract": false,
+              "name": "findSubscription"
+            },
+            {
+              "kind": "Method",
               "canonicalReference": "@cardano-after-dark/dred-client!DredClient#generateKey:member(1)",
               "docComment": "",
               "excerptTokens": [
@@ -1490,6 +1592,70 @@
               "isStatic": false,
               "isProtected": false,
               "isAbstract": false
+            },
+            {
+              "kind": "Method",
+              "canonicalReference": "@cardano-after-dark/dred-client!DredClient#info:member(1)",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "info(a1: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", ...args: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "any[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Content",
+                  "text": "void"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 5,
+                "endIndex": 6
+              },
+              "releaseTag": "Public",
+              "isProtected": false,
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "a1",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 2
+                  },
+                  "isOptional": false
+                },
+                {
+                  "parameterName": "args",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 3,
+                    "endIndex": 4
+                  },
+                  "isOptional": false
+                }
+              ],
+              "isOptional": false,
+              "isAbstract": false,
+              "name": "info"
             },
             {
               "kind": "Property",
@@ -1605,70 +1771,6 @@
               "name": "joinChannel"
             },
             {
-              "kind": "Method",
-              "canonicalReference": "@cardano-after-dark/dred-client!DredClient#log:member(1)",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "log(a1: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "string"
-                },
-                {
-                  "kind": "Content",
-                  "text": ", ...args: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "any[]"
-                },
-                {
-                  "kind": "Content",
-                  "text": "): "
-                },
-                {
-                  "kind": "Content",
-                  "text": "void"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isStatic": false,
-              "returnTypeTokenRange": {
-                "startIndex": 5,
-                "endIndex": 6
-              },
-              "releaseTag": "Public",
-              "isProtected": false,
-              "overloadIndex": 1,
-              "parameters": [
-                {
-                  "parameterName": "a1",
-                  "parameterTypeTokenRange": {
-                    "startIndex": 1,
-                    "endIndex": 2
-                  },
-                  "isOptional": false
-                },
-                {
-                  "parameterName": "args",
-                  "parameterTypeTokenRange": {
-                    "startIndex": 3,
-                    "endIndex": 4
-                  },
-                  "isOptional": false
-                }
-              ],
-              "isOptional": false,
-              "isAbstract": false,
-              "name": "log"
-            },
-            {
               "kind": "Property",
               "canonicalReference": "@cardano-after-dark/dred-client!DredClient#logger:member",
               "docComment": "",
@@ -1679,21 +1781,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "ReturnType",
-                  "canonicalReference": "!ReturnType:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": "<typeof "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "zonedLogger",
-                  "canonicalReference": "@poshplum/utils!zonedLogger:function"
-                },
-                {
-                  "kind": "Content",
-                  "text": ">"
+                  "text": "Logger",
+                  "canonicalReference": "@cardano-after-dark/dred-client!~Logger_2:type"
                 },
                 {
                   "kind": "Content",
@@ -1706,7 +1795,7 @@
               "name": "logger",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 5
+                "endIndex": 2
               },
               "isStatic": false,
               "isProtected": false,
@@ -1744,35 +1833,54 @@
               "name": "logInfo"
             },
             {
-              "kind": "Property",
-              "canonicalReference": "@cardano-after-dark/dred-client!DredClient#messageHandler:member",
+              "kind": "Method",
+              "canonicalReference": "@cardano-after-dark/dred-client!DredClient#mkChannelsListeners:member(1)",
               "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "messageHandler?: "
+                  "text": "mkChannelsListeners(listeners: "
                 },
                 {
                   "kind": "Reference",
-                  "text": "DredMessageListener",
-                  "canonicalReference": "@cardano-after-dark/dred-client!DredMessageListener:type"
+                  "text": "SimpleChannelsListeners",
+                  "canonicalReference": "@cardano-after-dark/dred-client!~SimpleChannelsListeners:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "FullChannelsListeners",
+                  "canonicalReference": "@cardano-after-dark/dred-client!~FullChannelsListeners:type"
                 },
                 {
                   "kind": "Content",
                   "text": ";"
                 }
               ],
-              "isReadonly": false,
-              "isOptional": true,
-              "releaseTag": "Public",
-              "name": "messageHandler",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              },
               "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 3,
+                "endIndex": 4
+              },
+              "releaseTag": "Public",
               "isProtected": false,
-              "isAbstract": false
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "listeners",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 2
+                  },
+                  "isOptional": false
+                }
+              ],
+              "isOptional": false,
+              "isAbstract": false,
+              "name": "mkChannelsListeners"
             },
             {
               "kind": "Method",
@@ -1842,26 +1950,17 @@
             },
             {
               "kind": "Method",
-              "canonicalReference": "@cardano-after-dark/dred-client!DredClient#mkChannelSubs:member(1)",
+              "canonicalReference": "@cardano-after-dark/dred-client!DredClient#mkConnectionManager:member(1)",
               "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "mkChannelSubs(smap: "
+                  "text": "mkConnectionManager(): "
                 },
                 {
                   "kind": "Reference",
-                  "text": "SubscriberMap",
-                  "canonicalReference": "@cardano-after-dark/dred-client!SubscriberMap:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": "): "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "SubscriptionListenerMap",
-                  "canonicalReference": "@cardano-after-dark/dred-client!~SubscriptionListenerMap:type"
+                  "text": "ConnectionManager",
+                  "canonicalReference": "@cardano-after-dark/dred-client!~ConnectionManager:class"
                 },
                 {
                   "kind": "Content",
@@ -1870,25 +1969,16 @@
               ],
               "isStatic": false,
               "returnTypeTokenRange": {
-                "startIndex": 3,
-                "endIndex": 4
+                "startIndex": 1,
+                "endIndex": 2
               },
               "releaseTag": "Public",
               "isProtected": false,
               "overloadIndex": 1,
-              "parameters": [
-                {
-                  "parameterName": "smap",
-                  "parameterTypeTokenRange": {
-                    "startIndex": 1,
-                    "endIndex": 2
-                  },
-                  "isOptional": false
-                }
-              ],
+              "parameters": [],
               "isOptional": false,
               "isAbstract": false,
-              "name": "mkChannelSubs"
+              "name": "mkConnectionManager"
             },
             {
               "kind": "Property",
@@ -2308,6 +2398,70 @@
               "name": "processChannelsMsg"
             },
             {
+              "kind": "Method",
+              "canonicalReference": "@cardano-after-dark/dred-client!DredClient#progress:member(1)",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "progress(a1: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", ...args: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "any[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Content",
+                  "text": "void"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 5,
+                "endIndex": 6
+              },
+              "releaseTag": "Public",
+              "isProtected": false,
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "a1",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 2
+                  },
+                  "isOptional": false
+                },
+                {
+                  "parameterName": "args",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 3,
+                    "endIndex": 4
+                  },
+                  "isOptional": false
+                }
+              ],
+              "isOptional": false,
+              "isAbstract": false,
+              "name": "progress"
+            },
+            {
               "kind": "Property",
               "canonicalReference": "@cardano-after-dark/dred-client!DredClient#pubKeyString:member",
               "docComment": "",
@@ -2567,20 +2721,16 @@
             {
               "kind": "Method",
               "canonicalReference": "@cardano-after-dark/dred-client!DredClient#subscribeToChannels:member(1)",
-              "docComment": "/**\n * modifies the client's list of channel subscriptions\n *\n * @remarks\n *\n * For a client using a single message-handler, call this method with a single channel-id or a list of channel-ids to subscribe to messages from specific channels. Throws a runtime error if there is no message-handler set.\n *\n * To use per-channel message-handlers, call this method with a map of channel-ids to listener functions. In this case, any assigned messageHandler is not used.\n */\n",
+              "docComment": "/**\n * modifies the client's list of channel subscriptions\n *\n * @remarks\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "subscribeToChannels(channels: "
+                  "text": "subscribeToChannels(listeners: "
                 },
                 {
                   "kind": "Reference",
-                  "text": "ChanId",
-                  "canonicalReference": "@cardano-after-dark/dred-client!ChanId:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": "[]"
+                  "text": "SimpleChannelsListeners",
+                  "canonicalReference": "@cardano-after-dark/dred-client!~SimpleChannelsListeners:type"
                 },
                 {
                   "kind": "Content",
@@ -2602,123 +2752,15 @@
               ],
               "isStatic": false,
               "returnTypeTokenRange": {
-                "startIndex": 4,
-                "endIndex": 6
+                "startIndex": 3,
+                "endIndex": 5
               },
               "releaseTag": "Public",
               "isProtected": false,
               "overloadIndex": 1,
               "parameters": [
                 {
-                  "parameterName": "channels",
-                  "parameterTypeTokenRange": {
-                    "startIndex": 1,
-                    "endIndex": 3
-                  },
-                  "isOptional": false
-                }
-              ],
-              "isOptional": false,
-              "isAbstract": false,
-              "name": "subscribeToChannels"
-            },
-            {
-              "kind": "Method",
-              "canonicalReference": "@cardano-after-dark/dred-client!DredClient#subscribeToChannels:member(2)",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "subscribeToChannels(channel: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "ChanId",
-                  "canonicalReference": "@cardano-after-dark/dred-client!ChanId:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": "): "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "Promise",
-                  "canonicalReference": "!Promise:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": "<void>"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isStatic": false,
-              "returnTypeTokenRange": {
-                "startIndex": 3,
-                "endIndex": 5
-              },
-              "releaseTag": "Public",
-              "isProtected": false,
-              "overloadIndex": 2,
-              "parameters": [
-                {
-                  "parameterName": "channel",
-                  "parameterTypeTokenRange": {
-                    "startIndex": 1,
-                    "endIndex": 2
-                  },
-                  "isOptional": false
-                }
-              ],
-              "isOptional": false,
-              "isAbstract": false,
-              "name": "subscribeToChannels"
-            },
-            {
-              "kind": "Method",
-              "canonicalReference": "@cardano-after-dark/dred-client!DredClient#subscribeToChannels:member(3)",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "subscribeToChannels(smap: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "SubscriberMap",
-                  "canonicalReference": "@cardano-after-dark/dred-client!SubscriberMap:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": "): "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "Promise",
-                  "canonicalReference": "!Promise:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": "<void>"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isStatic": false,
-              "returnTypeTokenRange": {
-                "startIndex": 3,
-                "endIndex": 5
-              },
-              "releaseTag": "Public",
-              "isProtected": false,
-              "overloadIndex": 3,
-              "parameters": [
-                {
-                  "parameterName": "smap",
+                  "parameterName": "listeners",
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
@@ -2732,6 +2774,50 @@
             },
             {
               "kind": "Property",
+              "canonicalReference": "@cardano-after-dark/dred-client!DredClient#subscriptionCache:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "subscriptionCache: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Record",
+                  "canonicalReference": "!Record:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ChannelSubscriptionListener",
+                  "canonicalReference": "@cardano-after-dark/dred-client!~ChannelSubscriptionListener:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "subscriptionCache",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 5
+              },
+              "isStatic": false,
+              "isProtected": false,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
               "canonicalReference": "@cardano-after-dark/dred-client!DredClient#subscriptions:member",
               "docComment": "",
               "excerptTokens": [
@@ -2741,8 +2827,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "SubscriptionListenerMap",
-                  "canonicalReference": "@cardano-after-dark/dred-client!~SubscriptionListenerMap:type"
+                  "text": "FullChannelsListeners",
+                  "canonicalReference": "@cardano-after-dark/dred-client!~FullChannelsListeners:type"
                 },
                 {
                   "kind": "Content",
@@ -2760,6 +2846,70 @@
               "isStatic": false,
               "isProtected": false,
               "isAbstract": false
+            },
+            {
+              "kind": "Method",
+              "canonicalReference": "@cardano-after-dark/dred-client!DredClient#trace:member(1)",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "trace(a1: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", ...args: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "any[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Content",
+                  "text": "void"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 5,
+                "endIndex": 6
+              },
+              "releaseTag": "Public",
+              "isProtected": false,
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "a1",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 2
+                  },
+                  "isOptional": false
+                },
+                {
+                  "parameterName": "args",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 3,
+                    "endIndex": 4
+                  },
+                  "isOptional": false
+                }
+              ],
+              "isOptional": false,
+              "isAbstract": false,
+              "name": "trace"
             },
             {
               "kind": "Method",
@@ -3366,17 +3516,8 @@
             },
             {
               "kind": "Reference",
-              "text": "DredChannelMessage",
-              "canonicalReference": "@cardano-after-dark/dred-client!DredChannelMessage:type"
-            },
-            {
-              "kind": "Content",
-              "text": " & "
-            },
-            {
-              "kind": "Reference",
-              "text": "DredMessage",
-              "canonicalReference": "@cardano-after-dark/dred-client!DredMessage:type"
+              "text": "FullDredMessage",
+              "canonicalReference": "@cardano-after-dark/dred-client!~FullDredMessage:type"
             },
             {
               "kind": "Content",
@@ -3392,7 +3533,7 @@
           "name": "DredMessageListener",
           "typeTokenRange": {
             "startIndex": 1,
-            "endIndex": 6
+            "endIndex": 4
           }
         },
         {
@@ -3871,6 +4012,68 @@
               "isOptional": false,
               "isAbstract": false,
               "name": "initHostDiscovery"
+            },
+            {
+              "kind": "Method",
+              "canonicalReference": "@cardano-after-dark/dred-client!NeighborhoodDiscovery#myServerInfo:member(1)",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "myServerInfo(serverId: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Promise",
+                  "canonicalReference": "!Promise:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "DredHostDetails",
+                  "canonicalReference": "@cardano-after-dark/dred-client!~DredHostDetails:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | undefined>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 3,
+                "endIndex": 7
+              },
+              "releaseTag": "Public",
+              "isProtected": false,
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "serverId",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 2
+                  },
+                  "isOptional": false
+                }
+              ],
+              "isOptional": false,
+              "isAbstract": false,
+              "name": "myServerInfo"
             },
             {
               "kind": "Property",
