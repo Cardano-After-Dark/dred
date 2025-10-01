@@ -1,5 +1,5 @@
 //@ts-check
-import { get, Server } from "http";
+import { Server } from "http";
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -67,6 +67,7 @@ import { asyncDelay, autobind } from "@poshplum/utils";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import { zonedLogger } from "@poshplum/utils";
 import { DredReplicator } from "./DredReplicator.js";
+import type { Logger } from "../types/Logger.js";
 
 const logging = parseInt(process.env.LOGGING || "0");
 export interface ExpressWithRedis extends express.Application {
@@ -157,7 +158,7 @@ export class DredServer {
     verifier: StringNacl;
     serverId: string;
     myServerInfo?: DredHostDetails;
-    logger: ReturnType<typeof zonedLogger>;
+    logger: Logger
 
     // Optional replicator, to be initialized only when replication is enabled
     replicator?: DredReplicator;
@@ -209,6 +210,8 @@ export class DredServer {
         });
 
         this.api.options("/channels/listen", (...args) => {
+            // nothing special to do here, just approve the CORS req
+
             //! it approves any allowed CORS / cross-origin requests.  These can be limited by domain name
             //  or other attributes of the cross-origin OPTIONS request.
         });
@@ -486,7 +489,6 @@ export class DredServer {
 
             this.trace(`Message published to channel ${channelId}: ${publishedMessageId}`);
             return publishedMessageId;
-            
         } catch (error) {
             this.warn(`Failed to publish message to channel ${channelId}:`, error);
             throw error; // Let caller handle the error
@@ -628,7 +630,6 @@ export class DredServer {
             let activePeers = 0;
             let totalPeers = 0;
 
-            
             if (this.replicator) {
                 totalPeers =
                     this.discovery?.hosts?.filter((h) => h.serverId !== this.serverId).length || 0;
@@ -655,7 +656,6 @@ export class DredServer {
             if (this.isDebugLoggingEnabled()) {
                 await this.logExtendedStatus(activePeers, totalPeers);
             }
-            
         } catch (error) {
             this.warn(`📊 Error logging periodic status: ${error}`);
         }
@@ -1116,22 +1116,28 @@ export class DredServer {
             return next();
         }
         const message = req.body;
-
-        //!!! todo y0w9cvr: it refuses to post plain-text messages into encrypted channels
-        //     see also todo zfnsmq8
-
-        this.info("server: postMessage", message);
-        const tunnelProducer = await this.mkChannelProducer(channelId);
-        const { msg, _type, _data, ...moreDetails } = message;
-
         //! it extracts and SILENTLY ignores reserved keys _type, _data in client-provided event details.
         // if (_type) console.warn("ignoring reserved key '_type' in client-provided message");
         // if (_data) console.warn("ignoring reserved key '_data' in client-provided message");
         const { msg, _type, _data, ...moreDetails } = message;
 
         let ocid = moreDetails.ocid 
+        if (!ocid) {
+            ocid = nanoid(6);
+            this.trace("generated missing ocid %s for message %o", ocid, message);
+            moreDetails.ocid = ocid;
+        }
+        //todo: include client-id in ocid, preventing a duplicate-id attack.
+        //  - requires the client to use a unique client-id, probably based on pubkey/challenge/response
+        //  ... otherwise, client id could be spoofed, and a duplicate-id attack would be possible.
+        // alt: use one or more "recent ocids" list to prevent observed duplicates.  and/or include
+        // a timestamp element in the ocid.
+
         this.debug("postMessageInChannel", channelId, ocid)
         this.trace("msg %s: %o", ocid, message);
+
+        //!!! todo y0w9cvr: it refuses to post plain-text messages into encrypted channels
+        //     see also todo zfnsmq8
 
         if ("string" !== typeof msg) {
             res.status(422).json({
@@ -1213,9 +1219,6 @@ export class DredServer {
         }, timerInterval);
         timer.unref(); //! the heartbeat-timer never blocks the process from exiting when it's otherwise done
 
-        //! it tells clients how frequently they should expect a heartbeat
-        sendUpdate({ type: "heartbeat-info", timerInterval });
-
         const cleanup = () => {
             reqLogger.debug("cleanup");
             //! it cleans up all the internal subscriptions
@@ -1236,6 +1239,7 @@ export class DredServer {
 
         const notifyConsumeError: consumerErrorNotifier = (res, channel, consumeError) => {
             if (!cancelled) {
+
                 sendUpdate({
                     channel,
                     type: "error",
@@ -1266,6 +1270,13 @@ export class DredServer {
                 });
             }
 
+            // !!! todo: support inbound bookmarks for each channel and "from end" or "from start" cues
+            //  - this will allow clients to pick up where they left off, or to start from the beginning
+            //    of a channel's history.  "from end" will be the default.
+            // for "bookmark" and "from start" options, this can be implemented as a "from end"
+            //   subscription that picks up the responsibility after a one-off and temporary
+            //  "from then to ‹current›" subscription has flushed its backlog.
+
             this.trace("  -- listening one: ", sub.channel);
             const subscriber = await this.listenOneChannel(
                 res,
@@ -1284,6 +1295,8 @@ export class DredServer {
         }
         reqLogger.debug("  👷listening in %d channels", subscriptions.length);
         reqLogger.trace(`  👷channels: ${subscriptions.map(s => s.channel).join(", ")}`);
+        //! it tells clients how frequently they should expect a heartbeat
+        sendUpdate({ type: "heartbeat-info", timerInterval });
     };
 
     async listenToNeighborhood() {
