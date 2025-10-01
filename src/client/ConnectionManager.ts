@@ -596,7 +596,11 @@ export class ConnectionManager extends StateMachine.withDefinition(
             this.warn(`no subscription for channel ${channel}`, event);
             return;
         }
-        sub?.notify(event)
+        try {
+            sub?.notify(event);
+        } catch (e:any) {
+            this.logger.error(`error in subscriber for channel ${channel}: %s`, e.stack || e.message || e);
+        }
     }
 
     async replaceHostConnection(host: DredHostDetails): Promise<HostConnection> {

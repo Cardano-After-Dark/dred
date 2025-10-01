@@ -116,6 +116,7 @@ export class ChannelSubscriptionListener {
     static rotationIntervalMs = 30 * 1000;
 
     options: ChannelSubOptions;
+    logger: Logger;
     olderMsgs!: Set<MsgId>;
     recentMsgs!: Set<MsgId>;
     rotateTime: number;
@@ -130,7 +131,7 @@ export class ChannelSubscriptionListener {
     ) {
         const { listener, logger, ...rest } = options;
         this.options = rest;
-
+        this.logger = logger;
         //! it tracks recent messages to prevent duplicate notifications
         this.recentMsgs = new Set<MsgId>();
         //! it prevents unbounded growth of the tracking data structure
