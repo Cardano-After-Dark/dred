@@ -146,11 +146,13 @@ const connectionManagerStates = {
                 ],
             });
             this.connectToHosts();
+            // ^ in background
         },
         updatedHostList: {
             nextState: "connecting",
             reEntry: true,
         },
+        sufficient: "healthy",
         partial: "partiallyConnected",
         replaceSubs: "replacingSubs",
         disconnected: "disconnected",
@@ -200,6 +202,7 @@ const connectionManagerStates = {
             nextState: "healthy",
             reEntry: false,
         },
+        disconnected: "disconnected",
         partial: "degraded",
         updatedHostList: "connecting",
     },
@@ -245,6 +248,7 @@ const connectionManagerStates = {
             });
         },
         reconnect: "connecting",
+        sufficient: "disconnected",
     },
 };
 
