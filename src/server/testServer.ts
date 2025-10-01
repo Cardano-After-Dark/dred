@@ -22,11 +22,8 @@ const {
 } = colors;
 
 import type { Express } from "express";
-import { Server } from "http";
 import supertest, { type SuperTestWithHost, type Test } from "supertest";
 import { Redis } from "ioredis";
-import type { AddressInfo } from "net";
-import { asyncDelay } from "../util/asyncDelay.js";
 
 import { createServer, DredServer } from "./DredServer.js";
 import { DredClient, type DredClientArgs } from "../client/DredClient.js";
@@ -52,10 +49,6 @@ export class TestDredServer extends DredServer {
      * @returns A DredClient instance.
      */
     mkClient(serverSelection: string, clientArgs: Partial<DredClientArgs> = {}): DredClient {
-        if (process.env.NODE_ENV !== "test") {
-            throw new Error("mkClient() is only for use in test environment");
-        }
-
         const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
         if (!discovery) throw new Error("discovery is required");
 
@@ -85,9 +78,6 @@ export class TestDredServer extends DredServer {
     }
 
     async reset(reconnect?: boolean, finalCleanup?: (r?: Redis) => any) {
-        if (process.env.NODE_ENV !== "test") {
-            throw new Error("reset() is only for use in test environment");
-        }
         this.progress("server: reset()");
 
         // Cleanup replication client first
@@ -145,7 +135,12 @@ let servers: TestDredServer[] = [];
 let server: TestDredServer; // a single server that tests can push stuff through by default
 let clientCleanupList: Array<DredClient> = [];
 
-const rootLogger = zonedLogger("root");
+const rootLogger = zonedLogger("root", {
+    defaultLevels: {
+        test: "info",
+        dred: "info",
+    },
+});
 const monitor = process.env.REDIS_MONITOR ? new Redis(6379, "localhost", { db: 9 }) : undefined;
 if (!monitor) {
     console.log("NOTE: to enable granular monitoring of redis activity, set REDIS_MONITOR=1");
@@ -164,7 +159,12 @@ export const redisLogger3 = zonedLogger("redis", {
     color: magentaBright.start + bgBlack.start,
     loggerId: "mon3",
 });
-export const testLogger = zonedLogger("test", { color: yellow.start, levels: { default: "info" } });
+export const testLogger = zonedLogger("test", {
+    color: yellow.start,
+    // levels: {
+    //     default: "info"
+    // }
+});
 
 // Minimal approach: fix Redis cleanup timing issues at the source
 
@@ -209,37 +209,40 @@ beforeEach(async () => {
     testLogger.progress("  --- beforeEach(): resetting redis and channels");
 
     // 1. STOP replication on all servers first
-    testLogger.debug("beforeEach: phase 1 - cleaning up replication");
-    for (const server of servers) {
-        testLogger.debug("beforeEach: cleaning up replication for server", server.serverId);
-        await server.cleanupReplication();
-    }
+    // XXX this is redundant with the afterEach cleanup
+    //   - which is newish because we'd been letting replication start by default
+    //   - and we'd been using this to stop it during first test (only).  Now not needed.
 
-    // 2. RESET Redis and servers (existing logic)
+    // testLogger.debug("beforeEach: phase 1 - cleaning up replication");
+    // for (const server of servers) {
+    //     testLogger.debug("beforeEach: cleaning up replication for server", server.serverId);
+    //     await server.cleanupReplication();
+    // }
+
     for (const server of servers) {
-        // this is to raze the state of the redis DB --> predictable state for tests
+        // this is to raze the state of the redis DB --> predictable state for each test
+        // ... even the first one, if a previous test run left a redis dataset in a weird state
         await server.redis?.flushdb();
         await server.reset();
         // testLogger.debug("beforeEach: establishing default channels");
         await server.pendingSetup();
     }
-    testLogger.progress("  --- did reset redis with default channels in beforeEach");
+    testLogger.progress("  --- did reset redis with default channels");
 
-    testLogger.progress("beforeEach() starting replication")
-    // XXXXXXXXXXX reset() already does this
-    // ?????? or, let reset() only do disconnecting, while this does the reconnecting.
-    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    
-    // 3. RESTART replication on all servers
-    for (const server of servers) {
-        await server.setupReplication();
-    }
-    testLogger.progress("----------------------- before test -----------------------");
+    testLogger.info("----------- done beforeEach() test ----------- ");
 });
 
-afterEach(async () => {
-    testLogger.progress("----------------------- after test ------------------------");
+export async function startReplication() {
+    testLogger.progress("beforeEach() starting replication");
+    await Promise.all(servers.map((s) => s.setupReplication()));
 
+    await Promise.all(servers.map((s) => s.replicator!.replicantsReady));
+    testLogger.info("----- replication started -----------------");
+}
+
+
+afterEach(async () => {
+    testLogger.info("-----------  afterEach() ----------- ");
     // 1 Clean up replication first (have their own clients)
     testLogger.debug("afterEach: phase 1 - cleaning up replication");
     for (const server of servers) {
@@ -252,7 +255,7 @@ afterEach(async () => {
     }
 
     // 2 Disconnect all clients, wait for disconnection to complete
-    testLogger.debug("afterEach: phase 2 - disconnecting clients");
+    testLogger.progress("afterEach: disconnecting clients");
     const allClients = [...clientCleanupList];
 
     // Disconnect all clients
@@ -261,7 +264,7 @@ afterEach(async () => {
             testLogger.debug(`afterEach: disconnecting client ${client.clientid || "unknown"}`);
             client.disconnect();
         } catch (error) {
-            testLogger.debug(`afterEach: client disconnect error: ${error}`);
+            testLogger.warn(`afterEach: client disconnect error: ${error}`);
         }
     }
 
@@ -321,11 +324,11 @@ type SetupDetails = {
     client: DredClient;
     servers: TestDredServer[];
     testLogger: ReturnType<typeof zonedLogger>;
-}
+};
 
 let setupDetails: SetupDetails | Promise<SetupDetails> | undefined = undefined;
 
-export async function testSetup() {
+export async function testSetup() : Promise<SetupDetails> {
     if (setupDetails) {
         return setupDetails;
     }
