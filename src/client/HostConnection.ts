@@ -472,9 +472,7 @@ export class HostConnection extends StateMachineNg<
             }
             if ("heartbeat-info" == value?.type) {
                 const { timerInterval } = value;
-                this.trace("heartbeat-info: expecting heartbeats every %d ms", {
-                    timerInterval,
-                });
+                this.trace("heartbeat-info: expecting heartbeats every %d ms", timerInterval);
                 this.heartbeatInterval = timerInterval;
                 continue;
             }

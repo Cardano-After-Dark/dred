@@ -94,7 +94,7 @@ export class DredReplicator {
     
     constructor(homeServer: DredServer, discovery: Discovery) {
         const serverDb = homeServer.redisDb;
-        const dbInfo = serverDb ? `[${serverDb}]-` : ""
+        const dbInfo = serverDb ? `/#${serverDb}` : "";
         const name = `${nanoid(4)}${dbInfo}`;
 
         this.logger = zonedLogger("replicator", {

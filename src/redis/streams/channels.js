@@ -770,7 +770,7 @@ export class RedisChannels {
             if (this.closing) {
                 return
             }
-            this.logger.error("Consume error: %o", error);
+            this.logger.debug("Consume error: %o", error);
             throw new RedisChannelsError(
                 "Can not consume from the tunnel: " +
                     tunnel[tun.KEY] +

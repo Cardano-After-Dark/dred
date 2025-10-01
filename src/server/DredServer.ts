@@ -293,7 +293,7 @@ export class DredServer {
                 url: url,
                 db: this.redisDb,
             },
-            channels: { log: this.logger },
+            channels: { log },
         });
         this.ensureDefaultChannels();
     }
@@ -372,7 +372,9 @@ export class DredServer {
         if (this.args.replicate) {
             // Start replication in background, non-blocking
             this.startReplicating();
-        } else if (process.env.NODE_ENV !== "test") {
+        } else if (process.env.NODE_ENV == "test") {
+            this.debug(`⚠️ replication disabled (via REPLICATION=false)`);
+        } else {
             this.warn(`⚠️ replication disabled (via REPLICATION=false)`);
         }
 
@@ -729,7 +731,7 @@ export class DredServer {
             // this.warn(`${this.serverId} Nullifying replicator reference`);
             this.replicator = undefined; // Always nullify, even on error
         }
-        this.log(` -- cleanupReplication ${this.serverId} complete`);
+        this.progress(`replication cleanup ok`);
     }
 
     async reset(reconnect?: boolean, finalCleanup?: (r?: Redis) => any) {
@@ -937,7 +939,7 @@ export class DredServer {
     };
 
     reqLogger(res: express.Response) {
-        return this.logger.child({
+        return zonedLogger("dred:req", {
             reqId: res.locals.id,
             clientid: res.locals.clientid,
             color: bgGreenBright.start + black.start,
@@ -1199,7 +1201,6 @@ export class DredServer {
 
     postMessageInChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
-        this.info("postMessageInChannel", channelId);
         const found = await this.channelList.has(channelId);
         if (!found) {
             res.status(404).json({
@@ -1219,6 +1220,11 @@ export class DredServer {
         //! it extracts and SILENTLY ignores reserved keys _type, _data in client-provided event details.
         // if (_type) console.warn("ignoring reserved key '_type' in client-provided message");
         // if (_data) console.warn("ignoring reserved key '_data' in client-provided message");
+        const { msg, _type, _data, ...moreDetails } = message;
+
+        let ocid = moreDetails.ocid 
+        this.debug("postMessageInChannel", channelId, ocid)
+        this.trace("msg %s: %o", ocid, message);
 
         if ("string" !== typeof msg) {
             res.status(422).json({
@@ -1285,16 +1291,17 @@ export class DredServer {
             for (const json of messages) {
                 const update = JSON.stringify(json);
                 res.write(update + "\n");
-                // debug("update: ", update)
+                reqLogger.trace("    <- ", update);
             }
             (res as any).flush(); //! flushes writes through compression middleware
         };
+        const reqLogger = this.reqLogger(res);
         const myStreamListeners: ListenerSubscriptionList = [];
         const timerInterval = 7000;
         //! it sends heartbeat signals every so often to clients
         //!!! todo: heartbeat interval can be configured
         const timer = setInterval(() => {
-            this.info("server: client <- heartbeat");
+            reqLogger.trace("   <- heartbeat");
             sendUpdate({ type: "heartbeat" });
         }, timerInterval);
         timer.unref(); //! the heartbeat-timer never blocks the process from exiting when it's otherwise done
@@ -1303,6 +1310,7 @@ export class DredServer {
         sendUpdate({ type: "heartbeat-info", timerInterval });
 
         const cleanup = () => {
+            reqLogger.debug("cleanup");
             //! it cleans up all the internal subscriptions
             for (const mySub of myStreamListeners) {
                 const { channel, stream } = mySub;
@@ -1351,7 +1359,7 @@ export class DredServer {
                 });
             }
 
-            this.debug("  -- listening one: ", sub.channel);
+            this.trace("  -- listening one: ", sub.channel);
             const subscriber = await this.listenOneChannel(
                 res,
                 sub,
@@ -1367,6 +1375,8 @@ export class DredServer {
         } else if (warnings.length) {
             sendUpdate.apply(this, warnings);
         }
+        reqLogger.debug("  👷listening in %d channels", subscriptions.length);
+        reqLogger.trace(`  👷channels: ${subscriptions.map(s => s.channel).join(", ")}`);
     };
 
     async listenToNeighborhood() {
@@ -1410,7 +1420,7 @@ export class DredServer {
                 for (const e of events) {
                     const { id: mid, ocid, type, data, ...meta } = e;
                     this.reqLogger(res).info(
-                        bgBlueBright(black(bold(`    <- ocid ${ocid} in ${sub.channel}: `))),
+                        `    <- ocid ${ocid} in ${sub.channel}: `,
                         e.data.length,
                         "bytes",
                     );
