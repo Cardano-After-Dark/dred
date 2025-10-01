@@ -26,7 +26,7 @@
     "scripts": {
         "dev": "scripts/setupEnvironment && echo \"NOTE ------------------------------------------\" && echo \"use separate commands for docs dev, exampleApp dev, build:client:watch, build:watch, etc\" && LOGGING=default:info nodemon -w dist/dredServer.mjs --enable-source-maps --inspect=9230 dist/dredServer.mjs",
         "doc": "cd docs/ ; concurrently --names 'docs' -c 'magenta.bgGreen' 'pnpm dev'",
-        "build:docs": "cd docs && pnpm build && pnpm export",
+        "build:docs": "cd docs && pnpm build",
         "start": "scripts/setupEnvironment && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --respawn index.ts",
         "start:debug": "scripts/setupEnvironment  && NODE_OPTIONS='--experimental-vm-modules --experimental-wasm-modules' ts-node-dev --inspect --respawn index.ts",
         "test": "scripts/setupEnvironment ; NODE_OPTIONS='--experimental-vm-modules' ENV_FILE=./config/.env.test vitest run --poolOptions.threads.singleThread",

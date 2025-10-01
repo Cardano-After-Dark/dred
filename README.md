@@ -22,8 +22,7 @@ To test the static build locally:
 ```bash
 cd docs
 rm -rf .next out  # Clean previous builds
-pnpm build        # Build the site
-pnpm export       # Export as static files
+pnpm build        # Build the site, export as static files
 cd out
 python3 -m http.server 8000  # Or any other static file server
 ```
