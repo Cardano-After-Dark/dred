@@ -2,7 +2,48 @@
 
 ## Summary of Changes
 
-### 1. Added HTTP/HTTPS Protocol Selection via Environment Variable
+### 1. Fixed Signal Handler Registration (Critical)
+
+**Problem**: Signal handlers (SIGINT/SIGTERM) were registered AFTER blockchain initialization, which could block indefinitely. This caused:
+- Port 3029 to remain occupied after CTRL+C on local machine
+- PM2 unable to properly stop stuck processes on remote servers
+
+**Solution**: Moved signal handlers to top of `init()` function, before any async operations.
+
+**Modified File:**
+
+#### `bin/dredServer` (lines 12-33, 104-111)
+- Moved `gracefulShutdown` function and signal handler registration to the beginning of `init()`
+- Changed `const server` to `let server = null` in outer scope
+- Added null check before calling `server.close()`
+- Signal handlers now registered BEFORE blockchain discovery
+- Ensures proper cleanup even if process gets stuck during initialization
+
+### 2. Added Static Discovery Workaround
+
+**Problem**: `NeighborhoodDiscovery` gets stuck in infinite "Delegate configuration requires upgrade" loop during blockchain initialization, preventing server from starting and binding to port 3029.
+
+**Solution**: Use `USE_STATIC_DISCOVERY=true` to bypass blockchain discovery entirely.
+
+**Modified Files:**
+
+#### `preprod/config/us.env`
+Added comment and set `USE_STATIC_DISCOVERY=true`:
+```bash
+# WORKAROUND: Using static discovery to bypass blockchain discovery delegate upgrade loop
+# The NeighborhoodDiscovery gets stuck in "Delegate configuration requires upgrade" loop
+# preventing server from starting. Static discovery allows server to start successfully.
+USE_STATIC_DISCOVERY=true
+```
+
+#### `preprod/config/uk.env`
+Added same workaround and comment as US server:
+```bash
+# WORKAROUND: Using static discovery to bypass blockchain discovery delegate upgrade loop
+USE_STATIC_DISCOVERY=true
+```
+
+### 3. Added HTTP/HTTPS Protocol Selection via Environment Variable
 
 Implemented `DRED_USE_INSECURE` environment variable to control whether servers use HTTP or HTTPS protocol.
 
@@ -21,21 +62,23 @@ Implemented `DRED_USE_INSECURE` environment variable to control whether servers 
 - Modified `defaultHosts()` method to read `DRED_USE_INSECURE` env var
 - Set `insecure` flag on default host configuration
 
-### 2. Updated Configuration Files
+### 4. Updated Configuration Files
 
 #### `preprod/config/us.env`
-Added: `DRED_USE_INSECURE=true`
+- Added: `USE_STATIC_DISCOVERY=true` (with comment explaining blockchain loop workaround)
+- Added: `DRED_USE_INSECURE=true`
 
 #### `preprod/config/uk.env`
-Added: `DRED_USE_INSECURE=true`
+- Added: `USE_STATIC_DISCOVERY=true` (with comment explaining blockchain loop workaround)
+- Added: `DRED_USE_INSECURE=true`
 
 #### `preprod/config/de.env`
-Added: `DRED_USE_INSECURE=false`
+- Added: `DRED_USE_INSECURE=false`
 
 #### `.env` (local development)
-Added: `DRED_USE_INSECURE=true`
+- Added: `DRED_USE_INSECURE=true`
 
-### 3. Enhanced Deployment Script
+### 5. Enhanced Deployment Script
 
 #### `preprod/scripts/setup-dred-minimal.sh`
 
@@ -45,11 +88,12 @@ Added: `DRED_USE_INSECURE=true`
 - Verifies port is free before proceeding
 
 **Added environment variable handling**:
+- Export `USE_STATIC_DISCOVERY` to remote server
 - Export `DRED_USE_INSECURE` to remote server (line 69)
 - Include in `.env` file (line 145)
 - Include in PM2 config (line 181)
 
-### 4. Created Message Testing Script
+### 6. Created Message Testing Script
 
 #### `scripts/send-message-on-channel.sh` (new file)
 Simple bash script to send test messages to DRED channels:
@@ -60,25 +104,41 @@ Example: ./send-message-on-channel.sh 217.154.34.155:3029 news 'Hello World'
 
 ## Verification Commands
 
-### 1. Build the Project
+**⚠️ CRITICAL**: Before deploying to remote servers, you MUST commit and push all changes to the `feature/onchain-replication-m2` branch. The deployment script clones directly from GitHub, so uncommitted local changes will NOT be deployed.
+
+### 1. Commit and Push Changes
+```bash
+git add .
+git commit -m "fix: signal handlers, static discovery workaround, and HTTP/HTTPS protocol selection"
+git push
+```
+
+### 2. Build the Project Locally
 ```bash
 pnpm build
 ```
 
-### 2. Deploy to Remote Server (UK)
+### 3. Deploy to Remote Server (UK)
 ```bash
+cd preprod
 make setup-dred uk
 ```
 
-### 3. Verify Remote Server Status
+### 4. Verify Remote Server Status
 ```bash
 make test uk
 ```
 
-Expected output: HTTP 200 response with channel list
+Expected output:
+```
+✓ SSH connection successful
+✓ DRED server responding on port 3029
+   Available channels: {"channels":["news","discussion",...]}
+```
 
-### 4. Launch Local DRED with Replication Logging
+### 5. Launch Local DRED with Replication Logging
 ```bash
+cd ..
 LOGGING=default:debug,replicant:trace,replicator:trace pnpm exec node dist/dredServer.mjs | pnpm exec pino-pretty
 ```
 
@@ -87,8 +147,9 @@ Expected output:
 - Neighborhood discovery finds remote servers
 - Replicator connects to remote servers via HTTP
 - Replicant subscriptions created for common channels
+- **Press CTRL+C to verify port is properly released** (signal handler fix)
 
-### 5. Send Test Message to Remote Server
+### 6. Send Test Message to Remote Server
 ```bash
 chmod +x scripts/send-message-on-channel.sh
 ./scripts/send-message-on-channel.sh 217.154.34.155:3029 news "Testing replication from UK to local server"
@@ -105,7 +166,7 @@ Expected output:
 HTTP Status: 200
 ```
 
-### 6. Verify Replication in Local Server Logs
+### 7. Verify Replication in Local Server Logs
 
 Look for these log entries in the local DRED server output:
 
@@ -140,23 +201,34 @@ Look for these log entries in the local DRED server output:
 - Full trace logs showing complete message flow
 - HTTP/HTTPS protocol selection working correctly based on `DRED_USE_INSECURE` configuration
 
+## Key Lessons Learned
+
+1. **Commit Before Deploy**: The deployment script (`setup-dred-minimal.sh`) clones from GitHub, so local uncommitted changes are NOT deployed to remote servers.
+
+2. **Signal Handler Timing**: Register signal handlers BEFORE any blocking async operations to ensure proper cleanup on CTRL+C.
+
+3. **Static Discovery Workaround**: When blockchain discovery fails (delegate upgrade loop), `USE_STATIC_DISCOVERY=true` allows servers to start with hardcoded peer list.
+
+4. **Port Cleanup**: The deployment script now automatically kills processes holding port 3029, ensuring idempotent deployments.
+
 ## Files Modified
 
 ```
-src/server/DredReplicator.ts
-src/peers/NeighborhoodDiscovery.ts
-src/peers/StaticHostDiscovery.ts
-preprod/config/us.env
-preprod/config/uk.env
-preprod/config/de.env
-preprod/scripts/setup-dred-minimal.sh
-.env
+bin/dredServer                              # Signal handler registration fix
+src/server/DredReplicator.ts                # HTTP/HTTPS protocol selection
+src/peers/NeighborhoodDiscovery.ts          # DRED_USE_INSECURE propagation
+src/peers/StaticHostDiscovery.ts            # DRED_USE_INSECURE support
+preprod/config/us.env                       # Static discovery + HTTP workaround
+preprod/config/uk.env                       # Static discovery + HTTP workaround
+preprod/config/de.env                       # HTTPS configuration
+preprod/scripts/setup-dred-minimal.sh       # Port cleanup + env var handling
+.env                                        # Local development HTTP config
 ```
 
 ## Files Created
 
 ```
-scripts/send-message-on-channel.sh
-.ai/s/x01/wrapup/input-context.md
-.ai/s/x01/wrapup/changes-and-verification.md
+scripts/send-message-on-channel.sh          # Message testing utility
+.ai/s/x01/wrapup/input-context.md           # Task context documentation
+.ai/s/x01/wrapup/changes-and-verification.md # This file
 ```

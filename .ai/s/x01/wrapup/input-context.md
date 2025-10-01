@@ -4,7 +4,14 @@
 Verify that DRED server replication is working correctly with proper logging, and confirm that messages sent to remote servers are successfully replicated to the local server.
 
 ## Problem Statement
-The DRED replication system was not working correctly because the `checkServerAvailability()` method in `DredReplicator.ts` was hardcoding `https://` for all servers, but some preprod servers (US, UK) run on HTTP (port 3029) without SSL certificates.
+
+The DRED replication system had three critical issues preventing it from working correctly:
+
+1. **HTTP/HTTPS Protocol Mismatch**: The `checkServerAvailability()` method in `DredReplicator.ts` was hardcoding `https://` for all servers, but some preprod servers (US, UK) run on HTTP (port 3029) without SSL certificates.
+
+2. **Blockchain Discovery Infinite Loop**: Servers using `NeighborhoodDiscovery` got stuck in an infinite "Delegate configuration requires upgrade" loop during blockchain initialization, preventing them from ever binding to port 3029 and becoming accessible.
+
+3. **Signal Handler Registration Timing**: Signal handlers (SIGINT/SIGTERM) were registered AFTER the blockchain initialization, so when servers got stuck, CTRL+C couldn't properly clean up, leaving port 3029 occupied and preventing PM2 from stopping processes.
 
 ## Requirements
 
