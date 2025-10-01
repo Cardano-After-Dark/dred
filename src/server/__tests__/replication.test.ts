@@ -1,19 +1,18 @@
 import { beforeAll, afterAll, beforeEach, afterEach, describe, it, vi, expect } from "vitest";
 import type { SuperTestWithHost, Test } from "supertest";
-import request from "supertest";
 import type { Express } from "express";
 
-import { zonedLogger } from "@poshplum/utils";
-import { testSetup } from "../testServer.js";
-import { DredClient } from "../../client/DredClient.js";
-import { DredServer } from "../DredServer.js";
+import { startReplication, TestDredServer, testSetup, testLogger } from "../testServer.js";
+import { DredClient, type FullDredMessage } from "../../client/DredClient.js";
 import { asyncDelay } from "../../util/asyncDelay.js";
 import { colors } from "../../picocolors/picocolors.js";
 
 const { magenta } = colors;
 
+const fit = it.only;
+
 // Test configuration
-const CHANNEL_NAME = "test-channel";
+const CHANNEL_NAME = "news";
 const REPLICATION_TIMEOUT = 2000;
 const SETUP_DELAY = 100;
 
@@ -22,70 +21,30 @@ interface TestMessage {
     type: string;
     ocid?: string;
     details?: {
-        replicatedFrom?: string;
+        replFrom?: string;
     };
-}
-
-// Encapsulates the message collection and handling for a single client
-class MessageCollector {
-    private messages: TestMessage[] = [];
-
-    getHandler(clientName: string) {
-        return (msg: TestMessage) => {
-            this.messages.push(msg);
-        };
-    }
-
-    clear() { 
-        this.messages = []; 
-    }
-
-    get count() { 
-        return this.messages.length; 
-    }
-
-    get all() { 
-        return [...this.messages]; 
-    }
-
-    get latest() { 
-        return this.messages[this.messages.length - 1]; 
-    }
-}
-
-// Helper to wait for expected message count
-async function waitForMessages(collector: MessageCollector, expectedCount: number, timeout = REPLICATION_TIMEOUT): Promise<void> {
-    const startTime = Date.now();
-    while (collector.count < expectedCount && Date.now() - startTime < timeout) {
-        await asyncDelay(50);
-    }
 }
 
 describe("Message Replication", () => {
     let test: {
         agent: SuperTestWithHost<Test>;
         app?: Express;
-        server: DredServer;
+        server: TestDredServer;
         client: DredClient;
-        servers: DredServer[];
+        servers: TestDredServer[];
     };
 
-    let dred1: DredServer;
-    let dred2: DredServer;
-    let dred3: DredServer;
+    let dred1: TestDredServer;
+    let dred2: TestDredServer;
+    let dred3: TestDredServer;
     let c1: DredClient;
     let c2: DredClient;
     let c3: DredClient;
 
-    // Message collectors for each client
-    let c1Messages: MessageCollector;
-    let c2Messages: MessageCollector;
-    let c3Messages: MessageCollector;
-
-    const testLogger = zonedLogger("test", {
-        loggerId: "t-rep",
-        color: magenta.start,
-    });
+    // const testLogger = zonedLogger("test", {
+    //     loggerId: "repl-test",
+    //     color: magenta.start,
+    // });
 
     beforeAll(async () => {
         test = await testSetup();
@@ -95,54 +54,19 @@ describe("Message Replication", () => {
     });
 
     beforeEach(async () => {
-        await asyncDelay(SETUP_DELAY);
+        // await asyncDelay(SETUP_DELAY);
 
         // Create clients
         c1 = dred1.mkClient("first");
-        await c1.generateKey();
-
         c2 = dred2.mkClient("second");
-        await c2.generateKey();
-
         c3 = dred3.mkClient("third");
-        await c3.generateKey();
+        await Promise.all([
+            c1.generateKey(),
+            c2.generateKey(),
+            c3.generateKey(),
+        ]);
 
-        // // Create channels on all servers
-        // await c1.createChannel(CHANNEL_NAME);
-        // await c2.createChannel(CHANNEL_NAME);
-        // await c3.createChannel(CHANNEL_NAME);
-
-        // // Refresh channel lists
-        // c1.channels = await c1.connManager.getChannelList();
-        // c2.channels = await c2.connManager.getChannelList();
-        // c3.channels = await c3.connManager.getChannelList();
-
-        // // Initialize message collectors
-        // c1Messages = new MessageCollector();
-        // c2Messages = new MessageCollector();
-        // c3Messages = new MessageCollector();
-
-        // // Subscribe to channels
-        // await c1.subscribeToChannels({
-        //     [CHANNEL_NAME]: c1Messages.getHandler("c1")
-        // });
-        // await c2.subscribeToChannels({
-        //     [CHANNEL_NAME]: c2Messages.getHandler("c2")
-        // });
-        // await c3.subscribeToChannels({
-        //     [CHANNEL_NAME]: c3Messages.getHandler("c3")
-        // });
-
-        await asyncDelay(SETUP_DELAY);
-    });
-
-    afterEach(async () => {
-        // Clean up message collectors
-        // c1Messages?.clear();
-        // c2Messages?.clear();
-        // c3Messages?.clear();
-        
-        // Note: Client cleanup handled by test framework
+        await startReplication();
     });
 
     afterAll(async () => {
@@ -168,6 +92,10 @@ describe("Message Replication", () => {
             expect(c2).not.toBe(c3);
             expect(c1).not.toBe(c3);
 
+            await c1.subscribeToChannels({})
+            await c1.subscribeToChannels({})
+            await c1.subscribeToChannels({})
+            
             expect(c1.channels).toContain(CHANNEL_NAME);
             expect(c2.channels).toContain(CHANNEL_NAME);
             expect(c3.channels).toContain(CHANNEL_NAME);
@@ -175,24 +103,36 @@ describe("Message Replication", () => {
     });
 
     describe("Basic Messaging", () => {
-        it("should deliver messages within the same server", async () => {
-            // const testMessage = {
-            //     msg: "Hello from test!",
-            //     type: "greeting",
-            //     ocid: "test-001"
-            // };
+        it("delivers messages within the same server", async () => {
+            const testMessage = {
+                msg: "Hello from test!",
+                type: "greeting",
+                ocid: "test-001"
+            };
 
-            // const response = await test.agent
-            //     .post(`/channel/${CHANNEL_NAME}/message`)
-            //     .send(testMessage)
-            //     .expect(200);
+            let success = false;
+            await c1.subscribeToChannels({
+                [CHANNEL_NAME]: (message: FullDredMessage) => {
+                    testLogger.info(`🎉 📥 CLIENT c1 received: ${message.msg}`);
+                    expect(message).toMatchObject(testMessage);
+                    success = true;
+                }
+            });
+            // Not needed because subscribeToChannels is (now) always fully ready
+            // before it returns:
+            // testLogger.progress(`⏳ waiting for subscribe to settle`);
+            // await asyncDelay(5);
+            const response = await test.agent
+                .post(`/channel/${CHANNEL_NAME}/message`)
+                .send(testMessage)
+                .expect(200);
 
-            // await waitForMessages(c1Messages, 1, 500);
-
-            // expect(c1Messages.count).toBe(1);
-            // expect(c1Messages.latest.type).toBe("greeting");
-            // expect(c2Messages.count).toBe(0); // Different server, no replication yet
-            // expect(c3Messages.count).toBe(0); // Different server, no replication yet
+            // not observed to be needed, but /channel/*/message doesn't yet have
+            // a pre-response delivery guarantee.  So a little wait is good for now.
+            // TODO: adjust ^ and remove this delay
+            await asyncDelay(10);
+            expect(success).toBe(true);
+            testLogger.progress(`🎉  success`);
         });
     });
 
@@ -218,11 +158,7 @@ describe("Message Replication", () => {
 
     describe("Cross-Server Replication", () => {
 
-        it.only("should replicate messages between all three servers", async () => {
-            // Setup replication on all servers
-            for (const server of [dred1, dred2, dred3]) {
-                await server.setupReplication();
-            }
+        it("should replicate messages between all three servers", async () => {
 
             const clientMessage: TestMessage = {
                 msg: "Hello from c1 client!",
@@ -230,126 +166,44 @@ describe("Message Replication", () => {
             };
 
             let c2Received = 0;
-            let CHANNEL_NAME = "news";
+            let c3Received = 0;
+   
+            testLogger.info("setting up listeners on each server");
 
             // CRITICAL: Set up c2 subscription BEFORE sending message
             // The client must be subscribed and ready to receive messages before replication occurs.
             // Without await here, the subscription setup is asynchronous and the client may miss 
             // the replicated message, causing the test to fail intermittently.
-            await c2.subscribeToChannels({
+            const s2 = c2.subscribeToChannels({
                 [CHANNEL_NAME]: (message) => {
-                    testLogger.warn(`📥 CLIENT c2 received: ${message.msg}`);
+                    testLogger.progress(`🎉 📥 CLIENT c2 received: ${message.msg}`);
                     expect(message).toMatchObject(clientMessage);
                     c2Received++;
                 }
             });
 
-            // Wait for subscription to be fully established across WebSocket connections
-            await asyncDelay(100);
-
+            const s3 = c3.subscribeToChannels({
+                [CHANNEL_NAME]: (message) => {
+                    testLogger.progress(`🎉 📥 CLIENT c3 received: ${message.msg}`);
+                    expect(message).toMatchObject(clientMessage);
+                    c3Received++;
+                }
+            });
+            await Promise.all([s2, s3]);
+            testLogger.info("all listeners set up");
+            // await asyncDelay(100);
             const clientResponse = await c1.postMessage(CHANNEL_NAME, clientMessage);
-            testLogger.warn(`📤 CLIENT c1 sent: ${clientMessage.msg}`);
+            testLogger.info(`📤 CLIENT c1 sent: ${clientMessage.msg}`);
 
             // Wait for replication to complete
-            await asyncDelay(2000);
+            await asyncDelay(40);
+            // if there are multiple deliveries, this would be a bad result.  20ms should give
+            // time to detect such a thing.
 
             expect(c2Received).toBe(1);
-
-            
-            // // Wait for replication to both other servers
-            // await waitForMessages(c2Messages, 1);
-            // await waitForMessages(c3Messages, 1);
-
-            // // Verify replication: c2 and c3 should receive the replicated message
-            // // expect(c2Messages.count).toBe(1);
-            // await asyncDelay(2000);
-            // expect(c2Messages.latest).toMatchObject({
-            //     msg: "Hello from c1 client!",
-            //     type: "client-greeting"
-            // });
-
-            // expect(c3Messages.count).toBe(1);
-            // expect(c3Messages.latest).toMatchObject({
-            //     msg: "Hello from c1 client!",
-            //     type: "client-greeting"
-            // });
-
-            // // Verify anti-loop: c1 should not receive its own message back
-            // expect(c1Messages.count).toBe(0);
+            expect(c3Received).toBe(1);
+            testLogger.progress(`🎉  success`);
         });
 
-        // OLD DELETEME
-        it("should replicate messages between all three servers", async () => {
-            // Setup replication on all servers
-            for (const server of [dred1, dred2, dred3]) {
-                await server.setupReplication();
-            }
-
-            const clientMessage: TestMessage = {
-                msg: "Hello from c1 client!",
-                type: "client-greeting"
-            };
-
-            const clientResponse = await c1.postMessage(CHANNEL_NAME, clientMessage);
-            testLogger.warn(`📤 CLIENT c1 sent: ${clientMessage.msg}`);
-
-            
-            // Wait for replication to both other servers
-            await waitForMessages(c2Messages, 1);
-            await waitForMessages(c3Messages, 1);
-
-            // Verify replication: c2 and c3 should receive the replicated message
-            // expect(c2Messages.count).toBe(1);
-            await asyncDelay(2000);
-            expect(c2Messages.latest).toMatchObject({
-                msg: "Hello from c1 client!",
-                type: "client-greeting"
-            });
-
-            expect(c3Messages.count).toBe(1);
-            expect(c3Messages.latest).toMatchObject({
-                msg: "Hello from c1 client!",
-                type: "client-greeting"
-            });
-
-            // Verify anti-loop: c1 should not receive its own message back
-            expect(c1Messages.count).toBe(0);
-        });
-
-        it("should replicate from any server to all others", async () => {
-            // Setup replication on all servers
-            for (const server of [dred1, dred2, dred3]) {
-                await server.setupReplication();
-            }
-
-            const messageFromServer2: TestMessage = {
-                msg: "Message from server 2!",
-                type: "server2-message"
-            };
-
-            // Send message from c2 (connected to dred2)
-            await c2.postMessage(CHANNEL_NAME, messageFromServer2);
-            testLogger.warn(`📤 CLIENT c2 sent: ${messageFromServer2.msg}`);
-
-            // Wait for replication to the other servers
-            await waitForMessages(c1Messages, 1);
-            await waitForMessages(c3Messages, 1);
-
-            // Verify c1 and c3 received the message from c2
-            expect(c1Messages.count).toBe(1);
-            expect(c1Messages.latest).toMatchObject({
-                msg: "Message from server 2!",
-                type: "server2-message"
-            });
-
-            expect(c3Messages.count).toBe(1);
-            expect(c3Messages.latest).toMatchObject({
-                msg: "Message from server 2!",
-                type: "server2-message"
-            });
-
-            // Verify anti-loop: c2 should not receive its own message back
-            expect(c2Messages.count).toBe(0);
-        });
     });
 });

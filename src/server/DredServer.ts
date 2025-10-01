@@ -132,6 +132,7 @@ type DredServerArgs = DredClientArgs & {
     api?: express.Application;
     serverDb?: number;
     replicate?: boolean;
+    serverClass?: typeof DredServer;
 };
 
 //!!! todo: augment to support a list of nbh's, with req details for nbh selection
@@ -307,8 +308,8 @@ export class DredServer {
         await this.ensureDefaultChannels();
         return this.setupPending;
     }
-    private setupPending?: Promise<any>;
-    //!!! todo: once for each nbh
+    setupPending?: Promise<any>;
+
     ensureDefaultChannels() {
         if (this.setupPending) return this.setupPending;
 
@@ -734,59 +735,6 @@ export class DredServer {
         this.progress(`replication cleanup ok`);
     }
 
-    async reset(reconnect?: boolean, finalCleanup?: (r?: Redis) => any) {
-        this.progress("server: reset()");
-
-        // Cleanup replication client first
-        await this.cleanupReplication();
-
-        // Wait for channel cleanup to complete fully
-        await this.channelConn.cleanup().catch(warning.bind(this, "channelConn.cleanup()"));
-
-        
-        // Small delay to ensure all Redis operations from channel cleanup complete
-        await new Promise((resolve) => setTimeout(resolve, 10));
-
-        finalCleanup?.(this.redis);
-        this.resetting = true;
-        await this.redis?.quit().catch(warning.bind(this, "redis.quit()"));
-        this.redis?.removeAllListeners();
-        this.channelConn = undefined;
-        this.redis = undefined;
-
-        const doReconnect = reconnect ?? true;
-        if (doReconnect) {
-            this.setupRedis(this.redisUrl);
-            this.resetting = false;
-
-            // Restart replication after reset if it was enabled
-            if (this.args.replicate) {
-                // this.warn(`🔄 Restarting replication after reset`);
-                // // Wait for setupPending to complete, then start replication (with delay)
-                // if (this.setupPending) {
-                //     this.setupPending.then(() => {
-                //         this.startReplicating()
-                //     }).catch((error) => {
-                //         this.warn(`❌ Replication restart failed:${error.message}`);
-                //     });
-                // } else {
-                //     // If no setupPending, start immediately
-                //     this.startReplicating();
-                // }
-            } else {
-                // test environment normally restarts replication "manually", right after the reset() calls are all done.
-                // this.warn(`⚠️  Replication remains DISABLED after reset`);
-            }
-
-            return this.setupPending;
-        }
-        function warning(this: DredServer, activityName) {
-            return (e) => {
-                this.warn(`during close: error in ${activityName}:\n\t`, e.message || e);
-            };
-        }
-    }
-
     async close() {
         this.cancelSubscribers();
 
@@ -796,7 +744,6 @@ export class DredServer {
         // Stop periodic status logging
         this.stopPeriodicStatusLogging();
 
-        this.reset(false);
         this.listener?.close();
     }
     async listenDetails() {}
@@ -812,46 +759,6 @@ export class DredServer {
         if ("string" === typeof addr) throw new Error(`Unix socket not supported currently`);
 
         return addr;
-    }
-
-    /**
-     * Create a DredClient instance, but does not generate a key.
-     * Note: The caller should call generateKey() after creating the client.
-     *
-     * @param serverSelection - The server ID to connect to.
-     * @param clientArgs - Additional client configuration options.
-     * @param serverManaged - Whether the client is managed by the server (affects cleanup).
-     * @returns A DredClient instance.
-     */
-    mkClient(
-        serverSelection: string,
-        clientArgs: Partial<DredClientArgs> = {}
-            serverManaged: boolean = true
-    ): DredClient {
-        const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
-        if (!discovery) throw new Error("discovery is required");
-
-        const oneHost = discovery.hosts!.find((h) => h.serverId === serverSelection);
-        if (!oneHost) {
-            this.logger.error(`server ${serverSelection} not found in discovery`, discovery);
-            throw new Error(`server ${serverSelection} not found in discovery`);
-        }
-        const singleDiscovery = new StaticHostDiscovery({
-            hosts: [oneHost],
-        });
-
-        const client = new DredClient({
-            // name: `${serverSelection || ""}-${clientIndex++}`,
-            ...this.clientArgs,
-            ...clientArgs,
-            neighborhood: this.nbh,
-            discovery: singleDiscovery,
-        });
-
-        // Mark client ownership for cleanup tracking
-        (client as any)._serverManaged = serverManaged;
-        
-        return client;
     }
 
     // just use `info`
@@ -1481,8 +1388,14 @@ export class DredServer {
     };
 }
 
-export async function createServer(options: DredServerArgs, serverId: string, serverDb: number) {
-    const server = new DredServer(options, serverId, serverDb);
+export async function createServer(
+    options: DredServerArgs,
+    serverId: string,
+    serverDb: number,
+    serverClass?: typeof DredServer
+) {
+    const SC = serverClass ?? DredServer;
+    const server = new SC(options, serverId, serverDb);
     const { api, redis } = server;
     api.set("redis", redis!);
 

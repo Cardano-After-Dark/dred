@@ -15,8 +15,7 @@ const { sign } = nacl;
 import util from "tweetnacl-util";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
-import { testSetup } from "../testServer.js";
-import { DredServer } from "../DredServer.js";
+import { testSetup, TestDredServer } from "../testServer.js";
 import { asyncDelay } from "../../util/asyncDelay.js";
 import type {
     Key,
@@ -43,7 +42,7 @@ const xit = it.skip
 describe("channels", () => {
     let agent: SuperTestWithHost<Test>;
     let client: DredClient;
-    let server: DredServer;
+    let server: TestDredServer;
 
     beforeAll(async () => {
         const setup = await testSetup();
@@ -54,13 +53,11 @@ describe("channels", () => {
         it("creates a channel on request, with createdAt set", async () => {
             const channelName = "fooChannel";
 
-            await asyncDelay(50);
             const response = await agent
                 .post(`/channel/${channelName}`)
                 .send({ createdAt: new Date().getTime() - 100000 })
                 .expect("Content-Type", /json/)
                 .expect(200);
-
 
 
             expect(response.body).toMatchObject({

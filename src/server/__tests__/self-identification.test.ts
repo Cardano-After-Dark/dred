@@ -58,7 +58,6 @@ describe("Self-identification issue reproduction", () => {
         
         try {
             await server.setupReplication();
-            await asyncDelay(1000);
             
             const replicator = server.replicator;
             expect(replicator?.isInitialized()).toBe(true);
