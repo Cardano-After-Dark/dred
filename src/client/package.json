@@ -6,15 +6,14 @@
     "packageManager": "pnpm@10.10.0",
     "exports": {
         ".": {
-            "types": "./dist/dred-client.d.ts",
+            "types": "./dist/index.d.ts",
             "browser": "./dist/dred-client.mjs",
-            "node": "./dist/dred-client-nodejs.mjs",
             "import": "./dist/dred-client.mjs",
             "require": "./dist/dred-client.js",
             "default": "./dist/dred-client.js"
         },
         "./node": {
-            "types": "./dist/dred-client-nodejs.d.ts",
+            "types": "./dist/index.d.ts",
             "import": "./dist/dred-client-nodejs.mjs",
             "require": "./dist/dred-client-nodejs.js",
             "default": "./dist/dred-client-nodejs.mjs"
