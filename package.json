@@ -1,6 +1,6 @@
 {
     "name": "dred-server",
-    "version": "0.6.0",
+    "version": "0.8.0",
     "description": "Distributed event streams for web3",
     "type": "module",
     "bin": {
