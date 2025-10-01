@@ -166,8 +166,12 @@ export class ChatApp extends Component<myProps, MyState> {
     chooseChannel(e) {
         const channel: string = this.channelSelector.current!.value || "";
         this.setState({ channel, message: `${channel}: chat channel ready` });
-        this.client.messageHandler = this.receiveComms;
-        this.client.subscribeToChannels(channel);
+
+        this.client.subscribeToChannels({
+            type: "mass",
+            channels: [channel],
+            massHandler: this.receiveComms,
+        });
         return this.transition("chat");
     }
 
