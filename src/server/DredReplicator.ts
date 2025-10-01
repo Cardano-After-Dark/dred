@@ -1,4 +1,3 @@
-
 /**
  * The DredReplicator(Mgr) class handles replication logic for a single Dred Server within a given neighborhood.
  *
@@ -81,7 +80,6 @@ export class DredReplicator {
     log(message: string, ...args: any[]) {
         this.logger.info(message, ...args);
     }
-
     warn(message: string, ...args: any[]) {
         this.logger.warn(message, ...args);
     }
@@ -120,27 +118,31 @@ export class DredReplicator {
         // NOTE: the discovery is already filtering by neighborhood
         const hosts = await this.discovery.getHostList();
         const otherHosts = hosts.filter((host) => host.serverId !== this.homeServer.serverId);
+        const readySignals: Promise<void>[] = [];
         // Create all replicants first
         for (const host of otherHosts) {
             // handle replication from a single target server to the home server
-            const repClient = new Replicant(this, this.homeServer, host);
+            const replicant = new Replicant(this, this.homeServer, host);
             // Store replicant for cleanup
-            this.replicants.push(repClient);
-        }
-
-        // Start all connection loops in parallel (non-blocking)
-        this.replicants.forEach((replicant) => {
+            this.replicants.push(replicant);
+            readySignals.push(
+                new Promise<any>((resolve) => {
+                    replicant.eventEmitter.once("replicator:connected", resolve);
+                }),
+            );
             try {
-                // Start connection loop asynchronously - don't await
+                // Start connection loop in background
                 replicant.startConnectionLoop();
-            } catch (error) {
-                this.warn(`Failed to start connection loop for replicant: ${error}`);
+            } catch (error: any) {
+                this.logger.error(`starting connection loop:`, error.stack);
             }
-        });
+        }
+        this.replicantsReady = Promise.all(readySignals);
 
         // Don't wait for connections to complete - let them retry in background
         this.progress(`initialized with ${this.replicants.length} replicants`);
     }
+    replicantsReady: Promise<void[]> | undefined;
 
     async cleanup() {
         if (!this.initialized) {
@@ -195,6 +197,10 @@ interface SimpleRetryState {
     retryTimer?: NodeJS.Timeout;
 }
 
+type ReplicationEvents = {
+    "replicator:connected": [replicant: Replicant];
+};
+
 /**
  * Replicant is a class that handles replication to a single target server.
  * It is responsible for:
@@ -202,22 +208,20 @@ interface SimpleRetryState {
  *  - replicating the messages from the target server to the home server, while preventing duplicates
  *  - listening to the home server for new channels
  */
-export class Replicant{
-    private static _logHeader = "[REPLicant]";
+export class Replicant {
     private replicator: DredReplicator;
     private homeServer: DredServer;
     private targetHost: DredHostDetails;
     private name: string;
     private repClient: DredClient | null;
     private retryState: SimpleRetryState;
-    logger: ReturnType<typeof zonedLogger>
-
+    logger: Logger;
+    eventEmitter: EventEmitter<ReplicationEvents> = new EventEmitter<ReplicationEvents>();
     log(message: string, ...args: any[]) {
         // Use a simulated "replication" facility with target as loggerId
         // This mimics what Randall wanted: facility 'replication' with target-server-id as loggerId
         this.logger.info(message, ...args);
     }
-
     warn(message: string, ...args: any[]) {
         // Use a simulated "replication" facility with target as loggerId
         this.logger.warn(message, ...args);
@@ -228,13 +232,16 @@ export class Replicant{
     debug(message: string, ...args: any[]) {
         this.logger.debug(message, ...args);
     }
+    trace(message: string, ...args: any[]) {
+        this.logger.trace(message, ...args);
+    }
 
     constructor(replicator: DredReplicator, homeServer: DredServer, targetHost: DredHostDetails) {
         this.replicator = replicator;
         this.homeServer = homeServer;
         this.targetHost = targetHost;
         const serverDb = homeServer.redisDb;
-        const dbInfo = serverDb ? `${nanoid(2)}[${serverDb}]-` : ""
+        const dbInfo = serverDb ? `${nanoid(3)}/#${serverDb}-` : "";
         const target = targetHost.serverId.replace(/^dredNode-/, "") || targetHost.address;
         this.name = `${dbInfo}from-${target}`;
         this.logger = zonedLogger("replicant", {
@@ -247,13 +254,6 @@ export class Replicant{
         };
     }
     
-    /**
-     * Get a human-readable name for logging
-     */
-    private getReadableName(): string {
-        return `Replicant[${this.targetHost.address}:${this.targetHost.port}]`;
-    }
-
     /**
      * Get the target host details
      */
@@ -362,11 +362,20 @@ export class Replicant{
                 // Error message already logged in checkServerAvailability with semantic format
                 throw new Error(`Target server ${this.targetHost.serverId} is not available`);
             }
+            const focusedDiscovery = new StaticHostDiscovery({
+                hosts: [this.targetHost],
+                neighborhood: this.homeServer.nbh,
+            });
             
             // Create client and attempt connection with timeout
-            this.repClient = this.homeServer.mkClient(this.targetHost.serverId, {
-                name: `from-${this.homeServer.serverId}-to-${this.targetHost.serverId}`
-            }, false); // false = not server managed
+            this.repClient = new DredClient(
+                {
+                    ...this.homeServer.clientArgs,
+                    name: this.name,
+                    neighborhood: this.homeServer.nbh,
+                    discovery: focusedDiscovery,
+                },
+            );
             
             // Set max listeners to prevent memory leak warnings on various components
             if (this.repClient) {
@@ -380,7 +389,6 @@ export class Replicant{
                     (this.repClient as any).setMaxListeners(20);
                 }
             }
-            
 
             let success = false;
             // Add timeout to the entire DRED client connection process
@@ -542,8 +550,6 @@ export class Replicant{
     }
 
     private async subscribeToCommonChannels(channels: string[]): Promise<void> {
-
-        
         await new Promise((resolve) => setTimeout(resolve, 100));
 
         // Connection state check
@@ -553,25 +559,11 @@ export class Replicant{
           - Waiting for connection...
           - After wait - RepClient: ${this.repClient!.currentState}, ConnManager: ${this.repClient!.connManager.currentState}`);
 
-        // Create subscription map with replication handlers
-        const subscriptionMap: Record<string, (msg: any) => void> = {};
-
-        // todo: use a single listener for all the messages, instead of one per channel
-        //    detect the channel from its args.
-        for (const channel of channels) {
-            subscriptionMap[channel] = (message) => {
-                this.warn(
-                    `📥 REPLICATION: Message detected from ${this.targetHost.serverId} in channel '${channel}' (${message.mid})`,
-                );
-                const { connection, ...core } = message;
-                this.log(`🎯 REPL MESSAGE from ${this.targetHost.serverId}:`, core);
-                this.handleIncomingMessage(channel, message);
-            };
-        }
-        
-        this.warn(`🔔 REPLICATION: Subscribing to ${channels.length} channels`);
-
-        await this.repClient!.subscribeToChannels(subscriptionMap);
+        await this.repClient!.subscribeToChannels({
+            type: "mass",
+            channels,
+            massHandler: this.messageHandler.bind(this),
+        });
 
         this.warn(`✅ Successfully subscribed to ${channels.length} channels`);
     }
@@ -582,65 +574,56 @@ export class Replicant{
      * @param message
      * @returns
      */
-    private async handleIncomingMessage(channelId: string, message: any): Promise<void> {
+    private async messageHandler(message: FullDredMessage): Promise<void> {
+        const { mid, channel, ocid } = message;
         try {
-            // eslint-disable-next-line no-debugger
-            debugger
-
-            const sourceId = this.targetHost.serverId;
-            
-            // Message received from target server 
-            
-            const messageId = message.mid || message.id || `${Date.now()}-${Math.random()}`;
-            const ocid = message.ocid;
+            this.trace(`received message`, { channel, mid });
+            const messageId = ocid || message.mid || `${Date.now()}-${Math.random()}`;
             
             // Skip messages without ocid - they can't be properly deduplicated
             if (!ocid) {
-                this.debug(`Skipping message without ocid`, messageId)
+                this.debug(`Skipping message without ocid`, messageId);
                 return;
             }
 
-            
-            
             // CRITICAL: Prevent replication loops
-            // Check if this message already came from replication (has replication metadata)
-            if (message.replicatedFrom && message.replicatedFrom !== undefined) {
-                this.warn(
-                    `---- UNEXPECTED: Skipping message: already replicated (from ${message.replicatedFrom})`,
+
+            if (message.origSrvId === this.homeServer.serverId) {
+                this.debug(
+                    `Skipping message originating from here: %s`, messageId
                 );
                 return;
             }
 
-            if (message.originalServerId === this.homeServer.serverId) {
-                this.debug(
-                    `Skipping message: originated from home server ${this.homeServer.serverId}`,
+            // Check if this message already came from replication (has replication metadata)
+            if (message.replFrom && message.replFrom !== undefined) {
+                this.warn(
+                    `---- UNEXPECTED: Skipping message: already replicated (from ${message.replFrom})`,
                 );
+                this.warn(`TODO: !!! ensure a ring topology doesn't drop messages due to this policy`)
                 return;
             }
             
-            // Check if we should replicate this message
-            if (!await this.shouldReplicateMessage(channelId, messageId)) {
+            if (!(await this.weHaveChannel(channel, messageId))) {
+                this.warn("dropping message for non-existent channel: %o", { channel, messageId });
+                this.warn(`TODO: !!! check for a race involving a new channel; ensure we aren't dropping messages`)
                 return;
             }
 
-
-            // Prepare replicated message
             const replicatedMessage = {
-                msg: message.msg || message.data,
-                type: message.type || 'replicated',
+                msg: message.msg,
+                encryptedMsg: message.encryptedMsg,
+                type: message.type || "replicated",
                 ocid: ocid,
-                replicatedFrom: this.targetHost.serverId,
-                replicatedAt: new Date().toISOString(),
-                originalMessageId: messageId,
-                originalServerId: this.targetHost.serverId,
+                replFrom: this.targetHost.serverId,
+                replAt: new Date().getTime(),
+                origMsgId: messageId,
+                origSrvId: this.targetHost.serverId,
             };
             
-            // Replicate to home server
-            await this.replicateToHomeServer(channelId, replicatedMessage);
-            
-            
-        } catch (error) {
-            this.warn(`Error handling message from ${this.targetHost.serverId} in channel ${channelId}: ${error}`);
+            await this.addMessage(channel, replicatedMessage);
+        } catch (error: any) {
+            this.logger.error(`while replicating channel '${channel}': `, error.stack);
             throw error;
         }
     }
@@ -653,8 +636,7 @@ export class Replicant{
      * @param messageId
      * @returns
      */
-    private async shouldReplicateMessage(channelId: string, messageId: string): Promise<boolean> {
-        
+    private async weHaveChannel(channelId: string, messageId: string): Promise<boolean> {
         // Check if channel still exists on home server
         const channelExists = await this.homeServer.channelList.has(channelId);
 
@@ -674,7 +656,7 @@ export class Replicant{
         return true;
     }
 
-    private async replicateToHomeServer(channelId: string, messageDetails: any): Promise<void> {
+    private async addMessage(channelId: string, messageDetails: any): Promise<void> {
         try {
             // this.warn(`📤 REPLICATION: Publishing to home server '${this.homeServer.serverId}' in channel '${channelId}' (ocid: ${messageDetails.ocid})`);
 
@@ -691,7 +673,6 @@ export class Replicant{
             } else {
                 this.debug(`Message was a duplicate, not replicated: ${messageDetails.ocid}`);
             }
-            
         } catch (error) {
             this.logger.error(`while adding to channel ${channelId}: ${error}`);
             throw error;
@@ -703,7 +684,7 @@ export class Replicant{
      * TestServer owns client lifecycle, so we just nullify our reference.
      */
     async cleanup(): Promise<void> {
-        this.progress(`cleaning up replicant`);
+        this.trace(`cleaning up replicant`);
 
         // Clear any pending retry timers
         if (this.retryState.retryTimer) {
@@ -717,13 +698,9 @@ export class Replicant{
         this.retryState.nextRetryTime = undefined;
 
         if (this.repClient) {
-            // TODO: check if the client is connected before trying to disconnect
-            // this.repClient.disconnect();
+            this.repClient.disconnect()
 
-            this.debug(
-                `${this.name} nullifying client reference (testServer will also try to disconnect clients)`,
-            );
-            // Don't try to clear subscriptions - DredClient subscription setter is incomplete
+            // Doesn't try to clear subscriptions - DredClient subscription setter is incomplete
             // Just nullify our reference and let testServer handle full client disconnect
             this.repClient = null;
         }
