@@ -120,7 +120,7 @@ export type eventChannelInfo = DredEvent & {
 
 /**
  * Type for event-emitter, with args-types for the listener on each event-name.
- * 
+ *
  * The args types are a tuple type, typically indicating a single arg for the event.
  * @public
  */
@@ -203,7 +203,7 @@ const clientStates = {
             const chans = await this.connManager.getChannelList();
             this.channels = chans;
             await this.transition("hasChannels");
-            this.emitHasChannels()
+            this.emitHasChannels();
         },
         hasChannels: "ready",
     },
@@ -233,7 +233,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     events: EventEmitter<ClientEvents, any> = this.ensureEmitterExists();
     connManager: ConnectionManager;
     channels: ChanId[] = [];
-    neighborhood: string // = "cardano-after-dark";
+    neighborhood: string; // = "cardano-after-dark";
     availableNeighborhoods: string[] = [];
     // neighborhoodContractAddress = "9bef...";
     discovery: Discovery;
@@ -295,12 +295,11 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             clientid: this.clientid,
         });
     }
-    
+
     private ensureEmitterExists() {
         return (this.events = this.events || new EventEmitter<ClientEvents>());
     }
 
-    
     info(a1: string, ...args: any[]) {
         this.logger.info(a1, ...args);
     }
@@ -589,11 +588,11 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     async once<E extends string & keyof ClientEvents>(
         eventName: E,
     ): Promise<
-    ClientEvents[E] extends [infer O1, ...infer more]
-    ? ClientEvents[E] extends [infer SINGLE]
-        ? SINGLE
-        : ClientEvents[E]
-    : void
+        ClientEvents[E] extends [infer O1, ...infer more]
+            ? ClientEvents[E] extends [infer SINGLE]
+                ? SINGLE
+                : ClientEvents[E]
+            : void
     > {
         return new Promise<any>((resolve) => {
             this.events.once(eventName, (...args) => {

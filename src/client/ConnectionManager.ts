@@ -67,7 +67,7 @@ const connectionManagerStates = {
                         "and/or give the user a default or choice based on neighborhood discovery.",
                         "Set a default neighborhood with the new DredClient{{neighborhood}) option",
                         "...or, use ‹clientObject›.discovery.setNeighborhood(nbhId)",
-                    ]
+                    ],
                 });
             }
         },
@@ -127,8 +127,8 @@ const connectionManagerStates = {
             //     debugger
             //     return true;
             // },
-            nextState: "disconnected"
-        }
+            nextState: "disconnected",
+        },
     },
     replacingSubs: {
         // equivalent to connecting, except:
@@ -241,9 +241,7 @@ const connectionManagerStates = {
                 recommendation: "check your network connection and/or have patience",
                 altMessageRealtime: "you may experience messaging delays",
                 altMessageSecurity: "wait for resolution before continuing",
-                [devMessage]: [
-                    "tbd"
-                ]
+                [devMessage]: ["tbd"],
             });
         },
         reconnect: "connecting",
@@ -304,7 +302,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
             contextObject: null,
             logProperties: {
                 loggerId: options.clientid,
-                color: cyan.start + dim.start
+                color: cyan.start + dim.start,
             },
         });
         this.clientid = options.clientid;
@@ -313,8 +311,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
         this.logger = zonedLogger("connMgr", {
             loggerId: options.clientid,
-            color: cyan.start + dim.start
-
+            color: cyan.start + dim.start,
         });
         this.connectionSettings = HostConnection.settingsWithDefaults(options.connectionSettings);
         this.discovery = options.discovery;
@@ -360,7 +357,6 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
     retireObsoleteConnections(updatedHosts: DredHostDetails[]) {
         //!!! todo: implement retireObsoleteConnections
-
         //! it removes connections to hosts that aren't in the updated host list.
     }
 

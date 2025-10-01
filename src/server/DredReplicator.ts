@@ -143,7 +143,7 @@ export class DredReplicator {
     }
 
     async cleanup() {
-        if(!this.initialized) {
+        if (!this.initialized) {
             this.warn(`not initialized`);
             return;
         }
@@ -333,10 +333,14 @@ export class Replicant{
         if (this.repClient !== null) {
             this.warn(`${this.name} already has a client, cleaning up first`);
             // Don't await cleanup - do it asynchronously
-            this.cleanup().then(() => {
+            this.cleanup()
+                .then(() => {
                 this.attemptConnection();
-            }).catch((error) => {
-                this.warn(`${this.name} cleanup failed, proceeding with connection attempt: ${error}`);
+                })
+                .catch((error) => {
+                    this.warn(
+                        `${this.name} cleanup failed, proceeding with connection attempt: ${error}`,
+                    );
                 this.attemptConnection();
             });
         } else {
@@ -436,8 +440,13 @@ export class Replicant{
             const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
             
             const response = await fetch(url, { 
-                method: 'GET',
-                signal: controller.signal
+                method: "GET",
+                signal: controller.signal,
+                headers: {
+                    "content-type": "application/json",
+                    accept: "application/json",
+                    clientId: `${this.name}-REPL`,
+                } as HeadersInit,
             });
             
             clearTimeout(timeoutId);
