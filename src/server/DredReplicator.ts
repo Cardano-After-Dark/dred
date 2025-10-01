@@ -443,7 +443,14 @@ export class Replicant {
      */
     private async checkServerAvailability(): Promise<boolean> {
         try {
-            const url = `https://${this.targetHost.address}:${this.targetHost.port}/channels`;
+            let secureProtocol = "https";
+            if (this.targetHost.insecure) {
+                if (process.env.NODE_ENV !== "test") {
+                    throw new Error("insecure replication is only allowed in test environment");
+                }
+                secureProtocol = "http";
+            }
+            const url = `${secureProtocol}://${this.targetHost.address}:${this.targetHost.port}/channels`;
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
             
@@ -490,6 +497,7 @@ export class Replicant {
         // Get channels from both servers and find intersection
         const commonChannels = await this.findCommonChannels();
         this.log(`common channels: ${commonChannels.join(", ")}`);
+
         // Subscribe to common channels with replication handlers
         await this.subscribeToCommonChannels(commonChannels);
     }
