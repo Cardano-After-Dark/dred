@@ -223,12 +223,18 @@ preprod/config/uk.env                       # Static discovery + HTTP workaround
 preprod/config/de.env                       # HTTPS configuration
 preprod/scripts/setup-dred-minimal.sh       # Port cleanup + env var handling
 .env                                        # Local development HTTP config
+Makefile                                    # Refactored from 312 to 62 lines
+scripts/deploy-remote.sh                    # Refactored from 84 to 28 lines
+scripts/run-local.sh                        # Refactored from 47 to 18 lines
+scripts/check-status.sh                     # Refactored from 140 to 47 lines
 ```
 
 ## Files Created
 
-```
+```bash
 scripts/send-message-on-channel.sh          # Message testing utility
+scripts/send-message.sh                     # Message sending wrapper
 .ai/s/x01/wrapup/input-context.md           # Task context documentation
 .ai/s/x01/wrapup/changes-and-verification.md # This file
+.ai/s/x01/wrapup/makefile-refactoring.md    # Makefile refactoring documentation
 ```

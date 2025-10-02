@@ -47,7 +47,31 @@ Successfully fixed and verified DRED server replication system with proper HTTP/
 ## Files Created
 
 - **scripts/send-message-on-channel.sh** - Message testing utility
+- **scripts/send-message.sh** - Message sending wrapper for Makefile
+- **Makefile** - Top-level development commands
 - **.ai/s/x01/wrapup/** - Complete documentation
+
+## Additional Work: Makefile Refactoring
+
+Successfully refactored the development Makefile from 312 lines to 62 lines (80% reduction):
+
+### Key Improvements
+
+- **Extracted complex logic to scripts**: deploy-remote.sh, run-local.sh, check-status.sh, send-message.sh
+- **Fixed macOS compatibility**: Replaced bash 4+ syntax with POSIX-compatible commands
+- **Fixed API queries**: Corrected jq query to show actual channel names instead of "channels"
+- **Followed preprod pattern**: Minimal Makefile that delegates to scripts
+
+### New Commands Available
+
+```bash
+make dred-setup-remote [server]    # Deploy to remote VPS
+make dred-run-local [LOGGING=...]  # Run locally with custom logging
+make dred-send-message [server] [channel] message...
+make dred-check-status             # Check all servers
+```
+
+See `makefile-refactoring.md` for detailed documentation.
 
 ## Next Steps (Future Sessions)
 
