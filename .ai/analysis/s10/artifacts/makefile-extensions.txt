@@ -1,0 +1,89 @@
+# DRED Replication Demonstration Extensions
+# Add these commands to your preprod/Makefile
+
+# =============================================================================
+# REPLICATION DEMONSTRATION COMMANDS
+# =============================================================================
+
+.PHONY: demo-query-servers
+demo-query-servers:
+	@echo "🔍 Querying both DRED servers..."
+	@cd .ai/analysis/s10/artifacts && bash query-servers.sh
+
+.PHONY: demo-replication
+demo-replication:
+	@echo "🚀 Starting replication demonstration..."
+	@cd .ai/analysis/s10/artifacts && bash replication-demo.sh
+
+.PHONY: demo-replication-auto
+demo-replication-auto:
+	@echo "🚀 Running automated replication demonstration..."
+	@cd .ai/analysis/s10/artifacts && bash replication-demo.sh --auto
+
+.PHONY: demo-create-channel
+demo-create-channel:
+	@if [ -z "$(CHANNEL)" ]; then \
+		echo "Usage: make demo-create-channel CHANNEL=your-channel-name"; \
+		exit 1; \
+	fi
+	@echo "📝 Creating channel '$(CHANNEL)' on both servers..."
+	@curl -X POST http://$(US):$(DRED_PORT)/channel/$(CHANNEL) -H "Content-Type: application/json" -d '{"createdAt": '$(shell date +%s000)'}' && echo " ✓ US"
+	@curl -X POST http://$(UK):$(DRED_PORT)/channel/$(CHANNEL) -H "Content-Type: application/json" -d '{"createdAt": '$(shell date +%s000)'}' && echo " ✓ UK"
+
+.PHONY: demo-send-message
+demo-send-message:
+	@if [ -z "$(CHANNEL)" ] || [ -z "$(MESSAGE)" ]; then \
+		echo "Usage: make demo-send-message CHANNEL=your-channel MESSAGE='your message' [SERVER=us|uk]"; \
+		exit 1; \
+	fi
+	@if [ "$(SERVER)" = "uk" ]; then \
+		echo "📤 Sending message to UK server..."; \
+		curl -X POST http://$(UK):$(DRED_PORT)/channel/$(CHANNEL)/message \
+			-H "Content-Type: application/json" \
+			-d '{"msg":"$(MESSAGE)","type":"demo","ocid":"demo-'$(shell date +%s)'","sender":"makefile-demo"}'; \
+	else \
+		echo "📤 Sending message to US server..."; \
+		curl -X POST http://$(US):$(DRED_PORT)/channel/$(CHANNEL)/message \
+			-H "Content-Type: application/json" \
+			-d '{"msg":"$(MESSAGE)","type":"demo","ocid":"demo-'$(shell date +%s)'","sender":"makefile-demo"}'; \
+	fi
+	@echo ""
+
+.PHONY: demo-test-remote-replication  
+demo-test-remote-replication:
+	@echo "🧪 Running remote replication TypeScript test..."
+	@echo "⚠️  This test requires both servers to be operational and in the same neighborhood"
+	@pnpm test remote-replication
+
+.PHONY: demo-help
+demo-help:
+	@echo "DRED Replication Demonstration Commands"
+	@echo "======================================"
+	@echo ""
+	@echo "Query Commands:"
+	@echo "  make demo-query-servers           # Check status of both servers"
+	@echo ""
+	@echo "Interactive Demonstrations:"
+	@echo "  make demo-replication             # Interactive replication demo"  
+	@echo "  make demo-replication-auto        # Automated replication demo"
+	@echo ""
+	@echo "Manual Operations:"
+	@echo "  make demo-create-channel CHANNEL=test    # Create channel on both servers"
+	@echo "  make demo-send-message CHANNEL=test MESSAGE='Hello' [SERVER=us|uk]"
+	@echo ""
+	@echo "Testing:"
+	@echo "  make demo-test-remote-replication # Run TypeScript integration test"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make demo-create-channel CHANNEL=demo-channel"
+	@echo "  make demo-send-message CHANNEL=demo-channel MESSAGE='Hello from US!' SERVER=us"
+	@echo "  make demo-send-message CHANNEL=demo-channel MESSAGE='Greetings from UK!' SERVER=uk"
+	@echo ""
+
+# Update the main help to include demo commands
+help::
+	@echo ""
+	@echo "Replication Demo:"
+	@echo "  make demo-help                    # Show replication demo commands"
+	@echo "  make demo-query-servers           # Query both servers"
+	@echo "  make demo-replication             # Interactive replication demo"
