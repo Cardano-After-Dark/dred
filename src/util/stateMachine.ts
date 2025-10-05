@@ -137,7 +137,7 @@ export abstract class StateMachine<
         promiseOrDelay: number | AnyPromise<any>,
     ) {
         if (this._deferredSMAction) {
-            this.log("existing action: ", this._deferredSMAction);
+            this.warn("existing action: ", this._deferredSMAction);
             throw new Error(
                 `🍓🍸 ${this.stateMachineName} already has a deferred action pending`
             );
@@ -159,7 +159,7 @@ export abstract class StateMachine<
         this._deferredSMAction = pAction;
         const p: Promise<any> = (promise as any).promise ?? promise;
 
-        this.log(`\n  -- scheduled! ${delay} ⏰`);
+        this.progress(`\n  -- scheduled! ${delay} ⏰`);
         this.ignoringListenerErrors("changed", () => {
             this.$notifier.emit("changed", this);
         })
@@ -169,16 +169,16 @@ export abstract class StateMachine<
                     // todo: this cancellation isn't actually performed yet,
                     // but when the code is changed to do that, verify that
                     // this shows as expected.
-                    this.log(
+                    this.trace(
                         `    -- deferred transition ${tn} already triggered 👍`
                     );
                     return;
                 }
                 if (this.destroyed) {
-                    this.log(" -- was destroyed; abandoning deferred transition");
+                    this.debug(" -- was destroyed; abandoning deferred transition");
                 }                    
                 this._deferredSMAction = undefined;
-                this.log("    -- triggering deferred state transition");
+                this.progress("    -- triggering deferred state transition");
                 this.transition(tn);
             },
             () => {
@@ -193,7 +193,7 @@ export abstract class StateMachine<
             cb();
         }
         catch (e: any) {
-            this.log(`ignoring error in '${event}' listener`, e);
+            this.warn(`Note: error in '${event}' listener`, e);
         }
     }
     /**
@@ -242,7 +242,7 @@ export abstract class StateMachine<
         promiseOrDelay: number | AnyPromise<any>,
     ) : DeferredState<this> {
         if (this._deferredSMAction) {
-            this.log("existing action: ", this._deferredSMAction);
+            this.warn("existing action: ", this._deferredSMAction);
             throw new Error(
                 `🍓🍸 ${this.stateMachineName} already has a deferred action`
             );
@@ -262,7 +262,7 @@ export abstract class StateMachine<
         const p: Promise<any> = (promise as any).promise ?? promise;
         p.catch(
             () => {
-                this.log(
+                this.warn(
                     `promise for deferred action cancelled or failed\n` +
                         `  ... NOT committing state -> ${targetState}`
                 );
@@ -312,14 +312,40 @@ export abstract class StateMachine<
             : "";
         return `@${this.$state} ${deferredStatus}: `
     }
-    log(...args: [string, ...any[]]) {
-        const [msg, ...rest] = args;
+    
+    error(message: string, ...args: any[]) {
+        //@ts-expect-error
+        if (this.logger) return this.logger.error(message, ...args);
+        console.error(`${this.logLabel} ${this.logPrefix()} ${message}`, ...args);
+    }
+    warn(message: string, ...args: any[]) {
+        //@ts-expect-error
+        if (this.logger) return this.logger.warn(message, ...args);
+        console.warn(`${this.logLabel} ${this.logPrefix()} ${message}`, ...args);
+    }
+    info(message: string, ...args: any[]) {
+        //@ts-expect-error
+        if (this.logger) return this.logger.info(message, ...args);
+        console.info(`${this.logLabel} ${this.logPrefix()} ${message}`, ...args);
+    }
+    progress(message: string, ...args: any[]) {
+        //@ts-expect-error
+        if (this.logger) return this.logger.progress(message, ...args);
+        console.info(`${this.logLabel} ${this.logPrefix()} ${message}`, ...args);
+    }
+    debug(message: string, ...args: any[]) {
+        //@ts-expect-error
+        if (this.logger) return this.logger.debug(message, ...args);
+        console.debug(`${this.logLabel} ${this.logPrefix()} ${message}`, ...args);
+    }
+    trace(message: string, ...args: any[]) {
+        //@ts-expect-error
+        if (this.logger) return this.logger.trace(message, ...args);
+        console.trace(`${this.logLabel} ${this.logPrefix()} ${message}`, ...args);
+    }
 
-        console.log(
-            `🍓🍸 ${this.instanceId} ${this.stateMachineName} ${this.logPrefix()}` +
-                msg,
-            ...rest
-        );
+    get logLabel() {
+        return `🍓🍸 ${this.instanceId} ${this.stateMachineName}`
     }
 
     onEntry: Partial<{ [state in STATES]: () => void }> = {};
@@ -403,7 +429,7 @@ export abstract class StateMachine<
                 // aren't duplicated
                 this._deferredSMAction = undefined
             } else {
-                this.log(" -- can't transition with deferred action : ( ")
+                this.warn(" -- can't transition with deferred action : ( ")
                 throw new Error(
                     `${this.stateMachineName} can't do transition ${tn} with deferred action '${this.$describeDeferredAction}' pending`
                 );
@@ -445,7 +471,7 @@ export abstract class StateMachine<
             })
 
         if (nextState == false) {
-            this.log(
+            this.info(
                 `transition canceled: ${currentState}: ${tn} XXX ${targetState}` +
                     (wasCancelled
                         ? `\n -- cancelled by 'transition' listener`
@@ -471,7 +497,7 @@ export abstract class StateMachine<
                 () => {
                     if (this._deferredSMAction) {
                         this._deferredSMAction = undefined;
-                        this.log(
+                        this.progress(
                             `    --  commit deferred ${type} -> ${targetState}`
                         );
                         return this.finishTransition(
@@ -486,7 +512,7 @@ export abstract class StateMachine<
             )
         } else if (this.$state != currentState) {
             const trampolineState = this.$state;
-            this.log(
+            this.progress(
                 `  -- trampolined ^^ ${currentState}: ${tn} 🏒 -> ~~${nextState}~~  🥅 ${trampolineState} during ${tn} `
             );
             // skipped extra notification
@@ -494,7 +520,7 @@ export abstract class StateMachine<
             nextState = nextState || targetState;
             const stateRedirect =
                 nextState == targetState ? "" : `~~${targetState}~~  -> `;
-            this.log(` -- ${tn} 🏒 -> ${stateRedirect} 🥅 ${nextState}`);
+            this.progress(` -- ${tn} 🏒 -> ${stateRedirect} 🥅 ${nextState}`);
             this.$state = (nextState || targetState) as any;
             this.ignoringListenerErrors("changed", () => {
                 this.$notifier.emit("changed", this);
