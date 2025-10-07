@@ -80,7 +80,10 @@ export abstract class StateMachine<
         });
         this.resetState();
         this.onStateEntered = this.onStateEntered.bind(this);
-        this.$notifier.on("state:entered", this.onStateEntered);
+        this.$notifier.on("state:entered", 
+            // avoid type-resolution loop with any cast
+            this.onStateEntered as any
+        );
     }
 
     get $deferredAction() {
@@ -98,12 +101,23 @@ export abstract class StateMachine<
         return `(deferred ${type} '${nextThing}'): ${displayStatus}`;
     }
 
-    get deferredTargetState() {
-        const deferredAction = this._deferredSMAction as any;
+    get deferredTargetState() : STATES | "" {
+        const deferredAction = this._deferredSMAction as any 
         if (!deferredAction) return "";
-        return deferredAction.targetState ?? this.transitionTable[
-            deferredAction.transitionName
-        ].to;
+        if (deferredAction.targetState) return deferredAction.targetState as STATES;
+
+        const currentState = this.$state;
+        if (!currentState) return "";
+        const currentTransition = deferredAction.transitionName as TRANSITIONS
+        const transitionsAvailable = this.transitionTable[currentState]
+        if (!transitionsAvailable) {
+            throw new Error(`🍓🍸 ${this.stateMachineName}: deferred transition (${currentTransition}) invalid from ${currentState} (no transitions defined)`)
+        }
+        const transition = transitionsAvailable[currentTransition]
+        if (!transition) {
+            throw new Error(`🍓🍸 ${this.stateMachineName}: deferred transition (${currentTransition}) invalid from state: ${currentState}`)
+        }
+        return transition.to;
     }
 
     /**
@@ -279,7 +293,7 @@ export abstract class StateMachine<
         })
     }
 
-    onStateEntered(sm, state) {
+    onStateEntered(sm : this, state: STATES) {
         const entryHook = this.onEntry[state];
         if (entryHook) {
             entryHook.call(this);

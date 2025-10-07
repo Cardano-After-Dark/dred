@@ -73,11 +73,11 @@ export function mkCancellablePromise<T>(
         reject(new Error("cancelled"))
         // controller.abort();
     }
-    const wrappedResolve = (x) => {
+    const wrappedResolve = (x: T) => {
         resolve(x)
         cpObj.status = "fulfilled"
     }
-    const wrappedReject = (e) => {
+    const wrappedReject = (e: Error) => {
         cpObj.status="rejected"
         reject(e)
     }
