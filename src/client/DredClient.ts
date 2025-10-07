@@ -73,6 +73,9 @@ export type SubscriberMap = {
 //     // event: DredMessage,
 // }
 
+/**
+ * @public
+ */
 export type FullDredMessage = ConnectionEvent &
     DredChannelMessage &
     DredMessage
