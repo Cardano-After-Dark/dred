@@ -90,9 +90,10 @@ export type ClientState = DredEvent & {
 };
 
 // Warning: (ae-forgotten-export) The symbol "ConnectionEvent" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "ReplicatedMessage" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export type DredChannelMessage = ConnectionEvent & {
+export type DredChannelMessage = ConnectionEvent & ReplicatedMessage & {
     message: "msg received in chan";
     neighborhood: NbhId;
     channel: ChanId;
@@ -100,10 +101,6 @@ export type DredChannelMessage = ConnectionEvent & {
     details: any;
     mid: MsgId;
     ts: Date;
-    replFrom?: string;
-    replAt?: number;
-    origSrvId?: string;
-    origMsgId?: string;
 };
 
 // Warning: (ae-forgotten-export) The symbol "DredClient_base" needs to be exported by the entry point index.d.ts
@@ -119,6 +116,10 @@ export class DredClient extends DredClient_base {
     authSub?: ChannelSubscriptionListener;
     // (undocumented)
     availableNeighborhoods: string[];
+    // Warning: (ae-forgotten-export) The symbol "BookmarkStorage" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    bookmarkStorage: BookmarkStorage;
     // (undocumented)
     channels: ChanId[];
     // Warning: (ae-forgotten-export) The symbol "ChannelSubscriptionListener" needs to be exported by the entry point index.d.ts
@@ -184,9 +185,11 @@ export class DredClient extends DredClient_base {
     // Warning: (ae-forgotten-export) The symbol "FullChannelsListeners" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    mkChannelsListeners(listeners: SimpleChannelsListeners): FullChannelsListeners;
+    mkChannelsListeners(listeners: SimpleChannelsListeners): Promise<FullChannelsListeners>;
+    // Warning: (ae-forgotten-export) The symbol "SimpleDredMessageListener" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
-    mkChannelSub(channel: string, listener: DredMessageListener): ChannelSubscriptionListener;
+    mkChannelSub(channel: string, sListener: SimpleDredMessageListener): Promise<ChannelSubscriptionListener>;
     // (undocumented)
     mkConnectionManager(): ConnectionManager;
     // (undocumented)
@@ -237,6 +240,8 @@ export class DredClient extends DredClient_base {
 
 // @public (undocumented)
 export interface DredClientArgs {
+    // (undocumented)
+    bookmarkStorage: BookmarkStorage;
     // Warning: (ae-forgotten-export) The symbol "connnectionSettings" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
@@ -281,10 +286,9 @@ export type DredMessage = {
     msg: string;
     "content-type"?: string;
     ocid?: string;
+    encryptedMsg?: string;
 };
 
-// Warning: (ae-forgotten-export) The symbol "FullDredMessage" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export type DredMessageListener = (dcm: FullDredMessage) => void;
 
@@ -305,6 +309,9 @@ export type eventHasChannels = DredEvent & {
     nbh: NbhId;
     channels: ChanId[];
 };
+
+// @public (undocumented)
+export type FullDredMessage = ConnectionEvent & DredChannelMessage & DredMessage;
 
 // @public (undocumented)
 export type MsgId = string;
@@ -378,7 +385,7 @@ export type SubscriberMap = {
 
 // Warnings were encountered during analysis:
 //
-// /home/san/dev/dred2/src/types/ChannelSubscriptions.ts:101:5 - (ae-forgotten-export) The symbol "DredMsgData" needs to be exported by the entry point index.d.ts
+// /home/san/dev/dred2/src/types/ChannelSubscriptions.ts:158:5 - (ae-forgotten-export) The symbol "DredMsgData" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
