@@ -546,22 +546,25 @@ export class Replicant {
     private async findCommonChannels(): Promise<string[]> {
         // Trigger channel discovery if not already done
         if (!this.repClient!.channels || this.repClient!.channels.length === 0) {
-            this.debug(`Triggering channel discovery for ${this.targetHost.serverId}`);
+            this.debug(`finding remote channels`);
             this.repClient!.channels = await this.repClient!.connManager.getChannelList();
         }
 
         // Get channels from target server (via replication client)
         const targetChannels = this.repClient!.channels;
-        this.debug(`${this.targetHost.serverId} channels: [${targetChannels.join(", ")}]`);
+        this.trace(`found channels: ${targetChannels.join(", ")}`);
 
         // Get channels from home server
         const homeChannels = (await this.homeServer.channelList.keys()) as string[];
-        this.debug(`my channels: [${homeChannels.join(", ")}]`);
+        this.trace(`my channels: ${homeChannels.join(", ")}`);
 
         // Find intersection (channels that exist on both servers)
         const commonChannels = targetChannels.filter(
             (channel) => homeChannels.includes(channel) && !channel.startsWith("_"), // Skip meta channels for now
         );
+        
+        this.trace(`common channels: ${commonChannels.join(", ")}`);
+        this.progress(`${commonChannels.length} common channels`);
 
         return commonChannels;
     }
@@ -570,7 +573,7 @@ export class Replicant {
         await new Promise((resolve) => setTimeout(resolve, 100));
 
         // Connection state check
-        this.log(`Connection states:
+        this.logger.ops(`Connection states:
           - RepClient: ${this.repClient!.currentState}
           - ConnManager: ${this.repClient!.connManager.currentState}
           - Waiting for connection...
@@ -582,7 +585,7 @@ export class Replicant {
             massHandler: this.messageHandler.bind(this),
         });
 
-        this.warn(`✅ Successfully subscribed to ${channels.length} channels`);
+        this.progress(`subscribed to ${channels.length} channels`);
     }
 
     /**

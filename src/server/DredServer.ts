@@ -439,27 +439,22 @@ export class DredServer {
             // composite key to ensure uniqueness across channels
             const deduplicationKey = this.messageKey(channel, msgId);
 
-            // DEBUG: Add detailed logging
-            this.warn(`🔍 DEDUP CHECK [${this.serverId}] checking: ${deduplicationKey}`);
 
             // Check if we've already processed this exact message
             const alreadyProcessed = await this.knownMessages.has(deduplicationKey);
 
-            this.warn(
-                `🔍 DEDUP RESULT [${this.serverId}] ${deduplicationKey} -> already processed: ${alreadyProcessed}`,
-            );
 
             if (alreadyProcessed) {
-                this.warn(
-                    `❌ DEDUP SKIP [${this.serverId}] Duplicate message detected, skipping: ${deduplicationKey}`,
+                this.trace(
+                    `skipping duplicate message: ${deduplicationKey}`,
                 );
                 return undefined; // Signal that message was not posted (duplicate)
             }
 
-            // Mark message as being processed (BEFORE actually posting to prevent race conditions)
+            // prevent racing double-post by pre-adding:
             await this.knownMessages.add(deduplicationKey);
-            this.warn(
-                `✅ DEDUP ADD [${this.serverId}] Added to known messages: ${deduplicationKey}`,
+            this.trace(
+                `+known messages: ${deduplicationKey}`,
             );
 
             // Actually post the message to the channel
@@ -469,9 +464,6 @@ export class DredServer {
                 messageDetails,
             );
 
-            this.warn(
-                `✅ DEDUP PUBLISH [${this.serverId}] Message successfully deduplicated and posted: ${deduplicationKey} -> ${publishedMessageId}`,
-            );
             return publishedMessageId;
         } catch (error: any) {
             // If we fail after marking as processed, we have a problem - log it
@@ -483,6 +475,7 @@ export class DredServer {
     messageKey(channel: string, msgId: string) {
         return `${channel}/${msgId}`;
     }
+
     /**
      * Publish a message directly without dedup.
      * Always await this method to prevent blocking caller and ensure message is published.
@@ -603,7 +596,7 @@ export class DredServer {
         }
 
         const intervalMs = intervalSeconds * 1000;
-        this.ops(`📊 Starting periodic status logging every ${intervalSeconds} seconds`);
+        this.progress(`📊 periodic status logging every ${intervalSeconds} seconds`);
 
         this.statusLoggingTimer = setInterval(() => {
             this.statusLogging();
@@ -620,7 +613,7 @@ export class DredServer {
         if (this.statusLoggingTimer) {
             clearInterval(this.statusLoggingTimer);
             this.statusLoggingTimer = undefined;
-            this.ops(`📊 Stopped periodic status logging`);
+            this.progress(`📊 stopped periodic status logging`);
         }
     }
 
