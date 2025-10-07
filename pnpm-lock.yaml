@@ -547,7 +547,7 @@ importers:
         specifier: ^10.11.3
         version: 10.26.8
       rollup-plugin-esbuild:
-        specifier: ^6.1.1
+        specifier: ^6.2.1
         version: 6.2.1(esbuild@0.25.8)(rollup@4.42.0)
       rollup-plugin-node-externals:
         specifier: ^5.0.3
