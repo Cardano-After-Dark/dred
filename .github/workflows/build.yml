@@ -99,35 +99,25 @@ jobs:
       # Run TypeScript type checking - continues even if there are issues
       # Shows warnings in the GitHub Actions UI but doesn't fail the build
       - name: Type check server
-        continue-on-error: true  # This allows the workflow to continue even if this step fails 
+        continue-on-error: false 
         id: typecheck-server
         run: |
-          npx tsc --noEmit
-          # If the type check fails, output a warning but don't fail the build
-          if [ $? -ne 0 ]; then
-            echo "::warning::TypeScript errors found. Check the output for details."
-          fi
-          # Output the TypeScript version for debugging
-          echo "TypeScript version:"
-          npx tsc --version
+          pnpm tsc --version
+          pnpm tsc --noEmit
 
-      - name: Type check client
-        continue-on-error: true  # This allows the workflow to continue even if this step fails 
-        id: typecheck-client
+      - name: Type check client-browser
+        id: typecheck-client-browser
         run: |
           cd src/client
-          npx tsc --noEmit -p tsconfig.browser.json
-          # If the type check fails, output a warning but don't fail the build
-          if [ $? -ne 0 ]; then
-            echo "::warning::TypeScript errors found. Check the output for details."
-          fi
-          npx tsc --noEmit -p tsconfig.nodejs.json
-          if [ $? -ne 0 ]; then
-            echo "::warning::TypeScript errors found. Check the output for details."
-          fi
-          # Output the TypeScript version for debugging
-          echo "TypeScript version:"
-          npx tsc --version
+          pnpm tsc --version
+          pnpm tsc --noEmit -p tsconfig.browser.json
+
+      - name: Type check client-nodejs
+        id: typecheck-client-nodejs
+        run: |
+          cd src/client
+          pnpm tsc --version
+          pnpm tsc --noEmit -p tsconfig.nodejs.json
 
       # Build the main project
       - name: Build project
