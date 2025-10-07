@@ -1,5 +1,5 @@
 // These are now global due to globals: true in vitest.config.ts
-import { beforeAll, vi, describe, it, expect } from "vitest";
+import { beforeEach, vi, describe, it, expect } from "vitest";
 
 // Uncomment the line below to disable auto-replication for this test file
 // disableAutoReplication();
@@ -16,7 +16,7 @@ const fit = it.only;
 
 describe("Dred client", () => {
     let server: TestDredServer, agent, client: DredClient;
-    beforeAll(async () => {
+    beforeEach(async () => {
         const test = await testSetup();
         ({ server, client, agent } = test);
     });

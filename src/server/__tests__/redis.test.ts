@@ -32,7 +32,7 @@ describe("Redis Set Functionality", () => {
 
     let server: DredServer;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         test = await testSetup();
         server = test.servers[0]; // Use first server for Redis testing
     });

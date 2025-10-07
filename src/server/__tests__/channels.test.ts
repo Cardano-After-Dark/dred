@@ -1,6 +1,6 @@
 // import { expect, jest, test } from "@jest/globals";
 // These are now global due to globals: true in vitest.config.ts
-import { beforeAll, vi, expect, describe, it } from "vitest";
+import { beforeEach, vi, expect, describe, it } from "vitest";
 
 // Uncomment the line below to disable auto-replication for this test file
 // disableAutoReplication();
@@ -44,7 +44,7 @@ describe("channels", () => {
     let client: DredClient;
     let server: TestDredServer;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         const setup = await testSetup();
         ({ client, agent, server } = setup);
     });
@@ -93,7 +93,7 @@ describe("channels", () => {
     describe("encrypted:", () => {
         let key, pubKey, pubKeyString;
 
-        beforeAll(() => {
+        beforeEach(() => {
             key = client.identity;
             // pubKey = key.publicKey;
             pubKeyString = client.pubKeyString as string;

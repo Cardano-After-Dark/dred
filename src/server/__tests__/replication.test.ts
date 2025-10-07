@@ -47,14 +47,15 @@ describe("Message Replication", () => {
     // });
 
     beforeAll(async () => {
-        test = await testSetup();
-        dred1 = test.servers[0];
-        dred2 = test.servers[1];
-        dred3 = test.servers[2];
+        // XXX don't use beforeAll for test setup
     });
 
     beforeEach(async () => {
         // await asyncDelay(SETUP_DELAY);
+        test = await testSetup();
+        dred1 = test.servers[0];
+        dred2 = test.servers[1];
+        dred3 = test.servers[2];
 
         // Create clients
         c1 = dred1.mkClient("first");
@@ -67,10 +68,6 @@ describe("Message Replication", () => {
         ]);
 
         await startReplication();
-    });
-
-    afterAll(async () => {
-        await asyncDelay(SETUP_DELAY);
     });
 
     describe("Setup Validation", () => {
@@ -111,13 +108,17 @@ describe("Message Replication", () => {
             };
 
             let success = false;
+
             await c1.subscribeToChannels({
                 [CHANNEL_NAME]: (message: FullDredMessage) => {
+                    const {type, msg, ocid} = message
+
                     testLogger.info(`🎉 📥 CLIENT c1 received: ${message.msg}`);
                     expect(message).toMatchObject(testMessage);
                     success = true;
                 }
             });
+
             // Not needed because subscribeToChannels is (now) always fully ready
             // before it returns:
             // testLogger.progress(`⏳ waiting for subscribe to settle`);

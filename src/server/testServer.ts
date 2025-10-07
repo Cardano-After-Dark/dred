@@ -30,6 +30,7 @@ import { DredClient, type DredClientArgs } from "../client/DredClient.js";
 
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import type { DredHostDetails } from "../types/DredHosts.js";
+import { asyncDelay } from "../util/asyncDelay.js";
 
 if (process.env.VITEST_TIMEOUT) {
     console.log("using vitest timeout override", process.env.VITEST_TIMEOUT);
@@ -77,24 +78,30 @@ export class TestDredServer extends DredServer {
         this.reset(false);
     }
 
-    async reset(reconnect?: boolean, finalCleanup?: (r?: Redis) => any) {
-        this.progress("server: reset()");
+    async reset(reconnect?: boolean, finalCleanup?: (r: Redis) => Promise<any>) {
+        this.debug("resetting test server");
 
         // Cleanup replication client first
         await this.cleanupReplication();
+        await this.cleanupRedisConnections();
 
         // Wait for channel cleanup to complete fully
-        await this.channelConn.cleanup().catch(warning.bind(this, "channelConn.cleanup()"));
+        await this.channelConn.cleanup().catch(warning.call(this, "channelConn.cleanup()"));
 
         // Small delay to ensure all Redis operations from channel cleanup complete
         await new Promise((resolve) => setTimeout(resolve, 10));
 
-        finalCleanup?.(this.redis);
         this.resetting = true;
-        await this.redis?.quit().catch(warning.bind(this, "redis.quit()"));
+        if (finalCleanup && this.redis) {
+            await finalCleanup(this.redis);
+        }
         this.redis?.removeAllListeners();
-        this.channelConn = undefined;
+        testLogger.trace("reset(): quitting redis")
+        await this.redis?.quit().catch(warning.bind(this, "redis.quit()"));
         this.redis = undefined;
+
+        this.channelConn = undefined;
+        this.didMakeDefaultChannels = false;
 
         const doReconnect = reconnect ?? true;
         if (doReconnect) {
@@ -120,7 +127,10 @@ export class TestDredServer extends DredServer {
                 // this.warn(`⚠️  Replication remains DISABLED after reset`);
             }
 
-            return this.setupPending;
+            if (this.setupPending) {
+                await this.setupPending;
+            }
+            this.progress("test server: reset() done");
         }
         function warning(this: TestDredServer, activityName) {
             return (e) => {
@@ -141,8 +151,11 @@ const rootLogger = zonedLogger("root", {
         dred: "info",
     },
 });
-const monitor = process.env.REDIS_MONITOR ? new Redis(6379, "localhost", { db: 9 }) : undefined;
-if (!monitor) {
+const monitorConnection = process.env.REDIS_MONITOR
+    ? new Redis(6379, "localhost", { db: 9 })
+    : undefined;
+let monitor: Redis | undefined;
+if (!monitorConnection) {
     console.log("NOTE: to enable granular monitoring of redis activity, set REDIS_MONITOR=1");
 }
 
@@ -170,42 +183,41 @@ export const testLogger = zonedLogger("test", {
 
 beforeAll(async () => {
     testLogger.info("-- beforeAll()");
-    await testSetup();
+    await initializeTestServers();
     const startTime = Math.round(Date.now() / 1000);
     // testLogger.info("isColorSupported", isColorSupported);
-    await monitor?.monitor((err, monitor) => {
-        monitor!.on("monitor", (time, args, source, database) => {
-            const now = Date.now();
-            const [s, ms6] = time.split(".");
-            const ms3 = Math.round(parseInt(ms6.slice(0, 4)) / 10);
-            const didHappenAt = parseInt(s) * 1000 + ms3;
-            const offset = didHappenAt - now;
-            const offsetStr = offset < 0 ? redBright(`${offset}ms `) : "";
-            const [ip, port] = source.split(":");
-            let argsDisplay = "";
-            // process args two at a time, adding blue(keys) and green(values) with strings quoted
-            for (let i = 0; i < args.length; i += 2) {
-                const value =
-                    "undefined" == typeof args[i + 1]
-                        ? ""
-                        : "string" == typeof args[i + 1]
-                          ? `"${greenBright(args[i + 1])}"`
-                          : greenBright(args[i + 1]);
-                argsDisplay += ` ${`${args[i]}`} ${value}`;
-            }
-            const logger = {
-                1: redisLogger1,
-                2: redisLogger2,
-                3: redisLogger3,
-            }[parseInt(database)]!.child({ time: didHappenAt });
-            logger.trace(`${offsetStr} :${port}>${argsDisplay}`);
-        });
+    monitor = await monitorConnection?.monitor();
+    monitor?.on("monitor", (time, args, source, database) => {
+        const now = Date.now();
+        const [s, ms6] = time.split(".");
+        const ms3 = Math.round(parseInt(ms6.slice(0, 4)) / 10);
+        const didHappenAt = parseInt(s) * 1000 + ms3;
+        const offset = didHappenAt - now;
+        const offsetStr = offset < 0 ? redBright(`${offset}ms `) : "";
+        const [ip, port] = source.split(":");
+        let argsDisplay = "";
+        // process args two at a time, adding blue(keys) and green(values) with strings quoted
+        for (let i = 0; i < args.length; i += 2) {
+            const value =
+                "undefined" == typeof args[i + 1]
+                    ? ""
+                    : "string" == typeof args[i + 1]
+                      ? `"${greenBright(args[i + 1])}"`
+                      : greenBright(args[i + 1]);
+            argsDisplay += ` ${`${args[i]}`} ${value}`;
+        }
+        const logger = {
+            1: redisLogger1,
+            2: redisLogger2,
+            3: redisLogger3,
+        }[parseInt(database)]!.child({ time: didHappenAt });
+        logger.trace(`${offsetStr} :${port}>${argsDisplay}`);
     });
+
     testLogger.info("================== done beforeAll()");
 });
 
 beforeEach(async () => {
-    // infra running
     testLogger.progress("  --- beforeEach(): resetting redis and channels");
 
     // 1. STOP replication on all servers first
@@ -222,12 +234,20 @@ beforeEach(async () => {
     for (const server of servers) {
         // this is to raze the state of the redis DB --> predictable state for each test
         // ... even the first one, if a previous test run left a redis dataset in a weird state
-        await server.redis?.flushdb();
-        await server.reset();
-        // testLogger.debug("beforeEach: establishing default channels");
-        await server.pendingSetup();
+        const redis = server.redis;
+        await server.reset(true, async (r) => {
+            testLogger.debug(`flushing redis #${server.redisDb}`);
+            return r!.flushdb("SYNC").then(() => {
+                testLogger.debug(`flushed redis #${server.redisDb}`);
+            }, (error) => {
+                testLogger.warn(`beforeEach: flushdb error: ${error.stack}`);
+            });
+        })
+        // included in server reset():
+        // await server.pendingSetup();
     }
     testLogger.progress("  --- did reset redis with default channels");
+    await testSetup()
 
     testLogger.info("----------- done beforeEach() test ----------- ");
 });
@@ -239,7 +259,6 @@ export async function startReplication() {
     await Promise.all(servers.map((s) => s.replicator!.replicantsReady));
     testLogger.info("----- replication started -----------------");
 }
-
 
 afterEach(async () => {
     testLogger.info("-----------  afterEach() ----------- ");
@@ -267,10 +286,11 @@ afterEach(async () => {
             testLogger.warn(`afterEach: client disconnect error: ${error}`);
         }
     }
+    setupDetails = undefined;
 
     // Brief wait for async disconnect operations to complete
-    testLogger.debug("afterEach: waiting for disconnect operations to complete");
-    await new Promise((resolve) => setTimeout(resolve, 20));
+    testLogger.trace("afterEach: waiting for disconnect operations to complete");
+    await asyncDelay(20);
 
     // Clear client lists
     clientCleanupList.length = 0;
@@ -282,10 +302,10 @@ afterEach(async () => {
         if (redis) {
             testLogger.debug("afterEach: resetting server", server.myServerInfo?.port);
 
-            await server.reset(true, (redis) => {
-                testLogger.debug("afterEach: flushing redis");
-                redis?.flushdb("SYNC");
-                testLogger.debug("afterEach: done flushing redis");
+            await server.reset(true, async (redis) => {
+                testLogger.debug(`afterEach: flushing redis #${server.redisDb}`);
+                await redis.flushdb("SYNC");
+                testLogger.debug(`flushed redis #${server.redisDb}`);
             });
         }
     }
@@ -317,29 +337,43 @@ afterAll(async () => {
     await new Promise((resolve) => setTimeout(resolve, 20));
 });
 
-type SetupDetails = {
-    agent: SuperTestWithHost<Test>;
+type ServerDetails = {
     app?: Express;
     server: TestDredServer;
-    client: DredClient;
     servers: TestDredServer[];
     testLogger: ReturnType<typeof zonedLogger>;
+};
+type SetupDetails = ServerDetails & {
+    agent: SuperTestWithHost<Test>;
+    client: DredClient;
 };
 
 let setupDetails: SetupDetails | Promise<SetupDetails> | undefined = undefined;
 
-export async function testSetup() : Promise<SetupDetails> {
+export async function testSetup(): Promise<SetupDetails> {
     if (setupDetails) {
         return setupDetails;
     }
-    setupDetails = initializeTestServers();
-    return setupDetails.then((details) => {
-        setupDetails = details;
-        return details;
+    const serverDetails = initializeTestServers();
+    // testLogger.info("testSetup() at " + new Error("at").stack);
+    setupDetails = serverDetails.then(async (details) => {
+        testLogger.info("testSetup() creating agent and client");
+        const agent = supertest.agent(details.app);
+        const client = details.server.mkClient("first"); //new DredClient({ ...addr, insecure: true });
+        await client.generateKey();
+
+        return setupDetails = { ...details, agent, client };
     });
+    return setupDetails;
 }
 
-export async function initializeTestServers(): Promise<SetupDetails> {
+let serverDetails: ServerDetails | Promise<ServerDetails> | undefined = undefined;
+
+export async function initializeTestServers(): Promise<ServerDetails> {
+    if (serverDetails) {
+        return serverDetails;
+    }
+    testLogger.info("initializeTestServers()");
     const hosts: DredHostDetails[] = [
         { serverId: "first", address: "localhost", port: "53032", insecure: true },
         { serverId: "second", address: "localhost", port: "53033", insecure: true },
@@ -363,7 +397,7 @@ export async function initializeTestServers(): Promise<SetupDetails> {
             },
             server.serverId,
             i++,
-            TestDredServer
+            TestDredServer,
         );
 
         await s.listen();
@@ -389,11 +423,14 @@ export async function initializeTestServers(): Promise<SetupDetails> {
     if (info === null) throw new Error(`server is not listening`);
     if ("string" === typeof info) throw new Error(`Unix socket not supported currently`);
 
-    const agent = supertest.agent(app);
-    const client = server.mkClient("first"); //new DredClient({ ...addr, insecure: true });
-    await client.generateKey();
-
     testLogger.info("================== initializeTestServers() done");
 
-    return { agent, app, server, client, servers, testLogger };
+    return serverDetails = { 
+        // agent, 
+        app, 
+        server, 
+        // client, 
+        servers, 
+        testLogger
+     };
 }

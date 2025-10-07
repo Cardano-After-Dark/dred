@@ -1,4 +1,4 @@
-import { beforeAll, afterAll, describe, it, vi, expect } from "vitest";
+import { beforeEach, afterAll, describe, it, vi, expect } from "vitest";
 import request, { type SuperTestWithHost, type Test } from "supertest";
 import { type Express } from "express";
 
@@ -16,7 +16,7 @@ describe("channel messages", () => {
     let server: TestDredServer;
     let client: DredClient;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         const test = await testSetup();
         ({ agent, server, client } = test);
     });

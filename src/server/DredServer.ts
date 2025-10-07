@@ -394,7 +394,7 @@ export class DredServer {
         if (!this._knownMessages) {
             // Use a specific key name for the deduplication set instead of abstract
             this._knownMessages = new RedisSet(
-                this.redis!.duplicate(),
+                this.redis!,
                 `${this.nbh}::knownMessages`,
             );
         }
@@ -732,11 +732,24 @@ export class DredServer {
             // this.warn(`${this.serverId} Nullifying replicator reference`);
             this.replicator = undefined; // Always nullify, even on error
         }
+    }
+
+    async cleanupRedisConnections() {
+        return Promise.allSettled([
+            this.channelList.cleanup(),
+            this.channelOptions.cleanup(),
+            this.knownMessages.cleanup(),
+        ]).then(() => {
+            this._knownMessages = undefined!;
+            this.channelList = undefined!;
+            this.channelOptions = undefined!;
+        })
         this.progress(`replication cleanup ok`);
     }
 
     async close() {
         this.cancelSubscribers();
+        await this.cleanupRedisConnections()
 
         // Cleanup replication client
         await this.cleanupReplication();
