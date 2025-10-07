@@ -174,7 +174,12 @@ export class DredServer {
     }
 
     setupExpressHandlers() {
-        this.api.use(compression());
+        //! allows clients to avoid compression when the content is known to not benefit from it
+        this.api.use(compression({filter(req,res) {
+            if (req.headers["x-no-compression"] == "true") return false;
+            return compression.filter(req,res);
+        }}));
+
         this.api.use((req, res, next) => {
             if (res.locals?.id) throw new Error("duplicate req processing detected");
             const { clientid = `‹gen›` } = req.headers;
