@@ -11,6 +11,7 @@ import {
     type FullChannelsListeners,
     expandChannelListeners,
     nbhChannelListChannel,
+    type BookmarkStorage,
 } from "../types/ChannelSubscriptions.js";
 import { type DredHostDetails, type connnectionSettings } from "../types/DredHosts.js";
 import { devMessage, type DredError, type DredEvent } from "../types/DredEvents.js";
@@ -77,16 +78,18 @@ const connectionManagerStates = {
     pendingSetup: {
         async onEntry(this: cm) {
             const chans = this.channelListeners ? expandChannelListeners(this.channelListeners) : [];
-            if (!chans.length) {
+            if (!chans.length && this.connectionSettings.watchChannels) {
                 //     this.logger.warn("    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set");
                 //     return
                 this.channelListeners = {
                     type: "mapped",
                     subs: {
                         [nbhChannelListChannel]: new ChannelSubscriptionListener({
-                            neighborhood: this.discovery.nbh,
                             channel: nbhChannelListChannel,
                             logger: this.logger,
+                            options: {
+                                bookmark: "0",
+                            },
                             listener: ({
                                 channel,
                                 mid,
@@ -114,9 +117,14 @@ const connectionManagerStates = {
                 this.hosts = hosts;
             }
 
-            if (this.hosts?.length) return this.transition("readyToConnect");
+            if (chans.length && this.hosts?.length) return this.transition("readyToConnect");
 
-            console.log("    🐞  pendingSetup: waiting for host discovery");
+            if (!this.hosts?.length) {
+                this.progress("    🐞  pendingSetup: waiting for host discovery");
+            }
+            if (!chans.length) {
+                this.progress("    🐞  pendingSetup: waiting for subscriptions");
+            }
         },
         updatedHostList: { nextState: "pendingSetup", reEntry: true },
         hasSubscriptions: { nextState: "pendingSetup", reEntry: true },
@@ -273,6 +281,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
     //! it is initialized with connection settings used for tuning behavior of outgoing connections
     connectionSettings: connnectionSettings;
+    bookmarkStorage: BookmarkStorage;
 
     //! it can map from the host object to a best-known Connection object for that host.
     private hostToConn = new Map<DredHostDetails, HostConnection>();
@@ -319,6 +328,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
         });
         this.connectionSettings = HostConnection.settingsWithDefaults(options.connectionSettings);
         this.discovery = options.discovery;
+        this.bookmarkStorage = options.bookmarkStorage;
         this.discovery.events.on("hosts:updated", this.setHostList);
         this.waitFor = options.waitFor;
         this.transition("default");
@@ -441,7 +451,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
         this.trace("channels: %s", channels.join(", "));
         if (this.channelListeners) return this.replaceSubscriptions(listeners);
 
-        this.channelListeners = listeners;
+        this.channelListeners = listeners
         if (!this.hosts) {
             if (this.discovery.hosts?.length) {
                 this.hosts = this.discovery.hosts;
@@ -455,6 +465,8 @@ export class ConnectionManager extends StateMachine.withDefinition(
             this.debug("setSubscriptions: releasing pendingSetup state");
             await this.transition("readyToConnect");
         }
+
+        await this.once("connected")
 
         // this.connectToHosts();
         return listeners;
@@ -519,16 +531,20 @@ export class ConnectionManager extends StateMachine.withDefinition(
         //! it gathers a list of channels and subscription settings to use for this connection
         const subscriptions: SubscriptionList = [];
         for (const sub of Object.values(this.channelListeners.subs)) {
-            subscriptions.push(sub.options);
+            subscriptions.push(sub.config);
         }
         if (this.channelListeners.type == "mass") {
             // when the server can do a wildcard subscription, use this:
             // subscriptions.push(this.channelListeners.massHandler.options);
 
+            const {bookmarks:channelBookmarks} = this.channelListeners;
+
             this.channelListeners.channels.forEach(x => {
                 subscriptions.push({
                     channel: x,
-                    neighborhood: this.discovery.nbh,
+                    options: {
+                        bookmark: channelBookmarks[x],
+                    }
                 });
             });
         }
@@ -598,6 +614,11 @@ export class ConnectionManager extends StateMachine.withDefinition(
             this.warn(`no subscription for channel ${channel}`, event);
             return;
         }
+        if (event.type=="channel:genesis") {
+            this.trace("suppressing notification of genesis event in channel %s", channel);
+            return 
+        }
+
         try {
             sub?.notify(event);
         } catch (e:any) {
@@ -912,4 +933,21 @@ export class ConnectionManager extends StateMachine.withDefinition(
             p1.publicKey == p2.publicKey
         );
     }
+
+    async once<E extends string & keyof ManagerEvents>(
+        eventName: E,
+    ): Promise<
+    ManagerEvents[E] extends [infer O1, ...infer more]
+            ? ManagerEvents[E] extends [infer SINGLE]
+                ? SINGLE
+                : ManagerEvents[E]
+            : void
+    > {
+        return new Promise<any>((resolve) => {
+            this.events.once(eventName, (...args) => {
+                resolve(args);
+            });
+        });
+    }
+
 }

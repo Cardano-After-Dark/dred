@@ -17,6 +17,7 @@ const {
     yellowBright,
     isColorSupported,
     bgBlack,
+    bgMagenta,
     magenta,
 } = colors;
 
@@ -44,6 +45,10 @@ import {
     nbhChannelListChannel,
     nbhAuthInfoChannel,
     type NamedListeners,
+    type SimpleDredMessageListener,
+    type BookmarkStorage,
+    type FullMassListener,
+    type DredMessage,
 } from "../types/ChannelSubscriptions.js";
 import { devMessage, type DredError, type DredEvent } from "../types/DredEvents.js";
 import { nanoid } from "../util/nanoid.js";
@@ -70,20 +75,8 @@ export type SubscriberMap = {
 
 export type FullDredMessage = ConnectionEvent &
     DredChannelMessage &
-    DredMessage & {
-        encryptedMsg?: string;
-    };
+    DredMessage
 
-/**
- * @public
- */
-export type DredMessage = {
-    type: string;
-    msg: string;
-    "content-type"?: string;
-    ocid?: string;
-    // [key: string]: string | undefined,
-};
 
 /**
  * @public
@@ -142,6 +135,7 @@ export interface ClientEvents {
 export interface DredClientArgs {
     waitFor: keyof ConnectionThresholds;
     neighborhood: NbhId;
+    bookmarkStorage: BookmarkStorage;
     discovery?: Discovery;
     name?: string;
     connectionSettings?: Partial<connnectionSettings>;
@@ -247,11 +241,15 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     authSub?: ChannelSubscriptionListener;
     instanceNumber = instanceCount++;
     clientid: string;
-
+    bookmarkStorage: BookmarkStorage;
     private _messageHandler?: FullChannelsListeners;
     private _subscriptions?: FullChannelsListeners;
     constructor(args: DredClientArgs) {
-        let { name: clientName, neighborhood } = args;
+        let { 
+            name: clientName, 
+            neighborhood,
+            bookmarkStorage
+        } = args;
         const clientid = (clientName || `#${instanceCount}`) + `-${nanoid(5)}`;
         super({
             contextLabel: clientName || "dred-client",
@@ -267,6 +265,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
         this.args = { ...args };
         this.events = this.ensureEmitterExists();
         this.clientid = clientid;
+        this.bookmarkStorage = args.bookmarkStorage;
         this.logger = zonedLogger(`dred-client`, {
             color: magenta.start,
             loggerId: clientid,
@@ -293,6 +292,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
             waitFor: this.args.waitFor,
             connectionSettings: this.args.connectionSettings || {},
             clientid: this.clientid,
+            bookmarkStorage: this.bookmarkStorage,
         });
     }
 
@@ -354,7 +354,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     async subscribeToChannels(listeners: SimpleChannelsListeners): Promise<void> {
         this.subscriptions = await this.connManager.setSubscriptions(
             // arg
-            this.mkChannelsListeners(listeners),
+            await this.mkChannelsListeners(listeners),
         );
         // await asyncDelay(1);
     }
@@ -413,7 +413,7 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
     //! it creates a new subscriptions object
     //! it recycles existing subscriptions
-    mkChannelsListeners(listeners: SimpleChannelsListeners): FullChannelsListeners {
+    async mkChannelsListeners(listeners: SimpleChannelsListeners): Promise<FullChannelsListeners> {
         const namedListeners: NamedListeners =
             listeners.type == "mapped"
                 ? { ...listeners.subs }
@@ -423,32 +423,52 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
         const subs: FullSubscriptionListenerMap = {};
         //! it watches for events relating to channel lifecycle
-        subs[nbhChannelListChannel] = this.channelSub = this.getChannelSub(
+        subs[nbhChannelListChannel] = this.channelSub = await this.getChannelSub(
             nbhChannelListChannel,
-            this.processChannelsMsg, //! it watches for events relating to channel lifecycle
-        );
-        subs[nbhAuthInfoChannel] = this.authSub = this.getChannelSub(
-            nbhAuthInfoChannel,
-            this.processAuthMsg, //! it watches for events relating to authentication lifecycle
+            {
+                listener: this.processChannelsMsg, //! it watches for events relating to channel lifecycle
+                options: {bookmark: "0"},
+            }
         );
         //! it watches for events relating to authentication lifecycle
-        subs[nbhAuthInfoChannel] = this.authSub = this.getChannelSub(
+        subs[nbhAuthInfoChannel] = this.authSub = await this.getChannelSub(
             nbhAuthInfoChannel,
-            this.processAuthMsg,
+            {
+                listener: this.processAuthMsg, //! it watches for events relating to authentication lifecycle
+                options: {bookmark: "0"},
+            }
         );
 
         if (listeners.type === "mass") {
-            return {
+            let listener : DredMessageListener = listeners.massHandler as any
+            if ((listener as any).listener) {
+                listener = (listener as any).listener;
+            }
+            const massListener : FullMassListener = {
                 type: "mass",
                 channels: listeners.channels,
-                massHandler: this.getChannelSub("*", listeners.massHandler),
+                bookmarks: Object.fromEntries(await Promise.all(
+                    listeners.channels.map(async c => [
+                        c,
+                        await this.bookmarkStorage.getBookmark(c)
+                    ]),
+                )),
+                massHandler: await this.getChannelSub("*", {
+                    listener,
+                    options: {bookmark: "unused"},
+                }),
                 subs,
             };
+            return massListener
         }
+        let seq : Promise<void> = Promise.resolve()
         Object.entries(namedListeners).forEach(([k, v]) => {
-            this.logger.debug(`subscribing to channel ${k}`);
-            subs[k] = this.getChannelSub(k, v);
+            seq = seq.then(async () => {
+                this.logger.debug(`subscribing to channel ${k}`);
+                subs[k] = await this.getChannelSub(k, v);
+            });
         });
+        await seq;
         const result: FullMappedListeners = {
             type: "mapped",
             subs,
@@ -458,12 +478,14 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
 
     @autobind
     processChannelsMsg(m: DredChannelMessage) {
+        this.bookmarkStorage.setBookmark(nbhChannelListChannel, m.mid)
         //!!! todo: it notifies client listeners about created or removed channels
         //!!! todo: it emits the generic state-updated event with updated channel list
     }
 
     @autobind
     processAuthMsg(m: DredChannelMessage) {
+        this.bookmarkStorage.setBookmark(nbhAuthInfoChannel, m.mid)
         //!!! todo: ??? it notifies listeners when authentication is required by one or more neighborhood hosts
         //     more use-case analysis needed for this.
         //!!! todo: it notifies listeners when a requested channel requires authentication not yet established
@@ -495,31 +517,38 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     }
 
     subscriptionCache: Record<string, ChannelSubscriptionListener> = {};
-    private getChannelSub(
+    private async getChannelSub(
         channel: string,
-        listener: DredMessageListener,
-    ): ChannelSubscriptionListener {
+        listener: SimpleDredMessageListener,
+    ): Promise<ChannelSubscriptionListener> {
         const found = this.subscriptionCache[channel];
         if (found?.listener === listener) return found;
         if (found) {
             this.logger.debug(`cached listener mismatch '${channel}'; replacing`);
         }
 
-        const newSub = this.mkChannelSub(channel, listener);
+        const newSub = await this.mkChannelSub(channel, listener);
         this.subscriptionCache[channel] = newSub;
         return newSub;
     }
 
     //! it creates new subscriptions and wires them up for notification to client application
     //! it doesn't require client applications to guard for memory / event-listener leakage
-    mkChannelSub(channel: string, listener: DredMessageListener): ChannelSubscriptionListener {
+    async mkChannelSub(channel: string, sListener: SimpleDredMessageListener): Promise<ChannelSubscriptionListener>  {
         const logger = zonedLogger(`listener:${channel}`, {
-            color: yellow.start,
+            color: `${bgMagenta.start}${yellowBright.start}`,
         });
+        //@ts-expect-error - listener.options only valid on one of the alternatives
+        const {options={}} = sListener;
+        //@ts-expect-error - listener.options only valid on one of the alternatives
+        let listener : DredMessageListener = sListener.listener ?? sListener;
+        let bookmark : string | undefined = options.bookmark || await this.bookmarkStorage?.getBookmark(channel)
         const sub = new ChannelSubscriptionListener({
-            neighborhood: this.neighborhood,
             channel,
             listener,
+            options: {
+                bookmark,
+            },
             logger,
         });
         return sub;

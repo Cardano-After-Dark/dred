@@ -31,6 +31,7 @@ export type ConnectionManagerOptions = {
     discovery: Discovery;
     waitFor: ThresholdChoice,
     connectionSettings: Partial<connnectionSettings>
+    bookmarkStorage?: BookmarkStorage;
 };
 
 export type PromisedHostDetails = Promise<DredHostDetails[]>;

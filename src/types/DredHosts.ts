@@ -9,6 +9,7 @@ export interface DredHostDetails {
 }
 
 export type connnectionSettings = {
+    watchChannels: boolean;
     maxRetries: number;
     retryBaseIntervalMs: number;
     retryMaxIntervalMs: number;

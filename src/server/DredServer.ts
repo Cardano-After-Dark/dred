@@ -61,7 +61,8 @@ import {
     type ChanId,
     type SubscriptionList,
     type NbhId,
-    type ChannelSubOptions,
+    type ChannelSubConfig,
+    defaultMaxDelayMs,
 } from "../types/ChannelSubscriptions.js";
 import { asyncDelay, autobind } from "@poshplum/utils";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
@@ -80,6 +81,7 @@ export type ChannelSubscriber = {
     channel: ChanId;
     stream: streamHandle;
 };
+type abstractChangeFeedUpdater = (maxLatency: number, ...messages: rStreamMsg[]) => void;
 type changeFeedUpdater = (...messages: rStreamMsg[]) => void;
 type consumerErrorNotifier = (res: express.Response, channel: ChanId, e: Error) => void;
 type rChannelError = {
@@ -128,7 +130,7 @@ const optionsSerializer: ValueAdapter<ChannelOptions> = {
     },
 };
 
-type DredServerArgs = DredClientArgs & {
+type DredServerArgs = Omit<DredClientArgs, "bookmarkStorage"> & {
     neighborhood: string;
     api?: express.Application;
     serverDb?: number;
@@ -297,8 +299,9 @@ export class DredServer {
                 url: url,
                 db: this.redisDb,
             },
-            channels: { log },
+            channels: { log },            
         });
+        this.progress("connected to redis");
         this.ensureDefaultChannels();
     }
 
@@ -313,16 +316,23 @@ export class DredServer {
     }
     setupPending?: Promise<any>;
 
+    didMakeDefaultChannels = false;
     ensureDefaultChannels() {
         if (this.setupPending) return this.setupPending;
 
+        if (this.didMakeDefaultChannels) {
+            throw new Error("default channels already made");
+        }
+        this.logger.debug("setting up default channels")
         return (this.setupPending = new Promise(async (res) => {
             await this.doChannelSetup("_chans");
             await this.doChannelSetup("_auth");
             await this.doChannelSetup("news");
             await this.doChannelSetup("discussion");
 
+            this.didMakeDefaultChannels = true;
             this.setupPending = undefined;
+            this.logger.progress("created default channels");
             res(true);
         }));
     }
@@ -422,7 +432,7 @@ export class DredServer {
     ): Promise<string | undefined> {
         try {
             // composite key to ensure uniqueness across channels
-            const deduplicationKey = `${channel}:::${msgId}`;
+            const deduplicationKey = this.messageKey(channel, msgId);
 
             // DEBUG: Add detailed logging
             this.warn(`🔍 DEDUP CHECK [${this.serverId}] checking: ${deduplicationKey}`);
@@ -458,13 +468,16 @@ export class DredServer {
                 `✅ DEDUP PUBLISH [${this.serverId}] Message successfully deduplicated and posted: ${deduplicationKey} -> ${publishedMessageId}`,
             );
             return publishedMessageId;
-        } catch (error) {
+        } catch (error: any) {
             // If we fail after marking as processed, we have a problem - log it
-            this.warn(`Error in message deduplication for ${channel}:::${msgId}:`, error);
+            this.warn(`Error in message deduplication for ${channel}:::${msgId}:`, error.stack);
             throw error; // Re-throw so caller can handle appropriately
         }
     }
 
+    messageKey(channel: string, msgId: string) {
+        return `${channel}/${msgId}`;
+    }
     /**
      * Publish a message directly without dedup.
      * Always await this method to prevent blocking caller and ensure message is published.
@@ -712,9 +725,9 @@ export class DredServer {
     }
 
     async cleanupReplication(): Promise<void> {
-        this.debug(`start cleanupReplication`);
+        this.debug(`cleaning up replicator`);
         if (!this.replicator) {
-            this.progress("replication not active; no cleanup needed");
+            this.debug("replication not active; no cleanup needed");
             return; // Idempotent - safe to call multiple times
         }
         try {
@@ -724,7 +737,9 @@ export class DredServer {
                 new Promise((_, reject) =>
                     setTimeout(() => reject(new Error("Replication cleanup timeout")), 5000),
                 ),
-            ]);
+            ]).then(() => {
+                this.progress(`cleaned up replicator`);
+            });
         } catch (error: any) {
             this.logger.error(`during replication cleanup:`, error.stack);
             // Continue cleanup even if error occurs
@@ -744,7 +759,6 @@ export class DredServer {
             this.channelList = undefined!;
             this.channelOptions = undefined!;
         })
-        this.progress(`replication cleanup ok`);
     }
 
     async close() {
@@ -860,7 +874,7 @@ export class DredServer {
 
     reqLogger(res: express.Response) {
         return zonedLogger("dred:req", {
-            reqId: res.locals.id,
+            loggerId: res.locals.id,
             clientid: res.locals.clientid,
             color: bgGreenBright.start + black.start,
         });
@@ -870,6 +884,7 @@ export class DredServer {
         const found: string[] = (await this.channelList.keys()) as string[];
         const channels = found.filter((x) => x[0] !== "_");
         res.status(200).json({ channels });
+        next();
     };
     createChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
@@ -966,14 +981,17 @@ export class DredServer {
         const streams = this.channelConn;
         const chans = await streams.use("_chans");
 
-        this.progress("channelCreated", channel, options);
+        this.debug("channelCreated", channel, options);
         //! it emits a channel-created event in the _chans meta-channel.
         //   applications with interest in such things can subscribe to that
         //   channel to get the news
         await streams.produce(chans, "a channel was created", {
             type: "chanCreated",
-            channel,
-            options: JSON.stringify(options),
+            ocid: nanoid(8),
+            msg: JSON.stringify({
+                channel,
+                options,
+            }),
         });
 
         // Notify replication client about new channel
@@ -1209,26 +1227,36 @@ export class DredServer {
         res.contentType("application/ndjson");
         res.useChunkedEncodingByDefault = false;
         // res.setHeader("x-hi", "there");
-        this.info("listening for", subscriptions);
+        const reqLogger = this.reqLogger(res);
+
+        reqLogger.progress("listening: %d channels: %s", subscriptions.length, subscriptions.map(s => `${s.channel}^${s.options.bookmark}`).join(", "));
         //!!! todo: it validates authorization as appropriate for each requested channel
 
-        const sendUpdate: changeFeedUpdater = (...messages) => {
+        let pendingFlush : ReturnType<typeof setTimeout> | undefined;
+
+        const sendUpdate: abstractChangeFeedUpdater = (maxLatency, ...messages) => {
             // if (json.event !== "keepalive") debugger
             for (const json of messages) {
                 const update = JSON.stringify(json);
                 res.write(update + "\n");
                 reqLogger.trace("    <- ", update);
             }
-            (res as any).flush(); //! flushes writes through compression middleware
+            if (!maxLatency) {
+                (res as any).flush()
+            } else if (maxLatency > 0 && !pendingFlush) {
+                pendingFlush = setTimeout(() => {
+                    (res as any).flush();
+                    pendingFlush = undefined;
+                }, maxLatency);
+            }
         };
-        const reqLogger = this.reqLogger(res);
         const myStreamListeners: ListenerSubscriptionList = [];
         const timerInterval = 7000;
         //! it sends heartbeat signals every so often to clients
         //!!! todo: heartbeat interval can be configured
         const timer = setInterval(() => {
             reqLogger.trace("   <- heartbeat");
-            sendUpdate({ type: "heartbeat" });
+            sendUpdate(0, { type: "heartbeat" });
         }, timerInterval);
         timer.unref(); //! the heartbeat-timer never blocks the process from exiting when it's otherwise done
 
@@ -1253,7 +1281,7 @@ export class DredServer {
         const notifyConsumeError: consumerErrorNotifier = (res, channel, consumeError) => {
             if (!cancelled) {
 
-                sendUpdate({
+                sendUpdate(0,{
                     channel,
                     type: "error",
                     message: "internal stream consumer failed",
@@ -1271,7 +1299,12 @@ export class DredServer {
         let anySuccesses = 0;
         let warnings: any[] = [];
         for (const sub of subscriptions) {
-            const { channel } = sub;
+            const { channel, options: {
+                maxLatency=defaultMaxDelayMs,
+                bookmark,
+                filter,
+            } } = sub;
+
             const found = await this.channelList.has(channel);
             if (!found) {
                 //! sends a warning note but does not fail unless there are no valid subscriptions
@@ -1294,7 +1327,7 @@ export class DredServer {
             const subscriber = await this.listenOneChannel(
                 res,
                 sub,
-                sendUpdate,
+                sendUpdate.bind(this, maxLatency),
                 notifyConsumeError,
             );
             myStreamListeners.push({ channel, stream: subscriber });
@@ -1304,12 +1337,12 @@ export class DredServer {
             res.status(404).json({ error: "no valid subscriptions in request" });
             return cancel();
         } else if (warnings.length) {
-            sendUpdate.apply(this, warnings);
+            sendUpdate(0, ...warnings);
         }
         reqLogger.debug("  👷listening in %d channels", subscriptions.length);
         reqLogger.trace(`  👷channels: ${subscriptions.map(s => s.channel).join(", ")}`);
         //! it tells clients how frequently they should expect a heartbeat
-        sendUpdate({ type: "heartbeat-info", timerInterval });
+        sendUpdate(0, { type: "heartbeat-info", timerInterval });
     };
 
     async listenToNeighborhood() {
@@ -1323,39 +1356,45 @@ export class DredServer {
 
     async listenOneChannel(
         res: express.Response,
-        sub: ChannelSubOptions,
+        sub: ChannelSubConfig,
         sendUpdate: changeFeedUpdater,
         notifyConsumerError: consumerErrorNotifier,
     ) {
-        //! it leverages the redis-streams module's cache of per-channel connections
-        const channelStream = await this.channelConn.use(sub.channel);
-        await this.channelConn.subscribe(channelStream);
+        const channelInfo = await this.channelConn.use(sub.channel);
+        //! todo: for "$" bookmarks, it can tap into an existing stream connection as a listener
+        //! todo: for non-$ bookmarks, it can use an ephemeral bookmark-to-now connection 
+        //   ... and then convert cleanly to a $ listener, using a technique ensuring no gap,
+        //   ... no duplicates, and accurate ordering
+        await this.channelConn.subscribe(channelInfo);
 
         //! it spawns asynchronous monitoring in each channel
-        this.monitorChannelChanges(res, channelStream, sub, sendUpdate, notifyConsumerError);
-        return channelStream;
+        this.monitorChannelChanges(res, channelInfo, sub, sendUpdate, notifyConsumerError);
+        return channelInfo;
     }
 
     private async monitorChannelChanges(
         res: express.Response,
-        channelStream: streamHandle,
-        sub: ChannelSubOptions,
+        streamInfo: streamHandle,
+        sub: ChannelSubConfig,
         sendUpdate: changeFeedUpdater,
         notifyConsumerError: consumerErrorNotifier,
     ) {
+        const { bookmark="$" } = sub.options
         try {
             for await (const events of this.channelConn.consume(
-                channelStream,
+                streamInfo,
                 "all",
                 10,
                 this.subscribeTimeout,
+                bookmark
             )) {
                 for (const e of events) {
                     const { id: mid, ocid, type, data, ...meta } = e;
-                    this.reqLogger(res).info(
-                        `    <- ocid ${ocid} in ${sub.channel}: `,
+                    this.reqLogger(res).trace(
+                        `    <- ocid %s in %s: %d bytes`,
+                        ocid,
+                        sub.channel,
                         e.data.length,
-                        "bytes",
                     );
                     // eslint-disable-next-line no-debugger
                     // debugger;

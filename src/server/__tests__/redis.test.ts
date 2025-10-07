@@ -111,7 +111,7 @@ describe("Redis Set Functionality", () => {
             };
 
             // Test the deduplication mechanism
-            const compositeKey = `${TEST_CHANNEL}:::${testMessage.ocid}`;
+            const compositeKey = server.messageKey(TEST_CHANNEL, testMessage.ocid!);
             
             // Verify message not in set initially
             expect(await server.knownMessages.has(compositeKey)).toBe(0);
@@ -147,7 +147,7 @@ describe("Redis Set Functionality", () => {
                 ocid: "first-time-456"
             };
 
-            const compositeKey = `${TEST_CHANNEL}:::${testMessage.ocid}`;
+            const compositeKey = server.messageKey(TEST_CHANNEL, testMessage.ocid!);
             
             // Ensure clean state
             await server.knownMessages.delete(compositeKey);

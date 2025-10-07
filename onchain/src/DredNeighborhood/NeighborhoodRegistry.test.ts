@@ -6,7 +6,6 @@ import {
     vi,
     assertType,
     expectTypeOf,
-    beforeAll,
 } from "vitest";
 
 import { addTestContext, type TestHelperState } from "@donecollectively/stellar-contracts/testing";

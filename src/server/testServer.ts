@@ -30,6 +30,7 @@ import { DredClient, type DredClientArgs } from "../client/DredClient.js";
 
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import type { DredHostDetails } from "../types/DredHosts.js";
+import { NoBookmarkMemory } from "./NoBookmarkMemory.js";
 import { asyncDelay } from "../util/asyncDelay.js";
 
 if (process.env.VITEST_TIMEOUT) {
@@ -68,6 +69,7 @@ export class TestDredServer extends DredServer {
             ...clientArgs,
             neighborhood: this.nbh,
             discovery: singleDiscovery,
+            bookmarkStorage: new NoBookmarkMemory(),
         });
 
         return client;

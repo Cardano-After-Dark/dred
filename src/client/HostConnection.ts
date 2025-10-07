@@ -18,9 +18,9 @@ import {
     type DredChannelMessage,
     type SubscriptionList,
     type FullChannelsListeners,
+    type DredMessage,
 } from "../types/ChannelSubscriptions.js";
 import { ndjsonStream } from "./betterJsonStream.js";
-import { type DredMessage, type DredMessageListener } from "./DredClient.js";
 import { type Logger } from "../types/Logger.js";
 import { nanoid } from "../util/nanoid.js";
 import { StateMachine as StateMachineNg, type StateTransitionTable } from "../util/stateMachine.js";
@@ -144,11 +144,11 @@ export class HostConnection extends StateMachineNg<
     info(message: string, ...args: any[]) {
         this.logger.info(message, ...args);
     }
-    debug(message: string, ...args: any[]) {
-        this.logger.debug(message, ...args);
-    }
     progress(message: string, ...args: any[]) {
         this.logger.progress(message, ...args);
+    }
+    debug(message: string, ...args: any[]) {
+        this.logger.debug(message, ...args);
     }
     trace(message: string, ...args: any[]) {
         this.logger.trace(message, ...args);
@@ -215,6 +215,7 @@ export class HostConnection extends StateMachineNg<
             retryMaxIntervalMs: 30000,
             maxRetries: Infinity,
             connectionWaitTimeMs: 7000,
+            watchChannels: false,
             ...partialSettings,
         };
     }
@@ -237,14 +238,8 @@ export class HostConnection extends StateMachineNg<
             loggerId: nanoid(4),
             transitionName: undefined,
             addContext: null,
+            extra: subscriptions.map(x => x.channel),
         });
-        const settingsWithDefaults: connnectionSettings = {
-            retryBaseIntervalMs: 1000,
-            retryMaxIntervalMs: 30000,
-            maxRetries: Infinity,
-            connectionWaitTimeMs: 7000,
-            ...settings,
-        };
         this.settings = HostConnection.settingsWithDefaults(settings);
 
         this.events.on("replacedBy", ({}) => {});
@@ -291,8 +286,8 @@ export class HostConnection extends StateMachineNg<
         signal.addEventListener("abort", abortHandler);
         const myself = (this.connecting = new Promise((res, rej) => {
             let aborted = false;
-            this.logger.info(`connecting to server ${this.host.serverId}`);
-            this.logger.debug("channelListeners", channelListeners);
+            this.logger.debug(`connecting to server ${this.host.serverId}`);
+            this.logger.trace("channelListeners", channelListeners);
 
             this.fetch(`/channels/listen`, {
                 body: JSON.stringify(this.channelSubs, null, 2),
@@ -671,8 +666,9 @@ export class HostConnection extends StateMachineNg<
             disconnected: {
                 to: "disconnected",
                 onTransition: () => {
-                    if (this.abortController?.signal.aborted) {
-                        throw new Error("already aborted");
+                    if( this.abortController && this.abortController.signal.aborted) {
+                        // throw new Error("already aborted");
+                        return
                     }
                     this.events.emit("disconnected", {
                         message: "server disconnected",
