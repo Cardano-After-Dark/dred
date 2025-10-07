@@ -13,7 +13,7 @@ import { Readable } from "node:stream";
 
 export const ReadableStream = platformReadableStream
 export default ReadableStream;
-export function fromPlatformFetchBody(b) {
+export function fromPlatformFetchBody(b: any) {
     // Readable is the old-style nodejs readable stream.
     if (b instanceof Readable) return nodeToWebStream(b);
 

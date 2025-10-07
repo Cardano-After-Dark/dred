@@ -226,7 +226,6 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
     initDelegateRoles() : basicDelegateMap<any>{
         const inh : basicDelegateMap<any> = super.basicDelegateRoles();
 
-        //@ts-ignore
         const govAuthority : basicDelegateMap<any>["govAuthority"] = inh.govAuthority;
         const myDelegates = delegateRoles({
             spendDelegate: defineRole("spendDgt", MyMintSpendDelegate, {}),

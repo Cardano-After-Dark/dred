@@ -50,7 +50,7 @@
         "paths": {
             "@cardano-after-dark/dred-client": ["./index.ts"],
             // { find: '@platform/ReadableStream', replacement: '../../platform/server/ReadableStream.ts' },
-            "@platform/ReadableStream": ["../../platform/browser/ReadableStream.ts"]
+            "@platform/*": ["../../platform/browser/*"]
         }
         // "plugins": [],
         // "outFile": "dist/index.d.ts",

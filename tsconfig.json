@@ -11,6 +11,6 @@
             // "sXXrc/*": ["src/*"]
         }
     },
-    "include": [ "**/*.ts", "**/*.js" ],
-    "exclude": [ "src/sampleApp", "**/node_modules/" ]
+    "include": [ "src/**/*.ts", "src/**/*.js" ],
+    "exclude": [ "src/client", "**/node_modules/" ]
 }

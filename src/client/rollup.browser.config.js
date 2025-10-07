@@ -12,6 +12,7 @@ const name = packageJson.main.replace(/\.js$/, "");
 const browserBundledModules = [
     // "@platform/fetch.ts",
     "@platform/ReadableStream",
+    "@platform/ReadableStream.js",
     "tweetnacl",
     "tweetnacl-util",
     "watsign",

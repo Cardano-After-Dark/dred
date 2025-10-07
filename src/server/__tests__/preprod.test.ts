@@ -114,7 +114,7 @@ async function setupReplicationClients(): Promise<void> {
         waitFor: "minimal",
         neighborhood: "preprod-test",
         discovery,
-        name: "us-test-client"
+        name: "us-test-client",
     });
     
     ukClient = new DredClient({

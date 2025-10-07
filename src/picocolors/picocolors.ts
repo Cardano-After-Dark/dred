@@ -35,8 +35,8 @@ let isColorSupported =
         !!env.CI
         )
 
-let formatter = (open, close, replace = open) => {
-    const f = (input) => {
+let formatter = (open: string, close: string, replace = open) => {
+    const f = (input: string) => {
 		let string = "" + input, index = string.indexOf(close, open.length)
 		return ~index ? open + replaceClose(string, close, replace, index) + close : open + string + close
 	}
@@ -45,7 +45,7 @@ let formatter = (open, close, replace = open) => {
     return f
 }
 
-let replaceClose = (string, close, replace, index) => {
+let replaceClose = (string: string, close: string, replace: string, index: number) => {
 	let result = "", cursor = 0
 	do {
 		result += string.substring(cursor, index) + replace

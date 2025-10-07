@@ -5,12 +5,12 @@ import { beforeEach, vi, describe, it, expect } from "vitest";
 // disableAutoReplication();
 
 import express from "express";
-import { DredClient, type FullDredMessage } from "../../client/DredClient";
-import { TestDredServer, testSetup } from "../../server/testServer";
-import { asyncDelay } from "../../util/asyncDelay";
+import { DredClient, type FullDredMessage } from "../../client/DredClient.js";
+import { TestDredServer, testSetup } from "../../server/testServer.js";
+import { asyncDelay } from "../../util/asyncDelay.js";
 
-import type {JsonMessagePayload} from "../../types/JsonMessagePayload";
-import { StaticHostDiscovery } from "../../peers/StaticHostDiscovery";
+import type {JsonMessagePayload} from "../../types/JsonMessagePayload.js";
+import { StaticHostDiscovery } from "../../peers/StaticHostDiscovery.js";
 
 const fit = it.only;
 

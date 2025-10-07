@@ -9,7 +9,8 @@ import alias from "@rollup/plugin-alias";
 
 const serverBundledModules = [
     // "@platform/fetch.ts", 
-    "@platform/ReadableStream"
+    "@platform/ReadableStream",
+    "@platform/ReadableStream.js"
 ];
 const forcedServerExternals = [];
 

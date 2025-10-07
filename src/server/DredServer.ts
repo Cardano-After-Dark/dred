@@ -762,7 +762,6 @@ export class DredServer {
     async close() {
         this.cancelSubscribers();
         await this.cleanupRedisConnections()
-
         // Cleanup replication client
         await this.cleanupReplication();
 

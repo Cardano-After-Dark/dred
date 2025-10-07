@@ -13,16 +13,18 @@
         "strict": true,
         "rootDir": "../..",
         "forceConsistentCasingInFileNames": true,
-        "module": "ESNext",
-        "moduleResolution": "Node",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
         "resolveJsonModule": true,
         // "isolatedModules": true,
         "noEmit": true,
         "jsx": "react-jsx",
         "jsxImportSource": "preact",
         "paths": {
+            "@platform/*": ["../../platform/browser/*"],
             // "sXXrc/*": ["../../src/*"]
         }
     },
-    "include": [ "../**/*.ts" ]
+    "include": [ "../**/*.ts", "../../platform/browser/**/*.ts" ],
+    "exclude": [ "../server/**/*.ts" ]
 }

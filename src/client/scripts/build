@@ -14,7 +14,7 @@ inBackground "typecheck all, prep for doc-gen and main .d.ts" \
     rollup \
       --config rollup.browser.config.js \
       --importAttributesKey "with" \
-      --configPlugin 'esbuild={sourcemap:true,supported:{"import-assertions":false},loaders:{".json": "json"}, target: "esnext", tsconfig:"./tsconfig.rollupconfig.json"}' \
+      --configPlugin 'esbuild={sourcemap:true,supported:{"import-assertions":false,"import-attributes":true},loaders:{".json": "json"}, target: "esnext", tsconfig:"./tsconfig.rollupconfig.json"}' \
       $* && playProgressSound
 } || logProblemWith "dred-client build for browser with rollup"
 
@@ -22,7 +22,7 @@ inBackground "typecheck all, prep for doc-gen and main .d.ts" \
     rollup \
       --config rollup.nodejs.config.js \
       --importAttributesKey "with" \
-      --configPlugin 'esbuild={sourcemap:true,supported:{"import-assertions":false},loaders:{".json": "json"}, target: "esnext"}' \
+      --configPlugin 'esbuild={sourcemap:true,supported:{"import-assertions":false,"import-attributes":true},loaders:{".json": "json"}, target: "esnext"}' \
       $* && playProgressSound
 } || logProblemWith "dred-client build for nodejs with rollup"
 
