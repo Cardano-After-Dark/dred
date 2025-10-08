@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Load environment variables
+source "$(dirname "$0")/load-env.sh"
+
 # Minimal DRED Setup Script - Based on S00 Success
 # IDEMPOTENT: Safe to run multiple times
 # Usage: ./setup-dred-minimal.sh <server_ip> <server_name>
@@ -14,7 +17,7 @@ fi
 SERVER_IP="$1"
 SERVER_NAME="$2"
 
-# Load server-specific configuration
+# Load server-specific configuration (in addition to ops.env)
 CONFIG_FILE="$(dirname "$0")/../config/$(echo "$SERVER_NAME" | tr '[:upper:]' '[:lower:]').env"
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "❌ Configuration file not found: $CONFIG_FILE"
@@ -23,7 +26,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
     exit 1
 fi
 
-echo "📋 Loading configuration from: $CONFIG_FILE"
+echo "📋 Loading server configuration from: $CONFIG_FILE"
 source "$CONFIG_FILE"
 
 # Color output

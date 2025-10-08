@@ -1,6 +1,3 @@
-# Private SSH keys (never commit these!)
-team-ssh-keys.private
-
 # Backup files
 *.backup
 *~

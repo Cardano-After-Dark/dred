@@ -1,0 +1,12 @@
+# Configuration files with sensitive data
+*.env
+!*.env.example
+
+# SSH keys (private)
+team-ssh-keys.private
+
+# Server-specific configs (if they contain secrets)
+# Uncomment if needed:
+# us.env
+# uk.env
+# de.env

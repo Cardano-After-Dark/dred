@@ -1,9 +1,8 @@
 #!/bin/bash
 # Send message to DRED channel
-
-US_IP="74.208.13.84"
-DE_IP="85.215.215.192"
-UK_IP="217.154.34.155"
+# Load configuration
+SCRIPT_DIR="$(dirname "$0")"
+source "$SCRIPT_DIR/load-env.sh"
 
 if [ $# -lt 3 ]; then
     echo "Usage: $0 [server|address:port] [channel] message..."
@@ -15,12 +14,12 @@ CHANNEL="$2"
 shift 2
 MESSAGE="$*"
 
-# Resolve server name to IP:port (case insensitive, works on macOS and Linux)
+# Resolve server name to IP:port (case insensitive)
 SERVER_LOWER=$(echo "$SERVER_OR_ADDR" | tr '[:upper:]' '[:lower:]')
 case "$SERVER_LOWER" in
-    us) ADDRESS="$US_IP:3029" ;;
-    de) ADDRESS="$DE_IP:3029" ;;
-    uk) ADDRESS="$UK_IP:3029" ;;
+    us) ADDRESS="$US:$DRED_PORT" ;;
+    de) ADDRESS="$DE:$DRED_PORT" ;;
+    uk) ADDRESS="$UK:$DRED_PORT" ;;
     *:*) ADDRESS="$SERVER_OR_ADDR" ;;
     *)
         echo "Unknown server: $SERVER_OR_ADDR (use us|de|uk or address:port)"
@@ -29,4 +28,4 @@ case "$SERVER_LOWER" in
 esac
 
 echo "Sending to $ADDRESS / $CHANNEL: $MESSAGE"
-"$(dirname "$0")/send-message-on-channel.sh" "$ADDRESS" "$CHANNEL" "$MESSAGE"
+"$SCRIPT_DIR/send-message-on-channel.sh" "$ADDRESS" "$CHANNEL" "$MESSAGE"

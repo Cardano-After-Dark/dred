@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Load environment variables
+source "$(dirname "$0")/load-env.sh"
+
 # Step 1: Setup devops user and SSH keys
 # Usage: ./setup-devops.sh <server_ip>
 
@@ -29,10 +32,11 @@ echo "Server: $SERVER_IP"
 echo ""
 
 # Check if SSH keys file exists
-if [ ! -f "team-ssh-keys.private" ]; then
-    log_error "team-ssh-keys.private not found"
+KEYS_FILE="$(dirname "$0")/../config/team-ssh-keys.private"
+if [ ! -f "$KEYS_FILE" ]; then
+    log_error "config/team-ssh-keys.private not found"
     echo "Create this file with your team's SSH public keys:"
-    echo "cp team-ssh-keys.private.example team-ssh-keys.private"
+    echo "cp config/team-ssh-keys.private.example config/team-ssh-keys.private"
     exit 1
 fi
 
@@ -50,7 +54,7 @@ echo "3. Configure SSH security"
 echo ""
 
 # Copy SSH keys from local to remote
-if ! scp team-ssh-keys.private root@"$SERVER_IP":~/team-keys.txt; then
+if ! scp "$KEYS_FILE" root@"$SERVER_IP":~/team-keys.txt; then
     log_error "Failed to copy SSH keys"
     exit 1
 fi
@@ -150,4 +154,4 @@ echo "✅ SSH keys installed for team members"
 echo "✅ SSH security configured"
 echo "✅ Basic firewall enabled"
 echo ""
-echo "Next step: make setup-infrastructure $(echo $SERVER_IP | sed 's/74.208.13.84/US/; s/85.215.215.192/DE/; s/217.154.34.155/UK/')" 
+echo "Next step: make setup-infra $(echo $SERVER_IP | sed 's/74.208.13.84/us/; s/85.215.215.192/de/; s/217.154.34.155/uk/')" 

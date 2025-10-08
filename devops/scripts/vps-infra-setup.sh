@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Load environment variables
+source "$(dirname "$0")/load-env.sh"
+
 # Step 2: Setup infrastructure (Docker, Redis, Node.js)
 # Usage: ./setup-infrastructure.sh <server_ip>
 
@@ -167,4 +170,4 @@ echo "✅ Redis container running (512MB limit)"
 echo "✅ Node.js, pnpm, PM2 installed"
 echo "✅ Firewall configured for DRED port"
 echo ""
-echo "Next step: make setup-dred $(echo $SERVER_IP | sed 's/74.208.13.84/US/; s/85.215.215.192/DE/; s/217.154.34.155/UK/')" 
+echo "Next step: make setup-dred $(echo $SERVER_IP | sed 's/74.208.13.84/us/; s/85.215.215.192/de/; s/217.154.34.155/uk/')" 

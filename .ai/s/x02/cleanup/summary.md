@@ -38,29 +38,25 @@ All confirmed **not referenced** in:
 3. **investigation-report.md** - Detailed findings and evidence
 4. **action-plan.md** - Step-by-step deletion guide with commands
 
-## Recommendation
+## Execution Complete ✅
 
-**Execute the cleanup:**
+**Deleted folders:**
+- ✅ vps/ (untracked)
+- ✅ vps_old/ (untracked)
+- ✅ pre-prod/ (~600 lines)
+- ✅ preprod/ignore/ (1,361 lines, untracked)
+- ✅ preprod/scripts/fix-api-key.sh (100 lines)
 
-```bash
-# Safe deletions (verified not referenced)
-rm -rf vps/ vps_old/ pre-prod/ preprod/ignore/
-
-# Optional (saves 100 lines)
-rm preprod/scripts/fix-api-key.sh
-
-# Commit
-git add -A
-git commit -m "chore: remove obsolete deployment infrastructure"
+**Committed:**
+```
+commit 3690801
+chore: remove obsolete deployment infrastructure
 ```
 
-**Impact:** Clean, focused deployment structure. Easier to maintain.
+**Result:**
+- Clean single preprod/ folder
+- 8 active scripts (1,084 lines)
+- 57% reduction in deployment code
+- Easier to maintain and understand
 
-## Next Steps
-
-User decides:
-1. Execute cleanup now
-2. Review action-plan.md first
-3. Proceed with other tasks
-
-High signal-to-noise documentation complete. Ready for action.
+See execution-summary.md for detailed results.

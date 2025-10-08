@@ -1,7 +1,9 @@
 #!/bin/bash
 # Check DRED server status
+# Load configuration
+SCRIPT_DIR="$(dirname "$0")"
+source "$SCRIPT_DIR/load-env.sh"
 
-DRED_PORT=${DRED_PORT:-3029}
 US_IP=$1
 DE_IP=$2
 UK_IP=$3
@@ -29,19 +31,19 @@ echo ""
 check_remote() {
     local NAME=$1
     local IP=$2
-    echo "$NAME ($IP:3029)"
+    echo "$NAME ($IP:$DRED_PORT)"
 
-    if ! ssh -o ConnectTimeout=5 -o BatchMode=yes devops@"$IP" exit 2>/dev/null; then
+    if ! ssh -o ConnectTimeout=5 -o BatchMode=yes $SSH_USER@"$IP" exit 2>/dev/null; then
         echo "  Status: SSH FAILED"
         echo ""
         return
     fi
 
-    STATUS=$(ssh devops@"$IP" "pm2 jlist 2>/dev/null | jq -r '.[] | select(.name==\"dred\") | .pm2_env.status' 2>/dev/null" || echo "unknown")
+    STATUS=$(ssh $SSH_USER@"$IP" "pm2 jlist 2>/dev/null | jq -r '.[] | select(.name==\"dred\") | .pm2_env.status' 2>/dev/null" || echo "unknown")
     echo "  Status: $(echo "$STATUS" | tr '[:lower:]' '[:upper:]')"
 
     if [ "$STATUS" = "online" ]; then
-        CHANNELS=$(curl -s http://"$IP":3029/channels --max-time 2 2>/dev/null | jq -r '.channels[]' 2>/dev/null | tr '\n' ' ')
+        CHANNELS=$(curl -s http://"$IP":$DRED_PORT/channels --max-time 2 2>/dev/null | jq -r '.channels[]' 2>/dev/null | tr '\n' ' ')
         if [ -n "$CHANNELS" ]; then
             echo "  Channels: $CHANNELS"
         else
