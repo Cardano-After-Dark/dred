@@ -3,7 +3,8 @@
     "allow": [
       "Bash(tree:*)",
       "Bash(mkdir:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Read(//private/tmp/**)"
     ]
   },
   "enableAllProjectMcpServers": false

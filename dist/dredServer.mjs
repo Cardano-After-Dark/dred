@@ -4004,6 +4004,14 @@ class RedisHash {
   }
 }
 
+class NoBookmarkMemory {
+  async getBookmark(channel) {
+    return "0";
+  }
+  async setBookmark(channel, bookmark) {
+  }
+}
+
 var __defProp$1 = Object.defineProperty;
 var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __publicField$1 = (obj, key, value) => __defNormalProp$1(obj, typeof key !== "symbol" ? key + "" : key, value);
@@ -4216,6 +4224,7 @@ class Replicant {
   async attemptConnection() {
     try {
       this.retryState.lastAttemptTime = /* @__PURE__ */ new Date();
+      this.log(`attempting connection to ${this.targetHost.serverId} at ${this.targetHost.address}:${this.targetHost.port}`);
       const isAvailable = await this.checkServerAvailability();
       if (!isAvailable) {
         throw new Error(`Target server ${this.targetHost.serverId} is not available`);
@@ -4250,6 +4259,7 @@ class Replicant {
       this.resetRetryState();
       this.log(`\u2705 replication connection established`);
     } catch (error) {
+      this.warn(`connection attempt failed: ${error.message}`);
       if (this.repClient) {
         try {
           this.repClient.disconnect();
@@ -4310,6 +4320,7 @@ class Replicant {
     const retryIntervalMs = retryIntervalSeconds * 1e3;
     this.retryState.isRetrying = true;
     this.retryState.nextRetryTime = new Date(Date.now() + retryIntervalMs);
+    this.log(`scheduling retry in ${retryIntervalSeconds} seconds`);
     this.retryState.retryTimer = setTimeout(() => {
       this.attemptConnection();
     }, retryIntervalMs);
@@ -5002,6 +5013,35 @@ expiration '${opts.expiresAt.getTime() % 1e5}, now '${now.getTime() % 1e5}`
     });
     this.api.use(this.resultLogger);
   }
+  /**
+   * Create a DredClient instance for connecting to a specific server.
+   * Used by the replicator to create clients for peer servers.
+   *
+   * @param serverSelection - The server ID to connect to.
+   * @param clientArgs - Additional client configuration options.
+   * @param serverManaged - Whether the client is managed by the server (affects cleanup).
+   * @returns A DredClient instance.
+   */
+  mkClient(serverSelection, clientArgs = {}, serverManaged = true) {
+    const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
+    if (!discovery) throw new Error("discovery is required");
+    const oneHost = discovery.hosts.find((h) => h.serverId === serverSelection);
+    if (!oneHost) {
+      this.logger.error(`server ${serverSelection} not found in discovery`, discovery);
+      throw new Error(`server ${serverSelection} not found in discovery`);
+    }
+    const singleDiscovery = new StaticHostDiscovery({
+      hosts: [oneHost]
+    });
+    const client = new DredClient({
+      ...this.clientArgs,
+      ...clientArgs,
+      neighborhood: this.nbh,
+      discovery: singleDiscovery,
+      bookmarkStorage: new NoBookmarkMemory()
+    });
+    return client;
+  }
   setupRedis(url) {
     if (this.redis) throw new Error(`redis connection is already set up`);
     this.progress(`Setting up Redis connection: ${url || "default"}, db: ${this.redisDb}`);
@@ -5579,12 +5619,12 @@ async function init() {
         let discovery;
         if (useStaticDiscovery) {
             console.log("📡 Using StaticHostDiscovery (temporary fix for bootstrap)");
-            
+
             // Define known preprod hosts
             const knownHosts = [
                 {
                     address: "74.208.13.84",
-                    port: 3029, 
+                    port: 3029,
                     serverId: "preprod-us",
                     insecure: true,  // Use HTTP instead of HTTPS
                     publicKey: "temp-key-1",
@@ -5593,13 +5633,21 @@ async function init() {
                 {
                     address: "217.154.34.155",
                     port: 3029,
-                    serverId: "preprod-uk", 
+                    serverId: "preprod-uk",
                     insecure: true,  // Use HTTP instead of HTTPS
                     publicKey: "temp-key-2",
                     pubKeyHash: "temp-hash-2"
+                },
+                {
+                    address: "127.0.0.1",
+                    port: 3029,
+                    serverId: "local-dev",
+                    insecure: true,  // Use HTTP instead of HTTPS
+                    publicKey: "temp-key-local",
+                    pubKeyHash: "temp-hash-local"
                 }
             ];
-            
+
             discovery = new StaticHostDiscovery({ hosts: knownHosts });
             console.log("✅ StaticHostDiscovery created with", knownHosts.length, "hosts");
         } else {

@@ -45,12 +45,12 @@ async function init() {
         let discovery;
         if (useStaticDiscovery) {
             console.log("📡 Using StaticHostDiscovery (temporary fix for bootstrap)");
-            
+
             // Define known preprod hosts
             const knownHosts = [
                 {
                     address: "74.208.13.84",
-                    port: 3029, 
+                    port: 3029,
                     serverId: "preprod-us",
                     insecure: true,  // Use HTTP instead of HTTPS
                     publicKey: "temp-key-1",
@@ -59,13 +59,21 @@ async function init() {
                 {
                     address: "217.154.34.155",
                     port: 3029,
-                    serverId: "preprod-uk", 
+                    serverId: "preprod-uk",
                     insecure: true,  // Use HTTP instead of HTTPS
                     publicKey: "temp-key-2",
                     pubKeyHash: "temp-hash-2"
+                },
+                {
+                    address: "127.0.0.1",
+                    port: 3029,
+                    serverId: "local-dev",
+                    insecure: true,  // Use HTTP instead of HTTPS
+                    publicKey: "temp-key-local",
+                    pubKeyHash: "temp-hash-local"
                 }
             ];
-            
+
             discovery = new StaticHostDiscovery({ hosts: knownHosts });
             console.log("✅ StaticHostDiscovery created with", knownHosts.length, "hosts");
         } else {

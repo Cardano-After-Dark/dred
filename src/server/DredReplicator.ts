@@ -336,7 +336,9 @@ export class Replicant{
     private async attemptConnection(): Promise<void> {
         try {
             this.retryState.lastAttemptTime = new Date();
-            
+
+            this.log(`attempting connection to ${this.targetHost.serverId} at ${this.targetHost.address}:${this.targetHost.port}`);
+
             // Check if target server is available first (with timeout)
             const isAvailable = await this.checkServerAvailability();
             if (!isAvailable) {
@@ -387,9 +389,10 @@ export class Replicant{
             this.resetRetryState();
             this.log(`✅ replication connection established`);
             
-        } catch (error) {
-            // Error already logged in checkServerAvailability with semantic format
-            
+        } catch (error: any) {
+            // Log the actual error for debugging
+            this.warn(`connection attempt failed: ${error.message}`);
+
             // Clean up failed client
             if (this.repClient) {
                 try {
@@ -399,7 +402,7 @@ export class Replicant{
                 }
                 this.repClient = null;
             }
-            
+
             // Schedule retry
             this.scheduleRetry();
         }
@@ -462,13 +465,15 @@ export class Replicant{
         if (this.retryState.isRetrying) {
             return;
         }
-        
+
         const retryIntervalSeconds = parseInt(process.env.REPLICATION_RETRY_INTERVAL_SECONDS || '60', 10);
         const retryIntervalMs = retryIntervalSeconds * 1000;
-        
+
         this.retryState.isRetrying = true;
         this.retryState.nextRetryTime = new Date(Date.now() + retryIntervalMs);
-        
+
+        this.log(`scheduling retry in ${retryIntervalSeconds} seconds`);
+
         this.retryState.retryTimer = setTimeout(() => {
             this.attemptConnection();
         }, retryIntervalMs);
