@@ -63,15 +63,15 @@ export default [
     serverBundle({
         input: "bin/dredServer",
         plugins: [
+            alias({
+                entries: [
+                    { find: '@platform/ReadableStream.js', replacement: './platform/server/ReadableStream.ts' },
+                    { find: '@platform/ReadableStream', replacement: './platform/server/ReadableStream.ts' },
+                ],
+            }),
             externals(),
             resolve({
                 extensions: [".mjs", ".js", ".json", ".ts"],
-            }),
-            alias({
-                entries: [
-                    { find: '@platform/ReadableStream', replacement: './platform/server/ReadableStream.ts' },
-                    { find: '@platform/ReadableStream.js', replacement: './platform/server/ReadableStream.ts' },
-                ],
             }),
             esbuildConfig,
         ],
@@ -80,15 +80,15 @@ export default [
 
     serverBundle({
         plugins: [
+            alias({
+                entries: [
+                    { find: '@platform/ReadableStream.js', replacement: './platform/server/ReadableStream.ts' },
+                    { find: '@platform/ReadableStream', replacement: './platform/server/ReadableStream.ts' },
+                ],
+            }),
             externals(),
             resolve({
                 extensions: [".mjs", ".js", ".json", ".ts"],
-            }),
-            alias({
-                entries: [
-                    { find: '@platform/ReadableStream', replacement: './platform/server/ReadableStream.ts' },
-                    { find: '@platform/ReadableStream.js', replacement: './platform/server/ReadableStream.ts' },
-                ],
             }),
             esbuildConfig,
         ],

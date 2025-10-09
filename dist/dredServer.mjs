@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { GenericSigner, TxBatcher, bytesToText } from '@donecollectively/stellar-contracts';
 import { EventEmitter } from 'eventemitter3';
-import { contextLogger, asyncDelay as asyncDelay$1, StateMachine, autobind, zonedLogger } from '@poshplum/utils';
+import { contextLogger, asyncDelay as asyncDelay$1, autobind, zonedLogger, StateMachine as StateMachine$1 } from '@poshplum/utils';
 import { makeBlockfrostV0Client, makeRandomRootPrivateKey, bytesToHex, makeRootPrivateKey, hexToBytes, makeSimpleWallet, DredCapo } from 'dred-network-registry';
 import util from 'tweetnacl-util';
 import { sign as sign$1, verify, newKeyPair } from 'watsign';
@@ -11,29 +11,28 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import compression from 'compression';
 import Redis, { Redis as Redis$1 } from 'ioredis';
-import { nanoid as nanoid$3, customAlphabet } from 'nanoid';
+import { customAlphabet } from 'nanoid';
 import { v4 } from 'uuid';
 import * as abstractLoggingInterface from 'abstract-logging';
 import fetch$1 from 'cross-fetch';
 import nacl from 'tweetnacl';
 import { ReadableStream as ReadableStream$1 } from 'node:stream/web';
 import { Readable } from 'node:stream';
-import 'process';
 import 'node:path';
 
 const devMessage = Symbol("?developer?");
 //! it provides a type facade to describe available events
 
-var __defProp$b = Object.defineProperty;
-var __defNormalProp$b = (obj, key, value) => key in obj ? __defProp$b(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$b = (obj, key, value) => __defNormalProp$b(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$c = Object.defineProperty;
+var __defNormalProp$c = (obj, key, value) => key in obj ? __defProp$c(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$c = (obj, key, value) => __defNormalProp$c(obj, typeof key !== "symbol" ? key + "" : key, value);
 class Discovery {
   constructor(options) {
-    __publicField$b(this, "nbh");
+    __publicField$c(this, "nbh");
     // neighborhood
-    __publicField$b(this, "hosts");
-    __publicField$b(this, "events", new EventEmitter());
-    __publicField$b(this, "logger", contextLogger("discovery"));
+    __publicField$c(this, "hosts");
+    __publicField$c(this, "events", new EventEmitter());
+    __publicField$c(this, "logger", contextLogger("discovery"));
     const { neighborhood } = options;
     this.nbh = "";
     if (neighborhood) this.setNeighborhood(neighborhood);
@@ -92,16 +91,16 @@ class Discovery {
   }
 }
 
-var __defProp$a = Object.defineProperty;
-var __defNormalProp$a = (obj, key, value) => key in obj ? __defProp$a(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$a = (obj, key, value) => __defNormalProp$a(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$b = Object.defineProperty;
+var __defNormalProp$b = (obj, key, value) => key in obj ? __defProp$b(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$b = (obj, key, value) => __defNormalProp$b(obj, typeof key !== "symbol" ? key + "" : key, value);
 class NeighborhoodDiscovery extends Discovery {
   constructor(options) {
     const { neighborhood } = options;
     super(options);
-    __publicField$a(this, "capo");
-    __publicField$a(this, "registryController");
-    __publicField$a(this, "neighborhood");
+    __publicField$b(this, "capo");
+    __publicField$b(this, "registryController");
+    __publicField$b(this, "neighborhood");
     if (neighborhood) this.neighborhood = neighborhood;
   }
   async myServerInfo(serverId) {
@@ -249,14 +248,14 @@ class NeighborhoodDiscovery extends Discovery {
   }
 }
 
-var __defProp$9 = Object.defineProperty;
-var __defNormalProp$9 = (obj, key, value) => key in obj ? __defProp$9(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$9 = (obj, key, value) => __defNormalProp$9(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$a = Object.defineProperty;
+var __defNormalProp$a = (obj, key, value) => key in obj ? __defProp$a(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$a = (obj, key, value) => __defNormalProp$a(obj, typeof key !== "symbol" ? key + "" : key, value);
 const { encodeUTF8: encodeUTF8$2, decodeUTF8: decodeUTF8$2, encodeBase64: encodeBase64$2, decodeBase64: decodeBase64$2 } = util;
 class StringNacl {
   constructor(keyPair, logger = console) {
-    __publicField$9(this, "identity");
-    __publicField$9(this, "logger");
+    __publicField$a(this, "identity");
+    __publicField$a(this, "logger");
     this.identity = keyPair;
     this.logger = logger;
   }
@@ -291,18 +290,18 @@ class StringNacl {
     return verify(strBuf, sigBuf, keyBuf);
   }
 }
-__publicField$9(StringNacl, "newKeyPair", newKeyPair);
+__publicField$a(StringNacl, "newKeyPair", newKeyPair);
 
-var __defProp$8 = Object.defineProperty;
-var __defNormalProp$8 = (obj, key, value) => key in obj ? __defProp$8(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$8 = (obj, key, value) => __defNormalProp$8(obj, key + "" , value);
+var __defProp$9 = Object.defineProperty;
+var __defNormalProp$9 = (obj, key, value) => key in obj ? __defProp$9(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$9 = (obj, key, value) => __defNormalProp$9(obj, key + "" , value);
 const { encodeUTF8: encodeUTF8$1, decodeUTF8: decodeUTF8$1, encodeBase64: encodeBase64$1, decodeBase64: decodeBase64$1 } = util;
 const localNbh = "localhost-nbh";
 class StaticHostDiscovery extends Discovery {
   constructor(options) {
     const { neighborhood, hosts } = options;
     super({ neighborhood: localNbh });
-    __publicField$8(this, "hosts");
+    __publicField$9(this, "hosts");
     this.hosts = hosts || StaticHostDiscovery.defaultHosts();
   }
   async getNeighborhoods() {
@@ -379,6 +378,8 @@ class StaticHostDiscovery extends Discovery {
     return { minimal: 1, healthy: 1 };
   }
 }
+
+const nanoid$1 = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 10);
 
 const sep = {
   HASH: "#",
@@ -1092,7 +1093,7 @@ class RedisChannels {
       if (this.closing) {
         return;
       }
-      this.logger.error("Consume error: %o", error);
+      this.logger.debug("Consume error: %o", error);
       throw new RedisChannelsError(
         "Can not consume from the tunnel: " + tunnel[tun.KEY] + " " + tunnel[tun.CONSUMER],
         error
@@ -1299,42 +1300,94 @@ let createColors = (enabled = isColorSupported) => {
 };
 const colors = createColors();
 
-var __defProp$7 = Object.defineProperty;
-var __defNormalProp$7 = (obj, key, value) => key in obj ? __defProp$7(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$7 = (obj, key, value) => __defNormalProp$7(obj, typeof key !== "symbol" ? key + "" : key, value);
-class ChannelSubscriptionListener {
+var __defProp$8 = Object.defineProperty;
+var __defNormalProp$8 = (obj, key, value) => key in obj ? __defProp$8(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$8 = (obj, key, value) => __defNormalProp$8(obj, typeof key !== "symbol" ? key + "" : key, value);
+const nbhChannelListChannel = "_chans";
+const nbhAuthInfoChannel = "_auth";
+function expandChannelListeners(listeners) {
+  return listeners.type === "mass" ? [...listeners.channels, nbhChannelListChannel, nbhAuthInfoChannel] : listeners.subs ? Object.keys(listeners.subs) : [];
+}
+const defaultMaxDelayMs = 0;
+const _ChannelSubscriptionListener = class _ChannelSubscriptionListener {
   // XXevents: EventEmitter<ChannelSubEvents>;
-  constructor(options) {
-    __publicField$7(this, "options");
-    __publicField$7(this, "recentMsgs");
-    __publicField$7(this, "listener");
-    const { listener, ...rest } = options;
-    this.options = rest;
-    //! it has a recent-messages map, not included in a JSON representation of the subscription
+  constructor(config) {
+    __publicField$8(this, "config");
+    __publicField$8(this, "options");
+    __publicField$8(this, "logger");
+    __publicField$8(this, "olderMsgs");
+    __publicField$8(this, "recentMsgs");
+    __publicField$8(this, "lastRotated");
+    __publicField$8(this, "listener");
+    const { listener, logger, ...rest } = config;
+    this.config = rest;
+    this.options = rest.options;
+    this.logger = logger;
+    //! it tracks recent messages to prevent duplicate notifications
     this.recentMsgs = /* @__PURE__ */ new Set();
+    //! it prevents unbounded growth of the tracking data structure
+    this.olderMsgs = /* @__PURE__ */ new Set();
+    this.lastRotated = Date.now();
     this.listener = listener;
   }
+  hasSeen(originalClientId, msgId) {
+    const now = Date.now();
+    if (now - this.lastRotated > _ChannelSubscriptionListener.rotationIntervalMs) {
+      this.olderMsgs = this.recentMsgs;
+      this.recentMsgs = /* @__PURE__ */ new Set();
+      this.lastRotated = now;
+    }
+    if (originalClientId) {
+      if (this.recentMsgs.has(originalClientId)) return true;
+      if (this.olderMsgs.has(originalClientId)) return true;
+    }
+    if (msgId) {
+      if (this.recentMsgs.has(msgId)) return true;
+      if (this.olderMsgs.has(msgId)) return true;
+    }
+    return false;
+  }
   notify(event) {
-    const { mid: msgId, ocid: originalClientId, connection, message, details, neighborhood, channel } = event;
+    const {
+      mid: msgId,
+      ocid: originalClientId,
+      connection,
+      message,
+      details,
+      neighborhood,
+      channel
+    } = event;
+    if (this.hasSeen(originalClientId)) {
+      this.logger.trace("already seen: %s", originalClientId);
+      return;
+    }
+    if (this.hasSeen(msgId)) {
+      this.logger.error("already seen messageId: %s", msgId);
+      return;
+    }
     const seen = this.recentMsgs;
     if (!seen.has(originalClientId) && !seen.has(msgId)) {
       seen.add(msgId);
+      this.logger.trace("msg %s", originalClientId);
       this.listener(event);
     }
   }
-}
+};
+// allows a message to be deduplicated within 60 seconds
+__publicField$8(_ChannelSubscriptionListener, "rotationIntervalMs", 30 * 1e3);
+let ChannelSubscriptionListener = _ChannelSubscriptionListener;
 
 //! converts a nodejs Readable Stream as returned by `node-fetch` and `cross-fetch`
 function nodeToWebStream(nodeStream) {
-  var destroyed = false;
-  var listeners = {};
+  let destroyed = false;
+  let listeners = {};
   function start(controller) {
     listeners["data"] = onData;
     listeners["end"] = onData;
     listeners["end"] = onDestroy;
     listeners["close"] = onDestroy;
     listeners["error"] = onDestroy;
-    for (var name in listeners) nodeStream.on(name, listeners[name]);
+    for (const name in listeners) nodeStream.on(name, listeners[name]);
     nodeStream.pause();
     function onData(chunk) {
       if (destroyed) return;
@@ -1344,8 +1397,8 @@ function nodeToWebStream(nodeStream) {
     function onDestroy(err) {
       if (destroyed) return;
       destroyed = true;
-      for (var name2 in listeners)
-        nodeStream.removeListener(name2, listeners[name2]);
+      for (const name in listeners)
+        nodeStream.removeListener(name, listeners[name]);
       if (err) controller.error(err);
       else controller.close();
     }
@@ -1356,7 +1409,7 @@ function nodeToWebStream(nodeStream) {
   }
   function cancel() {
     destroyed = true;
-    for (var name in listeners)
+    for (const name in listeners)
       nodeStream.removeListener(name, listeners[name]);
     nodeStream.push(null);
     nodeStream.pause();
@@ -1432,6 +1485,426 @@ function ndjsonStream(responseBody) {
   });
 }
 
+var __defProp$7 = Object.defineProperty;
+var __defNormalProp$7 = (obj, key, value) => key in obj ? __defProp$7(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$7 = (obj, key, value) => __defNormalProp$7(obj, typeof key !== "symbol" ? key + "" : key, value);
+let instanceId = 0;
+class StateMachine {
+  constructor() {
+    __publicField$7(this, "$state");
+    __publicField$7(this, "$notifier");
+    __publicField$7(this, "destroyed", false);
+    __publicField$7(this, "_deferredSMAction");
+    __publicField$7(this, "instanceId");
+    __publicField$7(this, "onEntry", {});
+    this.instanceId = instanceId++;
+    this.$state = this.initialState;
+    this.$notifier = new EventEmitter();
+    Object.defineProperty(this, "$notifier", {
+      enumerable: false
+    });
+    this.resetState();
+    this.onStateEntered = this.onStateEntered.bind(this);
+    this.$notifier.on(
+      "state:entered",
+      // avoid type-resolution loop with any cast
+      this.onStateEntered
+    );
+  }
+  get $deferredAction() {
+    const deferredAction = this._deferredSMAction;
+    if (!deferredAction) return "";
+    const { type, displayStatus } = deferredAction;
+    return displayStatus;
+  }
+  get $describeDeferredAction() {
+    const deferredAction = this._deferredSMAction;
+    if (!deferredAction) return "";
+    const { type, displayStatus } = deferredAction;
+    const nextThing = deferredAction?.targetState || deferredAction?.transitionName;
+    return `(deferred ${type} '${nextThing}'): ${displayStatus}`;
+  }
+  get deferredTargetState() {
+    const deferredAction = this._deferredSMAction;
+    if (!deferredAction) return "";
+    if (deferredAction.targetState) return deferredAction.targetState;
+    const currentState = this.$state;
+    if (!currentState) return "";
+    const currentTransition = deferredAction.transitionName;
+    const transitionsAvailable = this.transitionTable[currentState];
+    if (!transitionsAvailable) {
+      throw new Error(`\u{1F353}\u{1F378} ${this.stateMachineName}: deferred transition (${currentTransition}) invalid from ${currentState} (no transitions defined)`);
+    }
+    const transition = transitionsAvailable[currentTransition];
+    if (!transition) {
+      throw new Error(`\u{1F353}\u{1F378} ${this.stateMachineName}: deferred transition (${currentTransition}) invalid from state: ${currentState}`);
+    }
+    return transition.to;
+  }
+  /**
+   * schedules a deferred transition to be performed when the promise resolves
+   * @remarks
+   * When there is a deferred transition, the state-machine will not accept other
+   * transitions until the promise resolves one way or the other.
+   *
+   * A prime use-case for a deferred transition is for an onEntry hook to
+   * defer (with setTimeout()) an unconditional next activity that will be
+   * triggered by transitioning to the next state.
+   * 
+   * The displayStatus is used to provide transparency about the
+   * implied "activity" of waiting to trigger the transition.  For instance,
+   * a "doneCooking" state on a microwave might have a displayStatus of
+   * "food is ready", with a 2m-deferred transition to "remindingReady" state,
+   * where it beeps three times and returns to doneCooking for further
+   * reminders (opening the door or pressing Cancel would interrupt and
+   * prevent the deferred transition).
+   * 
+   * ### Return-type notes
+   * Note that the returned type is not usable as result of an
+   * onTransition hook or onEntry hook.  In onTransition, you can return
+   * `this.$deferredState(...)`.  To use `$deferredTransition(...)` in onEntry,
+   * just call it and don't return it.
+   */
+  $deferredTransition(tn, displayStatus, promiseOrDelay) {
+    if (this._deferredSMAction) {
+      this.warn("existing action: ", this._deferredSMAction);
+      throw new Error(
+        `\u{1F353}\u{1F378} ${this.stateMachineName} already has a deferred action pending`
+      );
+    }
+    let promise = promiseOrDelay;
+    let delay = "";
+    if ("number" == typeof promiseOrDelay) {
+      delay = `@ +${promiseOrDelay}ms`;
+      promise = this.delayed(promiseOrDelay);
+    }
+    const pAction = {
+      type: "transition",
+      transitionName: tn,
+      displayStatus,
+      promise
+    };
+    this._deferredSMAction = pAction;
+    const p = promise.promise ?? promise;
+    this.progress(`
+  -- scheduled! ${delay} \u23F0`);
+    this.ignoringListenerErrors("changed", () => {
+      this.$notifier.emit("changed", this);
+    });
+    p.then(
+      () => {
+        if (!this._deferredSMAction) {
+          this.trace(
+            `    -- deferred transition ${tn} already triggered \u{1F44D}`
+          );
+          return;
+        }
+        if (this.destroyed) {
+          this.debug(" -- was destroyed; abandoning deferred transition");
+        }
+        this._deferredSMAction = void 0;
+        this.progress("    -- triggering deferred state transition");
+        this.transition(tn);
+      },
+      () => {
+        this._deferredSMAction = void 0;
+      }
+    );
+    return pAction;
+  }
+  ignoringListenerErrors(event, cb) {
+    try {
+      cb();
+    } catch (e) {
+      this.warn(`Note: error in '${event}' listener`, e);
+    }
+  }
+  /**
+   * Schedules the completion of a deferred transition, placing the
+   * state-machine into the target state.
+   * @remarks
+   * When the context of a particular state-transition has a natural
+   * affinity to a delayed effect of triggering a state-change (or to
+   * re-initiating the current-state), this method can be used to
+   * indicate that deferred effect.
+   * 
+   * The displayStatus is used to provide transparency about the cause
+   * and context of the delayed change-of-state.
+   *
+   * The deferred transition will be cancelled if the promise is
+   * cancelled or fails.
+   *
+   * A key use-case for this is to allow a transition that can re-trigger
+   * the onEntry effects of the current state (or another next state), while
+   * remaining cosmetically or semantically in the original state, deferred
+   * the deferred entry to the target state; the target state's onEntry
+   * hook will then be called after the transition is actually finished.
+   * 
+   * Meanwhile, there is an explicit block on other state-transitions, and
+   * there is an explicit current displayStatus providing strong transparency
+   * about the deferred switch to the target state.
+   *
+   * As an example, a kitchen-timer feature on a microwave might (once it
+   * finishes its countdown to zero and is done beeping), trigger a 
+   * `$deferredState("idle", ...)` with a deferred displayStatus of "timer finished".  
+   * It would then move to idle when the Cancel button is pressed.  This example 
+   * differs from that in $deferredTransition(), with the assumption that the
+   * kitchen timer doesn't try to bug the user about it being finished,
+   * the way the "doneCooking" state example describes. 
+   * 
+   * ### Return-type notes
+   * Note that this type is only valid as the return value of an onTransition
+   * callback, and not as a return value of an onEntry hook.  In an onEntry
+   * hook, call and don't return the $deferredTransition(...).
+   */
+  $deferredState(transitionName, targetState, displayStatus, promiseOrDelay) {
+    if (this._deferredSMAction) {
+      this.warn("existing action: ", this._deferredSMAction);
+      throw new Error(
+        `\u{1F353}\u{1F378} ${this.stateMachineName} already has a deferred action`
+      );
+    }
+    let promise = promiseOrDelay;
+    if ("number" == typeof promiseOrDelay) {
+      promise = this.delayed(promiseOrDelay);
+    }
+    const pAction = {
+      type: "state",
+      promise,
+      displayStatus,
+      transitionName,
+      targetState
+    };
+    this._deferredSMAction = pAction;
+    const p = promise.promise ?? promise;
+    p.catch(
+      () => {
+        this.warn(
+          `promise for deferred action cancelled or failed
+  ... NOT committing state -> ${targetState}`
+        );
+        this._deferredSMAction = void 0;
+      }
+    );
+    return pAction;
+  }
+  async delayed(delay) {
+    return new Promise((res) => {
+      setTimeout(res, delay);
+    });
+  }
+  onStateEntered(sm, state) {
+    const entryHook = this.onEntry[state];
+    if (entryHook) {
+      entryHook.call(this);
+    }
+  }
+  destroy() {
+    this.$notifier.emit("destroyed", this);
+    this.$notifier.removeAllListeners();
+    this.$notifier = "destroyed";
+    this.destroyed = true;
+  }
+  notDestroyed() {
+    if (this.destroyed) {
+      throw new Error(
+        `\u{1F353}\u{1F378} ${this.stateMachineName} has already  been destroyed`
+      );
+    }
+  }
+  logPrefix() {
+    const deferredAction = this._deferredSMAction;
+    let deferredStatus = deferredAction?.displayStatus;
+    let deferredType = deferredAction?.type;
+    let nextThing = deferredAction?.targetState || deferredAction?.transitionName;
+    deferredStatus = deferredStatus ? `(deferred ${deferredType} ${nextThing}: ${deferredStatus})` : "";
+    return `@${this.$state} ${deferredStatus}: `;
+  }
+  error(message, ...args) {
+    if (this.logger) return this.logger.error(message, ...args);
+    console.error(`${this.logLabel} ${this.logPrefix()} ${message}`, ...args);
+  }
+  warn(message, ...args) {
+    if (this.logger) return this.logger.warn(message, ...args);
+    console.warn(`${this.logLabel} ${this.logPrefix()} ${message}`, ...args);
+  }
+  info(message, ...args) {
+    if (this.logger) return this.logger.info(message, ...args);
+    console.info(`${this.logLabel} ${this.logPrefix()} ${message}`, ...args);
+  }
+  progress(message, ...args) {
+    if (this.logger) return this.logger.progress(message, ...args);
+    console.info(`${this.logLabel} ${this.logPrefix()} ${message}`, ...args);
+  }
+  debug(message, ...args) {
+    if (this.logger) return this.logger.debug(message, ...args);
+    console.debug(`${this.logLabel} ${this.logPrefix()} ${message}`, ...args);
+  }
+  trace(message, ...args) {
+    if (this.logger) return this.logger.trace(message, ...args);
+    console.trace(`${this.logLabel} ${this.logPrefix()} ${message}`, ...args);
+  }
+  get logLabel() {
+    return `\u{1F353}\u{1F378} ${this.instanceId} ${this.stateMachineName}`;
+  }
+  get stateMachineName() {
+    return this.constructor.name;
+  }
+  get initialState() {
+    throw new Error("abstract");
+  }
+  /**
+   * creates a transition function for the indicated transition name
+   * @remarks
+   * the prefix brings this most common method to the top for autocomplete
+   *
+   * the resulting callback will try to transition the state-machine
+   * but can fail if the transition table doesn't permit the named transition
+   * at the time of the call.
+   * @public
+   */
+  $mkTransition(tn) {
+    return this.mkTransition(tn);
+  }
+  /**
+   * creates a transition function for the indicated transition name
+   * @remarks
+   * The resulting callback will try to transition the state-machine
+   * but can fail if the transition table doesn't permit the named transition
+   * at the time of the call.
+   * @public
+   */
+  mkTransition(tn) {
+    return this.transition.bind(this, tn);
+  }
+  /**
+   * returns true if the state-machine can currently use the named transition
+   * @public
+   */
+  $canTransition(tn) {
+    if (this._deferredSMAction) return false;
+    return !!this.transitionTable[this.$state][tn];
+  }
+  /**
+   * transitions the state-machine through the indicated tx name
+   * @remarks
+   * can fail if the transition table doesn't permit the named transition
+   * while in the current state.
+   *
+   * the prefix brings this most common method to the top for autocomplete
+   * @public
+   */
+  $transition(tn) {
+    return this.transition(tn);
+  }
+  /**
+   * transitions the state-machine through the indicated tx name
+   * @public
+   */
+  transition(tn) {
+    const currentState = this.$state;
+    const foundTransition = this.transitionTable[currentState][tn];
+    if (!foundTransition) {
+      debugger;
+      throw new Error(
+        ` \u{1F353}\u{1F378} ${this.stateMachineName}: invalid transition '${tn}' from state=${currentState}`
+      );
+    }
+    const { to: targetState, onTransition } = foundTransition;
+    if (this._deferredSMAction) {
+      if (targetState == this.deferredTargetState) {
+        this._deferredSMAction = void 0;
+      } else {
+        this.warn(" -- can't transition with deferred action : ( ");
+        throw new Error(
+          `${this.stateMachineName} can't do transition ${tn} with deferred action '${this.$describeDeferredAction}' pending`
+        );
+      }
+    }
+    let error = "";
+    let nextState;
+    try {
+      nextState = onTransition?.() || targetState;
+    } catch (e) {
+      nextState = false;
+      error = e.message || e;
+    }
+    return this.finishTransition(tn, targetState, currentState, nextState, error);
+  }
+  finishTransition(tn, targetState, currentState, nextState, error) {
+    if (this.destroyed) return void 0;
+    let wasCancelled = false;
+    if (!error) this.ignoringListenerErrors("transition", () => {
+      function mayCancelTransition(reason) {
+        wasCancelled = true;
+        error = reason || "\u2039unknown reason\u203A";
+        nextState = false;
+      }
+      this.$notifier.emit("transition", this, {
+        from: currentState,
+        transition: tn,
+        to: targetState,
+        cancelTransition: mayCancelTransition
+      });
+    });
+    if (nextState == false) {
+      this.info(
+        `transition canceled: ${currentState}: ${tn} XXX ${targetState}` + (wasCancelled ? `
+ -- cancelled by 'transition' listener` : "") + (!!error ? ` -- ${error}` : "") + `
+  -- staying in state ${currentState}`
+      );
+      return;
+    }
+    if (nextState && "string" != typeof nextState) {
+      const ns = nextState;
+      const {
+        displayStatus,
+        promise,
+        targetState: targetState2,
+        type
+      } = ns;
+      this._deferredSMAction = ns;
+      const p = promise.promise ?? promise;
+      p.then(
+        () => {
+          if (this._deferredSMAction) {
+            this._deferredSMAction = void 0;
+            this.progress(
+              `    --  commit deferred ${type} -> ${targetState2}`
+            );
+            return this.finishTransition(
+              tn,
+              targetState2,
+              currentState,
+              targetState2,
+              ""
+            );
+          }
+        }
+      );
+    } else if (this.$state != currentState) {
+      const trampolineState = this.$state;
+      this.progress(
+        `  -- trampolined ^^ ${currentState}: ${tn} \u{1F3D2} -> ~~${nextState}~~  \u{1F945} ${trampolineState} during ${tn} `
+      );
+    } else {
+      nextState = nextState || targetState;
+      const stateRedirect = nextState == targetState ? "" : `~~${targetState}~~  -> `;
+      this.progress(` -- ${tn} \u{1F3D2} -> ${stateRedirect} \u{1F945} ${nextState}`);
+      this.$state = nextState || targetState;
+      this.ignoringListenerErrors("changed", () => {
+        this.$notifier.emit("changed", this);
+      });
+      return new Promise((resolve) => {
+        resolve();
+        this.ignoringListenerErrors("state:entered", () => {
+          this.$notifier.emit("state:entered", this, this.$state);
+        });
+      });
+    }
+  }
+}
+
 var __defProp$6 = Object.defineProperty;
 var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
 var __defNormalProp$6 = (obj, key, value) => key in obj ? __defProp$6(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
@@ -1444,99 +1917,14 @@ var __decorateClass$2 = (decorators, target, key, kind) => {
   return result;
 };
 var __publicField$6 = (obj, key, value) => __defNormalProp$6(obj, typeof key !== "symbol" ? key + "" : key, value);
-const connectionStates = {
-  logLevel: "info",
-  connecting: {
-    default: true,
-    onEntry() {
-      this.connect().then(this.mkTransition("connected"), (e) => {
-        this.lastError = e;
-        this.transition("retry");
-      });
-    },
-    abort: "aborted",
-    retry: "retrying",
-    connected: "connected"
-  },
-  retrying: {
-    failed: "failed",
-    reconnect: {
-      nextState: "connecting",
-      effect() {
-        this.connecting = void 0;
-        this.connect();
-      }
-    },
-    abort: "aborted",
-    async onEntry() {
-      this.attempts += 1;
-      if (this.attempts > this.settings.maxRetries) return this.transition("failed");
-      this.retryLater();
-    }
-  },
-  connected: {
-    onEntry() {
-      this.events.emit("connected", {
-        connection: this,
-        message: "successful connection to neighborhood host",
-        attempts: this.attempts,
-        delayTime: this.elapsedTime(),
-        [devMessage]: [
-          "The connection is established and will emit 'message' events when received from the host."
-        ]
-      });
-    },
-    abort: "aborted",
-    disconnected: {
-      nextState: "disconnected",
-      predicate() {
-        return !this.abortController?.signal.aborted;
-      },
-      effect() {
-        //!!! todo: put the event trigger more directly in the spot where disconnection is detected (with any error message), plus the transition()
-        this.events.emit("disconnected", {
-          message: "server disconnected",
-          connection: this,
-          reason: "... from new location TBD",
-          [devMessage]: [
-            "no action needed; ConnectionManager will retry"
-          ]
-        });
-      }
-    }
-  },
-  failed: {
-    onEntry() {
-      this.events.emit(
-        "failed",
-        this.mkEvent({
-          message: `giving up after persistent connection failure (${this.settings.maxRetries} attempts). `,
-          recommendatIon: "check network connection, use patience, retry.  Do you have another way to connect to the network?",
-          [devMessage]: [
-            `The HostConnection object tried hard to get connected`,
-            `The connection manager is expected to retry, so it may be`,
-            `... better not to make maxRetries larger or to Infinity to keep retrying.`,
-            `See also: the 'retrying' event offered by the host connection.`
-          ]
-        })
-      );
-    }
-  },
-  //! aborts (from 'disconnected') and disconnects (from 'aborted') don't change the terminal states.
-  disconnected: {
-    //! disconnection is terminal; should be freed and garbage collected
-    abort: "disconnected",
-    onEntry() {
-      this.stopRetries();
-    }
-  },
-  aborted: {
-    //! an aborted connection is terminal; should be freed and garbage collected
-    disconnected: "aborted",
-    onEntry() {
-      this.stopRetries();
-    }
-  }
+const noTransitionsExcept = {
+  connect: null,
+  abort: null,
+  retry: null,
+  failed: null,
+  reconnect: null,
+  connected: null,
+  disconnected: null
 };
 const connectionEvents = {
   warning: "we timed out or encountered a problem connecting, but we'll keep retrying for a while",
@@ -1547,17 +1935,10 @@ const connectionEvents = {
   disconnected: "disconnected due to network error or missed heartbeats.",
   aborted: "connection aborted normally by controlling signal"
 };
-const _HostConnection = class _HostConnection extends StateMachine.withDefinition(
-  connectionStates,
-  "hostconn"
-) {
-  constructor(host, subscriptions, settings, clientid) {
-    super({
-      contextLabel: `connection:${host.serverId}`,
-      currentState: "default",
-      logFacility: "connection:state",
-      contextObject: null
-    });
+const _HostConnection = class _HostConnection extends StateMachine {
+  constructor(options) {
+    const { host, subscriptions, settings, clientid } = options;
+    super();
     __publicField$6(this, "events", new EventEmitter());
     __publicField$6(this, "abortController");
     __publicField$6(this, "host");
@@ -1579,12 +1960,167 @@ const _HostConnection = class _HostConnection extends StateMachine.withDefinitio
     __publicField$6(this, "heartbeatInterval", 1e4);
     __publicField$6(this, "lastHeartbeat", (/* @__PURE__ */ new Date()).getTime());
     __publicField$6(this, "heartbeatTimer");
-    this.logger = contextLogger("hostconn", {
-      clientid,
-      loggerId: nanoid$3(3)
+    __publicField$6(this, "onEntry", {
+      [`connecting`]: () => {
+        return this.connect().then(
+          () => {
+            this.progress("connect() succeeded");
+            return this.transition("connected");
+          },
+          (e) => {
+            debugger;
+            this.lastError = e;
+            this.warn("connect() failed, retrying", e.stack);
+            return this.transition("retry");
+          }
+        );
+      },
+      [`retrying`]: () => {
+        this.attempts += 1;
+        if (this.attempts > this.settings.maxRetries) {
+          return this.transition("failed");
+        }
+        const retryInterval = this.nextRetryInterval();
+        const { maxRetries } = this.settings;
+        this.ignoringListenerErrors(
+          "retrying",
+          () => this.events.emit(
+            "retrying",
+            this.mkEvent({
+              message: `connection error; will retry in ${Math.floor(
+                retryInterval / 1e3
+              )} seconds`,
+              [devMessage]: [
+                "This host connection got an error or timeout trying to connect, but it will retry on its own.",
+                "Each retry will be delayed a bit longer than the previous one. "
+              ],
+              retryCount: this.attempts,
+              maxRetries
+            })
+          )
+        );
+        this.$deferredTransition("reconnect", "will retry", retryInterval);
+      },
+      [`connected`]: () => {
+        this.progress("message stream established");
+        this.ignoringListenerErrors("connected", () => {
+          this.events.emit("connected", {
+            connection: this,
+            message: "successful connection to neighborhood host",
+            attempts: this.attempts,
+            delayTime: this.elapsedTime(),
+            [devMessage]: [
+              "The connection is established and will emit 'message' events when received from the host."
+            ]
+          });
+        });
+      },
+      [`failed`]: () => {
+        this.ignoringListenerErrors(
+          "failed",
+          () => this.events.emit(
+            "failed",
+            this.mkEvent({
+              message: `giving up after persistent connection failure (${this.settings.maxRetries} attempts). `,
+              recommendatIon: "check network connection, use patience, retry.  Do you have another way to connect to the network?",
+              [devMessage]: [
+                `The HostConnection object tried hard to get connected`,
+                `The connection manager is expected to retry, so it may be`,
+                `... better not to make maxRetries larger or to Infinity to keep retrying.`,
+                `See also: the 'retrying' event offered by the host connection.`
+              ]
+            })
+          )
+        );
+      },
+      [`disconnected`]: () => {
+        this.stopRetries();
+      }
     });
-    ({
-      ...settings
+    __publicField$6(this, "transitionTable", {
+      [`default`]: {
+        ...noTransitionsExcept,
+        connect: {
+          to: "connecting"
+        }
+      },
+      [`connecting`]: {
+        ...noTransitionsExcept,
+        connected: {
+          to: "connected"
+        },
+        abort: {
+          to: "aborted"
+        },
+        failed: {
+          to: "failed"
+        },
+        retry: {
+          to: "retrying"
+        },
+        disconnected: {
+          to: "disconnected"
+        }
+      },
+      [`retrying`]: {
+        ...noTransitionsExcept,
+        failed: {
+          to: "failed"
+        },
+        reconnect: {
+          to: "connecting",
+          onTransition: () => {
+            this.connecting = void 0;
+            this.connect();
+          }
+        },
+        abort: {
+          to: "aborted"
+        }
+      },
+      [`connected`]: {
+        ...noTransitionsExcept,
+        failed: {
+          to: "failed"
+        },
+        abort: {
+          to: "aborted"
+        },
+        disconnected: {
+          to: "disconnected",
+          onTransition: () => {
+            if (this.abortController && this.abortController.signal.aborted) {
+              return;
+            }
+            this.events.emit("disconnected", {
+              message: "server disconnected",
+              connection: this,
+              reason: "... from new location TBD",
+              [devMessage]: ["no action needed; ConnectionManager will retry"]
+            });
+          }
+        }
+      },
+      [`failed`]: {
+        ...noTransitionsExcept
+      },
+      [`disconnected`]: {
+        ...noTransitionsExcept,
+        abort: { to: "disconnected" }
+      },
+      [`aborted`]: {
+        ...noTransitionsExcept,
+        disconnected: {
+          to: "aborted"
+        }
+      }
+    });
+    this.logger = zonedLogger("hostconn", {
+      clientid,
+      loggerId: nanoid$1(4),
+      transitionName: void 0,
+      addContext: null,
+      extra: subscriptions.map((x) => x.channel)
     });
     this.settings = _HostConnection.settingsWithDefaults(settings);
     this.events.on("replacedBy", ({}) => {
@@ -1592,57 +2128,41 @@ const _HostConnection = class _HostConnection extends StateMachine.withDefinitio
     this.host = host;
     this.channelSubs = subscriptions;
     this.clientid = clientid;
-    this.connecting = this.connect();
+    this.transition("connect");
   }
   // Flag to track if disconnection is in progress
-  //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
   set currentState(v) {
     this._status = v;
   }
-  //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
   get currentState() {
     return this._status;
+  }
+  resetState() {
+  }
+  log(message, ...args) {
+    this.logger.info(this.logPrefix() + message, ...args);
+  }
+  error(message, ...args) {
+    this.logger.error(message, ...args);
+  }
+  warn(message, ...args) {
+    this.logger.warn(message, ...args);
+  }
+  info(message, ...args) {
+    this.logger.info(message, ...args);
+  }
+  progress(message, ...args) {
+    this.logger.progress(message, ...args);
+  }
+  debug(message, ...args) {
+    this.logger.debug(message, ...args);
+  }
+  trace(message, ...args) {
+    this.logger.trace(message, ...args);
   }
   elapsedTime() {
     const now = /* @__PURE__ */ new Date();
     return now.getTime() - this.startTime;
-  }
-  retryLater() {
-    const retryInterval = this.nextRetryInterval();
-    const { maxRetries } = this.settings;
-    //!!! todo: it only emits a warning if this.events.listeners indicates nobody is listening for the 'retrying' event.
-    this.events.emit(
-      "warning",
-      this.mkEvent({
-        message: `connection error; will retry in ${Math.floor(
-          retryInterval / 1e3
-        )} seconds`,
-        [devMessage]: "subscribe to 'retrying' to remove this warning.",
-        retryCount: this.attempts,
-        maxRetries
-      })
-    );
-    this.scheduledRetry = setTimeout(this.mkTransition("reconnect"), retryInterval);
-    this.events.emit(
-      "retrying",
-      this.mkEvent({
-        message: `connection error; will retry in ${Math.floor(
-          retryInterval / 1e3
-        )} seconds`,
-        [devMessage]: [
-          "This host connection got an error or timeout trying to connect, but it will retry on its own.",
-          "Each retry will be delayed a bit longer than the previous one. "
-        ],
-        retryCount: this.attempts,
-        maxRetries
-      })
-    );
-  }
-  eventWithMessage(m, e) {
-    return {
-      message: ``,
-      ...e
-    };
   }
   nextRetryInterval() {
     return Math.min(
@@ -1652,11 +2172,15 @@ const _HostConnection = class _HostConnection extends StateMachine.withDefinitio
   }
   disconnect(reason) {
     if (this._disconnecting) {
-      this.logger?.debug(`disconnect() called but already disconnecting for ${this.host?.serverId || "unknown"}`);
+      this.logger?.debug(
+        `disconnect() called but already disconnecting for ${this.host?.serverId || "unknown"}`
+      );
       return;
     }
     this._disconnecting = true;
-    this.logger?.debug(`disconnect() starting for ${this.host?.serverId || "unknown"}: ${reason}`);
+    this.logger?.debug(
+      `disconnect() starting for ${this.host?.serverId || "unknown"}: ${reason}`
+    );
     //!!! todo: cancel any pending stream with ReadableStream.cancel()
     if (this.abortController) this.abortController.abort(`disconnect(): ${reason}`);
     this.stopRetries();
@@ -1685,11 +2209,17 @@ const _HostConnection = class _HostConnection extends StateMachine.withDefinitio
       retryMaxIntervalMs: 3e4,
       maxRetries: Infinity,
       connectionWaitTimeMs: 7e3,
+      watchChannels: false,
       ...partialSettings
     };
   }
+  get initialState() {
+    return "default";
+  }
   async connect() {
-    if (this.connecting) return this.connecting;
+    if (this.connecting) {
+      return this.connecting;
+    }
     this.abortController = new AbortController();
     const { signal } = this.abortController;
     const abortHandler = () => {
@@ -1702,13 +2232,15 @@ const _HostConnection = class _HostConnection extends StateMachine.withDefinitio
         if (this._disconnecting || this._destroyed) {
           return;
         }
-        this.logger?.warn(`Unexpected abort transition error: ${error}`);
+        this.logger.warn(`Unexpected abort transition error: ${error}`);
       }
     };
+    const channelListeners = this.channelSubs;
     signal.addEventListener("abort", abortHandler);
     const myself = this.connecting = new Promise((res, rej) => {
       let aborted = false;
-      this.logger.info(`connecting to server ${this.host.serverId}`);
+      this.logger.debug(`connecting to server ${this.host.serverId}`);
+      this.logger.trace("channelListeners", channelListeners);
       this.fetch(`/channels/listen`, {
         body: JSON.stringify(this.channelSubs, null, 2),
         method: "POST",
@@ -1721,16 +2253,19 @@ const _HostConnection = class _HostConnection extends StateMachine.withDefinitio
         if (aborted) return false;
         if (this.abortController?.signal.aborted) return false;
         if (!response) return false;
+        this.logger.progress("connect: listening for %d channels", channelListeners.length);
+        this.logger.debug("channelListeners: ", channelListeners.map((x) => x.channel));
         //!!! todo: check to see if we should reject with an empty / non-existent response here
         res(true);
       }).catch((e) => {
-        debugger;
         if (this.isAbortError(e)) {
           aborted = true;
+        } else if ((e?.message || e?.toString())?.match(/connection manager disconnect/)) {
+          aborted = true;
         } else {
-          console.warn(`fetch error; see debugger - `, e);
-          this.events.emit("failed", this.connectionFailureEvent(e));
           debugger;
+          this.warn(`fetch error; see debugger: %s`, e.stack || e.message || e);
+          this.events.emit("failed", this.connectionFailureEvent(e));
         }
       });
     });
@@ -1804,8 +2339,12 @@ const _HostConnection = class _HostConnection extends StateMachine.withDefinitio
     const detectReadError = (e) => {
       if (this.isAbortError(e)) {
         connected = false;
+      } else if (typeof e === "string" && e.match(/connection manager disconnect/)) {
+        this.debug("disconnected on command from connection manager");
+        this.transition("disconnected");
       } else {
         console.warn(`fetch error during read; see debugger - `, e);
+        debugger;
         this.events.emit(
           "warning",
           this.mkEvent({
@@ -1821,7 +2360,6 @@ const _HostConnection = class _HostConnection extends StateMachine.withDefinitio
             reason: e
           })
         );
-        debugger;
       }
       return void 0;
     };
@@ -1848,14 +2386,18 @@ const _HostConnection = class _HostConnection extends StateMachine.withDefinitio
         continue;
       }
       if ("heartbeat-info" == value?.type) {
-        const { heartbeatInterval } = value;
-        this.heartbeatInterval = heartbeatInterval;
+        const { timerInterval } = value;
+        this.trace("heartbeat-info: expecting heartbeats every %d ms", timerInterval);
+        this.heartbeatInterval = timerInterval;
         continue;
       }
       if ("warning" == value?.type) {
         //!!! todo: consider how & whether integrate this so that the warning becomes actionable
-        console.log("warning from host", this.host.serverId, ":", value);
-        debugger;
+        if (process.env.NODE_ENV == "test") {
+          this.logger.debug("warning from host", this.host.serverId, ":", value);
+        } else {
+          this.logger.warn("warning from host", this.host.serverId, ":", value);
+        }
         continue;
       }
       const { mid, ocid, channel, nbh, type, msg, ...details } = value;
@@ -1947,10 +2489,7 @@ var __decorateClass$1 = (decorators, target, key, kind) => {
   return result;
 };
 var __publicField$5 = (obj, key, value) => __defNormalProp$5(obj, typeof key !== "symbol" ? key + "" : key, value);
-const {
-  cyan,
-  dim
-} = colors;
+const { cyan, dim } = colors;
 //!!! todo zw3w737: it has a way of posting the same unique message to multiple servers,
 const connectionManagerStates = {
   // logLevel: "info",
@@ -1978,39 +2517,51 @@ const connectionManagerStates = {
   },
   pendingSetup: {
     async onEntry() {
-      if (!this.channelSubs?.size) {
-        this.channelSubs = {
-          _chans: new ChannelSubscriptionListener({
-            neighborhood: this.discovery.nbh,
-            channel: "_chans",
-            listener: ({
-              channel,
-              mid,
-              ocid,
-              message,
-              details,
-              neighborhood,
-              connection
-            }) => {
-              this.logger.info("    \u{1F41E}  _chans: ", {
+      const chans = this.channelListeners ? expandChannelListeners(this.channelListeners) : [];
+      if (!chans.length && this.connectionSettings.watchChannels) {
+        this.channelListeners = {
+          type: "mapped",
+          subs: {
+            [nbhChannelListChannel]: new ChannelSubscriptionListener({
+              channel: nbhChannelListChannel,
+              logger: this.logger,
+              options: {
+                bookmark: "0"
+              },
+              listener: ({
                 channel,
                 mid,
                 ocid,
                 message,
                 details,
-                neighborhood
-                //connection,
-              });
-            }
-          })
+                neighborhood,
+                connection
+              }) => {
+                this.debug(" \u{1F41E} in _chans: ", {
+                  channel,
+                  mid,
+                  ocid,
+                  message,
+                  details,
+                  neighborhood
+                  //connection,
+                });
+              }
+            })
+          }
         };
       }
       const hosts = this.discovery.hosts;
       if (hosts?.length && !this.hosts) {
         this.hosts = hosts;
       }
-      if (this.hosts?.length) return this.transition("readyToConnect");
-      console.log("    \u{1F41E}  pendingSetup: waiting for host discovery");
+      if (chans.length && this.hosts?.length) return this.transition("readyToConnect");
+      if (!this.hosts?.length) {
+        this.progress("    \u{1F41E}  pendingSetup: waiting for host discovery");
+      }
+      if (!chans.length) {
+        this.progress("    \u{1F41E}  pendingSetup: waiting for subscriptions");
+      }
     },
     updatedHostList: { nextState: "pendingSetup", reEntry: true },
     hasSubscriptions: { nextState: "pendingSetup", reEntry: true },
@@ -2031,7 +2582,7 @@ const connectionManagerStates = {
     sufficient: "healthy"
   },
   connecting: {
-    onEntry() {
+    async onEntry() {
       this.events.emit("connecting", {
         message: "establishing connections to neighborhood hosts",
         [devMessage]: [
@@ -2045,6 +2596,7 @@ const connectionManagerStates = {
       nextState: "connecting",
       reEntry: true
     },
+    sufficient: "healthy",
     partial: "partiallyConnected",
     replaceSubs: "replacingSubs",
     disconnected: "disconnected"
@@ -2058,7 +2610,7 @@ const connectionManagerStates = {
     partial: "partiallyConnected"
   },
   healthy: {
-    onEntry() {
+    async onEntry() {
       if (this.previousState) throw new Error("hurray, we can change this next line");
       const previousState = this.currentState;
       //! it notifies interested clients when the connection count has become sufficient.
@@ -2091,11 +2643,12 @@ const connectionManagerStates = {
       nextState: "healthy",
       reEntry: false
     },
+    disconnected: "disconnected",
     partial: "degraded",
     updatedHostList: "connecting"
   },
   degraded: {
-    onEntry() {
+    async onEntry() {
       this.events.emit("connect:minimal", {
         message: "...trying to improve neighborhood connectivity",
         altMessageRealtime: "messages may be delayed",
@@ -2113,7 +2666,7 @@ const connectionManagerStates = {
     updatedHostList: "connecting"
   },
   disconnecting: {
-    onEntry() {
+    async onEntry() {
       this.events.emit("disconnecting", {
         message: "disconnecting from neighborhood hosts",
         [devMessage]: [`disconnecting on request (probably from client object)`]
@@ -2130,15 +2683,14 @@ const connectionManagerStates = {
         recommendation: "check your network connection and/or have patience",
         altMessageRealtime: "you may experience messaging delays",
         altMessageSecurity: "wait for resolution before continuing",
-        [devMessage]: [
-          "tbd"
-        ]
+        [devMessage]: ["tbd"]
       });
     },
-    reconnect: "connecting"
+    reconnect: "connecting",
+    sufficient: "disconnected"
   }
 };
-class ConnectionManager extends StateMachine.withDefinition(
+class ConnectionManager extends StateMachine$1.withDefinition(
   connectionManagerStates,
   "connMgr"
 ) {
@@ -2159,11 +2711,12 @@ class ConnectionManager extends StateMachine.withDefinition(
     __publicField$5(this, "events", new EventEmitter());
     __publicField$5(this, "waitFor");
     //! it keeps a current list of target event-subscriptions
-    __publicField$5(this, "channelSubs");
+    __publicField$5(this, "channelListeners");
     //! it remembers the last set of subscriptions, while the next set is being established.
     __publicField$5(this, "lastChannelSubs");
     //! it is initialized with connection settings used for tuning behavior of outgoing connections
     __publicField$5(this, "connectionSettings");
+    __publicField$5(this, "bookmarkStorage");
     //! it can map from the host object to a best-known Connection object for that host.
     __publicField$5(this, "hostToConn", /* @__PURE__ */ new Map());
     //! it keeps notes on the status of every connection it knows about, and can count the connections in each state
@@ -2184,6 +2737,7 @@ class ConnectionManager extends StateMachine.withDefinition(
     });
     this.connectionSettings = HostConnection.settingsWithDefaults(options.connectionSettings);
     this.discovery = options.discovery;
+    this.bookmarkStorage = options.bookmarkStorage;
     this.discovery.events.on("hosts:updated", this.setHostList);
     this.waitFor = options.waitFor;
     this.transition("default");
@@ -2199,6 +2753,24 @@ class ConnectionManager extends StateMachine.withDefinition(
   //@ts-expect-error -  base class has void as return type.  fix when state machine gets typescript love.
   get currentState() {
     return this._status || this.defaultState;
+  }
+  error(message, ...args) {
+    this.logger.error(message, ...args);
+  }
+  warn(message, ...args) {
+    this.logger.warn(message, ...args);
+  }
+  info(message, ...args) {
+    this.logger.info(message, ...args);
+  }
+  progress(message, ...args) {
+    this.logger.progress(message, ...args);
+  }
+  debug(message, ...args) {
+    this.logger.debug(message, ...args);
+  }
+  trace(message, ...args) {
+    this.logger.trace(message, ...args);
   }
   async setHostList({ hosts: newHosts }) {
     if (this.hosts) {
@@ -2267,31 +2839,37 @@ class ConnectionManager extends StateMachine.withDefinition(
     }
     this.transition("disconnected");
   }
-  async setSubscriptions(subs) {
-    if (this.channelSubs) return this.replaceSubscriptions(subs);
-    this.logger.info("setSubscriptions: setting first channel subscriptions", Object.keys(subs));
-    this.channelSubs = subs;
+  async setSubscriptions(listeners) {
+    const channels = expandChannelListeners(listeners);
+    this.debug(
+      `setSubscriptions (%s): %d channels ${this.channelListeners ? " (replace)" : ""}`,
+      listeners.type,
+      channels.length,
+      channels.length
+    );
+    this.trace("channels: %s", channels.join(", "));
+    if (this.channelListeners) return this.replaceSubscriptions(listeners);
+    this.channelListeners = listeners;
     if (!this.hosts) {
       if (this.discovery.hosts?.length) {
         this.hosts = this.discovery.hosts;
       } else {
-        this.logger.info("setSubscriptions: waiting for hosts:ready from discovery");
+        this.info("setSubscriptions: waiting for hosts:ready from discovery");
         await new Promise((resolve) => this.discovery.events.once("hosts:ready", resolve));
-        this.logger.info("setSubscriptions: discovery: hosts:ready - excellent!");
+        this.info("setSubscriptions: discovery: hosts:ready - excellent!");
       }
     }
     if (this.currentState == "pendingSetup") {
-      this.logger.debug("setSubscriptions: releasing pendingSetup state");
-      this.transition("readyToConnect");
+      this.debug("setSubscriptions: releasing pendingSetup state");
+      await this.transition("readyToConnect");
     }
-    return subs;
+    await this.once("connected");
+    return listeners;
   }
-  async replaceSubscriptions(subs) {
-    const chans = Object.keys(subs);
-    this.logger.debug("replaceSubscriptions: replacing host connections with %d new subscriptions", chans.length);
-    this.logger.trace("new subscriptions:", chans);
-    this.lastChannelSubs = this.channelSubs;
-    this.channelSubs = subs;
+  async replaceSubscriptions(listeners) {
+    expandChannelListeners(listeners);
+    this.lastChannelSubs = this.channelListeners;
+    this.channelListeners = listeners;
     const promises = [];
     for (const host of this.hostToConn.keys()) {
       promises.push(this.replaceHostConnection(host));
@@ -2300,9 +2878,15 @@ class ConnectionManager extends StateMachine.withDefinition(
       this.lastChannelSubs = void 0;
     });
     if (this.currentState == "pendingSetup") {
-      this.transition("readyToConnect");
+      await this.transition("readyToConnect");
     }
-    return subs;
+    this.debug(
+      "replaceSubscriptions: waiting for one of %d promises to resolve",
+      promises.length
+    );
+    await Promise.race(promises);
+    this.progress("replaceSubscriptions: got connected");
+    return listeners;
   }
   connectToHosts() {
     if (!this.hosts) {
@@ -2323,18 +2907,35 @@ class ConnectionManager extends StateMachine.withDefinition(
     }
   }
   connectTo(host) {
-    if (!this.channelSubs)
+    if (!this.channelListeners)
       throw new Error(
         // makes typescript happy
         `missing channelSubs; should already have a reasonable default value`
       );
-    //! it gathers a list of channels and subscription settings to use for this conection
+    debugger;
+    //! it gathers a list of channels and subscription settings to use for this connection
     const subscriptions = [];
-    for (const sub of Object.values(this.channelSubs)) {
-      subscriptions.push(sub.options);
+    for (const sub of Object.values(this.channelListeners.subs)) {
+      subscriptions.push(sub.config);
+    }
+    if (this.channelListeners.type == "mass") {
+      const { bookmarks: channelBookmarks } = this.channelListeners;
+      this.channelListeners.channels.forEach((x) => {
+        subscriptions.push({
+          channel: x,
+          options: {
+            bookmark: channelBookmarks[x]
+          }
+        });
+      });
     }
     if (!this.clientid) throw new Error("missing clientid");
-    const conn = new HostConnection(host, subscriptions, this.connectionSettings, this.clientid);
+    const conn = new HostConnection({
+      host,
+      settings: this.connectionSettings,
+      clientid: this.clientid,
+      subscriptions
+    });
     conn.events.once("connected", this.healthyConnection);
     conn.events.once("disconnected", this.cleanupConnection);
     conn.events.once("replacedBy", this.cleanupConnection);
@@ -2349,24 +2950,41 @@ class ConnectionManager extends StateMachine.withDefinition(
     const { connection, message: msg } = event;
     //! it records the active state of the connection
     this.moveConnTo(connection, "active");
-    this.logger.info({ summary: `connection to ${connection.host.address}` }, "healthy");
+    this.progress(`healthy: ${connection.host.address}`);
     //! it does NOT need to trigger event 'replacedBy', because replaceHostConnection() takes that responsibility
     this.checkConnectionState();
   }
   cleanupConnection(event) {
     const { connection, message } = event;
-    console.log("cleanup: ", connection.host.address, message);
+    this.debug("cleanup: ", connection.host.address, message);
     this.moveConnTo(connection, "disconnected");
     this.graveyard.add(connection);
   }
   notifySubscribers(event) {
     const { channel } = event;
-    if (!this.channelSubs) {
-      console.log("no listeners to hear about:", event);
+    const { channelListeners } = this;
+    if (!channelListeners) {
+      this.warn("no listeners to hear about:", event);
       return;
     }
-    const sub = this.channelSubs[channel];
-    sub?.notify(event);
+    let sub = channelListeners.subs[channel];
+    if (!sub && channelListeners.type === "mass") {
+      sub = channelListeners.massHandler;
+    }
+    if (!sub) {
+      debugger;
+      this.warn(`no subscription for channel ${channel}`, event);
+      return;
+    }
+    if (event.type == "channel:genesis") {
+      this.trace("suppressing notification of genesis event in channel %s", channel);
+      return;
+    }
+    try {
+      sub?.notify(event);
+    } catch (e) {
+      this.logger.error(`error in subscriber for channel ${channel}: %s`, e.stack || e.message || e);
+    }
   }
   async replaceHostConnection(host) {
     const replacingConn = this.hostToConn.get(host);
@@ -2375,6 +2993,7 @@ class ConnectionManager extends StateMachine.withDefinition(
     return new Promise((resolve, reject) => {
       let timeout;
       replacement.events.once("connected", ({ connection }) => {
+        this.debug("replaceHostConnection: connected to new host");
         const oldConnection = replacingConn;
         //! if it completes quickly, the original connection is seamlessly replaced in the active-connections list
         oldConnection?.replacedBy(replacement);
@@ -2385,16 +3004,21 @@ class ConnectionManager extends StateMachine.withDefinition(
         oldConnection && this.graveyard.add(oldConnection);
         if (!timeout) {
           timeout = false;
+          this.progress("replaceHostConnection: resolving new connection");
           resolve(replacement);
+        } else {
+          this.debug("replaceHostConnection: NOT resolving new connection after timeout");
         }
       });
       //! if the new connection doesn't connect promptly, it...
       asyncDelay(this.connectionSettings.connectionWaitTimeMs).then(() => {
         this.moveConnTo(replacement, "pending");
         const oldConnection = replacingConn;
+        this.debug("replaceHostConnection: moving old connection to obsolete");
         oldConnection && this.moveConnTo(oldConnection, "obsolete");
         if (timeout !== false) {
           timeout = true;
+          this.progress("replaceHostConnection: resolving new connection after timeout");
           resolve(replacement);
         }
       });
@@ -2624,6 +3248,13 @@ class ConnectionManager extends StateMachine.withDefinition(
   areSamePeer(p1, p2) {
     return p1.address == p2.address && p1.port == p2.port && p1.serverId == p2.serverId && p1.publicKey == p2.publicKey;
   }
+  async once(eventName) {
+    return new Promise((resolve) => {
+      this.events.once(eventName, (...args) => {
+        resolve(args);
+      });
+    });
+  }
 }
 __decorateClass$1([
   autobind
@@ -2651,17 +3282,16 @@ var __decorateClass = (decorators, target, key, kind) => {
 };
 var __publicField$4 = (obj, key, value) => __defNormalProp$4(obj, typeof key !== "symbol" ? key + "" : key, value);
 const { sign } = nacl;
-const nanoid$2 = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
 const {
+  yellowBright,
+  bgMagenta,
   magenta
 } = colors;
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
-const nbhChannelList = "_chans";
-const nbhAuthInfo = "_auth";
 parseInt(process.env.LOGGING || "");
 //! it runs onEntry() and predicate() hooks always in context
 const clientStates = {
-  logLevel: "warn",
+  // logLevel: "warn",
   default: {
     //! it automatically advances to next states, when it can make progress
     async onEntry() {
@@ -2714,10 +3344,14 @@ const clientStates = {
   }
 };
 let instanceCount = 1;
-class DredClient extends StateMachine.withDefinition(clientStates, "client") {
+class DredClient extends StateMachine$1.withDefinition(clientStates, "client") {
   constructor(args) {
-    let { name: clientName, neighborhood } = args;
-    const clientid = (clientName || `#${instanceCount}`) + `-${nanoid$2(5)}`;
+    let {
+      name: clientName,
+      neighborhood,
+      bookmarkStorage
+    } = args;
+    const clientid = (clientName || `#${instanceCount}`) + `-${nanoid$1(5)}`;
     super({
       contextLabel: clientName || "dred-client",
       currentState: "default",
@@ -2741,19 +3375,22 @@ class DredClient extends StateMachine.withDefinition(clientStates, "client") {
     __publicField$4(this, "pubKeyString");
     __publicField$4(this, "logger");
     __publicField$4(this, "insecure");
-    __publicField$4(this, "_subscriptions");
     __publicField$4(this, "subscribers", /* @__PURE__ */ new Map());
     __publicField$4(this, "channelSub");
     __publicField$4(this, "authSub");
-    __publicField$4(this, "messageHandler");
     __publicField$4(this, "instanceNumber", instanceCount++);
     __publicField$4(this, "clientid");
+    __publicField$4(this, "bookmarkStorage");
+    __publicField$4(this, "_messageHandler");
+    __publicField$4(this, "_subscriptions");
     __publicField$4(this, "_status");
+    __publicField$4(this, "subscriptionCache", {});
     if (!neighborhood) throw new Error("neighborhood is required");
     this.neighborhood = neighborhood;
     this.args = { ...args };
     this.events = this.ensureEmitterExists();
     this.clientid = clientid;
+    this.bookmarkStorage = args.bookmarkStorage;
     this.logger = zonedLogger(`dred-client`, {
       color: magenta.start,
       loggerId: clientid
@@ -2765,23 +3402,36 @@ class DredClient extends StateMachine.withDefinition(clientStates, "client") {
     this._status = this._status || "default";
     const discovery = this.constructor.resolveDiscovery(args);
     this.discovery = discovery;
-    this.connManager = new ConnectionManager({
-      discovery,
-      waitFor: this.args.waitFor,
-      connectionSettings: this.args.connectionSettings || {},
-      clientid
-    });
+    this.connManager = this.mkConnectionManager();
     this.transition("default");
     //!!! make this test-only
+  }
+  mkConnectionManager() {
+    return new ConnectionManager({
+      discovery: this.discovery,
+      waitFor: this.args.waitFor,
+      connectionSettings: this.args.connectionSettings || {},
+      clientid: this.clientid,
+      bookmarkStorage: this.bookmarkStorage
+    });
   }
   ensureEmitterExists() {
     return this.events = this.events || new EventEmitter();
   }
-  log(a1, ...args) {
+  info(a1, ...args) {
     this.logger.info(a1, ...args);
   }
   warn(a1, ...args) {
     this.logger.warn(a1, ...args);
+  }
+  progress(a1, ...args) {
+    this.logger.progress(a1, ...args);
+  }
+  debug(a1, ...args) {
+    this.logger.debug(a1, ...args);
+  }
+  trace(a1, ...args) {
+    this.logger.trace(a1, ...args);
   }
   logInfo() {
     const neighborhood = this.neighborhood;
@@ -2808,29 +3458,15 @@ class DredClient extends StateMachine.withDefinition(clientStates, "client") {
     this.neighborhood = n;
     asyncDelay$1(1).then(this.mkTransition("nbhSelected"));
   }
-  async subscribeToChannels(arg) {
-    let smap;
-    if (Array.isArray(arg)) {
-      if (!this.messageHandler) {
-        throw new Error(
-          `to use subscribeToChannels with an implicit subscriber, set client's messageHandler first`
-        );
-      }
-      smap = {};
-      for (const channel of arg) {
-        smap[channel] = this.messageHandler;
-      }
-    } else if ("string" === typeof arg) {
-      if (!this.messageHandler) {
-        throw new Error(
-          `to use subscribeToChannels with an implicit subscriber, set client's messageHandler first`
-        );
-      }
-      smap = { [arg]: this.messageHandler };
-    } else {
-      smap = arg;
-    }
-    this.subscriptions = await this.connManager.setSubscriptions(this.mkChannelSubs(smap));
+  /**
+   * modifies the client's list of channel subscriptions
+   * @remarks
+   */
+  async subscribeToChannels(listeners) {
+    this.subscriptions = await this.connManager.setSubscriptions(
+      // arg
+      await this.mkChannelsListeners(listeners)
+    );
   }
   onTransition() {
     //! tbd if we need to use this hook, perhaps for persisting the bookmark state of channels
@@ -2876,28 +3512,70 @@ class DredClient extends StateMachine.withDefinition(clientStates, "client") {
   }
   //! it creates a new subscriptions object
   //! it recycles existing subscriptions
-  mkChannelSubs(smap) {
+  async mkChannelsListeners(listeners) {
+    const namedListeners = listeners.type == "mapped" ? { ...listeners.subs } : listeners.type == "mass" ? {} : listeners;
     const subs = {};
-    subs[nbhChannelList] = this.channelSub = this.getChannelSub(
-      nbhChannelList,
-      this.processChannelsMsg
-      //! it watches for events relating to channel lifecycle
+    //! it watches for events relating to channel lifecycle
+    subs[nbhChannelListChannel] = this.channelSub = await this.getChannelSub(
+      nbhChannelListChannel,
+      {
+        listener: this.processChannelsMsg,
+        //! it watches for events relating to channel lifecycle
+        options: { bookmark: "0" }
+      }
     );
-    subs[nbhAuthInfo] = this.authSub = this.getChannelSub(
-      nbhAuthInfo,
-      this.processAuthMsg
-      //! it watches for events relating to authentication lifecycle
+    //! it watches for events relating to authentication lifecycle
+    subs[nbhAuthInfoChannel] = this.authSub = await this.getChannelSub(
+      nbhAuthInfoChannel,
+      {
+        listener: this.processAuthMsg,
+        //! it watches for events relating to authentication lifecycle
+        options: { bookmark: "0" }
+      }
     );
-    for (const [chan, listener] of Object.entries(smap)) {
-      subs[chan] = this.getChannelSub(chan, listener);
+    if (listeners.type === "mass") {
+      let listener = listeners.massHandler;
+      if (listener.listener) {
+        listener = listener.listener;
+      }
+      const massListener = {
+        type: "mass",
+        channels: listeners.channels,
+        bookmarks: Object.fromEntries(await Promise.all(
+          listeners.channels.map(async (c) => [
+            c,
+            await this.bookmarkStorage.getBookmark(c)
+          ])
+        )),
+        massHandler: await this.getChannelSub("*", {
+          listener,
+          options: { bookmark: "unused" }
+        }),
+        subs
+      };
+      return massListener;
     }
-    return subs;
+    let seq = Promise.resolve();
+    Object.entries(namedListeners).forEach(([k, v]) => {
+      seq = seq.then(async () => {
+        this.logger.debug(`subscribing to channel ${k}`);
+        subs[k] = await this.getChannelSub(k, v);
+      });
+    });
+    await seq;
+    const result = {
+      type: "mapped",
+      subs
+    };
+    return result;
   }
   processChannelsMsg(m) {
+    this.bookmarkStorage.setBookmark(nbhChannelListChannel, m.mid);
     //!!! todo: it notifies client listeners about created or removed channels
     //!!! todo: it emits the generic state-updated event with updated channel list
   }
   processAuthMsg(m) {
+    this.bookmarkStorage.setBookmark(nbhAuthInfoChannel, m.mid);
     //!!! todo: ??? it notifies listeners when authentication is required by one or more neighborhood hosts
     //!!! todo: it notifies listeners when a requested channel requires authentication not yet established
     //!!! todo: notifies listening application of new identities joining the neighborhood {type: "newId", pubKey, handle, certificates}
@@ -2906,28 +3584,44 @@ class DredClient extends StateMachine.withDefinition(clientStates, "client") {
   }
   //! it unlistens from subscriptions no longer being used
   set subscriptions(replacement) {
-    for (const [chan, sub] of Object.entries(this._subscriptions || {})) {
-      //!!! todo: match subscription filter settings
-    }
     this._subscriptions = replacement;
   }
   // TODO: replace this with a direct `subscriptions` property
   get subscriptions() {
-    if (!this._subscriptions) return {};
+    //! it creates an empty subscriptions object if not already set
+    if (!this._subscriptions)
+      return {
+        type: "mapped",
+        subs: {}
+      };
     return this._subscriptions;
   }
-  getChannelSub(channel, listener) {
-    const found = this.subscriptions[channel];
-    if (found) return found;
-    return this.mkChannelSub(channel, listener);
+  async getChannelSub(channel, listener) {
+    const found = this.subscriptionCache[channel];
+    if (found?.listener === listener) return found;
+    if (found) {
+      this.logger.debug(`cached listener mismatch '${channel}'; replacing`);
+    }
+    const newSub = await this.mkChannelSub(channel, listener);
+    this.subscriptionCache[channel] = newSub;
+    return newSub;
   }
   //! it creates new subscriptions and wires them up for notification to client application
   //! it doesn't require client applications to guard for memory / event-listener leakage
-  mkChannelSub(channel, listener) {
+  async mkChannelSub(channel, sListener) {
+    const logger = zonedLogger(`listener:${channel}`, {
+      color: `${bgMagenta.start}${yellowBright.start}`
+    });
+    const { options = {} } = sListener;
+    let listener = sListener.listener ?? sListener;
+    let bookmark = options.bookmark || await this.bookmarkStorage?.getBookmark(channel);
     const sub = new ChannelSubscriptionListener({
-      neighborhood: this.neighborhood,
       channel,
-      listener
+      listener,
+      options: {
+        bookmark
+      },
+      logger
     });
     return sub;
   }
@@ -2942,7 +3636,7 @@ class DredClient extends StateMachine.withDefinition(clientStates, "client") {
     //!! todo: it logs the pending request to an observable queue of
     //!! todo: it exposes the progress info in a way that is easily consumed
     if (path[0] !== "/") path = `/${path}`;
-    let host = (await this.discovery.getHostList())[0];
+    let host = this.discovery.hosts?.[0] || (await this.discovery.getHostList())[0];
     const proto = host.insecure ? "http" : "https";
     const shortServer = `${host.address}:${host.port}`;
     const url = `${proto}://${shortServer}${path}`;
@@ -3112,25 +3806,46 @@ class DredClient extends StateMachine.withDefinition(clientStates, "client") {
   //     see also todo zw3w737
   //!!! todo zfnsmq8: it refuses to post plain-text messages into encrypted channels
   //     see also todo y0w9cvr
+  findSubscription(channelName, required = true) {
+    const { subscriptions } = this;
+    const { subs } = subscriptions;
+    if (!subs) {
+      throw new Error(`no subscriptions found`);
+    }
+    let sub = subs[channelName];
+    if (subscriptions.type === "mass") {
+      if (!sub) {
+        this.debug(`using massHandler for channel ${channelName}`);
+        sub = subscriptions.massHandler;
+      } else {
+        this.debug(`using special admin handler for channel ${channelName}`);
+      }
+    } else if (sub) {
+      this.debug(`using regular mapped handler for channel ${channelName}`);
+    } else if (!required) {
+      return void 0;
+    } else {
+      throw new Error(`no subscription found for channel ${channelName}`);
+    }
+    return sub;
+  }
   async postMessage(channelName, oMsg) {
-    const sub = this.subscriptions[channelName];
+    const sub = this.findSubscription(channelName, false);
     const message = { ...oMsg };
     this.logger.info("posting message ", message);
     let { type, ocid, msg } = message;
+    if (!(type && msg)) {
+      throw new Error(`missing required 'type' and/or 'message'`);
+    }
     if ("string" !== typeof msg) {
       throw new Error(`message 'msg' attr must be a string, not a JSON object`);
     }
     if (!message.ocid) {
-      const _ocid = nanoid$2();
+      const _ocid = nanoid$1();
       ocid = message.ocid = _ocid;
     }
     if (sub) {
       sub.recentMsgs.add(ocid);
-    }
-    //! it guards usage for non-typescript users
-    if (!(type && msg)) {
-      debugger;
-      throw new Error(`missing required 'type' and/or 'message'`);
     }
     const result = await this.fetch(`/channel/${channelName}/message`, {
       method: "POST",
@@ -3171,24 +3886,37 @@ class RedisSet {
     __publicField$3(this, "redis");
     __publicField$3(this, "key");
     __publicField$3(this, "abstract");
-    this.redis = redis;
+    __publicField$3(this, "disconnected", false);
+    this.redis = redis.duplicate();
     this.key = key;
     this.abstract = !!(key === "_abstract");
   }
   async has(key, setName) {
-    if (this.abstract && !setName)
-      throw new Error(`abstract RedisSet requires setName in arg2`);
+    this.assertOk(setName);
     return this.redis.call("SISMEMBER", setName || this.key, key);
   }
   async add(key, setName) {
+    this.assertOk(setName);
     if (this.abstract && !setName)
       throw new Error(`abstract RedisSet requires setName in arg2`);
     return this.redis.call("SADD", setName || this.key, key);
   }
   async delete(key, setName) {
+    this.assertOk(setName);
     if (this.abstract && !setName)
       throw new Error(`abstract RedisSet requires setName in arg2`);
     return this.redis.call("SREM", setName || this.key, key);
+  }
+  assertOk(setName) {
+    if (this.disconnected)
+      throw new Error(`RedisSet ${this.key} is disconnected`);
+    if (this.abstract && !this.key && !setName)
+      throw new Error(`abstract RedisSet requires key in last arg`);
+  }
+  async cleanup() {
+    this.disconnected = true;
+    this.redis.removeAllListeners();
+    return this.redis.disconnect();
   }
 }
 
@@ -3217,14 +3945,14 @@ class RedisHash {
     __publicField$2(this, "hashName");
     __publicField$2(this, "abstract");
     __publicField$2(this, "adapter");
-    this.redis = redis;
+    __publicField$2(this, "disconnected", false);
+    this.redis = redis.duplicate();
     this.hashName = hashName;
     this.adapter = adapter;
     this.abstract = !!(hashName === "_abstract");
   }
   async get(key, hashName) {
-    if (this.abstract && !hashName)
-      throw new Error(`abstract RedisHash requires hashName in arg2`);
+    this.assertOk();
     const hName = hashName || this.hashName;
     const str = await this.redis.call(
       "HGET",
@@ -3235,34 +3963,44 @@ class RedisHash {
     return parsed;
   }
   async has(key, hashName) {
+    this.assertOk();
     const hName = hashName || this.hashName;
-    const v = await this.get(key, hName);
+    const v = await this.redis.hexists(hName, key.toString());
     return !!v;
   }
   async keys(hashName) {
-    if (this.abstract && !hashName)
-      throw new Error(`abstract RedisHash requires hashName in arg1`);
+    this.assertOk(hashName);
     const hName = hashName || this.hashName;
     return this.redis.call("HKEYS", hName);
   }
   async size(hashName) {
-    if (this.abstract && !hashName)
-      throw new Error(`abstract RedisHash requires hashName in arg1`);
+    this.assertOk(hashName);
     const hName = hashName || this.hashName;
     return this.redis.hlen(hName);
   }
   async set(key, value, hashName) {
-    if (this.abstract && !hashName)
-      throw new Error(`abstract RedisHash requires hashName in arg3`);
+    this.assertOk(hashName);
     const hName = hashName || this.hashName;
     const v = this.adapter.toRedis(value);
     return this.redis.call("HSET", hName, key.toString(), v);
   }
   async delete(key, hashName) {
-    if (this.abstract && !hashName)
-      throw new Error(`abstract RedisHash requires hashName in arg2`);
+    this.assertOk(hashName);
     const hName = hashName || this.hashName;
     return this.redis.call("HDEL", hName, key.toString());
+  }
+  assertOk(hashName) {
+    if (this.disconnected) {
+      debugger;
+      throw new Error(`RedisHash ${this.hashName} is disconnected`);
+    }
+    if (this.abstract && !this.hashName && !hashName)
+      throw new Error(`abstract RedisHash requires hashName in last arg`);
+  }
+  async cleanup() {
+    this.disconnected = true;
+    this.redis.removeAllListeners();
+    return this.redis.disconnect();
   }
 }
 
@@ -3272,7 +4010,7 @@ var __publicField$1 = (obj, key, value) => __defNormalProp$1(obj, typeof key !==
 const {
   blue,
   yellow} = colors;
-const nanoid$1 = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
+const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
 class DredReplicator {
   constructor(homeServer, discovery) {
     __publicField$1(this, "logger");
@@ -3282,7 +4020,7 @@ class DredReplicator {
     __publicField$1(this, "initialized", false);
     const serverDb = homeServer.redisDb;
     const dbInfo = serverDb ? `[${serverDb}]-` : "";
-    const name = `${nanoid$1(3)}${dbInfo}`;
+    const name = `${nanoid(3)}${dbInfo}`;
     this.logger = zonedLogger("replicator", {
       color: yellow.start,
       //  levels: {default: "info"},
@@ -3378,7 +4116,7 @@ class Replicant {
     this.homeServer = homeServer;
     this.targetHost = targetHost;
     const serverDb = homeServer.redisDb;
-    const dbInfo = serverDb ? `${nanoid$1(2)}[${serverDb}]-` : "";
+    const dbInfo = serverDb ? `${nanoid(2)}[${serverDb}]-` : "";
     const target = targetHost.serverId.replace(/^dredNode-/, "") || targetHost.address;
     this.name = `${dbInfo}from-${target}`;
     this.logger = zonedLogger("replicant", {
@@ -3748,12 +4486,9 @@ __publicField$1(Replicant, "_logHeader", "[REPLicant]");
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
 const {
   bgBlack,
-  bgBlueBright,
   bgGreenBright,
-  bold,
   black,
   white} = colors;
 parseInt(process.env.LOGGING || "0");
@@ -3790,13 +4525,13 @@ class DredServer {
     __publicField(this, "serverId");
     __publicField(this, "myServerInfo");
     __publicField(this, "logger");
-    // replicationClient?: ReplicationClient;
     // Optional replicator, to be initialized only when replication is enabled
     __publicField(this, "replicator");
     // Periodic status logging
     __publicField(this, "statusLoggingTimer");
     __publicField(this, "resetting", false);
     __publicField(this, "setupPending");
+    __publicField(this, "didMakeDefaultChannels", false);
     __publicField(this, "_knownMessages");
     __publicField(this, "resultLogger", (req, res, next) => {
       const now = (/* @__PURE__ */ new Date()).getTime();
@@ -3809,6 +4544,7 @@ class DredServer {
       const found = await this.channelList.keys();
       const channels = found.filter((x) => x[0] !== "_");
       res.status(200).json({ channels });
+      next();
     });
     __publicField(this, "createChannel", async (req, res, next) => {
       const { channelId } = req.params;
@@ -3906,9 +4642,9 @@ class DredServer {
       const opts = await this.getChanOptions(channelId);
       //! trying to join an expired channel produces an error
       if (opts.expiresAt && now > opts.expiresAt) {
-        this.warn(`Join failed: Channel ${channelId} is expired`);
-        this.log(
-          `expiration '${opts.expiresAt.getTime() % 1e5}, now '${now.getTime() % 1e5}`
+        this.warn(
+          `Join failed: Channel ${channelId} is expired
+expiration '${opts.expiresAt.getTime() % 1e5}, now '${now.getTime() % 1e5}`
         );
         res.status(422).json({
           error: "this channel's expiresAt is already past"
@@ -3937,10 +4673,10 @@ class DredServer {
         //! the owner can join someone by pubKey, even if the memberLimit is reached
         overMemberLimit = false;
         approvedVerifier = myId;
-        this.log("owner-approved join");
+        this.info("owner-approved join");
       } else if ("member" == opts.approveJoins && (opts.members || []).includes(myId)) {
         //! a member can join someone by pubKey if approveJoins: member
-        this.log("member-approved join");
+        this.info("member-approved join");
         approvedVerifier = myId;
       } else if (opts.allowJoining) {
         //! a non-member can join themself if allowJoining is true and approveJoins is "open"
@@ -3958,7 +4694,7 @@ class DredServer {
           //!!! todo: join requests, when not open, are simple messages in the channel,
           //!    which clients can read, prompting members or owner to issue an approval.
         } else {
-          this.log("self-join");
+          this.info("self-join");
           approvedVerifier = myId;
         }
       }
@@ -4005,7 +4741,6 @@ class DredServer {
     });
     __publicField(this, "postMessageInChannel", async (req, res, next) => {
       const { channelId } = req.params;
-      this.log("postMessageInChannel", channelId);
       const found = await this.channelList.has(channelId);
       if (!found) {
         res.status(404).json({
@@ -4014,11 +4749,17 @@ class DredServer {
         return next();
       }
       const message = req.body;
-      //!!! todo y0w9cvr: it refuses to post plain-text messages into encrypted channels
-      this.log("server: postMessage", message);
-      await this.mkChannelProducer(channelId);
-      const { msg, _type, _data, ...moreDetails } = message;
       //! it extracts and SILENTLY ignores reserved keys _type, _data in client-provided event details.
+      const { msg, _type, _data, ...moreDetails } = message;
+      let ocid = moreDetails.ocid;
+      if (!ocid) {
+        ocid = nanoid$1(6);
+        this.trace("generated missing ocid %s for message %o", ocid, message);
+        moreDetails.ocid = ocid;
+      }
+      this.debug("postMessageInChannel", channelId, ocid);
+      this.trace("msg %s: %o", ocid, message);
+      //!!! todo y0w9cvr: it refuses to post plain-text messages into encrypted channels
       if ("string" !== typeof msg) {
         res.status(422).json({
           error: "message must be a string, not a JSON object"
@@ -4038,7 +4779,12 @@ class DredServer {
           error: "missing required 'type' attribute for posting message in channel"
         });
       } else {
-        const id = await this.ensureMessageProcessedOnce(channelId, moreDetails.ocid, msg, moreDetails);
+        const id = await this.ensureMessageProcessedOnce(
+          channelId,
+          moreDetails.ocid,
+          msg,
+          moreDetails
+        );
         if (id) {
           res.json({ id, status: "created", ocid: moreDetails.ocid });
         } else {
@@ -4052,29 +4798,37 @@ class DredServer {
       const subscriptions = req.body;
       res.contentType("application/ndjson");
       res.useChunkedEncodingByDefault = false;
-      this.log("listening for", subscriptions);
+      const reqLogger = this.reqLogger(res);
+      reqLogger.progress("listening: %d channels: %s", subscriptions.length, subscriptions.map((s) => `${s.channel}^${s.options.bookmark}`).join(", "));
       //!!! todo: it validates authorization as appropriate for each requested channel
-      const sendUpdate = (...messages) => {
+      let pendingFlush;
+      const sendUpdate = (maxLatency, ...messages) => {
         for (const json of messages) {
           const update = JSON.stringify(json);
           res.write(update + "\n");
+          reqLogger.trace("    <- ", update);
         }
-        res.flush();
-        //! flushes writes through compression middleware
+        if (!maxLatency) {
+          res.flush();
+        } else if (maxLatency > 0 && !pendingFlush) {
+          pendingFlush = setTimeout(() => {
+            res.flush();
+            pendingFlush = void 0;
+          }, maxLatency);
+        }
       };
       const myStreamListeners = [];
       const timerInterval = 7e3;
       //! it sends heartbeat signals every so often to clients
       //!!! todo: heartbeat interval can be configured
       const timer = setInterval(() => {
-        this.log("server: client <- heartbeat");
-        sendUpdate({ type: "heartbeat" });
+        reqLogger.trace("   <- heartbeat");
+        sendUpdate(0, { type: "heartbeat" });
       }, timerInterval);
       timer.unref();
       //! the heartbeat-timer never blocks the process from exiting when it's otherwise done
-      //! it tells clients how frequently they should expect a heartbeat
-      sendUpdate({ type: "heartbeat-info", timerInterval });
       const cleanup = () => {
+        reqLogger.debug("cleanup");
         //! it cleans up all the internal subscriptions
         for (const mySub of myStreamListeners) {
           const { channel, stream } = mySub;
@@ -4091,7 +4845,7 @@ class DredServer {
       };
       const notifyConsumeError = (res2, channel, consumeError) => {
         if (!cancelled) {
-          sendUpdate({
+          sendUpdate(0, {
             channel,
             type: "error",
             message: "internal stream consumer failed",
@@ -4108,7 +4862,11 @@ class DredServer {
       let anySuccesses = 0;
       let warnings = [];
       for (const sub of subscriptions) {
-        const { channel } = sub;
+        const { channel, options: {
+          maxLatency = defaultMaxDelayMs,
+          bookmark,
+          filter
+        } } = sub;
         const found = await this.channelList.has(channel);
         if (!found) {
           //! sends a warning note but does not fail unless there are no valid subscriptions
@@ -4119,11 +4877,11 @@ class DredServer {
             message: "invalid or expired channel"
           });
         }
-        this.logger.debug("  -- listening one: ", sub.channel);
+        this.trace("  -- listening one: ", sub.channel);
         const subscriber = await this.listenOneChannel(
           res,
           sub,
-          sendUpdate,
+          sendUpdate.bind(this, maxLatency),
           notifyConsumeError
         );
         myStreamListeners.push({ channel, stream: subscriber });
@@ -4133,38 +4891,12 @@ class DredServer {
         res.status(404).json({ error: "no valid subscriptions in request" });
         return cancel();
       } else if (warnings.length) {
-        sendUpdate.apply(this, warnings);
+        sendUpdate(0, ...warnings);
       }
-    });
-    // Admin endpoints for replication management
-    __publicField(this, "adminStartReplication", async (req, res, next) => {
-      try {
-        if (this.replicator) {
-          this.warn("Replication already running");
-          res.json({
-            status: "already_running",
-            message: "Replication is already active",
-            replicatorExists: true
-          });
-          return next();
-        }
-        this.log("Starting replication via admin endpoint...");
-        await this.setupReplication();
-        this.log("Replication started successfully via admin endpoint");
-        res.json({
-          status: "started",
-          message: "Replication started successfully",
-          replicatorExists: !!this.replicator
-        });
-      } catch (error) {
-        this.warn("Failed to start replication via admin endpoint:", error.message);
-        res.status(500).json({
-          status: "error",
-          message: "Failed to start replication",
-          error: error.message
-        });
-      }
-      next();
+      reqLogger.debug("  \u{1F477}listening in %d channels", subscriptions.length);
+      reqLogger.trace(`  \u{1F477}channels: ${subscriptions.map((s) => s.channel).join(", ")}`);
+      //! it tells clients how frequently they should expect a heartbeat
+      sendUpdate(0, { type: "heartbeat-info", timerInterval });
     });
     __publicField(this, "adminReplicationStatus", async (req, res, next) => {
       try {
@@ -4198,7 +4930,8 @@ class DredServer {
       }
       next();
     });
-    this.args = args;
+    const { replicate = true } = args;
+    this.args = { ...args, replicate };
     const loggerName = `dred`;
     this.logger = zonedLogger(loggerName, {
       loggerId: serverId
@@ -4209,11 +4942,10 @@ class DredServer {
     });
     this.serverId = serverId;
     this.discovery = DredClient.resolveDiscovery(args);
-    this.log(`+server '${serverId}' with discovery type: ${this.discovery.constructor.name}`);
     this.api = this.createExpressServer();
     const redisUrl = this.redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
     this.listener = null;
-    this.verifier = new StringNacl(void 0, this);
+    this.verifier = new StringNacl(void 0, this.logger);
     this.producers = /* @__PURE__ */ new Map();
     this.subscribers = /* @__PURE__ */ new Map();
     this.redisDb = redisDb || 0;
@@ -4225,13 +4957,17 @@ class DredServer {
     return this.args.neighborhood;
   }
   setupExpressHandlers() {
-    this.api.use(compression());
+    //! allows clients to avoid compression when the content is known to not benefit from it
+    this.api.use(compression({ filter(req, res) {
+      if (req.headers["x-no-compression"] == "true") return false;
+      return compression.filter(req, res);
+    } }));
     this.api.use((req, res, next) => {
       if (res.locals?.id) throw new Error("duplicate req processing detected");
       const { clientid = `\u2039gen\u203A` } = req.headers;
-      res.locals.clientid = `${clientid}-${nanoid(4)}`;
+      res.locals.clientid = `${clientid}-${nanoid$1(4)}`;
       res.locals.startTime = (/* @__PURE__ */ new Date()).getTime();
-      res.locals.id = nanoid(4);
+      res.locals.id = nanoid$1(4);
       this.reqLogger(res).info(`-> ${req.method} ${req.originalUrl} `);
       next();
     });
@@ -4268,7 +5004,7 @@ class DredServer {
   }
   setupRedis(url) {
     if (this.redis) throw new Error(`redis connection is already set up`);
-    this.log(`Setting up Redis connection: ${url || "default"}, db: ${this.redisDb}`);
+    this.progress(`Setting up Redis connection: ${url || "default"}, db: ${this.redisDb}`);
     const options = {
       db: this.redisDb
       // keyPrefix: `${this.nbh}::`  //!!! todo vet this technique.
@@ -4284,7 +5020,7 @@ class DredServer {
       StringValueAdapter
     );
     this.channelOptions = new RedisHash(this.redis, "channelOptions", optionsSerializer);
-    zonedLogger("dred-stream", {
+    const log = zonedLogger("dred-stream", {
       loggerId: this.serverId,
       color: bgBlack.start + white.start
     });
@@ -4294,8 +5030,9 @@ class DredServer {
         url,
         db: this.redisDb
       },
-      channels: { log: this.logger }
+      channels: { log }
     });
+    this.progress("connected to redis");
     this.ensureDefaultChannels();
   }
   //! it has a mockable function for starting the express server
@@ -4306,15 +5043,20 @@ class DredServer {
     await this.ensureDefaultChannels();
     return this.setupPending;
   }
-  //!!! todo: once for each nbh
   ensureDefaultChannels() {
     if (this.setupPending) return this.setupPending;
+    if (this.didMakeDefaultChannels) {
+      throw new Error("default channels already made");
+    }
+    this.logger.debug("setting up default channels");
     return this.setupPending = new Promise(async (res) => {
       await this.doChannelSetup("_chans");
       await this.doChannelSetup("_auth");
       await this.doChannelSetup("news");
       await this.doChannelSetup("discussion");
+      this.didMakeDefaultChannels = true;
       this.setupPending = void 0;
+      this.logger.progress("created default channels");
       res(true);
     });
   }
@@ -4326,7 +5068,7 @@ class DredServer {
     const streams = this.channelConn;
     if (!streams) {
       if (this.resetting) {
-        this.logger.warn(
+        this.warn(
           "ignoring continuing channel setup for %s while racing with a subsequent reset!"
         );
         return;
@@ -4354,30 +5096,35 @@ class DredServer {
     if (!myInfo) throw new Error(`can't identify my own info`);
     const { port, address } = myInfo;
     this.listener = this.api.listen(Number(port), address);
-    this.log(`server '${this.serverId}' listening at ${address}:${port}`);
-    if (!this.isReplicationDisabled()) {
+    this.info(`listening at ${address}:${port}`);
+    if (this.args.replicate) {
       this.startReplicating();
+    } else if (process.env.NODE_ENV == "test") {
+      this.debug(`\u26A0\uFE0F replication disabled (via REPLICATION=false)`);
     } else {
-      this.warn(`\u26A0\uFE0F replication not starting: REPLICATION=false)`);
+      this.warn(`\u26A0\uFE0F replication disabled (via REPLICATION=false)`);
     }
     this.startPeriodicStatusLogging();
     return this.listener;
   }
   /**
-   * Known message set. Lazily initialized to avoid undefined errors.
-  */
+   * Known message set.
+   */
   get knownMessages() {
     if (!this._knownMessages) {
-      this._knownMessages = new RedisSet(this.redis.duplicate(), `${this.nbh}::knownMessages`);
+      this._knownMessages = new RedisSet(
+        this.redis,
+        `${this.nbh}::knownMessages`
+      );
     }
     return this._knownMessages;
   }
   /**
    * Ensure a message is processed only once. Use it to avoid duplicate messages.
-   * 
-   * Always await this method to prevent race conditions and blockings. 
-   * 
-   * 
+   *
+   * Always await this method to prevent race conditions and blockings.
+   *
+   *
    * @param channel channel name
    * @param msgId ocid
    * @param msg message content
@@ -4386,35 +5133,47 @@ class DredServer {
    */
   async ensureMessageProcessedOnce(channel, msgId, msg, messageDetails) {
     try {
-      const deduplicationKey = `${channel}:::${msgId}`;
-      this.warn(`\u{1F50D} DEDUP CHECK [${this.serverId}] checking: ${deduplicationKey}`);
+      const deduplicationKey = this.messageKey(channel, msgId);
       const alreadyProcessed = await this.knownMessages.has(deduplicationKey);
-      this.warn(`\u{1F50D} DEDUP RESULT [${this.serverId}] ${deduplicationKey} -> already processed: ${alreadyProcessed}`);
       if (alreadyProcessed) {
-        this.warn(`\u274C DEDUP SKIP [${this.serverId}] Duplicate message detected, skipping: ${deduplicationKey}`);
+        this.trace(
+          `skipping duplicate message: ${deduplicationKey}`
+        );
         return void 0;
       }
       await this.knownMessages.add(deduplicationKey);
-      this.warn(`\u2705 DEDUP ADD [${this.serverId}] Added to known messages: ${deduplicationKey}`);
-      const publishedMessageId = await this.publishMessageToChannel(channel, msg, messageDetails);
-      this.warn(`\u2705 DEDUP PUBLISH [${this.serverId}] Message successfully deduplicated and posted: ${deduplicationKey} -> ${publishedMessageId}`);
+      this.trace(
+        `+known messages: ${deduplicationKey}`
+      );
+      const publishedMessageId = await this.publishMessageToChannel(
+        channel,
+        msg,
+        messageDetails
+      );
       return publishedMessageId;
     } catch (error) {
-      this.warn(`Error in message deduplication for ${channel}:::${msgId}:`, error);
+      this.warn(`Error in message deduplication for ${channel}:::${msgId}:`, error.stack);
       throw error;
     }
   }
+  messageKey(channel, msgId) {
+    return `${channel}/${msgId}`;
+  }
   /**
-   * Publish a message directly without dedup. 
+   * Publish a message directly without dedup.
    * Always await this method to prevent blocking caller and ensure message is published.
-   * 
+   *
    * @returns id of the published message
    */
   async publishMessageToChannel(channelId, msg, messageDetails = {}) {
     try {
       const producer = await this.mkChannelProducer(channelId);
-      const publishedMessageId = await this.channelConn.produce(producer, msg, messageDetails);
-      this.log(`Message published to channel ${channelId}: ${publishedMessageId}`);
+      const publishedMessageId = await this.channelConn.produce(
+        producer,
+        msg,
+        messageDetails
+      );
+      this.trace(`Message published to channel ${channelId}: ${publishedMessageId}`);
       return publishedMessageId;
     } catch (error) {
       this.warn(`Failed to publish message to channel ${channelId}:`, error);
@@ -4440,27 +5199,18 @@ class DredServer {
   //     return id;
   // }
   // ------------------------------------------------------------
-  // when env var is set to true, auto replication is disabled
-  isReplicationDisabled() {
-    return process.env.REPLICATION === "false";
-  }
   async setupReplication() {
     if (this.replicator) {
-      this.warn("Replication already setup");
+      this.info("skipping extra setupReplication()");
       return;
     }
-    this.warn(`${this.serverId} Starting replication setup...`);
+    this.progress(`replication setup`);
     try {
-      this.warn(`${this.serverId} Creating replicator...`);
       this.replicator = new DredReplicator(this, this.discovery);
-      this.warn(`${this.serverId} Initializing replicator...`);
       await this.replicator.initialize();
-      this.warn(`${this.serverId} Replication setup complete - replicator exists: ${!!this.replicator}`);
     } catch (error) {
-      this.warn(`${this.serverId} ERROR during replication setup: ${error}`);
-      this.warn(`${this.serverId} ERROR stack:`, error.stack);
+      this.logger.error(`during replication setup: `, error.stack);
       this.replicator = void 0;
-      this.warn(`${this.serverId} Failed to setup replication - nullified replicator`);
       throw error;
     }
   }
@@ -4468,11 +5218,10 @@ class DredServer {
    * Start auto-replication in background immediately
    */
   startReplicating() {
-    this.warn(`\u{1F504} STARTING AUTO-REPLICATION FOR ${this.serverId.toUpperCase()} (BACKGROUND)`);
     this.setupReplication().then(() => {
-      this.log(`\u2705 Replication setup ok`);
+      this.progress(`\u2705 Replication setup ok`);
     }).catch((error) => {
-      this.warn(`\u274C Replication setup failed (will retry): ${error.message}`);
+      this.logger.error(`\u274C Replication setup failed (will retry): ${error.message}`);
       this.scheduleReplicationRetry();
     });
   }
@@ -4492,11 +5241,13 @@ class DredServer {
   startPeriodicStatusLogging() {
     const intervalSeconds = parseInt(process.env.STATUS_INTERVAL_SECONDS || "5");
     if (intervalSeconds <= 0 || intervalSeconds > 1e3) {
-      this.log(`\u{1F4CA} Periodic status logging disabled (STATUS_INTERVAL_SECONDS=${intervalSeconds})`);
+      this.ops(
+        `\u{1F4CA} Periodic status logging disabled (STATUS_INTERVAL_SECONDS=${intervalSeconds})`
+      );
       return;
     }
     const intervalMs = intervalSeconds * 1e3;
-    this.log(`\u{1F4CA} Starting periodic status logging every ${intervalSeconds} seconds`);
+    this.progress(`\u{1F4CA} periodic status logging every ${intervalSeconds} seconds`);
     this.statusLoggingTimer = setInterval(() => {
       this.statusLogging();
     }, intervalMs);
@@ -4509,7 +5260,7 @@ class DredServer {
     if (this.statusLoggingTimer) {
       clearInterval(this.statusLoggingTimer);
       this.statusLoggingTimer = void 0;
-      this.log(`\u{1F4CA} Stopped periodic status logging`);
+      this.progress(`\u{1F4CA} stopped periodic status logging`);
     }
   }
   /**
@@ -4538,7 +5289,9 @@ class DredServer {
         channelCount = await this.channelList.size();
       } catch (error) {
       }
-      this.log(`\u{1F4CA} Uptime: ${uptimeFormatted} | Replication: ${replicationStatus} | Channels: ${channelCount}`);
+      this.ops(
+        `\u{1F4CA} Uptime: ${uptimeFormatted} | Replication: ${replicationStatus} | Channels: ${channelCount}`
+      );
       if (this.isDebugLoggingEnabled()) {
         await this.logExtendedStatus(activePeers, totalPeers);
       }
@@ -4560,7 +5313,9 @@ class DredServer {
         const targetHost = rep.getTargetHost();
         return `${targetHost.serverId.slice(-8)}@${targetHost.address}:${targetHost.port}`;
       });
-      const connectedServerIds = new Set(activeReplicants.map((rep) => rep.getTargetHost().serverId));
+      const connectedServerIds = new Set(
+        activeReplicants.map((rep) => rep.getTargetHost().serverId)
+      );
       const nonConnectedPeers = allPeers.filter((h) => !connectedServerIds.has(h.serverId)).map((h) => `${h.serverId.slice(-8)}@${h.address}:${h.port}`);
       let channels = [];
       try {
@@ -4573,16 +5328,15 @@ class DredServer {
         `   Non-connected peers (${nonConnectedPeers.length}): [${nonConnectedPeers.join(", ") || "none"}]`,
         `   Channels: [${channels.join(", ") || "none"}]`
       ].join("\n");
-      this.log(extendedStatus);
+      this.info(extendedStatus);
     } catch (error) {
       this.warn(`\u{1F50D} Error logging extended status: ${error}`);
     }
   }
   async cleanupReplication() {
-    this.debug(`start cleanupReplication`);
+    this.debug(`cleaning up replicator`);
     if (!this.replicator) {
-      debugger;
-      this.warn(" === Replication not setup");
+      this.debug("replication not active; no cleanup needed");
       return;
     }
     try {
@@ -4591,58 +5345,31 @@ class DredServer {
         new Promise(
           (_, reject) => setTimeout(() => reject(new Error("Replication cleanup timeout")), 5e3)
         )
-      ]);
-      this.warn(`${this.serverId} Replication cleanup complete`);
+      ]).then(() => {
+        this.progress(`cleaned up replicator`);
+      });
     } catch (error) {
-      this.warn(`${this.serverId} Error during replication cleanup: ${error}`);
+      this.logger.error(`during replication cleanup:`, error.stack);
     } finally {
       this.replicator = void 0;
     }
-    this.log(` -- cleanupReplication ${this.serverId} complete`);
   }
-  async reset(reconnect, finalCleanup) {
-    this.log("server: reset()");
-    await this.cleanupReplication();
-    await this.channelConn.cleanup().catch(warning.bind(this, "channelConn.cleanup()"));
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    finalCleanup?.(this.redis);
-    this.resetting = true;
-    await this.redis?.quit().catch(warning.bind(this, "redis.quit()"));
-    this.redis?.removeAllListeners();
-    this.channelConn = void 0;
-    this.redis = void 0;
-    const doReconnect = reconnect ?? true;
-    if (doReconnect) {
-      this.setupRedis(this.redisUrl);
-      this.resetting = false;
-      if (!this.isReplicationDisabled()) {
-        this.warn(`\u{1F504} Restarting replication after reset`);
-        if (this.setupPending) {
-          this.setupPending.then(() => {
-            this.startReplicating();
-          }).catch((error) => {
-            this.warn(`\u274C Replication restart failed:${error.message}`);
-          });
-        } else {
-          this.startReplicating();
-        }
-      } else {
-        this.warn(`\u26A0\uFE0F  Replication remains DISABLED after reset`);
-      }
-      return this.setupPending;
-    }
-    function warning(activityName) {
-      return (e) => {
-        this.warn(`during close: error in ${activityName}:
-	`, e.message || e);
-      };
-    }
+  async cleanupRedisConnections() {
+    return Promise.allSettled([
+      this.channelList.cleanup(),
+      this.channelOptions.cleanup(),
+      this.knownMessages.cleanup()
+    ]).then(() => {
+      this._knownMessages = void 0;
+      this.channelList = void 0;
+      this.channelOptions = void 0;
+    });
   }
   async close() {
     this.cancelSubscribers();
+    await this.cleanupRedisConnections();
     await this.cleanupReplication();
     this.stopPeriodicStatusLogging();
-    this.reset(false);
     this.listener?.close();
   }
   async listenDetails() {
@@ -4653,44 +5380,27 @@ class DredServer {
     listener.address();
     throw new Error(`is this needed?`);
   }
-  /**
-   * Create a DredClient instance, but does not generate a key. 
-   * Note: The caller should call generateKey() after creating the client.
-   * 
-   * @param serverSelection - The server ID to connect to.
-   * @param clientArgs - Additional client configuration options.
-   * @param serverManaged - Whether the client is managed by the server (affects cleanup).
-   * @returns A DredClient instance.
-   */
-  mkClient(serverSelection, clientArgs = {}, serverManaged = true) {
-    const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
-    if (!discovery) throw new Error("discovery is required");
-    const oneHost = discovery.hosts.find((h) => h.serverId === serverSelection);
-    if (!oneHost) {
-      this.logger.error(`server ${serverSelection} not found in discovery`, discovery);
-      throw new Error(`server ${serverSelection} not found in discovery`);
-    }
-    const singleDiscovery = new StaticHostDiscovery({
-      hosts: [oneHost]
-    });
-    const client = new DredClient({
-      // name: `${serverSelection || ""}-${clientIndex++}`,
-      ...this.clientArgs,
-      ...clientArgs,
-      neighborhood: this.nbh,
-      discovery: singleDiscovery
-    });
-    client._serverManaged = serverManaged;
-    return client;
-  }
-  log(a1, ...args) {
+  // just use `info`
+  // log(a1: string, ...args: any[]) {
+  //     this.logger.info(a1, ...args);
+  // }
+  info(a1, ...args) {
     this.logger.info(a1, ...args);
   }
   warn(a1, ...args) {
     this.logger.warn(a1, ...args);
   }
+  progress(a1, ...args) {
+    this.logger.progress(a1, ...args);
+  }
+  ops(a1, ...args) {
+    this.logger.ops(a1, ...args);
+  }
   debug(a1, ...args) {
     this.logger.debug(a1, ...args);
+  }
+  trace(a1, ...args) {
+    this.logger.trace(a1, ...args);
   }
   async logInfo() {
     const serverId = this.serverId;
@@ -4727,8 +5437,8 @@ class DredServer {
     return logMessage;
   }
   reqLogger(res) {
-    return this.logger.child({
-      reqId: res.locals.id,
+    return zonedLogger("dred:req", {
+      loggerId: res.locals.id,
       clientid: res.locals.clientid,
       color: bgGreenBright.start + black.start
     });
@@ -4737,12 +5447,15 @@ class DredServer {
     //! it allows specific subclass of dred server to be notified of channel-creation
     const streams = this.channelConn;
     const chans = await streams.use("_chans");
-    this.log("channelCreated", channel, options);
+    this.debug("channelCreated", channel, options);
     //! it emits a channel-created event in the _chans meta-channel.
     await streams.produce(chans, "a channel was created", {
       type: "chanCreated",
-      channel,
-      options: JSON.stringify(options)
+      ocid: nanoid$1(8),
+      msg: JSON.stringify({
+        channel,
+        options
+      })
     });
   }
   async getChanOptions(channelName) {
@@ -4774,27 +5487,31 @@ class DredServer {
     //!!! todo: it keeps a recency list of messages seen from other servers,
   }
   async listenOneChannel(res, sub, sendUpdate, notifyConsumerError) {
-    //! it leverages the redis-streams module's cache of per-channel connections
-    const channelStream = await this.channelConn.use(sub.channel);
-    await this.channelConn.subscribe(channelStream);
+    const channelInfo = await this.channelConn.use(sub.channel);
+    //! todo: for "$" bookmarks, it can tap into an existing stream connection as a listener
+    //! todo: for non-$ bookmarks, it can use an ephemeral bookmark-to-now connection 
+    await this.channelConn.subscribe(channelInfo);
     //! it spawns asynchronous monitoring in each channel
-    this.monitorChannelChanges(res, channelStream, sub, sendUpdate, notifyConsumerError);
-    return channelStream;
+    this.monitorChannelChanges(res, channelInfo, sub, sendUpdate, notifyConsumerError);
+    return channelInfo;
   }
-  async monitorChannelChanges(res, channelStream, sub, sendUpdate, notifyConsumerError) {
+  async monitorChannelChanges(res, streamInfo, sub, sendUpdate, notifyConsumerError) {
+    const { bookmark = "$" } = sub.options;
     try {
       for await (const events of this.channelConn.consume(
-        channelStream,
+        streamInfo,
         "all",
         10,
-        this.subscribeTimeout
+        this.subscribeTimeout,
+        bookmark
       )) {
         for (const e of events) {
           const { id: mid, ocid, type, data, ...meta } = e;
-          this.reqLogger(res).info(
-            bgBlueBright(black(bold(`    <- ocid ${ocid} in ${sub.channel}: `))),
-            e.data.length,
-            "bytes"
+          this.reqLogger(res).trace(
+            `    <- ocid %s in %s: %d bytes`,
+            ocid,
+            sub.channel,
+            e.data.length
           );
           //!!! todo: apply filters from the subscription
           sendUpdate({
@@ -4813,8 +5530,9 @@ class DredServer {
     }
   }
 }
-async function createServer(options, serverId, serverDb) {
-  const server = new DredServer(options, serverId, serverDb);
+async function createServer(options, serverId, serverDb, serverClass) {
+  const SC = DredServer;
+  const server = new SC(options, serverId, serverDb);
   const { api, redis } = server;
   api.set("redis", redis);
   api.use(express.json({}));
