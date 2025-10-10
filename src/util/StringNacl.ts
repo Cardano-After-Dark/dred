@@ -7,7 +7,7 @@ const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 import { newKeyPair, sign, verify } from "watsign";
 
 type LoggerType = {
-    log: Function;
+    info: Function;
     warn: Function;
 };
 export class StringNacl {

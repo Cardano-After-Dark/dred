@@ -1,20 +1,19 @@
 {
     "name": "@cardano-after-dark/dred-client",
-    "version": "0.6.0",
+    "version": "0.8.0",
     "description": "Distributed event streams for web3 (client)",
     "type": "module",
     "packageManager": "pnpm@10.10.0",
     "exports": {
         ".": {
-            "types": "./dist/dred-client.d.ts",
+            "types": "./dist/index.d.ts",
             "browser": "./dist/dred-client.mjs",
-            "node": "./dist/dred-client-nodejs.mjs",
             "import": "./dist/dred-client.mjs",
             "require": "./dist/dred-client.js",
             "default": "./dist/dred-client.js"
         },
         "./node": {
-            "types": "./dist/dred-client-nodejs.d.ts",
+            "types": "./dist/index.d.ts",
             "import": "./dist/dred-client-nodejs.mjs",
             "require": "./dist/dred-client-nodejs.js",
             "default": "./dist/dred-client-nodejs.mjs"
@@ -35,19 +34,18 @@
     "scripts": {
         "dev": "pnpm build:watch",
         "clean": "rm dist/*",
-        "build": "FORCE_COLOR=1 concurrently --names \"client:browser,client:node.js\" -c \"bgBlue.bold,bgMagenta.bold\" \"rollup -c rollup.browser.config.js\"  \"rollup -c rollup.nodejs.config.js\"",
-        "build:watch": "concurrently --names \"client:browser,client:node.js\" -c \"bgBlue.bold,bgMagenta.bold\" \"rollup -c rollup.browser.config.js -w\" \"rollup -c  rollup.nodejs.config.js -w\"  ",
-        "build:browser": "rollup -c rollup.browser.config.js",
-        "build:browser:watch": "rollup -c rollup.browser.config.js -w"
+        "build": "FORCE_COLOR=1 ./scripts/build",
+        "build:watch": "concurrently --names \"initial,client:browser,client:node.js\" -c \"bgYellow.bold,bgBlue.bold,bgMagenta.bold\" \"./scripts/build\" \"rollup --importAttributesKey \"with\"  -c rollup.browser.config.js -w\" \"rollup -c  rollup.nodejs.config.js -w\"  "
     },
     "dependencies": {
+        "@donecollectively/stellar-contracts": "github:donecollectively/stellar-contracts#semver:0.9.1-beta.10",
+        "dred-network-registry": "../../onchain",
         "@poshplum/poshplum": "^0.8.9",
         "@poshplum/utils": "^0.8.2",
         "body-parser": "^1.20.0",
         "cross-fetch": "^3.1.5",
         "eventemitter3": "^5.0.0",
         "nanoid": "^4.0.1",
-        "node-fetch": "^2",
         "tweetnacl": "^1.0.3",
         "tweetnacl-util": "^0.15.1",
         "watsign": "^0.1.8"
@@ -58,20 +56,11 @@
         "@babel/preset-env": "^7.4.3",
         "@preact/preset-vite": "^2.4.0",
         "@rollup/plugin-alias": "^4.0.4",
-        "@rollup/plugin-node-resolve": "^15.0.1",
-        "@swc/cli": "^0.1.57",
-        "@swc/core": "^1.2.204",
-        "@types/node": "^18.11.10",
-        "@types/node-fetch": "^2.6.2",
-        "concurrently": "^7.6.0",
-        "esbuild": "^0.17.10",
         "module-alias": "^2.2.2",
         "preact": "^10.11.3",
-        "rollup": "3",
-        "rollup-plugin-dts": "^5.1.0",
-        "rollup-plugin-esbuild": "^6.1.1",
+        "rollup-plugin-esbuild": "^6.2.1",
         "rollup-plugin-node-externals": "^5.0.3",
-        "typescript": "^5.3.3",
+        "typescript": "^5.8.3",
         "vite": "^4.0.0"
     }
 }

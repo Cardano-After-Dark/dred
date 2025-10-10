@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+startTime=$(date)
+
+. ../../node_modules/@donecollectively/stellar-contracts/scripts/support.sh
+
+# set -e # exit on error
+#//! EXPECTS to be run in context of `pnpm exec`
+
+playStartSound
+
+inBackground "typecheck all, prep for doc-gen and main .d.ts" \
+    tsc -p ./tsconfig.dts.json  &
+{
+    rollup \
+      --config rollup.browser.config.js \
+      --importAttributesKey "with" \
+      --configPlugin 'esbuild={sourcemap:true,supported:{"import-assertions":false,"import-attributes":true},loaders:{".json": "json"}, target: "esnext", tsconfig:"./tsconfig.rollupconfig.json"}' \
+      $* && playProgressSound
+} || logProblemWith "dred-client build for browser with rollup"
+
+{ 
+    rollup \
+      --config rollup.nodejs.config.js \
+      --importAttributesKey "with" \
+      --configPlugin 'esbuild={sourcemap:true,supported:{"import-assertions":false,"import-attributes":true},loaders:{".json": "json"}, target: "esnext"}' \
+      $* && playProgressSound
+} || logProblemWith "dred-client build for nodejs with rollup"
+
+wait
+exitIfError
+playCheckpointSound
+
+echo -n "build finished at "
+date
+inBackground "dred-client docs" api-extractor run --local --verbose &
+wait
+exitIfError
+echo "dred-client build started at  $startTime"
+echo "dred-client build finished at $(date)"
+
+playSuccessSound
+
+# to debug rollup plugins:
+#   pnpm exec node --inspect-brk \
+#      node_modules/rollup/dist/bin/rollup \
+#         --config rollup.config.ts \
+#         --configPlugin 'esbuild={loaders:{".json": "json"}, target: "esnext", tsconfig:"./tsconfig.rollupconfig.json"}'

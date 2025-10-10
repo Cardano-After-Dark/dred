@@ -1,4 +1,8 @@
 import { beforeAll, afterAll, beforeEach, afterEach, describe, it, expect } from "vitest";
+
+// Uncomment the line below to disable auto-replication for this test file
+// disableAutoReplication();
+
 import { testSetup } from "../testServer.js";
 import { DredServer } from "../DredServer.js";
 import { asyncDelay } from "../../util/asyncDelay.js";
@@ -28,7 +32,7 @@ describe("Redis Set Functionality", () => {
 
     let server: DredServer;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         test = await testSetup();
         server = test.servers[0]; // Use first server for Redis testing
     });
@@ -107,7 +111,7 @@ describe("Redis Set Functionality", () => {
             };
 
             // Test the deduplication mechanism
-            const compositeKey = `${TEST_CHANNEL}:::${testMessage.ocid}`;
+            const compositeKey = server.messageKey(TEST_CHANNEL, testMessage.ocid!);
             
             // Verify message not in set initially
             expect(await server.knownMessages.has(compositeKey)).toBe(0);
@@ -143,7 +147,7 @@ describe("Redis Set Functionality", () => {
                 ocid: "first-time-456"
             };
 
-            const compositeKey = `${TEST_CHANNEL}:::${testMessage.ocid}`;
+            const compositeKey = server.messageKey(TEST_CHANNEL, testMessage.ocid!);
             
             // Ensure clean state
             await server.knownMessages.delete(compositeKey);

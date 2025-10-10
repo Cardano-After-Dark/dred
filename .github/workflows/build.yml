@@ -34,6 +34,18 @@ jobs:
     runs-on: ubuntu-latest
     # Skip this job if both events occur - run only for PR event in this case
     if: github.event_name != 'push' || !github.event.pull_request
+
+    services:
+      redis:
+        image: redis:latest
+        options: >-
+          --health-cmd "redis-cli ping | grep PONG || exit 1"
+          --health-interval 30s
+          --health-timeout 3s
+          --health-retries 5
+        ports:
+          - 6379:6379
+          
     steps:
       # Check out the repository code
       - name: Checkout repository
@@ -86,32 +98,36 @@ jobs:
         
       # Run TypeScript type checking - continues even if there are issues
       # Shows warnings in the GitHub Actions UI but doesn't fail the build
-      - name: Type check
-        continue-on-error: true  # This allows the workflow to continue even if this step fails 
-        id: typecheck
+      - name: Type check server
+        continue-on-error: false 
+        id: typecheck-server
         run: |
-          npx tsc --noEmit
-          # If the type check fails, output a warning but don't fail the build
-          if [ $? -ne 0 ]; then
-            echo "::warning::TypeScript errors found. Check the output for details."
-          fi
-          # Output the TypeScript version for debugging
-          echo "TypeScript version:"
-          npx tsc --version
-        
+          pnpm tsc --version
+          pnpm tsc --noEmit
+
+      - name: Type check client-browser
+        id: typecheck-client-browser
+        run: |
+          cd src/client
+          pnpm tsc --version
+          pnpm tsc --noEmit -p tsconfig.browser.json
+
+      - name: Type check client-nodejs
+        id: typecheck-client-nodejs
+        run: |
+          cd src/client
+          pnpm tsc --version
+          pnpm tsc --noEmit -p tsconfig.nodejs.json
+
       # Build the main project
       - name: Build project
         run: pnpm run build
         
-      # Run tests - continues even if tests fail
+      # Run tests 
       - name: Run tests
-        continue-on-error: true  # Tests won't fail the build
+        continue-on-error: false 
         run: |
           pnpm test | pnpm pino-pretty
-          # If tests fail, output a warning but don't fail the build
-          if [ $? -ne 0 ]; then
-            echo "::warning::Tests failed. Check the output for details."
-          fi
 
   # Build the client
   build-client:

@@ -2,14 +2,14 @@
 import util from "tweetnacl-util";
 const { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } = util;
 
-import { DredHostDetails } from "../types/DredHosts.js";
+import type { DredHostDetails } from "../types/DredHosts.js";
 import {
     Discovery,
-    GenericDiscoveryOptions,
-    promisedConnectionThresholds,
+    type GenericDiscoveryOptions,
+    type promisedConnectionThresholds,
 } from "../types/Discovery.js";
 import { StringNacl } from "../util/StringNacl.js";
-import { NbhId } from "../types/ChannelSubscriptions.js";
+import type { NbhId } from "../types/ChannelSubscriptions.js";
 import { asyncDelay } from "@poshplum/utils";
 
 const localNbh = "localhost-nbh";
@@ -17,6 +17,9 @@ interface DevDiscoveryOptions extends GenericDiscoveryOptions {
     hosts?: DredHostDetails[];
 }
 
+/**
+ * @public
+ */
 export class StaticHostDiscovery extends Discovery {
     hosts: DredHostDetails[];
     async getNeighborhoods() {
@@ -77,7 +80,11 @@ export class StaticHostDiscovery extends Discovery {
         this.hosts = hosts || StaticHostDiscovery.defaultHosts();
     }
     async initHostDiscovery() {
-        this.setupDefaultHosts();
+        // Only setup default hosts if no custom hosts were provided
+        if (!this.hosts || this.hosts.length === 0) {
+            this.setupDefaultHosts();
+        }
+        // Custom hosts are already set in constructor
     }
 
     toJSON() {

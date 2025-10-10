@@ -1,20 +1,22 @@
 // These are now global due to globals: true in vitest.config.ts
-import { beforeAll, vi, describe, it, expect } from "vitest";
+import { beforeEach, vi, describe, it, expect } from "vitest";
+
+// Uncomment the line below to disable auto-replication for this test file
+// disableAutoReplication();
 
 import express from "express";
-import { DredServer } from "../../server/DredServer";
-import { DredClient } from "../../client/DredClient";
-import { testSetup } from "../../server/testServer";
-import { asyncDelay } from "../../util/asyncDelay";
+import { DredClient, type FullDredMessage } from "../../client/DredClient.js";
+import { TestDredServer, testSetup } from "../../server/testServer.js";
+import { asyncDelay } from "../../util/asyncDelay.js";
 
-import type {JsonMessagePayload} from "../../types/JsonMessagePayload";
-import { StaticHostDiscovery } from "../../peers/StaticHostDiscovery";
+import type {JsonMessagePayload} from "../../types/JsonMessagePayload.js";
+import { StaticHostDiscovery } from "../../peers/StaticHostDiscovery.js";
 
 const fit = it.only;
 
 describe("Dred client", () => {
-    let server: DredServer, agent, client: DredClient;
-    beforeAll(async () => {
+    let server: TestDredServer, agent, client: DredClient;
+    beforeEach(async () => {
         const test = await testSetup();
         ({ server, client, agent } = test);
     });
@@ -95,9 +97,9 @@ describe("Dred client", () => {
 
                 let received = 0;
 
-                otherClient.subscribeToChannels({
-                    [chan]: (inbound) => {
-                        debugger
+                await otherClient.subscribeToChannels({
+                    [chan]: (inbound: FullDredMessage) => {
+
                         if (!inbound.msg) {
                           const {details, message, mid, msg, neighborhood, ocid, ts, type} = inbound
                           console.warn("probably an error: ", {details, message, mid, msg, neighborhood, ocid, ts, type})
@@ -109,7 +111,7 @@ describe("Dred client", () => {
                         received += 1;
                     }
                 }});
-                await asyncDelay(50);
+
                 await client.postMessage(chan, {
                     type: "poetry",
                     msg: JSON.stringify(msg)
@@ -120,7 +122,7 @@ describe("Dred client", () => {
                     type: "poetry",
                     msg: JSON.stringify(msg)
                 });
-                await asyncDelay(50);
+                await asyncDelay(10);
 
                 expect(received).toBe(2);
             });
@@ -158,25 +160,23 @@ describe("Dred client", () => {
                         await client.createChannel(chan);
 
                         let received = 0;
-                        client.subscribeToChannels({
-                            [chan]: (inbound) => {
+                        await client.subscribeToChannels({
+                            [chan]: (inbound: FullDredMessage) => {
                                 expect(inbound).toMatchObject(msg);
                                 received += 1;
                             }
                         });
-                        await asyncDelay(50);
 
                         await client.postMessage(chan, {
                             type: "poetry",
                             msg: JSON.stringify(msg)
                         });
-                        // await asyncDelay(20);
-
+                        
                         await client.postMessage(chan, {
                             type: "poetry",
                             msg: JSON.stringify(msg)
                         });
-                        await asyncDelay(50);
+                        await asyncDelay(20);
 
                         expect(received).toBe(2);
                     });

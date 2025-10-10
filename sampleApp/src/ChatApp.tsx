@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import PropTypes, { InferProps } from "prop-types";
 
 import util from "tweetnacl-util";
@@ -148,7 +149,7 @@ export class ChatApp extends Component<myProps, MyState> {
 
     @autobind
     async chooseNeighborhood(e) {
-        const neighborhood = this.neighborhoodSelector.current.value;
+        const neighborhood = this.neighborhoodSelector.current!.value;
         this.setState({
             neighborhood,
             message: `selected neighborhood '${neighborhood}'`,
@@ -163,10 +164,14 @@ export class ChatApp extends Component<myProps, MyState> {
 
     @autobind
     chooseChannel(e) {
-        const channel: string = this.channelSelector.current.value;
+        const channel: string = this.channelSelector.current!.value || "";
         this.setState({ channel, message: `${channel}: chat channel ready` });
-        this.client.messageHandler = this.receiveComms;
-        this.client.subscribeToChannels(channel);
+
+        this.client.subscribeToChannels({
+            type: "mass",
+            channels: [channel],
+            massHandler: this.receiveComms,
+        });
         return this.transition("chat");
     }
 
@@ -628,7 +633,7 @@ export class ChatApp extends Component<myProps, MyState> {
         // })
 
         const url = URL.createObjectURL(nowPlaying);
-        const player : HTMLAudioElement = this.player.current;
+        const player : HTMLAudioElement = this.player.current!;
         // const loading = new Promise((res, rej) => {
         //     player.addEventListener("load", res, {once: true})
         //     player.addEventListener("loadeddata", res, {once: true})
@@ -640,7 +645,7 @@ export class ChatApp extends Component<myProps, MyState> {
         //     debugger
         //     console.error(e)
         // })
-        this.player.current.play().catch(e =>{
+        this.player.current!.play().catch(e =>{
             console.error(e)
             this.bump({lastError: `Error decoding received message`})
         });
@@ -654,7 +659,7 @@ export class ChatApp extends Component<myProps, MyState> {
 
     private showConsoleMessages() {
         const { msgs } = this.state;
-        return React.createPortal(
+        return ReactDOM.createPortal(
             <div
                 style={{
                     top: 0,
@@ -891,7 +896,7 @@ export class ChatApp extends Component<myProps, MyState> {
 
     @autobind
     setMicPref() {
-        const s = this.micSelector.current;
+        const s = this.micSelector.current!;
         const index = s.selectedIndex;
         const selectedItem = s.options[index];
         const selectedMic = selectedItem.value;

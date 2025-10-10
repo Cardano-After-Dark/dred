@@ -77,8 +77,8 @@ const defaultRegData: minimalNodeRegistrationData = {
   memberToken: "foo-xxx",
   state: { NeedsValidation: [] },
   nodeDetails: {
-    address: "11.22.33.44",
-    port: 8080,
+    address: "example.com",
+    port: 443,
     // pubKey: "",
     pubKey: "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
     pubKeyHash: "‹computed›",
@@ -559,7 +559,6 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
                     if (isNaN(port)) return "must be a number";
                     if (port < 1 || port > 65535)
                       return "must be a valid port number";
-                    return "";
                   },
                 })}
                 {this.field("Node's Public Key", "nodeDetails.pubKey", {
@@ -569,7 +568,6 @@ export class NodeRegEditor extends React.Component<propsType, stateType> {
                     if (v.length < 1) return "must be at least 1 character";
                     if (v.length != 64)
                       return "must be 64 characters long, not " + v.length + v;
-                    return "";
                   },
                 })}
                 {this.field("Owner", "memberToken", {
@@ -980,9 +978,8 @@ function getPathValue(
   path: string,
 ) {
   const parts = path.split(".");
-  let value = rec;
+  let value = rec as any;
   for (const part of parts) {
-    //@ts-expect-error accessing generic string index
     value = value[part];
   }
   return value.toString();

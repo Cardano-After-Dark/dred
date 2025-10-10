@@ -1,25 +1,25 @@
 import { autobind, StateMachine, zonedLogger } from "@poshplum/utils";
 import { EventEmitter } from "eventemitter3";
 
-import { Discovery, ConnectionThresholds } from "../types/Discovery.js";
+import { Discovery, type ConnectionThresholds } from "../types/Discovery.js";
 import {
-    ChanId,
-    SubscriptionListenerMap,
-    NbhId,
+    type ChanId,
+    type NbhId,
     ChannelSubscriptionListener,
-    DredChannelMessage,
-    SubscriptionList,
+    type DredChannelMessage,
+    type SubscriptionList,
+    type FullChannelsListeners,
+    expandChannelListeners,
+    nbhChannelListChannel,
+    type BookmarkStorage,
 } from "../types/ChannelSubscriptions.js";
-import { DredHostDetails, connnectionSettings } from "../types/DredHosts.js";
-import { devMessage, DredError, DredEvent } from "../types/DredEvents.js";
+import { type DredHostDetails, type connnectionSettings } from "../types/DredHosts.js";
+import { devMessage, type DredError, type DredEvent } from "../types/DredEvents.js";
 
-import { ConnectionEvent, HostConnection } from "./HostConnection.js";
+import { type ConnectionEvent, HostConnection } from "./HostConnection.js";
 import { colors } from "../picocolors/picocolors.js";
-const {
-    cyan,
-    dim,
-} = colors;
-import {
+const { cyan, dim } = colors;
+import type {
     ConnectionState,
     ConnectionManagerOptions,
     PromisedHostDetails,
@@ -27,11 +27,10 @@ import {
 } from "../types/PeerDiscovery.js";
 import { asyncDelay } from "../util/asyncDelay.js";
 import { fetcher } from "./fetcher.js";
-import { DredMessage } from "./DredClient.js";
+import { type FullDredMessage } from "./DredClient.js";
 
 //!!! todo zw3w737: it has a way of posting the same unique message to multiple servers,
 //     ... and for that message to converge across them all.
-
 
 type ManagerEvents = {
     hasNeighborhood: [DredEvent];
@@ -69,7 +68,7 @@ const connectionManagerStates = {
                         "and/or give the user a default or choice based on neighborhood discovery.",
                         "Set a default neighborhood with the new DredClient{{neighborhood}) option",
                         "...or, use ‹clientObject›.discovery.setNeighborhood(nbhId)",
-                    ]
+                    ],
                 });
             }
         },
@@ -78,21 +77,39 @@ const connectionManagerStates = {
     },
     pendingSetup: {
         async onEntry(this: cm) {
-            if (!this.channelSubs?.size) {
+            const chans = this.channelListeners ? expandChannelListeners(this.channelListeners) : [];
+            if (!chans.length && this.connectionSettings.watchChannels) {
                 //     this.logger.warn("    🐞 ConnectionManager: pendingSetup: deferred until channel subscriptions are set");
                 //     return
-                this.channelSubs = {
-                    _chans: new ChannelSubscriptionListener({
-                        neighborhood: this.discovery.nbh,
-                        channel: "_chans",
-                        listener: ({
-                            channel, mid, ocid, message, details, neighborhood, connection,
-                        }) => {
-                            this.logger.info("    🐞  _chans: ", {
-                                channel, mid, ocid, message, details, neighborhood, //connection,
-                            });
-                        },
-                    }),
+                this.channelListeners = {
+                    type: "mapped",
+                    subs: {
+                        [nbhChannelListChannel]: new ChannelSubscriptionListener({
+                            channel: nbhChannelListChannel,
+                            logger: this.logger,
+                            options: {
+                                bookmark: "0",
+                            },
+                            listener: ({
+                                channel,
+                                mid,
+                                ocid,
+                                message,
+                                details,
+                                neighborhood,
+                                connection,
+                            }) => {
+                                this.debug(" 🐞 in _chans: ", {
+                                    channel,
+                                    mid,
+                                    ocid,
+                                    message,
+                                    details,
+                                    neighborhood, //connection,
+                                });
+                            },
+                        }),
+                    },
                 };
             }
             const hosts = this.discovery.hosts;
@@ -100,9 +117,14 @@ const connectionManagerStates = {
                 this.hosts = hosts;
             }
 
-            if (this.hosts?.length) return this.transition("readyToConnect");
+            if (chans.length && this.hosts?.length) return this.transition("readyToConnect");
 
-            console.log("    🐞  pendingSetup: waiting for host discovery");
+            if (!this.hosts?.length) {
+                this.progress("    🐞  pendingSetup: waiting for host discovery");
+            }
+            if (!chans.length) {
+                this.progress("    🐞  pendingSetup: waiting for subscriptions");
+            }
         },
         updatedHostList: { nextState: "pendingSetup", reEntry: true },
         hasSubscriptions: { nextState: "pendingSetup", reEntry: true },
@@ -113,8 +135,8 @@ const connectionManagerStates = {
             //     debugger
             //     return true;
             // },
-            nextState: "disconnected"
-        }
+            nextState: "disconnected",
+        },
     },
     replacingSubs: {
         // equivalent to connecting, except:
@@ -123,7 +145,7 @@ const connectionManagerStates = {
         sufficient: "healthy",
     },
     connecting: {
-        onEntry(this: cm) {
+        async onEntry(this: cm) {
             this.events.emit("connecting", {
                 message: "establishing connections to neighborhood hosts",
                 [devMessage]: [
@@ -132,13 +154,16 @@ const connectionManagerStates = {
                 ],
             });
             this.connectToHosts();
+            // ^ in background
         },
         updatedHostList: {
             nextState: "connecting",
             reEntry: true,
         },
+        sufficient: "healthy",
         partial: "partiallyConnected",
         replaceSubs: "replacingSubs",
+        disconnected: "disconnected",
     },
     partiallyConnected: {
         onEntry(this: cm) {
@@ -149,7 +174,7 @@ const connectionManagerStates = {
         partial: "partiallyConnected",
     },
     healthy: {
-        onEntry(this: cm) {
+        async onEntry(this: cm) {
             //@ts-expect-error - until state-machine provides us an indicator of previous state
             if (this.previousState) throw new Error("hurray, we can change this next line");
             const previousState = this.currentState as string;
@@ -185,11 +210,12 @@ const connectionManagerStates = {
             nextState: "healthy",
             reEntry: false,
         },
+        disconnected: "disconnected",
         partial: "degraded",
         updatedHostList: "connecting",
     },
     degraded: {
-        onEntry(this: cm) {
+        async onEntry(this: cm) {
             this.events.emit("connect:minimal", {
                 message: "...trying to improve neighborhood connectivity",
                 altMessageRealtime: "messages may be delayed",
@@ -208,7 +234,7 @@ const connectionManagerStates = {
         updatedHostList: "connecting",
     },
     disconnecting: {
-        onEntry(this: cm) {
+        async onEntry(this: cm) {
             this.events.emit("disconnecting", {
                 message: "disconnecting from neighborhood hosts",
                 [devMessage]: [`disconnecting on request (probably from client object)`],
@@ -226,12 +252,11 @@ const connectionManagerStates = {
                 recommendation: "check your network connection and/or have patience",
                 altMessageRealtime: "you may experience messaging delays",
                 altMessageSecurity: "wait for resolution before continuing",
-                [devMessage]: [
-                    "tbd"
-                ]
+                [devMessage]: ["tbd"],
             });
         },
         reconnect: "connecting",
+        sufficient: "disconnected",
     },
 };
 
@@ -249,13 +274,14 @@ export class ConnectionManager extends StateMachine.withDefinition(
         return this.discovery.getConnectionThresholds();
     }
     //! it keeps a current list of target event-subscriptions
-    channelSubs?: SubscriptionListenerMap;
+    channelListeners?: FullChannelsListeners;
 
     //! it remembers the last set of subscriptions, while the next set is being established.
-    lastChannelSubs?: SubscriptionListenerMap;
+    lastChannelSubs?: FullChannelsListeners;
 
     //! it is initialized with connection settings used for tuning behavior of outgoing connections
     connectionSettings: connnectionSettings;
+    bookmarkStorage: BookmarkStorage;
 
     //! it can map from the host object to a best-known Connection object for that host.
     private hostToConn = new Map<DredHostDetails, HostConnection>();
@@ -289,7 +315,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
             contextObject: null,
             logProperties: {
                 loggerId: options.clientid,
-                color: cyan.start + dim.start
+                color: cyan.start + dim.start,
             },
         });
         this.clientid = options.clientid;
@@ -298,17 +324,40 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
         this.logger = zonedLogger("connMgr", {
             loggerId: options.clientid,
-            color: cyan.start + dim.start
-
+            color: cyan.start + dim.start,
         });
         this.connectionSettings = HostConnection.settingsWithDefaults(options.connectionSettings);
         this.discovery = options.discovery;
+        this.bookmarkStorage = options.bookmarkStorage;
         this.discovery.events.on("hosts:updated", this.setHostList);
         this.waitFor = options.waitFor;
         this.transition("default");
         // .then(() => {
         //     console.log("AFTER transition, post ConnectionManager constructor", options);
         // })
+    }
+
+    error(message: string, ...args: any[]) {
+        this.logger.error(message, ...args);
+    }
+
+    warn(message: string, ...args: any[]) {
+        this.logger.warn(message, ...args);
+    }
+
+    info(message: string, ...args: any[]) {
+        this.logger.info(message, ...args);
+    }
+    progress(message: string, ...args: any[]) {
+        this.logger.progress(message, ...args);
+    }
+
+    debug(message: string, ...args: any[]) {
+        this.logger.debug(message, ...args);
+    }
+
+    trace(message: string, ...args: any[]) {
+        this.logger.trace(message, ...args);
     }
 
     @autobind
@@ -322,7 +371,6 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
     retireObsoleteConnections(updatedHosts: DredHostDetails[]) {
         //!!! todo: implement retireObsoleteConnections
-
         //! it removes connections to hosts that aren't in the updated host list.
     }
 
@@ -392,36 +440,43 @@ export class ConnectionManager extends StateMachine.withDefinition(
         this.transition("disconnected");
     }
 
-    async setSubscriptions(subs: SubscriptionListenerMap) {
-        if (this.channelSubs) return this.replaceSubscriptions(subs);
+    async setSubscriptions(listeners: FullChannelsListeners) {
+        const channels = expandChannelListeners(listeners);
+        this.debug(
+            `setSubscriptions (%s): %d channels ${this.channelListeners ? " (replace)" : ""}`,
+            listeners.type,
+            channels.length,
+            channels.length,
+        );
+        this.trace("channels: %s", channels.join(", "));
+        if (this.channelListeners) return this.replaceSubscriptions(listeners);
 
-        this.logger.info("setSubscriptions: setting first channel subscriptions", Object.keys(subs));
-        this.channelSubs = subs;
+        this.channelListeners = listeners
         if (!this.hosts) {
             if (this.discovery.hosts?.length) {
                 this.hosts = this.discovery.hosts;
             } else {
-                this.logger.info("setSubscriptions: waiting for hosts:ready from discovery");
+                this.info("setSubscriptions: waiting for hosts:ready from discovery");
                 await new Promise((resolve) => this.discovery.events.once("hosts:ready", resolve));
-                this.logger.info("setSubscriptions: discovery: hosts:ready - excellent!");
+                this.info("setSubscriptions: discovery: hosts:ready - excellent!");
             }
         }
         if (this.currentState == "pendingSetup") {
-            this.logger.debug("setSubscriptions: releasing pendingSetup state");
-            this.transition("readyToConnect");
+            this.debug("setSubscriptions: releasing pendingSetup state");
+            await this.transition("readyToConnect");
         }
 
+        await this.once("connected")
+
         // this.connectToHosts();
-        return subs;
+        return listeners;
     }
 
-    async replaceSubscriptions(subs: SubscriptionListenerMap) {
-        const chans = Object.keys(subs)
-        this.logger.debug("replaceSubscriptions: replacing host connections with %d new subscriptions", chans.length);
-        this.logger.trace("new subscriptions:", chans);
+    async replaceSubscriptions(listeners: FullChannelsListeners) {
+        const chans = expandChannelListeners(listeners);
 
-        this.lastChannelSubs = this.channelSubs;
-        this.channelSubs = subs;
+        this.lastChannelSubs = this.channelListeners;
+        this.channelListeners = listeners;
 
         const promises: Promise<any>[] = [];
         for (const host of this.hostToConn.keys()) {
@@ -430,14 +485,19 @@ export class ConnectionManager extends StateMachine.withDefinition(
         // these promises will resolve within settings.connectionWaitTime,
         // although IF enough of the connections haven't gotten started yet, then
         // the connection manager will change to
-        Promise.all(promises).then( () => {
+        Promise.all(promises).then(() => {
             this.lastChannelSubs = undefined;
-        })
+        });
         if (this.currentState == "pendingSetup") {
-            this.transition("readyToConnect");
+            await this.transition("readyToConnect");
         }
-
-        return subs;
+        this.debug(
+            "replaceSubscriptions: waiting for one of %d promises to resolve",
+            promises.length,
+        );
+        await Promise.race(promises);
+        this.progress("replaceSubscriptions: got connected");
+        return listeners;
     }
 
     connectToHosts() {
@@ -449,7 +509,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
             }
         }
 
-        for (const h of this.hosts) {            
+        for (const h of this.hosts) {
             const foundConn = this.hostToConn.get(h);
 
             if (foundConn) {
@@ -462,18 +522,40 @@ export class ConnectionManager extends StateMachine.withDefinition(
     }
 
     connectTo(host: DredHostDetails) {
-        if (!this.channelSubs)
+        if (!this.channelListeners)
             throw new Error( // makes typescript happy
-                `missing channelSubs; should already have a reasonable default value`
+                `missing channelSubs; should already have a reasonable default value`,
             );
-            
-        //! it gathers a list of channels and subscription settings to use for this conection
-        const subscriptions : SubscriptionList = [];
-        for (const sub of Object.values(this.channelSubs)) {
-            subscriptions.push(sub.options)
+
+        debugger
+        //! it gathers a list of channels and subscription settings to use for this connection
+        const subscriptions: SubscriptionList = [];
+        for (const sub of Object.values(this.channelListeners.subs)) {
+            subscriptions.push(sub.config);
+        }
+        if (this.channelListeners.type == "mass") {
+            // when the server can do a wildcard subscription, use this:
+            // subscriptions.push(this.channelListeners.massHandler.options);
+
+            const {bookmarks:channelBookmarks} = this.channelListeners;
+
+            this.channelListeners.channels.forEach(x => {
+                subscriptions.push({
+                    channel: x,
+                    options: {
+                        bookmark: channelBookmarks[x],
+                    }
+                });
+            });
         }
         if (!this.clientid) throw new Error("missing clientid");
-        const conn = new HostConnection(host, subscriptions, this.connectionSettings, this.clientid);
+
+        const conn = new HostConnection({
+            host,
+            settings: this.connectionSettings,
+            clientid: this.clientid,
+            subscriptions,
+        });
         conn.events.once("connected", this.healthyConnection);
 
         conn.events.once("disconnected", this.cleanupConnection);
@@ -499,7 +581,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
         const { connection, message: msg } = event;
         //! it records the active state of the connection
         this.moveConnTo(connection, "active");
-        this.logger.info({ summary: `connection to ${connection.host.address}` }, "healthy");
+        this.progress(`healthy: ${connection.host.address}`);
 
         //! it does NOT need to trigger event 'replacedBy', because replaceHostConnection() takes that responsibility
 
@@ -509,21 +591,39 @@ export class ConnectionManager extends StateMachine.withDefinition(
     @autobind
     cleanupConnection(event: ConnectionEvent | DredError) {
         const { connection, message } = event;
-        console.log("cleanup: ", connection.host.address, message);
+        this.debug("cleanup: ", connection.host.address, message);
 
         this.moveConnTo(connection, "disconnected");
         this.graveyard.add(connection);
     }
 
     @autobind
-    notifySubscribers(event: ConnectionEvent & DredChannelMessage & DredMessage) {
+    notifySubscribers(event: FullDredMessage) {
         const { channel } = event;
-        if (!this.channelSubs) {
-            console.log("no listeners to hear about:", event);
+        const { channelListeners } = this;
+        if (!channelListeners) {
+            this.warn("no listeners to hear about:", event);
             return;
         }
-        const sub = this.channelSubs[channel];
-        sub?.notify(event)
+        let sub = channelListeners.subs[channel];
+        if (!sub && channelListeners.type === "mass") {
+            sub = channelListeners.massHandler;
+        }
+        if (!sub) {
+            debugger
+            this.warn(`no subscription for channel ${channel}`, event);
+            return;
+        }
+        if (event.type=="channel:genesis") {
+            this.trace("suppressing notification of genesis event in channel %s", channel);
+            return 
+        }
+
+        try {
+            sub?.notify(event);
+        } catch (e:any) {
+            this.logger.error(`error in subscriber for channel ${channel}: %s`, e.stack || e.message || e);
+        }
     }
 
     async replaceHostConnection(host: DredHostDetails): Promise<HostConnection> {
@@ -534,6 +634,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
         return new Promise<HostConnection>((resolve, reject) => {
             let timeout: boolean;
             replacement.events.once("connected", ({ connection }) => {
+                this.debug("replaceHostConnection: connected to new host");
                 const oldConnection = replacingConn;
                 //! if it completes quickly, the original connection is seamlessly replaced in the active-connections list
                 oldConnection?.replacedBy(replacement);
@@ -545,7 +646,10 @@ export class ConnectionManager extends StateMachine.withDefinition(
 
                 if (!timeout) {
                     timeout = false;
+                    this.progress("replaceHostConnection: resolving new connection");
                     resolve(replacement);
+                } else {
+                    this.debug("replaceHostConnection: NOT resolving new connection after timeout");
                 }
             });
             //! if the new connection doesn't connect promptly, it...
@@ -556,9 +660,11 @@ export class ConnectionManager extends StateMachine.withDefinition(
             asyncDelay(this.connectionSettings.connectionWaitTimeMs).then(() => {
                 this.moveConnTo(replacement, "pending");
                 const oldConnection = replacingConn;
+                this.debug("replaceHostConnection: moving old connection to obsolete");
                 oldConnection && this.moveConnTo(oldConnection, "obsolete");
                 if (timeout !== false) {
                     timeout = true;
+                    this.progress("replaceHostConnection: resolving new connection after timeout");
                     resolve(replacement);
                 }
             });
@@ -597,7 +703,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
         const unhappy: ConnectionState[] = ["degraded", "minimally connected"];
 
         const pcn = (this.partialConnectNotification = asyncDelay(
-            this.connectionSettings.connectionWaitTimeMs
+            this.connectionSettings.connectionWaitTimeMs,
         ));
         await pcn;
 
@@ -644,7 +750,7 @@ export class ConnectionManager extends StateMachine.withDefinition(
         const newCache = await this.discovery.getHostList();
         if (newCache === this.hosts) {
             throw new Error(
-                `discoverPeers returned the existing perCache; it must return a new Peer list`
+                `discoverPeers returned the existing perCache; it must return a new Peer list`,
             );
         }
         let i = 0;
@@ -827,4 +933,21 @@ export class ConnectionManager extends StateMachine.withDefinition(
             p1.publicKey == p2.publicKey
         );
     }
+
+    async once<E extends string & keyof ManagerEvents>(
+        eventName: E,
+    ): Promise<
+    ManagerEvents[E] extends [infer O1, ...infer more]
+            ? ManagerEvents[E] extends [infer SINGLE]
+                ? SINGLE
+                : ManagerEvents[E]
+            : void
+    > {
+        return new Promise<any>((resolve) => {
+            this.events.once(eventName, (...args) => {
+                resolve(args);
+            });
+        });
+    }
+
 }

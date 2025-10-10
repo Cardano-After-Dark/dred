@@ -1,20 +1,22 @@
-import { beforeAll, afterAll, describe, it, vi, expect } from "vitest";
-import request, { SuperTestWithHost, Test } from "supertest";
-import { Express } from "express";
+import { beforeEach, afterAll, describe, it, vi, expect } from "vitest";
+import request, { type SuperTestWithHost, type Test } from "supertest";
+import { type Express } from "express";
 
-import { testSetup } from "../testServer.js";
+// Uncomment the line below to disable auto-replication for this test file
+// disableAutoReplication();
+
+import { TestDredServer, testLogger, testSetup } from "../testServer.js";
 import { DredClient } from "../../client/DredClient.js";
-import { DredServer } from "../DredServer.js";
 import { asyncDelay } from "../../util/asyncDelay.js";
 
 const fit = it.only;
 
 describe("channel messages", () => {
     let agent: SuperTestWithHost<Test>;
-    let server: DredServer;
+    let server: TestDredServer;
     let client: DredClient;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         const test = await testSetup();
         ({ agent, server, client } = test);
     });
@@ -72,7 +74,7 @@ describe("channel messages", () => {
 
                 let received = 0;
 
-                client.subscribeToChannels({
+                await client.subscribeToChannels({
                     [chan]: (inbound) => {
                         // const {ocid, message} = inbound
                         // party emoji: 🎉
@@ -81,7 +83,6 @@ describe("channel messages", () => {
                         received += 1;
                     },
                 });
-                await asyncDelay(80);
 
                 // low-level message creation:
                 await agent
@@ -125,7 +126,7 @@ describe("channel messages", () => {
 
                 // console.log("created channel");
                 let received = 0;
-                const subscription = otherClient.subscribeToChannels({
+                const subscription = await otherClient.subscribeToChannels({
                     [chan]: ({connection, ...inbound}) => {
                         client.logger.info("chan msg", inbound);
                         // console.log("chan msg", inbound);
@@ -133,25 +134,26 @@ describe("channel messages", () => {
                         received += 1;
                     },
                 });
-                await asyncDelay(20);
-                // console.log("posting");
+
+                testLogger.info("posting first message");
 
                 // high-level
                 await client.postMessage(chan, msg);
+                await asyncDelay(10);
+                expect(received).toBe(1);
+
+                testLogger.info("wait for subscription to get no result for one timeout cycle");
+                // check that it keeps listening after an initial timeout 
+                await asyncDelay(160);
+                expect(received).toBe(1);
+
+                testLogger.info("posting second message");
+                await client.postMessage(chan, msg);
+                await asyncDelay(10);
+                expect(received).toBe(2);
+
                 // low-level
-                // const response = await agent
-                //     .post(`/channel/${chan}/message`)
-                //     .send({
-                //         ...msg,
-                //         ocid: "42-1234",
-                //     })
-                //     .expect("Content-Type", /json/)
-                    // .expect(200);
-
-
-                // console.log("posting again");
-
-                // await client.postMessage(chan, msg)
+                testLogger.info("posting 3rd message (low-level)");
                 await agent
                     .post(`/channel/${chan}/message`)
                     .send({ 
@@ -161,9 +163,9 @@ describe("channel messages", () => {
                     .expect("Content-Type", /json/)
                     .expect(200);
 
-                await asyncDelay(40);
+                await asyncDelay(10);
 
-                expect(received).toBe(2);
+                expect(received).toBe(3);
             });
         });
     });

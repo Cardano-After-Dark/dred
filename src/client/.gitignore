@@ -7,6 +7,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+// for api-extractor's input files:
+.api-extractor-temp/
+
 node_modules
 dist
 dist-ssr

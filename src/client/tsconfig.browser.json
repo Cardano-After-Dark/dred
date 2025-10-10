@@ -1,11 +1,13 @@
 {
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
+        "module": "es6",
+        "moduleResolution": "bundler",
         "paths": {
             "@platform/*": ["../../platform/browser/*"],
             // "dred-client": ["./dist/dred-client.mjs"]
             // "sXXrc/*": ["../../src/*"]
         }
     },
-    "include": ["index.ts", "peers/**/*.ts"]
+    "include": ["index.ts", "../../platform/browser/**/*.ts"]
 }

@@ -1,1 +1,1 @@
-export { DredServer, createServer } from "./DredServer";
+export { DredServer, createServer } from "./DredServer.js";

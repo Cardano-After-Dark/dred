@@ -44,7 +44,7 @@ type addlState = {
     }
 }
 
-export let helperState: TestHelperState<DredCapo, addlState> = {
+export const helperState: TestHelperState<DredCapo, addlState> = {
     snapshots: {},
     nodesInSnapshot: {
         firstNodeId: "",

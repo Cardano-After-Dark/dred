@@ -26,15 +26,16 @@ export class RedisHash<KEYTYPE extends { toString(): string }, VALUETYPE = strin
     hashName: keyType;
     abstract: boolean;
     adapter: ValueAdapter<VALUETYPE>;
+    disconnected = false
     constructor(redis: Redis, hashName: string, adapter: ValueAdapter<VALUETYPE>) {
-        this.redis = redis;
+        this.redis = redis.duplicate();
         this.hashName = hashName;
         this.adapter = adapter;
         this.abstract = !!(hashName === "_abstract");
     }
+
     async get(key: KEYTYPE, hashName?: string): Promise<VALUETYPE> {
-        if (this.abstract && !hashName)
-            throw new Error(`abstract RedisHash requires hashName in arg2`);
+        this.assertOk();
 
         const hName = hashName || this.hashName;
         const str = (await this.redis.call(
@@ -47,22 +48,29 @@ export class RedisHash<KEYTYPE extends { toString(): string }, VALUETYPE = strin
     }
 
     async has(key: KEYTYPE, hashName? : string) {
+        this.assertOk();
+
         const hName = hashName || this.hashName;
-        const v = await this.get(key, hName)
+        const v = await this.redis.hexists(hName, key.toString());
+
         return !!v
     }
 
     async keys(hashName?: string) {
-        if (this.abstract && !hashName)
-            throw new Error(`abstract RedisHash requires hashName in arg1`);
+        this.assertOk(hashName);
 
             const hName = hashName || this.hashName;
             return this.redis.call("HKEYS", hName);
     }
 
+    async size(hashName?: string) {
+        this.assertOk(hashName);
+        const hName = hashName || this.hashName;
+        return this.redis.hlen(hName);
+    }
+
     async set(key: KEYTYPE, value: VALUETYPE, hashName?: string) {
-        if (this.abstract && !hashName)
-            throw new Error(`abstract RedisHash requires hashName in arg3`);
+        this.assertOk(hashName);
 
         const hName = hashName || this.hashName;
         const v = this.adapter.toRedis(value);
@@ -70,10 +78,23 @@ export class RedisHash<KEYTYPE extends { toString(): string }, VALUETYPE = strin
     }
 
     async delete(key: KEYTYPE, hashName?: string) {
-        if (this.abstract && !hashName)
-            throw new Error(`abstract RedisHash requires hashName in arg2`);
-
+        this.assertOk(hashName);
         const hName = hashName || this.hashName;
         return this.redis.call("HDEL", hName, key.toString());
+    }
+
+    assertOk(hashName?: string) {
+        if (this.disconnected) {
+            debugger
+            throw new Error(`RedisHash ${this.hashName} is disconnected`);
+        }
+        if (this.abstract && !this.hashName && !hashName)
+            throw new Error(`abstract RedisHash requires hashName in last arg`);
+    }
+
+    async cleanup() {
+        this.disconnected = true;
+        this.redis.removeAllListeners();
+        return this.redis.disconnect();
     }
 }

@@ -1,4 +1,3 @@
-import dts from "rollup-plugin-dts";
 import esbuild from "rollup-plugin-esbuild";
 import externals from "rollup-plugin-node-externals";
 import resolve from "@rollup/plugin-node-resolve";
@@ -19,11 +18,17 @@ const serverBundle = (config) => ({
     input: "src/server/index.ts",
     ...config,
     external: (id) => {
-        if (serverBundledModules.includes(id)) return false;
-        if (forcedServerExternals.includes(id)) return true;
-        // console.warn("---ext detect ---", id)
-
-        return !/^[./]/.test(id);
+        if (serverBundledModules.includes(id)) {
+            // console.log("---bundled---", id)
+            return false;
+        }
+        if (forcedServerExternals.includes(id)) {
+            // console.log("---forced externals---", id)
+            return true;
+        }
+        const isExternal = !/^[./]/.test(id);
+        // console.warn("---ext detect ---", id, isExternal)
+        return isExternal;
     },
 });
 

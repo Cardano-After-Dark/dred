@@ -1,0 +1,18 @@
+# DRED Team SSH Public Keys (PRIVATE FILE - NOT COMMITTED)
+# Copy this file to 'team-ssh-keys.private' and add your actual keys
+# This file is excluded from git via .gitignore
+
+# Team member 1
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExample1KeyHere user1@machine1
+
+# Team member 2  
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQExample2KeyHere user2@machine2
+
+# Team member 3
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExample3KeyHere user3@machine3
+
+# Instructions:
+# 1. Copy this file: cp team-ssh-keys.private.example team-ssh-keys.private
+# 2. Replace example keys with your actual team SSH public keys
+# 3. The setup scripts will read from team-ssh-keys.private
+# 4. Never commit team-ssh-keys.private to git! 

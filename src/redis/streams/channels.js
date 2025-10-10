@@ -633,7 +633,7 @@ export class RedisChannels {
                 currentId = "$";
             }
 
-            while (true) {
+            while (!this.closing) {
                 const result = [];
                 let data;
 
@@ -770,7 +770,7 @@ export class RedisChannels {
             if (this.closing) {
                 return
             }
-            this.logger.error("Consume error: %o", error);
+            this.logger.debug("Consume error: %o", error);
             throw new RedisChannelsError(
                 "Can not consume from the tunnel: " +
                     tunnel[tun.KEY] +
@@ -821,9 +821,12 @@ export class RedisChannels {
             delete this._consumers[i];
         }
 
-        // reconnect after disconnect
-        await this._nonBlockRedisClient.disconnect(true);
-        this._nonBlockRedisClient.removeAllListeners();
+        // Ensure all consumer operations complete before closing main connection
+        if (this._nonBlockRedisClient) {
+            // reconnect after disconnect
+            await this._nonBlockRedisClient.disconnect(true);
+            this._nonBlockRedisClient.removeAllListeners();
+        }
     }
 
     /*

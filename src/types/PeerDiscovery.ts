@@ -1,5 +1,6 @@
-import { connnectionSettings, DredHostDetails } from "./DredHosts.js";
-import { ConnectionThresholds, Discovery } from "./Discovery.js";
+import type { connnectionSettings, DredHostDetails } from "./DredHosts.js";
+import type { ConnectionThresholds, Discovery } from "./Discovery.js";
+import type { BookmarkStorage } from "./ChannelSubscriptions.js";
 
 // export type unusedPeerSettings = {
 //     hostName: String;
@@ -31,6 +32,7 @@ export type ConnectionManagerOptions = {
     discovery: Discovery;
     waitFor: ThresholdChoice,
     connectionSettings: Partial<connnectionSettings>
+    bookmarkStorage: BookmarkStorage;
 };
 
 export type PromisedHostDetails = Promise<DredHostDetails[]>;

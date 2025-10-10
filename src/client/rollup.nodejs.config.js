@@ -1,18 +1,16 @@
-import { join } from "path";
-import dts from "rollup-plugin-dts";
-// import typescript from "rollup-plugin-ts";
 import esbuild from 'rollup-plugin-esbuild';
 import externals from "rollup-plugin-node-externals";
 import resolve from "@rollup/plugin-node-resolve";
 import { twoModulesOut } from "../../rollup.lib.js";
 
-import packageJson from "./package.json" assert { type: 'json' };
+import packageJson from "./package.json" with { type: 'json' };
 const name = packageJson.main.replace(/\.js$/, "");
 import alias from "@rollup/plugin-alias";
 
 const serverBundledModules = [
     // "@platform/fetch.ts", 
-    "@platform/ReadableStream"
+    "@platform/ReadableStream",
+    "@platform/ReadableStream.js"
 ];
 const forcedServerExternals = [];
 
@@ -21,11 +19,17 @@ const serverBundle = (config) => ({
     input: "./index.ts",
     ...config,
     external: (id) => {
-        if (serverBundledModules.includes(id)) return false;
-        if (forcedServerExternals.includes(id)) return true;
-        // console.warn("---ext detect ---", id)
-
-        return !/^[./]/.test(id);
+        if (serverBundledModules.includes(id)) {
+            // console.log("---bundled---", id)
+            return false;
+        }
+        if (forcedServerExternals.includes(id)) {
+            // console.log("---forced externals---", id)
+            return true;
+        }
+        const isExternal = !/^[./]/.test(id);
+        // console.warn("---ext detect ---", id, isExternal)
+        return isExternal;
     },
 });
 
@@ -80,15 +84,15 @@ export default [
         ],
         ...twoModulesOut(`${name}-nodejs`),
     }),
-    serverBundle({
-        plugins: [
-            dts({
-                tsconfig: "tsconfig.nodejs.json",
-            }),
-        ],
-        output: {
-            file: `${name}-nodejs.d.ts`,
-            format: "es",
-        },
-    }),
+    // serverBundle({
+    //     plugins: [
+    //         dts({
+    //             tsconfig: "tsconfig.nodejs.json",
+    //         }),
+    //     ],
+    //     output: {
+    //         file: `${name}-nodejs.d.ts`,
+    //         format: "es",
+    //     },
+    // }),
 ];

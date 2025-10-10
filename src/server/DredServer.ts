@@ -1,16 +1,16 @@
 //@ts-check
-import { get, Server } from "http";
+import { Server } from "http";
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import compression from "compression";
 
-import { Redis, RedisOptions } from "ioredis";
-import { nanoid } from "nanoid";
+import { Redis, type RedisOptions } from "ioredis";
+import { nanoid } from "../util/nanoid.js";
+
 import type { Application } from "express";
 
-//@ts-expect-error
-import { RedisChannels } from "../redis/streams";
+import { RedisChannels } from "../redis/streams/index.js";
 
 import { colors } from "../picocolors/picocolors.js";
 const {
@@ -44,30 +44,31 @@ const {
     isColorSupported,
 } = colors;
 
-import { DredClient, DredClientArgs } from "../client/DredClient.js";
+import { DredClient, type DredClientArgs } from "../client/DredClient.js";
 import { RedisSet } from "../redis/RedisSet.js";
-import { Subscriber } from "../Subscriber.js";
+import { type Subscriber } from "../Subscriber.js";
 import {
     JSONValueAdapter,
     RedisHash,
     StringValueAdapter,
-    ValueAdapter,
+    type ValueAdapter,
 } from "../redis/RedisHash.js";
-import { ChannelOptions } from "../types/ChannelOptions.js";
+import { type ChannelOptions } from "../types/ChannelOptions.js";
 import { StringNacl } from "../util/StringNacl.js";
-import { Discovery } from "../types/Discovery.js";
-import { DredHostDetails } from "../types/DredHosts.js";
+import { type Discovery } from "../types/Discovery.js";
+import { type DredHostDetails } from "../types/DredHosts.js";
 import {
-    ChanId,
-    SubscriptionList,
-    NbhId,
-    ChannelSubOptions,
+    type ChanId,
+    type SubscriptionList,
+    type NbhId,
+    type ChannelSubConfig,
+    defaultMaxDelayMs,
 } from "../types/ChannelSubscriptions.js";
 import { asyncDelay, autobind } from "@poshplum/utils";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import { zonedLogger } from "@poshplum/utils";
-import { ReplicationClient } from "./ReplicationClient.js";
 import { DredReplicator } from "./DredReplicator.js";
+import type { Logger } from "../types/Logger.js";
 
 const logging = parseInt(process.env.LOGGING || "0");
 export interface ExpressWithRedis extends express.Application {
@@ -80,6 +81,7 @@ export type ChannelSubscriber = {
     channel: ChanId;
     stream: streamHandle;
 };
+type abstractChangeFeedUpdater = (maxLatency: number, ...messages: rStreamMsg[]) => void;
 type changeFeedUpdater = (...messages: rStreamMsg[]) => void;
 type consumerErrorNotifier = (res: express.Response, channel: ChanId, e: Error) => void;
 type rChannelError = {
@@ -128,10 +130,12 @@ const optionsSerializer: ValueAdapter<ChannelOptions> = {
     },
 };
 
-type DredServerArgs = DredClientArgs & {
+type DredServerArgs = Omit<DredClientArgs, "bookmarkStorage"> & {
     neighborhood: string;
     api?: express.Application;
     serverDb?: number;
+    replicate?: boolean;
+    serverClass?: typeof DredServer;
 };
 
 //!!! todo: augment to support a list of nbh's, with req details for nbh selection
@@ -156,11 +160,13 @@ export class DredServer {
     verifier: StringNacl;
     serverId: string;
     myServerInfo?: DredHostDetails;
-    logger: ReturnType<typeof zonedLogger>;
-    // replicationClient?: ReplicationClient;
+    logger: Logger
 
     // Optional replicator, to be initialized only when replication is enabled
     replicator?: DredReplicator;
+
+    // Periodic status logging
+    private statusLoggingTimer?: NodeJS.Timeout;
 
     resetting = false;
     get nbh() {
@@ -168,7 +174,12 @@ export class DredServer {
     }
 
     setupExpressHandlers() {
-        this.api.use(compression());
+        //! allows clients to avoid compression when the content is known to not benefit from it
+        this.api.use(compression({filter(req,res) {
+            if (req.headers["x-no-compression"] == "true") return false;
+            return compression.filter(req,res);
+        }}));
+
         this.api.use((req, res, next) => {
             if (res.locals?.id) throw new Error("duplicate req processing detected");
             const { clientid = `‹gen›` } = req.headers;
@@ -206,6 +217,8 @@ export class DredServer {
         });
 
         this.api.options("/channels/listen", (...args) => {
+            // nothing special to do here, just approve the CORS req
+
             //! it approves any allowed CORS / cross-origin requests.  These can be limited by domain name
             //  or other attributes of the cross-origin OPTIONS request.
         });
@@ -213,14 +226,20 @@ export class DredServer {
             //! it allows clients to subscribe to many channels and receive notification about updates in any of them
             this.listenOnChannels(...args);
         });
+
+        this.api.get("/admin/replication-status", (...args) => {
+            this.adminReplicationStatus(...args);
+        });
+
         this.api.use(this.resultLogger);
     }
 
     constructor(args: DredServerArgs, serverId: string, redisDb: number) {
-        this.args = args;
+        const { replicate = true } = args;
+        this.args = { ...args, replicate };
         const loggerName = `dred`;
+
         this.logger = zonedLogger(loggerName, {
-            serverId,
             loggerId: serverId,
             // levels: {
             //     [loggerName]: logging ? "info" : "warn",
@@ -230,15 +249,14 @@ export class DredServer {
 
         this.serverId = serverId;
         this.discovery = DredClient.resolveDiscovery(args);
-        // const t= express()
-        this.log(`+server '${serverId}'`, this.discovery, null, 2);
-        this.api = this.createExpressServer();
-        // const t= express();
 
+        // this.log(`+server '${serverId}' with discovery type: ${this.discovery.constructor.name}`);
+
+        this.api = this.createExpressServer();
         const redisUrl = (this.redisUrl = process.env.REDIS_URL || "redis://localhost:6379");
 
         this.listener = null;
-        this.verifier = new StringNacl(undefined, this);
+        this.verifier = new StringNacl(undefined, this.logger);
         this.producers = new Map();
         this.subscribers = new Map();
         this.redisDb = redisDb || 0;
@@ -249,26 +267,19 @@ export class DredServer {
 
         // this.channelConn._log.error = console.error.bind(console);
         this.clientArgs = args;
-
         this.setupExpressHandlers();
     }
 
     setupRedis(url: string | undefined) {
         if (this.redis) throw new Error(`redis connection is already set up`);
-        // redis.subscribe(...).on("message", (event) => {
-        //     for (const peer of peers) {
-        //         peer.addEvent(event)
-        //     }
-        // })
 
-        //!!! todo: use configured Redis connection details
-        this.log(`Setting up Redis connection: ${url || "default"}, db: ${this.redisDb}`);
-        // console.log(`REDIS_URL ${url}`);
+        this.progress(`Setting up Redis connection: ${url || "default"}, db: ${this.redisDb}`);
+
         const options: RedisOptions = {
             db: this.redisDb,
-
             // keyPrefix: `${this.nbh}::`  //!!! todo vet this technique.
         };
+
         if (url) {
             this.redis = new Redis(url, options);
         } else {
@@ -284,20 +295,18 @@ export class DredServer {
 
         const log = zonedLogger("dred-stream", {
             loggerId: this.serverId,
-            // color: black.start +bgCyanBright.start// green.start
-            // color: green.start
-            color: bgBlack.start + white.start
+            color: bgBlack.start + white.start,
         });
 
-        //!!! todo: allows the application name to override 'dred' setting in channel names created in Redis
         this.channelConn = new RedisChannels({
             application: `${this.nbh}::`,
             redis: {
                 url: url,
                 db: this.redisDb,
             },
-            channels: { log: this.logger },
+            channels: { log },            
         });
+        this.progress("connected to redis");
         this.ensureDefaultChannels();
     }
 
@@ -307,20 +316,28 @@ export class DredServer {
     }
 
     async pendingSetup() {
+        await this.ensureDefaultChannels();
         return this.setupPending;
     }
-    private setupPending?: Promise<any>;
-    //!!! todo: once for each nbh
+    setupPending?: Promise<any>;
+
+    didMakeDefaultChannels = false;
     ensureDefaultChannels() {
         if (this.setupPending) return this.setupPending;
 
+        if (this.didMakeDefaultChannels) {
+            throw new Error("default channels already made");
+        }
+        this.logger.debug("setting up default channels")
         return (this.setupPending = new Promise(async (res) => {
             await this.doChannelSetup("_chans");
             await this.doChannelSetup("_auth");
             await this.doChannelSetup("news");
             await this.doChannelSetup("discussion");
 
+            this.didMakeDefaultChannels = true;
             this.setupPending = undefined;
+            this.logger.progress("created default channels");
             res(true);
         }));
     }
@@ -334,7 +351,7 @@ export class DredServer {
         const streams = this.channelConn;
         if (!streams) {
             if (this.resetting) {
-                this.logger.warn(
+                this.warn(
                     "ignoring continuing channel setup for %s while racing with a subsequent reset!",
                 );
                 return;
@@ -349,9 +366,9 @@ export class DredServer {
         const stream = await streams.use(channel);
 
         //!!! revisit this with a more specific plan : )
-        await streams.produce(stream, "first event in this channel", { 
+        await streams.produce(stream, "first event in this channel", {
             type: "channel:genesis",
-            ocid: `${channel}:genesis`
+            ocid: `${channel}:genesis`,
         });
         const o = { channelId: channel, ...options };
         this.channelCreated(channel, o);
@@ -361,39 +378,40 @@ export class DredServer {
     async listen() {
         await this.setupPending;
 
-        // Setup replication after all basic server setup is complete
-        // at this point, "_chans" and "_auth" channels are already created
-        // TODO we should restore this at some point
-        // see https://discord.com/channels/891363866775261275/913447653826773012/1380756651166011443
-        //  await this.setupReplication();
-        // this.setupReplication();
-
         const myInfo = (this.myServerInfo =
-            this.myServerInfo || (await this.discovery.myServerInfo(this.serverId)));
+            this.myServerInfo || (await this.discovery.myServerInfo(this.serverId))); //
         if (!myInfo) throw new Error(`can't identify my own info`);
         const { port, address } = myInfo;
-        this.listener = this.api.listen(port, address);
-        this.log(`server '${this.serverId}' listening at ${address}:${port}`);
+
+        this.listener = this.api.listen(Number(port), address);
+        this.info(`listening at ${address}:${port}`);
+
+        // Setup replication after all basic server setup is complete
+        // at this point, "_chans" and "_auth" channels are already created
+        if (this.args.replicate) {
+            // Start replication in background, non-blocking
+            this.startReplicating();
+        } else if (process.env.NODE_ENV == "test") {
+            this.debug(`⚠️ replication disabled (via REPLICATION=false)`);
+        } else {
+            this.warn(`⚠️ replication disabled (via REPLICATION=false)`);
+        }
+
+        this.startPeriodicStatusLogging();
+
         return this.listener;
-        // express
-        //       listen(port: number, hostname: string, backlog: number, callback?: () => void): http.Server;
-        //       listen(port: number, hostname: string, callback?: () => void): http.Server;
     }
 
-
-    // ------------------------------------------------------------
-    // Solution to avoid duplicate messages (replication)
-    // ------------------------------------------------------------
-
-    // knownMessages = new RedisSet(this.redis!.duplicate()); // removed in favor of lazy initialization
-    
     /**
-     * Known message set. Lazily initialized to avoid undefined errors.
-    */
-   get knownMessages(): RedisSet {
-       if (!this._knownMessages) {
-           // Use a specific key name for the deduplication set instead of abstract
-           this._knownMessages = new RedisSet(this.redis!.duplicate(), `${this.nbh}::knownMessages`);
+     * Known message set.
+     */
+    get knownMessages(): RedisSet {
+        if (!this._knownMessages) {
+            // Use a specific key name for the deduplication set instead of abstract
+            this._knownMessages = new RedisSet(
+                this.redis!,
+                `${this.nbh}::knownMessages`,
+            );
         }
         return this._knownMessages;
     }
@@ -401,10 +419,10 @@ export class DredServer {
 
     /**
      * Ensure a message is processed only once. Use it to avoid duplicate messages.
-     * 
-     * Always await this method to prevent race conditions and blockings. 
-     * 
-     * 
+     *
+     * Always await this method to prevent race conditions and blockings.
+     *
+     *
      * @param channel channel name
      * @param msgId ocid
      * @param msg message content
@@ -412,66 +430,76 @@ export class DredServer {
      * @returns message id if published, undefined if duplicate
      */
     async ensureMessageProcessedOnce(
-        channel: string, 
-        msgId: string, 
-        msg: string, 
-        messageDetails?: any
+        channel: string,
+        msgId: string,
+        msg: string,
+        messageDetails?: any,
     ): Promise<string | undefined> {
         try {
             // composite key to ensure uniqueness across channels
-            const deduplicationKey = `${channel}:::${msgId}`;
-            
-            // DEBUG: Add detailed logging
-            this.warn(`🔍 DEDUP CHECK [${this.serverId}] checking: ${deduplicationKey}`);
-            
+            const deduplicationKey = this.messageKey(channel, msgId);
+
+
             // Check if we've already processed this exact message
             const alreadyProcessed = await this.knownMessages.has(deduplicationKey);
-            
-            this.warn(`🔍 DEDUP RESULT [${this.serverId}] ${deduplicationKey} -> already processed: ${alreadyProcessed}`);
-            
+
+
             if (alreadyProcessed) {
-                this.warn(`❌ DEDUP SKIP [${this.serverId}] Duplicate message detected, skipping: ${deduplicationKey}`);
+                this.trace(
+                    `skipping duplicate message: ${deduplicationKey}`,
+                );
                 return undefined; // Signal that message was not posted (duplicate)
             }
-            
-            // Mark message as being processed (BEFORE actually posting to prevent race conditions)
+
+            // prevent racing double-post by pre-adding:
             await this.knownMessages.add(deduplicationKey);
-            this.warn(`✅ DEDUP ADD [${this.serverId}] Added to known messages: ${deduplicationKey}`);
-            
+            this.trace(
+                `+known messages: ${deduplicationKey}`,
+            );
+
             // Actually post the message to the channel
-            const publishedMessageId = await this.publishMessageToChannel(channel, msg, messageDetails);
-            
-            this.warn(`✅ DEDUP PUBLISH [${this.serverId}] Message successfully deduplicated and posted: ${deduplicationKey} -> ${publishedMessageId}`);
+            const publishedMessageId = await this.publishMessageToChannel(
+                channel,
+                msg,
+                messageDetails,
+            );
+
             return publishedMessageId;
-            
-        } catch (error) {
+        } catch (error: any) {
             // If we fail after marking as processed, we have a problem - log it
-            this.warn(`Error in message deduplication for ${channel}:::${msgId}:`, error);
+            this.warn(`Error in message deduplication for ${channel}:::${msgId}:`, error.stack);
             throw error; // Re-throw so caller can handle appropriately
         }
     }
 
+    messageKey(channel: string, msgId: string) {
+        return `${channel}/${msgId}`;
+    }
+
     /**
-     * Publish a message directly without dedup. 
+     * Publish a message directly without dedup.
      * Always await this method to prevent blocking caller and ensure message is published.
-     * 
+     *
      * @returns id of the published message
      */
     async publishMessageToChannel(
-        channelId: string, 
-        msg: string, 
-        messageDetails: any = {}
+        channelId: string,
+        msg: string,
+        messageDetails: any = {},
     ): Promise<string> {
         try {
             // Get channel producer for this server
             const producer = await this.mkChannelProducer(channelId);
-            
+
             // Produce the message on the channel with provided details
-            const publishedMessageId = await this.channelConn.produce(producer, msg, messageDetails);
-            
-            this.log(`Message published to channel ${channelId}: ${publishedMessageId}`);
+            const publishedMessageId = await this.channelConn.produce(
+                producer,
+                msg,
+                messageDetails,
+            );
+
+            this.trace(`Message published to channel ${channelId}: ${publishedMessageId}`);
             return publishedMessageId;
-            
         } catch (error) {
             this.warn(`Failed to publish message to channel ${channelId}:`, error);
             throw error; // Let caller handle the error
@@ -479,10 +507,8 @@ export class DredServer {
     }
 
     async clearMessageDeduplicationCache(olderThanMs?: number): Promise<void> {
-        // TODO: implement time-based cleanup if needed, useful for testing or reset 
+        // TODO: implement time-based cleanup if needed, useful for testing or reset
     }
-
-
 
     // async ensureMessageProcessedOnce(channel: string, msgId, msg: string) {
     //     // create composite key to avoid duplicates
@@ -494,119 +520,254 @@ export class DredServer {
     //     this.actuallyPost(channel, msg)
     // }
 
-    
     // async actuallyPost(channelId: string,msg: string, messageDetails: any) {
-        
+
     //     // Get channel producer for home server
     //     const producer = await this.mkChannelProducer(channelId);
-        
+
     //     // Produce the replicated message on the home server
     //     const id = await this.channelConn.produce(producer, msg, messageDetails);
-        
+
     //     return id;
     // }
     // ------------------------------------------------------------
-    
+
     async setupReplication() {
         if (this.replicator) {
-            this.warn("Replication already setup");
+            this.info("skipping extra setupReplication()");
             return; // Idempotent - safe to call multiple times
         }
-        this.warn(`${this.serverId} Starting replication setup...`);
+        this.progress(`replication setup`);
         try {
-            await asyncDelay(1000);
-            this.warn(`${this.serverId} Creating replicator...`);
+            // await asyncDelay(1000);// maybe we can just skip this
+            // this.warn(`${this.serverId} Creating replicator...`);
             this.replicator = new DredReplicator(this, this.discovery);
-            this.warn(`${this.serverId} Initializing replicator...`);
-            await this.replicator.initialize();
-            this.warn(`${this.serverId} Replication setup complete - replicator exists: ${!!this.replicator}`);
-
-            // const hosts = await this.discovery.getHostList();
-            // const otherHosts = hosts.filter(host => host.serverId !== this.serverId);
-
-            // if (otherHosts.length === 0) {
-            //     this.log("No other hosts found for replication");
-            //     return;
-            // }
-
-            // for (const host of otherHosts) {
-            //     const replicant = new Replicant(this, host);
-            //     await replicant.initialize();
-            // }
-
-            // this.replicationClient = new ReplicationClient(this);
-            // await this.replicationClient.initialize(otherHosts);
-            // this.log(`Replication setup complete with ${otherHosts.length} peer servers`);
+            // this.warn(`${this.serverId} Initializing replicator...`);
+            await this.replicator.initialize();            
+            // this.warn(`${this.serverId} Replication setup complete - replicator exists: ${!!this.replicator}`);
         } catch (error: any) {
             // Cleanup on failure
-            this.warn(`${this.serverId} ERROR during replication setup: ${error}`);
-            this.warn(`${this.serverId} ERROR stack:`, error.stack);
+            this.logger.error(`during replication setup: `, error.stack);
             this.replicator = undefined;
-            this.warn(`${this.serverId} Failed to setup replication - nullified replicator`);
+            // this.warn(`${this.serverId} Failed to setup replication - nullified replicator`);
             throw error; // Re-throw if caller needs to handle
         }
     }
 
+    /**
+     * Start auto-replication in background immediately
+     */
+    private startReplicating(): void {
+        // this.warn(`🔄 STARTING AUTO-REPLICATION FOR ${this.serverId.toUpperCase()} (BACKGROUND)`);
+
+        // Run in background - don't await, don't block server startup
+        this.setupReplication()
+            .then(() => {
+                this.progress(`✅ Replication setup ok`);
+            })
+            .catch((error) => {
+                this.logger.error(`❌ Replication setup failed (will retry): ${error.message}`);
+                this.scheduleReplicationRetry();
+            });
+    }
+
+    /**
+     * Schedule a retry of replication setup after 1 minute
+     */
+    private scheduleReplicationRetry(): void {
+        setTimeout(() => {
+            this.warn(`🔄 Retrying replication (waited 1m)`);
+            this.startReplicating();
+        }, 60000); // 1 minute
+    }
+
+    /**
+     * Start periodic status logging based on STATUS_INTERVAL_SECONDS environment variable
+     * Default: 2 seconds, Range: 1-1000 seconds, 0 or negative = disabled
+     */
+    private startPeriodicStatusLogging(): void {
+        const intervalSeconds = parseInt(process.env.STATUS_INTERVAL_SECONDS || "5");
+
+        if (intervalSeconds <= 0 || intervalSeconds > 1000) {
+            this.ops(
+                `📊 Periodic status logging disabled (STATUS_INTERVAL_SECONDS=${intervalSeconds})`,
+            );
+            return;
+        }
+
+        const intervalMs = intervalSeconds * 1000;
+        this.progress(`📊 periodic status logging every ${intervalSeconds} seconds`);
+
+        this.statusLoggingTimer = setInterval(() => {
+            this.statusLogging();
+        }, intervalMs);
+
+        // Don't keep the process alive just for status logging
+        this.statusLoggingTimer.unref();
+    }
+
+    /**
+     * Stop periodic status logging
+     */
+    private stopPeriodicStatusLogging(): void {
+        if (this.statusLoggingTimer) {
+            clearInterval(this.statusLoggingTimer);
+            this.statusLoggingTimer = undefined;
+            this.progress(`📊 stopped periodic status logging`);
+        }
+    }
+
+    /**
+     * Check if debug logging is enabled
+     */
+    private isDebugLoggingEnabled(): boolean {
+        return (
+            process.env.LOGGING?.includes("debug") ||
+            process.env.DEBUG === "1" ||
+            process.env.DEBUG === "true"
+        );
+    }
+
+    /**
+     * Logs current server status
+     */
+    private async statusLogging(): Promise<void> {
+        try {
+            const uptime = process.uptime();
+            const uptimeFormatted = `${Math.floor(uptime / 3600)}h ${Math.floor((uptime % 3600) / 60)}m ${Math.floor(uptime % 60)}s`;
+
+            // Get replication status with details
+            let replicationStatus = "DISABLED";
+            let activePeers = 0;
+            let totalPeers = 0;
+
+            if (this.replicator) {
+                totalPeers =
+                    this.discovery?.hosts?.filter((h) => h.serverId !== this.serverId).length || 0;
+                activePeers = this.replicator.getActiveReplicants
+                    ? this.replicator.getActiveReplicants().length
+                    : 0;
+                replicationStatus = `ENABLED (${activePeers}/${totalPeers})`;
+            }
+
+            // Get channel count
+            let channelCount = 0;
+            try {
+                channelCount = await this.channelList.size();
+            } catch (error) {
+                // Ignore channel errors, keep 0
+            }
+
+            // Compact format for regular logging
+            this.ops(
+                `📊 Uptime: ${uptimeFormatted} | Replication: ${replicationStatus} | Channels: ${channelCount}`,
+            );
+
+            // Extended debug format (only when DEBUG logging is enabled)
+            if (this.isDebugLoggingEnabled()) {
+                await this.logExtendedStatus(activePeers, totalPeers);
+            }
+        } catch (error) {
+            this.warn(`📊 Error logging periodic status: ${error}`);
+        }
+    }
+
+    /**
+     * Log extended status with peer connection details (debug mode only)
+     */
+    private async logExtendedStatus(activePeers: number, totalPeers: number): Promise<void> {
+        try {
+            if (!this.replicator || !this.discovery?.hosts) {
+                return;
+            }
+
+            const allPeers = this.discovery.hosts.filter((h) => h.serverId !== this.serverId);
+            const activeReplicants = this.replicator.getActiveReplicants
+                ? this.replicator.getActiveReplicants()
+                : [];
+
+            // Get connected peers
+            const connectedPeers = activeReplicants.map((rep) => {
+                const targetHost = rep.getTargetHost();
+                return `${targetHost.serverId.slice(-8)}@${targetHost.address}:${targetHost.port}`;
+            });
+
+            // Get non-connected peers
+            const connectedServerIds = new Set(
+                activeReplicants.map((rep) => rep.getTargetHost().serverId),
+            );
+            const nonConnectedPeers = allPeers
+                .filter((h) => !connectedServerIds.has(h.serverId))
+                .map((h) => `${h.serverId.slice(-8)}@${h.address}:${h.port}`);
+
+            // Get channel details
+            let channels: string[] = [];
+            try {
+                channels = (await this.channelList.keys()) as string[];
+            } catch (error) {
+                // Ignore channel errors
+            }
+
+            // Single multi-line extended status message
+            const extendedStatus = [
+                "🔍 EXTENDED STATUS:",
+                `   Connected peers (${connectedPeers.length}): [${connectedPeers.join(", ") || "none"}]`,
+                `   Non-connected peers (${nonConnectedPeers.length}): [${nonConnectedPeers.join(", ") || "none"}]`,
+                `   Channels: [${channels.join(", ") || "none"}]`,
+            ].join("\n");
+
+            this.info(extendedStatus);
+        } catch (error) {
+            this.warn(`🔍 Error logging extended status: ${error}`);
+        }
+    }
+
     async cleanupReplication(): Promise<void> {
+        this.debug(`cleaning up replicator`);
         if (!this.replicator) {
-            this.warn("Replication not setup");
+            this.debug("replication not active; no cleanup needed");
             return; // Idempotent - safe to call multiple times
         }
-        this.warn(`${this.serverId} Starting replication cleanup...`);
         try {
             // Add timeout to prevent hanging during cleanup
             await Promise.race([
                 this.replicator.cleanup(),
-                new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error("Replication cleanup timeout")), 5000)
-                )
-            ]);
-            this.warn(`${this.serverId} Replication cleanup complete`);
-        } catch (error) {
-            this.warn(`${this.serverId} Error during replication cleanup: ${error}`);
+                new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error("Replication cleanup timeout")), 5000),
+                ),
+            ]).then(() => {
+                this.progress(`cleaned up replicator`);
+            });
+        } catch (error: any) {
+            this.logger.error(`during replication cleanup:`, error.stack);
             // Continue cleanup even if error occurs
         } finally {
-            this.warn(`${this.serverId} Nullifying replicator reference`);
+            // this.warn(`${this.serverId} Nullifying replicator reference`);
             this.replicator = undefined; // Always nullify, even on error
         }
     }
 
-    async reset(reconnect?: boolean, finalCleanup?: (r?: Redis) => any) {
-        this.log("server: reset()");
-
-        // Cleanup replication client first
-        await this.cleanupReplication();
-
-        await this.channelConn.cleanup().catch(warning.bind(this, "channelConn.cleanup()"));
-        // await this.channelConn.this?.redis?.quit().catch(warning.bind(this,"channelConn.redis.quit()"));
-        // this.channelConn?.redis?.disconnect();
-        finalCleanup?.(this.redis);
-        this.resetting = true;
-        await this.redis?.quit().catch(warning.bind(this, "redis.quit()"));
-        this.redis?.removeAllListeners();
-        this.channelConn = undefined;
-        this.redis = undefined;
-
-        const doReconnect = reconnect ?? true;
-        if (doReconnect) {
-            this.setupRedis(this.redisUrl);
-            this.resetting = false;
-            return this.setupPending;
-        }
-        function warning(this: DredServer, activityName) {
-            return (e) => {
-                this.warn(`during close: error in ${activityName}:\n\t`, e.message || e);
-            };
-        }
+    async cleanupRedisConnections() {
+        return Promise.allSettled([
+            this.channelList.cleanup(),
+            this.channelOptions.cleanup(),
+            this.knownMessages.cleanup(),
+        ]).then(() => {
+            this._knownMessages = undefined!;
+            this.channelList = undefined!;
+            this.channelOptions = undefined!;
+        })
     }
 
     async close() {
         this.cancelSubscribers();
-
+        await this.cleanupRedisConnections()
         // Cleanup replication client
         await this.cleanupReplication();
 
-        this.reset(false);
+        // Stop periodic status logging
+        this.stopPeriodicStatusLogging();
+
         this.listener?.close();
     }
     async listenDetails() {}
@@ -624,51 +785,27 @@ export class DredServer {
         return addr;
     }
 
-    /**
-     * Create a DredClient instance, but does not generate a key. 
-     * Note: The caller should call generateKey() after creating the client.
-     * 
-     * @param serverSelection - The server ID to connect to.
-     * @param clientArgs - Additional client configuration options.
-     * @param serverManaged - Whether the client is managed by the server (affects cleanup).
-     * @returns A DredClient instance.
-     */
-    mkClient(
-            serverSelection: string, 
-            clientArgs: Partial<DredClientArgs> = {}, 
-            serverManaged: boolean = true
-    ): DredClient {
-        const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
-        if (!discovery) throw new Error("discovery is required");
-
-        const oneHost = discovery.hosts!.find((h) => h.serverId === serverSelection);
-        if (!oneHost) {
-            this.logger.error(`server ${serverSelection} not found in discovery`, discovery);
-            throw new Error(`server ${serverSelection} not found in discovery`);
-        }
-        const singleDiscovery = new StaticHostDiscovery({
-            hosts: [oneHost],
-        });
-
-        const client = new DredClient({
-            // name: `${serverSelection || ""}-${clientIndex++}`,
-            ...this.clientArgs,
-            ...clientArgs,
-            neighborhood: this.nbh,
-            discovery: singleDiscovery,
-        });
-
-        // Mark client ownership for cleanup tracking
-        (client as any)._serverManaged = serverManaged;
-        
-        return client;
-    }
-
-    log(a1: string, ...args: any[]) {
+    // just use `info`
+    // log(a1: string, ...args: any[]) {
+    //     this.logger.info(a1, ...args);
+    // }
+    info(a1: string, ...args: any[]) {
         this.logger.info(a1, ...args);
     }
     warn(a1: string, ...args: any[]) {
         this.logger.warn(a1, ...args);
+    }
+    progress(a1: string, ...args: any[]) {
+        this.logger.progress(a1, ...args);
+    }
+    ops(a1: string, ...args: any[]) {
+        this.logger.ops(a1, ...args);
+    }
+    debug(a1: string, ...args: any[]) {
+        this.logger.debug(a1, ...args);
+    }
+    trace(a1: string, ...args: any[]) {
+        this.logger.trace(a1, ...args);
     }
 
     async logInfo(): Promise<string> {
@@ -733,8 +870,8 @@ export class DredServer {
     };
 
     reqLogger(res: express.Response) {
-        return this.logger.child({
-            reqId: res.locals.id,
+        return zonedLogger("dred:req", {
+            loggerId: res.locals.id,
             clientid: res.locals.clientid,
             color: bgGreenBright.start + black.start,
         });
@@ -744,6 +881,7 @@ export class DredServer {
         const found: string[] = (await this.channelList.keys()) as string[];
         const channels = found.filter((x) => x[0] !== "_");
         res.status(200).json({ channels });
+        next();
     };
     createChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
@@ -840,14 +978,17 @@ export class DredServer {
         const streams = this.channelConn;
         const chans = await streams.use("_chans");
 
-        this.log("channelCreated", channel, options);
+        this.debug("channelCreated", channel, options);
         //! it emits a channel-created event in the _chans meta-channel.
         //   applications with interest in such things can subscribe to that
         //   channel to get the news
         await streams.produce(chans, "a channel was created", {
             type: "chanCreated",
-            channel,
-            options: JSON.stringify(options),
+            ocid: nanoid(8),
+            msg: JSON.stringify({
+                channel,
+                options,
+            }),
         });
 
         // Notify replication client about new channel
@@ -881,8 +1022,7 @@ export class DredServer {
 
         //! trying to join an expired channel produces an error
         if (opts.expiresAt && now > opts.expiresAt) {
-            this.warn(`Join failed: Channel ${channelId} is expired`);
-            this.log(
+            this.warn(`Join failed: Channel ${channelId} is expired\n`+
                 `expiration '${opts.expiresAt.getTime() % 100000}, now '${now.getTime() % 100000}`,
             );
             res.status(422).json({
@@ -916,10 +1056,10 @@ export class DredServer {
             overMemberLimit = false;
             approvedVerifier = myId;
 
-            this.log("owner-approved join");
+            this.info("owner-approved join");
         } else if ("member" == opts.approveJoins && (opts.members || []).includes(myId)) {
             //! a member can join someone by pubKey if approveJoins: member
-            this.log("member-approved join");
+            this.info("member-approved join");
             approvedVerifier = myId;
         } else if (opts.allowJoining) {
             //! a non-member can join themself if allowJoining is true and approveJoins is "open"
@@ -938,7 +1078,7 @@ export class DredServer {
                 //!!! todo: join requests, when not open, are simple messages in the channel,
                 //!    which clients can read, prompting members or owner to issue an approval.
             } else {
-                this.log("self-join");
+                this.info("self-join");
                 approvedVerifier = myId;
             }
         }
@@ -996,7 +1136,6 @@ export class DredServer {
 
     postMessageInChannel: express.RequestHandler = async (req, res, next) => {
         const { channelId } = req.params;
-        this.log("postMessageInChannel", channelId);
         const found = await this.channelList.has(channelId);
         if (!found) {
             res.status(404).json({
@@ -1005,17 +1144,28 @@ export class DredServer {
             return next();
         }
         const message = req.body;
-
-        //!!! todo y0w9cvr: it refuses to post plain-text messages into encrypted channels
-        //     see also todo zfnsmq8
-
-        this.log("server: postMessage", message);
-        const tunnelProducer = await this.mkChannelProducer(channelId);
-        const { msg, _type, _data, ...moreDetails } = message;
-
         //! it extracts and SILENTLY ignores reserved keys _type, _data in client-provided event details.
         // if (_type) console.warn("ignoring reserved key '_type' in client-provided message");
         // if (_data) console.warn("ignoring reserved key '_data' in client-provided message");
+        const { msg, _type, _data, ...moreDetails } = message;
+
+        let ocid = moreDetails.ocid 
+        if (!ocid) {
+            ocid = nanoid(6);
+            this.trace("generated missing ocid %s for message %o", ocid, message);
+            moreDetails.ocid = ocid;
+        }
+        //todo: include client-id in ocid, preventing a duplicate-id attack.
+        //  - requires the client to use a unique client-id, probably based on pubkey/challenge/response
+        //  ... otherwise, client id could be spoofed, and a duplicate-id attack would be possible.
+        // alt: use one or more "recent ocids" list to prevent observed duplicates.  and/or include
+        // a timestamp element in the ocid.
+
+        this.debug("postMessageInChannel", channelId, ocid)
+        this.trace("msg %s: %o", ocid, message);
+
+        //!!! todo y0w9cvr: it refuses to post plain-text messages into encrypted channels
+        //     see also todo zfnsmq8
 
         if ("string" !== typeof msg) {
             res.status(422).json({
@@ -1037,7 +1187,12 @@ export class DredServer {
             });
         } else {
             // Use deduplication system to prevent replication loops
-            const id = await this.ensureMessageProcessedOnce(channelId, moreDetails.ocid, msg, moreDetails);
+            const id = await this.ensureMessageProcessedOnce(
+                channelId,
+                moreDetails.ocid,
+                msg,
+                moreDetails,
+            );
             if (id) {
                 res.json({ id, status: "created", ocid: moreDetails.ocid });
             } else {
@@ -1069,32 +1224,41 @@ export class DredServer {
         res.contentType("application/ndjson");
         res.useChunkedEncodingByDefault = false;
         // res.setHeader("x-hi", "there");
-        this.log("listening for", subscriptions);
+        const reqLogger = this.reqLogger(res);
+
+        reqLogger.progress("listening: %d channels: %s", subscriptions.length, subscriptions.map(s => `${s.channel}^${s.options.bookmark}`).join(", "));
         //!!! todo: it validates authorization as appropriate for each requested channel
 
-        const sendUpdate: changeFeedUpdater = (...messages) => {
+        let pendingFlush : ReturnType<typeof setTimeout> | undefined;
+
+        const sendUpdate: abstractChangeFeedUpdater = (maxLatency, ...messages) => {
             // if (json.event !== "keepalive") debugger
             for (const json of messages) {
                 const update = JSON.stringify(json);
                 res.write(update + "\n");
-                // debug("update: ", update)
+                reqLogger.trace("    <- ", update);
             }
-            (res as any).flush(); //! flushes writes through compression middleware
+            if (!maxLatency) {
+                (res as any).flush()
+            } else if (maxLatency > 0 && !pendingFlush) {
+                pendingFlush = setTimeout(() => {
+                    (res as any).flush();
+                    pendingFlush = undefined;
+                }, maxLatency);
+            }
         };
         const myStreamListeners: ListenerSubscriptionList = [];
         const timerInterval = 7000;
         //! it sends heartbeat signals every so often to clients
         //!!! todo: heartbeat interval can be configured
         const timer = setInterval(() => {
-            this.log("server: client <- heartbeat");
-            sendUpdate({ type: "heartbeat" });
+            reqLogger.trace("   <- heartbeat");
+            sendUpdate(0, { type: "heartbeat" });
         }, timerInterval);
         timer.unref(); //! the heartbeat-timer never blocks the process from exiting when it's otherwise done
 
-        //! it tells clients how frequently they should expect a heartbeat
-        sendUpdate({ type: "heartbeat-info", timerInterval });
-
         const cleanup = () => {
+            reqLogger.debug("cleanup");
             //! it cleans up all the internal subscriptions
             for (const mySub of myStreamListeners) {
                 const { channel, stream } = mySub;
@@ -1113,7 +1277,8 @@ export class DredServer {
 
         const notifyConsumeError: consumerErrorNotifier = (res, channel, consumeError) => {
             if (!cancelled) {
-                sendUpdate({
+
+                sendUpdate(0,{
                     channel,
                     type: "error",
                     message: "internal stream consumer failed",
@@ -1131,7 +1296,12 @@ export class DredServer {
         let anySuccesses = 0;
         let warnings: any[] = [];
         for (const sub of subscriptions) {
-            const { channel } = sub;
+            const { channel, options: {
+                maxLatency=defaultMaxDelayMs,
+                bookmark,
+                filter,
+            } } = sub;
+
             const found = await this.channelList.has(channel);
             if (!found) {
                 //! sends a warning note but does not fail unless there are no valid subscriptions
@@ -1143,11 +1313,18 @@ export class DredServer {
                 });
             }
 
-            this.logger.debug("  -- listening one: ", sub.channel);
+            // !!! todo: support inbound bookmarks for each channel and "from end" or "from start" cues
+            //  - this will allow clients to pick up where they left off, or to start from the beginning
+            //    of a channel's history.  "from end" will be the default.
+            // for "bookmark" and "from start" options, this can be implemented as a "from end"
+            //   subscription that picks up the responsibility after a one-off and temporary
+            //  "from then to ‹current›" subscription has flushed its backlog.
+
+            this.trace("  -- listening one: ", sub.channel);
             const subscriber = await this.listenOneChannel(
                 res,
                 sub,
-                sendUpdate,
+                sendUpdate.bind(this, maxLatency),
                 notifyConsumeError,
             );
             myStreamListeners.push({ channel, stream: subscriber });
@@ -1157,8 +1334,12 @@ export class DredServer {
             res.status(404).json({ error: "no valid subscriptions in request" });
             return cancel();
         } else if (warnings.length) {
-            sendUpdate.apply(this, warnings);
+            sendUpdate(0, ...warnings);
         }
+        reqLogger.debug("  👷listening in %d channels", subscriptions.length);
+        reqLogger.trace(`  👷channels: ${subscriptions.map(s => s.channel).join(", ")}`);
+        //! it tells clients how frequently they should expect a heartbeat
+        sendUpdate(0, { type: "heartbeat-info", timerInterval });
     };
 
     async listenToNeighborhood() {
@@ -1172,39 +1353,45 @@ export class DredServer {
 
     async listenOneChannel(
         res: express.Response,
-        sub: ChannelSubOptions,
+        sub: ChannelSubConfig,
         sendUpdate: changeFeedUpdater,
         notifyConsumerError: consumerErrorNotifier,
     ) {
-        //! it leverages the redis-streams module's cache of per-channel connections
-        const channelStream = await this.channelConn.use(sub.channel);
-        await this.channelConn.subscribe(channelStream);
+        const channelInfo = await this.channelConn.use(sub.channel);
+        //! todo: for "$" bookmarks, it can tap into an existing stream connection as a listener
+        //! todo: for non-$ bookmarks, it can use an ephemeral bookmark-to-now connection 
+        //   ... and then convert cleanly to a $ listener, using a technique ensuring no gap,
+        //   ... no duplicates, and accurate ordering
+        await this.channelConn.subscribe(channelInfo);
 
         //! it spawns asynchronous monitoring in each channel
-        this.monitorChannelChanges(res, channelStream, sub, sendUpdate, notifyConsumerError);
-        return channelStream;
+        this.monitorChannelChanges(res, channelInfo, sub, sendUpdate, notifyConsumerError);
+        return channelInfo;
     }
 
     private async monitorChannelChanges(
         res: express.Response,
-        channelStream: streamHandle,
-        sub: ChannelSubOptions,
+        streamInfo: streamHandle,
+        sub: ChannelSubConfig,
         sendUpdate: changeFeedUpdater,
         notifyConsumerError: consumerErrorNotifier,
     ) {
+        const { bookmark="$" } = sub.options
         try {
             for await (const events of this.channelConn.consume(
-                channelStream,
+                streamInfo,
                 "all",
                 10,
                 this.subscribeTimeout,
+                bookmark
             )) {
                 for (const e of events) {
                     const { id: mid, ocid, type, data, ...meta } = e;
-                    this.reqLogger(res).info(
-                        bgBlueBright(black(bold(`    <- ocid ${ocid} in ${sub.channel}: `))),
+                    this.reqLogger(res).trace(
+                        `    <- ocid %s in %s: %d bytes`,
+                        ocid,
+                        sub.channel,
                         e.data.length,
-                        "bytes",
                     );
                     // eslint-disable-next-line no-debugger
                     // debugger;
@@ -1225,15 +1412,57 @@ export class DredServer {
             notifyConsumerError(res, sub.channel, consumeError as Error);
         }
     }
+
+    adminReplicationStatus: express.RequestHandler = async (req, res, next) => {
+        try {
+            const isActive = !!this.replicator && this.replicator.isInitialized();
+            const replicatorExists = !!this.replicator;
+
+            // Get discovery info
+            const discoveryHosts = this.discovery?.hosts || [];
+            const myServerId = this.serverId;
+            const peerCount = discoveryHosts.filter((h) => h.serverId !== myServerId).length;
+
+            res.json({
+                status: "ok",
+                replication: {
+                    active: isActive,
+                    replicatorExists,
+                    serverId: myServerId,
+                    discoveredPeers: peerCount,
+                    discoveryType: this.discovery.constructor.name,
+                    hosts: discoveryHosts.map((h) => ({
+                        serverId: h.serverId,
+                        address: h.address,
+                        port: h.port,
+                    })),
+                },
+            });
+        } catch (error: any) {
+            this.warn("Error getting replication status:", error.message);
+            res.status(500).json({
+                status: "error",
+                message: "Failed to get replication status",
+                error: error.message,
+            });
+        }
+        next();
+    };
 }
 
-export async function createServer(options: DredServerArgs, serverId: string, serverDb: number) {
-    const server = new DredServer(options, serverId, serverDb);
+export async function createServer(
+    options: DredServerArgs,
+    serverId: string,
+    serverDb: number,
+    serverClass?: typeof DredServer
+) {
+    const SC = serverClass ?? DredServer;
+    const server = new SC(options, serverId, serverDb);
     const { api, redis } = server;
-    api.set("redis", redis);
+    api.set("redis", redis!);
 
     api.use(express.json({}));
-    const messagesInChannel = new RedisSet(redis);
+    const messagesInChannel = new RedisSet(redis!);
 
     return server;
 }
