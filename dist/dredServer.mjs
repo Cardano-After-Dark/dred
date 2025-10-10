@@ -5623,10 +5623,10 @@ async function init() {
             // Define known preprod hosts
             const knownHosts = [
                 {
-                    address: "74.208.13.84",
-                    port: 3029,
-                    serverId: "preprod-us",
-                    insecure: true,  // Use HTTP instead of HTTPS
+                    address: "us.pp.node-01.dred.network",
+                    port: 443,
+                    serverId: "https://us.pp.node-01.dred.network",
+                    insecure: false,  // Use HTTP instead of HTTPS
                     publicKey: "temp-key-1",
                     pubKeyHash: "temp-hash-1"
                 },

@@ -26,13 +26,13 @@ endef
 
 # Handle command arguments
 # For commands with just server parameter
-ifneq (,$(filter srv-setup srv-connect vps-infra-setup vps-dred-deploy vps-dred-logs,$(MAKECMDGOALS)))
+ifneq (,$(filter srv-setup srv-connect vps-infra-setup vps-dred-deploy vps-dred-logs dok-infra-setup dok-dred-deploy dok-dred-logs,$(MAKECMDGOALS)))
     SERVER := $(word 2,$(MAKECMDGOALS))
     $(eval $(SERVER):;@:)
 endif
 
 # For commands with server + extra arguments
-ifneq (,$(filter vps-check,$(MAKECMDGOALS)))
+ifneq (,$(filter vps-check dok-check,$(MAKECMDGOALS)))
     SERVER := $(word 2,$(MAKECMDGOALS))
     $(eval $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS)):;@:)
 endif
@@ -66,7 +66,10 @@ help:
 	@echo "  make vps-dred-logs [server]                    # Tail DRED logs (50 lines)"
 	@echo ""
 	@echo "Docker Ops:"
-	@echo "  #TODO: add equivalent to VPS setup, deploy, logs, check (next iteration)"
+	@echo "  make dok-infra-setup [server]                  # Step 2: Install Docker"
+	@echo "  make dok-dred-deploy [server]                  # Step 3: Deploy DRED application from $(DRED_BRANCH)"
+	@echo "  make dok-check [server] [command]              # Check Docker container status"
+	@echo "  make dok-dred-logs [server]                    # View Docker container logs"
 	@echo ""
 	@echo "Examples:"
 	@echo ""
@@ -182,7 +185,45 @@ vps-dred-logs:
 	@ssh $(SSH_USER)@$(call get_server_ip,$(SERVER)) "pm2 logs dred --lines 50"
 
 # =============================================================================
-# DOCKER OPERATIONS (TODO)
+# DOCKER OPERATIONS
 # =============================================================================
 
-# TODO: Docker equivalents for VPS operations will be added in next iteration
+.PHONY: dok-infra-setup
+dok-infra-setup:
+	@if [ -z "$(SERVER)" ]; then \
+		echo "Usage: make dok-infra-setup [server]"; \
+		echo "Available servers: us, de, uk"; \
+		exit 1; \
+	fi
+	@echo "Installing Docker on $(call get_server_name,$(SERVER))"
+	@./scripts/dok-infra-setup.sh $(call get_server_ip,$(SERVER))
+
+.PHONY: dok-dred-deploy
+dok-dred-deploy:
+	@if [ -z "$(SERVER)" ]; then \
+		echo "Usage: make dok-dred-deploy [server]"; \
+		echo "Available servers: us, de, uk"; \
+		exit 1; \
+	fi
+	@echo "Deploying DRED with Docker on $(call get_server_name,$(SERVER))"
+	@./scripts/dok-dred-deploy.sh $(call get_server_ip,$(SERVER)) $(call get_server_name,$(SERVER))
+
+.PHONY: dok-check
+dok-check:
+	@if [ -z "$(SERVER)" ]; then \
+		echo "Usage: make dok-check [server] [command] [args...]"; \
+		echo "Available servers: us, de, uk"; \
+		echo "Commands: status, logs, ps, exec, restart, env, health"; \
+		exit 1; \
+	fi
+	@./scripts/dok-check.sh $(call get_server_ip,$(SERVER)) $(call get_server_name,$(SERVER)) $(wordlist 3,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+
+.PHONY: dok-dred-logs
+dok-dred-logs:
+	@if [ -z "$(SERVER)" ]; then \
+		echo "Usage: make dok-dred-logs [server]"; \
+		echo "Available servers: us, de, uk"; \
+		exit 1; \
+	fi
+	@echo "Viewing logs for $(call get_server_name,$(SERVER))..."
+	@ssh $(SSH_USER)@$(call get_server_ip,$(SERVER)) "cd ~/dred-docker && sudo docker logs -f dred-node"
