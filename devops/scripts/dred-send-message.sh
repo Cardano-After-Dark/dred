@@ -14,12 +14,29 @@ CHANNEL="$2"
 shift 2
 MESSAGE="$*"
 
-# Resolve server name to IP:port (case insensitive)
+# Resolve server name to IP:port and domain (case insensitive)
 SERVER_LOWER=$(echo "$SERVER_OR_ADDR" | tr '[:upper:]' '[:lower:]')
+HOST_DOMAIN=""
 case "$SERVER_LOWER" in
-    us) ADDRESS="$US:$DRED_PORT" ;;
-    de) ADDRESS="$DE:$DRED_PORT" ;;
-    uk) ADDRESS="$UK:$DRED_PORT" ;;
+    us)
+        ADDRESS="$US:$DRED_PORT"
+        # Load server-specific config to get HOST_DOMAIN
+        if [ -f "$SCRIPT_DIR/../config/us.env" ]; then
+            source "$SCRIPT_DIR/../config/us.env"
+        fi
+        ;;
+    de)
+        ADDRESS="$DE:$DRED_PORT"
+        if [ -f "$SCRIPT_DIR/../config/de.env" ]; then
+            source "$SCRIPT_DIR/../config/de.env"
+        fi
+        ;;
+    uk)
+        ADDRESS="$UK:$DRED_PORT"
+        if [ -f "$SCRIPT_DIR/../config/uk.env" ]; then
+            source "$SCRIPT_DIR/../config/uk.env"
+        fi
+        ;;
     *:*) ADDRESS="$SERVER_OR_ADDR" ;;
     *)
         echo "Unknown server: $SERVER_OR_ADDR (use us|de|uk or address:port)"
@@ -28,4 +45,9 @@ case "$SERVER_LOWER" in
 esac
 
 echo "Sending to $ADDRESS / $CHANNEL: $MESSAGE"
-"$SCRIPT_DIR/send-message-on-channel.sh" "$ADDRESS" "$CHANNEL" "$MESSAGE"
+if [ -n "$HOST_DOMAIN" ]; then
+    echo "Using SSL domain: $HOST_DOMAIN"
+    "$SCRIPT_DIR/send-message-on-channel.sh" "$ADDRESS" "$CHANNEL" "$MESSAGE" "$HOST_DOMAIN"
+else
+    "$SCRIPT_DIR/send-message-on-channel.sh" "$ADDRESS" "$CHANNEL" "$MESSAGE"
+fi
