@@ -1,6 +1,6 @@
 "use strict";
 
-import { ReadableStream } from "@platform/ReadableStream.js";
+import { ReadableStream } from "@platform/ReadableStream";
 
 /*exported ndjsonStream*/
 // forked from can-ndjson-stream because its error handling is sub-par.

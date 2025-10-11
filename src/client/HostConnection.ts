@@ -1,6 +1,6 @@
 import { autobind, contextLogger, zonedLogger } from "@poshplum/utils";
 import { EventEmitter } from "eventemitter3";
-import { fromPlatformFetchBody } from "@platform/ReadableStream.js";
+import { fromPlatformFetchBody } from "@platform/ReadableStream";
 
 import { type connnectionSettings, type DredHostDetails } from "../types/DredHosts.js";
 // import { asyncDelay } from "../util/asyncDelay.js";
