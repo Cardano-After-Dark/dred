@@ -21,6 +21,8 @@
         "jsx": "react-jsx",
         "jsxImportSource": "preact",
         "paths": {
+            "@platform/ReadableStream.js": ["../../platform/browser/ReadableStream.ts"],
+            "@platform/ReadableStream": ["../../platform/browser/ReadableStream.ts"],
             "@platform/*": ["../../platform/browser/*"],
             // "sXXrc/*": ["../../src/*"]
         }

@@ -4,6 +4,8 @@
         "module": "es6",
         "moduleResolution": "bundler",
         "paths": {
+            "@platform/ReadableStream.js": ["../../platform/browser/ReadableStream.ts"],
+            "@platform/ReadableStream": ["../../platform/browser/ReadableStream.ts"],
             "@platform/*": ["../../platform/browser/*"],
             // "dred-client": ["./dist/dred-client.mjs"]
             // "sXXrc/*": ["../../src/*"]

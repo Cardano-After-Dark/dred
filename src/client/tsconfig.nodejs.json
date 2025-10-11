@@ -3,6 +3,8 @@
     "compilerOptions": {
         "experimentalDecorators": true,
         "paths": {
+            "@platform/ReadableStream.js": ["../../platform/server/ReadableStream.ts"],
+            "@platform/ReadableStream": ["../../platform/server/ReadableStream.ts"],
             "@platform/*": ["../../platform/server/*"],
             // "sXXrc/*": ["../../src/*"]
         }
