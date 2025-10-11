@@ -44,6 +44,7 @@ export default [
             alias({
                 entries: [
                     { find: '@platform/ReadableStream', replacement: '../../platform/browser/ReadableStream.ts' },
+                    { find: '@platform/ReadableStream.js', replacement: '../../platform/browser/ReadableStream.ts' },
                 ],
             }),
             // for rollup-plugin-ts

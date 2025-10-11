@@ -51,6 +51,7 @@ export default [
             alias({
                 entries: [
                     { find: '@platform/ReadableStream', replacement: '../../platform/server/ReadableStream.ts' },
+                    { find: '@platform/ReadableStream.js', replacement: '../../platform/server/ReadableStream.ts' },
                 ],
             }),
             esbuild({
