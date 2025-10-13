@@ -29,6 +29,7 @@ import { Discovery } from "../types/Discovery.js";
 import { DredServer } from "./DredServer.js";
 import { type DredHostDetails } from "../types/DredHosts.js";
 import { zonedLogger } from "@poshplum/utils";
+import { EventEmitter } from "eventemitter3";
 
 import {colors} from "../picocolors/picocolors.js";
 import { asyncDelay } from "../util/asyncDelay.js";
@@ -57,6 +58,7 @@ export class DredReplicator{
     private readonly discovery: Discovery;
     private replicants: Replicant[] = [];
     private initialized: boolean = false;
+    replicantsReady: Promise<void[]> | undefined;
 
     isInitialized(): boolean {
         return this.initialized;
@@ -105,32 +107,33 @@ export class DredReplicator{
         this.initialized = true;
         this.log(`initializing`);
 
-        
+
         // NOTE: the discovery is already filtering by neighborhood
         const hosts = await this.discovery.getHostList();
         const otherHosts = hosts.filter((host) => host.serverId !== this.homeServer.serverId);
+        const readySignals: Promise<void>[] = [];
         // Create all replicants first
         for (const host of otherHosts) {
             // handle replication from a single target server to the home server
-            const repClient = new Replicant(this, this.homeServer, host);
+            const replicant = new Replicant(this, this.homeServer, host);
             // Store replicant for cleanup
-            this.replicants.push(repClient);
-        }
-
-        // Start all connection loops in parallel (non-blocking)
-        this.replicants.forEach((replicant) => {
+            this.replicants.push(replicant);
+            readySignals.push(
+                new Promise<any>((resolve) => {
+                    replicant.eventEmitter.once("replicator:connected", resolve);
+                }),
+            );
             try {
-                // Start connection loop asynchronously - don't await
+                // Start connection loop in background
                 replicant.startConnectionLoop();
-            } catch (error) {
-                this.warn(`Failed to start connection loop for replicant: ${error}`);
+            } catch (error: any) {
+                this.logger.error(`starting connection loop:`, error.stack);
             }
-        });
+        }
+        this.replicantsReady = Promise.all(readySignals);
 
         // Don't wait for connections to complete - let them retry in background
-        this.log(`started ${this.replicants.length} connection loops in parallel`);
-
-        this.log(`initialized`);
+        this.log(`initialized with ${this.replicants.length} replicants`);
     }
 
     async cleanup() {
@@ -186,6 +189,10 @@ interface SimpleRetryState {
     retryTimer?: NodeJS.Timeout;
 }
 
+type ReplicationEvents = {
+    "replicator:connected": [replicant: Replicant];
+};
+
 /**
  * Replicant is a class that handles replication to a single target server.
  * It is responsible for:
@@ -202,6 +209,7 @@ export class Replicant{
     private repClient: DredClient | null;
     private retryState: SimpleRetryState;
     logger: ReturnType<typeof zonedLogger>
+    eventEmitter: EventEmitter<ReplicationEvents> = new EventEmitter<ReplicationEvents>();
 
     log(message: string, ...args: any[]) {
         // Use a simulated "replication" facility with target as loggerId
@@ -384,11 +392,14 @@ export class Replicant{
             });        
             
             await Promise.race([connectionPromise, timeoutPromise]);
-            
+
             // Connection successful - reset retry state
             this.resetRetryState();
             this.log(`✅ replication connection established`);
-            
+
+            // Emit connected event for replicantsReady promise
+            this.eventEmitter.emit("replicator:connected", this);
+
         } catch (error: any) {
             // Log the actual error for debugging
             this.warn(`connection attempt failed: ${error.message}`);
