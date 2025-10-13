@@ -66,7 +66,6 @@ import {
 } from "../types/ChannelSubscriptions.js";
 import { asyncDelay, autobind } from "@poshplum/utils";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
-import { NoBookmarkMemory } from "./NoBookmarkMemory.js";
 import { zonedLogger } from "@poshplum/utils";
 import { DredReplicator } from "./DredReplicator.js";
 import type { Logger } from "../types/Logger.js";
@@ -269,39 +268,6 @@ export class DredServer {
         // this.channelConn._log.error = console.error.bind(console);
         this.clientArgs = args;
         this.setupExpressHandlers();
-    }
-
-    /**
-     * Create a DredClient instance for connecting to a specific server.
-     * Used by the replicator to create clients for peer servers.
-     *
-     * @param serverSelection - The server ID to connect to.
-     * @param clientArgs - Additional client configuration options.
-     * @param serverManaged - Whether the client is managed by the server (affects cleanup).
-     * @returns A DredClient instance.
-     */
-    mkClient(serverSelection: string, clientArgs: Partial<DredClientArgs> = {}, serverManaged: boolean = true): DredClient {
-        const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
-        if (!discovery) throw new Error("discovery is required");
-
-        const oneHost = discovery.hosts!.find((h) => h.serverId === serverSelection);
-        if (!oneHost) {
-            this.logger.error(`server ${serverSelection} not found in discovery`, discovery);
-            throw new Error(`server ${serverSelection} not found in discovery`);
-        }
-        const singleDiscovery = new StaticHostDiscovery({
-            hosts: [oneHost],
-        });
-
-        const client = new DredClient({
-            ...this.clientArgs,
-            ...clientArgs,
-            neighborhood: this.nbh,
-            discovery: singleDiscovery,
-            bookmarkStorage: new NoBookmarkMemory(),
-        });
-
-        return client;
     }
 
     setupRedis(url: string | undefined) {

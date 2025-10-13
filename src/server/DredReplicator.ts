@@ -24,16 +24,25 @@
  * This class acts as the central coordinator for managing replication within a neighborhood.
  */
 
+import fetch from "cross-fetch";
+import { autobind, zonedLogger } from "@poshplum/utils";
+import { asyncDelay } from "../util/asyncDelay.js";
+import { colors } from "../picocolors/picocolors.js";
+import { nanoid } from "../util/nanoid.js";
+
+import { ConnectionManager } from "../client/ConnectionManager.js";
 import { DredClient } from "../client/DredClient.js";
 import { Discovery } from "../types/Discovery.js";
 import { DredServer } from "./DredServer.js";
-import { type DredHostDetails } from "../types/DredHosts.js";
-import { zonedLogger } from "@poshplum/utils";
 import { EventEmitter } from "eventemitter3";
+import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 
-import {colors} from "../picocolors/picocolors.js";
-import { asyncDelay } from "../util/asyncDelay.js";
-import { customAlphabet } from "nanoid";
+import type { FullDredMessage } from "../client/DredClient.js";
+import type { DredHostDetails } from "../types/DredHosts.js";
+import type { ConnectionManagerOptions } from "../types/PeerDiscovery.js";
+import type { Logger } from "../types/Logger.js";
+import { ReplicationSourceBookmarks } from "./ReplicationSourceBookmarks.js";
+import type { DredMessage, ReplicatedMessage } from "../types/ChannelSubscriptions.js";
 const {
     bgBlackBright,
     blue,
@@ -48,12 +57,11 @@ const {
     isColorSupported,
     bgBlack,
     magenta,
-    magentaBright
+    magentaBright,
 } = colors;
-const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
 
-export class DredReplicator{
-    logger: ReturnType<typeof zonedLogger>
+export class DredReplicator {
+    logger: Logger;
     private readonly homeServer: DredServer;
     private readonly discovery: Discovery;
     private replicants: Replicant[] = [];
@@ -74,23 +82,25 @@ export class DredReplicator{
     log(message: string, ...args: any[]) {
         this.logger.info(message, ...args);
     }
-
     warn(message: string, ...args: any[]) {
         this.logger.warn(message, ...args);
+    }
+    progress(message: string, ...args: any[]) {
+        this.logger.progress(message, ...args);
     }
     debug(message: string, ...args: any[]) {
         this.logger.debug(message, ...args);
     }
     
     constructor(homeServer: DredServer, discovery: Discovery) {
-        const serverDb = homeServer.redisDb
-        const dbInfo = serverDb ? `[${serverDb}]-` : ""
-        const name = `${nanoid(3)}${dbInfo}`;
+        const serverDb = homeServer.redisDb;
+        const dbInfo = serverDb ? `/#${serverDb}` : "";
+        const name = `${nanoid(4)}${dbInfo}`;
 
         this.logger = zonedLogger("replicator", {
             color: yellow.start,
             //  levels: {default: "info"},
-            loggerId: name
+            loggerId: name,
         });
         this.homeServer = homeServer;
         this.discovery = discovery;
@@ -100,12 +110,12 @@ export class DredReplicator{
     }
 
     async initialize() {
-        if(this.initialized) {
-            this.warn(`already initialized`);
+        if (this.initialized) {
+            this.progress(`already initialized`);
             return;
         }
         this.initialized = true;
-        this.log(`initializing`);
+        this.debug(`initializing`);
 
 
         // NOTE: the discovery is already filtering by neighborhood
@@ -133,35 +143,35 @@ export class DredReplicator{
         this.replicantsReady = Promise.all(readySignals);
 
         // Don't wait for connections to complete - let them retry in background
-        this.log(`initialized with ${this.replicants.length} replicants`);
+        this.progress(`initialized with ${this.replicants.length} replicants`);
     }
 
     async cleanup() {
-        if(!this.initialized) {
+        if (!this.initialized) {
             this.warn(`not initialized`);
             return;
         }
-        
-        this.warn(`Cleaning up ${this.replicants.length} replicants`);
+
+        this.debug(`cleanup ${this.replicants.length} replicants`);
         
         // Clean up all replicants - wait for all but continue on errors
         const results = await Promise.allSettled(
             this.replicants.map((replicant, index) => {
                 // this.debug(`cleaning up replicant ${index}`);
                 return replicant.cleanup();
-            })
+            }),
         );
-        
+
         // Log any failures but don't throw
         results.forEach((result, index) => {
-            if (result.status === 'rejected') {
+            if (result.status === "rejected") {
                 this.warn(`Error cleaning up replicant ${index}: ${result.reason}`);
             }
         });
-        
+
         this.replicants = [];
         this.initialized = false;
-        this.warn(`cleanup complete`);
+        this.progress(`cleanup complete`);
     }
 
     // // true when message with this ocid was already processed for this channel
@@ -200,26 +210,32 @@ type ReplicationEvents = {
  *  - replicating the messages from the target server to the home server, while preventing duplicates
  *  - listening to the home server for new channels
  */
-export class Replicant{
-    private static _logHeader = "[REPLicant]";
+export class Replicant {
     private replicator: DredReplicator;
     private homeServer: DredServer;
     private targetHost: DredHostDetails;
     private name: string;
     private repClient: DredClient | null;
     private retryState: SimpleRetryState;
-    logger: ReturnType<typeof zonedLogger>
+    logger: Logger;
     eventEmitter: EventEmitter<ReplicationEvents> = new EventEmitter<ReplicationEvents>();
-
     log(message: string, ...args: any[]) {
         // Use a simulated "replication" facility with target as loggerId
         // This mimics what Randall wanted: facility 'replication' with target-server-id as loggerId
         this.logger.info(message, ...args);
     }
-
     warn(message: string, ...args: any[]) {
         // Use a simulated "replication" facility with target as loggerId
         this.logger.warn(message, ...args);
+    }
+    progress(message: string, ...args: any[]) {
+        this.logger.progress(message, ...args);
+    }
+    debug(message: string, ...args: any[]) {
+        this.logger.debug(message, ...args);
+    }
+    trace(message: string, ...args: any[]) {
+        this.logger.trace(message, ...args);
     }
 
     constructor(replicator: DredReplicator, homeServer: DredServer, targetHost: DredHostDetails) {
@@ -353,19 +369,31 @@ export class Replicant{
                 // Error message already logged in checkServerAvailability with semantic format
                 throw new Error(`Target server ${this.targetHost.serverId} is not available`);
             }
-            
+            const focusedDiscovery = new StaticHostDiscovery({
+                hosts: [this.targetHost],
+                neighborhood: this.homeServer.nbh,
+            });
+
             // Create client and attempt connection with timeout
-            this.repClient = this.homeServer.mkClient(this.targetHost.serverId, {
-                name: `from-${this.homeServer.serverId}-to-${this.targetHost.serverId}`
-            }, false); // false = not server managed
-            
+            this.repClient = new DredClient({
+                ...this.homeServer.clientArgs,
+                name: this.name,
+                neighborhood: this.homeServer.nbh,
+                discovery: focusedDiscovery,
+                bookmarkStorage: new ReplicationSourceBookmarks(
+                    this.homeServer.serverId,
+                    this.targetHost.serverId,
+                    this.homeServer.redis!,
+                ),
+            });
+
             // Set max listeners to prevent memory leak warnings on various components
             if (this.repClient) {
                 const connManager = (this.repClient as any).connManager;
                 if (connManager && connManager.setMaxListeners) {
                     connManager.setMaxListeners(20);
                 }
-                
+
                 // Also set on the client itself if it supports it
                 if ((this.repClient as any).setMaxListeners) {
                     (this.repClient as any).setMaxListeners(20);
@@ -501,9 +529,6 @@ export class Replicant{
         
         this.retryState.isRetrying = false;
         this.retryState.nextRetryTime = undefined;
-    }
-    debug(message: string, ...args: any[]) {
-        this.logger.debug(message, ...args);
     }
 
     private async findCommonChannels(): Promise<string[]> {
