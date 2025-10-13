@@ -7,7 +7,8 @@ const name = packageJson.main.replace(/\.js$/, "");
 
 const serverBundledModules = [
     // "@platform/fetch.ts",
-     "@platform/ReadableStream"
+     "@platform/ReadableStream",
+     "@platform/ReadableStream.js"
 ];
 const forcedServerExternals = [];
 
@@ -69,6 +70,7 @@ export default [
             alias({
                 entries: [
                     { find: '@platform/ReadableStream', replacement: './platform/server/ReadableStream.ts' },
+                    { find: '@platform/ReadableStream.js', replacement: './platform/server/ReadableStream.ts' },
                 ],
             }),
             esbuildConfig,
@@ -85,6 +87,7 @@ export default [
             alias({
                 entries: [
                     { find: '@platform/ReadableStream', replacement: './platform/server/ReadableStream.ts' },
+                    { find: '@platform/ReadableStream.js', replacement: './platform/server/ReadableStream.ts' },
                 ],
             }),
             esbuildConfig,
