@@ -23,16 +23,16 @@ import 'node:path';
 const devMessage = Symbol("?developer?");
 //! it provides a type facade to describe available events
 
-var __defProp$c = Object.defineProperty;
-var __defNormalProp$c = (obj, key, value) => key in obj ? __defProp$c(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$c = (obj, key, value) => __defNormalProp$c(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$d = Object.defineProperty;
+var __defNormalProp$d = (obj, key, value) => key in obj ? __defProp$d(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$d = (obj, key, value) => __defNormalProp$d(obj, typeof key !== "symbol" ? key + "" : key, value);
 class Discovery {
   constructor(options) {
-    __publicField$c(this, "nbh");
+    __publicField$d(this, "nbh");
     // neighborhood
-    __publicField$c(this, "hosts");
-    __publicField$c(this, "events", new EventEmitter());
-    __publicField$c(this, "logger", contextLogger("discovery"));
+    __publicField$d(this, "hosts");
+    __publicField$d(this, "events", new EventEmitter());
+    __publicField$d(this, "logger", contextLogger("discovery"));
     const { neighborhood } = options;
     this.nbh = "";
     if (neighborhood) this.setNeighborhood(neighborhood);
@@ -91,16 +91,16 @@ class Discovery {
   }
 }
 
-var __defProp$b = Object.defineProperty;
-var __defNormalProp$b = (obj, key, value) => key in obj ? __defProp$b(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$b = (obj, key, value) => __defNormalProp$b(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$c = Object.defineProperty;
+var __defNormalProp$c = (obj, key, value) => key in obj ? __defProp$c(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$c = (obj, key, value) => __defNormalProp$c(obj, typeof key !== "symbol" ? key + "" : key, value);
 class NeighborhoodDiscovery extends Discovery {
   constructor(options) {
     const { neighborhood } = options;
     super(options);
-    __publicField$b(this, "capo");
-    __publicField$b(this, "registryController");
-    __publicField$b(this, "neighborhood");
+    __publicField$c(this, "capo");
+    __publicField$c(this, "registryController");
+    __publicField$c(this, "neighborhood");
     if (neighborhood) this.neighborhood = neighborhood;
   }
   async myServerInfo(serverId) {
@@ -248,14 +248,14 @@ class NeighborhoodDiscovery extends Discovery {
   }
 }
 
-var __defProp$a = Object.defineProperty;
-var __defNormalProp$a = (obj, key, value) => key in obj ? __defProp$a(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$a = (obj, key, value) => __defNormalProp$a(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$b = Object.defineProperty;
+var __defNormalProp$b = (obj, key, value) => key in obj ? __defProp$b(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$b = (obj, key, value) => __defNormalProp$b(obj, typeof key !== "symbol" ? key + "" : key, value);
 const { encodeUTF8: encodeUTF8$2, decodeUTF8: decodeUTF8$2, encodeBase64: encodeBase64$2, decodeBase64: decodeBase64$2 } = util;
 class StringNacl {
   constructor(keyPair, logger = console) {
-    __publicField$a(this, "identity");
-    __publicField$a(this, "logger");
+    __publicField$b(this, "identity");
+    __publicField$b(this, "logger");
     this.identity = keyPair;
     this.logger = logger;
   }
@@ -290,18 +290,18 @@ class StringNacl {
     return verify(strBuf, sigBuf, keyBuf);
   }
 }
-__publicField$a(StringNacl, "newKeyPair", newKeyPair);
+__publicField$b(StringNacl, "newKeyPair", newKeyPair);
 
-var __defProp$9 = Object.defineProperty;
-var __defNormalProp$9 = (obj, key, value) => key in obj ? __defProp$9(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$9 = (obj, key, value) => __defNormalProp$9(obj, key + "" , value);
+var __defProp$a = Object.defineProperty;
+var __defNormalProp$a = (obj, key, value) => key in obj ? __defProp$a(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$a = (obj, key, value) => __defNormalProp$a(obj, key + "" , value);
 const { encodeUTF8: encodeUTF8$1, decodeUTF8: decodeUTF8$1, encodeBase64: encodeBase64$1, decodeBase64: decodeBase64$1 } = util;
 const localNbh = "localhost-nbh";
 class StaticHostDiscovery extends Discovery {
   constructor(options) {
     const { neighborhood, hosts } = options;
     super({ neighborhood: localNbh });
-    __publicField$9(this, "hosts");
+    __publicField$a(this, "hosts");
     this.hosts = hosts || StaticHostDiscovery.defaultHosts();
   }
   async getNeighborhoods() {
@@ -379,7 +379,7 @@ class StaticHostDiscovery extends Discovery {
   }
 }
 
-const nanoid$1 = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 10);
+const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 10);
 
 const sep = {
   HASH: "#",
@@ -1300,9 +1300,9 @@ let createColors = (enabled = isColorSupported) => {
 };
 const colors = createColors();
 
-var __defProp$8 = Object.defineProperty;
-var __defNormalProp$8 = (obj, key, value) => key in obj ? __defProp$8(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$8 = (obj, key, value) => __defNormalProp$8(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$9 = Object.defineProperty;
+var __defNormalProp$9 = (obj, key, value) => key in obj ? __defProp$9(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$9 = (obj, key, value) => __defNormalProp$9(obj, typeof key !== "symbol" ? key + "" : key, value);
 const nbhChannelListChannel = "_chans";
 const nbhAuthInfoChannel = "_auth";
 function expandChannelListeners(listeners) {
@@ -1312,13 +1312,13 @@ const defaultMaxDelayMs = 0;
 const _ChannelSubscriptionListener = class _ChannelSubscriptionListener {
   // XXevents: EventEmitter<ChannelSubEvents>;
   constructor(config) {
-    __publicField$8(this, "config");
-    __publicField$8(this, "options");
-    __publicField$8(this, "logger");
-    __publicField$8(this, "olderMsgs");
-    __publicField$8(this, "recentMsgs");
-    __publicField$8(this, "lastRotated");
-    __publicField$8(this, "listener");
+    __publicField$9(this, "config");
+    __publicField$9(this, "options");
+    __publicField$9(this, "logger");
+    __publicField$9(this, "olderMsgs");
+    __publicField$9(this, "recentMsgs");
+    __publicField$9(this, "lastRotated");
+    __publicField$9(this, "listener");
     const { listener, logger, ...rest } = config;
     this.config = rest;
     this.options = rest.options;
@@ -1374,7 +1374,7 @@ const _ChannelSubscriptionListener = class _ChannelSubscriptionListener {
   }
 };
 // allows a message to be deduplicated within 60 seconds
-__publicField$8(_ChannelSubscriptionListener, "rotationIntervalMs", 30 * 1e3);
+__publicField$9(_ChannelSubscriptionListener, "rotationIntervalMs", 30 * 1e3);
 let ChannelSubscriptionListener = _ChannelSubscriptionListener;
 
 //! converts a nodejs Readable Stream as returned by `node-fetch` and `cross-fetch`
@@ -1485,18 +1485,18 @@ function ndjsonStream(responseBody) {
   });
 }
 
-var __defProp$7 = Object.defineProperty;
-var __defNormalProp$7 = (obj, key, value) => key in obj ? __defProp$7(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$7 = (obj, key, value) => __defNormalProp$7(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$8 = Object.defineProperty;
+var __defNormalProp$8 = (obj, key, value) => key in obj ? __defProp$8(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$8 = (obj, key, value) => __defNormalProp$8(obj, typeof key !== "symbol" ? key + "" : key, value);
 let instanceId = 0;
 class StateMachine {
   constructor() {
-    __publicField$7(this, "$state");
-    __publicField$7(this, "$notifier");
-    __publicField$7(this, "destroyed", false);
-    __publicField$7(this, "_deferredSMAction");
-    __publicField$7(this, "instanceId");
-    __publicField$7(this, "onEntry", {});
+    __publicField$8(this, "$state");
+    __publicField$8(this, "$notifier");
+    __publicField$8(this, "destroyed", false);
+    __publicField$8(this, "_deferredSMAction");
+    __publicField$8(this, "instanceId");
+    __publicField$8(this, "onEntry", {});
     this.instanceId = instanceId++;
     this.$state = this.initialState;
     this.$notifier = new EventEmitter();
@@ -1905,18 +1905,18 @@ class StateMachine {
   }
 }
 
-var __defProp$6 = Object.defineProperty;
+var __defProp$7 = Object.defineProperty;
 var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
-var __defNormalProp$6 = (obj, key, value) => key in obj ? __defProp$6(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp$7 = (obj, key, value) => key in obj ? __defProp$7(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __decorateClass$2 = (decorators, target, key, kind) => {
   var result = __getOwnPropDesc$2(target, key) ;
   for (var i = decorators.length - 1, decorator; i >= 0; i--)
     if (decorator = decorators[i])
       result = (decorator(target, key, result) ) || result;
-  if (result) __defProp$6(target, key, result);
+  if (result) __defProp$7(target, key, result);
   return result;
 };
-var __publicField$6 = (obj, key, value) => __defNormalProp$6(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __publicField$7 = (obj, key, value) => __defNormalProp$7(obj, typeof key !== "symbol" ? key + "" : key, value);
 const noTransitionsExcept = {
   connect: null,
   abort: null,
@@ -1939,28 +1939,28 @@ const _HostConnection = class _HostConnection extends StateMachine {
   constructor(options) {
     const { host, subscriptions, settings, clientid } = options;
     super();
-    __publicField$6(this, "events", new EventEmitter());
-    __publicField$6(this, "abortController");
-    __publicField$6(this, "host");
-    __publicField$6(this, "settings");
-    __publicField$6(this, "attempts", 0);
-    __publicField$6(this, "lastError");
-    __publicField$6(this, "channelSubs");
-    __publicField$6(this, "stream");
-    __publicField$6(this, "clientid");
-    __publicField$6(this, "startTime", (/* @__PURE__ */ new Date()).getTime());
-    __publicField$6(this, "scheduledRetry");
-    __publicField$6(this, "logger");
-    __publicField$6(this, "_status");
+    __publicField$7(this, "events", new EventEmitter());
+    __publicField$7(this, "abortController");
+    __publicField$7(this, "host");
+    __publicField$7(this, "settings");
+    __publicField$7(this, "attempts", 0);
+    __publicField$7(this, "lastError");
+    __publicField$7(this, "channelSubs");
+    __publicField$7(this, "stream");
+    __publicField$7(this, "clientid");
+    __publicField$7(this, "startTime", (/* @__PURE__ */ new Date()).getTime());
+    __publicField$7(this, "scheduledRetry");
+    __publicField$7(this, "logger");
+    __publicField$7(this, "_status");
     // assigned by state-machine
-    __publicField$6(this, "_destroyed", false);
+    __publicField$7(this, "_destroyed", false);
     // Flag to track if connection is being destroyed
-    __publicField$6(this, "_disconnecting", false);
-    __publicField$6(this, "connecting");
-    __publicField$6(this, "heartbeatInterval", 1e4);
-    __publicField$6(this, "lastHeartbeat", (/* @__PURE__ */ new Date()).getTime());
-    __publicField$6(this, "heartbeatTimer");
-    __publicField$6(this, "onEntry", {
+    __publicField$7(this, "_disconnecting", false);
+    __publicField$7(this, "connecting");
+    __publicField$7(this, "heartbeatInterval", 1e4);
+    __publicField$7(this, "lastHeartbeat", (/* @__PURE__ */ new Date()).getTime());
+    __publicField$7(this, "heartbeatTimer");
+    __publicField$7(this, "onEntry", {
       [`connecting`]: () => {
         return this.connect().then(
           () => {
@@ -2037,7 +2037,7 @@ const _HostConnection = class _HostConnection extends StateMachine {
         this.stopRetries();
       }
     });
-    __publicField$6(this, "transitionTable", {
+    __publicField$7(this, "transitionTable", {
       [`default`]: {
         ...noTransitionsExcept,
         connect: {
@@ -2117,7 +2117,7 @@ const _HostConnection = class _HostConnection extends StateMachine {
     });
     this.logger = zonedLogger("hostconn", {
       clientid,
-      loggerId: nanoid$1(4),
+      loggerId: nanoid(4),
       transitionName: void 0,
       addContext: null,
       extra: subscriptions.map((x) => x.channel)
@@ -2440,7 +2440,7 @@ const _HostConnection = class _HostConnection extends StateMachine {
     }
   }
 };
-__publicField$6(_HostConnection, "emitterHelp", connectionEvents);
+__publicField$7(_HostConnection, "emitterHelp", connectionEvents);
 __decorateClass$2([
   autobind
 ], _HostConnection.prototype, "watchdog");
@@ -2477,18 +2477,18 @@ async function fetcher(path, options) {
   throw reason;
 }
 
-var __defProp$5 = Object.defineProperty;
+var __defProp$6 = Object.defineProperty;
 var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
-var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp$6 = (obj, key, value) => key in obj ? __defProp$6(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __decorateClass$1 = (decorators, target, key, kind) => {
   var result = __getOwnPropDesc$1(target, key) ;
   for (var i = decorators.length - 1, decorator; i >= 0; i--)
     if (decorator = decorators[i])
       result = (decorator(target, key, result) ) || result;
-  if (result) __defProp$5(target, key, result);
+  if (result) __defProp$6(target, key, result);
   return result;
 };
-var __publicField$5 = (obj, key, value) => __defNormalProp$5(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __publicField$6 = (obj, key, value) => __defNormalProp$6(obj, typeof key !== "symbol" ? key + "" : key, value);
 const { cyan, dim } = colors;
 //!!! todo zw3w737: it has a way of posting the same unique message to multiple servers,
 const connectionManagerStates = {
@@ -2705,31 +2705,31 @@ class ConnectionManager extends StateMachine$1.withDefinition(
         color: cyan.start + dim.start
       }
     });
-    __publicField$5(this, "state", "pending");
-    __publicField$5(this, "discovery");
-    __publicField$5(this, "hosts");
-    __publicField$5(this, "events", new EventEmitter());
-    __publicField$5(this, "waitFor");
+    __publicField$6(this, "state", "pending");
+    __publicField$6(this, "discovery");
+    __publicField$6(this, "hosts");
+    __publicField$6(this, "events", new EventEmitter());
+    __publicField$6(this, "waitFor");
     //! it keeps a current list of target event-subscriptions
-    __publicField$5(this, "channelListeners");
+    __publicField$6(this, "channelListeners");
     //! it remembers the last set of subscriptions, while the next set is being established.
-    __publicField$5(this, "lastChannelSubs");
+    __publicField$6(this, "lastChannelSubs");
     //! it is initialized with connection settings used for tuning behavior of outgoing connections
-    __publicField$5(this, "connectionSettings");
-    __publicField$5(this, "bookmarkStorage");
+    __publicField$6(this, "connectionSettings");
+    __publicField$6(this, "bookmarkStorage");
     //! it can map from the host object to a best-known Connection object for that host.
-    __publicField$5(this, "hostToConn", /* @__PURE__ */ new Map());
+    __publicField$6(this, "hostToConn", /* @__PURE__ */ new Map());
     //! it keeps notes on the status of every connection it knows about, and can count the connections in each state
-    __publicField$5(this, "connStatus", /* @__PURE__ */ new Map());
+    __publicField$6(this, "connStatus", /* @__PURE__ */ new Map());
     //! it keeps a graveyard of connections that can drop out of the set anytime they're garbage-collected,
     //  for connections that are known to be obsolete / replaced by newer versions, but which might still get / emit
     //  some events while they wrap up their operations.
-    __publicField$5(this, "graveyard", /* @__PURE__ */ new WeakSet());
-    __publicField$5(this, "partialConnectNotification");
-    __publicField$5(this, "_status");
-    __publicField$5(this, "channels");
-    __publicField$5(this, "clientid");
-    __publicField$5(this, "logger");
+    __publicField$6(this, "graveyard", /* @__PURE__ */ new WeakSet());
+    __publicField$6(this, "partialConnectNotification");
+    __publicField$6(this, "_status");
+    __publicField$6(this, "channels");
+    __publicField$6(this, "clientid");
+    __publicField$6(this, "logger");
     this.clientid = options.clientid;
     this.logger = zonedLogger("connMgr", {
       loggerId: options.clientid,
@@ -3269,18 +3269,18 @@ __decorateClass$1([
   autobind
 ], ConnectionManager.prototype, "notifySubscribers");
 
-var __defProp$4 = Object.defineProperty;
+var __defProp$5 = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __decorateClass = (decorators, target, key, kind) => {
   var result = __getOwnPropDesc(target, key) ;
   for (var i = decorators.length - 1, decorator; i >= 0; i--)
     if (decorator = decorators[i])
       result = (decorator(target, key, result) ) || result;
-  if (result) __defProp$4(target, key, result);
+  if (result) __defProp$5(target, key, result);
   return result;
 };
-var __publicField$4 = (obj, key, value) => __defNormalProp$4(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __publicField$5 = (obj, key, value) => __defNormalProp$5(obj, typeof key !== "symbol" ? key + "" : key, value);
 const { sign } = nacl;
 const {
   yellowBright,
@@ -3351,7 +3351,7 @@ class DredClient extends StateMachine$1.withDefinition(clientStates, "client") {
       neighborhood,
       bookmarkStorage
     } = args;
-    const clientid = (clientName || `#${instanceCount}`) + `-${nanoid$1(5)}`;
+    const clientid = (clientName || `#${instanceCount}`) + `-${nanoid(5)}`;
     super({
       contextLabel: clientName || "dred-client",
       currentState: "default",
@@ -3361,30 +3361,30 @@ class DredClient extends StateMachine$1.withDefinition(clientStates, "client") {
         loggerId: clientid
       }
     });
-    __publicField$4(this, "args");
-    __publicField$4(this, "events", this.ensureEmitterExists());
-    __publicField$4(this, "connManager");
-    __publicField$4(this, "channels", []);
-    __publicField$4(this, "neighborhood");
+    __publicField$5(this, "args");
+    __publicField$5(this, "events", this.ensureEmitterExists());
+    __publicField$5(this, "connManager");
+    __publicField$5(this, "channels", []);
+    __publicField$5(this, "neighborhood");
     // = "cardano-after-dark";
-    __publicField$4(this, "availableNeighborhoods", []);
+    __publicField$5(this, "availableNeighborhoods", []);
     // neighborhoodContractAddress = "9bef...";
-    __publicField$4(this, "discovery");
-    __publicField$4(this, "identity");
-    __publicField$4(this, "signer");
-    __publicField$4(this, "pubKeyString");
-    __publicField$4(this, "logger");
-    __publicField$4(this, "insecure");
-    __publicField$4(this, "subscribers", /* @__PURE__ */ new Map());
-    __publicField$4(this, "channelSub");
-    __publicField$4(this, "authSub");
-    __publicField$4(this, "instanceNumber", instanceCount++);
-    __publicField$4(this, "clientid");
-    __publicField$4(this, "bookmarkStorage");
-    __publicField$4(this, "_messageHandler");
-    __publicField$4(this, "_subscriptions");
-    __publicField$4(this, "_status");
-    __publicField$4(this, "subscriptionCache", {});
+    __publicField$5(this, "discovery");
+    __publicField$5(this, "identity");
+    __publicField$5(this, "signer");
+    __publicField$5(this, "pubKeyString");
+    __publicField$5(this, "logger");
+    __publicField$5(this, "insecure");
+    __publicField$5(this, "subscribers", /* @__PURE__ */ new Map());
+    __publicField$5(this, "channelSub");
+    __publicField$5(this, "authSub");
+    __publicField$5(this, "instanceNumber", instanceCount++);
+    __publicField$5(this, "clientid");
+    __publicField$5(this, "bookmarkStorage");
+    __publicField$5(this, "_messageHandler");
+    __publicField$5(this, "_subscriptions");
+    __publicField$5(this, "_status");
+    __publicField$5(this, "subscriptionCache", {});
     if (!neighborhood) throw new Error("neighborhood is required");
     this.neighborhood = neighborhood;
     this.args = { ...args };
@@ -3841,7 +3841,7 @@ class DredClient extends StateMachine$1.withDefinition(clientStates, "client") {
       throw new Error(`message 'msg' attr must be a string, not a JSON object`);
     }
     if (!message.ocid) {
-      const _ocid = nanoid$1();
+      const _ocid = nanoid();
       ocid = message.ocid = _ocid;
     }
     if (sub) {
@@ -3878,15 +3878,15 @@ __decorateClass([
   autobind
 ], DredClient.prototype, "processAuthMsg");
 
-var __defProp$3 = Object.defineProperty;
-var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$3 = (obj, key, value) => __defNormalProp$3(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$4 = Object.defineProperty;
+var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$4 = (obj, key, value) => __defNormalProp$4(obj, typeof key !== "symbol" ? key + "" : key, value);
 class RedisSet {
   constructor(redis, key = "_abstract") {
-    __publicField$3(this, "redis");
-    __publicField$3(this, "key");
-    __publicField$3(this, "abstract");
-    __publicField$3(this, "disconnected", false);
+    __publicField$4(this, "redis");
+    __publicField$4(this, "key");
+    __publicField$4(this, "abstract");
+    __publicField$4(this, "disconnected", false);
     this.redis = redis.duplicate();
     this.key = key;
     this.abstract = !!(key === "_abstract");
@@ -3920,9 +3920,9 @@ class RedisSet {
   }
 }
 
-var __defProp$2 = Object.defineProperty;
-var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$2 = (obj, key, value) => __defNormalProp$2(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$3 = Object.defineProperty;
+var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$3 = (obj, key, value) => __defNormalProp$3(obj, typeof key !== "symbol" ? key + "" : key, value);
 const StringValueAdapter = {
   toRedis(v) {
     return v;
@@ -3941,11 +3941,11 @@ const JSONValueAdapter = {
 };
 class RedisHash {
   constructor(redis, hashName, adapter) {
-    __publicField$2(this, "redis");
-    __publicField$2(this, "hashName");
-    __publicField$2(this, "abstract");
-    __publicField$2(this, "adapter");
-    __publicField$2(this, "disconnected", false);
+    __publicField$3(this, "redis");
+    __publicField$3(this, "hashName");
+    __publicField$3(this, "abstract");
+    __publicField$3(this, "adapter");
+    __publicField$3(this, "disconnected", false);
     this.redis = redis.duplicate();
     this.hashName = hashName;
     this.adapter = adapter;
@@ -4004,11 +4004,34 @@ class RedisHash {
   }
 }
 
-class NoBookmarkMemory {
+var __defProp$2 = Object.defineProperty;
+var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$2 = (obj, key, value) => __defNormalProp$2(obj, typeof key !== "symbol" ? key + "" : key, value);
+class ReplicationSourceBookmarks {
+  constructor(localServerId, remoteServerId, connection) {
+    __publicField$2(this, "redis");
+    __publicField$2(this, "localServerId");
+    __publicField$2(this, "remoteServerId");
+    __publicField$2(this, "channelBookmarks");
+    this.redis = connection;
+    this.localServerId = localServerId;
+    this.remoteServerId = remoteServerId;
+    this.channelBookmarks = new RedisHash(
+      this.redis,
+      `bookmarks:repl<${this.localServerId}>-at-${this.remoteServerId}-#`,
+      StringValueAdapter
+    );
+  }
   async getBookmark(channel) {
-    return "0";
+    const result = await this.channelBookmarks.get(channel);
+    if (!result) {
+      return "0";
+    }
+    return result;
   }
   async setBookmark(channel, bookmark) {
+    return this.channelBookmarks.set(channel, bookmark).then(() => {
+    });
   }
 }
 
@@ -4018,7 +4041,6 @@ var __publicField$1 = (obj, key, value) => __defNormalProp$1(obj, typeof key !==
 const {
   blue,
   yellow} = colors;
-const nanoid = customAlphabet("0123456789abcdefghjkmnpqrstvwxyz", 12);
 class DredReplicator {
   constructor(homeServer, discovery) {
     __publicField$1(this, "logger");
@@ -4026,9 +4048,10 @@ class DredReplicator {
     __publicField$1(this, "discovery");
     __publicField$1(this, "replicants", []);
     __publicField$1(this, "initialized", false);
+    __publicField$1(this, "replicantsReady");
     const serverDb = homeServer.redisDb;
-    const dbInfo = serverDb ? `[${serverDb}]-` : "";
-    const name = `${nanoid(3)}${dbInfo}`;
+    const dbInfo = serverDb ? `/#${serverDb}` : "";
+    const name = `${nanoid(4)}${dbInfo}`;
     this.logger = zonedLogger("replicator", {
       color: yellow.start,
       //  levels: {default: "info"},
@@ -4052,38 +4075,45 @@ class DredReplicator {
   warn(message, ...args) {
     this.logger.warn(message, ...args);
   }
+  progress(message, ...args) {
+    this.logger.progress(message, ...args);
+  }
   debug(message, ...args) {
     this.logger.debug(message, ...args);
   }
   async initialize() {
     if (this.initialized) {
-      this.warn(`already initialized`);
+      this.progress(`already initialized`);
       return;
     }
     this.initialized = true;
-    this.log(`initializing`);
+    this.debug(`initializing`);
     const hosts = await this.discovery.getHostList();
     const otherHosts = hosts.filter((host) => host.serverId !== this.homeServer.serverId);
+    const readySignals = [];
     for (const host of otherHosts) {
-      const repClient = new Replicant(this, this.homeServer, host);
-      this.replicants.push(repClient);
-    }
-    this.replicants.forEach((replicant) => {
+      const replicant = new Replicant(this, this.homeServer, host);
+      this.replicants.push(replicant);
+      readySignals.push(
+        new Promise((resolve) => {
+          replicant.eventEmitter.once("replicator:connected", resolve);
+        })
+      );
       try {
         replicant.startConnectionLoop();
       } catch (error) {
-        this.warn(`Failed to start connection loop for replicant: ${error}`);
+        this.logger.error(`starting connection loop:`, error.stack);
       }
-    });
-    this.log(`started ${this.replicants.length} connection loops in parallel`);
-    this.log(`initialized`);
+    }
+    this.replicantsReady = Promise.all(readySignals);
+    this.progress(`initialized with ${this.replicants.length} replicants`);
   }
   async cleanup() {
     if (!this.initialized) {
       this.warn(`not initialized`);
       return;
     }
-    this.warn(`Cleaning up ${this.replicants.length} replicants`);
+    this.debug(`cleanup ${this.replicants.length} replicants`);
     const results = await Promise.allSettled(
       this.replicants.map((replicant, index) => {
         return replicant.cleanup();
@@ -4096,7 +4126,7 @@ class DredReplicator {
     });
     this.replicants = [];
     this.initialized = false;
-    this.warn(`cleanup complete`);
+    this.progress(`cleanup complete`);
   }
   // // true when message with this ocid was already processed for this channel
   // public hasProcessedMessage(channelId: string, messageId: string): boolean {
@@ -4120,6 +4150,7 @@ class Replicant {
     __publicField$1(this, "repClient");
     __publicField$1(this, "retryState");
     __publicField$1(this, "logger");
+    __publicField$1(this, "eventEmitter", new EventEmitter());
     this.replicator = replicator;
     this.homeServer = homeServer;
     this.targetHost = targetHost;
@@ -4141,6 +4172,15 @@ class Replicant {
   }
   warn(message, ...args) {
     this.logger.warn(message, ...args);
+  }
+  progress(message, ...args) {
+    this.logger.progress(message, ...args);
+  }
+  debug(message, ...args) {
+    this.logger.debug(message, ...args);
+  }
+  trace(message, ...args) {
+    this.logger.trace(message, ...args);
   }
   /**
    * Get a human-readable name for logging
@@ -4229,9 +4269,21 @@ class Replicant {
       if (!isAvailable) {
         throw new Error(`Target server ${this.targetHost.serverId} is not available`);
       }
-      this.repClient = this.homeServer.mkClient(this.targetHost.serverId, {
-        name: `from-${this.homeServer.serverId}-to-${this.targetHost.serverId}`
-      }, false);
+      const focusedDiscovery = new StaticHostDiscovery({
+        hosts: [this.targetHost],
+        neighborhood: this.homeServer.nbh
+      });
+      this.repClient = new DredClient({
+        ...this.homeServer.clientArgs,
+        name: this.name,
+        neighborhood: this.homeServer.nbh,
+        discovery: focusedDiscovery,
+        bookmarkStorage: new ReplicationSourceBookmarks(
+          this.homeServer.serverId,
+          this.targetHost.serverId,
+          this.homeServer.redis
+        )
+      });
       if (this.repClient) {
         const connManager = this.repClient.connManager;
         if (connManager && connManager.setMaxListeners) {
@@ -4258,6 +4310,7 @@ class Replicant {
       await Promise.race([connectionPromise, timeoutPromise]);
       this.resetRetryState();
       this.log(`\u2705 replication connection established`);
+      this.eventEmitter.emit("replicator:connected", this);
     } catch (error) {
       this.warn(`connection attempt failed: ${error.message}`);
       if (this.repClient) {
@@ -4279,7 +4332,7 @@ class Replicant {
       const url = `${protocol}://${this.targetHost.address}:${this.targetHost.port}/channels`;
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5e3);
-      const response = await fetch(url, {
+      const response = await fetch$1(url, {
         method: "GET",
         signal: controller.signal
       });
@@ -4335,9 +4388,6 @@ class Replicant {
     }
     this.retryState.isRetrying = false;
     this.retryState.nextRetryTime = void 0;
-  }
-  debug(message, ...args) {
-    this.logger.debug(message, ...args);
   }
   async findCommonChannels() {
     if (!this.repClient.channels || this.repClient.channels.length === 0) {
@@ -4492,7 +4542,6 @@ class Replicant {
     this.log(`cleanup complete`);
   }
 }
-__publicField$1(Replicant, "_logHeader", "[REPLicant]");
 
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
@@ -4764,7 +4813,7 @@ expiration '${opts.expiresAt.getTime() % 1e5}, now '${now.getTime() % 1e5}`
       const { msg, _type, _data, ...moreDetails } = message;
       let ocid = moreDetails.ocid;
       if (!ocid) {
-        ocid = nanoid$1(6);
+        ocid = nanoid(6);
         this.trace("generated missing ocid %s for message %o", ocid, message);
         moreDetails.ocid = ocid;
       }
@@ -4976,9 +5025,9 @@ expiration '${opts.expiresAt.getTime() % 1e5}, now '${now.getTime() % 1e5}`
     this.api.use((req, res, next) => {
       if (res.locals?.id) throw new Error("duplicate req processing detected");
       const { clientid = `\u2039gen\u203A` } = req.headers;
-      res.locals.clientid = `${clientid}-${nanoid$1(4)}`;
+      res.locals.clientid = `${clientid}-${nanoid(4)}`;
       res.locals.startTime = (/* @__PURE__ */ new Date()).getTime();
-      res.locals.id = nanoid$1(4);
+      res.locals.id = nanoid(4);
       this.reqLogger(res).info(`-> ${req.method} ${req.originalUrl} `);
       next();
     });
@@ -5012,35 +5061,6 @@ expiration '${opts.expiresAt.getTime() % 1e5}, now '${now.getTime() % 1e5}`
       this.adminReplicationStatus(...args);
     });
     this.api.use(this.resultLogger);
-  }
-  /**
-   * Create a DredClient instance for connecting to a specific server.
-   * Used by the replicator to create clients for peer servers.
-   *
-   * @param serverSelection - The server ID to connect to.
-   * @param clientArgs - Additional client configuration options.
-   * @param serverManaged - Whether the client is managed by the server (affects cleanup).
-   * @returns A DredClient instance.
-   */
-  mkClient(serverSelection, clientArgs = {}, serverManaged = true) {
-    const discovery = clientArgs.discovery ?? this.clientArgs.discovery;
-    if (!discovery) throw new Error("discovery is required");
-    const oneHost = discovery.hosts.find((h) => h.serverId === serverSelection);
-    if (!oneHost) {
-      this.logger.error(`server ${serverSelection} not found in discovery`, discovery);
-      throw new Error(`server ${serverSelection} not found in discovery`);
-    }
-    const singleDiscovery = new StaticHostDiscovery({
-      hosts: [oneHost]
-    });
-    const client = new DredClient({
-      ...this.clientArgs,
-      ...clientArgs,
-      neighborhood: this.nbh,
-      discovery: singleDiscovery,
-      bookmarkStorage: new NoBookmarkMemory()
-    });
-    return client;
   }
   setupRedis(url) {
     if (this.redis) throw new Error(`redis connection is already set up`);
@@ -5491,7 +5511,7 @@ expiration '${opts.expiresAt.getTime() % 1e5}, now '${now.getTime() % 1e5}`
     //! it emits a channel-created event in the _chans meta-channel.
     await streams.produce(chans, "a channel was created", {
       type: "chanCreated",
-      ocid: nanoid$1(8),
+      ocid: nanoid(8),
       msg: JSON.stringify({
         channel,
         options
