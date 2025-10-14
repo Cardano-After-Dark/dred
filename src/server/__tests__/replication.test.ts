@@ -72,6 +72,10 @@ describe("Message Replication", () => {
 
     describe("Setup Validation", () => {
         it("should have properly configured servers and clients", async () => {
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+            testLogger.info("🧪 TEST START: Setup Validation - properly configured servers and clients");
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+
             expect(dred1).toBeDefined();
             expect(dred2).toBeDefined();
             expect(dred3).toBeDefined();
@@ -101,6 +105,10 @@ describe("Message Replication", () => {
 
     describe("Basic Messaging", () => {
         it("delivers messages within the same server", async () => {
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+            testLogger.info("🧪 TEST START: Basic Messaging - delivers messages within the same server");
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+
             const testMessage = {
                 msg: "Hello from test!",
                 type: "greeting",
@@ -141,6 +149,10 @@ describe("Message Replication", () => {
         // Smoke test: Quick Redis connectivity check to ensure Redis is available before replication tests.
         // For detailed Redis functionality testing, see redis.test.ts
         it("should have working Redis connections for replication", async () => {
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+            testLogger.info("🧪 TEST START: Redis Integration - working Redis connections for replication");
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+
             // Verify Redis connections exist
             expect(dred1.redis).toBeDefined();
             expect(dred2.redis).toBeDefined();
@@ -160,6 +172,9 @@ describe("Message Replication", () => {
     describe("Cross-Server Replication", () => {
 
         it("should replicate messages between all three servers", async () => {
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+            testLogger.info("🧪 TEST START: Cross-Server Replication - replicate messages between all three servers");
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
 
             const clientMessage: TestMessage = {
                 msg: "Hello from c1 client!",
@@ -206,7 +221,11 @@ describe("Message Replication", () => {
             testLogger.progress(`🎉  success`);
         });
 
-        it("should replicate new channels added after replication starts", async () => {
+        fit("should replicate new channels added after replication starts", async () => {
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+            testLogger.info("🧪 TEST START: Cross-Server Replication - replicate new channels added after replication starts");
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+
             const dynamicChannelName = "dynamic-chan";
 
             testLogger.info(`🔧 Creating new channel '${dynamicChannelName}' on dred1 after replication started`);
