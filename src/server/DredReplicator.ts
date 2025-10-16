@@ -557,7 +557,7 @@ export class Replicant {
 
     private async subscribeToCommonChannels(channels: string[]): Promise<void> {
 
-        
+
         await new Promise(resolve => setTimeout(resolve, 100));
 
         // Connection state check
@@ -566,10 +566,15 @@ export class Replicant {
           - ConnManager: ${this.repClient!.connManager.currentState}
           - Waiting for connection...
           - After wait - RepClient: ${this.repClient!.currentState}, ConnManager: ${this.repClient!.connManager.currentState}`);
-        
+
         // Create subscription map with replication handlers
         const subscriptionMap: Record<string, (msg: any) => void> = {};
-        
+
+        // Subscribe to _chans meta channel to detect new channels
+        subscriptionMap['_chans'] = (message) => {
+            this.handleChannelEvent(message);
+        };
+
         for (const channel of channels) {
             subscriptionMap[channel] = (message) => {
                 this.warn(`📥 REPLICATION: Message detected from ${this.targetHost.serverId} in channel '${channel}' (${message.mid})`);
@@ -578,12 +583,12 @@ export class Replicant {
                 this.handleIncomingMessage(channel, message);
             };
         }
-        
-        this.warn(`🔔 REPLICATION: Subscribing to ${channels.length} channels`);
+
+        this.warn(`🔔 REPLICATION: Subscribing to ${channels.length} channels + _chans meta channel`);
 
         await this.repClient!.subscribeToChannels(subscriptionMap);
 
-        this.warn(`✅ Successfully subscribed to ${channels.length} channels`);
+        this.warn(`✅ Successfully subscribed to ${channels.length} channels + _chans`);
     }
 
     /**
@@ -691,7 +696,7 @@ export class Replicant {
     private async replicateToHomeServer(channelId: string, messageDetails: any): Promise<void> {
         try {
             this.warn(`📤 REPLICATION: Publishing to home server '${this.homeServer.serverId}' in channel '${channelId}' (ocid: ${messageDetails.ocid})`);
-            
+
             // Use the DredServer's deduplication system to prevent duplicate messages
             const result = await this.homeServer.ensureMessageProcessedOnce(
                 channelId,
@@ -699,16 +704,92 @@ export class Replicant {
                 messageDetails.msg,
                 messageDetails
             );
-            
+
             if (result) {
                 this.log(`Message successfully replicated to home server: ${result}`);
             } else {
                 this.log(`Message was a duplicate, not replicated: ${messageDetails.ocid}`);
             }
-            
+
         } catch (error) {
             this.warn(`Failed to replicate message to home server channel ${channelId}: ${error}`);
             throw error;
+        }
+    }
+
+    /**
+     * Handle channel events from _chans meta channel
+     */
+    private handleChannelEvent(message: any): void {
+        try {
+            const { type, msg } = message;
+
+            if (type === 'chanCreated') {
+                const data = JSON.parse(msg);
+                const { channel, options } = data;
+
+                this.log(`📢 Channel creation detected on ${this.targetHost.serverId}: ${channel}`);
+                // Handle asynchronously but don't await to avoid blocking
+                this.handleChannelAdded(channel, options).catch(error => {
+                    this.warn(`Error handling channel addition: ${error}`);
+                });
+            }
+        } catch (error) {
+            this.warn(`Error handling channel event: ${error}`);
+        }
+    }
+
+    /**
+     * Handle a new channel being added on the target server
+     */
+    private async handleChannelAdded(channelName: string, options: any): Promise<void> {
+        try {
+            // Check if home server already has this channel
+            const hasChannel = await this.homeServer.channelList.has(channelName);
+
+            if (hasChannel) {
+                this.debug(`Channel ${channelName} already exists on home server`);
+                return;
+            }
+
+            this.log(`🆕 Creating channel ${channelName} on home server ${this.homeServer.serverId}`);
+
+            // Create channel on home server using the same options
+            await this.homeServer.channelList.set(channelName, '1');
+            await this.homeServer.setChanOptions(channelName, options);
+
+            // Subscribe to this new channel for message replication
+            await this.subscribeToNewChannel(channelName);
+
+            this.log(`✅ Channel ${channelName} replicated and subscribed`);
+        } catch (error) {
+            this.warn(`Failed to handle channel addition for ${channelName}: ${error}`);
+        }
+    }
+
+    /**
+     * Subscribe to a newly discovered channel
+     */
+    private async subscribeToNewChannel(channelName: string): Promise<void> {
+        try {
+            this.log(`📥 Subscribing to new channel: ${channelName}`);
+
+            // Create subscription for this channel
+            const newSubscription = {
+                [channelName]: (message: any) => {
+                    this.warn(`📥 REPLICATION: Message detected from ${this.targetHost.serverId} in channel '${channelName}' (${message.mid})`);
+                    const{connection, ...core}=message;
+                    this.log(`🎯 REPL MESSAGE from ${this.targetHost.serverId}:`, core);
+                    this.handleIncomingMessage(channelName, message);
+                }
+            };
+
+            // Subscribe to the new channel
+            await this.repClient!.subscribeToChannels(newSubscription);
+
+            this.log(`✅ Subscribed to new channel: ${channelName}`);
+        } catch (error) {
+            this.warn(`Failed to subscribe to new channel ${channelName}: ${error}`);
         }
     }
 
