@@ -579,13 +579,20 @@ export class Replicant {
           - Waiting for connection...
           - After wait - RepClient: ${this.repClient!.currentState}, ConnManager: ${this.repClient!.connManager.currentState}`);
 
+        // Subscribe to _chans meta channel to detect new channels
+        await this.repClient!.subscribeToChannels({
+            '_chans': (message: any) => {
+                this.handleChannelEvent(message);
+            }
+        });
+
         await this.repClient!.subscribeToChannels({
             type: "mass",
             channels,
             massHandler: this.messageHandler.bind(this),
         });
 
-        this.progress(`subscribed to ${channels.length} channels`);
+        this.progress(`subscribed to ${channels.length} channels + _chans meta channel`);
     }
 
     /**
@@ -710,6 +717,76 @@ export class Replicant {
         } catch (error) {
             this.logger.error(`while adding to channel ${channelId}: ${error}`);
             throw error;
+        }
+    }
+
+    /**
+     * Handle channel events from _chans meta channel
+     */
+    private handleChannelEvent(message: any): void {
+        try {
+            const { type, msg } = message;
+
+            if (type === 'chanCreated') {
+                const data = JSON.parse(msg);
+                const { channel, options } = data;
+
+                this.log(`📢 Channel creation detected on ${this.targetHost.serverId}: ${channel}`);
+                // Handle asynchronously but don't await to avoid blocking
+                this.handleChannelAdded(channel, options).catch(error => {
+                    this.warn(`Error handling channel addition: ${error}`);
+                });
+            }
+        } catch (error) {
+            this.warn(`Error handling channel event: ${error}`);
+        }
+    }
+
+    /**
+     * Handle a new channel being added on the target server
+     */
+    private async handleChannelAdded(channelName: string, options: any): Promise<void> {
+        try {
+            // Check if home server already has this channel
+            const hasChannel = await this.homeServer.channelList.has(channelName);
+
+            if (hasChannel) {
+                this.debug(`Channel ${channelName} already exists on home server`);
+                return;
+            }
+
+            this.log(`🆕 Creating channel ${channelName} on home server ${this.homeServer.serverId}`);
+
+            // Create channel on home server using the same options
+            await this.homeServer.channelList.set(channelName, '1');
+            await this.homeServer.setChanOptions(channelName, options);
+
+            // Subscribe to this new channel for message replication
+            await this.subscribeToNewChannel(channelName);
+
+            this.log(`✅ Channel ${channelName} replicated and subscribed`);
+        } catch (error) {
+            this.warn(`Failed to handle channel addition for ${channelName}: ${error}`);
+        }
+    }
+
+    /**
+     * Subscribe to a newly discovered channel using mass handler (compatible with main branch)
+     */
+    private async subscribeToNewChannel(channelName: string): Promise<void> {
+        try {
+            this.log(`📥 Subscribing to new channel: ${channelName}`);
+
+            // Subscribe using the mass handler approach (compatible with main branch)
+            await this.repClient!.subscribeToChannels({
+                type: "mass",
+                channels: [channelName],
+                massHandler: this.messageHandler.bind(this),
+            });
+
+            this.log(`✅ Subscribed to new channel: ${channelName}`);
+        } catch (error) {
+            this.warn(`Failed to subscribe to new channel ${channelName}: ${error}`);
         }
     }
 
