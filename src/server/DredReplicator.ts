@@ -559,10 +559,15 @@ export class Replicant {
         this.trace(`my channels: ${homeChannels.join(", ")}`);
 
         // Find intersection (channels that exist on both servers)
+        // Skip ALL meta channels (those starting with _)
         const commonChannels = targetChannels.filter(
-            (channel) => homeChannels.includes(channel) && !channel.startsWith("_"), // Skip meta channels for now
+            (channel) => homeChannels.includes(channel) && !channel.startsWith("_"),
         );
-        
+
+        // Note: We do NOT add _chans here. It will be subscribed to separately
+        // because DredClient automatically subscribes to _chans with its own handler.
+        // We'll override that handler in subscribeToCommonChannels().
+
         this.trace(`common channels: ${commonChannels.join(", ")}`);
         this.progress(`${commonChannels.length} common channels`);
 
@@ -579,18 +584,24 @@ export class Replicant {
           - Waiting for connection...
           - After wait - RepClient: ${this.repClient!.currentState}, ConnManager: ${this.repClient!.connManager.currentState}`);
 
-        // Subscribe to _chans meta channel to detect new channels
-        await this.repClient!.subscribeToChannels({
-            '_chans': (message: any) => {
+        // Use mapped subscription to handle _chans separately
+        // DredClient automatically subscribes to _chans, so we need to override its handler
+        const subscriptionMap: Record<string, (message: FullDredMessage) => void> = {
+            // Dedicated handler for _chans to monitor channel creation events
+            '_chans': (message: FullDredMessage) => {
                 this.handleChannelEvent(message);
             }
-        });
+        };
 
-        await this.repClient!.subscribeToChannels({
-            type: "mass",
-            channels,
-            massHandler: this.messageHandler.bind(this),
-        });
+        // Add mass handler for regular channels
+        for (const channel of channels) {
+            subscriptionMap[channel] = (message: FullDredMessage) => {
+                this.messageHandler(message);
+            };
+        }
+
+        this.log(`🎯 Subscribing to ${channels.length} channels + _chans`);
+        await this.repClient!.subscribeToChannels(subscriptionMap);
 
         this.progress(`subscribed to ${channels.length} channels + _chans meta channel`);
     }
@@ -697,9 +708,9 @@ export class Replicant {
 
     private async addMessage(channelId: string, mid: string, messageDetails: DredMessage & ReplicatedMessage): Promise<void> {
         try {
+            const { ocid } = messageDetails;
             // this.warn(`📤 REPLICATION: Publishing to home server '${this.homeServer.serverId}' in channel '${channelId}' (ocid: ${messageDetails.ocid})`);
 
-            const { ocid } = messageDetails
             // Use the DredServer's deduplication system to prevent duplicate messages
             const result = await this.homeServer.ensureMessageProcessedOnce(
                 channelId,
@@ -771,27 +782,45 @@ export class Replicant {
             // Subscribe to this new channel for message replication
             await this.subscribeToNewChannel(channelName);
 
-            this.log(`✅ Channel ${channelName} replicated and subscribed`);
+            this.log(`✅ Channel ${channelName} created and subscribed on home server`);
         } catch (error) {
             this.warn(`Failed to handle channel addition for ${channelName}: ${error}`);
         }
     }
 
     /**
-     * Subscribe to a newly discovered channel using mass handler (compatible with main branch)
+     * Subscribe to a newly discovered channel by re-subscribing to all channels
+     * This ensures we maintain the _chans handler while adding the new channel
      */
     private async subscribeToNewChannel(channelName: string): Promise<void> {
         try {
-            this.log(`📥 Subscribing to new channel: ${channelName}`);
+            this.debug(`Adding subscription for new channel: ${channelName}`);
 
-            // Subscribe using the mass handler approach (compatible with main branch)
-            await this.repClient!.subscribeToChannels({
-                type: "mass",
-                channels: [channelName],
-                massHandler: this.messageHandler.bind(this),
-            });
+            // Force refresh channel list from target server to include the new channel
+            this.repClient!.channels = [];  // Clear cache to force refresh
 
-            this.log(`✅ Subscribed to new channel: ${channelName}`);
+            // Get current list of common channels
+            const commonChannels = await this.findCommonChannels();
+
+            // Create subscription map including _chans and all channels
+            const subscriptionMap: Record<string, (message: FullDredMessage) => void> = {
+                // Dedicated handler for _chans to monitor channel creation events
+                '_chans': (message: FullDredMessage) => {
+                    this.handleChannelEvent(message);
+                }
+            };
+
+            // Add handlers for all regular channels (including the new one)
+            for (const channel of commonChannels) {
+                subscriptionMap[channel] = (message: FullDredMessage) => {
+                    this.messageHandler(message);
+                };
+            }
+
+            this.progress(`re-subscribing to ${commonChannels.length} channels + _chans (including new: ${channelName})`);
+            await this.repClient!.subscribeToChannels(subscriptionMap);
+
+            this.progress(`subscribed to new channel: ${channelName}`);
         } catch (error) {
             this.warn(`Failed to subscribe to new channel ${channelName}: ${error}`);
         }
