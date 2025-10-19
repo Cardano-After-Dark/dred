@@ -221,7 +221,7 @@ describe("Message Replication", () => {
             testLogger.progress(`🎉  success`);
         });
 
-        fit("should replicate new channels added after replication starts", async () => {
+        it("should replicate new channels added after replication starts", async () => {
             testLogger.info("═══════════════════════════════════════════════════════════════════");
             testLogger.info("🧪 TEST START: Cross-Server Replication - replicate new channels added after replication starts");
             testLogger.info("═══════════════════════════════════════════════════════════════════");
