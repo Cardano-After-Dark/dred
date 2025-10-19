@@ -732,6 +732,13 @@ export class Replicant {
                 const { channel, options } = data;
 
                 this.log(`📢 Channel creation detected on ${this.targetHost.serverId}: ${channel}`);
+
+                // Skip meta channels (they start with _)
+                if (channel.startsWith('_')) {
+                    this.debug(`Skipping meta channel: ${channel}`);
+                    return;
+                }
+
                 // Handle asynchronously but don't await to avoid blocking
                 this.handleChannelAdded(channel, options).catch(error => {
                     this.warn(`Error handling channel addition: ${error}`);
