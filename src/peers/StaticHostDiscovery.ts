@@ -62,12 +62,14 @@ export class StaticHostDiscovery extends Discovery {
         // Read host and port from environment variables for production deployment
         const host = process.env.DRED_HOST || "127.0.0.1";
         const port = parseInt(process.env.DRED_PORT || "3029");
-        
+        // Use DRED_USE_INSECURE env var to determine HTTP/HTTPS, default to false (HTTPS)
+        const insecure = process.env.DRED_USE_INSECURE === 'true';
+
         return [{
             serverId: "singleton",
             address: host,
             port: port,
-            insecure: true,            
+            insecure: insecure,
             // publicKey: this.getPubKeyFromFs(3029),
         }]
     }

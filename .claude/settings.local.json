@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(mkdir:*)",
+      "Bash(cat:*)",
+      "Read(//private/tmp/**)"
+    ]
+  },
+  "enableAllProjectMcpServers": false
+}

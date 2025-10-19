@@ -6,3 +6,8 @@ config/keys/
 devdb
 docs/out/
 docs/.next/
+
+# Environment files with secrets
+.env
+!.env.example
+.ai/

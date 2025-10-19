@@ -72,6 +72,10 @@ describe("Message Replication", () => {
 
     describe("Setup Validation", () => {
         it("should have properly configured servers and clients", async () => {
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+            testLogger.info("🧪 TEST START: Setup Validation - properly configured servers and clients");
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+
             expect(dred1).toBeDefined();
             expect(dred2).toBeDefined();
             expect(dred3).toBeDefined();
@@ -101,6 +105,10 @@ describe("Message Replication", () => {
 
     describe("Basic Messaging", () => {
         it("delivers messages within the same server", async () => {
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+            testLogger.info("🧪 TEST START: Basic Messaging - delivers messages within the same server");
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+
             const testMessage = {
                 msg: "Hello from test!",
                 type: "greeting",
@@ -141,6 +149,10 @@ describe("Message Replication", () => {
         // Smoke test: Quick Redis connectivity check to ensure Redis is available before replication tests.
         // For detailed Redis functionality testing, see redis.test.ts
         it("should have working Redis connections for replication", async () => {
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+            testLogger.info("🧪 TEST START: Redis Integration - working Redis connections for replication");
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+
             // Verify Redis connections exist
             expect(dred1.redis).toBeDefined();
             expect(dred2.redis).toBeDefined();
@@ -160,6 +172,9 @@ describe("Message Replication", () => {
     describe("Cross-Server Replication", () => {
 
         it("should replicate messages between all three servers", async () => {
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+            testLogger.info("🧪 TEST START: Cross-Server Replication - replicate messages between all three servers");
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
 
             const clientMessage: TestMessage = {
                 msg: "Hello from c1 client!",
@@ -168,12 +183,12 @@ describe("Message Replication", () => {
 
             let c2Received = 0;
             let c3Received = 0;
-   
+
             testLogger.info("setting up listeners on each server");
 
             // CRITICAL: Set up c2 subscription BEFORE sending message
             // The client must be subscribed and ready to receive messages before replication occurs.
-            // Without await here, the subscription setup is asynchronous and the client may miss 
+            // Without await here, the subscription setup is asynchronous and the client may miss
             // the replicated message, causing the test to fail intermittently.
             const s2 = c2.subscribeToChannels({
                 [CHANNEL_NAME]: (message) => {
@@ -204,6 +219,76 @@ describe("Message Replication", () => {
             expect(c2Received).toBe(1);
             expect(c3Received).toBe(1);
             testLogger.progress(`🎉  success`);
+        });
+
+        fit("should replicate new channels added after replication starts", async () => {
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+            testLogger.info("🧪 TEST START: Cross-Server Replication - replicate new channels added after replication starts");
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+
+            const dynamicChannelName = "dynamic-chan";
+
+            testLogger.info(`🔧 Creating new channel '${dynamicChannelName}' on dred1 after replication started`);
+
+            // Create a new channel on dred1 (first server) after replication has already started
+            await c1.createChannel(dynamicChannelName);
+
+            // Wait for channel creation event to propagate and replicants to detect it
+            await asyncDelay(200);
+
+            // Verify the channel exists on all servers
+            testLogger.info("Verifying channel exists on all servers");
+            const dred1Channels = await dred1.channelList.keys();
+            const dred2Channels = await dred2.channelList.keys();
+            const dred3Channels = await dred3.channelList.keys();
+
+            testLogger.info(`dred1 channels: ${dred1Channels.join(', ')}`);
+            testLogger.info(`dred2 channels: ${dred2Channels.join(', ')}`);
+            testLogger.info(`dred3 channels: ${dred3Channels.join(', ')}`);
+
+            expect(dred1Channels).toContain(dynamicChannelName);
+            expect(dred2Channels).toContain(dynamicChannelName);
+            expect(dred3Channels).toContain(dynamicChannelName);
+
+            // Now test message replication in the dynamically created channel
+            const testMessage: TestMessage = {
+                msg: "Message in dynamic channel",
+                type: "dynamic-test"
+            };
+
+            let c2DynamicReceived = 0;
+            let c3DynamicReceived = 0;
+
+            testLogger.info(`Setting up subscriptions to ${dynamicChannelName}`);
+
+            // Subscribe clients to the new channel
+            await Promise.all([
+                c2.subscribeToChannels({
+                    [dynamicChannelName]: (message) => {
+                        testLogger.progress(`📥 c2 received in ${dynamicChannelName}: ${message.msg}`);
+                        expect(message).toMatchObject(testMessage);
+                        c2DynamicReceived++;
+                    }
+                }),
+                c3.subscribeToChannels({
+                    [dynamicChannelName]: (message) => {
+                        testLogger.progress(`📥 c3 received in ${dynamicChannelName}: ${message.msg}`);
+                        expect(message).toMatchObject(testMessage);
+                        c3DynamicReceived++;
+                    }
+                })
+            ]);
+
+            testLogger.info(`Posting message to ${dynamicChannelName}`);
+            await c1.postMessage(dynamicChannelName, testMessage);
+
+            // Wait for replication
+            await asyncDelay(40);
+
+            expect(c2DynamicReceived).toBe(1);
+            expect(c3DynamicReceived).toBe(1);
+
+            testLogger.progress(`✅ Dynamic channel replication successful!`);
         });
 
     });
