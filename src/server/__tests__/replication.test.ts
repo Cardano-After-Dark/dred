@@ -238,9 +238,9 @@ describe("Message Replication", () => {
 
             // Verify the channel exists on all servers
             testLogger.info("Verifying channel exists on all servers");
-            const dred1Channels = await dred1.channelList.keys();
-            const dred2Channels = await dred2.channelList.keys();
-            const dred3Channels = await dred3.channelList.keys();
+            const dred1Channels = await dred1.channelList.keys() as string[];
+            const dred2Channels = await dred2.channelList.keys() as string[];
+            const dred3Channels = await dred3.channelList.keys() as string[];
 
             testLogger.info(`dred1 channels: ${dred1Channels.join(', ')}`);
             testLogger.info(`dred2 channels: ${dred2Channels.join(', ')}`);
@@ -289,6 +289,104 @@ describe("Message Replication", () => {
             expect(c3DynamicReceived).toBe(1);
 
             testLogger.progress(`✅ Dynamic channel replication successful!`);
+        });
+
+        fit("should deliver historical messages when a new server connects to an existing channel", async () => {
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+            testLogger.info("🧪 TEST START: Cross-Server Replication - deliver historical messages on new connection");
+            testLogger.info("═══════════════════════════════════════════════════════════════════");
+
+            const historyChannelName = "history-test";
+
+            // Step 1: Create channel on dred1
+            testLogger.info(`Creating channel '${historyChannelName}' on dred1`);
+            await c1.createChannel(historyChannelName);
+            await asyncDelay(200); // Wait for channel to replicate to dred2 and dred3
+
+            // Step 2: Send some messages between dred1 and dred2 (before dred3 client connects)
+            testLogger.info("Sending historical messages between dred1 and dred2");
+
+            const message1: TestMessage = {
+                msg: "Historical message 1",
+                type: "history-test"
+            };
+            const message2: TestMessage = {
+                msg: "Historical message 2",
+                type: "history-test"
+            };
+
+            // Subscribe c2 to the channel
+            const c2Messages: string[] = [];
+            await c2.subscribeToChannels({
+                [historyChannelName]: (message) => {
+                    c2Messages.push(message.msg);
+                    testLogger.progress(`📥 c2 received: ${message.msg}`);
+                }
+            });
+
+            // Post messages from c1
+            await c1.postMessage(historyChannelName, message1);
+            await asyncDelay(40); // Wait for replication
+            await c1.postMessage(historyChannelName, message2);
+            await asyncDelay(40); // Wait for replication
+
+            testLogger.info(`c2 received ${c2Messages.length} messages so far`);
+            expect(c2Messages.length).toBe(2);
+
+            // Step 3: Now c3 connects and should receive historical messages
+            testLogger.info("c3 connecting to channel (should receive historical messages)");
+
+            const c3Messages: string[] = [];
+            await c3.subscribeToChannels({
+                [historyChannelName]: (message) => {
+                    c3Messages.push(message.msg);
+                    testLogger.progress(`📥 c3 received historical: ${message.msg}`);
+                }
+            });
+
+            // Wait a bit for historical messages to be delivered
+            await asyncDelay(100);
+
+            // c3 should have received the 2 historical messages
+            testLogger.info(`c3 received ${c3Messages.length} historical messages`);
+            expect(c3Messages.length).toBe(2);
+            expect(c3Messages).toContain("Historical message 1");
+            expect(c3Messages).toContain("Historical message 2");
+
+            // Step 4: Send a new message to verify real-time delivery still works
+            const message3: TestMessage = {
+                msg: "New message after c3 joined",
+                type: "history-test"
+            };
+
+            const c2NewMessages: string[] = [];
+            const c3NewMessages: string[] = [];
+
+            await c2.subscribeToChannels({
+                [historyChannelName]: (message) => {
+                    if (message.msg === message3.msg) {
+                        c2NewMessages.push(message.msg);
+                        testLogger.progress(`📥 c2 received new: ${message.msg}`);
+                    }
+                }
+            });
+
+            await c3.subscribeToChannels({
+                [historyChannelName]: (message) => {
+                    if (message.msg === message3.msg) {
+                        c3NewMessages.push(message.msg);
+                        testLogger.progress(`📥 c3 received new: ${message.msg}`);
+                    }
+                }
+            });
+
+            await c1.postMessage(historyChannelName, message3);
+            await asyncDelay(40);
+
+            expect(c2NewMessages.length).toBe(1);
+            expect(c3NewMessages.length).toBe(1);
+
+            testLogger.progress(`✅ Historical message delivery successful!`);
         });
 
     });
