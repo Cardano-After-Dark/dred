@@ -1,0 +1,33 @@
+services:
+  dred-node:
+    #image: dred-node:latest
+    build:
+      context: .
+      args:
+        BRANCH: ${GIT_BRANCH}
+      dockerfile: Dockerfile
+    container_name: dred-node
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - HOST_DOMAIN=${HOST_DOMAIN}         # Domain for LetsEncrypt SSL certificate
+      - EMAIL=admin@${HOST_DOMAIN}         # Email for LetsEncrypt SSL certificate
+      - NODE_ENV=production                # Node Environment
+      - CARDANO_NETWORK=${CARDANO_NETWORK} # Use one out of {preview,preprod,mainnet}
+      - BF_API_KEY=${BF_API_KEY}           # Blockfrost API Key
+    volumes:
+      - ./letsencrypt:/etc/letsencrypt   # Persist certificates
+      - ./nginx-ssl:/etc/nginx/ssl       # Persist SSL config
+      - ./redis-data:/var/lib/redis      # Persist Redis data
+      - ./logs:/var/log                  # Persist Logs
+      - ./keystore:/dred/keystore        # Persist Keys
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
+      - net.ipv6.conf.default.disable_ipv6=1
+
+networks:
+  dred-network:
+    driver: bridge
+    enable_ipv6: false
+
