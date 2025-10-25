@@ -57,7 +57,7 @@ fi
 
 # Copy docker-install.sh script to server
 log_step "Copying docker-install.sh to server..."
-DOCKER_INSTALL_SCRIPT="$(dirname "$0")/../docker/scripts/docker-install.sh"
+DOCKER_INSTALL_SCRIPT="$(dirname "$0")/../../docker/scripts/docker-install.sh"
 if [ ! -f "$DOCKER_INSTALL_SCRIPT" ]; then
     log_error "docker-install.sh not found at: $DOCKER_INSTALL_SCRIPT"
     exit 1

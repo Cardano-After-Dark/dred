@@ -72,7 +72,7 @@ log_info "Directory structure created"
 
 # Copy docker folder contents to server
 log_step "Copying Docker configuration to server..."
-DOCKER_DIR="$(dirname "$0")/../docker"
+DOCKER_DIR="$(dirname "$0")/../../docker"
 
 if [ ! -d "$DOCKER_DIR" ]; then
     log_error "Docker directory not found: $DOCKER_DIR"

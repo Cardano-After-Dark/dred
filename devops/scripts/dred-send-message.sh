@@ -47,7 +47,7 @@ esac
 echo "Sending to $ADDRESS / $CHANNEL: $MESSAGE"
 if [ -n "$HOST_DOMAIN" ]; then
     echo "Using SSL domain: $HOST_DOMAIN"
-    "$SCRIPT_DIR/send-message-on-channel.sh" "$ADDRESS" "$CHANNEL" "$MESSAGE" "$HOST_DOMAIN"
+    "$SCRIPT_DIR/send-message.sh" "$ADDRESS" "$CHANNEL" "$MESSAGE" "$HOST_DOMAIN"
 else
-    "$SCRIPT_DIR/send-message-on-channel.sh" "$ADDRESS" "$CHANNEL" "$MESSAGE"
+    "$SCRIPT_DIR/send-message.sh" "$ADDRESS" "$CHANNEL" "$MESSAGE"
 fi

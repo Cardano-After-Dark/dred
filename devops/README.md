@@ -1,5 +1,11 @@
 # DRED DevOps
 
+> ⚠️ **STATUS: EXPERIMENTAL / WORK IN PROGRESS**
+>
+> This devops tooling is experimental and primarily designed for centralized deployment
+> scenarios. It represents ongoing work and may not be suitable for all use cases.
+> Use with caution and expect changes.
+
 Streamlined infrastructure management for DRED deployment.
 
 ## Quick Start
