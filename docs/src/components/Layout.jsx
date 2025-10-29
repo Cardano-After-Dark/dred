@@ -192,16 +192,16 @@ export function Layout({ children, title, tableOfContents, prose }) {
 
       {isHomePage && <Hero />}
 
-      <div id="page-container" className="relative flex sm:px-2 lg:px-8 xl:px-12">
-        <div className="hidden lg:block lg:w-64 xl:w-72">
-          <div id="navigation-area" className="sticky top-[4.5rem] h-[calc(100vh-4.5rem)] overflow-y-auto overflow-x-hidden py-16">
+    <div id="page-container" className="relative flex sm:px-2 lg:px-3 xl:px-4">
+        <div className="hidden lg:block lg:w-64">
+          <div id="navigation-area" className="sticky top-[4.5rem] h-[calc(100vh-4.5rem)] overflow-y-auto overflow-x-hidden py-4">
             <Navigation
               navigation={navigation}
               className="pr-8"
             />
           </div>
         </div>
-        <div className="min-w-0 flex-1 px-2 py-16 lg:px-4">
+        <div className="min-w-0 flex-1 px-2 py-4 lg:px-3">
           <article>
             {(title || section) && (
               <header className="mb-9 space-y-1">
@@ -253,7 +253,7 @@ export function Layout({ children, title, tableOfContents, prose }) {
           </dl>
         </div>
         <div id="toc-area" className="hidden xl:block xl:w-56">
-          <div id="sidebar" className="sticky top-[4.5rem] h-[calc(100vh-4.5rem)] overflow-y-auto py-16">
+          <div id="sidebar" className="sticky top-[4.5rem] h-[calc(100vh-4.5rem)] overflow-y-auto py-4">
             <nav aria-labelledby="on-this-page-title">
               {tableOfContents.length > 0 && (
                 <>
