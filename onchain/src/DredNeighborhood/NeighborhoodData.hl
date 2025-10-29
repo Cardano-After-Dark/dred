@@ -10,81 +10,105 @@ import {
 // } from NeighborhoodSettings
 
 enum SubscriptionFeeFrequency {
-    Epoch {
+    4150: Epoch {
         fee: Value
     }
-    Monthly {
+    4151: Monthly {
         fee: Value
     }
-    Yearly {
+    4152: Yearly {
         fee: Value
     }
 }
 
 enum FeeSource {
-    EndUser
-    SponsorContract {
+    4160: EndUser
+    4161: SponsorContract {
         sponsorContract: ScriptHash // or Address?
     }
-    // CapoRole {
-    //     role: String
-    // }
+
 }
 
 enum RevenueModel {
-    TransactionBased {
+    4120: TransactionBasedV1 {
         minTxFee: Value
         maxTxFee: Option[Value]
         chargeTo: FeeSource
-    }
-
-    Subscription {
+        nodeOpShare: Real  // 0.0 to 1.0
+    }    
+    4121: SubscriptionV1 {
         subscriptionFee: []SubscriptionFeeFrequency
+        nodeOpShare: Real  // 0.0 to 1.0
     }
+    // 412x: TransactionBasedV2 { ... }
+    // 412x: SubscriptionV2 { ... }
 }
 
-struct AppInfo {
+struct AppInfoV1 {
     url: String
     revenueModel: []RevenueModel
     name: String
     description: String
 }
 
-struct UpdateInfo {
+struct UpdateInfoV1 {
     name: String "nm"
     description: String "dsc"
     url: String "url"
 }
 
-struct NodeOpsInfo {
+struct NodeOpsInfoV1 {
     minNodes: Int "cMin"
     maxNodes: Int "cMax"
     minNodeOperatorStake: Value "minStk"
     minUptime: Int "minUpt"
 }
 
+
 enum NeighborhoodState {
-    Preproduction
-    Active
-    UpdatePending
-    UpdateDisputed
-    Retired
+    4180: Preproduction
+    4181: Active
+    4182: UpdatePending
+    4183: UpdateDisputed
+    4184: Retired
+    // can grow by adding new states here ONLY
 }
+
+enum NbhDetails {
+    4100: NbhDetailsV1 {
+        state: NeighborhoodState
+        appInfo: AppInfoV1
+        opsInfo: NodeOpsInfoV1
+        updateInfo: Option[UpdateInfoV1]
+    }
+    // future room for growth:
+    // 4101: NbhDetailsV2 {
+    // }
+
+    func validate(self) -> Bool {
+        assert(true || /*never executed*/ self == self, "no way");
+        true
+    }
+}
+
 
 struct NeighborhoodData {
     id : ByteArray "@id" // = "nbhd-XXXXyyyyZZZZ"
     type : String "tpe" // = "nbhd"
 
     memberToken: String "mt"
-    state: NeighborhoodState "st"
-    appInfo: AppInfo "app"
-    opsInfo: NodeOpsInfo "ops"
-    updateInfo: Option[UpdateInfo] "upd"
+    details: NbhDetails "dtl"
 
     func validate(self) -> Bool {
         assert(true || /*never executed*/ self == self, "no way");
         // assert(self.memberToken != null, "memberToken is null");
         true
+    }
+
+    func detailsV1(self) -> NbhDetails::NbhDetailsV1 {
+        self.details.switch {
+            x: NbhDetailsV1 => x
+        }
     }
 
     func validateActivation(self,
@@ -93,7 +117,7 @@ struct NeighborhoodData {
         print("a");
         assert(nextData.memberToken == self.memberToken, "memberToken cannot be changed");
         print("b");
-        self.state.switch {
+        self.detailsV1().state.switch {
             Preproduction => print("  -- activating a Preproduction neighborhood..."),
             UpdatePending => {
                 TODO("validate the updateInfo");
@@ -101,7 +125,7 @@ struct NeighborhoodData {
             },
             _ => error("neighborhood is not in need of activation")
         }
-        nextData.state.switch {
+        nextData.detailsV1().state.switch {
             Active => print("  -- ok, next state is Active"),
             _ => error("neighborhood must switch to Active state")
         }

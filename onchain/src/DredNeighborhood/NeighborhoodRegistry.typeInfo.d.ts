@@ -184,19 +184,19 @@ export interface DelegationDetailLike {
             export type NeighborhoodStateMeta = EnumTypeMeta<
     {module: "NeighborhoodData", enumName: "NeighborhoodState"}, {
         Preproduction: singleEnumVariantMeta<NeighborhoodStateMeta, "Preproduction",
-            "Constr#0", "tagOnly", tagOnly, "noSpecialFlags"
+            "Constr#4180", "tagOnly", tagOnly, "noSpecialFlags"
         >,
         Active: singleEnumVariantMeta<NeighborhoodStateMeta, "Active",
-            "Constr#1", "tagOnly", tagOnly, "noSpecialFlags"
+            "Constr#4181", "tagOnly", tagOnly, "noSpecialFlags"
         >,
         UpdatePending: singleEnumVariantMeta<NeighborhoodStateMeta, "UpdatePending",
-            "Constr#2", "tagOnly", tagOnly, "noSpecialFlags"
+            "Constr#4182", "tagOnly", tagOnly, "noSpecialFlags"
         >,
         UpdateDisputed: singleEnumVariantMeta<NeighborhoodStateMeta, "UpdateDisputed",
-            "Constr#3", "tagOnly", tagOnly, "noSpecialFlags"
+            "Constr#4183", "tagOnly", tagOnly, "noSpecialFlags"
         >,
         Retired: singleEnumVariantMeta<NeighborhoodStateMeta, "Retired",
-            "Constr#4", "tagOnly", tagOnly, "noSpecialFlags"
+            "Constr#4184", "tagOnly", tagOnly, "noSpecialFlags"
         >
     }
 >;
@@ -257,10 +257,10 @@ export type NeighborhoodStateLike = IntersectedEnum<
             export type FeeSourceMeta = EnumTypeMeta<
     {module: "NeighborhoodData", enumName: "FeeSource"}, {
         EndUser: singleEnumVariantMeta<FeeSourceMeta, "EndUser",
-            "Constr#0", "tagOnly", tagOnly, "noSpecialFlags"
+            "Constr#4160", "tagOnly", tagOnly, "noSpecialFlags"
         >,
         SponsorContract: singleEnumVariantMeta<FeeSourceMeta, "SponsorContract",
-            "Constr#1", "singletonField", /* implied wrapper { sponsorContract: ... } for singleVariantField */ 
+            "Constr#4161", "singletonField", /* implied wrapper { sponsorContract: ... } for singleVariantField */ 
 			ScriptHash   , "noSpecialFlags"
         >
     }
@@ -312,46 +312,49 @@ export type FeeSourceLike = IntersectedEnum<
 >
 
 /**
- * A strong type for the canonical form of RevenueModel$TransactionBased
+ * A strong type for the canonical form of RevenueModel$TransactionBasedV1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see RevenueModel$Ergo$TransactionBased instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see RevenueModel$Ergo$TransactionBasedV1 instead.
  * @public
  */
-export interface RevenueModel$TransactionBased {
+export interface RevenueModel$TransactionBasedV1 {
     minTxFee: Value  /*minVariantField*/ ,
     maxTxFee: Value | undefined  /*minVariantField*/ ,
-    chargeTo: FeeSource  /*minVariantField*/ 
+    chargeTo: FeeSource  /*minVariantField*/ ,
+    nodeOpShare: number  /*minVariantField*/ 
 }
 
 
 /**
- * An ergonomic, though less strictly-safe form of RevenueModel$TransactionBased
+ * An ergonomic, though less strictly-safe form of RevenueModel$TransactionBasedV1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the RevenueModel$TransactionBasedLike type,
+ * conversion to on-chain use.  For creating such data, use the RevenueModel$TransactionBasedV1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-export type RevenueModel$Ergo$TransactionBased = {
+export type RevenueModel$Ergo$TransactionBasedV1 = {
     minTxFee: Value  /*minVariantField*/ ,
     maxTxFee: Value | undefined  /*minVariantField*/ ,
-    chargeTo: ErgoFeeSource  /*minVariantField*/ 
+    chargeTo: ErgoFeeSource  /*minVariantField*/ ,
+    nodeOpShare: number  /*minVariantField*/ 
 }
 
 
 /**
- * A strong type for the permissive form of RevenueModel$TransactionBased
+ * A strong type for the permissive form of RevenueModel$TransactionBasedV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export interface RevenueModel$TransactionBasedLike {
+export interface RevenueModel$TransactionBasedV1Like {
     minTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]  /*minVariantField*/ ,
     maxTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[] | undefined  /*minVariantField*/ ,
-    chargeTo: FeeSourceLike  /*minVariantField*/ 
+    chargeTo: FeeSourceLike  /*minVariantField*/ ,
+    nodeOpShare: number  /*minVariantField*/ 
 }
 
 
@@ -363,15 +366,15 @@ export interface RevenueModel$TransactionBasedLike {
             export type SubscriptionFeeFrequencyMeta = EnumTypeMeta<
     {module: "NeighborhoodData", enumName: "SubscriptionFeeFrequency"}, {
         Epoch: singleEnumVariantMeta<SubscriptionFeeFrequencyMeta, "Epoch",
-            "Constr#0", "singletonField", /* implied wrapper { fee: ... } for singleVariantField */ 
+            "Constr#4150", "singletonField", /* implied wrapper { fee: ... } for singleVariantField */ 
 			Value   , "noSpecialFlags"
         >,
         Monthly: singleEnumVariantMeta<SubscriptionFeeFrequencyMeta, "Monthly",
-            "Constr#1", "singletonField", /* implied wrapper { fee: ... } for singleVariantField */ 
+            "Constr#4151", "singletonField", /* implied wrapper { fee: ... } for singleVariantField */ 
 			Value   , "noSpecialFlags"
         >,
         Yearly: singleEnumVariantMeta<SubscriptionFeeFrequencyMeta, "Yearly",
-            "Constr#2", "singletonField", /* implied wrapper { fee: ... } for singleVariantField */ 
+            "Constr#4152", "singletonField", /* implied wrapper { fee: ... } for singleVariantField */ 
 			Value   , "noSpecialFlags"
         >
     }
@@ -428,19 +431,61 @@ export type SubscriptionFeeFrequencyLike = IntersectedEnum<
 			Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]    /*minEnumVariant*/ }
 >
 
+/**
+ * A strong type for the canonical form of RevenueModel$SubscriptionV1
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see RevenueModel$Ergo$SubscriptionV1 instead.
+ * @public
+ */
+export interface RevenueModel$SubscriptionV1 {
+    subscriptionFee: Array<SubscriptionFeeFrequency>  /*minVariantField*/ ,
+    nodeOpShare: number  /*minVariantField*/ 
+}
+
+
+/**
+ * An ergonomic, though less strictly-safe form of RevenueModel$SubscriptionV1
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the RevenueModel$SubscriptionV1Like type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+export type RevenueModel$Ergo$SubscriptionV1 = {
+    subscriptionFee: Array<ErgoSubscriptionFeeFrequency>  /*minVariantField*/ ,
+    nodeOpShare: number  /*minVariantField*/ 
+}
+
+
+/**
+ * A strong type for the permissive form of RevenueModel$SubscriptionV1
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+export interface RevenueModel$SubscriptionV1Like {
+    subscriptionFee: Array<SubscriptionFeeFrequencyLike>  /*minVariantField*/ ,
+    nodeOpShare: number  /*minVariantField*/ 
+}
+
+
+
 
             /**
             * @internal
             */
             export type RevenueModelMeta = EnumTypeMeta<
     {module: "NeighborhoodData", enumName: "RevenueModel"}, {
-        TransactionBased: singleEnumVariantMeta<RevenueModelMeta, "TransactionBased",
-            "Constr#0", 
-            "fields", RevenueModel$TransactionBased, "noSpecialFlags"
+        TransactionBasedV1: singleEnumVariantMeta<RevenueModelMeta, "TransactionBasedV1",
+            "Constr#4120", 
+            "fields", RevenueModel$TransactionBasedV1, "noSpecialFlags"
         >,
-        Subscription: singleEnumVariantMeta<RevenueModelMeta, "Subscription",
-            "Constr#1", "singletonField", /* implied wrapper { subscriptionFee: ... } for singleVariantField */ 
-			Array<SubscriptionFeeFrequency>   , "noSpecialFlags"
+        SubscriptionV1: singleEnumVariantMeta<RevenueModelMeta, "SubscriptionV1",
+            "Constr#4121", 
+            "fields", RevenueModel$SubscriptionV1, "noSpecialFlags"
         >
     }
 >;
@@ -457,9 +502,8 @@ export type SubscriptionFeeFrequencyLike = IntersectedEnum<
  * @public
  */
 export type RevenueModel = 
-        | { TransactionBased: RevenueModel$TransactionBased /*minEnumVariant*/ }
-        | { Subscription: /* implied wrapper { subscriptionFee: ... } for singleVariantField */ 
-			Array<SubscriptionFeeFrequency>    /*minEnumVariant*/ }
+        | { TransactionBasedV1: RevenueModel$TransactionBasedV1 /*minEnumVariant*/ }
+        | { SubscriptionV1: RevenueModel$SubscriptionV1 /*minEnumVariant*/ }
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -469,9 +513,8 @@ export type RevenueModel =
  * @public
  */
 export type ErgoRevenueModel = IntersectedEnum<
-        | { TransactionBased: RevenueModel$Ergo$TransactionBased /*minEnumVariant*/ }
-        | { Subscription: /* implied wrapper { subscriptionFee: ... } for singleVariantField */ 
-			Array<ErgoSubscriptionFeeFrequency>    /*minEnumVariant*/ }
+        | { TransactionBasedV1: RevenueModel$Ergo$TransactionBasedV1 /*minEnumVariant*/ }
+        | { SubscriptionV1: RevenueModel$Ergo$SubscriptionV1 /*minEnumVariant*/ }
 >
 
 /**
@@ -489,20 +532,19 @@ export type ErgoRevenueModel = IntersectedEnum<
  * @public
  */
 export type RevenueModelLike = IntersectedEnum<
-        | { TransactionBased: RevenueModel$TransactionBasedLike /*minEnumVariant*/ }
-        | { Subscription: /* implied wrapper { subscriptionFee: ... } for singleVariantField */ 
-			Array<SubscriptionFeeFrequencyLike>    /*minEnumVariant*/ }
+        | { TransactionBasedV1: RevenueModel$TransactionBasedV1Like /*minEnumVariant*/ }
+        | { SubscriptionV1: RevenueModel$SubscriptionV1Like /*minEnumVariant*/ }
 >
 
 /**
- * A strong type for the canonical form of AppInfo
+ * A strong type for the canonical form of AppInfoV1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoAppInfo instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoAppInfoV1 instead.
  * @public
  */
-export interface AppInfo {
+export interface AppInfoV1 {
     url: /*minStructField*/ string
     revenueModel: /*minStructField*/ Array<RevenueModel>
     name: /*minStructField*/ string
@@ -511,15 +553,15 @@ export interface AppInfo {
 
 
 /**
- * An ergonomic, though less strictly-safe form of AppInfo
+ * An ergonomic, though less strictly-safe form of AppInfoV1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the AppInfoLike type,
+ * conversion to on-chain use.  For creating such data, use the AppInfoV1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-export type ErgoAppInfo = {
+export type ErgoAppInfoV1 = {
     url: /*minStructField*/ string
     revenueModel: /*minStructField*/ Array<ErgoRevenueModel>
     name: /*minStructField*/ string
@@ -528,12 +570,12 @@ export type ErgoAppInfo = {
 
 
 /**
- * A strong type for the permissive form of AppInfo
+ * A strong type for the permissive form of AppInfoV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export interface AppInfoLike {
+export interface AppInfoV1Like {
     url: /*minStructField*/ string
     revenueModel: /*minStructField*/ Array<RevenueModelLike>
     name: /*minStructField*/ string
@@ -543,14 +585,14 @@ export interface AppInfoLike {
 
 
 /**
- * A strong type for the canonical form of NodeOpsInfo
+ * A strong type for the canonical form of NodeOpsInfoV1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOpsInfo instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOpsInfoV1 instead.
  * @public
  */
-export interface NodeOpsInfo {
+export interface NodeOpsInfoV1 {
     minNodes: /*minStructField*/ bigint
     maxNodes: /*minStructField*/ bigint
     minNodeOperatorStake: /*minStructField*/ Value
@@ -559,23 +601,23 @@ export interface NodeOpsInfo {
 
 
 /**
- * An ergonomic, though less strictly-safe form of NodeOpsInfo
+ * An ergonomic, though less strictly-safe form of NodeOpsInfoV1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeOpsInfoLike type,
+ * conversion to on-chain use.  For creating such data, use the NodeOpsInfoV1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-export type ErgoNodeOpsInfo = NodeOpsInfo/*like canon-other*/
+export type ErgoNodeOpsInfoV1 = NodeOpsInfoV1/*like canon-other*/
 
 /**
- * A strong type for the permissive form of NodeOpsInfo
+ * A strong type for the permissive form of NodeOpsInfoV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export interface NodeOpsInfoLike {
+export interface NodeOpsInfoV1Like {
     minNodes: /*minStructField*/ IntLike
     maxNodes: /*minStructField*/ IntLike
     minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
@@ -585,14 +627,14 @@ export interface NodeOpsInfoLike {
 
 
 /**
- * A strong type for the canonical form of UpdateInfo
+ * A strong type for the canonical form of UpdateInfoV1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoUpdateInfo instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoUpdateInfoV1 instead.
  * @public
  */
-export interface UpdateInfo {
+export interface UpdateInfoV1 {
     name: /*minStructField*/ string
     description: /*minStructField*/ string
     url: /*minStructField*/ string
@@ -600,29 +642,133 @@ export interface UpdateInfo {
 
 
 /**
- * An ergonomic, though less strictly-safe form of UpdateInfo
+ * An ergonomic, though less strictly-safe form of UpdateInfoV1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the UpdateInfoLike type,
+ * conversion to on-chain use.  For creating such data, use the UpdateInfoV1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-export type ErgoUpdateInfo = UpdateInfo/*like canon-other*/
+export type ErgoUpdateInfoV1 = UpdateInfoV1/*like canon-other*/
 
 /**
- * A strong type for the permissive form of UpdateInfo
+ * A strong type for the permissive form of UpdateInfoV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export interface UpdateInfoLike {
+export interface UpdateInfoV1Like {
     name: /*minStructField*/ string
     description: /*minStructField*/ string
     url: /*minStructField*/ string
 }
 
 
+
+/**
+ * A strong type for the canonical form of NbhDetails$NbhDetailsV1
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see NbhDetails$Ergo$NbhDetailsV1 instead.
+ * @public
+ */
+export interface NbhDetails$NbhDetailsV1 {
+    state: NeighborhoodState  /*minVariantField*/ ,
+    appInfo: AppInfoV1  /*minVariantField*/ ,
+    opsInfo: NodeOpsInfoV1  /*minVariantField*/ ,
+    updateInfo: UpdateInfoV1 | undefined  /*minVariantField*/ 
+}
+
+
+/**
+ * An ergonomic, though less strictly-safe form of NbhDetails$NbhDetailsV1
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the NbhDetails$NbhDetailsV1Like type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+export type NbhDetails$Ergo$NbhDetailsV1 = {
+    state: ErgoNeighborhoodState  /*minVariantField*/ ,
+    appInfo: ErgoAppInfoV1  /*minVariantField*/ ,
+    opsInfo: ErgoNodeOpsInfoV1  /*minVariantField*/ ,
+    updateInfo: ErgoUpdateInfoV1 | undefined  /*minVariantField*/ 
+}
+
+
+/**
+ * A strong type for the permissive form of NbhDetails$NbhDetailsV1
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+export interface NbhDetails$NbhDetailsV1Like {
+    state: NeighborhoodStateLike  /*minVariantField*/ ,
+    appInfo: AppInfoV1Like  /*minVariantField*/ ,
+    opsInfo: NodeOpsInfoV1Like  /*minVariantField*/ ,
+    updateInfo: UpdateInfoV1Like | undefined  /*minVariantField*/ 
+}
+
+
+
+
+            /**
+            * @internal
+            */
+            export type NbhDetailsMeta = EnumTypeMeta<
+    {module: "NeighborhoodData", enumName: "NbhDetails"}, {
+        NbhDetailsV1: singleEnumVariantMeta<NbhDetailsMeta, "NbhDetailsV1",
+            "Constr#4100", 
+            "fields", NbhDetails$NbhDetailsV1, "noSpecialFlags"
+        >
+    }
+>;
+
+
+/**
+ * NbhDetails enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the NbhDetails enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `NbhDetailsHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+export type NbhDetails = 
+        | { NbhDetailsV1: NbhDetails$NbhDetailsV1 /*minEnumVariant*/ }
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+export type ErgoNbhDetails = IntersectedEnum<
+        | { NbhDetailsV1: NbhDetails$Ergo$NbhDetailsV1 /*minEnumVariant*/ }
+>
+
+/**
+ * NbhDetails enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the NbhDetails enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `NbhDetailsHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+export type NbhDetailsLike = IntersectedEnum<
+        | { NbhDetailsV1: NbhDetails$NbhDetailsV1Like /*minEnumVariant*/ }
+>
 
 /**
  * A strong type for the canonical form of NeighborhoodData
@@ -636,10 +782,7 @@ export interface NeighborhoodData {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
-    state: /*minStructField*/ NeighborhoodState
-    appInfo: /*minStructField*/ AppInfo
-    opsInfo: /*minStructField*/ NodeOpsInfo
-    updateInfo: /*minStructField*/ UpdateInfo | undefined
+    details: /*minStructField*/ NbhDetails
 }
 
 
@@ -656,10 +799,7 @@ export type ErgoNeighborhoodData = {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
-    state: /*minStructField*/ ErgoNeighborhoodState
-    appInfo: /*minStructField*/ ErgoAppInfo
-    opsInfo: /*minStructField*/ ErgoNodeOpsInfo
-    updateInfo: /*minStructField*/ ErgoUpdateInfo | undefined
+    details: /*minStructField*/ ErgoNbhDetails
 }
 
 
@@ -673,10 +813,7 @@ export interface NeighborhoodDataLike {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
-    state: /*minStructField*/ NeighborhoodStateLike
-    appInfo: /*minStructField*/ AppInfoLike
-    opsInfo: /*minStructField*/ NodeOpsInfoLike
-    updateInfo: /*minStructField*/ UpdateInfoLike | undefined
+    details: /*minStructField*/ NbhDetailsLike
 }
 
 

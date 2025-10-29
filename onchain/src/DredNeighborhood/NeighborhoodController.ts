@@ -15,7 +15,6 @@ import type {
     DgDataUpdateOptions,
 } from "@donecollectively/stellar-contracts";
 
-import NeighborhoodRegistryBundle from "./NeighborhoodRegistry.hlb.js";
 import type { DredCapo } from "../DredCapo.js";
 import type { ErgoNeighborhoodData, minimalNeighborhoodData, NeighborhoodData, NeighborhoodDataLike } from "./NeighborhoodRegistry.typeInfo.js";
 import NeighborhoodPolicyDataBridge from "./NeighborhoodRegistry.bridge.js";
@@ -59,30 +58,35 @@ export class NeighborhoodController extends DelegatedDataContract<
             // id: "nbhd-0000000000",
             // type: "dredNbh",
             memberToken: "member-owner",
-            state: {Preproduction: {}},
-            appInfo: {
-                name: "Default Neighborhood",
-                description: "A default neighborhood for Dred services",
-                url: "https://dred.com",
-                revenueModel: [
-                    {
-                        TransactionBased: {
-                            chargeTo: {
-                                EndUser: {}
-                            },
-                            minTxFee: makeValue(42_000_000n),
-                            maxTxFee: undefined
-                        }
-                    }
-                ]
+            details: {
+                NbhDetailsV1: {
+                    state: {Preproduction: {}},
+                    appInfo: {
+                        name: "Default Neighborhood",
+                        description: "A default neighborhood for Dred services",
+                        url: "https://dred.com",
+                        revenueModel: [
+                            {
+                                TransactionBasedV1: {
+                                    chargeTo: {
+                                        EndUser: {}
+                                    },
+                                    minTxFee: makeValue(42_000_000n),
+                                    maxTxFee: undefined,
+                                    nodeOpShare: 0.1
+                                }
+                            }
+                        ],
+                    },
+                    opsInfo: {
+                        minNodes: 3n,
+                        maxNodes: 13n,
+                        minNodeOperatorStake: makeValue(42_000_000n),
+                        minUptime: 90n
+                    },
+                    updateInfo: undefined
+                }
             },
-            updateInfo: undefined,
-            opsInfo: {
-                minNodes: 3n,
-                maxNodes: 13n,
-                minNodeOperatorStake: makeValue(42_000_000n),
-                minUptime: 90n,
-            }
         };
     }
 

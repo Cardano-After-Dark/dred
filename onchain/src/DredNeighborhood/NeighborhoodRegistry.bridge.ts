@@ -62,12 +62,15 @@ import type {
     DelegationDetail, ErgoDelegationDetail, DelegationDetailLike,
     NeighborhoodState, ErgoNeighborhoodState, NeighborhoodStateLike,
     FeeSource, ErgoFeeSource, FeeSourceLike,
-    RevenueModel$TransactionBased, RevenueModel$Ergo$TransactionBased, RevenueModel$TransactionBasedLike,
+    RevenueModel$TransactionBasedV1, RevenueModel$Ergo$TransactionBasedV1, RevenueModel$TransactionBasedV1Like,
     SubscriptionFeeFrequency, ErgoSubscriptionFeeFrequency, SubscriptionFeeFrequencyLike,
+    RevenueModel$SubscriptionV1, RevenueModel$Ergo$SubscriptionV1, RevenueModel$SubscriptionV1Like,
     RevenueModel, ErgoRevenueModel, RevenueModelLike,
-    AppInfo, ErgoAppInfo, AppInfoLike,
-    NodeOpsInfo, ErgoNodeOpsInfo, NodeOpsInfoLike,
-    UpdateInfo, ErgoUpdateInfo, UpdateInfoLike,
+    AppInfoV1, ErgoAppInfoV1, AppInfoV1Like,
+    NodeOpsInfoV1, ErgoNodeOpsInfoV1, NodeOpsInfoV1Like,
+    UpdateInfoV1, ErgoUpdateInfoV1, UpdateInfoV1Like,
+    NbhDetails$NbhDetailsV1, NbhDetails$Ergo$NbhDetailsV1, NbhDetails$NbhDetailsV1Like,
+    NbhDetails, ErgoNbhDetails, NbhDetailsLike,
     NeighborhoodData, ErgoNeighborhoodData, NeighborhoodDataLike,
     DelegateDatum$capoStoredData, DelegateDatum$Ergo$capoStoredData, DelegateDatum$capoStoredDataLike,
     DelegateDatum, ErgoDelegateDatum, DelegateDatumLike,
@@ -89,6 +92,7 @@ import type {
     DelegateActivity$CreatingDelegatedData, DelegateActivity$Ergo$CreatingDelegatedData, DelegateActivity$CreatingDelegatedDataLike,
     DelegateActivity$UpdatingDelegatedData, DelegateActivity$Ergo$UpdatingDelegatedData, DelegateActivity$UpdatingDelegatedDataLike,
     DelegateActivity$DeletingDelegatedData, DelegateActivity$Ergo$DeletingDelegatedData, DelegateActivity$DeletingDelegatedDataLike,
+    OtherActivity, ErgoOtherActivity, OtherActivityLike,
     DelegateActivity, ErgoDelegateActivity, DelegateActivityLike,
     PendingDelegateAction$Add, PendingDelegateAction$Ergo$Add, PendingDelegateAction$AddLike,
     PendingDelegateAction$Replace, PendingDelegateAction$Ergo$Replace, PendingDelegateAction$ReplaceLike,
@@ -284,39 +288,39 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
         return this.ᱺᱺDelegationDetailCast.toUplcData(fields);
     },
       /**
-       * generates UplcData for the enum type ***AppInfo*** for the `BasicDelegate` script
+       * generates UplcData for the enum type ***AppInfoV1*** for the `BasicDelegate` script
        */
-        AppInfo: (fields: AppInfoLike | {
+        AppInfoV1: (fields: AppInfoV1Like | {
     url: /*minStructField*/ string
     revenueModel: /*minStructField*/ Array<RevenueModelLike>
     name: /*minStructField*/ string
     description: /*minStructField*/ string
 }
 ) => {
-        return this.ᱺᱺAppInfoCast.toUplcData(fields);
+        return this.ᱺᱺAppInfoV1Cast.toUplcData(fields);
     },
       /**
-       * generates UplcData for the enum type ***NodeOpsInfo*** for the `BasicDelegate` script
+       * generates UplcData for the enum type ***NodeOpsInfoV1*** for the `BasicDelegate` script
        */
-        NodeOpsInfo: (fields: NodeOpsInfoLike | {
+        NodeOpsInfoV1: (fields: NodeOpsInfoV1Like | {
     minNodes: /*minStructField*/ IntLike
     maxNodes: /*minStructField*/ IntLike
     minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
     minUptime: /*minStructField*/ IntLike
 }
 ) => {
-        return this.ᱺᱺNodeOpsInfoCast.toUplcData(fields);
+        return this.ᱺᱺNodeOpsInfoV1Cast.toUplcData(fields);
     },
       /**
-       * generates UplcData for the enum type ***UpdateInfo*** for the `BasicDelegate` script
+       * generates UplcData for the enum type ***UpdateInfoV1*** for the `BasicDelegate` script
        */
-        UpdateInfo: (fields: UpdateInfoLike | {
+        UpdateInfoV1: (fields: UpdateInfoV1Like | {
     name: /*minStructField*/ string
     description: /*minStructField*/ string
     url: /*minStructField*/ string
 }
 ) => {
-        return this.ᱺᱺUpdateInfoCast.toUplcData(fields);
+        return this.ᱺᱺUpdateInfoV1Cast.toUplcData(fields);
     },
       /**
        * generates UplcData for the enum type ***NeighborhoodData*** for the `BasicDelegate` script
@@ -325,10 +329,7 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
-    state: /*minStructField*/ NeighborhoodStateLike
-    appInfo: /*minStructField*/ AppInfoLike
-    opsInfo: /*minStructField*/ NodeOpsInfoLike
-    updateInfo: /*minStructField*/ UpdateInfoLike | undefined
+    details: /*minStructField*/ NbhDetailsLike
 }
 ) => {
         return this.ᱺᱺNeighborhoodDataCast.toUplcData(fields);
@@ -423,20 +424,20 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     );
     /**
                 * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺAppInfoCast = makeCast<AppInfo, AppInfoLike>(
-        AppInfoSchema,
+    ᱺᱺAppInfoV1Cast = makeCast<AppInfoV1, AppInfoV1Like>(
+        AppInfoV1Schema,
         { isMainnet: true, unwrapSingleFieldEnumVariants: true }
     );
     /**
                 * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNodeOpsInfoCast = makeCast<NodeOpsInfo, NodeOpsInfoLike>(
-        NodeOpsInfoSchema,
+    ᱺᱺNodeOpsInfoV1Cast = makeCast<NodeOpsInfoV1, NodeOpsInfoV1Like>(
+        NodeOpsInfoV1Schema,
         { isMainnet: true, unwrapSingleFieldEnumVariants: true }
     );
     /**
                 * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺUpdateInfoCast = makeCast<UpdateInfo, UpdateInfoLike>(
-        UpdateInfoSchema,
+    ᱺᱺUpdateInfoV1Cast = makeCast<UpdateInfoV1, UpdateInfoV1Like>(
+        UpdateInfoV1Schema,
         { isMainnet: true, unwrapSingleFieldEnumVariants: true }
     );
     /**
@@ -581,6 +582,27 @@ export class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
         const cast = typeHelper.ᱺᱺcast;  
 
         return cast.fromUplcData(d) as ErgoRevenueModel;        
+    } /* enumReader helper */
+
+    /**
+        * reads UplcData *known to fit the **NbhDetails*** enum type,
+        * for the BasicDelegate script.
+        * #### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the enum type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    NbhDetails(d : UplcData) { 
+        const typeHelper = this.bridge.types.NbhDetails;
+        const cast = typeHelper.ᱺᱺcast;  
+
+        return cast.fromUplcData(d) as ErgoNbhDetails;        
     } /* enumReader helper */
 
 datum = (d: UplcData) => { return this.DelegateDatum(d) }
@@ -750,6 +772,27 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
         const cast = typeHelper.ᱺᱺcast;  
 
         return cast.fromUplcData(d) as ErgoBurningActivity;        
+    } /* enumReader helper */
+
+    /**
+        * reads UplcData *known to fit the **OtherActivity*** enum type,
+        * for the BasicDelegate script.
+        * #### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the enum type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    OtherActivity(d : UplcData) { 
+        const typeHelper = this.bridge.types.OtherActivity;
+        const cast = typeHelper.ᱺᱺcast;  
+
+        return cast.fromUplcData(d) as ErgoOtherActivity;        
     } /* enumReader helper */
 
     /**
@@ -959,7 +1002,7 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
     } /* structReader helper */
 
     /**
-        * reads UplcData *known to fit the **AppInfo*** struct type,
+        * reads UplcData *known to fit the **AppInfoV1*** struct type,
         * for the BasicDelegate script.
         * #### Standard WARNING
         * 
@@ -972,13 +1015,13 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
         * It may throw an error, or it may throw no error, but return a value that
         * causes some error later on in your code, when you try to use it.
         */
-    AppInfo(d: UplcData) {
-        const cast = this.bridge.ᱺᱺAppInfoCast;
-        return cast.fromUplcData(d) //??? as ErgoAppInfo;
+    AppInfoV1(d: UplcData) {
+        const cast = this.bridge.ᱺᱺAppInfoV1Cast;
+        return cast.fromUplcData(d) //??? as ErgoAppInfoV1;
     } /* structReader helper */
 
     /**
-        * reads UplcData *known to fit the **NodeOpsInfo*** struct type,
+        * reads UplcData *known to fit the **NodeOpsInfoV1*** struct type,
         * for the BasicDelegate script.
         * #### Standard WARNING
         * 
@@ -991,13 +1034,13 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
         * It may throw an error, or it may throw no error, but return a value that
         * causes some error later on in your code, when you try to use it.
         */
-    NodeOpsInfo(d: UplcData) {
-        const cast = this.bridge.ᱺᱺNodeOpsInfoCast;
-        return cast.fromUplcData(d) //??? as ErgoNodeOpsInfo;
+    NodeOpsInfoV1(d: UplcData) {
+        const cast = this.bridge.ᱺᱺNodeOpsInfoV1Cast;
+        return cast.fromUplcData(d) //??? as ErgoNodeOpsInfoV1;
     } /* structReader helper */
 
     /**
-        * reads UplcData *known to fit the **UpdateInfo*** struct type,
+        * reads UplcData *known to fit the **UpdateInfoV1*** struct type,
         * for the BasicDelegate script.
         * #### Standard WARNING
         * 
@@ -1010,9 +1053,9 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
         * It may throw an error, or it may throw no error, but return a value that
         * causes some error later on in your code, when you try to use it.
         */
-    UpdateInfo(d: UplcData) {
-        const cast = this.bridge.ᱺᱺUpdateInfoCast;
-        return cast.fromUplcData(d) //??? as ErgoUpdateInfo;
+    UpdateInfoV1(d: UplcData) {
+        const cast = this.bridge.ᱺᱺUpdateInfoV1Cast;
+        return cast.fromUplcData(d) //??? as ErgoUpdateInfoV1;
     } /* structReader helper */
 
     /**
@@ -1238,7 +1281,7 @@ export class NeighborhoodStateHelper extends EnumBridge<JustAnEnum> {
 
 /**
  * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Preproduction"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4180***
  */
     get Preproduction() {
         const uplc = this.mkUplcData({ Preproduction: {} }, 
@@ -1248,7 +1291,7 @@ export class NeighborhoodStateHelper extends EnumBridge<JustAnEnum> {
 
 /**
  * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Active"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4181***
  */
     get Active() {
         const uplc = this.mkUplcData({ Active: {} }, 
@@ -1258,7 +1301,7 @@ export class NeighborhoodStateHelper extends EnumBridge<JustAnEnum> {
 
 /**
  * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.UpdatePending"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4182***
  */
     get UpdatePending() {
         const uplc = this.mkUplcData({ UpdatePending: {} }, 
@@ -1268,7 +1311,7 @@ export class NeighborhoodStateHelper extends EnumBridge<JustAnEnum> {
 
 /**
  * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.UpdateDisputed"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4183***
  */
     get UpdateDisputed() {
         const uplc = this.mkUplcData({ UpdateDisputed: {} }, 
@@ -1278,7 +1321,7 @@ export class NeighborhoodStateHelper extends EnumBridge<JustAnEnum> {
 
 /**
  * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Retired"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4184***
  */
     get Retired() {
         const uplc = this.mkUplcData({ Retired: {} }, 
@@ -1305,7 +1348,7 @@ export class FeeSourceHelper extends EnumBridge<JustAnEnum> {
 
 /**
  * (property getter): UplcData for ***"NeighborhoodData::FeeSource.EndUser"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4160***
  */
     get EndUser() {
         const uplc = this.mkUplcData({ EndUser: {} }, 
@@ -1396,45 +1439,48 @@ export class RevenueModelHelper extends EnumBridge<JustAnEnum> {
     );
 
     /**
-     * generates  UplcData for ***"NeighborhoodData::RevenueModel.TransactionBased"***
-     * @remarks - ***RevenueModel$TransactionBasedLike*** is the same as the expanded field-types.
+     * generates  UplcData for ***"NeighborhoodData::RevenueModel.TransactionBasedV1"***
+     * @remarks - ***RevenueModel$TransactionBasedV1Like*** is the same as the expanded field-types.
      */
-    TransactionBased(fields: RevenueModel$TransactionBasedLike | { 
+    TransactionBasedV1(fields: RevenueModel$TransactionBasedV1Like | { 
         minTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[],
         maxTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[] | undefined,
-        chargeTo: FeeSourceLike
+        chargeTo: FeeSourceLike,
+        nodeOpShare: number
     }) : UplcData {
         const uplc = this.mkUplcData({
-            TransactionBased: fields 
-        }, "NeighborhoodData::RevenueModel.TransactionBased");
+            TransactionBasedV1: fields 
+        }, "NeighborhoodData::RevenueModel.TransactionBasedV1");
        return uplc;
     } /*multiFieldVariant enum accessor*/
 
     /**
-     * generates  UplcData for ***"NeighborhoodData::RevenueModel.Subscription"***
+     * generates  UplcData for ***"NeighborhoodData::RevenueModel.SubscriptionV1"***
+     * @remarks - ***RevenueModel$SubscriptionV1Like*** is the same as the expanded field-types.
      */
-    Subscription(
-        subscriptionFee: Array<SubscriptionFeeFrequencyLike>
-    ) : UplcData {
-        const uplc = this.mkUplcData({ 
-           Subscription: subscriptionFee
-        }, "NeighborhoodData::RevenueModel.Subscription"); /*singleField enum variant*/
+    SubscriptionV1(fields: RevenueModel$SubscriptionV1Like | { 
+        subscriptionFee: Array<SubscriptionFeeFrequencyLike>,
+        nodeOpShare: number
+    }) : UplcData {
+        const uplc = this.mkUplcData({
+            SubscriptionV1: fields 
+        }, "NeighborhoodData::RevenueModel.SubscriptionV1");
        return uplc;
-    }
+    } /*multiFieldVariant enum accessor*/
 }/*mkEnumHelperClass*/
 
 
 /**
- * Helper class for generating UplcData for the struct ***AppInfo*** type.
+ * Helper class for generating UplcData for the struct ***AppInfoV1*** type.
  * @public
  */
-export class AppInfoHelper extends DataBridge {
+export class AppInfoV1Helper extends DataBridge {
     isCallable = true
    /**
             * @internal
             * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast = makeCast<AppInfo, AppInfoLike>(
-        AppInfoSchema,
+    ᱺᱺcast = makeCast<AppInfoV1, AppInfoV1Like>(
+        AppInfoV1Schema,
         { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
     );
 
@@ -1444,23 +1490,23 @@ export class AppInfoHelper extends DataBridge {
     //
     //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
     //
-    // AppInfo(fields: AppInfoLike) {
+    // AppInfoV1(fields: AppInfoV1Like) {
     //    return this.ᱺᱺcast.toUplcData(fields);
     //}
 } //mkStructHelperClass 
 
 
 /**
- * Helper class for generating UplcData for the struct ***NodeOpsInfo*** type.
+ * Helper class for generating UplcData for the struct ***NodeOpsInfoV1*** type.
  * @public
  */
-export class NodeOpsInfoHelper extends DataBridge {
+export class NodeOpsInfoV1Helper extends DataBridge {
     isCallable = true
    /**
             * @internal
             * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast = makeCast<NodeOpsInfo, NodeOpsInfoLike>(
-        NodeOpsInfoSchema,
+    ᱺᱺcast = makeCast<NodeOpsInfoV1, NodeOpsInfoV1Like>(
+        NodeOpsInfoV1Schema,
         { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
     );
 
@@ -1470,23 +1516,23 @@ export class NodeOpsInfoHelper extends DataBridge {
     //
     //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
     //
-    // NodeOpsInfo(fields: NodeOpsInfoLike) {
+    // NodeOpsInfoV1(fields: NodeOpsInfoV1Like) {
     //    return this.ᱺᱺcast.toUplcData(fields);
     //}
 } //mkStructHelperClass 
 
 
 /**
- * Helper class for generating UplcData for the struct ***UpdateInfo*** type.
+ * Helper class for generating UplcData for the struct ***UpdateInfoV1*** type.
  * @public
  */
-export class UpdateInfoHelper extends DataBridge {
+export class UpdateInfoV1Helper extends DataBridge {
     isCallable = true
    /**
             * @internal
             * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast = makeCast<UpdateInfo, UpdateInfoLike>(
-        UpdateInfoSchema,
+    ᱺᱺcast = makeCast<UpdateInfoV1, UpdateInfoV1Like>(
+        UpdateInfoV1Schema,
         { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
     );
 
@@ -1496,10 +1542,48 @@ export class UpdateInfoHelper extends DataBridge {
     //
     //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
     //
-    // UpdateInfo(fields: UpdateInfoLike) {
+    // UpdateInfoV1(fields: UpdateInfoV1Like) {
     //    return this.ᱺᱺcast.toUplcData(fields);
     //}
 } //mkStructHelperClass 
+
+
+/**
+ * Helper class for generating UplcData for variants of the ***NbhDetails*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+export class NbhDetailsHelper extends EnumBridge<JustAnEnum> {
+    /*mkEnumHelperClass*/
+    /**
+            * @internal
+            *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<NbhDetails, NbhDetailsLike>(
+        NbhDetailsSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    /**
+     * generates  UplcData for ***"NeighborhoodData::NbhDetails.NbhDetailsV1"***
+     * @remarks - ***NbhDetails$NbhDetailsV1Like*** is the same as the expanded field-types.
+     */
+    NbhDetailsV1(fields: NbhDetails$NbhDetailsV1Like | { 
+        state: NeighborhoodStateLike,
+        appInfo: AppInfoV1Like,
+        opsInfo: NodeOpsInfoV1Like,
+        updateInfo: {
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
+    url: /*minStructField*/ string
+}
+ | undefined
+    }) : UplcData {
+        const uplc = this.mkUplcData({
+            NbhDetailsV1: fields 
+        }, "NeighborhoodData::NbhDetails.NbhDetailsV1");
+       return uplc;
+    } /*multiFieldVariant enum accessor*/
+}/*mkEnumHelperClass*/
 
 
 /**
