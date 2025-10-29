@@ -61,7 +61,7 @@ import type {
     DelegateDatum$Cip68RefToken, DelegateDatum$Ergo$Cip68RefToken, DelegateDatum$Cip68RefTokenLike,
     DelegationDetail, ErgoDelegationDetail, DelegationDetailLike,
     DredNodeState, ErgoDredNodeState, DredNodeStateLike,
-    NodeDetails, ErgoNodeDetails, NodeDetailsLike,
+    NodeDetailsV1, ErgoNodeDetailsV1, NodeDetailsV1Like,
     NodeRegistrationData, ErgoNodeRegistrationData, NodeRegistrationDataLike,
     DelegateDatum$capoStoredData, DelegateDatum$Ergo$capoStoredData, DelegateDatum$capoStoredDataLike,
     DelegateDatum, ErgoDelegateDatum, DelegateDatumLike,
@@ -264,16 +264,16 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
         return this.ᱺᱺDelegationDetailCast.toUplcData(fields);
     },
       /**
-       * generates UplcData for the enum type ***NodeDetails*** for the `BasicDelegate` script
+       * generates UplcData for the enum type ***NodeDetailsV1*** for the `BasicDelegate` script
        */
-        NodeDetails: (fields: NodeDetailsLike | {
+        NodeDetailsV1: (fields: NodeDetailsV1Like | {
     address: /*minStructField*/ string
     port: /*minStructField*/ IntLike
     pubKey: /*minStructField*/ PubKey | string | number[]
     pubKeyHash: /*minStructField*/ PubKeyHash | string | number[]
 }
 ) => {
-        return this.ᱺᱺNodeDetailsCast.toUplcData(fields);
+        return this.ᱺᱺNodeDetailsV1Cast.toUplcData(fields);
     },
       /**
        * generates UplcData for the enum type ***NodeRegistrationData*** for the `BasicDelegate` script
@@ -283,7 +283,7 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
     state: /*minStructField*/ DredNodeStateLike
-    nodeDetails: /*minStructField*/ NodeDetailsLike
+    nodeDetails: /*minStructField*/ NodeDetailsV1Like
 }
 ) => {
         return this.ᱺᱺNodeRegistrationDataCast.toUplcData(fields);
@@ -381,8 +381,8 @@ export class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
     );
     /**
                 * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNodeDetailsCast = makeCast<NodeDetails, NodeDetailsLike>(
-        NodeDetailsSchema,
+    ᱺᱺNodeDetailsV1Cast = makeCast<NodeDetailsV1, NodeDetailsV1Like>(
+        NodeDetailsV1Schema,
         { isMainnet: true, unwrapSingleFieldEnumVariants: true }
     );
     /**
@@ -863,7 +863,7 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
     } /* structReader helper */
 
     /**
-        * reads UplcData *known to fit the **NodeDetails*** struct type,
+        * reads UplcData *known to fit the **NodeDetailsV1*** struct type,
         * for the BasicDelegate script.
         * #### Standard WARNING
         * 
@@ -876,9 +876,9 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
         * It may throw an error, or it may throw no error, but return a value that
         * causes some error later on in your code, when you try to use it.
         */
-    NodeDetails(d: UplcData) {
-        const cast = this.bridge.ᱺᱺNodeDetailsCast;
-        return cast.fromUplcData(d) //??? as ErgoNodeDetails;
+    NodeDetailsV1(d: UplcData) {
+        const cast = this.bridge.ᱺᱺNodeDetailsV1Cast;
+        return cast.fromUplcData(d) //??? as ErgoNodeDetailsV1;
     } /* structReader helper */
 
     /**
@@ -1151,16 +1151,16 @@ export class DredNodeStateHelper extends EnumBridge<JustAnEnum> {
 
 
 /**
- * Helper class for generating UplcData for the struct ***NodeDetails*** type.
+ * Helper class for generating UplcData for the struct ***NodeDetailsV1*** type.
  * @public
  */
-export class NodeDetailsHelper extends DataBridge {
+export class NodeDetailsV1Helper extends DataBridge {
     isCallable = true
    /**
             * @internal
             * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast = makeCast<NodeDetails, NodeDetailsLike>(
-        NodeDetailsSchema,
+    ᱺᱺcast = makeCast<NodeDetailsV1, NodeDetailsV1Like>(
+        NodeDetailsV1Schema,
         { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
     );
 
@@ -1170,7 +1170,7 @@ export class NodeDetailsHelper extends DataBridge {
     //
     //Also: if you're reading this, ask in our discord server about a 🎁 for curiosity-seekers! 
     //
-    // NodeDetails(fields: NodeDetailsLike) {
+    // NodeDetailsV1(fields: NodeDetailsV1Like) {
     //    return this.ᱺᱺcast.toUplcData(fields);
     //}
 } //mkStructHelperClass 
@@ -3013,6 +3013,21 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
         }, "DredNodeRegistryPolicy::DelegateActivity.MultipleDelegateActivities"); /*singleField enum variant*/
        return uplc;
     }
+
+    /**
+     * access to different variants of the ***nested OtherActivity*** type needed for ***DelegateActivity:OtherActivities***.
+     */
+    get OtherActivities() {
+        const nestedAccessor = new OtherActivityHelperNested({
+            isMainnet: this.isMainnet, isNested: true, isActivity: true 
+        });
+        nestedAccessor.mkDataVia(
+            (activity: OtherActivityLike) => {
+                return  this.mkUplcData({ OtherActivities: activity }, 
+            "DredNodeRegistryPolicy::DelegateActivity.OtherActivities");
+        });
+        return nestedAccessor;
+    } /* nested enum accessor */
 }/*mkEnumHelperClass*/
 
 
@@ -3620,6 +3635,179 @@ export class dgd_DataSrcHelper extends EnumBridge<JustAnEnum> {
 
 
 /**
+ * Helper class for generating UplcData for variants of the ***AbstractDelegateActivitiesEnum*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+export class AbstractDelegateActivitiesEnumHelper extends EnumBridge<JustAnEnum> {
+    /*mkEnumHelperClass*/
+    /**
+            * @internal
+            *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<AbstractDelegateActivitiesEnum, AbstractDelegateActivitiesEnumLike>(
+        AbstractDelegateActivitiesEnumSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+
+
+
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.SpendingActivities"***
+     */
+    SpendingActivities(
+        activity: UplcData
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           SpendingActivities: activity
+        }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.SpendingActivities"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MintingActivities"***
+     */
+    MintingActivities(
+        activity: UplcData
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           MintingActivities: activity
+        }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MintingActivities"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.BurningActivities"***
+     */
+    BurningActivities(
+        activity: UplcData
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           BurningActivities: activity
+        }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.BurningActivities"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData"***, 
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass 
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$CreatingDelegatedData}` for use in a context
+     * providing an implicit seed utxo. 
+     */
+    CreatingDelegatedData(value: hasSeed, fields: { 
+        dataType: string 
+    } ) : UplcData
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData"*** 
+     * with raw seed details included in fields.
+     */
+    CreatingDelegatedData(fields: AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike | {
+            seed: TxOutputId | string,
+            dataType: string
+    } ): UplcData
+    CreatingDelegatedData(
+        seedOrUf: hasSeed | AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike, 
+        filteredFields?: { 
+            dataType: string
+    }) : UplcData {
+        if (filteredFields) {
+            const seedTxOutputId = this.getSeed(seedOrUf as hasSeed);
+            const uplc = this.mkUplcData({
+                CreatingDelegatedData: { seed: seedTxOutputId, ...filteredFields } 
+            }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData");
+           return uplc;
+        } else {
+            const fields = seedOrUf as AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike; 
+           const uplc = this.mkUplcData({
+                CreatingDelegatedData: fields 
+            }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData");
+           return uplc;
+        }
+    } /*multiFieldVariant/seeded enum accessor*/ 
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData"***, 
+     * @param fields - \{ dataType: string \}
+     * @remarks
+    * ##### Seeded activity
+    * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+     * provided implicitly by a SeedActivity-supporting library function. 
+     *
+     * #### Usage
+     *   1. Call the `$seeded$CreatingDelegatedData({ dataType })`
+      *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     */
+    $seeded$CreatingDelegatedData = impliedSeedActivityMaker(this, 
+        this.CreatingDelegatedData as (value: hasSeed, fields: { 
+            dataType: string 
+        } ) => UplcData
+    )
+    /* coda: seeded helper in same multiFieldVariant/seeded */
+
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.UpdatingDelegatedData"***
+     * @remarks - ***AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike*** is the same as the expanded field-types.
+     */
+    UpdatingDelegatedData(fields: AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike | { 
+        dataType: string,
+        recId: number[]
+    }) : UplcData {
+        const uplc = this.mkUplcData({
+            UpdatingDelegatedData: fields 
+        }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.UpdatingDelegatedData");
+       return uplc;
+    } /*multiFieldVariant enum accessor*/
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.DeletingDelegatedData"***
+     * @remarks - ***AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike*** is the same as the expanded field-types.
+     */
+    DeletingDelegatedData(fields: AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike | { 
+        dataType: string,
+        recId: number[]
+    }) : UplcData {
+        const uplc = this.mkUplcData({
+            DeletingDelegatedData: fields 
+        }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.DeletingDelegatedData");
+       return uplc;
+    } /*multiFieldVariant enum accessor*/
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MultipleDelegateActivities"***
+     */
+    MultipleDelegateActivities(
+        activities: Array<UplcData>
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           MultipleDelegateActivities: activities
+        }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MultipleDelegateActivities"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.OtherActivities"***
+     */
+    OtherActivities(
+        activity: UplcData
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           OtherActivities: activity
+        }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.OtherActivities"); /*singleField enum variant*/
+       return uplc;
+    }
+}/*mkEnumHelperClass*/
+
+
+/**
  * Helper class for generating UplcData for the struct ***DgDataDetails*** type.
  * @public
  */
@@ -3766,11 +3954,11 @@ export const DredNodeStateSchema : EnumTypeSchema = {
     ]
 };
 
-export const NodeDetailsSchema : StructTypeSchema = {
+export const NodeDetailsV1Schema : StructTypeSchema = {
     "kind": "struct",
     "format": "list",
-    "id": "__module__NodeRegistrationData__NodeDetails[]",
-    "name": "NodeDetails",
+    "id": "__module__NodeRegistrationData__NodeDetailsV1[]",
+    "name": "NodeDetailsV1",
     "fieldTypes": [
         {
             "name": "address",
@@ -3907,8 +4095,8 @@ export const NodeRegistrationDataSchema : StructTypeSchema = {
             "type": {
                 "kind": "struct",
                 "format": "list",
-                "id": "__module__NodeRegistrationData__NodeDetails[]",
-                "name": "NodeDetails",
+                "id": "__module__NodeRegistrationData__NodeDetailsV1[]",
+                "name": "NodeDetailsV1",
                 "fieldTypes": [
                     {
                         "name": "address",
@@ -4151,8 +4339,8 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                 "type": {
                                     "kind": "struct",
                                     "format": "list",
-                                    "id": "__module__NodeRegistrationData__NodeDetails[]",
-                                    "name": "NodeDetails",
+                                    "id": "__module__NodeRegistrationData__NodeDetailsV1[]",
+                                    "name": "NodeDetailsV1",
                                     "fieldTypes": [
                                         {
                                             "name": "address",

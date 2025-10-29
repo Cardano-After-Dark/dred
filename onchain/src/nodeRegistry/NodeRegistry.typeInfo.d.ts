@@ -255,14 +255,14 @@ export type DredNodeStateLike = IntersectedEnum<
 >
 
 /**
- * A strong type for the canonical form of NodeDetails
+ * A strong type for the canonical form of NodeDetailsV1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeDetails instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeDetailsV1 instead.
  * @public
  */
-export interface NodeDetails {
+export interface NodeDetailsV1 {
     address: /*minStructField*/ string
     port: /*minStructField*/ bigint
     pubKey: /*minStructField*/ PubKey
@@ -271,23 +271,23 @@ export interface NodeDetails {
 
 
 /**
- * An ergonomic, though less strictly-safe form of NodeDetails
+ * An ergonomic, though less strictly-safe form of NodeDetailsV1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeDetailsLike type,
+ * conversion to on-chain use.  For creating such data, use the NodeDetailsV1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-export type ErgoNodeDetails = NodeDetails/*like canon-other*/
+export type ErgoNodeDetailsV1 = NodeDetailsV1/*like canon-other*/
 
 /**
- * A strong type for the permissive form of NodeDetails
+ * A strong type for the permissive form of NodeDetailsV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export interface NodeDetailsLike {
+export interface NodeDetailsV1Like {
     address: /*minStructField*/ string
     port: /*minStructField*/ IntLike
     pubKey: /*minStructField*/ PubKey | string | number[]
@@ -309,7 +309,7 @@ export interface NodeRegistrationData {
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
     state: /*minStructField*/ DredNodeState
-    nodeDetails: /*minStructField*/ NodeDetails
+    nodeDetails: /*minStructField*/ NodeDetailsV1
 }
 
 
@@ -327,7 +327,7 @@ export type ErgoNodeRegistrationData = {
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
     state: /*minStructField*/ ErgoDredNodeState
-    nodeDetails: /*minStructField*/ ErgoNodeDetails
+    nodeDetails: /*minStructField*/ ErgoNodeDetailsV1
 }
 
 
@@ -342,7 +342,7 @@ export interface NodeRegistrationDataLike {
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
     state: /*minStructField*/ DredNodeStateLike
-    nodeDetails: /*minStructField*/ NodeDetailsLike
+    nodeDetails: /*minStructField*/ NodeDetailsV1Like
 }
 
 
