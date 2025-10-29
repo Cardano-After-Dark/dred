@@ -5,17 +5,18 @@ import type { basicDelegateMap } from '@donecollectively/stellar-contracts';
 import { bytesToHex } from '@helios-lang/codec-utils';
 import { CapoDAppProvider } from '@donecollectively/stellar-contracts/ui';
 import type { CapoDappStatus } from '@donecollectively/stellar-contracts/ui';
-import { CapoDelegateBundle } from '@donecollectively/stellar-contracts';
-import type { CapoHeliosBundle } from '@donecollectively/stellar-contracts';
 import type { CardanoClient } from '@helios-lang/tx-utils';
 import { Cast } from '@helios-lang/contract-utils';
 import type { CharterData } from '@donecollectively/stellar-contracts';
 import type { Cip30Wallet } from '@helios-lang/tx-utils';
+import { ConcreteCapoDelegateBundle } from '@donecollectively/stellar-contracts';
 import { ContractDataBridge } from '@donecollectively/stellar-contracts';
 import type { DappUserInfo } from '@donecollectively/stellar-contracts/ui';
 import { DataBridgeReaderClass } from '@donecollectively/stellar-contracts';
+import { default as default_2 } from './NodeRegistry.hlb.js';
 import { DelegatedDataContract } from '@donecollectively/stellar-contracts';
 import type { DgDataUpdateOptions } from '@donecollectively/stellar-contracts';
+import { DredCapoBundle } from './DredCapo.hlb.js';
 import { EnumBridge } from '@donecollectively/stellar-contracts';
 import type { EnumTypeMeta } from '@donecollectively/stellar-contracts';
 import type { FoundDatumUtxo } from '@donecollectively/stellar-contracts';
@@ -38,6 +39,8 @@ import { makeRootPrivateKey } from '@helios-lang/tx-utils';
 import { makeSimpleWallet } from '@helios-lang/tx-utils';
 import type { minimalData } from '@donecollectively/stellar-contracts';
 import type { MintingPolicyHash } from '@helios-lang/ledger';
+import { NeighborhoodRegistryBundle } from './NeighborhoodRegistry.hlb.js';
+import { ProtocolSettingsBundle } from './ProtocolSettings.hlb.js';
 import type { PubKey } from '@helios-lang/ledger';
 import type { PubKeyHash } from '@helios-lang/ledger';
 import { default as React_2 } from 'react';
@@ -61,6 +64,590 @@ import type { ValidatorHash } from '@helios-lang/ledger';
 import type { Value } from '@helios-lang/ledger';
 
 /**
+ * A strong type for the canonical form of AbstractDelegateActivitiesEnum$CreatingDelegatedData
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see AbstractDelegateActivitiesEnum$Ergo$CreatingDelegatedData instead.
+ * @public
+ */
+declare interface AbstractDelegateActivitiesEnum$CreatingDelegatedData {
+    seed: TxOutputId  /*minVariantField*/ ,
+    dataType: string  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the canonical form of AbstractDelegateActivitiesEnum$CreatingDelegatedData
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see AbstractDelegateActivitiesEnum$Ergo$CreatingDelegatedData instead.
+ * @public
+ */
+declare interface AbstractDelegateActivitiesEnum$CreatingDelegatedData_2 {
+    seed: TxOutputId  /*minVariantField*/ ,
+    dataType: string  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the permissive form of AbstractDelegateActivitiesEnum$CreatingDelegatedData
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike {
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    dataType: string  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the permissive form of AbstractDelegateActivitiesEnum$CreatingDelegatedData
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike_2 {
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    dataType: string  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the canonical form of AbstractDelegateActivitiesEnum$DeletingDelegatedData
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see AbstractDelegateActivitiesEnum$Ergo$DeletingDelegatedData instead.
+ * @public
+ */
+declare interface AbstractDelegateActivitiesEnum$DeletingDelegatedData {
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the canonical form of AbstractDelegateActivitiesEnum$DeletingDelegatedData
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see AbstractDelegateActivitiesEnum$Ergo$DeletingDelegatedData instead.
+ * @public
+ */
+declare interface AbstractDelegateActivitiesEnum$DeletingDelegatedData_2 {
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the permissive form of AbstractDelegateActivitiesEnum$DeletingDelegatedData
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike {
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the permissive form of AbstractDelegateActivitiesEnum$DeletingDelegatedData
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike_2 {
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
+}
+
+/**
+ * An ergonomic, though less strictly-safe form of AbstractDelegateActivitiesEnum$CreatingDelegatedData
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type AbstractDelegateActivitiesEnum$Ergo$CreatingDelegatedData = AbstractDelegateActivitiesEnum$CreatingDelegatedData
+
+/**
+ * An ergonomic, though less strictly-safe form of AbstractDelegateActivitiesEnum$CreatingDelegatedData
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type AbstractDelegateActivitiesEnum$Ergo$CreatingDelegatedData_2 = AbstractDelegateActivitiesEnum$CreatingDelegatedData_2
+
+/**
+ * An ergonomic, though less strictly-safe form of AbstractDelegateActivitiesEnum$DeletingDelegatedData
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type AbstractDelegateActivitiesEnum$Ergo$DeletingDelegatedData = AbstractDelegateActivitiesEnum$DeletingDelegatedData
+
+/**
+ * An ergonomic, though less strictly-safe form of AbstractDelegateActivitiesEnum$DeletingDelegatedData
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type AbstractDelegateActivitiesEnum$Ergo$DeletingDelegatedData_2 = AbstractDelegateActivitiesEnum$DeletingDelegatedData_2
+
+/**
+ * An ergonomic, though less strictly-safe form of AbstractDelegateActivitiesEnum$UpdatingDelegatedData
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type AbstractDelegateActivitiesEnum$Ergo$UpdatingDelegatedData = AbstractDelegateActivitiesEnum$UpdatingDelegatedData
+
+/**
+ * An ergonomic, though less strictly-safe form of AbstractDelegateActivitiesEnum$UpdatingDelegatedData
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type AbstractDelegateActivitiesEnum$Ergo$UpdatingDelegatedData_2 = AbstractDelegateActivitiesEnum$UpdatingDelegatedData_2
+
+/**
+ * A strong type for the canonical form of AbstractDelegateActivitiesEnum$UpdatingDelegatedData
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see AbstractDelegateActivitiesEnum$Ergo$UpdatingDelegatedData instead.
+ * @public
+ */
+declare interface AbstractDelegateActivitiesEnum$UpdatingDelegatedData {
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the canonical form of AbstractDelegateActivitiesEnum$UpdatingDelegatedData
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see AbstractDelegateActivitiesEnum$Ergo$UpdatingDelegatedData instead.
+ * @public
+ */
+declare interface AbstractDelegateActivitiesEnum$UpdatingDelegatedData_2 {
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the permissive form of AbstractDelegateActivitiesEnum$UpdatingDelegatedData
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike {
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the permissive form of AbstractDelegateActivitiesEnum$UpdatingDelegatedData
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike_2 {
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
+}
+
+/**
+ * AbstractDelegateActivitiesEnum enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **10 variant(s)** of the AbstractDelegateActivitiesEnum enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `AbstractDelegateActivitiesEnumHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type AbstractDelegateActivitiesEnum = 
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			CapoLifecycleActivity_2    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			DelegateLifecycleActivity_2    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { CreatingDelegatedData: AbstractDelegateActivitiesEnum$CreatingDelegatedData /*minEnumVariant*/ }
+| { UpdatingDelegatedData: AbstractDelegateActivitiesEnum$UpdatingDelegatedData /*minEnumVariant*/ }
+| { DeletingDelegatedData: AbstractDelegateActivitiesEnum$DeletingDelegatedData /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+
+/**
+ * AbstractDelegateActivitiesEnum enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **10 variant(s)** of the AbstractDelegateActivitiesEnum enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `AbstractDelegateActivitiesEnumHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type AbstractDelegateActivitiesEnum_2 = 
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			CapoLifecycleActivity_3    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			DelegateLifecycleActivity_3    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { CreatingDelegatedData: AbstractDelegateActivitiesEnum$CreatingDelegatedData_2 /*minEnumVariant*/ }
+| { UpdatingDelegatedData: AbstractDelegateActivitiesEnum$UpdatingDelegatedData_2 /*minEnumVariant*/ }
+| { DeletingDelegatedData: AbstractDelegateActivitiesEnum$DeletingDelegatedData_2 /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+
+/**
+ * Helper class for generating UplcData for variants of the ***AbstractDelegateActivitiesEnum*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class AbstractDelegateActivitiesEnumHelper extends EnumBridge<JustAnEnum> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<AbstractDelegateActivitiesEnum, Partial<{
+        CapoLifecycleActivities: CapoLifecycleActivityLike_2;
+        DelegateLifecycleActivities: DelegateLifecycleActivityLike_2;
+        SpendingActivities: UplcData;
+        MintingActivities: UplcData;
+        BurningActivities: UplcData;
+        CreatingDelegatedData: AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike;
+        UpdatingDelegatedData: AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike;
+        DeletingDelegatedData: AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike;
+        MultipleDelegateActivities: Array<UplcData>;
+        OtherActivities: UplcData;
+    }>>;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.SpendingActivities"***
+     */
+    SpendingActivities(activity: UplcData): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MintingActivities"***
+     */
+    MintingActivities(activity: UplcData): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.BurningActivities"***
+     */
+    BurningActivities(activity: UplcData): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$CreatingDelegatedData}` for use in a context
+     * providing an implicit seed utxo.
+     */
+    CreatingDelegatedData(value: hasSeed, fields: {
+        dataType: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData"***
+     * with raw seed details included in fields.
+     */
+    CreatingDelegatedData(fields: AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike | {
+        seed: TxOutputId | string;
+        dataType: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData"***,
+     * @param fields - \{ dataType: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$CreatingDelegatedData({ dataType })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     */
+    $seeded$CreatingDelegatedData: (fields: {
+        dataType: string;
+    }) => SeedActivity<(value: hasSeed, fields: {
+    dataType: string;
+    }) => UplcData>;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.UpdatingDelegatedData"***
+     * @remarks - ***AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike*** is the same as the expanded field-types.
+     */
+    UpdatingDelegatedData(fields: AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike | {
+        dataType: string;
+        recId: number[];
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.DeletingDelegatedData"***
+     * @remarks - ***AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike*** is the same as the expanded field-types.
+     */
+    DeletingDelegatedData(fields: AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike | {
+        dataType: string;
+        recId: number[];
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MultipleDelegateActivities"***
+     */
+    MultipleDelegateActivities(activities: Array<UplcData>): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.OtherActivities"***
+     */
+    OtherActivities(activity: UplcData): UplcData;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***AbstractDelegateActivitiesEnum*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class AbstractDelegateActivitiesEnumHelper_2 extends EnumBridge<JustAnEnum> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<AbstractDelegateActivitiesEnum_2, Partial<{
+        CapoLifecycleActivities: CapoLifecycleActivityLike_3;
+        DelegateLifecycleActivities: DelegateLifecycleActivityLike_3;
+        SpendingActivities: UplcData;
+        MintingActivities: UplcData;
+        BurningActivities: UplcData;
+        CreatingDelegatedData: AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike_2;
+        UpdatingDelegatedData: AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike_2;
+        DeletingDelegatedData: AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike_2;
+        MultipleDelegateActivities: Array<UplcData>;
+        OtherActivities: UplcData;
+    }>>;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.SpendingActivities"***
+     */
+    SpendingActivities(activity: UplcData): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MintingActivities"***
+     */
+    MintingActivities(activity: UplcData): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.BurningActivities"***
+     */
+    BurningActivities(activity: UplcData): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData"***,
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$CreatingDelegatedData}` for use in a context
+     * providing an implicit seed utxo.
+     */
+    CreatingDelegatedData(value: hasSeed, fields: {
+        dataType: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData"***
+     * with raw seed details included in fields.
+     */
+    CreatingDelegatedData(fields: AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike_2 | {
+        seed: TxOutputId | string;
+        dataType: string;
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData"***,
+     * @param fields - \{ dataType: string \}
+     * @remarks
+     * ##### Seeded activity
+     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be
+     * provided implicitly by a SeedActivity-supporting library function.
+     *
+     * #### Usage
+     *   1. Call the `$seeded$CreatingDelegatedData({ dataType })`
+     *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     */
+    $seeded$CreatingDelegatedData: (fields: {
+        dataType: string;
+    }) => SeedActivity<(value: hasSeed, fields: {
+    dataType: string;
+    }) => UplcData>;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.UpdatingDelegatedData"***
+     * @remarks - ***AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike*** is the same as the expanded field-types.
+     */
+    UpdatingDelegatedData(fields: AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike_2 | {
+        dataType: string;
+        recId: number[];
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.DeletingDelegatedData"***
+     * @remarks - ***AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike*** is the same as the expanded field-types.
+     */
+    DeletingDelegatedData(fields: AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike_2 | {
+        dataType: string;
+        recId: number[];
+    }): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MultipleDelegateActivities"***
+     */
+    MultipleDelegateActivities(activities: Array<UplcData>): UplcData;
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.OtherActivities"***
+     */
+    OtherActivities(activity: UplcData): UplcData;
+}
+
+/**
+ * AbstractDelegateActivitiesEnum enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **10 variant(s)** of the AbstractDelegateActivitiesEnum enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `AbstractDelegateActivitiesEnumHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+declare type AbstractDelegateActivitiesEnumLike = IntersectedEnum<
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			CapoLifecycleActivityLike_2    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			DelegateLifecycleActivityLike_2    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { CreatingDelegatedData: AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike /*minEnumVariant*/ }
+| { UpdatingDelegatedData: AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike /*minEnumVariant*/ }
+| { DeletingDelegatedData: AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+>
+
+/**
+ * AbstractDelegateActivitiesEnum enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **10 variant(s)** of the AbstractDelegateActivitiesEnum enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `AbstractDelegateActivitiesEnumHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+declare type AbstractDelegateActivitiesEnumLike_2 = IntersectedEnum<
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			CapoLifecycleActivityLike_3    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			DelegateLifecycleActivityLike_3    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { CreatingDelegatedData: AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike_2 /*minEnumVariant*/ }
+| { UpdatingDelegatedData: AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike_2 /*minEnumVariant*/ }
+| { DeletingDelegatedData: AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike_2 /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+>
+
+/**
+ * @internal
+ */
+declare type AbstractDelegateActivitiesEnumMeta = EnumTypeMeta<
+    {module: "CapoDelegateHelpers", enumName: "AbstractDelegateActivitiesEnum"}, {
+    CapoLifecycleActivities: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "CapoLifecycleActivities",
+    "Constr#0", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+    			CapoLifecycleActivity_2   , "noSpecialFlags"
+    >,
+    DelegateLifecycleActivities: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "DelegateLifecycleActivities",
+    "Constr#1", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+    			DelegateLifecycleActivity_2   , "noSpecialFlags"
+    >,
+    SpendingActivities: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "SpendingActivities",
+    "Constr#2", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData   , "noSpecialFlags"
+    >,
+    MintingActivities: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "MintingActivities",
+    "Constr#3", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData   , "noSpecialFlags"
+    >,
+    BurningActivities: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "BurningActivities",
+    "Constr#4", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData   , "noSpecialFlags"
+    >,
+    CreatingDelegatedData: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "CreatingDelegatedData",
+    "Constr#5", 
+    "fields", AbstractDelegateActivitiesEnum$CreatingDelegatedData, "isSeededActivity"
+    >,
+    UpdatingDelegatedData: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "UpdatingDelegatedData",
+    "Constr#6", 
+    "fields", AbstractDelegateActivitiesEnum$UpdatingDelegatedData, "noSpecialFlags"
+    >,
+    DeletingDelegatedData: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "DeletingDelegatedData",
+    "Constr#7", 
+    "fields", AbstractDelegateActivitiesEnum$DeletingDelegatedData, "noSpecialFlags"
+    >,
+    MultipleDelegateActivities: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "MultipleDelegateActivities",
+    "Constr#8", "singletonField", /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>   , "noSpecialFlags"
+    >,
+    OtherActivities: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "OtherActivities",
+    "Constr#9", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData   , "noSpecialFlags"
+    >
+}
+>;
+
+/**
  * A strong type for the canonical form of AbstractSettingsForNeighborhood
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -69,7 +656,7 @@ import type { Value } from '@helios-lang/ledger';
  * @public
  */
 declare interface AbstractSettingsForNeighborhood {
-    NeighborhoodSettings: NeighborhoodSettings_2;
+    NeighborhoodSettings: /*minStructField*/ NeighborhoodSettings_2
 }
 
 /**
@@ -79,7 +666,7 @@ declare interface AbstractSettingsForNeighborhood {
  * @public
  */
 declare interface AbstractSettingsForNeighborhoodLike {
-    NeighborhoodSettings: NeighborhoodSettingsLike;
+    NeighborhoodSettings: /*minStructField*/ NeighborhoodSettingsLike
 }
 
 /**
@@ -91,7 +678,7 @@ declare interface AbstractSettingsForNeighborhoodLike {
  * @public
  */
 declare interface AbstractSettingsForNodeOperator {
-    nodeOpSettings: NodeOperatorSettings_2;
+    nodeOpSettings: /*minStructField*/ NodeOperatorSettings_2
 }
 
 /**
@@ -101,7 +688,7 @@ declare interface AbstractSettingsForNodeOperator {
  * @public
  */
 declare interface AbstractSettingsForNodeOperatorLike {
-    nodeOpSettings: NodeOperatorSettingsLike;
+    nodeOpSettings: /*minStructField*/ NodeOperatorSettingsLike
 }
 
 /**
@@ -437,8 +1024,8 @@ declare class ActivityDelegateRoleHelperNested_4 extends EnumBridge<isActivity> 
  * @public
  */
 declare interface AnyData {
-    id: number[];
-    type: string;
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
 }
 
 /**
@@ -450,8 +1037,8 @@ declare interface AnyData {
  * @public
  */
 declare interface AnyData_2 {
-    id: number[];
-    type: string;
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
 }
 
 /**
@@ -463,8 +1050,8 @@ declare interface AnyData_2 {
  * @public
  */
 declare interface AnyData_3 {
-    id: number[];
-    type: string;
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
 }
 
 /**
@@ -476,8 +1063,8 @@ declare interface AnyData_3 {
  * @public
  */
 declare interface AnyData_4 {
-    id: number[];
-    type: string;
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
 }
 
 /**
@@ -487,8 +1074,8 @@ declare interface AnyData_4 {
  * @public
  */
 declare interface AnyDataLike {
-    id: number[];
-    type: string;
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
 }
 
 /**
@@ -498,8 +1085,8 @@ declare interface AnyDataLike {
  * @public
  */
 declare interface AnyDataLike_2 {
-    id: number[];
-    type: string;
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
 }
 
 /**
@@ -509,8 +1096,8 @@ declare interface AnyDataLike_2 {
  * @public
  */
 declare interface AnyDataLike_3 {
-    id: number[];
-    type: string;
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
 }
 
 /**
@@ -520,93 +1107,93 @@ declare interface AnyDataLike_3 {
  * @public
  */
 declare interface AnyDataLike_4 {
-    id: number[];
-    type: string;
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
 }
 
 /**
- * A strong type for the canonical form of AppInfo
+ * A strong type for the canonical form of AppInfoV1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoAppInfo instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoAppInfoV1 instead.
  * @public
  */
-declare interface AppInfo {
-    url: string;
-    revenueModel: Array<RevenueModel>;
-    name: string;
-    description: string;
+declare interface AppInfoV1 {
+    url: /*minStructField*/ string
+    revenueModel: /*minStructField*/ Array<RevenueModel>
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
 }
 
 /**
- * A strong type for the permissive form of AppInfo
+ * A strong type for the permissive form of AppInfoV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface AppInfoLike {
-    url: string;
-    revenueModel: Array<RevenueModelLike>;
-    name: string;
-    description: string;
+declare interface AppInfoV1Like {
+    url: /*minStructField*/ string
+    revenueModel: /*minStructField*/ Array<RevenueModelLike>
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
 }
 
 /**
  * BurningActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **1 variant(s)** of the BurningActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `BurningActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type BurningActivity = {
-    _placeholder1BA: number[];
-};
+declare type BurningActivity = 
+| { _placeholder1BA: /* implied wrapper { recId: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
 
 /**
  * BurningActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **1 variant(s)** of the BurningActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `BurningActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type BurningActivity_2 = {
-    DeletingRecord: number[];
-};
+declare type BurningActivity_2 = 
+| { DeletingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
 
 /**
  * BurningActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **1 variant(s)** of the BurningActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `BurningActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type BurningActivity_3 = {
-    DeletingRecord: number[];
-};
+declare type BurningActivity_3 = 
+| { DeletingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
 
 /**
  * BurningActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **1 variant(s)** of the BurningActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `BurningActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type BurningActivity_4 = {
-    DeletingRecord: number[];
-};
+declare type BurningActivity_4 = 
+| { DeletingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***BurningActivity*** enum type.
@@ -790,85 +1377,91 @@ declare class BurningActivityHelperNested_4 extends EnumBridge<isActivity> {
 
 /**
  * BurningActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **1 variant(s)** of the BurningActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `BurningActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type BurningActivityLike = IntersectedEnum<{
-    _placeholder1BA: number[];
-}>;
+declare type BurningActivityLike = IntersectedEnum<
+| { _placeholder1BA: /* implied wrapper { recId: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+>
 
 /**
  * BurningActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **1 variant(s)** of the BurningActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `BurningActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type BurningActivityLike_2 = IntersectedEnum<{
-    DeletingRecord: number[];
-}>;
+declare type BurningActivityLike_2 = IntersectedEnum<
+| { DeletingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+>
 
 /**
  * BurningActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **1 variant(s)** of the BurningActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `BurningActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type BurningActivityLike_3 = IntersectedEnum<{
-    DeletingRecord: number[];
-}>;
+declare type BurningActivityLike_3 = IntersectedEnum<
+| { DeletingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+>
 
 /**
  * BurningActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **1 variant(s)** of the BurningActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `BurningActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type BurningActivityLike_4 = IntersectedEnum<{
-    DeletingRecord: number[];
-}>;
+declare type BurningActivityLike_4 = IntersectedEnum<
+| { DeletingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type BurningActivityMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "BurningActivity";
-}, {
-    DeletingRecord: singleEnumVariantMeta<BurningActivityMeta, "DeletingRecord", "Constr#0", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ number[], "noSpecialFlags">;
-}>;
+declare type BurningActivityMeta = EnumTypeMeta<
+    {module: "DredNodeRegistryPolicy", enumName: "BurningActivity"}, {
+    DeletingRecord: singleEnumVariantMeta<BurningActivityMeta, "DeletingRecord",
+    "Constr#0", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]   , "noSpecialFlags"
+    >
+}
+>;
 
 export { bytesToHex }
 
@@ -881,8 +1474,8 @@ export { bytesToHex }
  * @public
  */
 declare interface CapoCtx {
-    mph: MintingPolicyHash;
-    charter: cctx_CharterInputType;
+    mph: /*minStructField*/ MintingPolicyHash
+    charter: /*minStructField*/ cctx_CharterInputType
 }
 
 /**
@@ -894,8 +1487,8 @@ declare interface CapoCtx {
  * @public
  */
 declare interface CapoCtx_2 {
-    mph: MintingPolicyHash;
-    charter: cctx_CharterInputType_2;
+    mph: /*minStructField*/ MintingPolicyHash
+    charter: /*minStructField*/ cctx_CharterInputType_2
 }
 
 /**
@@ -907,8 +1500,8 @@ declare interface CapoCtx_2 {
  * @public
  */
 declare interface CapoCtx_3 {
-    mph: MintingPolicyHash;
-    charter: cctx_CharterInputType_3;
+    mph: /*minStructField*/ MintingPolicyHash
+    charter: /*minStructField*/ cctx_CharterInputType_3
 }
 
 /**
@@ -920,8 +1513,8 @@ declare interface CapoCtx_3 {
  * @public
  */
 declare interface CapoCtx_4 {
-    mph: MintingPolicyHash;
-    charter: cctx_CharterInputType_4;
+    mph: /*minStructField*/ MintingPolicyHash
+    charter: /*minStructField*/ cctx_CharterInputType_4
 }
 
 /**
@@ -931,8 +1524,8 @@ declare interface CapoCtx_4 {
  * @public
  */
 declare interface CapoCtxLike {
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-    charter: cctx_CharterInputTypeLike;
+    mph: /*minStructField*/ MintingPolicyHash | string | number[]
+    charter: /*minStructField*/ cctx_CharterInputTypeLike
 }
 
 /**
@@ -942,8 +1535,8 @@ declare interface CapoCtxLike {
  * @public
  */
 declare interface CapoCtxLike_2 {
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-    charter: cctx_CharterInputTypeLike_2;
+    mph: /*minStructField*/ MintingPolicyHash | string | number[]
+    charter: /*minStructField*/ cctx_CharterInputTypeLike_2
 }
 
 /**
@@ -953,8 +1546,8 @@ declare interface CapoCtxLike_2 {
  * @public
  */
 declare interface CapoCtxLike_3 {
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-    charter: cctx_CharterInputTypeLike_3;
+    mph: /*minStructField*/ MintingPolicyHash | string | number[]
+    charter: /*minStructField*/ cctx_CharterInputTypeLike_3
 }
 
 /**
@@ -964,8 +1557,8 @@ declare interface CapoCtxLike_3 {
  * @public
  */
 declare interface CapoCtxLike_4 {
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-    charter: cctx_CharterInputTypeLike_4;
+    mph: /*minStructField*/ MintingPolicyHash | string | number[]
+    charter: /*minStructField*/ cctx_CharterInputTypeLike_4
 }
 
 /**
@@ -977,14 +1570,14 @@ declare interface CapoCtxLike_4 {
  * @public
  */
 declare interface CapoDatum$CharterData {
-    spendDelegateLink: RelativeDelegateLink_2;
-    spendInvariants: Array<RelativeDelegateLink_2>;
-    otherNamedDelegates: Map<string, RelativeDelegateLink_2>;
-    mintDelegateLink: RelativeDelegateLink_2;
-    mintInvariants: Array<RelativeDelegateLink_2>;
-    govAuthorityLink: RelativeDelegateLink_2;
-    manifest: Map<string, CapoManifestEntry>;
-    pendingChanges: Array<PendingCharterChange>;
+    spendDelegateLink: RelativeDelegateLink_2  /*minVariantField*/ ,
+    spendInvariants: Array<RelativeDelegateLink_2>  /*minVariantField*/ ,
+    otherNamedDelegates: Map<string, RelativeDelegateLink_2>  /*minVariantField*/ ,
+    mintDelegateLink: RelativeDelegateLink_2  /*minVariantField*/ ,
+    mintInvariants: Array<RelativeDelegateLink_2>  /*minVariantField*/ ,
+    govAuthorityLink: RelativeDelegateLink_2  /*minVariantField*/ ,
+    manifest: Map<string, CapoManifestEntry>  /*minVariantField*/ ,
+    pendingChanges: Array<PendingCharterChange>  /*minVariantField*/ 
 }
 
 /**
@@ -996,14 +1589,14 @@ declare interface CapoDatum$CharterData {
  * @public
  */
 declare interface CapoDatum$CharterData_2 {
-    spendDelegateLink: RelativeDelegateLink_3;
-    spendInvariants: Array<RelativeDelegateLink_3>;
-    otherNamedDelegates: Map<string, RelativeDelegateLink_3>;
-    mintDelegateLink: RelativeDelegateLink_3;
-    mintInvariants: Array<RelativeDelegateLink_3>;
-    govAuthorityLink: RelativeDelegateLink_3;
-    manifest: Map<string, CapoManifestEntry_2>;
-    pendingChanges: Array<PendingCharterChange_2>;
+    spendDelegateLink: RelativeDelegateLink_3  /*minVariantField*/ ,
+    spendInvariants: Array<RelativeDelegateLink_3>  /*minVariantField*/ ,
+    otherNamedDelegates: Map<string, RelativeDelegateLink_3>  /*minVariantField*/ ,
+    mintDelegateLink: RelativeDelegateLink_3  /*minVariantField*/ ,
+    mintInvariants: Array<RelativeDelegateLink_3>  /*minVariantField*/ ,
+    govAuthorityLink: RelativeDelegateLink_3  /*minVariantField*/ ,
+    manifest: Map<string, CapoManifestEntry_2>  /*minVariantField*/ ,
+    pendingChanges: Array<PendingCharterChange_2>  /*minVariantField*/ 
 }
 
 /**
@@ -1015,14 +1608,14 @@ declare interface CapoDatum$CharterData_2 {
  * @public
  */
 declare interface CapoDatum$CharterData_3 {
-    spendDelegateLink: RelativeDelegateLink_4;
-    spendInvariants: Array<RelativeDelegateLink_4>;
-    otherNamedDelegates: Map<string, RelativeDelegateLink_4>;
-    mintDelegateLink: RelativeDelegateLink_4;
-    mintInvariants: Array<RelativeDelegateLink_4>;
-    govAuthorityLink: RelativeDelegateLink_4;
-    manifest: Map<string, CapoManifestEntry_3>;
-    pendingChanges: Array<PendingCharterChange_3>;
+    spendDelegateLink: RelativeDelegateLink_4  /*minVariantField*/ ,
+    spendInvariants: Array<RelativeDelegateLink_4>  /*minVariantField*/ ,
+    otherNamedDelegates: Map<string, RelativeDelegateLink_4>  /*minVariantField*/ ,
+    mintDelegateLink: RelativeDelegateLink_4  /*minVariantField*/ ,
+    mintInvariants: Array<RelativeDelegateLink_4>  /*minVariantField*/ ,
+    govAuthorityLink: RelativeDelegateLink_4  /*minVariantField*/ ,
+    manifest: Map<string, CapoManifestEntry_3>  /*minVariantField*/ ,
+    pendingChanges: Array<PendingCharterChange_3>  /*minVariantField*/ 
 }
 
 /**
@@ -1034,14 +1627,14 @@ declare interface CapoDatum$CharterData_3 {
  * @public
  */
 declare interface CapoDatum$CharterData_4 {
-    spendDelegateLink: RelativeDelegateLink_5;
-    spendInvariants: Array<RelativeDelegateLink_5>;
-    otherNamedDelegates: Map<string, RelativeDelegateLink_5>;
-    mintDelegateLink: RelativeDelegateLink_5;
-    mintInvariants: Array<RelativeDelegateLink_5>;
-    govAuthorityLink: RelativeDelegateLink_5;
-    manifest: Map<string, CapoManifestEntry_4>;
-    pendingChanges: Array<PendingCharterChange_4>;
+    spendDelegateLink: RelativeDelegateLink_5  /*minVariantField*/ ,
+    spendInvariants: Array<RelativeDelegateLink_5>  /*minVariantField*/ ,
+    otherNamedDelegates: Map<string, RelativeDelegateLink_5>  /*minVariantField*/ ,
+    mintDelegateLink: RelativeDelegateLink_5  /*minVariantField*/ ,
+    mintInvariants: Array<RelativeDelegateLink_5>  /*minVariantField*/ ,
+    govAuthorityLink: RelativeDelegateLink_5  /*minVariantField*/ ,
+    manifest: Map<string, CapoManifestEntry_4>  /*minVariantField*/ ,
+    pendingChanges: Array<PendingCharterChange_4>  /*minVariantField*/ 
 }
 
 /**
@@ -1051,14 +1644,14 @@ declare interface CapoDatum$CharterData_4 {
  * @public
  */
 declare interface CapoDatum$CharterDataLike {
-    spendDelegateLink: RelativeDelegateLinkLike;
-    spendInvariants: Array<RelativeDelegateLinkLike>;
-    otherNamedDelegates: Map<string, RelativeDelegateLinkLike>;
-    mintDelegateLink: RelativeDelegateLinkLike;
-    mintInvariants: Array<RelativeDelegateLinkLike>;
-    govAuthorityLink: RelativeDelegateLinkLike;
-    manifest: Map<string, CapoManifestEntryLike>;
-    pendingChanges: Array<PendingCharterChangeLike>;
+    spendDelegateLink: RelativeDelegateLinkLike  /*minVariantField*/ ,
+    spendInvariants: Array<RelativeDelegateLinkLike>  /*minVariantField*/ ,
+    otherNamedDelegates: Map<string, RelativeDelegateLinkLike>  /*minVariantField*/ ,
+    mintDelegateLink: RelativeDelegateLinkLike  /*minVariantField*/ ,
+    mintInvariants: Array<RelativeDelegateLinkLike>  /*minVariantField*/ ,
+    govAuthorityLink: RelativeDelegateLinkLike  /*minVariantField*/ ,
+    manifest: Map<string, CapoManifestEntryLike>  /*minVariantField*/ ,
+    pendingChanges: Array<PendingCharterChangeLike>  /*minVariantField*/ 
 }
 
 /**
@@ -1068,14 +1661,14 @@ declare interface CapoDatum$CharterDataLike {
  * @public
  */
 declare interface CapoDatum$CharterDataLike_2 {
-    spendDelegateLink: RelativeDelegateLinkLike_2;
-    spendInvariants: Array<RelativeDelegateLinkLike_2>;
-    otherNamedDelegates: Map<string, RelativeDelegateLinkLike_2>;
-    mintDelegateLink: RelativeDelegateLinkLike_2;
-    mintInvariants: Array<RelativeDelegateLinkLike_2>;
-    govAuthorityLink: RelativeDelegateLinkLike_2;
-    manifest: Map<string, CapoManifestEntryLike_2>;
-    pendingChanges: Array<PendingCharterChangeLike_2>;
+    spendDelegateLink: RelativeDelegateLinkLike_2  /*minVariantField*/ ,
+    spendInvariants: Array<RelativeDelegateLinkLike_2>  /*minVariantField*/ ,
+    otherNamedDelegates: Map<string, RelativeDelegateLinkLike_2>  /*minVariantField*/ ,
+    mintDelegateLink: RelativeDelegateLinkLike_2  /*minVariantField*/ ,
+    mintInvariants: Array<RelativeDelegateLinkLike_2>  /*minVariantField*/ ,
+    govAuthorityLink: RelativeDelegateLinkLike_2  /*minVariantField*/ ,
+    manifest: Map<string, CapoManifestEntryLike_2>  /*minVariantField*/ ,
+    pendingChanges: Array<PendingCharterChangeLike_2>  /*minVariantField*/ 
 }
 
 /**
@@ -1085,14 +1678,14 @@ declare interface CapoDatum$CharterDataLike_2 {
  * @public
  */
 declare interface CapoDatum$CharterDataLike_3 {
-    spendDelegateLink: RelativeDelegateLinkLike_3;
-    spendInvariants: Array<RelativeDelegateLinkLike_3>;
-    otherNamedDelegates: Map<string, RelativeDelegateLinkLike_3>;
-    mintDelegateLink: RelativeDelegateLinkLike_3;
-    mintInvariants: Array<RelativeDelegateLinkLike_3>;
-    govAuthorityLink: RelativeDelegateLinkLike_3;
-    manifest: Map<string, CapoManifestEntryLike_3>;
-    pendingChanges: Array<PendingCharterChangeLike_3>;
+    spendDelegateLink: RelativeDelegateLinkLike_3  /*minVariantField*/ ,
+    spendInvariants: Array<RelativeDelegateLinkLike_3>  /*minVariantField*/ ,
+    otherNamedDelegates: Map<string, RelativeDelegateLinkLike_3>  /*minVariantField*/ ,
+    mintDelegateLink: RelativeDelegateLinkLike_3  /*minVariantField*/ ,
+    mintInvariants: Array<RelativeDelegateLinkLike_3>  /*minVariantField*/ ,
+    govAuthorityLink: RelativeDelegateLinkLike_3  /*minVariantField*/ ,
+    manifest: Map<string, CapoManifestEntryLike_3>  /*minVariantField*/ ,
+    pendingChanges: Array<PendingCharterChangeLike_3>  /*minVariantField*/ 
 }
 
 /**
@@ -1102,14 +1695,14 @@ declare interface CapoDatum$CharterDataLike_3 {
  * @public
  */
 declare interface CapoDatum$CharterDataLike_4 {
-    spendDelegateLink: RelativeDelegateLinkLike_4;
-    spendInvariants: Array<RelativeDelegateLinkLike_4>;
-    otherNamedDelegates: Map<string, RelativeDelegateLinkLike_4>;
-    mintDelegateLink: RelativeDelegateLinkLike_4;
-    mintInvariants: Array<RelativeDelegateLinkLike_4>;
-    govAuthorityLink: RelativeDelegateLinkLike_4;
-    manifest: Map<string, CapoManifestEntryLike_4>;
-    pendingChanges: Array<PendingCharterChangeLike_4>;
+    spendDelegateLink: RelativeDelegateLinkLike_4  /*minVariantField*/ ,
+    spendInvariants: Array<RelativeDelegateLinkLike_4>  /*minVariantField*/ ,
+    otherNamedDelegates: Map<string, RelativeDelegateLinkLike_4>  /*minVariantField*/ ,
+    mintDelegateLink: RelativeDelegateLinkLike_4  /*minVariantField*/ ,
+    mintInvariants: Array<RelativeDelegateLinkLike_4>  /*minVariantField*/ ,
+    govAuthorityLink: RelativeDelegateLinkLike_4  /*minVariantField*/ ,
+    manifest: Map<string, CapoManifestEntryLike_4>  /*minVariantField*/ ,
+    pendingChanges: Array<PendingCharterChangeLike_4>  /*minVariantField*/ 
 }
 
 /**
@@ -1122,15 +1715,15 @@ declare interface CapoDatum$CharterDataLike_4 {
  * @public
  */
 declare type CapoDatum$Ergo$CharterData = {
-    spendDelegateLink: ErgoRelativeDelegateLink;
-    spendInvariants: Array<ErgoRelativeDelegateLink>;
-    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink>;
-    mintDelegateLink: ErgoRelativeDelegateLink;
-    mintInvariants: Array<ErgoRelativeDelegateLink>;
-    govAuthorityLink: ErgoRelativeDelegateLink;
-    manifest: Map<string, ErgoCapoManifestEntry>;
-    pendingChanges: Array<ErgoPendingCharterChange>;
-};
+    spendDelegateLink: ErgoRelativeDelegateLink  /*minVariantField*/ ,
+    spendInvariants: Array<ErgoRelativeDelegateLink>  /*minVariantField*/ ,
+    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink>  /*minVariantField*/ ,
+    mintDelegateLink: ErgoRelativeDelegateLink  /*minVariantField*/ ,
+    mintInvariants: Array<ErgoRelativeDelegateLink>  /*minVariantField*/ ,
+    govAuthorityLink: ErgoRelativeDelegateLink  /*minVariantField*/ ,
+    manifest: Map<string, ErgoCapoManifestEntry>  /*minVariantField*/ ,
+    pendingChanges: Array<ErgoPendingCharterChange>  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of CapoDatum$CharterData
@@ -1142,15 +1735,15 @@ declare type CapoDatum$Ergo$CharterData = {
  * @public
  */
 declare type CapoDatum$Ergo$CharterData_2 = {
-    spendDelegateLink: ErgoRelativeDelegateLink_2;
-    spendInvariants: Array<ErgoRelativeDelegateLink_2>;
-    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink_2>;
-    mintDelegateLink: ErgoRelativeDelegateLink_2;
-    mintInvariants: Array<ErgoRelativeDelegateLink_2>;
-    govAuthorityLink: ErgoRelativeDelegateLink_2;
-    manifest: Map<string, ErgoCapoManifestEntry_2>;
-    pendingChanges: Array<ErgoPendingCharterChange_2>;
-};
+    spendDelegateLink: ErgoRelativeDelegateLink_2  /*minVariantField*/ ,
+    spendInvariants: Array<ErgoRelativeDelegateLink_2>  /*minVariantField*/ ,
+    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink_2>  /*minVariantField*/ ,
+    mintDelegateLink: ErgoRelativeDelegateLink_2  /*minVariantField*/ ,
+    mintInvariants: Array<ErgoRelativeDelegateLink_2>  /*minVariantField*/ ,
+    govAuthorityLink: ErgoRelativeDelegateLink_2  /*minVariantField*/ ,
+    manifest: Map<string, ErgoCapoManifestEntry_2>  /*minVariantField*/ ,
+    pendingChanges: Array<ErgoPendingCharterChange_2>  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of CapoDatum$CharterData
@@ -1162,15 +1755,15 @@ declare type CapoDatum$Ergo$CharterData_2 = {
  * @public
  */
 declare type CapoDatum$Ergo$CharterData_3 = {
-    spendDelegateLink: ErgoRelativeDelegateLink_3;
-    spendInvariants: Array<ErgoRelativeDelegateLink_3>;
-    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink_3>;
-    mintDelegateLink: ErgoRelativeDelegateLink_3;
-    mintInvariants: Array<ErgoRelativeDelegateLink_3>;
-    govAuthorityLink: ErgoRelativeDelegateLink_3;
-    manifest: Map<string, ErgoCapoManifestEntry_3>;
-    pendingChanges: Array<ErgoPendingCharterChange_3>;
-};
+    spendDelegateLink: ErgoRelativeDelegateLink_3  /*minVariantField*/ ,
+    spendInvariants: Array<ErgoRelativeDelegateLink_3>  /*minVariantField*/ ,
+    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink_3>  /*minVariantField*/ ,
+    mintDelegateLink: ErgoRelativeDelegateLink_3  /*minVariantField*/ ,
+    mintInvariants: Array<ErgoRelativeDelegateLink_3>  /*minVariantField*/ ,
+    govAuthorityLink: ErgoRelativeDelegateLink_3  /*minVariantField*/ ,
+    manifest: Map<string, ErgoCapoManifestEntry_3>  /*minVariantField*/ ,
+    pendingChanges: Array<ErgoPendingCharterChange_3>  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of CapoDatum$CharterData
@@ -1182,15 +1775,15 @@ declare type CapoDatum$Ergo$CharterData_3 = {
  * @public
  */
 declare type CapoDatum$Ergo$CharterData_4 = {
-    spendDelegateLink: ErgoRelativeDelegateLink_4;
-    spendInvariants: Array<ErgoRelativeDelegateLink_4>;
-    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink_4>;
-    mintDelegateLink: ErgoRelativeDelegateLink_4;
-    mintInvariants: Array<ErgoRelativeDelegateLink_4>;
-    govAuthorityLink: ErgoRelativeDelegateLink_4;
-    manifest: Map<string, ErgoCapoManifestEntry_4>;
-    pendingChanges: Array<ErgoPendingCharterChange_4>;
-};
+    spendDelegateLink: ErgoRelativeDelegateLink_4  /*minVariantField*/ ,
+    spendInvariants: Array<ErgoRelativeDelegateLink_4>  /*minVariantField*/ ,
+    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink_4>  /*minVariantField*/ ,
+    mintDelegateLink: ErgoRelativeDelegateLink_4  /*minVariantField*/ ,
+    mintInvariants: Array<ErgoRelativeDelegateLink_4>  /*minVariantField*/ ,
+    govAuthorityLink: ErgoRelativeDelegateLink_4  /*minVariantField*/ ,
+    manifest: Map<string, ErgoCapoManifestEntry_4>  /*minVariantField*/ ,
+    pendingChanges: Array<ErgoPendingCharterChange_4>  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of CapoDatum$CharterData
@@ -1202,15 +1795,15 @@ declare type CapoDatum$Ergo$CharterData_4 = {
  * @public
  */
 declare type CapoDatum$Ergo$CharterData_5 = {
-    spendDelegateLink: ErgoRelativeDelegateLink_5;
-    spendInvariants: Array<ErgoRelativeDelegateLink_5>;
-    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink_5>;
-    mintDelegateLink: ErgoRelativeDelegateLink_5;
-    mintInvariants: Array<ErgoRelativeDelegateLink_5>;
-    govAuthorityLink: ErgoRelativeDelegateLink_5;
-    manifest: Map<string, ErgoCapoManifestEntry_5>;
-    pendingChanges: Array<ErgoPendingCharterChange_5>;
-};
+    spendDelegateLink: ErgoRelativeDelegateLink_5  /*minVariantField*/ ,
+    spendInvariants: Array<ErgoRelativeDelegateLink_5>  /*minVariantField*/ ,
+    otherNamedDelegates: Map<string, ErgoRelativeDelegateLink_5>  /*minVariantField*/ ,
+    mintDelegateLink: ErgoRelativeDelegateLink_5  /*minVariantField*/ ,
+    mintInvariants: Array<ErgoRelativeDelegateLink_5>  /*minVariantField*/ ,
+    govAuthorityLink: ErgoRelativeDelegateLink_5  /*minVariantField*/ ,
+    manifest: Map<string, ErgoCapoManifestEntry_5>  /*minVariantField*/ ,
+    pendingChanges: Array<ErgoPendingCharterChange_5>  /*minVariantField*/ 
+}
 
 /**
  * A strong type for the canonical form of CapoLifecycleActivity$CreatingDelegate
@@ -1221,8 +1814,8 @@ declare type CapoDatum$Ergo$CharterData_5 = {
  * @public
  */
 declare interface CapoLifecycleActivity$CreatingDelegate {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1234,8 +1827,8 @@ declare interface CapoLifecycleActivity$CreatingDelegate {
  * @public
  */
 declare interface CapoLifecycleActivity$CreatingDelegate_2 {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1247,8 +1840,8 @@ declare interface CapoLifecycleActivity$CreatingDelegate_2 {
  * @public
  */
 declare interface CapoLifecycleActivity$CreatingDelegate_3 {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1260,8 +1853,8 @@ declare interface CapoLifecycleActivity$CreatingDelegate_3 {
  * @public
  */
 declare interface CapoLifecycleActivity$CreatingDelegate_4 {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1271,8 +1864,8 @@ declare interface CapoLifecycleActivity$CreatingDelegate_4 {
  * @public
  */
 declare interface CapoLifecycleActivity$CreatingDelegateLike {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1282,8 +1875,8 @@ declare interface CapoLifecycleActivity$CreatingDelegateLike {
  * @public
  */
 declare interface CapoLifecycleActivity$CreatingDelegateLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1293,8 +1886,8 @@ declare interface CapoLifecycleActivity$CreatingDelegateLike_2 {
  * @public
  */
 declare interface CapoLifecycleActivity$CreatingDelegateLike_3 {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1304,8 +1897,8 @@ declare interface CapoLifecycleActivity$CreatingDelegateLike_3 {
  * @public
  */
 declare interface CapoLifecycleActivity$CreatingDelegateLike_4 {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1317,7 +1910,7 @@ declare interface CapoLifecycleActivity$CreatingDelegateLike_4 {
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type CapoLifecycleActivity$Ergo$CreatingDelegate = CapoLifecycleActivity$CreatingDelegate;
+declare type CapoLifecycleActivity$Ergo$CreatingDelegate = CapoLifecycleActivity$CreatingDelegate
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$CreatingDelegate
@@ -1328,7 +1921,7 @@ declare type CapoLifecycleActivity$Ergo$CreatingDelegate = CapoLifecycleActivity
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type CapoLifecycleActivity$Ergo$CreatingDelegate_2 = CapoLifecycleActivity$CreatingDelegate_2;
+declare type CapoLifecycleActivity$Ergo$CreatingDelegate_2 = CapoLifecycleActivity$CreatingDelegate_2
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$CreatingDelegate
@@ -1339,7 +1932,7 @@ declare type CapoLifecycleActivity$Ergo$CreatingDelegate_2 = CapoLifecycleActivi
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type CapoLifecycleActivity$Ergo$CreatingDelegate_3 = CapoLifecycleActivity$CreatingDelegate_3;
+declare type CapoLifecycleActivity$Ergo$CreatingDelegate_3 = CapoLifecycleActivity$CreatingDelegate_3
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$CreatingDelegate
@@ -1350,7 +1943,7 @@ declare type CapoLifecycleActivity$Ergo$CreatingDelegate_3 = CapoLifecycleActivi
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type CapoLifecycleActivity$Ergo$CreatingDelegate_4 = CapoLifecycleActivity$CreatingDelegate_4;
+declare type CapoLifecycleActivity$Ergo$CreatingDelegate_4 = CapoLifecycleActivity$CreatingDelegate_4
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewMintDelegate
@@ -1361,7 +1954,7 @@ declare type CapoLifecycleActivity$Ergo$CreatingDelegate_4 = CapoLifecycleActivi
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate = CapoLifecycleActivity$forcingNewMintDelegate;
+declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate = CapoLifecycleActivity$forcingNewMintDelegate
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewMintDelegate
@@ -1372,7 +1965,7 @@ declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate = CapoLifecycleAc
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_2 = CapoLifecycleActivity$forcingNewMintDelegate_2;
+declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_2 = CapoLifecycleActivity$forcingNewMintDelegate_2
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewMintDelegate
@@ -1383,7 +1976,7 @@ declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_2 = CapoLifecycle
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_3 = CapoLifecycleActivity$forcingNewMintDelegate_3;
+declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_3 = CapoLifecycleActivity$forcingNewMintDelegate_3
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewMintDelegate
@@ -1394,7 +1987,7 @@ declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_3 = CapoLifecycle
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_4 = CapoLifecycleActivity$forcingNewMintDelegate_4;
+declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_4 = CapoLifecycleActivity$forcingNewMintDelegate_4
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewSpendDelegate
@@ -1405,7 +1998,7 @@ declare type CapoLifecycleActivity$Ergo$forcingNewMintDelegate_4 = CapoLifecycle
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate = CapoLifecycleActivity$forcingNewSpendDelegate;
+declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate = CapoLifecycleActivity$forcingNewSpendDelegate
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewSpendDelegate
@@ -1416,7 +2009,7 @@ declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate = CapoLifecycleA
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_2 = CapoLifecycleActivity$forcingNewSpendDelegate_2;
+declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_2 = CapoLifecycleActivity$forcingNewSpendDelegate_2
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewSpendDelegate
@@ -1427,7 +2020,7 @@ declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_2 = CapoLifecycl
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_3 = CapoLifecycleActivity$forcingNewSpendDelegate_3;
+declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_3 = CapoLifecycleActivity$forcingNewSpendDelegate_3
 
 /**
  * An ergonomic, though less strictly-safe form of CapoLifecycleActivity$forcingNewSpendDelegate
@@ -1438,7 +2031,7 @@ declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_3 = CapoLifecycl
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_4 = CapoLifecycleActivity$forcingNewSpendDelegate_4;
+declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_4 = CapoLifecycleActivity$forcingNewSpendDelegate_4
 
 /**
  * A strong type for the canonical form of CapoLifecycleActivity$forcingNewMintDelegate
@@ -1449,8 +2042,8 @@ declare type CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_4 = CapoLifecycl
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewMintDelegate {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1462,8 +2055,8 @@ declare interface CapoLifecycleActivity$forcingNewMintDelegate {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewMintDelegate_2 {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1475,8 +2068,8 @@ declare interface CapoLifecycleActivity$forcingNewMintDelegate_2 {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewMintDelegate_3 {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1488,8 +2081,8 @@ declare interface CapoLifecycleActivity$forcingNewMintDelegate_3 {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewMintDelegate_4 {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1499,8 +2092,8 @@ declare interface CapoLifecycleActivity$forcingNewMintDelegate_4 {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewMintDelegateLike {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1510,8 +2103,8 @@ declare interface CapoLifecycleActivity$forcingNewMintDelegateLike {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1521,8 +2114,8 @@ declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_2 {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_3 {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1532,8 +2125,8 @@ declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_3 {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_4 {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1545,8 +2138,8 @@ declare interface CapoLifecycleActivity$forcingNewMintDelegateLike_4 {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewSpendDelegate {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1558,8 +2151,8 @@ declare interface CapoLifecycleActivity$forcingNewSpendDelegate {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewSpendDelegate_2 {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1571,8 +2164,8 @@ declare interface CapoLifecycleActivity$forcingNewSpendDelegate_2 {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewSpendDelegate_3 {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1584,8 +2177,8 @@ declare interface CapoLifecycleActivity$forcingNewSpendDelegate_3 {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewSpendDelegate_4 {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1595,8 +2188,8 @@ declare interface CapoLifecycleActivity$forcingNewSpendDelegate_4 {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1606,8 +2199,8 @@ declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1617,8 +2210,8 @@ declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike_2 {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike_3 {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -1628,113 +2221,93 @@ declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike_3 {
  * @public
  */
 declare interface CapoLifecycleActivity$forcingNewSpendDelegateLike_4 {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
  * CapoLifecycleActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type CapoLifecycleActivity = {
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegate;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRole_2;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegate;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegate;
-} | {
-    updatingManifest: ManifestActivity;
-};
+declare type CapoLifecycleActivity = 
+| { CreatingDelegate: CapoLifecycleActivity$CreatingDelegate /*minEnumVariant*/ }
+| { queuePendingChange: tagOnly /*minEnumVariant*/ }
+| { removePendingChange: /* implied wrapper { role: ... } for singleVariantField */ 
+    			DelegateRole_2    /*minEnumVariant*/ }
+| { commitPendingChanges: tagOnly /*minEnumVariant*/ }
+| { forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegate /*minEnumVariant*/ }
+| { forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegate /*minEnumVariant*/ }
+| { updatingManifest: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ManifestActivity    /*minEnumVariant*/ }
 
 /**
  * CapoLifecycleActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type CapoLifecycleActivity_2 = {
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegate_2;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRole_3;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegate_2;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegate_2;
-} | {
-    updatingManifest: ManifestActivity_2;
-};
+declare type CapoLifecycleActivity_2 = 
+| { CreatingDelegate: CapoLifecycleActivity$CreatingDelegate_2 /*minEnumVariant*/ }
+| { queuePendingChange: tagOnly /*minEnumVariant*/ }
+| { removePendingChange: /* implied wrapper { role: ... } for singleVariantField */ 
+    			DelegateRole_3    /*minEnumVariant*/ }
+| { commitPendingChanges: tagOnly /*minEnumVariant*/ }
+| { forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegate_2 /*minEnumVariant*/ }
+| { forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegate_2 /*minEnumVariant*/ }
+| { updatingManifest: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ManifestActivity_2    /*minEnumVariant*/ }
 
 /**
  * CapoLifecycleActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type CapoLifecycleActivity_3 = {
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegate_3;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRole_4;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegate_3;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegate_3;
-} | {
-    updatingManifest: ManifestActivity_3;
-};
+declare type CapoLifecycleActivity_3 = 
+| { CreatingDelegate: CapoLifecycleActivity$CreatingDelegate_3 /*minEnumVariant*/ }
+| { queuePendingChange: tagOnly /*minEnumVariant*/ }
+| { removePendingChange: /* implied wrapper { role: ... } for singleVariantField */ 
+    			DelegateRole_4    /*minEnumVariant*/ }
+| { commitPendingChanges: tagOnly /*minEnumVariant*/ }
+| { forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegate_3 /*minEnumVariant*/ }
+| { forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegate_3 /*minEnumVariant*/ }
+| { updatingManifest: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ManifestActivity_3    /*minEnumVariant*/ }
 
 /**
  * CapoLifecycleActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type CapoLifecycleActivity_4 = {
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegate_4;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRole_5;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegate_4;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegate_4;
-} | {
-    updatingManifest: ManifestActivity_4;
-};
+declare type CapoLifecycleActivity_4 = 
+| { CreatingDelegate: CapoLifecycleActivity$CreatingDelegate_4 /*minEnumVariant*/ }
+| { queuePendingChange: tagOnly /*minEnumVariant*/ }
+| { removePendingChange: /* implied wrapper { role: ... } for singleVariantField */ 
+    			DelegateRole_5    /*minEnumVariant*/ }
+| { commitPendingChanges: tagOnly /*minEnumVariant*/ }
+| { forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegate_4 /*minEnumVariant*/ }
+| { forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegate_4 /*minEnumVariant*/ }
+| { updatingManifest: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ManifestActivity_4    /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***CapoLifecycleActivity*** enum type.
@@ -1800,10 +2373,6 @@ declare class CapoLifecycleActivityHelper extends EnumBridge<JustAnEnum> {
      * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
      */
     get queuePendingChange(): UplcData;
-    /**
-     * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
-     */
-    get removePendingChange(): DelegateRoleHelperNested;
     /**
      * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
      * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
@@ -1891,10 +2460,6 @@ declare class CapoLifecycleActivityHelper extends EnumBridge<JustAnEnum> {
     }) => SeedActivity<(value: hasSeed, fields: {
     purpose: string;
     }) => UplcData>;
-    /**
-     * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
-     */
-    get updatingManifest(): ManifestActivityHelperNested;
 }
 
 /**
@@ -1961,10 +2526,6 @@ declare class CapoLifecycleActivityHelper_2 extends EnumBridge<JustAnEnum> {
      * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
      */
     get queuePendingChange(): UplcData;
-    /**
-     * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
-     */
-    get removePendingChange(): DelegateRoleHelperNested_2;
     /**
      * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
      * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
@@ -2052,10 +2613,6 @@ declare class CapoLifecycleActivityHelper_2 extends EnumBridge<JustAnEnum> {
     }) => SeedActivity<(value: hasSeed, fields: {
     purpose: string;
     }) => UplcData>;
-    /**
-     * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
-     */
-    get updatingManifest(): ManifestActivityHelperNested_2;
 }
 
 /**
@@ -2122,10 +2679,6 @@ declare class CapoLifecycleActivityHelper_3 extends EnumBridge<JustAnEnum> {
      * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
      */
     get queuePendingChange(): UplcData;
-    /**
-     * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
-     */
-    get removePendingChange(): DelegateRoleHelperNested_3;
     /**
      * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
      * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
@@ -2213,10 +2766,6 @@ declare class CapoLifecycleActivityHelper_3 extends EnumBridge<JustAnEnum> {
     }) => SeedActivity<(value: hasSeed, fields: {
     purpose: string;
     }) => UplcData>;
-    /**
-     * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
-     */
-    get updatingManifest(): ManifestActivityHelperNested_3;
 }
 
 /**
@@ -2283,10 +2832,6 @@ declare class CapoLifecycleActivityHelper_4 extends EnumBridge<JustAnEnum> {
      * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
      */
     get queuePendingChange(): UplcData;
-    /**
-     * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
-     */
-    get removePendingChange(): DelegateRoleHelperNested_4;
     /**
      * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
      * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
@@ -2374,10 +2919,6 @@ declare class CapoLifecycleActivityHelper_4 extends EnumBridge<JustAnEnum> {
     }) => SeedActivity<(value: hasSeed, fields: {
     purpose: string;
     }) => UplcData>;
-    /**
-     * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
-     */
-    get updatingManifest(): ManifestActivityHelperNested_4;
 }
 
 /**
@@ -3138,139 +3679,141 @@ declare class CapoLifecycleActivityHelperNested_4 extends EnumBridge<isActivity>
 
 /**
  * CapoLifecycleActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type CapoLifecycleActivityLike = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRoleLike;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike;
-} | {
-    updatingManifest: ManifestActivityLike;
-}>;
+declare type CapoLifecycleActivityLike = IntersectedEnum<
+| { CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike /*minEnumVariant*/ }
+| { queuePendingChange: tagOnly /*minEnumVariant*/ }
+| { removePendingChange: /* implied wrapper { role: ... } for singleVariantField */ 
+    			DelegateRoleLike    /*minEnumVariant*/ }
+| { commitPendingChanges: tagOnly /*minEnumVariant*/ }
+| { forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike /*minEnumVariant*/ }
+| { forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike /*minEnumVariant*/ }
+| { updatingManifest: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ManifestActivityLike    /*minEnumVariant*/ }
+>
 
 /**
  * CapoLifecycleActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type CapoLifecycleActivityLike_2 = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_2;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRoleLike_2;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_2;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_2;
-} | {
-    updatingManifest: ManifestActivityLike_2;
-}>;
+declare type CapoLifecycleActivityLike_2 = IntersectedEnum<
+| { CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_2 /*minEnumVariant*/ }
+| { queuePendingChange: tagOnly /*minEnumVariant*/ }
+| { removePendingChange: /* implied wrapper { role: ... } for singleVariantField */ 
+    			DelegateRoleLike_2    /*minEnumVariant*/ }
+| { commitPendingChanges: tagOnly /*minEnumVariant*/ }
+| { forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_2 /*minEnumVariant*/ }
+| { forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_2 /*minEnumVariant*/ }
+| { updatingManifest: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ManifestActivityLike_2    /*minEnumVariant*/ }
+>
 
 /**
  * CapoLifecycleActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type CapoLifecycleActivityLike_3 = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_3;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRoleLike_3;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_3;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_3;
-} | {
-    updatingManifest: ManifestActivityLike_3;
-}>;
+declare type CapoLifecycleActivityLike_3 = IntersectedEnum<
+| { CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_3 /*minEnumVariant*/ }
+| { queuePendingChange: tagOnly /*minEnumVariant*/ }
+| { removePendingChange: /* implied wrapper { role: ... } for singleVariantField */ 
+    			DelegateRoleLike_3    /*minEnumVariant*/ }
+| { commitPendingChanges: tagOnly /*minEnumVariant*/ }
+| { forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_3 /*minEnumVariant*/ }
+| { forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_3 /*minEnumVariant*/ }
+| { updatingManifest: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ManifestActivityLike_3    /*minEnumVariant*/ }
+>
 
 /**
  * CapoLifecycleActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **7 variant(s)** of the CapoLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `CapoLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type CapoLifecycleActivityLike_4 = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_4;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: DelegateRoleLike_4;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_4;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_4;
-} | {
-    updatingManifest: ManifestActivityLike_4;
-}>;
+declare type CapoLifecycleActivityLike_4 = IntersectedEnum<
+| { CreatingDelegate: CapoLifecycleActivity$CreatingDelegateLike_4 /*minEnumVariant*/ }
+| { queuePendingChange: tagOnly /*minEnumVariant*/ }
+| { removePendingChange: /* implied wrapper { role: ... } for singleVariantField */ 
+    			DelegateRoleLike_4    /*minEnumVariant*/ }
+| { commitPendingChanges: tagOnly /*minEnumVariant*/ }
+| { forcingNewSpendDelegate: CapoLifecycleActivity$forcingNewSpendDelegateLike_4 /*minEnumVariant*/ }
+| { forcingNewMintDelegate: CapoLifecycleActivity$forcingNewMintDelegateLike_4 /*minEnumVariant*/ }
+| { updatingManifest: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ManifestActivityLike_4    /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type CapoLifecycleActivityMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "CapoLifecycleActivity";
-}, {
-    CreatingDelegate: singleEnumVariantMeta<CapoLifecycleActivityMeta, "CreatingDelegate", "Constr#0", "fields", CapoLifecycleActivity$CreatingDelegate_2, "isSeededActivity">;
-    queuePendingChange: singleEnumVariantMeta<CapoLifecycleActivityMeta, "queuePendingChange", "Constr#1", "tagOnly", tagOnly, "noSpecialFlags">;
-    removePendingChange: singleEnumVariantMeta<CapoLifecycleActivityMeta, "removePendingChange", "Constr#2", "singletonField", /* implied wrapper { role: ... } for singleVariantField */ DelegateRole_3, "noSpecialFlags">;
-    commitPendingChanges: singleEnumVariantMeta<CapoLifecycleActivityMeta, "commitPendingChanges", "Constr#3", "tagOnly", tagOnly, "noSpecialFlags">;
-    forcingNewSpendDelegate: singleEnumVariantMeta<CapoLifecycleActivityMeta, "forcingNewSpendDelegate", "Constr#4", "fields", CapoLifecycleActivity$forcingNewSpendDelegate_2, "isSeededActivity">;
-    forcingNewMintDelegate: singleEnumVariantMeta<CapoLifecycleActivityMeta, "forcingNewMintDelegate", "Constr#5", "fields", CapoLifecycleActivity$forcingNewMintDelegate_2, "isSeededActivity">;
-    updatingManifest: singleEnumVariantMeta<CapoLifecycleActivityMeta, "updatingManifest", "Constr#6", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ ManifestActivity_2, "noSpecialFlags">;
-}>;
+declare type CapoLifecycleActivityMeta = EnumTypeMeta<
+    {module: "CapoDelegateHelpers", enumName: "CapoLifecycleActivity"}, {
+    CreatingDelegate: singleEnumVariantMeta<CapoLifecycleActivityMeta, "CreatingDelegate",
+    "Constr#0", 
+    "fields", CapoLifecycleActivity$CreatingDelegate_2, "isSeededActivity"
+    >,
+    queuePendingChange: singleEnumVariantMeta<CapoLifecycleActivityMeta, "queuePendingChange",
+    "Constr#1", "tagOnly", tagOnly, "noSpecialFlags"
+    >,
+    removePendingChange: singleEnumVariantMeta<CapoLifecycleActivityMeta, "removePendingChange",
+    "Constr#2", "singletonField", /* implied wrapper { role: ... } for singleVariantField */ 
+    			DelegateRole_3   , "noSpecialFlags"
+    >,
+    commitPendingChanges: singleEnumVariantMeta<CapoLifecycleActivityMeta, "commitPendingChanges",
+    "Constr#3", "tagOnly", tagOnly, "noSpecialFlags"
+    >,
+    forcingNewSpendDelegate: singleEnumVariantMeta<CapoLifecycleActivityMeta, "forcingNewSpendDelegate",
+    "Constr#4", 
+    "fields", CapoLifecycleActivity$forcingNewSpendDelegate_2, "isSeededActivity"
+    >,
+    forcingNewMintDelegate: singleEnumVariantMeta<CapoLifecycleActivityMeta, "forcingNewMintDelegate",
+    "Constr#5", 
+    "fields", CapoLifecycleActivity$forcingNewMintDelegate_2, "isSeededActivity"
+    >,
+    updatingManifest: singleEnumVariantMeta<CapoLifecycleActivityMeta, "updatingManifest",
+    "Constr#6", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ManifestActivity_2   , "noSpecialFlags"
+    >
+}
+>;
 
 /**
  * A strong type for the canonical form of CapoManifestEntry
@@ -3281,9 +3824,9 @@ declare type CapoLifecycleActivityMeta = EnumTypeMeta<{
  * @public
  */
 declare interface CapoManifestEntry {
-    entryType: ManifestEntryType;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
+    entryType: /*minStructField*/ ManifestEntryType
+    tokenName: /*minStructField*/ number[]
+    mph: /*minStructField*/ MintingPolicyHash | undefined
 }
 
 /**
@@ -3295,9 +3838,9 @@ declare interface CapoManifestEntry {
  * @public
  */
 declare interface CapoManifestEntry_2 {
-    entryType: ManifestEntryType_2;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
+    entryType: /*minStructField*/ ManifestEntryType_2
+    tokenName: /*minStructField*/ number[]
+    mph: /*minStructField*/ MintingPolicyHash | undefined
 }
 
 /**
@@ -3309,9 +3852,9 @@ declare interface CapoManifestEntry_2 {
  * @public
  */
 declare interface CapoManifestEntry_3 {
-    entryType: ManifestEntryType_3;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
+    entryType: /*minStructField*/ ManifestEntryType_3
+    tokenName: /*minStructField*/ number[]
+    mph: /*minStructField*/ MintingPolicyHash | undefined
 }
 
 /**
@@ -3323,9 +3866,9 @@ declare interface CapoManifestEntry_3 {
  * @public
  */
 declare interface CapoManifestEntry_4 {
-    entryType: ManifestEntryType_4;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
+    entryType: /*minStructField*/ ManifestEntryType_4
+    tokenName: /*minStructField*/ number[]
+    mph: /*minStructField*/ MintingPolicyHash | undefined
 }
 
 /**
@@ -3335,9 +3878,9 @@ declare interface CapoManifestEntry_4 {
  * @public
  */
 declare interface CapoManifestEntryLike {
-    entryType: ManifestEntryTypeLike;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
+    entryType: /*minStructField*/ ManifestEntryTypeLike
+    tokenName: /*minStructField*/ number[]
+    mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined
 }
 
 /**
@@ -3347,9 +3890,9 @@ declare interface CapoManifestEntryLike {
  * @public
  */
 declare interface CapoManifestEntryLike_2 {
-    entryType: ManifestEntryTypeLike_2;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
+    entryType: /*minStructField*/ ManifestEntryTypeLike_2
+    tokenName: /*minStructField*/ number[]
+    mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined
 }
 
 /**
@@ -3359,9 +3902,9 @@ declare interface CapoManifestEntryLike_2 {
  * @public
  */
 declare interface CapoManifestEntryLike_3 {
-    entryType: ManifestEntryTypeLike_3;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
+    entryType: /*minStructField*/ ManifestEntryTypeLike_3
+    tokenName: /*minStructField*/ number[]
+    mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined
 }
 
 /**
@@ -3371,9 +3914,9 @@ declare interface CapoManifestEntryLike_3 {
  * @public
  */
 declare interface CapoManifestEntryLike_4 {
-    entryType: ManifestEntryTypeLike_4;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined;
+    entryType: /*minStructField*/ ManifestEntryTypeLike_4
+    tokenName: /*minStructField*/ number[]
+    mph: /*minStructField*/ MintingPolicyHash | string | number[] | undefined
 }
 
 /**
@@ -3386,9 +3929,9 @@ declare interface CapoManifestEntryLike_4 {
  * @public
  */
 declare type cctx_CharterInputType$Ergo$Input = {
-    datum: CapoDatum$Ergo$CharterData_2;
-    utxo: TxInput;
-};
+    datum: CapoDatum$Ergo$CharterData_2  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of cctx_CharterInputType$Input
@@ -3400,9 +3943,9 @@ declare type cctx_CharterInputType$Ergo$Input = {
  * @public
  */
 declare type cctx_CharterInputType$Ergo$Input_2 = {
-    datum: CapoDatum$Ergo$CharterData_3;
-    utxo: TxInput;
-};
+    datum: CapoDatum$Ergo$CharterData_3  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of cctx_CharterInputType$Input
@@ -3414,9 +3957,9 @@ declare type cctx_CharterInputType$Ergo$Input_2 = {
  * @public
  */
 declare type cctx_CharterInputType$Ergo$Input_3 = {
-    datum: CapoDatum$Ergo$CharterData_4;
-    utxo: TxInput;
-};
+    datum: CapoDatum$Ergo$CharterData_4  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of cctx_CharterInputType$Input
@@ -3428,9 +3971,9 @@ declare type cctx_CharterInputType$Ergo$Input_3 = {
  * @public
  */
 declare type cctx_CharterInputType$Ergo$Input_4 = {
-    datum: CapoDatum$Ergo$CharterData_5;
-    utxo: TxInput;
-};
+    datum: CapoDatum$Ergo$CharterData_5  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of cctx_CharterInputType$RefInput
@@ -3442,9 +3985,9 @@ declare type cctx_CharterInputType$Ergo$Input_4 = {
  * @public
  */
 declare type cctx_CharterInputType$Ergo$RefInput = {
-    datum: CapoDatum$Ergo$CharterData_2;
-    utxo: TxInput;
-};
+    datum: CapoDatum$Ergo$CharterData_2  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of cctx_CharterInputType$RefInput
@@ -3456,9 +3999,9 @@ declare type cctx_CharterInputType$Ergo$RefInput = {
  * @public
  */
 declare type cctx_CharterInputType$Ergo$RefInput_2 = {
-    datum: CapoDatum$Ergo$CharterData_3;
-    utxo: TxInput;
-};
+    datum: CapoDatum$Ergo$CharterData_3  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of cctx_CharterInputType$RefInput
@@ -3470,9 +4013,9 @@ declare type cctx_CharterInputType$Ergo$RefInput_2 = {
  * @public
  */
 declare type cctx_CharterInputType$Ergo$RefInput_3 = {
-    datum: CapoDatum$Ergo$CharterData_4;
-    utxo: TxInput;
-};
+    datum: CapoDatum$Ergo$CharterData_4  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of cctx_CharterInputType$RefInput
@@ -3484,9 +4027,9 @@ declare type cctx_CharterInputType$Ergo$RefInput_3 = {
  * @public
  */
 declare type cctx_CharterInputType$Ergo$RefInput_4 = {
-    datum: CapoDatum$Ergo$CharterData_5;
-    utxo: TxInput;
-};
+    datum: CapoDatum$Ergo$CharterData_5  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
+}
 
 /**
  * A strong type for the canonical form of cctx_CharterInputType$Input
@@ -3497,8 +4040,8 @@ declare type cctx_CharterInputType$Ergo$RefInput_4 = {
  * @public
  */
 declare interface cctx_CharterInputType$Input {
-    datum: CapoDatum$CharterData;
-    utxo: TxInput;
+    datum: CapoDatum$CharterData  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3510,8 +4053,8 @@ declare interface cctx_CharterInputType$Input {
  * @public
  */
 declare interface cctx_CharterInputType$Input_2 {
-    datum: CapoDatum$CharterData_2;
-    utxo: TxInput;
+    datum: CapoDatum$CharterData_2  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3523,8 +4066,8 @@ declare interface cctx_CharterInputType$Input_2 {
  * @public
  */
 declare interface cctx_CharterInputType$Input_3 {
-    datum: CapoDatum$CharterData_3;
-    utxo: TxInput;
+    datum: CapoDatum$CharterData_3  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3536,8 +4079,8 @@ declare interface cctx_CharterInputType$Input_3 {
  * @public
  */
 declare interface cctx_CharterInputType$Input_4 {
-    datum: CapoDatum$CharterData_4;
-    utxo: TxInput;
+    datum: CapoDatum$CharterData_4  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3547,8 +4090,8 @@ declare interface cctx_CharterInputType$Input_4 {
  * @public
  */
 declare interface cctx_CharterInputType$InputLike {
-    datum: CapoDatum$CharterDataLike;
-    utxo: TxInput;
+    datum: CapoDatum$CharterDataLike  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3558,8 +4101,8 @@ declare interface cctx_CharterInputType$InputLike {
  * @public
  */
 declare interface cctx_CharterInputType$InputLike_2 {
-    datum: CapoDatum$CharterDataLike_2;
-    utxo: TxInput;
+    datum: CapoDatum$CharterDataLike_2  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3569,8 +4112,8 @@ declare interface cctx_CharterInputType$InputLike_2 {
  * @public
  */
 declare interface cctx_CharterInputType$InputLike_3 {
-    datum: CapoDatum$CharterDataLike_3;
-    utxo: TxInput;
+    datum: CapoDatum$CharterDataLike_3  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3580,8 +4123,8 @@ declare interface cctx_CharterInputType$InputLike_3 {
  * @public
  */
 declare interface cctx_CharterInputType$InputLike_4 {
-    datum: CapoDatum$CharterDataLike_4;
-    utxo: TxInput;
+    datum: CapoDatum$CharterDataLike_4  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3593,8 +4136,8 @@ declare interface cctx_CharterInputType$InputLike_4 {
  * @public
  */
 declare interface cctx_CharterInputType$RefInput {
-    datum: CapoDatum$CharterData;
-    utxo: TxInput;
+    datum: CapoDatum$CharterData  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3606,8 +4149,8 @@ declare interface cctx_CharterInputType$RefInput {
  * @public
  */
 declare interface cctx_CharterInputType$RefInput_2 {
-    datum: CapoDatum$CharterData_2;
-    utxo: TxInput;
+    datum: CapoDatum$CharterData_2  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3619,8 +4162,8 @@ declare interface cctx_CharterInputType$RefInput_2 {
  * @public
  */
 declare interface cctx_CharterInputType$RefInput_3 {
-    datum: CapoDatum$CharterData_3;
-    utxo: TxInput;
+    datum: CapoDatum$CharterData_3  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3632,8 +4175,8 @@ declare interface cctx_CharterInputType$RefInput_3 {
  * @public
  */
 declare interface cctx_CharterInputType$RefInput_4 {
-    datum: CapoDatum$CharterData_4;
-    utxo: TxInput;
+    datum: CapoDatum$CharterData_4  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3643,8 +4186,8 @@ declare interface cctx_CharterInputType$RefInput_4 {
  * @public
  */
 declare interface cctx_CharterInputType$RefInputLike {
-    datum: CapoDatum$CharterDataLike;
-    utxo: TxInput;
+    datum: CapoDatum$CharterDataLike  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3654,8 +4197,8 @@ declare interface cctx_CharterInputType$RefInputLike {
  * @public
  */
 declare interface cctx_CharterInputType$RefInputLike_2 {
-    datum: CapoDatum$CharterDataLike_2;
-    utxo: TxInput;
+    datum: CapoDatum$CharterDataLike_2  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3665,8 +4208,8 @@ declare interface cctx_CharterInputType$RefInputLike_2 {
  * @public
  */
 declare interface cctx_CharterInputType$RefInputLike_3 {
-    datum: CapoDatum$CharterDataLike_3;
-    utxo: TxInput;
+    datum: CapoDatum$CharterDataLike_3  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
@@ -3676,81 +4219,69 @@ declare interface cctx_CharterInputType$RefInputLike_3 {
  * @public
  */
 declare interface cctx_CharterInputType$RefInputLike_4 {
-    datum: CapoDatum$CharterDataLike_4;
-    utxo: TxInput;
+    datum: CapoDatum$CharterDataLike_4  /*minVariantField*/ ,
+    utxo: TxInput  /*minVariantField*/ 
 }
 
 /**
  * cctx_CharterInputType enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the cctx_CharterInputType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `cctx_CharterInputTypeHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type cctx_CharterInputType = {
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$RefInput;
-} | {
-    Input: cctx_CharterInputType$Input;
-};
+declare type cctx_CharterInputType = 
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { RefInput: cctx_CharterInputType$RefInput /*minEnumVariant*/ }
+| { Input: cctx_CharterInputType$Input /*minEnumVariant*/ }
 
 /**
  * cctx_CharterInputType enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the cctx_CharterInputType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `cctx_CharterInputTypeHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type cctx_CharterInputType_2 = {
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$RefInput_2;
-} | {
-    Input: cctx_CharterInputType$Input_2;
-};
+declare type cctx_CharterInputType_2 = 
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { RefInput: cctx_CharterInputType$RefInput_2 /*minEnumVariant*/ }
+| { Input: cctx_CharterInputType$Input_2 /*minEnumVariant*/ }
 
 /**
  * cctx_CharterInputType enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the cctx_CharterInputType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `cctx_CharterInputTypeHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type cctx_CharterInputType_3 = {
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$RefInput_3;
-} | {
-    Input: cctx_CharterInputType$Input_3;
-};
+declare type cctx_CharterInputType_3 = 
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { RefInput: cctx_CharterInputType$RefInput_3 /*minEnumVariant*/ }
+| { Input: cctx_CharterInputType$Input_3 /*minEnumVariant*/ }
 
 /**
  * cctx_CharterInputType enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the cctx_CharterInputType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `cctx_CharterInputTypeHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type cctx_CharterInputType_4 = {
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$RefInput_4;
-} | {
-    Input: cctx_CharterInputType$Input_4;
-};
+declare type cctx_CharterInputType_4 = 
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { RefInput: cctx_CharterInputType$RefInput_4 /*minEnumVariant*/ }
+| { Input: cctx_CharterInputType$Input_4 /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***cctx_CharterInputType*** enum type.
@@ -3902,103 +4433,102 @@ declare class cctx_CharterInputTypeHelper_4 extends EnumBridge<JustAnEnum> {
 
 /**
  * cctx_CharterInputType enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **3 variant(s)** of the cctx_CharterInputType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `cctx_CharterInputTypeHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type cctx_CharterInputTypeLike = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$RefInputLike;
-} | {
-    Input: cctx_CharterInputType$InputLike;
-}>;
+declare type cctx_CharterInputTypeLike = IntersectedEnum<
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { RefInput: cctx_CharterInputType$RefInputLike /*minEnumVariant*/ }
+| { Input: cctx_CharterInputType$InputLike /*minEnumVariant*/ }
+>
 
 /**
  * cctx_CharterInputType enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **3 variant(s)** of the cctx_CharterInputType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `cctx_CharterInputTypeHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type cctx_CharterInputTypeLike_2 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$RefInputLike_2;
-} | {
-    Input: cctx_CharterInputType$InputLike_2;
-}>;
+declare type cctx_CharterInputTypeLike_2 = IntersectedEnum<
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { RefInput: cctx_CharterInputType$RefInputLike_2 /*minEnumVariant*/ }
+| { Input: cctx_CharterInputType$InputLike_2 /*minEnumVariant*/ }
+>
 
 /**
  * cctx_CharterInputType enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **3 variant(s)** of the cctx_CharterInputType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `cctx_CharterInputTypeHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type cctx_CharterInputTypeLike_3 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$RefInputLike_3;
-} | {
-    Input: cctx_CharterInputType$InputLike_3;
-}>;
+declare type cctx_CharterInputTypeLike_3 = IntersectedEnum<
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { RefInput: cctx_CharterInputType$RefInputLike_3 /*minEnumVariant*/ }
+| { Input: cctx_CharterInputType$InputLike_3 /*minEnumVariant*/ }
+>
 
 /**
  * cctx_CharterInputType enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **3 variant(s)** of the cctx_CharterInputType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `cctx_CharterInputTypeHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type cctx_CharterInputTypeLike_4 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$RefInputLike_4;
-} | {
-    Input: cctx_CharterInputType$InputLike_4;
-}>;
+declare type cctx_CharterInputTypeLike_4 = IntersectedEnum<
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { RefInput: cctx_CharterInputType$RefInputLike_4 /*minEnumVariant*/ }
+| { Input: cctx_CharterInputType$InputLike_4 /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type cctx_CharterInputTypeMeta = EnumTypeMeta<{
-    module: "CapoHelpers";
-    enumName: "cctx_CharterInputType";
-}, {
-    Unk: singleEnumVariantMeta<cctx_CharterInputTypeMeta, "Unk", "Constr#0", "tagOnly", tagOnly, "noSpecialFlags">;
-    RefInput: singleEnumVariantMeta<cctx_CharterInputTypeMeta, "RefInput", "Constr#1", "fields", cctx_CharterInputType$RefInput_2, "noSpecialFlags">;
-    Input: singleEnumVariantMeta<cctx_CharterInputTypeMeta, "Input", "Constr#2", "fields", cctx_CharterInputType$Input_2, "noSpecialFlags">;
-}>;
+declare type cctx_CharterInputTypeMeta = EnumTypeMeta<
+    {module: "CapoHelpers", enumName: "cctx_CharterInputType"}, {
+    Unk: singleEnumVariantMeta<cctx_CharterInputTypeMeta, "Unk",
+    "Constr#0", "tagOnly", tagOnly, "noSpecialFlags"
+    >,
+    RefInput: singleEnumVariantMeta<cctx_CharterInputTypeMeta, "RefInput",
+    "Constr#1", 
+    "fields", cctx_CharterInputType$RefInput_2, "noSpecialFlags"
+    >,
+    Input: singleEnumVariantMeta<cctx_CharterInputTypeMeta, "Input",
+    "Constr#2", 
+    "fields", cctx_CharterInputType$Input_2, "noSpecialFlags"
+    >
+}
+>;
 
 declare const computedSignals: {
     userAddress: ReadonlySignal<Address | undefined>;
@@ -4042,8 +4572,8 @@ declare const coreSignals: {
  * @public
  */
 declare interface DelegateActivity$CreatingDelegatedData {
-    seed: TxOutputId;
-    dataType: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    dataType: string  /*minVariantField*/ 
 }
 
 /**
@@ -4055,8 +4585,8 @@ declare interface DelegateActivity$CreatingDelegatedData {
  * @public
  */
 declare interface DelegateActivity$CreatingDelegatedData_2 {
-    seed: TxOutputId;
-    dataType: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    dataType: string  /*minVariantField*/ 
 }
 
 /**
@@ -4068,8 +4598,8 @@ declare interface DelegateActivity$CreatingDelegatedData_2 {
  * @public
  */
 declare interface DelegateActivity$CreatingDelegatedData_3 {
-    seed: TxOutputId;
-    dataType: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    dataType: string  /*minVariantField*/ 
 }
 
 /**
@@ -4081,8 +4611,8 @@ declare interface DelegateActivity$CreatingDelegatedData_3 {
  * @public
  */
 declare interface DelegateActivity$CreatingDelegatedData_4 {
-    seed: TxOutputId;
-    dataType: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    dataType: string  /*minVariantField*/ 
 }
 
 /**
@@ -4092,8 +4622,8 @@ declare interface DelegateActivity$CreatingDelegatedData_4 {
  * @public
  */
 declare interface DelegateActivity$CreatingDelegatedDataLike {
-    seed: TxOutputId | string;
-    dataType: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    dataType: string  /*minVariantField*/ 
 }
 
 /**
@@ -4103,8 +4633,8 @@ declare interface DelegateActivity$CreatingDelegatedDataLike {
  * @public
  */
 declare interface DelegateActivity$CreatingDelegatedDataLike_2 {
-    seed: TxOutputId | string;
-    dataType: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    dataType: string  /*minVariantField*/ 
 }
 
 /**
@@ -4114,8 +4644,8 @@ declare interface DelegateActivity$CreatingDelegatedDataLike_2 {
  * @public
  */
 declare interface DelegateActivity$CreatingDelegatedDataLike_3 {
-    seed: TxOutputId | string;
-    dataType: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    dataType: string  /*minVariantField*/ 
 }
 
 /**
@@ -4125,8 +4655,8 @@ declare interface DelegateActivity$CreatingDelegatedDataLike_3 {
  * @public
  */
 declare interface DelegateActivity$CreatingDelegatedDataLike_4 {
-    seed: TxOutputId | string;
-    dataType: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    dataType: string  /*minVariantField*/ 
 }
 
 /**
@@ -4138,8 +4668,8 @@ declare interface DelegateActivity$CreatingDelegatedDataLike_4 {
  * @public
  */
 declare interface DelegateActivity$DeletingDelegatedData {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4151,8 +4681,8 @@ declare interface DelegateActivity$DeletingDelegatedData {
  * @public
  */
 declare interface DelegateActivity$DeletingDelegatedData_2 {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4164,8 +4694,8 @@ declare interface DelegateActivity$DeletingDelegatedData_2 {
  * @public
  */
 declare interface DelegateActivity$DeletingDelegatedData_3 {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4177,8 +4707,8 @@ declare interface DelegateActivity$DeletingDelegatedData_3 {
  * @public
  */
 declare interface DelegateActivity$DeletingDelegatedData_4 {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4188,8 +4718,8 @@ declare interface DelegateActivity$DeletingDelegatedData_4 {
  * @public
  */
 declare interface DelegateActivity$DeletingDelegatedDataLike {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4199,8 +4729,8 @@ declare interface DelegateActivity$DeletingDelegatedDataLike {
  * @public
  */
 declare interface DelegateActivity$DeletingDelegatedDataLike_2 {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4210,8 +4740,8 @@ declare interface DelegateActivity$DeletingDelegatedDataLike_2 {
  * @public
  */
 declare interface DelegateActivity$DeletingDelegatedDataLike_3 {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4221,8 +4751,8 @@ declare interface DelegateActivity$DeletingDelegatedDataLike_3 {
  * @public
  */
 declare interface DelegateActivity$DeletingDelegatedDataLike_4 {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4234,7 +4764,7 @@ declare interface DelegateActivity$DeletingDelegatedDataLike_4 {
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateActivity$Ergo$CreatingDelegatedData = DelegateActivity$CreatingDelegatedData;
+declare type DelegateActivity$Ergo$CreatingDelegatedData = DelegateActivity$CreatingDelegatedData
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateActivity$CreatingDelegatedData
@@ -4245,7 +4775,7 @@ declare type DelegateActivity$Ergo$CreatingDelegatedData = DelegateActivity$Crea
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateActivity$Ergo$CreatingDelegatedData_2 = DelegateActivity$CreatingDelegatedData_2;
+declare type DelegateActivity$Ergo$CreatingDelegatedData_2 = DelegateActivity$CreatingDelegatedData_2
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateActivity$CreatingDelegatedData
@@ -4256,7 +4786,7 @@ declare type DelegateActivity$Ergo$CreatingDelegatedData_2 = DelegateActivity$Cr
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateActivity$Ergo$CreatingDelegatedData_3 = DelegateActivity$CreatingDelegatedData_3;
+declare type DelegateActivity$Ergo$CreatingDelegatedData_3 = DelegateActivity$CreatingDelegatedData_3
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateActivity$CreatingDelegatedData
@@ -4267,7 +4797,7 @@ declare type DelegateActivity$Ergo$CreatingDelegatedData_3 = DelegateActivity$Cr
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateActivity$Ergo$CreatingDelegatedData_4 = DelegateActivity$CreatingDelegatedData_4;
+declare type DelegateActivity$Ergo$CreatingDelegatedData_4 = DelegateActivity$CreatingDelegatedData_4
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateActivity$DeletingDelegatedData
@@ -4278,7 +4808,7 @@ declare type DelegateActivity$Ergo$CreatingDelegatedData_4 = DelegateActivity$Cr
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateActivity$Ergo$DeletingDelegatedData = DelegateActivity$DeletingDelegatedData;
+declare type DelegateActivity$Ergo$DeletingDelegatedData = DelegateActivity$DeletingDelegatedData
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateActivity$DeletingDelegatedData
@@ -4289,7 +4819,7 @@ declare type DelegateActivity$Ergo$DeletingDelegatedData = DelegateActivity$Dele
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateActivity$Ergo$DeletingDelegatedData_2 = DelegateActivity$DeletingDelegatedData_2;
+declare type DelegateActivity$Ergo$DeletingDelegatedData_2 = DelegateActivity$DeletingDelegatedData_2
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateActivity$DeletingDelegatedData
@@ -4300,7 +4830,7 @@ declare type DelegateActivity$Ergo$DeletingDelegatedData_2 = DelegateActivity$De
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateActivity$Ergo$DeletingDelegatedData_3 = DelegateActivity$DeletingDelegatedData_3;
+declare type DelegateActivity$Ergo$DeletingDelegatedData_3 = DelegateActivity$DeletingDelegatedData_3
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateActivity$DeletingDelegatedData
@@ -4311,7 +4841,7 @@ declare type DelegateActivity$Ergo$DeletingDelegatedData_3 = DelegateActivity$De
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateActivity$Ergo$DeletingDelegatedData_4 = DelegateActivity$DeletingDelegatedData_4;
+declare type DelegateActivity$Ergo$DeletingDelegatedData_4 = DelegateActivity$DeletingDelegatedData_4
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateActivity$UpdatingDelegatedData
@@ -4322,7 +4852,7 @@ declare type DelegateActivity$Ergo$DeletingDelegatedData_4 = DelegateActivity$De
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateActivity$Ergo$UpdatingDelegatedData = DelegateActivity$UpdatingDelegatedData;
+declare type DelegateActivity$Ergo$UpdatingDelegatedData = DelegateActivity$UpdatingDelegatedData
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateActivity$UpdatingDelegatedData
@@ -4333,7 +4863,7 @@ declare type DelegateActivity$Ergo$UpdatingDelegatedData = DelegateActivity$Upda
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateActivity$Ergo$UpdatingDelegatedData_2 = DelegateActivity$UpdatingDelegatedData_2;
+declare type DelegateActivity$Ergo$UpdatingDelegatedData_2 = DelegateActivity$UpdatingDelegatedData_2
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateActivity$UpdatingDelegatedData
@@ -4344,7 +4874,7 @@ declare type DelegateActivity$Ergo$UpdatingDelegatedData_2 = DelegateActivity$Up
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateActivity$Ergo$UpdatingDelegatedData_3 = DelegateActivity$UpdatingDelegatedData_3;
+declare type DelegateActivity$Ergo$UpdatingDelegatedData_3 = DelegateActivity$UpdatingDelegatedData_3
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateActivity$UpdatingDelegatedData
@@ -4355,7 +4885,7 @@ declare type DelegateActivity$Ergo$UpdatingDelegatedData_3 = DelegateActivity$Up
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateActivity$Ergo$UpdatingDelegatedData_4 = DelegateActivity$UpdatingDelegatedData_4;
+declare type DelegateActivity$Ergo$UpdatingDelegatedData_4 = DelegateActivity$UpdatingDelegatedData_4
 
 /**
  * A strong type for the canonical form of DelegateActivity$UpdatingDelegatedData
@@ -4366,8 +4896,8 @@ declare type DelegateActivity$Ergo$UpdatingDelegatedData_4 = DelegateActivity$Up
  * @public
  */
 declare interface DelegateActivity$UpdatingDelegatedData {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4379,8 +4909,8 @@ declare interface DelegateActivity$UpdatingDelegatedData {
  * @public
  */
 declare interface DelegateActivity$UpdatingDelegatedData_2 {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4392,8 +4922,8 @@ declare interface DelegateActivity$UpdatingDelegatedData_2 {
  * @public
  */
 declare interface DelegateActivity$UpdatingDelegatedData_3 {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4405,8 +4935,8 @@ declare interface DelegateActivity$UpdatingDelegatedData_3 {
  * @public
  */
 declare interface DelegateActivity$UpdatingDelegatedData_4 {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4416,8 +4946,8 @@ declare interface DelegateActivity$UpdatingDelegatedData_4 {
  * @public
  */
 declare interface DelegateActivity$UpdatingDelegatedDataLike {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4427,8 +4957,8 @@ declare interface DelegateActivity$UpdatingDelegatedDataLike {
  * @public
  */
 declare interface DelegateActivity$UpdatingDelegatedDataLike_2 {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4438,8 +4968,8 @@ declare interface DelegateActivity$UpdatingDelegatedDataLike_2 {
  * @public
  */
 declare interface DelegateActivity$UpdatingDelegatedDataLike_3 {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -4449,129 +4979,125 @@ declare interface DelegateActivity$UpdatingDelegatedDataLike_3 {
  * @public
  */
 declare interface DelegateActivity$UpdatingDelegatedDataLike_4 {
-    dataType: string;
-    recId: number[];
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
 }
 
 /**
  * DelegateActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
- * supporting the **9 variant(s)** of the DelegateActivity enum type
- *
+ * supporting the **10 variant(s)** of the DelegateActivity enum type
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateActivity = {
-    CapoLifecycleActivities: CapoLifecycleActivity;
-} | {
-    DelegateLifecycleActivities: DelegateLifecycleActivity;
-} | {
-    SpendingActivities: SpendingActivity;
-} | {
-    MintingActivities: MintingActivity;
-} | {
-    BurningActivities: BurningActivity;
-} | {
-    CreatingDelegatedData: DelegateActivity$CreatingDelegatedData;
-} | {
-    UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedData;
-} | {
-    DeletingDelegatedData: DelegateActivity$DeletingDelegatedData;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-};
+declare type DelegateActivity = 
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			CapoLifecycleActivity    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			DelegateLifecycleActivity    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			SpendingActivity    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			MintingActivity    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			BurningActivity    /*minEnumVariant*/ }
+| { CreatingDelegatedData: DelegateActivity$CreatingDelegatedData /*minEnumVariant*/ }
+| { UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedData /*minEnumVariant*/ }
+| { DeletingDelegatedData: DelegateActivity$DeletingDelegatedData /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
 
 /**
  * DelegateActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
- * supporting the **9 variant(s)** of the DelegateActivity enum type
- *
+ * supporting the **10 variant(s)** of the DelegateActivity enum type
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateActivity_2 = {
-    CapoLifecycleActivities: CapoLifecycleActivity_2;
-} | {
-    DelegateLifecycleActivities: DelegateLifecycleActivity_2;
-} | {
-    SpendingActivities: SpendingActivity_2;
-} | {
-    MintingActivities: MintingActivity_2;
-} | {
-    BurningActivities: BurningActivity_2;
-} | {
-    CreatingDelegatedData: DelegateActivity$CreatingDelegatedData_2;
-} | {
-    UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedData_2;
-} | {
-    DeletingDelegatedData: DelegateActivity$DeletingDelegatedData_2;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-};
+declare type DelegateActivity_2 = 
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			CapoLifecycleActivity_2    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			DelegateLifecycleActivity_2    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			SpendingActivity_2    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			MintingActivity_2    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			BurningActivity_2    /*minEnumVariant*/ }
+| { CreatingDelegatedData: DelegateActivity$CreatingDelegatedData_2 /*minEnumVariant*/ }
+| { UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedData_2 /*minEnumVariant*/ }
+| { DeletingDelegatedData: DelegateActivity$DeletingDelegatedData_2 /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			OtherActivity    /*minEnumVariant*/ }
 
 /**
  * DelegateActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
- * supporting the **9 variant(s)** of the DelegateActivity enum type
- *
+ * supporting the **10 variant(s)** of the DelegateActivity enum type
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateActivity_3 = {
-    CapoLifecycleActivities: CapoLifecycleActivity_3;
-} | {
-    DelegateLifecycleActivities: DelegateLifecycleActivity_3;
-} | {
-    SpendingActivities: SpendingActivity_3;
-} | {
-    MintingActivities: MintingActivity_3;
-} | {
-    BurningActivities: BurningActivity_3;
-} | {
-    CreatingDelegatedData: DelegateActivity$CreatingDelegatedData_3;
-} | {
-    UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedData_3;
-} | {
-    DeletingDelegatedData: DelegateActivity$DeletingDelegatedData_3;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-};
+declare type DelegateActivity_3 = 
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			CapoLifecycleActivity_3    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			DelegateLifecycleActivity_3    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			SpendingActivity_3    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			MintingActivity_3    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			BurningActivity_3    /*minEnumVariant*/ }
+| { CreatingDelegatedData: DelegateActivity$CreatingDelegatedData_3 /*minEnumVariant*/ }
+| { UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedData_3 /*minEnumVariant*/ }
+| { DeletingDelegatedData: DelegateActivity$DeletingDelegatedData_3 /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			OtherActivity_2    /*minEnumVariant*/ }
 
 /**
  * DelegateActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
- * supporting the **9 variant(s)** of the DelegateActivity enum type
- *
+ * supporting the **10 variant(s)** of the DelegateActivity enum type
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateActivity_4 = {
-    CapoLifecycleActivities: CapoLifecycleActivity_4;
-} | {
-    DelegateLifecycleActivities: DelegateLifecycleActivity_4;
-} | {
-    SpendingActivities: SpendingActivity_4;
-} | {
-    MintingActivities: MintingActivity_4;
-} | {
-    BurningActivities: BurningActivity_4;
-} | {
-    CreatingDelegatedData: DelegateActivity$CreatingDelegatedData_4;
-} | {
-    UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedData_4;
-} | {
-    DeletingDelegatedData: DelegateActivity$DeletingDelegatedData_4;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-};
+declare type DelegateActivity_4 = 
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			CapoLifecycleActivity_4    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			DelegateLifecycleActivity_4    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			SpendingActivity_4    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			MintingActivity_4    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			BurningActivity_4    /*minEnumVariant*/ }
+| { CreatingDelegatedData: DelegateActivity$CreatingDelegatedData_4 /*minEnumVariant*/ }
+| { UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedData_4 /*minEnumVariant*/ }
+| { DeletingDelegatedData: DelegateActivity$DeletingDelegatedData_4 /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			OtherActivity_3    /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***DelegateActivity*** enum type.
@@ -4592,6 +5118,7 @@ declare class DelegateActivityHelper extends EnumBridge<isActivity> {
         UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedDataLike;
         DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike;
         MultipleDelegateActivities: Array<UplcData>;
+        OtherActivities: UplcData;
     }>>;
     /**
      * access to different variants of the ***nested CapoLifecycleActivity*** type needed for ***DelegateActivity:CapoLifecycleActivities***.
@@ -4674,6 +5201,10 @@ declare class DelegateActivityHelper extends EnumBridge<isActivity> {
      * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.MultipleDelegateActivities"***
      */
     MultipleDelegateActivities(activities: Array<UplcData>): isActivity;
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.OtherActivities"***
+     */
+    OtherActivities(activity: UplcData): isActivity;
 }
 
 /**
@@ -4695,6 +5226,7 @@ declare class DelegateActivityHelper_2 extends EnumBridge<isActivity> {
         UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedDataLike_2;
         DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike_2;
         MultipleDelegateActivities: Array<UplcData>;
+        OtherActivities: OtherActivityLike;
     }>>;
     /**
      * access to different variants of the ***nested CapoLifecycleActivity*** type needed for ***DelegateActivity:CapoLifecycleActivities***.
@@ -4777,6 +5309,10 @@ declare class DelegateActivityHelper_2 extends EnumBridge<isActivity> {
      * generates isActivity/redeemer wrapper with UplcData for ***"DredNodeRegistryPolicy::DelegateActivity.MultipleDelegateActivities"***
      */
     MultipleDelegateActivities(activities: Array<UplcData>): isActivity;
+    /**
+     * access to different variants of the ***nested OtherActivity*** type needed for ***DelegateActivity:OtherActivities***.
+     */
+    get OtherActivities(): OtherActivityHelperNested;
 }
 
 /**
@@ -4798,6 +5334,7 @@ declare class DelegateActivityHelper_3 extends EnumBridge<isActivity> {
         UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedDataLike_3;
         DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike_3;
         MultipleDelegateActivities: Array<UplcData>;
+        OtherActivities: OtherActivityLike_2;
     }>>;
     /**
      * access to different variants of the ***nested CapoLifecycleActivity*** type needed for ***DelegateActivity:CapoLifecycleActivities***.
@@ -4880,6 +5417,10 @@ declare class DelegateActivityHelper_3 extends EnumBridge<isActivity> {
      * generates isActivity/redeemer wrapper with UplcData for ***"NeighborhoodPolicy::DelegateActivity.MultipleDelegateActivities"***
      */
     MultipleDelegateActivities(activities: Array<UplcData>): isActivity;
+    /**
+     * access to different variants of the ***nested OtherActivity*** type needed for ***DelegateActivity:OtherActivities***.
+     */
+    get OtherActivities(): OtherActivityHelperNested_2;
 }
 
 /**
@@ -4901,6 +5442,7 @@ declare class DelegateActivityHelper_4 extends EnumBridge<isActivity> {
         UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedDataLike_4;
         DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike_4;
         MultipleDelegateActivities: Array<UplcData>;
+        OtherActivities: OtherActivityLike_3;
     }>>;
     /**
      * access to different variants of the ***nested CapoLifecycleActivity*** type needed for ***DelegateActivity:CapoLifecycleActivities***.
@@ -4983,59 +5525,93 @@ declare class DelegateActivityHelper_4 extends EnumBridge<isActivity> {
      * generates isActivity/redeemer wrapper with UplcData for ***"ProtocolSettingsPolicy::DelegateActivity.MultipleDelegateActivities"***
      */
     MultipleDelegateActivities(activities: Array<UplcData>): isActivity;
+    /**
+     * access to different variants of the ***nested OtherActivity*** type needed for ***DelegateActivity:OtherActivities***.
+     */
+    get OtherActivities(): OtherActivityHelperNested_3;
 }
 
 /**
  * DelegateActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
- * for creating any of the **9 variant(s)** of the DelegateActivity enum type
- *
+ * for creating any of the **10 variant(s)** of the DelegateActivity enum type
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type DelegateActivityLike = IntersectedEnum<{
-    CapoLifecycleActivities: CapoLifecycleActivityLike_2;
-} | {
-    DelegateLifecycleActivities: DelegateLifecycleActivityLike_2;
-} | {
-    SpendingActivities: SpendingActivityLike_2;
-} | {
-    MintingActivities: MintingActivityLike_2;
-} | {
-    BurningActivities: BurningActivityLike_2;
-} | {
-    CreatingDelegatedData: DelegateActivity$CreatingDelegatedDataLike_2;
-} | {
-    UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedDataLike_2;
-} | {
-    DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike_2;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-}>;
+declare type DelegateActivityLike = IntersectedEnum<
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			CapoLifecycleActivityLike_2    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			DelegateLifecycleActivityLike_2    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			SpendingActivityLike_2    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			MintingActivityLike_2    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			BurningActivityLike_2    /*minEnumVariant*/ }
+| { CreatingDelegatedData: DelegateActivity$CreatingDelegatedDataLike_2 /*minEnumVariant*/ }
+| { UpdatingDelegatedData: DelegateActivity$UpdatingDelegatedDataLike_2 /*minEnumVariant*/ }
+| { DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike_2 /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			OtherActivityLike    /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type DelegateActivityMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "DelegateActivity";
-}, {
-    CapoLifecycleActivities: singleEnumVariantMeta<DelegateActivityMeta, "CapoLifecycleActivities", "Constr#0", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ CapoLifecycleActivity_2, "noSpecialFlags">;
-    DelegateLifecycleActivities: singleEnumVariantMeta<DelegateActivityMeta, "DelegateLifecycleActivities", "Constr#1", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ DelegateLifecycleActivity_2, "noSpecialFlags">;
-    SpendingActivities: singleEnumVariantMeta<DelegateActivityMeta, "SpendingActivities", "Constr#2", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ SpendingActivity_2, "noSpecialFlags">;
-    MintingActivities: singleEnumVariantMeta<DelegateActivityMeta, "MintingActivities", "Constr#3", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ MintingActivity_2, "noSpecialFlags">;
-    BurningActivities: singleEnumVariantMeta<DelegateActivityMeta, "BurningActivities", "Constr#4", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ BurningActivity_2, "noSpecialFlags">;
-    CreatingDelegatedData: singleEnumVariantMeta<DelegateActivityMeta, "CreatingDelegatedData", "Constr#5", "fields", DelegateActivity$CreatingDelegatedData_2, "isSeededActivity">;
-    UpdatingDelegatedData: singleEnumVariantMeta<DelegateActivityMeta, "UpdatingDelegatedData", "Constr#6", "fields", DelegateActivity$UpdatingDelegatedData_2, "noSpecialFlags">;
-    DeletingDelegatedData: singleEnumVariantMeta<DelegateActivityMeta, "DeletingDelegatedData", "Constr#7", "fields", DelegateActivity$DeletingDelegatedData_2, "noSpecialFlags">;
-    MultipleDelegateActivities: singleEnumVariantMeta<DelegateActivityMeta, "MultipleDelegateActivities", "Constr#8", "singletonField", /* implied wrapper { activities: ... } for singleVariantField */ Array<UplcData>, "noSpecialFlags">;
-}>;
+declare type DelegateActivityMeta = EnumTypeMeta<
+    {module: "DredNodeRegistryPolicy", enumName: "DelegateActivity"}, {
+    CapoLifecycleActivities: singleEnumVariantMeta<DelegateActivityMeta, "CapoLifecycleActivities",
+    "Constr#0", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+    			CapoLifecycleActivity_2   , "noSpecialFlags"
+    >,
+    DelegateLifecycleActivities: singleEnumVariantMeta<DelegateActivityMeta, "DelegateLifecycleActivities",
+    "Constr#1", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+    			DelegateLifecycleActivity_2   , "noSpecialFlags"
+    >,
+    SpendingActivities: singleEnumVariantMeta<DelegateActivityMeta, "SpendingActivities",
+    "Constr#2", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+    			SpendingActivity_2   , "noSpecialFlags"
+    >,
+    MintingActivities: singleEnumVariantMeta<DelegateActivityMeta, "MintingActivities",
+    "Constr#3", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+    			MintingActivity_2   , "noSpecialFlags"
+    >,
+    BurningActivities: singleEnumVariantMeta<DelegateActivityMeta, "BurningActivities",
+    "Constr#4", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+    			BurningActivity_2   , "noSpecialFlags"
+    >,
+    CreatingDelegatedData: singleEnumVariantMeta<DelegateActivityMeta, "CreatingDelegatedData",
+    "Constr#5", 
+    "fields", DelegateActivity$CreatingDelegatedData_2, "isSeededActivity"
+    >,
+    UpdatingDelegatedData: singleEnumVariantMeta<DelegateActivityMeta, "UpdatingDelegatedData",
+    "Constr#6", 
+    "fields", DelegateActivity$UpdatingDelegatedData_2, "noSpecialFlags"
+    >,
+    DeletingDelegatedData: singleEnumVariantMeta<DelegateActivityMeta, "DeletingDelegatedData",
+    "Constr#7", 
+    "fields", DelegateActivity$DeletingDelegatedData_2, "noSpecialFlags"
+    >,
+    MultipleDelegateActivities: singleEnumVariantMeta<DelegateActivityMeta, "MultipleDelegateActivities",
+    "Constr#8", "singletonField", /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>   , "noSpecialFlags"
+    >,
+    OtherActivities: singleEnumVariantMeta<DelegateActivityMeta, "OtherActivities",
+    "Constr#9", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+    			OtherActivity   , "noSpecialFlags"
+    >
+}
+>;
 
 /**
  * A strong type for the canonical form of DelegateDatum$capoStoredData
@@ -5046,9 +5622,9 @@ declare type DelegateActivityMeta = EnumTypeMeta<{
  * @public
  */
 declare interface DelegateDatum$capoStoredData {
-    data: AnyData;
-    version: bigint;
-    otherDetails: UplcData;
+    data: AnyData  /*minVariantField*/ ,
+    version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5060,9 +5636,9 @@ declare interface DelegateDatum$capoStoredData {
  * @public
  */
 declare interface DelegateDatum$capoStoredData_2 {
-    data: NodeRegistrationData;
-    version: bigint;
-    otherDetails: UplcData;
+    data: NodeRegistrationData  /*minVariantField*/ ,
+    version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5074,9 +5650,9 @@ declare interface DelegateDatum$capoStoredData_2 {
  * @public
  */
 declare interface DelegateDatum$capoStoredData_3 {
-    data: NeighborhoodData;
-    version: bigint;
-    otherDetails: UplcData;
+    data: NeighborhoodData  /*minVariantField*/ ,
+    version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5088,9 +5664,9 @@ declare interface DelegateDatum$capoStoredData_3 {
  * @public
  */
 declare interface DelegateDatum$capoStoredData_4 {
-    data: ProtocolSettings;
-    version: bigint;
-    otherDetails: UplcData;
+    data: ProtocolSettings  /*minVariantField*/ ,
+    version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5100,9 +5676,9 @@ declare interface DelegateDatum$capoStoredData_4 {
  * @public
  */
 declare interface DelegateDatum$capoStoredDataLike {
-    data: AnyDataLike;
-    version: IntLike;
-    otherDetails: UplcData;
+    data: AnyDataLike  /*minVariantField*/ ,
+    version: IntLike  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5112,9 +5688,9 @@ declare interface DelegateDatum$capoStoredDataLike {
  * @public
  */
 declare interface DelegateDatum$capoStoredDataLike_2 {
-    data: NodeRegistrationDataLike;
-    version: IntLike;
-    otherDetails: UplcData;
+    data: NodeRegistrationDataLike  /*minVariantField*/ ,
+    version: IntLike  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5124,9 +5700,9 @@ declare interface DelegateDatum$capoStoredDataLike_2 {
  * @public
  */
 declare interface DelegateDatum$capoStoredDataLike_3 {
-    data: NeighborhoodDataLike;
-    version: IntLike;
-    otherDetails: UplcData;
+    data: NeighborhoodDataLike  /*minVariantField*/ ,
+    version: IntLike  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5136,9 +5712,9 @@ declare interface DelegateDatum$capoStoredDataLike_3 {
  * @public
  */
 declare interface DelegateDatum$capoStoredDataLike_4 {
-    data: ProtocolSettingsLike;
-    version: IntLike;
-    otherDetails: UplcData;
+    data: ProtocolSettingsLike  /*minVariantField*/ ,
+    version: IntLike  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5150,9 +5726,9 @@ declare interface DelegateDatum$capoStoredDataLike_4 {
  * @public
  */
 declare interface DelegateDatum$Cip68RefToken {
-    cip68meta: AnyData;
-    cip68version: bigint;
-    otherDetails: UplcData;
+    cip68meta: AnyData  /*minVariantField*/ ,
+    cip68version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5164,9 +5740,9 @@ declare interface DelegateDatum$Cip68RefToken {
  * @public
  */
 declare interface DelegateDatum$Cip68RefToken_2 {
-    cip68meta: AnyData_2;
-    cip68version: bigint;
-    otherDetails: UplcData;
+    cip68meta: AnyData_2  /*minVariantField*/ ,
+    cip68version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5178,9 +5754,9 @@ declare interface DelegateDatum$Cip68RefToken_2 {
  * @public
  */
 declare interface DelegateDatum$Cip68RefToken_3 {
-    cip68meta: AnyData_3;
-    cip68version: bigint;
-    otherDetails: UplcData;
+    cip68meta: AnyData_3  /*minVariantField*/ ,
+    cip68version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5192,9 +5768,9 @@ declare interface DelegateDatum$Cip68RefToken_3 {
  * @public
  */
 declare interface DelegateDatum$Cip68RefToken_4 {
-    cip68meta: AnyData_4;
-    cip68version: bigint;
-    otherDetails: UplcData;
+    cip68meta: AnyData_4  /*minVariantField*/ ,
+    cip68version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5204,9 +5780,9 @@ declare interface DelegateDatum$Cip68RefToken_4 {
  * @public
  */
 declare interface DelegateDatum$Cip68RefTokenLike {
-    cip68meta: AnyDataLike;
-    cip68version: IntLike;
-    otherDetails: UplcData;
+    cip68meta: AnyDataLike  /*minVariantField*/ ,
+    cip68version: IntLike  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5216,9 +5792,9 @@ declare interface DelegateDatum$Cip68RefTokenLike {
  * @public
  */
 declare interface DelegateDatum$Cip68RefTokenLike_2 {
-    cip68meta: AnyDataLike_2;
-    cip68version: IntLike;
-    otherDetails: UplcData;
+    cip68meta: AnyDataLike_2  /*minVariantField*/ ,
+    cip68version: IntLike  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5228,9 +5804,9 @@ declare interface DelegateDatum$Cip68RefTokenLike_2 {
  * @public
  */
 declare interface DelegateDatum$Cip68RefTokenLike_3 {
-    cip68meta: AnyDataLike_3;
-    cip68version: IntLike;
-    otherDetails: UplcData;
+    cip68meta: AnyDataLike_3  /*minVariantField*/ ,
+    cip68version: IntLike  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5240,9 +5816,9 @@ declare interface DelegateDatum$Cip68RefTokenLike_3 {
  * @public
  */
 declare interface DelegateDatum$Cip68RefTokenLike_4 {
-    cip68meta: AnyDataLike_4;
-    cip68version: IntLike;
-    otherDetails: UplcData;
+    cip68meta: AnyDataLike_4  /*minVariantField*/ ,
+    cip68version: IntLike  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
 }
 
 /**
@@ -5255,10 +5831,10 @@ declare interface DelegateDatum$Cip68RefTokenLike_4 {
  * @public
  */
 declare type DelegateDatum$Ergo$capoStoredData = {
-    data: ErgoAnyData;
-    version: bigint;
-    otherDetails: UplcData;
-};
+    data: ErgoAnyData  /*minVariantField*/ ,
+    version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateDatum$capoStoredData
@@ -5270,10 +5846,10 @@ declare type DelegateDatum$Ergo$capoStoredData = {
  * @public
  */
 declare type DelegateDatum$Ergo$capoStoredData_2 = {
-    data: ErgoNodeRegistrationData;
-    version: bigint;
-    otherDetails: UplcData;
-};
+    data: ErgoNodeRegistrationData  /*minVariantField*/ ,
+    version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateDatum$capoStoredData
@@ -5285,10 +5861,10 @@ declare type DelegateDatum$Ergo$capoStoredData_2 = {
  * @public
  */
 declare type DelegateDatum$Ergo$capoStoredData_3 = {
-    data: ErgoNeighborhoodData;
-    version: bigint;
-    otherDetails: UplcData;
-};
+    data: ErgoNeighborhoodData  /*minVariantField*/ ,
+    version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateDatum$capoStoredData
@@ -5300,10 +5876,10 @@ declare type DelegateDatum$Ergo$capoStoredData_3 = {
  * @public
  */
 declare type DelegateDatum$Ergo$capoStoredData_4 = {
-    data: ErgoProtocolSettings;
-    version: bigint;
-    otherDetails: UplcData;
-};
+    data: ErgoProtocolSettings  /*minVariantField*/ ,
+    version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateDatum$Cip68RefToken
@@ -5315,10 +5891,10 @@ declare type DelegateDatum$Ergo$capoStoredData_4 = {
  * @public
  */
 declare type DelegateDatum$Ergo$Cip68RefToken = {
-    cip68meta: ErgoAnyData;
-    cip68version: bigint;
-    otherDetails: UplcData;
-};
+    cip68meta: ErgoAnyData  /*minVariantField*/ ,
+    cip68version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateDatum$Cip68RefToken
@@ -5330,10 +5906,10 @@ declare type DelegateDatum$Ergo$Cip68RefToken = {
  * @public
  */
 declare type DelegateDatum$Ergo$Cip68RefToken_2 = {
-    cip68meta: ErgoAnyData_2;
-    cip68version: bigint;
-    otherDetails: UplcData;
-};
+    cip68meta: ErgoAnyData_2  /*minVariantField*/ ,
+    cip68version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateDatum$Cip68RefToken
@@ -5345,10 +5921,10 @@ declare type DelegateDatum$Ergo$Cip68RefToken_2 = {
  * @public
  */
 declare type DelegateDatum$Ergo$Cip68RefToken_3 = {
-    cip68meta: ErgoAnyData_3;
-    cip68version: bigint;
-    otherDetails: UplcData;
-};
+    cip68meta: ErgoAnyData_3  /*minVariantField*/ ,
+    cip68version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateDatum$Cip68RefToken
@@ -5360,82 +5936,74 @@ declare type DelegateDatum$Ergo$Cip68RefToken_3 = {
  * @public
  */
 declare type DelegateDatum$Ergo$Cip68RefToken_4 = {
-    cip68meta: ErgoAnyData_4;
-    cip68version: bigint;
-    otherDetails: UplcData;
-};
+    cip68meta: ErgoAnyData_4  /*minVariantField*/ ,
+    cip68version: bigint  /*minVariantField*/ ,
+    otherDetails: UplcData  /*minVariantField*/ 
+}
 
 /**
  * DelegateDatum enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the DelegateDatum enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateDatumHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateDatum = {
-    Cip68RefToken: DelegateDatum$Cip68RefToken;
-} | {
-    IsDelegation: DelegationDetail;
-} | {
-    capoStoredData: DelegateDatum$capoStoredData;
-};
+declare type DelegateDatum = 
+| { Cip68RefToken: DelegateDatum$Cip68RefToken /*minEnumVariant*/ }
+| { IsDelegation: /* implied wrapper { dd: ... } for singleVariantField */ 
+    			DelegationDetail    /*minEnumVariant*/ }
+| { capoStoredData: DelegateDatum$capoStoredData /*minEnumVariant*/ }
 
 /**
  * DelegateDatum enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the DelegateDatum enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateDatumHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateDatum_2 = {
-    Cip68RefToken: DelegateDatum$Cip68RefToken_2;
-} | {
-    IsDelegation: DelegationDetail_2;
-} | {
-    capoStoredData: DelegateDatum$capoStoredData_2;
-};
+declare type DelegateDatum_2 = 
+| { Cip68RefToken: DelegateDatum$Cip68RefToken_2 /*minEnumVariant*/ }
+| { IsDelegation: /* implied wrapper { dd: ... } for singleVariantField */ 
+    			DelegationDetail_2    /*minEnumVariant*/ }
+| { capoStoredData: DelegateDatum$capoStoredData_2 /*minEnumVariant*/ }
 
 /**
  * DelegateDatum enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the DelegateDatum enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateDatumHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateDatum_3 = {
-    Cip68RefToken: DelegateDatum$Cip68RefToken_3;
-} | {
-    IsDelegation: DelegationDetail_3;
-} | {
-    capoStoredData: DelegateDatum$capoStoredData_3;
-};
+declare type DelegateDatum_3 = 
+| { Cip68RefToken: DelegateDatum$Cip68RefToken_3 /*minEnumVariant*/ }
+| { IsDelegation: /* implied wrapper { dd: ... } for singleVariantField */ 
+    			DelegationDetail_3    /*minEnumVariant*/ }
+| { capoStoredData: DelegateDatum$capoStoredData_3 /*minEnumVariant*/ }
 
 /**
  * DelegateDatum enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the DelegateDatum enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateDatumHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateDatum_4 = {
-    Cip68RefToken: DelegateDatum$Cip68RefToken_4;
-} | {
-    IsDelegation: DelegationDetail_4;
-} | {
-    capoStoredData: DelegateDatum$capoStoredData_4;
-};
+declare type DelegateDatum_4 = 
+| { Cip68RefToken: DelegateDatum$Cip68RefToken_4 /*minEnumVariant*/ }
+| { IsDelegation: /* implied wrapper { dd: ... } for singleVariantField */ 
+    			DelegationDetail_4    /*minEnumVariant*/ }
+| { capoStoredData: DelegateDatum$capoStoredData_4 /*minEnumVariant*/ }
 
 /**
  * Helper class for generating InlineTxOutputDatum for variants of the ***DelegateDatum*** enum type.
@@ -5611,37 +6179,44 @@ declare class DelegateDatumHelper_4 extends EnumBridge<JustAnEnum> {
 
 /**
  * DelegateDatum enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **3 variant(s)** of the DelegateDatum enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateDatumHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type DelegateDatumLike = IntersectedEnum<{
-    Cip68RefToken: DelegateDatum$Cip68RefTokenLike_2;
-} | {
-    IsDelegation: DelegationDetailLike_2;
-} | {
-    capoStoredData: DelegateDatum$capoStoredDataLike_2;
-}>;
+declare type DelegateDatumLike = IntersectedEnum<
+| { Cip68RefToken: DelegateDatum$Cip68RefTokenLike_2 /*minEnumVariant*/ }
+| { IsDelegation: /* implied wrapper { dd: ... } for singleVariantField */ 
+    			DelegationDetailLike_2    /*minEnumVariant*/ }
+| { capoStoredData: DelegateDatum$capoStoredDataLike_2 /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type DelegateDatumMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "DelegateDatum";
-}, {
-    Cip68RefToken: singleEnumVariantMeta<DelegateDatumMeta, "Cip68RefToken", "Constr#0", "fields", DelegateDatum$Cip68RefToken_2, "noSpecialFlags">;
-    IsDelegation: singleEnumVariantMeta<DelegateDatumMeta, "IsDelegation", "Constr#1", "singletonField", /* implied wrapper { dd: ... } for singleVariantField */ DelegationDetail_2, "noSpecialFlags">;
-    capoStoredData: singleEnumVariantMeta<DelegateDatumMeta, "capoStoredData", "Constr#2", "fields", DelegateDatum$capoStoredData_2, "noSpecialFlags">;
-}>;
+declare type DelegateDatumMeta = EnumTypeMeta<
+    {module: "DredNodeRegistryPolicy", enumName: "DelegateDatum"}, {
+    Cip68RefToken: singleEnumVariantMeta<DelegateDatumMeta, "Cip68RefToken",
+    "Constr#0", 
+    "fields", DelegateDatum$Cip68RefToken_2, "noSpecialFlags"
+    >,
+    IsDelegation: singleEnumVariantMeta<DelegateDatumMeta, "IsDelegation",
+    "Constr#1", "singletonField", /* implied wrapper { dd: ... } for singleVariantField */ 
+    			DelegationDetail_2   , "noSpecialFlags"
+    >,
+    capoStoredData: singleEnumVariantMeta<DelegateDatumMeta, "capoStoredData",
+    "Constr#2", 
+    "fields", DelegateDatum$capoStoredData_2, "noSpecialFlags"
+    >
+}
+>;
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateLifecycleActivity$ReplacingMe
@@ -5652,7 +6227,7 @@ declare type DelegateDatumMeta = EnumTypeMeta<{
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateLifecycleActivity$Ergo$ReplacingMe = DelegateLifecycleActivity$ReplacingMe;
+declare type DelegateLifecycleActivity$Ergo$ReplacingMe = DelegateLifecycleActivity$ReplacingMe
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateLifecycleActivity$ReplacingMe
@@ -5663,7 +6238,7 @@ declare type DelegateLifecycleActivity$Ergo$ReplacingMe = DelegateLifecycleActiv
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateLifecycleActivity$Ergo$ReplacingMe_2 = DelegateLifecycleActivity$ReplacingMe_2;
+declare type DelegateLifecycleActivity$Ergo$ReplacingMe_2 = DelegateLifecycleActivity$ReplacingMe_2
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateLifecycleActivity$ReplacingMe
@@ -5674,7 +6249,7 @@ declare type DelegateLifecycleActivity$Ergo$ReplacingMe_2 = DelegateLifecycleAct
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateLifecycleActivity$Ergo$ReplacingMe_3 = DelegateLifecycleActivity$ReplacingMe_3;
+declare type DelegateLifecycleActivity$Ergo$ReplacingMe_3 = DelegateLifecycleActivity$ReplacingMe_3
 
 /**
  * An ergonomic, though less strictly-safe form of DelegateLifecycleActivity$ReplacingMe
@@ -5685,7 +6260,7 @@ declare type DelegateLifecycleActivity$Ergo$ReplacingMe_3 = DelegateLifecycleAct
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type DelegateLifecycleActivity$Ergo$ReplacingMe_4 = DelegateLifecycleActivity$ReplacingMe_4;
+declare type DelegateLifecycleActivity$Ergo$ReplacingMe_4 = DelegateLifecycleActivity$ReplacingMe_4
 
 /**
  * A strong type for the canonical form of DelegateLifecycleActivity$ReplacingMe
@@ -5696,8 +6271,8 @@ declare type DelegateLifecycleActivity$Ergo$ReplacingMe_4 = DelegateLifecycleAct
  * @public
  */
 declare interface DelegateLifecycleActivity$ReplacingMe {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -5709,8 +6284,8 @@ declare interface DelegateLifecycleActivity$ReplacingMe {
  * @public
  */
 declare interface DelegateLifecycleActivity$ReplacingMe_2 {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -5722,8 +6297,8 @@ declare interface DelegateLifecycleActivity$ReplacingMe_2 {
  * @public
  */
 declare interface DelegateLifecycleActivity$ReplacingMe_3 {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -5735,8 +6310,8 @@ declare interface DelegateLifecycleActivity$ReplacingMe_3 {
  * @public
  */
 declare interface DelegateLifecycleActivity$ReplacingMe_4 {
-    seed: TxOutputId;
-    purpose: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -5746,8 +6321,8 @@ declare interface DelegateLifecycleActivity$ReplacingMe_4 {
  * @public
  */
 declare interface DelegateLifecycleActivity$ReplacingMeLike {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -5757,8 +6332,8 @@ declare interface DelegateLifecycleActivity$ReplacingMeLike {
  * @public
  */
 declare interface DelegateLifecycleActivity$ReplacingMeLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -5768,8 +6343,8 @@ declare interface DelegateLifecycleActivity$ReplacingMeLike_2 {
  * @public
  */
 declare interface DelegateLifecycleActivity$ReplacingMeLike_3 {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
@@ -5779,81 +6354,69 @@ declare interface DelegateLifecycleActivity$ReplacingMeLike_3 {
  * @public
  */
 declare interface DelegateLifecycleActivity$ReplacingMeLike_4 {
-    seed: TxOutputId | string;
-    purpose: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ 
 }
 
 /**
  * DelegateLifecycleActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the DelegateLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateLifecycleActivity = {
-    ReplacingMe: DelegateLifecycleActivity$ReplacingMe;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-};
+declare type DelegateLifecycleActivity = 
+| { ReplacingMe: DelegateLifecycleActivity$ReplacingMe /*minEnumVariant*/ }
+| { Retiring: tagOnly /*minEnumVariant*/ }
+| { ValidatingSettings: tagOnly /*minEnumVariant*/ }
 
 /**
  * DelegateLifecycleActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the DelegateLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateLifecycleActivity_2 = {
-    ReplacingMe: DelegateLifecycleActivity$ReplacingMe_2;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-};
+declare type DelegateLifecycleActivity_2 = 
+| { ReplacingMe: DelegateLifecycleActivity$ReplacingMe_2 /*minEnumVariant*/ }
+| { Retiring: tagOnly /*minEnumVariant*/ }
+| { ValidatingSettings: tagOnly /*minEnumVariant*/ }
 
 /**
  * DelegateLifecycleActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the DelegateLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateLifecycleActivity_3 = {
-    ReplacingMe: DelegateLifecycleActivity$ReplacingMe_3;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-};
+declare type DelegateLifecycleActivity_3 = 
+| { ReplacingMe: DelegateLifecycleActivity$ReplacingMe_3 /*minEnumVariant*/ }
+| { Retiring: tagOnly /*minEnumVariant*/ }
+| { ValidatingSettings: tagOnly /*minEnumVariant*/ }
 
 /**
  * DelegateLifecycleActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the DelegateLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateLifecycleActivity_4 = {
-    ReplacingMe: DelegateLifecycleActivity$ReplacingMe_4;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-};
+declare type DelegateLifecycleActivity_4 = 
+| { ReplacingMe: DelegateLifecycleActivity$ReplacingMe_4 /*minEnumVariant*/ }
+| { Retiring: tagOnly /*minEnumVariant*/ }
+| { ValidatingSettings: tagOnly /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***DelegateLifecycleActivity*** enum type.
@@ -6441,243 +7004,211 @@ declare class DelegateLifecycleActivityHelperNested_4 extends EnumBridge<isActiv
 
 /**
  * DelegateLifecycleActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **3 variant(s)** of the DelegateLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type DelegateLifecycleActivityLike = IntersectedEnum<{
-    ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-}>;
+declare type DelegateLifecycleActivityLike = IntersectedEnum<
+| { ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike /*minEnumVariant*/ }
+| { Retiring: tagOnly /*minEnumVariant*/ }
+| { ValidatingSettings: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * DelegateLifecycleActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **3 variant(s)** of the DelegateLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type DelegateLifecycleActivityLike_2 = IntersectedEnum<{
-    ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_2;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-}>;
+declare type DelegateLifecycleActivityLike_2 = IntersectedEnum<
+| { ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_2 /*minEnumVariant*/ }
+| { Retiring: tagOnly /*minEnumVariant*/ }
+| { ValidatingSettings: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * DelegateLifecycleActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **3 variant(s)** of the DelegateLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type DelegateLifecycleActivityLike_3 = IntersectedEnum<{
-    ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_3;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-}>;
+declare type DelegateLifecycleActivityLike_3 = IntersectedEnum<
+| { ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_3 /*minEnumVariant*/ }
+| { Retiring: tagOnly /*minEnumVariant*/ }
+| { ValidatingSettings: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * DelegateLifecycleActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **3 variant(s)** of the DelegateLifecycleActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateLifecycleActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type DelegateLifecycleActivityLike_4 = IntersectedEnum<{
-    ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_4;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-}>;
+declare type DelegateLifecycleActivityLike_4 = IntersectedEnum<
+| { ReplacingMe: DelegateLifecycleActivity$ReplacingMeLike_4 /*minEnumVariant*/ }
+| { Retiring: tagOnly /*minEnumVariant*/ }
+| { ValidatingSettings: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type DelegateLifecycleActivityMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "DelegateLifecycleActivity";
-}, {
-    ReplacingMe: singleEnumVariantMeta<DelegateLifecycleActivityMeta, "ReplacingMe", "Constr#0", "fields", DelegateLifecycleActivity$ReplacingMe_2, "isSeededActivity">;
-    Retiring: singleEnumVariantMeta<DelegateLifecycleActivityMeta, "Retiring", "Constr#1", "tagOnly", tagOnly, "noSpecialFlags">;
-    ValidatingSettings: singleEnumVariantMeta<DelegateLifecycleActivityMeta, "ValidatingSettings", "Constr#2", "tagOnly", tagOnly, "noSpecialFlags">;
-}>;
+declare type DelegateLifecycleActivityMeta = EnumTypeMeta<
+    {module: "CapoDelegateHelpers", enumName: "DelegateLifecycleActivity"}, {
+    ReplacingMe: singleEnumVariantMeta<DelegateLifecycleActivityMeta, "ReplacingMe",
+    "Constr#0", 
+    "fields", DelegateLifecycleActivity$ReplacingMe_2, "isSeededActivity"
+    >,
+    Retiring: singleEnumVariantMeta<DelegateLifecycleActivityMeta, "Retiring",
+    "Constr#1", "tagOnly", tagOnly, "noSpecialFlags"
+    >,
+    ValidatingSettings: singleEnumVariantMeta<DelegateLifecycleActivityMeta, "ValidatingSettings",
+    "Constr#2", "tagOnly", tagOnly, "noSpecialFlags"
+    >
+}
+>;
 
 /**
  * DelegateRole enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **8 variant(s)** of the DelegateRole enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateRole = {
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-};
+declare type DelegateRole = 
+| { MintDgt: tagOnly /*minEnumVariant*/ }
+| { SpendDgt: tagOnly /*minEnumVariant*/ }
+| { MintInvariant: tagOnly /*minEnumVariant*/ }
+| { SpendInvariant: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { OtherNamedDgt: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { BothMintAndSpendDgt: tagOnly /*minEnumVariant*/ }
+| { HandledByCapoOnly: tagOnly /*minEnumVariant*/ }
 
 /**
  * DelegateRole enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **8 variant(s)** of the DelegateRole enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateRole_2 = {
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-};
+declare type DelegateRole_2 = 
+| { MintDgt: tagOnly /*minEnumVariant*/ }
+| { SpendDgt: tagOnly /*minEnumVariant*/ }
+| { MintInvariant: tagOnly /*minEnumVariant*/ }
+| { SpendInvariant: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { OtherNamedDgt: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { BothMintAndSpendDgt: tagOnly /*minEnumVariant*/ }
+| { HandledByCapoOnly: tagOnly /*minEnumVariant*/ }
 
 /**
  * DelegateRole enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **8 variant(s)** of the DelegateRole enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateRole_3 = {
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-};
+declare type DelegateRole_3 = 
+| { MintDgt: tagOnly /*minEnumVariant*/ }
+| { SpendDgt: tagOnly /*minEnumVariant*/ }
+| { MintInvariant: tagOnly /*minEnumVariant*/ }
+| { SpendInvariant: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { OtherNamedDgt: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { BothMintAndSpendDgt: tagOnly /*minEnumVariant*/ }
+| { HandledByCapoOnly: tagOnly /*minEnumVariant*/ }
 
 /**
  * DelegateRole enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **8 variant(s)** of the DelegateRole enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateRole_4 = {
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-};
+declare type DelegateRole_4 = 
+| { MintDgt: tagOnly /*minEnumVariant*/ }
+| { SpendDgt: tagOnly /*minEnumVariant*/ }
+| { MintInvariant: tagOnly /*minEnumVariant*/ }
+| { SpendInvariant: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { OtherNamedDgt: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { BothMintAndSpendDgt: tagOnly /*minEnumVariant*/ }
+| { HandledByCapoOnly: tagOnly /*minEnumVariant*/ }
 
 /**
  * DelegateRole enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **8 variant(s)** of the DelegateRole enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DelegateRole_5 = {
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-};
+declare type DelegateRole_5 = 
+| { MintDgt: tagOnly /*minEnumVariant*/ }
+| { SpendDgt: tagOnly /*minEnumVariant*/ }
+| { MintInvariant: tagOnly /*minEnumVariant*/ }
+| { SpendInvariant: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { OtherNamedDgt: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { BothMintAndSpendDgt: tagOnly /*minEnumVariant*/ }
+| { HandledByCapoOnly: tagOnly /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
@@ -6916,425 +7447,146 @@ declare class DelegateRoleHelper_4 extends EnumBridge<JustAnEnum> {
 }
 
 /**
- * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class DelegateRoleHelperNested extends EnumBridge<JustAnEnum> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_2, Partial<{
-        MintDgt: tagOnly;
-        SpendDgt: tagOnly;
-        MintInvariant: tagOnly;
-        SpendInvariant: tagOnly;
-        DgDataPolicy: string;
-        OtherNamedDgt: string;
-        BothMintAndSpendDgt: tagOnly;
-        HandledByCapoOnly: tagOnly;
-    }>>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-     */
-    get MintDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get SpendDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-     */
-    get MintInvariant(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get SpendInvariant(): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    DgDataPolicy(name: string): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    OtherNamedDgt(name: string): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
-     */
-    get BothMintAndSpendDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
-     */
-    get HandledByCapoOnly(): UplcData;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class DelegateRoleHelperNested_2 extends EnumBridge<JustAnEnum> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_3, Partial<{
-        MintDgt: tagOnly;
-        SpendDgt: tagOnly;
-        MintInvariant: tagOnly;
-        SpendInvariant: tagOnly;
-        DgDataPolicy: string;
-        OtherNamedDgt: string;
-        BothMintAndSpendDgt: tagOnly;
-        HandledByCapoOnly: tagOnly;
-    }>>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-     */
-    get MintDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get SpendDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-     */
-    get MintInvariant(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get SpendInvariant(): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    DgDataPolicy(name: string): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    OtherNamedDgt(name: string): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
-     */
-    get BothMintAndSpendDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
-     */
-    get HandledByCapoOnly(): UplcData;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class DelegateRoleHelperNested_3 extends EnumBridge<JustAnEnum> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_4, Partial<{
-        MintDgt: tagOnly;
-        SpendDgt: tagOnly;
-        MintInvariant: tagOnly;
-        SpendInvariant: tagOnly;
-        DgDataPolicy: string;
-        OtherNamedDgt: string;
-        BothMintAndSpendDgt: tagOnly;
-        HandledByCapoOnly: tagOnly;
-    }>>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-     */
-    get MintDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get SpendDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-     */
-    get MintInvariant(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get SpendInvariant(): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    DgDataPolicy(name: string): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    OtherNamedDgt(name: string): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
-     */
-    get BothMintAndSpendDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
-     */
-    get HandledByCapoOnly(): UplcData;
-}
-
-/**
- * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-declare class DelegateRoleHelperNested_4 extends EnumBridge<JustAnEnum> {
-    /**
-     * @internal
-     *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast: Cast<DelegateRole_5, Partial<{
-        MintDgt: tagOnly;
-        SpendDgt: tagOnly;
-        MintInvariant: tagOnly;
-        SpendInvariant: tagOnly;
-        DgDataPolicy: string;
-        OtherNamedDgt: string;
-        BothMintAndSpendDgt: tagOnly;
-        HandledByCapoOnly: tagOnly;
-    }>>;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-     */
-    get MintDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-     */
-    get SpendDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-     */
-    get MintInvariant(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-     */
-    get SpendInvariant(): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    DgDataPolicy(name: string): UplcData;
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-     * @remarks
-     * #### Nested activity:
-     * this is connected to a nested-activity wrapper, so the details are piped through
-     * the parent's uplc-encoder, producing a single uplc object with
-     * a complete wrapper for this inner activity detail.
-     */
-    OtherNamedDgt(name: string): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
-     */
-    get BothMintAndSpendDgt(): UplcData;
-    /**
-     * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
-     */
-    get HandledByCapoOnly(): UplcData;
-}
-
-/**
  * DelegateRole enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **8 variant(s)** of the DelegateRole enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type DelegateRoleLike = IntersectedEnum<{
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-}>;
+declare type DelegateRoleLike = IntersectedEnum<
+| { MintDgt: tagOnly /*minEnumVariant*/ }
+| { SpendDgt: tagOnly /*minEnumVariant*/ }
+| { MintInvariant: tagOnly /*minEnumVariant*/ }
+| { SpendInvariant: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { OtherNamedDgt: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { BothMintAndSpendDgt: tagOnly /*minEnumVariant*/ }
+| { HandledByCapoOnly: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * DelegateRole enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **8 variant(s)** of the DelegateRole enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type DelegateRoleLike_2 = IntersectedEnum<{
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-}>;
+declare type DelegateRoleLike_2 = IntersectedEnum<
+| { MintDgt: tagOnly /*minEnumVariant*/ }
+| { SpendDgt: tagOnly /*minEnumVariant*/ }
+| { MintInvariant: tagOnly /*minEnumVariant*/ }
+| { SpendInvariant: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { OtherNamedDgt: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { BothMintAndSpendDgt: tagOnly /*minEnumVariant*/ }
+| { HandledByCapoOnly: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * DelegateRole enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **8 variant(s)** of the DelegateRole enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type DelegateRoleLike_3 = IntersectedEnum<{
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-}>;
+declare type DelegateRoleLike_3 = IntersectedEnum<
+| { MintDgt: tagOnly /*minEnumVariant*/ }
+| { SpendDgt: tagOnly /*minEnumVariant*/ }
+| { MintInvariant: tagOnly /*minEnumVariant*/ }
+| { SpendInvariant: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { OtherNamedDgt: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { BothMintAndSpendDgt: tagOnly /*minEnumVariant*/ }
+| { HandledByCapoOnly: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * DelegateRole enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **8 variant(s)** of the DelegateRole enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateRoleHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type DelegateRoleLike_4 = IntersectedEnum<{
-    MintDgt: tagOnly;
-} | {
-    SpendDgt: tagOnly;
-} | {
-    MintInvariant: tagOnly;
-} | {
-    SpendInvariant: tagOnly;
-} | {
-    DgDataPolicy: string;
-} | {
-    OtherNamedDgt: string;
-} | {
-    BothMintAndSpendDgt: tagOnly;
-} | {
-    HandledByCapoOnly: tagOnly;
-}>;
+declare type DelegateRoleLike_4 = IntersectedEnum<
+| { MintDgt: tagOnly /*minEnumVariant*/ }
+| { SpendDgt: tagOnly /*minEnumVariant*/ }
+| { MintInvariant: tagOnly /*minEnumVariant*/ }
+| { SpendInvariant: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { OtherNamedDgt: /* implied wrapper { name: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { BothMintAndSpendDgt: tagOnly /*minEnumVariant*/ }
+| { HandledByCapoOnly: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type DelegateRoleMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "DelegateRole";
-}, {
-    MintDgt: singleEnumVariantMeta<DelegateRoleMeta, "MintDgt", "Constr#0", "tagOnly", tagOnly, "noSpecialFlags">;
-    SpendDgt: singleEnumVariantMeta<DelegateRoleMeta, "SpendDgt", "Constr#1", "tagOnly", tagOnly, "noSpecialFlags">;
-    MintInvariant: singleEnumVariantMeta<DelegateRoleMeta, "MintInvariant", "Constr#2", "tagOnly", tagOnly, "noSpecialFlags">;
-    SpendInvariant: singleEnumVariantMeta<DelegateRoleMeta, "SpendInvariant", "Constr#3", "tagOnly", tagOnly, "noSpecialFlags">;
-    DgDataPolicy: singleEnumVariantMeta<DelegateRoleMeta, "DgDataPolicy", "Constr#4", "singletonField", /* implied wrapper { name: ... } for singleVariantField */ string, "noSpecialFlags">;
-    OtherNamedDgt: singleEnumVariantMeta<DelegateRoleMeta, "OtherNamedDgt", "Constr#5", "singletonField", /* implied wrapper { name: ... } for singleVariantField */ string, "noSpecialFlags">;
-    BothMintAndSpendDgt: singleEnumVariantMeta<DelegateRoleMeta, "BothMintAndSpendDgt", "Constr#6", "tagOnly", tagOnly, "noSpecialFlags">;
-    HandledByCapoOnly: singleEnumVariantMeta<DelegateRoleMeta, "HandledByCapoOnly", "Constr#7", "tagOnly", tagOnly, "noSpecialFlags">;
-}>;
+declare type DelegateRoleMeta = EnumTypeMeta<
+    {module: "CapoDelegateHelpers", enumName: "DelegateRole"}, {
+    MintDgt: singleEnumVariantMeta<DelegateRoleMeta, "MintDgt",
+    "Constr#0", "tagOnly", tagOnly, "noSpecialFlags"
+    >,
+    SpendDgt: singleEnumVariantMeta<DelegateRoleMeta, "SpendDgt",
+    "Constr#1", "tagOnly", tagOnly, "noSpecialFlags"
+    >,
+    MintInvariant: singleEnumVariantMeta<DelegateRoleMeta, "MintInvariant",
+    "Constr#2", "tagOnly", tagOnly, "noSpecialFlags"
+    >,
+    SpendInvariant: singleEnumVariantMeta<DelegateRoleMeta, "SpendInvariant",
+    "Constr#3", "tagOnly", tagOnly, "noSpecialFlags"
+    >,
+    DgDataPolicy: singleEnumVariantMeta<DelegateRoleMeta, "DgDataPolicy",
+    "Constr#4", "singletonField", /* implied wrapper { name: ... } for singleVariantField */ 
+    			string   , "noSpecialFlags"
+    >,
+    OtherNamedDgt: singleEnumVariantMeta<DelegateRoleMeta, "OtherNamedDgt",
+    "Constr#5", "singletonField", /* implied wrapper { name: ... } for singleVariantField */ 
+    			string   , "noSpecialFlags"
+    >,
+    BothMintAndSpendDgt: singleEnumVariantMeta<DelegateRoleMeta, "BothMintAndSpendDgt",
+    "Constr#6", "tagOnly", tagOnly, "noSpecialFlags"
+    >,
+    HandledByCapoOnly: singleEnumVariantMeta<DelegateRoleMeta, "HandledByCapoOnly",
+    "Constr#7", "tagOnly", tagOnly, "noSpecialFlags"
+    >
+}
+>;
 
 /**
  * A strong type for the canonical form of DelegationDetail
@@ -7345,9 +7597,9 @@ declare type DelegateRoleMeta = EnumTypeMeta<{
  * @public
  */
 declare interface DelegationDetail {
-    capoAddr: Address;
-    mph: MintingPolicyHash;
-    tn: number[];
+    capoAddr: /*minStructField*/ Address
+    mph: /*minStructField*/ MintingPolicyHash
+    tn: /*minStructField*/ number[]
 }
 
 /**
@@ -7359,9 +7611,9 @@ declare interface DelegationDetail {
  * @public
  */
 declare interface DelegationDetail_2 {
-    capoAddr: Address;
-    mph: MintingPolicyHash;
-    tn: number[];
+    capoAddr: /*minStructField*/ Address
+    mph: /*minStructField*/ MintingPolicyHash
+    tn: /*minStructField*/ number[]
 }
 
 /**
@@ -7373,9 +7625,9 @@ declare interface DelegationDetail_2 {
  * @public
  */
 declare interface DelegationDetail_3 {
-    capoAddr: Address;
-    mph: MintingPolicyHash;
-    tn: number[];
+    capoAddr: /*minStructField*/ Address
+    mph: /*minStructField*/ MintingPolicyHash
+    tn: /*minStructField*/ number[]
 }
 
 /**
@@ -7387,9 +7639,9 @@ declare interface DelegationDetail_3 {
  * @public
  */
 declare interface DelegationDetail_4 {
-    capoAddr: Address;
-    mph: MintingPolicyHash;
-    tn: number[];
+    capoAddr: /*minStructField*/ Address
+    mph: /*minStructField*/ MintingPolicyHash
+    tn: /*minStructField*/ number[]
 }
 
 /**
@@ -7399,9 +7651,9 @@ declare interface DelegationDetail_4 {
  * @public
  */
 declare interface DelegationDetailLike {
-    capoAddr: /*minStructField*/ Address | string;
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-    tn: number[];
+    capoAddr: /*minStructField*/ Address | string
+    mph: /*minStructField*/ MintingPolicyHash | string | number[]
+    tn: /*minStructField*/ number[]
 }
 
 /**
@@ -7411,9 +7663,9 @@ declare interface DelegationDetailLike {
  * @public
  */
 declare interface DelegationDetailLike_2 {
-    capoAddr: /*minStructField*/ Address | string;
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-    tn: number[];
+    capoAddr: /*minStructField*/ Address | string
+    mph: /*minStructField*/ MintingPolicyHash | string | number[]
+    tn: /*minStructField*/ number[]
 }
 
 /**
@@ -7423,9 +7675,9 @@ declare interface DelegationDetailLike_2 {
  * @public
  */
 declare interface DelegationDetailLike_3 {
-    capoAddr: /*minStructField*/ Address | string;
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-    tn: number[];
+    capoAddr: /*minStructField*/ Address | string
+    mph: /*minStructField*/ MintingPolicyHash | string | number[]
+    tn: /*minStructField*/ number[]
 }
 
 /**
@@ -7435,9 +7687,9 @@ declare interface DelegationDetailLike_3 {
  * @public
  */
 declare interface DelegationDetailLike_4 {
-    capoAddr: /*minStructField*/ Address | string;
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
-    tn: number[];
+    capoAddr: /*minStructField*/ Address | string
+    mph: /*minStructField*/ MintingPolicyHash | string | number[]
+    tn: /*minStructField*/ number[]
 }
 
 /**
@@ -7449,8 +7701,8 @@ declare interface DelegationDetailLike_4 {
  * @public
  */
 declare interface dgd_DataSrc$Both {
-    utxo: TxInput;
-    txo: TxOutput;
+    utxo: TxInput  /*minVariantField*/ ,
+    txo: TxOutput  /*minVariantField*/ 
 }
 
 /**
@@ -7462,8 +7714,8 @@ declare interface dgd_DataSrc$Both {
  * @public
  */
 declare interface dgd_DataSrc$Both_2 {
-    utxo: TxInput;
-    txo: TxOutput;
+    utxo: TxInput  /*minVariantField*/ ,
+    txo: TxOutput  /*minVariantField*/ 
 }
 
 /**
@@ -7473,8 +7725,8 @@ declare interface dgd_DataSrc$Both_2 {
  * @public
  */
 declare interface dgd_DataSrc$BothLike {
-    utxo: TxInput;
-    txo: TxOutput;
+    utxo: TxInput  /*minVariantField*/ ,
+    txo: TxOutput  /*minVariantField*/ 
 }
 
 /**
@@ -7484,8 +7736,8 @@ declare interface dgd_DataSrc$BothLike {
  * @public
  */
 declare interface dgd_DataSrc$BothLike_2 {
-    utxo: TxInput;
-    txo: TxOutput;
+    utxo: TxInput  /*minVariantField*/ ,
+    txo: TxOutput  /*minVariantField*/ 
 }
 
 /**
@@ -7497,7 +7749,7 @@ declare interface dgd_DataSrc$BothLike_2 {
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type dgd_DataSrc$Ergo$Both = dgd_DataSrc$Both;
+declare type dgd_DataSrc$Ergo$Both = dgd_DataSrc$Both
 
 /**
  * An ergonomic, though less strictly-safe form of dgd_DataSrc$Both
@@ -7508,47 +7760,43 @@ declare type dgd_DataSrc$Ergo$Both = dgd_DataSrc$Both;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type dgd_DataSrc$Ergo$Both_2 = dgd_DataSrc$Both_2;
+declare type dgd_DataSrc$Ergo$Both_2 = dgd_DataSrc$Both_2
 
 /**
  * dgd_DataSrc enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **4 variant(s)** of the dgd_DataSrc enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `dgd_DataSrcHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type dgd_DataSrc = {
-    Unk: tagOnly;
-} | {
-    Input: TxInput;
-} | {
-    Output: TxOutput;
-} | {
-    Both: dgd_DataSrc$Both;
-};
+declare type dgd_DataSrc = 
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { Input: /* implied wrapper { utxo: ... } for singleVariantField */ 
+    			TxInput    /*minEnumVariant*/ }
+| { Output: /* implied wrapper { txo: ... } for singleVariantField */ 
+    			TxOutput    /*minEnumVariant*/ }
+| { Both: dgd_DataSrc$Both /*minEnumVariant*/ }
 
 /**
  * dgd_DataSrc enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **4 variant(s)** of the dgd_DataSrc enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `dgd_DataSrcHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type dgd_DataSrc_2 = {
-    Unk: tagOnly;
-} | {
-    Input: TxInput;
-} | {
-    Output: TxOutput;
-} | {
-    Both: dgd_DataSrc$Both_2;
-};
+declare type dgd_DataSrc_2 = 
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { Input: /* implied wrapper { utxo: ... } for singleVariantField */ 
+    			TxInput    /*minEnumVariant*/ }
+| { Output: /* implied wrapper { txo: ... } for singleVariantField */ 
+    			TxOutput    /*minEnumVariant*/ }
+| { Both: dgd_DataSrc$Both_2 /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***dgd_DataSrc*** enum type.
@@ -7628,64 +7876,72 @@ declare class dgd_DataSrcHelper_2 extends EnumBridge<JustAnEnum> {
 
 /**
  * dgd_DataSrc enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **4 variant(s)** of the dgd_DataSrc enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `dgd_DataSrcHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type dgd_DataSrcLike = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    Input: TxInput;
-} | {
-    Output: TxOutput;
-} | {
-    Both: dgd_DataSrc$BothLike;
-}>;
+declare type dgd_DataSrcLike = IntersectedEnum<
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { Input: /* implied wrapper { utxo: ... } for singleVariantField */ 
+    			TxInput    /*minEnumVariant*/ }
+| { Output: /* implied wrapper { txo: ... } for singleVariantField */ 
+    			TxOutput    /*minEnumVariant*/ }
+| { Both: dgd_DataSrc$BothLike /*minEnumVariant*/ }
+>
 
 /**
  * dgd_DataSrc enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **4 variant(s)** of the dgd_DataSrc enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `dgd_DataSrcHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type dgd_DataSrcLike_2 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    Input: TxInput;
-} | {
-    Output: TxOutput;
-} | {
-    Both: dgd_DataSrc$BothLike_2;
-}>;
+declare type dgd_DataSrcLike_2 = IntersectedEnum<
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { Input: /* implied wrapper { utxo: ... } for singleVariantField */ 
+    			TxInput    /*minEnumVariant*/ }
+| { Output: /* implied wrapper { txo: ... } for singleVariantField */ 
+    			TxOutput    /*minEnumVariant*/ }
+| { Both: dgd_DataSrc$BothLike_2 /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type dgd_DataSrcMeta = EnumTypeMeta<{
-    module: "CapoHelpers";
-    enumName: "dgd_DataSrc";
-}, {
-    Unk: singleEnumVariantMeta<dgd_DataSrcMeta, "Unk", "Constr#0", "tagOnly", tagOnly, "noSpecialFlags">;
-    Input: singleEnumVariantMeta<dgd_DataSrcMeta, "Input", "Constr#1", "singletonField", /* implied wrapper { utxo: ... } for singleVariantField */ TxInput, "noSpecialFlags">;
-    Output: singleEnumVariantMeta<dgd_DataSrcMeta, "Output", "Constr#2", "singletonField", /* implied wrapper { txo: ... } for singleVariantField */ TxOutput, "noSpecialFlags">;
-    Both: singleEnumVariantMeta<dgd_DataSrcMeta, "Both", "Constr#3", "fields", dgd_DataSrc$Both, "noSpecialFlags">;
-}>;
+declare type dgd_DataSrcMeta = EnumTypeMeta<
+    {module: "CapoHelpers", enumName: "dgd_DataSrc"}, {
+    Unk: singleEnumVariantMeta<dgd_DataSrcMeta, "Unk",
+    "Constr#0", "tagOnly", tagOnly, "noSpecialFlags"
+    >,
+    Input: singleEnumVariantMeta<dgd_DataSrcMeta, "Input",
+    "Constr#1", "singletonField", /* implied wrapper { utxo: ... } for singleVariantField */ 
+    			TxInput   , "noSpecialFlags"
+    >,
+    Output: singleEnumVariantMeta<dgd_DataSrcMeta, "Output",
+    "Constr#2", "singletonField", /* implied wrapper { txo: ... } for singleVariantField */ 
+    			TxOutput   , "noSpecialFlags"
+    >,
+    Both: singleEnumVariantMeta<dgd_DataSrcMeta, "Both",
+    "Constr#3", 
+    "fields", dgd_DataSrc$Both, "noSpecialFlags"
+    >
+}
+>;
 
 /**
  * A strong type for the canonical form of DgDataDetails
@@ -7696,10 +7952,11 @@ declare type dgd_DataSrcMeta = EnumTypeMeta<{
  * @public
  */
 declare interface DgDataDetails {
-    dataSrc: dgd_DataSrc;
-    id: number[];
-    type: string;
-    mph: MintingPolicyHash;
+    dataSrc: /*minStructField*/ dgd_DataSrc
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    mph: /*minStructField*/ MintingPolicyHash
+    activity: /*minStructField*/ AbstractDelegateActivitiesEnum | undefined
 }
 
 /**
@@ -7711,10 +7968,11 @@ declare interface DgDataDetails {
  * @public
  */
 declare interface DgDataDetails_2 {
-    dataSrc: dgd_DataSrc_2;
-    id: number[];
-    type: string;
-    mph: MintingPolicyHash;
+    dataSrc: /*minStructField*/ dgd_DataSrc_2
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    mph: /*minStructField*/ MintingPolicyHash
+    activity: /*minStructField*/ AbstractDelegateActivitiesEnum_2 | undefined
 }
 
 /**
@@ -7724,10 +7982,11 @@ declare interface DgDataDetails_2 {
  * @public
  */
 declare interface DgDataDetailsLike {
-    dataSrc: dgd_DataSrcLike;
-    id: number[];
-    type: string;
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
+    dataSrc: /*minStructField*/ dgd_DataSrcLike
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    mph: /*minStructField*/ MintingPolicyHash | string | number[]
+    activity: /*minStructField*/ AbstractDelegateActivitiesEnumLike | undefined
 }
 
 /**
@@ -7737,10 +7996,11 @@ declare interface DgDataDetailsLike {
  * @public
  */
 declare interface DgDataDetailsLike_2 {
-    dataSrc: dgd_DataSrcLike_2;
-    id: number[];
-    type: string;
-    mph: /*minStructField*/ MintingPolicyHash | string | number[];
+    dataSrc: /*minStructField*/ dgd_DataSrcLike_2
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    mph: /*minStructField*/ MintingPolicyHash | string | number[]
+    activity: /*minStructField*/ AbstractDelegateActivitiesEnumLike_2 | undefined
 }
 
 /**
@@ -7749,7 +8009,7 @@ declare interface DgDataDetailsLike_2 {
 export declare class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> {
     autoSetup: boolean;
     get defaultFeatureFlags(): DredCapoFeatures;
-    scriptBundle(): CapoHeliosBundle;
+    scriptBundleClass(): Promise<DredCapoBundle>;
     /**
      * locates the current settings for the capo
      */
@@ -7821,10 +8081,9 @@ declare class DredCapo_2 extends StellarTokenomicsCapo {
             /* Add other feature-flag defaults here */
         };
     }
-    scriptBundle() {
-        return DredCapoBundle.create({
-            setup: this.setup
-        });
+    async scriptBundleClass() {
+        const t = await import('./contracts-preprod/DredCapo.hlb.mjs');
+        return t.DredCapoBundle;
     }
     /**
      * locates the current settings for the capo
@@ -8157,6 +8416,10 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
          */
         BurningActivity: BurningActivityHelper_2;
         /**
+         * generates UplcData for the enum type ***OtherActivity*** for the `BasicDelegate` script
+         */
+        OtherActivity: OtherActivityHelper;
+        /**
          * generates UplcData for the enum type ***DelegateActivity*** for the `BasicDelegate` script
          */
         DelegateActivity: DelegateActivityHelper_2;
@@ -8185,6 +8448,10 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
          */
         dgd_DataSrc: dgd_DataSrcHelper;
         /**
+         * generates UplcData for the enum type ***AbstractDelegateActivitiesEnum*** for the `BasicDelegate` script
+         */
+        AbstractDelegateActivitiesEnum: AbstractDelegateActivitiesEnumHelper;
+        /**
          * generates UplcData for the enum type ***AnyData*** for the `BasicDelegate` script
          */
         AnyData: (fields: AnyDataLike_2 | {
@@ -8200,9 +8467,9 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
             tn: number[];
         }) => UplcData;
         /**
-         * generates UplcData for the enum type ***NodeDetails*** for the `BasicDelegate` script
+         * generates UplcData for the enum type ***NodeDetailsV1*** for the `BasicDelegate` script
          */
-        NodeDetails: (fields: NodeDetailsLike | {
+        NodeDetailsV1: (fields: NodeDetailsV1Like | {
             address: string;
             port: IntLike;
             pubKey: /*minStructField*/ PubKey | string | number[];
@@ -8216,7 +8483,7 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
             type: string;
             memberToken: string;
             state: DredNodeStateLike;
-            nodeDetails: NodeDetailsLike;
+            nodeDetails: NodeDetailsV1Like;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***RelativeDelegateLink*** for the `BasicDelegate` script
@@ -8285,6 +8552,7 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
             id: number[];
             type: string;
             mph: /*minStructField*/ MintingPolicyHash | string | number[];
+            activity: /*minStructField*/ AbstractDelegateActivitiesEnumLike | undefined;
         }) => UplcData;
     };
     /**
@@ -8295,7 +8563,7 @@ declare class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
     ᱺᱺDelegationDetailCast: Cast<DelegationDetail_2, DelegationDetailLike_2>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNodeDetailsCast: Cast<NodeDetails, NodeDetailsLike>;
+    ᱺᱺNodeDetailsV1Cast: Cast<NodeDetailsV1, NodeDetailsV1Like>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺNodeRegistrationDataCast: Cast<NodeRegistrationData, NodeRegistrationDataLike>;
@@ -8469,6 +8737,21 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      */
     BurningActivity(d: UplcData): ErgoBurningActivity_2;
     /**
+     * reads UplcData *known to fit the **OtherActivity*** enum type,
+     * for the BasicDelegate script.
+     * #### Standard WARNING
+     *
+     * This is a low-level data-reader for use in ***advanced development scenarios***.
+     *
+     * Used correctly with data that matches the enum type, this reader
+     * returns strongly-typed data - your code using these types will be safe.
+     *
+     * On the other hand, reading non-matching data will not give you a valid result.
+     * It may throw an error, or it may throw no error, but return a value that
+     * causes some error later on in your code, when you try to use it.
+     */
+    OtherActivity(d: UplcData): ErgoOtherActivity;
+    /**
      * reads UplcData *known to fit the **DelegateActivity*** enum type,
      * for the BasicDelegate script.
      * #### Standard WARNING
@@ -8574,6 +8857,21 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      */
     dgd_DataSrc(d: UplcData): Ergodgd_DataSrc;
     /**
+     * reads UplcData *known to fit the **AbstractDelegateActivitiesEnum*** enum type,
+     * for the BasicDelegate script.
+     * #### Standard WARNING
+     *
+     * This is a low-level data-reader for use in ***advanced development scenarios***.
+     *
+     * Used correctly with data that matches the enum type, this reader
+     * returns strongly-typed data - your code using these types will be safe.
+     *
+     * On the other hand, reading non-matching data will not give you a valid result.
+     * It may throw an error, or it may throw no error, but return a value that
+     * causes some error later on in your code, when you try to use it.
+     */
+    AbstractDelegateActivitiesEnum(d: UplcData): ErgoAbstractDelegateActivitiesEnum;
+    /**
      * reads UplcData *known to fit the **AnyData*** struct type,
      * for the BasicDelegate script.
      * #### Standard WARNING
@@ -8604,7 +8902,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      */
     DelegationDetail(d: UplcData): DelegationDetail_2;
     /**
-     * reads UplcData *known to fit the **NodeDetails*** struct type,
+     * reads UplcData *known to fit the **NodeDetailsV1*** struct type,
      * for the BasicDelegate script.
      * #### Standard WARNING
      *
@@ -8617,7 +8915,7 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NodeDetails(d: UplcData): NodeDetails;
+    NodeDetailsV1(d: UplcData): NodeDetailsV1;
     /**
      * reads UplcData *known to fit the **NodeRegistrationData*** struct type,
      * for the BasicDelegate script.
@@ -8742,23 +9040,22 @@ declare class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderCla
 
 /**
  * DredNodeState enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **4 variant(s)** of the DredNodeState enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DredNodeStateHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type DredNodeState = {
-    NeedsValidation: Array<number[]>;
-} | {
-    Active: number;
-} | {
-    NeedsHeartbeats: Array<number[]>;
-} | {
-    Inactive: tagOnly;
-};
+declare type DredNodeState = 
+| { NeedsValidation: /* implied wrapper { validators: ... } for singleVariantField */ 
+    			Array<number[]>    /*minEnumVariant*/ }
+| { Active: /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ 
+    			number    /*minEnumVariant*/ }
+| { NeedsHeartbeats: /* implied wrapper { validators: ... } for singleVariantField */ 
+    			Array<number[]>    /*minEnumVariant*/ }
+| { Inactive: tagOnly /*minEnumVariant*/ }
 
 /**
  * DredNodeState enum variants
@@ -8815,40 +9112,104 @@ declare class DredNodeStateHelper extends EnumBridge<JustAnEnum> {
 
 /**
  * DredNodeState enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **4 variant(s)** of the DredNodeState enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `DredNodeStateHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type DredNodeStateLike = IntersectedEnum<{
-    NeedsValidation: Array<number[]>;
-} | {
-    Active: TimeLike;
-} | {
-    NeedsHeartbeats: Array<number[]>;
-} | {
-    Inactive: tagOnly;
-}>;
+declare type DredNodeStateLike = IntersectedEnum<
+| { NeedsValidation: /* implied wrapper { validators: ... } for singleVariantField */ 
+    			Array<number[]>    /*minEnumVariant*/ }
+| { Active: /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ 
+    			TimeLike    /*minEnumVariant*/ }
+| { NeedsHeartbeats: /* implied wrapper { validators: ... } for singleVariantField */ 
+    			Array<number[]>    /*minEnumVariant*/ }
+| { Inactive: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type DredNodeStateMeta = EnumTypeMeta<{
-    module: "NodeRegistrationData";
-    enumName: "DredNodeState";
-}, {
-    NeedsValidation: singleEnumVariantMeta<DredNodeStateMeta, "NeedsValidation", "Constr#0", "singletonField", /* implied wrapper { validators: ... } for singleVariantField */ Array<number[]>, "noSpecialFlags">;
-    Active: singleEnumVariantMeta<DredNodeStateMeta, "Active", "Constr#1", "singletonField", /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ number, "noSpecialFlags">;
-    NeedsHeartbeats: singleEnumVariantMeta<DredNodeStateMeta, "NeedsHeartbeats", "Constr#2", "singletonField", /* implied wrapper { validators: ... } for singleVariantField */ Array<number[]>, "noSpecialFlags">;
-    Inactive: singleEnumVariantMeta<DredNodeStateMeta, "Inactive", "Constr#3", "tagOnly", tagOnly, "noSpecialFlags">;
-}>;
+declare type DredNodeStateMeta = EnumTypeMeta<
+    {module: "NodeRegistrationData", enumName: "DredNodeState"}, {
+    NeedsValidation: singleEnumVariantMeta<DredNodeStateMeta, "NeedsValidation",
+    "Constr#0", "singletonField", /* implied wrapper { validators: ... } for singleVariantField */ 
+    			Array<number[]>   , "noSpecialFlags"
+    >,
+    Active: singleEnumVariantMeta<DredNodeStateMeta, "Active",
+    "Constr#1", "singletonField", /* implied wrapper { lastHeartbeat: ... } for singleVariantField */ 
+    			number   , "noSpecialFlags"
+    >,
+    NeedsHeartbeats: singleEnumVariantMeta<DredNodeStateMeta, "NeedsHeartbeats",
+    "Constr#2", "singletonField", /* implied wrapper { validators: ... } for singleVariantField */ 
+    			Array<number[]>   , "noSpecialFlags"
+    >,
+    Inactive: singleEnumVariantMeta<DredNodeStateMeta, "Inactive",
+    "Constr#3", "tagOnly", tagOnly, "noSpecialFlags"
+    >
+}
+>;
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoAbstractDelegateActivitiesEnum = IntersectedEnum<
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoCapoLifecycleActivity_2    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoDelegateLifecycleActivity_2    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { CreatingDelegatedData: AbstractDelegateActivitiesEnum$Ergo$CreatingDelegatedData /*minEnumVariant*/ }
+| { UpdatingDelegatedData: AbstractDelegateActivitiesEnum$Ergo$UpdatingDelegatedData /*minEnumVariant*/ }
+| { DeletingDelegatedData: AbstractDelegateActivitiesEnum$Ergo$DeletingDelegatedData /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+>
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoAbstractDelegateActivitiesEnum_2 = IntersectedEnum<
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoCapoLifecycleActivity_3    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoDelegateLifecycleActivity_3    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+| { CreatingDelegatedData: AbstractDelegateActivitiesEnum$Ergo$CreatingDelegatedData_2 /*minEnumVariant*/ }
+| { UpdatingDelegatedData: AbstractDelegateActivitiesEnum$Ergo$UpdatingDelegatedData_2 /*minEnumVariant*/ }
+| { DeletingDelegatedData: AbstractDelegateActivitiesEnum$Ergo$DeletingDelegatedData_2 /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+>
 
 /**
  * An ergonomic, though less strictly-safe form of AbstractSettingsForNodeOperator
@@ -8860,8 +9221,8 @@ declare type DredNodeStateMeta = EnumTypeMeta<{
  * @public
  */
 declare type ErgoAbstractSettingsForNodeOperator = {
-    nodeOpSettings: ErgoNodeOperatorSettings_2;
-};
+    nodeOpSettings: /*minStructField*/ ErgoNodeOperatorSettings_2
+}
 
 /**
  * An ergonomic, though less strictly-safe form of AnyData
@@ -8872,7 +9233,7 @@ declare type ErgoAbstractSettingsForNodeOperator = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoAnyData = AnyData;
+declare type ErgoAnyData = AnyData
 
 /**
  * An ergonomic, though less strictly-safe form of AnyData
@@ -8883,7 +9244,7 @@ declare type ErgoAnyData = AnyData;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoAnyData_2 = AnyData_2;
+declare type ErgoAnyData_2 = AnyData_2
 
 /**
  * An ergonomic, though less strictly-safe form of AnyData
@@ -8894,7 +9255,7 @@ declare type ErgoAnyData_2 = AnyData_2;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoAnyData_3 = AnyData_3;
+declare type ErgoAnyData_3 = AnyData_3
 
 /**
  * An ergonomic, though less strictly-safe form of AnyData
@@ -8905,23 +9266,23 @@ declare type ErgoAnyData_3 = AnyData_3;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoAnyData_4 = AnyData_4;
+declare type ErgoAnyData_4 = AnyData_4
 
 /**
- * An ergonomic, though less strictly-safe form of AppInfo
+ * An ergonomic, though less strictly-safe form of AppInfoV1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the AppInfoLike type,
+ * conversion to on-chain use.  For creating such data, use the AppInfoV1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoAppInfo = {
-    url: string;
-    revenueModel: Array<ErgoRevenueModel>;
-    name: string;
-    description: string;
-};
+declare type ErgoAppInfoV1 = {
+    url: /*minStructField*/ string
+    revenueModel: /*minStructField*/ Array<ErgoRevenueModel>
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
+}
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -8930,7 +9291,7 @@ declare type ErgoAppInfo = {
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoBurningActivity = IntersectedEnum<BurningActivity>;
+declare type ErgoBurningActivity = IntersectedEnum<BurningActivity/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -8939,7 +9300,7 @@ declare type ErgoBurningActivity = IntersectedEnum<BurningActivity>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoBurningActivity_2 = IntersectedEnum<BurningActivity_2>;
+declare type ErgoBurningActivity_2 = IntersectedEnum<BurningActivity_2/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -8948,7 +9309,7 @@ declare type ErgoBurningActivity_2 = IntersectedEnum<BurningActivity_2>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoBurningActivity_3 = IntersectedEnum<BurningActivity_3>;
+declare type ErgoBurningActivity_3 = IntersectedEnum<BurningActivity_3/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -8957,7 +9318,7 @@ declare type ErgoBurningActivity_3 = IntersectedEnum<BurningActivity_3>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoBurningActivity_4 = IntersectedEnum<BurningActivity_4>;
+declare type ErgoBurningActivity_4 = IntersectedEnum<BurningActivity_4/*like canon enum*/>
 
 /**
  * An ergonomic, though less strictly-safe form of CapoCtx
@@ -8969,9 +9330,9 @@ declare type ErgoBurningActivity_4 = IntersectedEnum<BurningActivity_4>;
  * @public
  */
 declare type ErgoCapoCtx = {
-    mph: MintingPolicyHash;
-    charter: Ergocctx_CharterInputType_2;
-};
+    mph: /*minStructField*/ MintingPolicyHash
+    charter: /*minStructField*/ Ergocctx_CharterInputType_2
+}
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -8980,21 +9341,17 @@ declare type ErgoCapoCtx = {
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoCapoLifecycleActivity = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: ErgoDelegateRole_2;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$Ergo$forcingNewSpendDelegate;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate;
-} | {
-    updatingManifest: ErgoManifestActivity_2;
-}>;
+declare type ErgoCapoLifecycleActivity = IntersectedEnum<
+| { CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate /*minEnumVariant*/ }
+| { queuePendingChange: tagOnly /*minEnumVariant*/ }
+| { removePendingChange: /* implied wrapper { role: ... } for singleVariantField */ 
+    			ErgoDelegateRole_2    /*minEnumVariant*/ }
+| { commitPendingChanges: tagOnly /*minEnumVariant*/ }
+| { forcingNewSpendDelegate: CapoLifecycleActivity$Ergo$forcingNewSpendDelegate /*minEnumVariant*/ }
+| { forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate /*minEnumVariant*/ }
+| { updatingManifest: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoManifestActivity_2    /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9003,21 +9360,17 @@ declare type ErgoCapoLifecycleActivity = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoCapoLifecycleActivity_2 = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate_2;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: ErgoDelegateRole_3;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_2;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate_2;
-} | {
-    updatingManifest: ErgoManifestActivity_3;
-}>;
+declare type ErgoCapoLifecycleActivity_2 = IntersectedEnum<
+| { CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate_2 /*minEnumVariant*/ }
+| { queuePendingChange: tagOnly /*minEnumVariant*/ }
+| { removePendingChange: /* implied wrapper { role: ... } for singleVariantField */ 
+    			ErgoDelegateRole_3    /*minEnumVariant*/ }
+| { commitPendingChanges: tagOnly /*minEnumVariant*/ }
+| { forcingNewSpendDelegate: CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_2 /*minEnumVariant*/ }
+| { forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate_2 /*minEnumVariant*/ }
+| { updatingManifest: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoManifestActivity_3    /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9026,21 +9379,17 @@ declare type ErgoCapoLifecycleActivity_2 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoCapoLifecycleActivity_3 = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate_3;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: ErgoDelegateRole_4;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_3;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate_3;
-} | {
-    updatingManifest: ErgoManifestActivity_4;
-}>;
+declare type ErgoCapoLifecycleActivity_3 = IntersectedEnum<
+| { CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate_3 /*minEnumVariant*/ }
+| { queuePendingChange: tagOnly /*minEnumVariant*/ }
+| { removePendingChange: /* implied wrapper { role: ... } for singleVariantField */ 
+    			ErgoDelegateRole_4    /*minEnumVariant*/ }
+| { commitPendingChanges: tagOnly /*minEnumVariant*/ }
+| { forcingNewSpendDelegate: CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_3 /*minEnumVariant*/ }
+| { forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate_3 /*minEnumVariant*/ }
+| { updatingManifest: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoManifestActivity_4    /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9049,21 +9398,17 @@ declare type ErgoCapoLifecycleActivity_3 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoCapoLifecycleActivity_4 = IntersectedEnum<{
-    CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate_4;
-} | {
-    queuePendingChange: tagOnly;
-} | {
-    removePendingChange: ErgoDelegateRole_5;
-} | {
-    commitPendingChanges: tagOnly;
-} | {
-    forcingNewSpendDelegate: CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_4;
-} | {
-    forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate_4;
-} | {
-    updatingManifest: ErgoManifestActivity_5;
-}>;
+declare type ErgoCapoLifecycleActivity_4 = IntersectedEnum<
+| { CreatingDelegate: CapoLifecycleActivity$Ergo$CreatingDelegate_4 /*minEnumVariant*/ }
+| { queuePendingChange: tagOnly /*minEnumVariant*/ }
+| { removePendingChange: /* implied wrapper { role: ... } for singleVariantField */ 
+    			ErgoDelegateRole_5    /*minEnumVariant*/ }
+| { commitPendingChanges: tagOnly /*minEnumVariant*/ }
+| { forcingNewSpendDelegate: CapoLifecycleActivity$Ergo$forcingNewSpendDelegate_4 /*minEnumVariant*/ }
+| { forcingNewMintDelegate: CapoLifecycleActivity$Ergo$forcingNewMintDelegate_4 /*minEnumVariant*/ }
+| { updatingManifest: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoManifestActivity_5    /*minEnumVariant*/ }
+>
 
 /**
  * An ergonomic, though less strictly-safe form of CapoManifestEntry
@@ -9075,10 +9420,10 @@ declare type ErgoCapoLifecycleActivity_4 = IntersectedEnum<{
  * @public
  */
 declare type ErgoCapoManifestEntry = {
-    entryType: ErgoManifestEntryType;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
-};
+    entryType: /*minStructField*/ ErgoManifestEntryType
+    tokenName: /*minStructField*/ number[]
+    mph: /*minStructField*/ MintingPolicyHash | undefined
+}
 
 /**
  * An ergonomic, though less strictly-safe form of CapoManifestEntry
@@ -9090,10 +9435,10 @@ declare type ErgoCapoManifestEntry = {
  * @public
  */
 declare type ErgoCapoManifestEntry_2 = {
-    entryType: ErgoManifestEntryType_2;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
-};
+    entryType: /*minStructField*/ ErgoManifestEntryType_2
+    tokenName: /*minStructField*/ number[]
+    mph: /*minStructField*/ MintingPolicyHash | undefined
+}
 
 /**
  * An ergonomic, though less strictly-safe form of CapoManifestEntry
@@ -9105,10 +9450,10 @@ declare type ErgoCapoManifestEntry_2 = {
  * @public
  */
 declare type ErgoCapoManifestEntry_3 = {
-    entryType: ErgoManifestEntryType_3;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
-};
+    entryType: /*minStructField*/ ErgoManifestEntryType_3
+    tokenName: /*minStructField*/ number[]
+    mph: /*minStructField*/ MintingPolicyHash | undefined
+}
 
 /**
  * An ergonomic, though less strictly-safe form of CapoManifestEntry
@@ -9120,10 +9465,10 @@ declare type ErgoCapoManifestEntry_3 = {
  * @public
  */
 declare type ErgoCapoManifestEntry_4 = {
-    entryType: ErgoManifestEntryType_4;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
-};
+    entryType: /*minStructField*/ ErgoManifestEntryType_4
+    tokenName: /*minStructField*/ number[]
+    mph: /*minStructField*/ MintingPolicyHash | undefined
+}
 
 /**
  * An ergonomic, though less strictly-safe form of CapoManifestEntry
@@ -9135,10 +9480,10 @@ declare type ErgoCapoManifestEntry_4 = {
  * @public
  */
 declare type ErgoCapoManifestEntry_5 = {
-    entryType: ErgoManifestEntryType_5;
-    tokenName: number[];
-    mph: /*minStructField*/ MintingPolicyHash | undefined;
-};
+    entryType: /*minStructField*/ ErgoManifestEntryType_5
+    tokenName: /*minStructField*/ number[]
+    mph: /*minStructField*/ MintingPolicyHash | undefined
+}
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9147,13 +9492,11 @@ declare type ErgoCapoManifestEntry_5 = {
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type Ergocctx_CharterInputType = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$Ergo$RefInput;
-} | {
-    Input: cctx_CharterInputType$Ergo$Input;
-}>;
+declare type Ergocctx_CharterInputType = IntersectedEnum<
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { RefInput: cctx_CharterInputType$Ergo$RefInput /*minEnumVariant*/ }
+| { Input: cctx_CharterInputType$Ergo$Input /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9162,13 +9505,11 @@ declare type Ergocctx_CharterInputType = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type Ergocctx_CharterInputType_2 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$Ergo$RefInput_2;
-} | {
-    Input: cctx_CharterInputType$Ergo$Input_2;
-}>;
+declare type Ergocctx_CharterInputType_2 = IntersectedEnum<
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { RefInput: cctx_CharterInputType$Ergo$RefInput_2 /*minEnumVariant*/ }
+| { Input: cctx_CharterInputType$Ergo$Input_2 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9177,13 +9518,11 @@ declare type Ergocctx_CharterInputType_2 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type Ergocctx_CharterInputType_3 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$Ergo$RefInput_3;
-} | {
-    Input: cctx_CharterInputType$Ergo$Input_3;
-}>;
+declare type Ergocctx_CharterInputType_3 = IntersectedEnum<
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { RefInput: cctx_CharterInputType$Ergo$RefInput_3 /*minEnumVariant*/ }
+| { Input: cctx_CharterInputType$Ergo$Input_3 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9192,13 +9531,11 @@ declare type Ergocctx_CharterInputType_3 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type Ergocctx_CharterInputType_4 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    RefInput: cctx_CharterInputType$Ergo$RefInput_4;
-} | {
-    Input: cctx_CharterInputType$Ergo$Input_4;
-}>;
+declare type Ergocctx_CharterInputType_4 = IntersectedEnum<
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { RefInput: cctx_CharterInputType$Ergo$RefInput_4 /*minEnumVariant*/ }
+| { Input: cctx_CharterInputType$Ergo$Input_4 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9207,25 +9544,25 @@ declare type Ergocctx_CharterInputType_4 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateActivity = IntersectedEnum<{
-    CapoLifecycleActivities: ErgoCapoLifecycleActivity;
-} | {
-    DelegateLifecycleActivities: ErgoDelegateLifecycleActivity;
-} | {
-    SpendingActivities: ErgoSpendingActivity;
-} | {
-    MintingActivities: ErgoMintingActivity;
-} | {
-    BurningActivities: ErgoBurningActivity;
-} | {
-    CreatingDelegatedData: DelegateActivity$Ergo$CreatingDelegatedData;
-} | {
-    UpdatingDelegatedData: DelegateActivity$Ergo$UpdatingDelegatedData;
-} | {
-    DeletingDelegatedData: DelegateActivity$Ergo$DeletingDelegatedData;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-}>;
+declare type ErgoDelegateActivity = IntersectedEnum<
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoCapoLifecycleActivity    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoDelegateLifecycleActivity    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoSpendingActivity    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoMintingActivity    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoBurningActivity    /*minEnumVariant*/ }
+| { CreatingDelegatedData: DelegateActivity$Ergo$CreatingDelegatedData /*minEnumVariant*/ }
+| { UpdatingDelegatedData: DelegateActivity$Ergo$UpdatingDelegatedData /*minEnumVariant*/ }
+| { DeletingDelegatedData: DelegateActivity$Ergo$DeletingDelegatedData /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			UplcData    /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9234,25 +9571,25 @@ declare type ErgoDelegateActivity = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateActivity_2 = IntersectedEnum<{
-    CapoLifecycleActivities: ErgoCapoLifecycleActivity_2;
-} | {
-    DelegateLifecycleActivities: ErgoDelegateLifecycleActivity_2;
-} | {
-    SpendingActivities: ErgoSpendingActivity_2;
-} | {
-    MintingActivities: ErgoMintingActivity_2;
-} | {
-    BurningActivities: ErgoBurningActivity_2;
-} | {
-    CreatingDelegatedData: DelegateActivity$Ergo$CreatingDelegatedData_2;
-} | {
-    UpdatingDelegatedData: DelegateActivity$Ergo$UpdatingDelegatedData_2;
-} | {
-    DeletingDelegatedData: DelegateActivity$Ergo$DeletingDelegatedData_2;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-}>;
+declare type ErgoDelegateActivity_2 = IntersectedEnum<
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoCapoLifecycleActivity_2    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoDelegateLifecycleActivity_2    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoSpendingActivity_2    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoMintingActivity_2    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoBurningActivity_2    /*minEnumVariant*/ }
+| { CreatingDelegatedData: DelegateActivity$Ergo$CreatingDelegatedData_2 /*minEnumVariant*/ }
+| { UpdatingDelegatedData: DelegateActivity$Ergo$UpdatingDelegatedData_2 /*minEnumVariant*/ }
+| { DeletingDelegatedData: DelegateActivity$Ergo$DeletingDelegatedData_2 /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoOtherActivity    /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9261,25 +9598,25 @@ declare type ErgoDelegateActivity_2 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateActivity_3 = IntersectedEnum<{
-    CapoLifecycleActivities: ErgoCapoLifecycleActivity_3;
-} | {
-    DelegateLifecycleActivities: ErgoDelegateLifecycleActivity_3;
-} | {
-    SpendingActivities: ErgoSpendingActivity_3;
-} | {
-    MintingActivities: ErgoMintingActivity_3;
-} | {
-    BurningActivities: ErgoBurningActivity_3;
-} | {
-    CreatingDelegatedData: DelegateActivity$Ergo$CreatingDelegatedData_3;
-} | {
-    UpdatingDelegatedData: DelegateActivity$Ergo$UpdatingDelegatedData_3;
-} | {
-    DeletingDelegatedData: DelegateActivity$Ergo$DeletingDelegatedData_3;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-}>;
+declare type ErgoDelegateActivity_3 = IntersectedEnum<
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoCapoLifecycleActivity_3    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoDelegateLifecycleActivity_3    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoSpendingActivity_3    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoMintingActivity_3    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoBurningActivity_3    /*minEnumVariant*/ }
+| { CreatingDelegatedData: DelegateActivity$Ergo$CreatingDelegatedData_3 /*minEnumVariant*/ }
+| { UpdatingDelegatedData: DelegateActivity$Ergo$UpdatingDelegatedData_3 /*minEnumVariant*/ }
+| { DeletingDelegatedData: DelegateActivity$Ergo$DeletingDelegatedData_3 /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoOtherActivity_2    /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9288,25 +9625,25 @@ declare type ErgoDelegateActivity_3 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateActivity_4 = IntersectedEnum<{
-    CapoLifecycleActivities: ErgoCapoLifecycleActivity_4;
-} | {
-    DelegateLifecycleActivities: ErgoDelegateLifecycleActivity_4;
-} | {
-    SpendingActivities: ErgoSpendingActivity_4;
-} | {
-    MintingActivities: ErgoMintingActivity_4;
-} | {
-    BurningActivities: ErgoBurningActivity_4;
-} | {
-    CreatingDelegatedData: DelegateActivity$Ergo$CreatingDelegatedData_4;
-} | {
-    UpdatingDelegatedData: DelegateActivity$Ergo$UpdatingDelegatedData_4;
-} | {
-    DeletingDelegatedData: DelegateActivity$Ergo$DeletingDelegatedData_4;
-} | {
-    MultipleDelegateActivities: Array<UplcData>;
-}>;
+declare type ErgoDelegateActivity_4 = IntersectedEnum<
+| { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoCapoLifecycleActivity_4    /*minEnumVariant*/ }
+| { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoDelegateLifecycleActivity_4    /*minEnumVariant*/ }
+| { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoSpendingActivity_4    /*minEnumVariant*/ }
+| { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoMintingActivity_4    /*minEnumVariant*/ }
+| { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoBurningActivity_4    /*minEnumVariant*/ }
+| { CreatingDelegatedData: DelegateActivity$Ergo$CreatingDelegatedData_4 /*minEnumVariant*/ }
+| { UpdatingDelegatedData: DelegateActivity$Ergo$UpdatingDelegatedData_4 /*minEnumVariant*/ }
+| { DeletingDelegatedData: DelegateActivity$Ergo$DeletingDelegatedData_4 /*minEnumVariant*/ }
+| { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+    			Array<UplcData>    /*minEnumVariant*/ }
+| { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+    			ErgoOtherActivity_3    /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9315,13 +9652,12 @@ declare type ErgoDelegateActivity_4 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateDatum = IntersectedEnum<{
-    Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken;
-} | {
-    IsDelegation: ErgoDelegationDetail;
-} | {
-    capoStoredData: DelegateDatum$Ergo$capoStoredData;
-}>;
+declare type ErgoDelegateDatum = IntersectedEnum<
+| { Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken /*minEnumVariant*/ }
+| { IsDelegation: /* implied wrapper { dd: ... } for singleVariantField */ 
+    			ErgoDelegationDetail    /*minEnumVariant*/ }
+| { capoStoredData: DelegateDatum$Ergo$capoStoredData /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9330,13 +9666,12 @@ declare type ErgoDelegateDatum = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateDatum_2 = IntersectedEnum<{
-    Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_2;
-} | {
-    IsDelegation: ErgoDelegationDetail_2;
-} | {
-    capoStoredData: DelegateDatum$Ergo$capoStoredData_2;
-}>;
+declare type ErgoDelegateDatum_2 = IntersectedEnum<
+| { Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_2 /*minEnumVariant*/ }
+| { IsDelegation: /* implied wrapper { dd: ... } for singleVariantField */ 
+    			ErgoDelegationDetail_2    /*minEnumVariant*/ }
+| { capoStoredData: DelegateDatum$Ergo$capoStoredData_2 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9345,13 +9680,12 @@ declare type ErgoDelegateDatum_2 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateDatum_3 = IntersectedEnum<{
-    Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_3;
-} | {
-    IsDelegation: ErgoDelegationDetail_3;
-} | {
-    capoStoredData: DelegateDatum$Ergo$capoStoredData_3;
-}>;
+declare type ErgoDelegateDatum_3 = IntersectedEnum<
+| { Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_3 /*minEnumVariant*/ }
+| { IsDelegation: /* implied wrapper { dd: ... } for singleVariantField */ 
+    			ErgoDelegationDetail_3    /*minEnumVariant*/ }
+| { capoStoredData: DelegateDatum$Ergo$capoStoredData_3 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9360,13 +9694,12 @@ declare type ErgoDelegateDatum_3 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateDatum_4 = IntersectedEnum<{
-    Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_4;
-} | {
-    IsDelegation: ErgoDelegationDetail_4;
-} | {
-    capoStoredData: DelegateDatum$Ergo$capoStoredData_4;
-}>;
+declare type ErgoDelegateDatum_4 = IntersectedEnum<
+| { Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_4 /*minEnumVariant*/ }
+| { IsDelegation: /* implied wrapper { dd: ... } for singleVariantField */ 
+    			ErgoDelegationDetail_4    /*minEnumVariant*/ }
+| { capoStoredData: DelegateDatum$Ergo$capoStoredData_4 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9375,13 +9708,11 @@ declare type ErgoDelegateDatum_4 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateLifecycleActivity = IntersectedEnum<{
-    ReplacingMe: DelegateLifecycleActivity$Ergo$ReplacingMe;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-}>;
+declare type ErgoDelegateLifecycleActivity = IntersectedEnum<
+| { ReplacingMe: DelegateLifecycleActivity$Ergo$ReplacingMe /*minEnumVariant*/ }
+| { Retiring: tagOnly /*minEnumVariant*/ }
+| { ValidatingSettings: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9390,13 +9721,11 @@ declare type ErgoDelegateLifecycleActivity = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateLifecycleActivity_2 = IntersectedEnum<{
-    ReplacingMe: DelegateLifecycleActivity$Ergo$ReplacingMe_2;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-}>;
+declare type ErgoDelegateLifecycleActivity_2 = IntersectedEnum<
+| { ReplacingMe: DelegateLifecycleActivity$Ergo$ReplacingMe_2 /*minEnumVariant*/ }
+| { Retiring: tagOnly /*minEnumVariant*/ }
+| { ValidatingSettings: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9405,13 +9734,11 @@ declare type ErgoDelegateLifecycleActivity_2 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateLifecycleActivity_3 = IntersectedEnum<{
-    ReplacingMe: DelegateLifecycleActivity$Ergo$ReplacingMe_3;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-}>;
+declare type ErgoDelegateLifecycleActivity_3 = IntersectedEnum<
+| { ReplacingMe: DelegateLifecycleActivity$Ergo$ReplacingMe_3 /*minEnumVariant*/ }
+| { Retiring: tagOnly /*minEnumVariant*/ }
+| { ValidatingSettings: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9420,13 +9747,11 @@ declare type ErgoDelegateLifecycleActivity_3 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateLifecycleActivity_4 = IntersectedEnum<{
-    ReplacingMe: DelegateLifecycleActivity$Ergo$ReplacingMe_4;
-} | {
-    Retiring: tagOnly;
-} | {
-    ValidatingSettings: tagOnly;
-}>;
+declare type ErgoDelegateLifecycleActivity_4 = IntersectedEnum<
+| { ReplacingMe: DelegateLifecycleActivity$Ergo$ReplacingMe_4 /*minEnumVariant*/ }
+| { Retiring: tagOnly /*minEnumVariant*/ }
+| { ValidatingSettings: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9435,7 +9760,7 @@ declare type ErgoDelegateLifecycleActivity_4 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateRole = IntersectedEnum<DelegateRole>;
+declare type ErgoDelegateRole = IntersectedEnum<DelegateRole/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9444,7 +9769,7 @@ declare type ErgoDelegateRole = IntersectedEnum<DelegateRole>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateRole_2 = IntersectedEnum<DelegateRole_2>;
+declare type ErgoDelegateRole_2 = IntersectedEnum<DelegateRole_2/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9453,7 +9778,7 @@ declare type ErgoDelegateRole_2 = IntersectedEnum<DelegateRole_2>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateRole_3 = IntersectedEnum<DelegateRole_3>;
+declare type ErgoDelegateRole_3 = IntersectedEnum<DelegateRole_3/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9462,7 +9787,7 @@ declare type ErgoDelegateRole_3 = IntersectedEnum<DelegateRole_3>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateRole_4 = IntersectedEnum<DelegateRole_4>;
+declare type ErgoDelegateRole_4 = IntersectedEnum<DelegateRole_4/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9471,7 +9796,7 @@ declare type ErgoDelegateRole_4 = IntersectedEnum<DelegateRole_4>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDelegateRole_5 = IntersectedEnum<DelegateRole_5>;
+declare type ErgoDelegateRole_5 = IntersectedEnum<DelegateRole_5/*like canon enum*/>
 
 /**
  * An ergonomic, though less strictly-safe form of DelegationDetail
@@ -9482,7 +9807,7 @@ declare type ErgoDelegateRole_5 = IntersectedEnum<DelegateRole_5>;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoDelegationDetail = DelegationDetail;
+declare type ErgoDelegationDetail = DelegationDetail
 
 /**
  * An ergonomic, though less strictly-safe form of DelegationDetail
@@ -9493,7 +9818,7 @@ declare type ErgoDelegationDetail = DelegationDetail;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoDelegationDetail_2 = DelegationDetail_2;
+declare type ErgoDelegationDetail_2 = DelegationDetail_2
 
 /**
  * An ergonomic, though less strictly-safe form of DelegationDetail
@@ -9504,7 +9829,7 @@ declare type ErgoDelegationDetail_2 = DelegationDetail_2;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoDelegationDetail_3 = DelegationDetail_3;
+declare type ErgoDelegationDetail_3 = DelegationDetail_3
 
 /**
  * An ergonomic, though less strictly-safe form of DelegationDetail
@@ -9515,7 +9840,7 @@ declare type ErgoDelegationDetail_3 = DelegationDetail_3;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoDelegationDetail_4 = DelegationDetail_4;
+declare type ErgoDelegationDetail_4 = DelegationDetail_4
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9524,15 +9849,14 @@ declare type ErgoDelegationDetail_4 = DelegationDetail_4;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type Ergodgd_DataSrc = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    Input: TxInput;
-} | {
-    Output: TxOutput;
-} | {
-    Both: dgd_DataSrc$Ergo$Both;
-}>;
+declare type Ergodgd_DataSrc = IntersectedEnum<
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { Input: /* implied wrapper { utxo: ... } for singleVariantField */ 
+    			TxInput    /*minEnumVariant*/ }
+| { Output: /* implied wrapper { txo: ... } for singleVariantField */ 
+    			TxOutput    /*minEnumVariant*/ }
+| { Both: dgd_DataSrc$Ergo$Both /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9541,15 +9865,14 @@ declare type Ergodgd_DataSrc = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type Ergodgd_DataSrc_2 = IntersectedEnum<{
-    Unk: tagOnly;
-} | {
-    Input: TxInput;
-} | {
-    Output: TxOutput;
-} | {
-    Both: dgd_DataSrc$Ergo$Both_2;
-}>;
+declare type Ergodgd_DataSrc_2 = IntersectedEnum<
+| { Unk: tagOnly /*minEnumVariant*/ }
+| { Input: /* implied wrapper { utxo: ... } for singleVariantField */ 
+    			TxInput    /*minEnumVariant*/ }
+| { Output: /* implied wrapper { txo: ... } for singleVariantField */ 
+    			TxOutput    /*minEnumVariant*/ }
+| { Both: dgd_DataSrc$Ergo$Both_2 /*minEnumVariant*/ }
+>
 
 /**
  * An ergonomic, though less strictly-safe form of DgDataDetails
@@ -9561,11 +9884,12 @@ declare type Ergodgd_DataSrc_2 = IntersectedEnum<{
  * @public
  */
 declare type ErgoDgDataDetails = {
-    dataSrc: Ergodgd_DataSrc;
-    id: number[];
-    type: string;
-    mph: MintingPolicyHash;
-};
+    dataSrc: /*minStructField*/ Ergodgd_DataSrc
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    mph: /*minStructField*/ MintingPolicyHash
+    activity: /*minStructField*/ ErgoAbstractDelegateActivitiesEnum | undefined
+}
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9574,7 +9898,7 @@ declare type ErgoDgDataDetails = {
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoDredNodeState = IntersectedEnum<DredNodeState>;
+declare type ErgoDredNodeState = IntersectedEnum<DredNodeState/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9592,7 +9916,7 @@ declare type ErgoDredNodeState_2 = IntersectedEnum<DredNodeState_2/*like canon e
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoFeeSource = IntersectedEnum<FeeSource>;
+declare type ErgoFeeSource = IntersectedEnum<FeeSource/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9601,17 +9925,14 @@ declare type ErgoFeeSource = IntersectedEnum<FeeSource>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoManifestActivity = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$Ergo$updatingEntry;
-} | {
-    addingEntry: ManifestActivity$Ergo$addingEntry;
-} | {
-    forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken;
-} | {
-    burningThreadToken: ManifestActivity$Ergo$burningThreadToken;
-}>;
+declare type ErgoManifestActivity = IntersectedEnum<
+| { retiringEntry: /* implied wrapper { key: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { updatingEntry: ManifestActivity$Ergo$updatingEntry /*minEnumVariant*/ }
+| { addingEntry: ManifestActivity$Ergo$addingEntry /*minEnumVariant*/ }
+| { forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken /*minEnumVariant*/ }
+| { burningThreadToken: ManifestActivity$Ergo$burningThreadToken /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9620,17 +9941,14 @@ declare type ErgoManifestActivity = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoManifestActivity_2 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$Ergo$updatingEntry_2;
-} | {
-    addingEntry: ManifestActivity$Ergo$addingEntry_2;
-} | {
-    forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_2;
-} | {
-    burningThreadToken: ManifestActivity$Ergo$burningThreadToken_2;
-}>;
+declare type ErgoManifestActivity_2 = IntersectedEnum<
+| { retiringEntry: /* implied wrapper { key: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { updatingEntry: ManifestActivity$Ergo$updatingEntry_2 /*minEnumVariant*/ }
+| { addingEntry: ManifestActivity$Ergo$addingEntry_2 /*minEnumVariant*/ }
+| { forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_2 /*minEnumVariant*/ }
+| { burningThreadToken: ManifestActivity$Ergo$burningThreadToken_2 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9639,17 +9957,14 @@ declare type ErgoManifestActivity_2 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoManifestActivity_3 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$Ergo$updatingEntry_3;
-} | {
-    addingEntry: ManifestActivity$Ergo$addingEntry_3;
-} | {
-    forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_3;
-} | {
-    burningThreadToken: ManifestActivity$Ergo$burningThreadToken_3;
-}>;
+declare type ErgoManifestActivity_3 = IntersectedEnum<
+| { retiringEntry: /* implied wrapper { key: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { updatingEntry: ManifestActivity$Ergo$updatingEntry_3 /*minEnumVariant*/ }
+| { addingEntry: ManifestActivity$Ergo$addingEntry_3 /*minEnumVariant*/ }
+| { forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_3 /*minEnumVariant*/ }
+| { burningThreadToken: ManifestActivity$Ergo$burningThreadToken_3 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9658,17 +9973,14 @@ declare type ErgoManifestActivity_3 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoManifestActivity_4 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$Ergo$updatingEntry_4;
-} | {
-    addingEntry: ManifestActivity$Ergo$addingEntry_4;
-} | {
-    forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_4;
-} | {
-    burningThreadToken: ManifestActivity$Ergo$burningThreadToken_4;
-}>;
+declare type ErgoManifestActivity_4 = IntersectedEnum<
+| { retiringEntry: /* implied wrapper { key: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { updatingEntry: ManifestActivity$Ergo$updatingEntry_4 /*minEnumVariant*/ }
+| { addingEntry: ManifestActivity$Ergo$addingEntry_4 /*minEnumVariant*/ }
+| { forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_4 /*minEnumVariant*/ }
+| { burningThreadToken: ManifestActivity$Ergo$burningThreadToken_4 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9677,17 +9989,14 @@ declare type ErgoManifestActivity_4 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoManifestActivity_5 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$Ergo$updatingEntry_5;
-} | {
-    addingEntry: ManifestActivity$Ergo$addingEntry_5;
-} | {
-    forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_5;
-} | {
-    burningThreadToken: ManifestActivity$Ergo$burningThreadToken_5;
-}>;
+declare type ErgoManifestActivity_5 = IntersectedEnum<
+| { retiringEntry: /* implied wrapper { key: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { updatingEntry: ManifestActivity$Ergo$updatingEntry_5 /*minEnumVariant*/ }
+| { addingEntry: ManifestActivity$Ergo$addingEntry_5 /*minEnumVariant*/ }
+| { forkingThreadToken: ManifestActivity$Ergo$forkingThreadToken_5 /*minEnumVariant*/ }
+| { burningThreadToken: ManifestActivity$Ergo$burningThreadToken_5 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9696,17 +10005,13 @@ declare type ErgoManifestActivity_5 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoManifestEntryType = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy;
-} | {
-    DelegateThreads: ManifestEntryType$Ergo$DelegateThreads;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
+declare type ErgoManifestEntryType = IntersectedEnum<
+| { NamedTokenRef: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy /*minEnumVariant*/ }
+| { DelegateThreads: ManifestEntryType$Ergo$DelegateThreads /*minEnumVariant*/ }
+| { MerkleMembership: tagOnly /*minEnumVariant*/ }
+| { MerkleStateRoot: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9715,17 +10020,13 @@ declare type ErgoManifestEntryType = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoManifestEntryType_2 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_2;
-} | {
-    DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_2;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
+declare type ErgoManifestEntryType_2 = IntersectedEnum<
+| { NamedTokenRef: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_2 /*minEnumVariant*/ }
+| { DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_2 /*minEnumVariant*/ }
+| { MerkleMembership: tagOnly /*minEnumVariant*/ }
+| { MerkleStateRoot: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9734,17 +10035,13 @@ declare type ErgoManifestEntryType_2 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoManifestEntryType_3 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_3;
-} | {
-    DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_3;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
+declare type ErgoManifestEntryType_3 = IntersectedEnum<
+| { NamedTokenRef: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_3 /*minEnumVariant*/ }
+| { DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_3 /*minEnumVariant*/ }
+| { MerkleMembership: tagOnly /*minEnumVariant*/ }
+| { MerkleStateRoot: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9753,17 +10050,13 @@ declare type ErgoManifestEntryType_3 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoManifestEntryType_4 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_4;
-} | {
-    DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_4;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
+declare type ErgoManifestEntryType_4 = IntersectedEnum<
+| { NamedTokenRef: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_4 /*minEnumVariant*/ }
+| { DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_4 /*minEnumVariant*/ }
+| { MerkleMembership: tagOnly /*minEnumVariant*/ }
+| { MerkleStateRoot: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9772,17 +10065,13 @@ declare type ErgoManifestEntryType_4 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoManifestEntryType_5 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_5;
-} | {
-    DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_5;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
+declare type ErgoManifestEntryType_5 = IntersectedEnum<
+| { NamedTokenRef: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: ManifestEntryType$Ergo$DgDataPolicy_5 /*minEnumVariant*/ }
+| { DelegateThreads: ManifestEntryType$Ergo$DelegateThreads_5 /*minEnumVariant*/ }
+| { MerkleMembership: tagOnly /*minEnumVariant*/ }
+| { MerkleStateRoot: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9791,7 +10080,7 @@ declare type ErgoManifestEntryType_5 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoMintingActivity = IntersectedEnum<MintingActivity>;
+declare type ErgoMintingActivity = IntersectedEnum<MintingActivity/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9800,7 +10089,7 @@ declare type ErgoMintingActivity = IntersectedEnum<MintingActivity>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoMintingActivity_2 = IntersectedEnum<MintingActivity_2>;
+declare type ErgoMintingActivity_2 = IntersectedEnum<MintingActivity_2/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9809,7 +10098,7 @@ declare type ErgoMintingActivity_2 = IntersectedEnum<MintingActivity_2>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoMintingActivity_3 = IntersectedEnum<MintingActivity_3>;
+declare type ErgoMintingActivity_3 = IntersectedEnum<MintingActivity_3/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9818,7 +10107,18 @@ declare type ErgoMintingActivity_3 = IntersectedEnum<MintingActivity_3>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoMintingActivity_4 = IntersectedEnum<MintingActivity_4>;
+declare type ErgoMintingActivity_4 = IntersectedEnum<MintingActivity_4/*like canon enum*/>
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoNbhDetails = IntersectedEnum<
+| { NbhDetailsV1: NbhDetails$Ergo$NbhDetailsV1 /*minEnumVariant*/ }
+>
 
 /**
  * An ergonomic, though less strictly-safe form of NeighborhoodData
@@ -9830,14 +10130,11 @@ declare type ErgoMintingActivity_4 = IntersectedEnum<MintingActivity_4>;
  * @public
  */
 export declare type ErgoNeighborhoodData = {
-    id: number[];
-    type: string;
-    memberToken: string;
-    state: ErgoNeighborhoodState;
-    appInfo: ErgoAppInfo;
-    opsInfo: ErgoNodeOpsInfo;
-    updateInfo: /*minStructField*/ ErgoUpdateInfo | undefined;
-};
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    memberToken: /*minStructField*/ string
+    details: /*minStructField*/ ErgoNbhDetails
+}
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9846,9 +10143,10 @@ export declare type ErgoNeighborhoodData = {
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoNeighborhoodSettings = IntersectedEnum<{
-    V1: ErgoNeighborhoodSettingsV1;
-}>;
+declare type ErgoNeighborhoodSettings = IntersectedEnum<
+| { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+    			ErgoNeighborhoodSettingsV1    /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9857,9 +10155,10 @@ declare type ErgoNeighborhoodSettings = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoNeighborhoodSettings_2 = IntersectedEnum<{
-    V1: ErgoNeighborhoodSettingsV1_2;
-}>;
+declare type ErgoNeighborhoodSettings_2 = IntersectedEnum<
+| { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+    			ErgoNeighborhoodSettingsV1_2    /*minEnumVariant*/ }
+>
 
 /**
  * An ergonomic, though less strictly-safe form of NeighborhoodSettingsV1
@@ -9870,7 +10169,7 @@ declare type ErgoNeighborhoodSettings_2 = IntersectedEnum<{
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoNeighborhoodSettingsV1 = NeighborhoodSettingsV1;
+declare type ErgoNeighborhoodSettingsV1 = NeighborhoodSettingsV1
 
 /**
  * An ergonomic, though less strictly-safe form of NeighborhoodSettingsV1
@@ -9881,7 +10180,7 @@ declare type ErgoNeighborhoodSettingsV1 = NeighborhoodSettingsV1;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoNeighborhoodSettingsV1_2 = NeighborhoodSettingsV1_2;
+declare type ErgoNeighborhoodSettingsV1_2 = NeighborhoodSettingsV1_2
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9890,29 +10189,29 @@ declare type ErgoNeighborhoodSettingsV1_2 = NeighborhoodSettingsV1_2;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoNeighborhoodState = IntersectedEnum<NeighborhoodState>;
+declare type ErgoNeighborhoodState = IntersectedEnum<NeighborhoodState/*like canon enum*/>
 
 /**
- * An ergonomic, though less strictly-safe form of NodeDetails
+ * An ergonomic, though less strictly-safe form of NodeDetailsV1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeDetailsLike type,
+ * conversion to on-chain use.  For creating such data, use the NodeDetailsV1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoNodeDetails = NodeDetails;
+declare type ErgoNodeDetailsV1 = NodeDetailsV1
 
 /**
- * An ergonomic, though less strictly-safe form of NodeDetails
+ * An ergonomic, though less strictly-safe form of NodeDetailsV1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeDetailsLike type,
+ * conversion to on-chain use.  For creating such data, use the NodeDetailsV1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoNodeDetails_2 = NodeDetails_2
+declare type ErgoNodeDetailsV1_2 = NodeDetailsV1_2
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9921,9 +10220,10 @@ declare type ErgoNodeDetails_2 = NodeDetails_2
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoNodeOperatorSettings = IntersectedEnum<{
-    V1: ErgoNodeOperatorSettingsV1;
-}>;
+declare type ErgoNodeOperatorSettings = IntersectedEnum<
+| { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+    			ErgoNodeOperatorSettingsV1    /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -9932,9 +10232,10 @@ declare type ErgoNodeOperatorSettings = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoNodeOperatorSettings_2 = IntersectedEnum<{
-    V1: ErgoNodeOperatorSettingsV1_2;
-}>;
+declare type ErgoNodeOperatorSettings_2 = IntersectedEnum<
+| { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+    			ErgoNodeOperatorSettingsV1_2    /*minEnumVariant*/ }
+>
 
 /**
  * An ergonomic, though less strictly-safe form of NodeOperatorSettingsV1
@@ -9945,7 +10246,7 @@ declare type ErgoNodeOperatorSettings_2 = IntersectedEnum<{
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoNodeOperatorSettingsV1 = NodeOperatorSettingsV1;
+declare type ErgoNodeOperatorSettingsV1 = NodeOperatorSettingsV1
 
 /**
  * An ergonomic, though less strictly-safe form of NodeOperatorSettingsV1
@@ -9956,18 +10257,18 @@ declare type ErgoNodeOperatorSettingsV1 = NodeOperatorSettingsV1;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoNodeOperatorSettingsV1_2 = NodeOperatorSettingsV1_2;
+declare type ErgoNodeOperatorSettingsV1_2 = NodeOperatorSettingsV1_2
 
 /**
- * An ergonomic, though less strictly-safe form of NodeOpsInfo
+ * An ergonomic, though less strictly-safe form of NodeOpsInfoV1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NodeOpsInfoLike type,
+ * conversion to on-chain use.  For creating such data, use the NodeOpsInfoV1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoNodeOpsInfo = NodeOpsInfo;
+declare type ErgoNodeOpsInfoV1 = NodeOpsInfoV1
 
 /**
  * An ergonomic, though less strictly-safe form of NodeRegistrationData
@@ -9979,12 +10280,12 @@ declare type ErgoNodeOpsInfo = NodeOpsInfo;
  * @public
  */
 export declare type ErgoNodeRegistrationData = {
-    id: number[];
-    type: string;
-    memberToken: string;
-    state: ErgoDredNodeState;
-    nodeDetails: ErgoNodeDetails;
-};
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    memberToken: /*minStructField*/ string
+    state: /*minStructField*/ ErgoDredNodeState
+    nodeDetails: /*minStructField*/ ErgoNodeDetailsV1
+}
 
 /**
  * An ergonomic, though less strictly-safe form of NodeRegistrationData
@@ -10000,7 +10301,7 @@ declare type ErgoNodeRegistrationData_2 = {
     type: /*minStructField*/ string
     memberToken: /*minStructField*/ string
     state: /*minStructField*/ ErgoDredNodeState_2
-    nodeDetails: /*minStructField*/ ErgoNodeDetails_2
+    nodeDetails: /*minStructField*/ ErgoNodeDetailsV1_2
 }
 
 /**
@@ -10010,11 +10311,7 @@ declare type ErgoNodeRegistrationData_2 = {
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoPendingCharterChange = IntersectedEnum<{
-    delegateChange: ErgoPendingDelegateChange;
-} | {
-    otherManifestChange: PendingCharterChange$Ergo$otherManifestChange;
-}>;
+declare type ErgoOtherActivity = IntersectedEnum<OtherActivity/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10023,11 +10320,7 @@ declare type ErgoPendingCharterChange = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoPendingCharterChange_2 = IntersectedEnum<{
-    delegateChange: ErgoPendingDelegateChange_2;
-} | {
-    otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_2;
-}>;
+declare type ErgoOtherActivity_2 = IntersectedEnum<OtherActivity_2/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10036,11 +10329,7 @@ declare type ErgoPendingCharterChange_2 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoPendingCharterChange_3 = IntersectedEnum<{
-    delegateChange: ErgoPendingDelegateChange_3;
-} | {
-    otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_3;
-}>;
+declare type ErgoOtherActivity_3 = IntersectedEnum<OtherActivity_3/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10049,11 +10338,11 @@ declare type ErgoPendingCharterChange_3 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoPendingCharterChange_4 = IntersectedEnum<{
-    delegateChange: ErgoPendingDelegateChange_4;
-} | {
-    otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_4;
-}>;
+declare type ErgoPendingCharterChange = IntersectedEnum<
+| { delegateChange: /* implied wrapper { change: ... } for singleVariantField */ 
+    			ErgoPendingDelegateChange    /*minEnumVariant*/ }
+| { otherManifestChange: PendingCharterChange$Ergo$otherManifestChange /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10062,11 +10351,11 @@ declare type ErgoPendingCharterChange_4 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoPendingCharterChange_5 = IntersectedEnum<{
-    delegateChange: ErgoPendingDelegateChange_5;
-} | {
-    otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_5;
-}>;
+declare type ErgoPendingCharterChange_2 = IntersectedEnum<
+| { delegateChange: /* implied wrapper { change: ... } for singleVariantField */ 
+    			ErgoPendingDelegateChange_2    /*minEnumVariant*/ }
+| { otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_2 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10075,13 +10364,11 @@ declare type ErgoPendingCharterChange_5 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoPendingDelegateAction = IntersectedEnum<{
-    Add: PendingDelegateAction$Ergo$Add;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Ergo$Replace;
-}>;
+declare type ErgoPendingCharterChange_3 = IntersectedEnum<
+| { delegateChange: /* implied wrapper { change: ... } for singleVariantField */ 
+    			ErgoPendingDelegateChange_3    /*minEnumVariant*/ }
+| { otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_3 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10090,13 +10377,11 @@ declare type ErgoPendingDelegateAction = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoPendingDelegateAction_2 = IntersectedEnum<{
-    Add: PendingDelegateAction$Ergo$Add_2;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Ergo$Replace_2;
-}>;
+declare type ErgoPendingCharterChange_4 = IntersectedEnum<
+| { delegateChange: /* implied wrapper { change: ... } for singleVariantField */ 
+    			ErgoPendingDelegateChange_4    /*minEnumVariant*/ }
+| { otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_4 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10105,13 +10390,11 @@ declare type ErgoPendingDelegateAction_2 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoPendingDelegateAction_3 = IntersectedEnum<{
-    Add: PendingDelegateAction$Ergo$Add_3;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Ergo$Replace_3;
-}>;
+declare type ErgoPendingCharterChange_5 = IntersectedEnum<
+| { delegateChange: /* implied wrapper { change: ... } for singleVariantField */ 
+    			ErgoPendingDelegateChange_5    /*minEnumVariant*/ }
+| { otherManifestChange: PendingCharterChange$Ergo$otherManifestChange_5 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10120,13 +10403,11 @@ declare type ErgoPendingDelegateAction_3 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoPendingDelegateAction_4 = IntersectedEnum<{
-    Add: PendingDelegateAction$Ergo$Add_4;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Ergo$Replace_4;
-}>;
+declare type ErgoPendingDelegateAction = IntersectedEnum<
+| { Add: PendingDelegateAction$Ergo$Add /*minEnumVariant*/ }
+| { Remove: tagOnly /*minEnumVariant*/ }
+| { Replace: PendingDelegateAction$Ergo$Replace /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10135,13 +10416,50 @@ declare type ErgoPendingDelegateAction_4 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoPendingDelegateAction_5 = IntersectedEnum<{
-    Add: PendingDelegateAction$Ergo$Add_5;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Ergo$Replace_5;
-}>;
+declare type ErgoPendingDelegateAction_2 = IntersectedEnum<
+| { Add: PendingDelegateAction$Ergo$Add_2 /*minEnumVariant*/ }
+| { Remove: tagOnly /*minEnumVariant*/ }
+| { Replace: PendingDelegateAction$Ergo$Replace_2 /*minEnumVariant*/ }
+>
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoPendingDelegateAction_3 = IntersectedEnum<
+| { Add: PendingDelegateAction$Ergo$Add_3 /*minEnumVariant*/ }
+| { Remove: tagOnly /*minEnumVariant*/ }
+| { Replace: PendingDelegateAction$Ergo$Replace_3 /*minEnumVariant*/ }
+>
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoPendingDelegateAction_4 = IntersectedEnum<
+| { Add: PendingDelegateAction$Ergo$Add_4 /*minEnumVariant*/ }
+| { Remove: tagOnly /*minEnumVariant*/ }
+| { Replace: PendingDelegateAction$Ergo$Replace_4 /*minEnumVariant*/ }
+>
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+declare type ErgoPendingDelegateAction_5 = IntersectedEnum<
+| { Add: PendingDelegateAction$Ergo$Add_5 /*minEnumVariant*/ }
+| { Remove: tagOnly /*minEnumVariant*/ }
+| { Replace: PendingDelegateAction$Ergo$Replace_5 /*minEnumVariant*/ }
+>
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateChange
@@ -10153,10 +10471,10 @@ declare type ErgoPendingDelegateAction_5 = IntersectedEnum<{
  * @public
  */
 declare type ErgoPendingDelegateChange = {
-    action: ErgoPendingDelegateAction;
-    role: ErgoDelegateRole;
-    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink | undefined;
-};
+    action: /*minStructField*/ ErgoPendingDelegateAction
+    role: /*minStructField*/ ErgoDelegateRole
+    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink | undefined
+}
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateChange
@@ -10168,10 +10486,10 @@ declare type ErgoPendingDelegateChange = {
  * @public
  */
 declare type ErgoPendingDelegateChange_2 = {
-    action: ErgoPendingDelegateAction_2;
-    role: ErgoDelegateRole_2;
-    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_2 | undefined;
-};
+    action: /*minStructField*/ ErgoPendingDelegateAction_2
+    role: /*minStructField*/ ErgoDelegateRole_2
+    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_2 | undefined
+}
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateChange
@@ -10183,10 +10501,10 @@ declare type ErgoPendingDelegateChange_2 = {
  * @public
  */
 declare type ErgoPendingDelegateChange_3 = {
-    action: ErgoPendingDelegateAction_3;
-    role: ErgoDelegateRole_3;
-    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_3 | undefined;
-};
+    action: /*minStructField*/ ErgoPendingDelegateAction_3
+    role: /*minStructField*/ ErgoDelegateRole_3
+    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_3 | undefined
+}
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateChange
@@ -10198,10 +10516,10 @@ declare type ErgoPendingDelegateChange_3 = {
  * @public
  */
 declare type ErgoPendingDelegateChange_4 = {
-    action: ErgoPendingDelegateAction_4;
-    role: ErgoDelegateRole_4;
-    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_4 | undefined;
-};
+    action: /*minStructField*/ ErgoPendingDelegateAction_4
+    role: /*minStructField*/ ErgoDelegateRole_4
+    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_4 | undefined
+}
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateChange
@@ -10213,10 +10531,10 @@ declare type ErgoPendingDelegateChange_4 = {
  * @public
  */
 declare type ErgoPendingDelegateChange_5 = {
-    action: ErgoPendingDelegateAction_5;
-    role: ErgoDelegateRole_5;
-    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_5 | undefined;
-};
+    action: /*minStructField*/ ErgoPendingDelegateAction_5
+    role: /*minStructField*/ ErgoDelegateRole_5
+    dgtLink: /*minStructField*/ ErgoRelativeDelegateLink_5 | undefined
+}
 
 /**
  * An ergonomic, though less strictly-safe form of ProtocolSettings
@@ -10228,11 +10546,11 @@ declare type ErgoPendingDelegateChange_5 = {
  * @public
  */
 export declare type ErgoProtocolSettings = {
-    id: number[];
-    type: string;
-    nodeOpSettings: ErgoNodeOperatorSettings;
-    nbhSettings: ErgoNeighborhoodSettings;
-};
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    nodeOpSettings: /*minStructField*/ ErgoNodeOperatorSettings
+    nbhSettings: /*minStructField*/ ErgoNeighborhoodSettings
+}
 
 /**
  * An ergonomic, though less strictly-safe form of RelativeDelegateLink
@@ -10243,7 +10561,7 @@ export declare type ErgoProtocolSettings = {
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoRelativeDelegateLink = RelativeDelegateLink;
+declare type ErgoRelativeDelegateLink = RelativeDelegateLink
 
 /**
  * An ergonomic, though less strictly-safe form of RelativeDelegateLink
@@ -10254,7 +10572,7 @@ declare type ErgoRelativeDelegateLink = RelativeDelegateLink;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoRelativeDelegateLink_2 = RelativeDelegateLink_2;
+declare type ErgoRelativeDelegateLink_2 = RelativeDelegateLink_2
 
 /**
  * An ergonomic, though less strictly-safe form of RelativeDelegateLink
@@ -10265,7 +10583,7 @@ declare type ErgoRelativeDelegateLink_2 = RelativeDelegateLink_2;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoRelativeDelegateLink_3 = RelativeDelegateLink_3;
+declare type ErgoRelativeDelegateLink_3 = RelativeDelegateLink_3
 
 /**
  * An ergonomic, though less strictly-safe form of RelativeDelegateLink
@@ -10276,7 +10594,7 @@ declare type ErgoRelativeDelegateLink_3 = RelativeDelegateLink_3;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoRelativeDelegateLink_4 = RelativeDelegateLink_4;
+declare type ErgoRelativeDelegateLink_4 = RelativeDelegateLink_4
 
 /**
  * An ergonomic, though less strictly-safe form of RelativeDelegateLink
@@ -10287,7 +10605,7 @@ declare type ErgoRelativeDelegateLink_4 = RelativeDelegateLink_4;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoRelativeDelegateLink_5 = RelativeDelegateLink_5;
+declare type ErgoRelativeDelegateLink_5 = RelativeDelegateLink_5
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10296,11 +10614,10 @@ declare type ErgoRelativeDelegateLink_5 = RelativeDelegateLink_5;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoRevenueModel = IntersectedEnum<{
-    TransactionBased: RevenueModel$Ergo$TransactionBased;
-} | {
-    Subscription: Array<ErgoSubscriptionFeeFrequency>;
-}>;
+declare type ErgoRevenueModel = IntersectedEnum<
+| { TransactionBasedV1: RevenueModel$Ergo$TransactionBasedV1 /*minEnumVariant*/ }
+| { SubscriptionV1: RevenueModel$Ergo$SubscriptionV1 /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10309,7 +10626,7 @@ declare type ErgoRevenueModel = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoSpendingActivity = IntersectedEnum<SpendingActivity>;
+declare type ErgoSpendingActivity = IntersectedEnum<SpendingActivity/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10318,17 +10635,17 @@ declare type ErgoSpendingActivity = IntersectedEnum<SpendingActivity>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoSpendingActivity_2 = IntersectedEnum<{
-    UpdatingRecord: number[];
-} | {
-    ValidatingNode: SpendingActivity$Ergo$ValidatingNode;
-} | {
-    ActivatingNode: number[];
-} | {
-    ReportingInactiveNode: number[];
-} | {
-    RefutingInactivity: number[];
-}>;
+declare type ErgoSpendingActivity_2 = IntersectedEnum<
+| { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+| { ValidatingNode: SpendingActivity$Ergo$ValidatingNode /*minEnumVariant*/ }
+| { ActivatingNode: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+| { ReportingInactiveNode: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+| { RefutingInactivity: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10337,7 +10654,7 @@ declare type ErgoSpendingActivity_2 = IntersectedEnum<{
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoSpendingActivity_3 = IntersectedEnum<SpendingActivity_3>;
+declare type ErgoSpendingActivity_3 = IntersectedEnum<SpendingActivity_3/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10346,7 +10663,7 @@ declare type ErgoSpendingActivity_3 = IntersectedEnum<SpendingActivity_3>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoSpendingActivity_4 = IntersectedEnum<SpendingActivity_4>;
+declare type ErgoSpendingActivity_4 = IntersectedEnum<SpendingActivity_4/*like canon enum*/>
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -10355,34 +10672,33 @@ declare type ErgoSpendingActivity_4 = IntersectedEnum<SpendingActivity_4>;
  * Nested enums are also merged in this ergonomic way.
  * @public
  */
-declare type ErgoSubscriptionFeeFrequency = IntersectedEnum<SubscriptionFeeFrequency>;
+declare type ErgoSubscriptionFeeFrequency = IntersectedEnum<SubscriptionFeeFrequency/*like canon enum*/>
 
 /**
- * An ergonomic, though less strictly-safe form of UpdateInfo
+ * An ergonomic, though less strictly-safe form of UpdateInfoV1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the UpdateInfoLike type,
+ * conversion to on-chain use.  For creating such data, use the UpdateInfoV1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ErgoUpdateInfo = UpdateInfo;
+declare type ErgoUpdateInfoV1 = UpdateInfoV1
 
 /**
  * FeeSource enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **2 variant(s)** of the FeeSource enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `FeeSourceHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type FeeSource = {
-    EndUser: tagOnly;
-} | {
-    SponsorContract: ScriptHash;
-};
+declare type FeeSource = 
+| { EndUser: tagOnly /*minEnumVariant*/ }
+| { SponsorContract: /* implied wrapper { sponsorContract: ... } for singleVariantField */ 
+    			ScriptHash    /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***FeeSource*** enum type.
@@ -10399,7 +10715,7 @@ declare class FeeSourceHelper extends EnumBridge<JustAnEnum> {
     }>>;
     /**
      * (property getter): UplcData for ***"NeighborhoodData::FeeSource.EndUser"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4160***
      */
     get EndUser(): UplcData;
     /**
@@ -10410,23 +10726,23 @@ declare class FeeSourceHelper extends EnumBridge<JustAnEnum> {
 
 /**
  * FeeSource enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **2 variant(s)** of the FeeSource enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `FeeSourceHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type FeeSourceLike = IntersectedEnum<{
-    EndUser: tagOnly;
-} | {
-    SponsorContract: /* implied wrapper { sponsorContract: ... } for singleVariantField */ ScriptHash | string | number[];
-}>;
+declare type FeeSourceLike = IntersectedEnum<
+| { EndUser: tagOnly /*minEnumVariant*/ }
+| { SponsorContract: /* implied wrapper { sponsorContract: ... } for singleVariantField */ 
+    			ScriptHash | string | number[]    /*minEnumVariant*/ }
+>
 
 export { hexToBytes }
 
@@ -10447,8 +10763,8 @@ export { makeSimpleWallet }
  * @public
  */
 declare interface ManifestActivity$addingEntry {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -10460,8 +10776,8 @@ declare interface ManifestActivity$addingEntry {
  * @public
  */
 declare interface ManifestActivity$addingEntry_2 {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -10473,8 +10789,8 @@ declare interface ManifestActivity$addingEntry_2 {
  * @public
  */
 declare interface ManifestActivity$addingEntry_3 {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -10486,8 +10802,8 @@ declare interface ManifestActivity$addingEntry_3 {
  * @public
  */
 declare interface ManifestActivity$addingEntry_4 {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -10499,8 +10815,8 @@ declare interface ManifestActivity$addingEntry_4 {
  * @public
  */
 declare interface ManifestActivity$addingEntry_5 {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -10510,8 +10826,8 @@ declare interface ManifestActivity$addingEntry_5 {
  * @public
  */
 declare interface ManifestActivity$addingEntryLike {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -10521,8 +10837,8 @@ declare interface ManifestActivity$addingEntryLike {
  * @public
  */
 declare interface ManifestActivity$addingEntryLike_2 {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -10532,8 +10848,8 @@ declare interface ManifestActivity$addingEntryLike_2 {
  * @public
  */
 declare interface ManifestActivity$addingEntryLike_3 {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -10543,8 +10859,8 @@ declare interface ManifestActivity$addingEntryLike_3 {
  * @public
  */
 declare interface ManifestActivity$addingEntryLike_4 {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -10556,8 +10872,8 @@ declare interface ManifestActivity$addingEntryLike_4 {
  * @public
  */
 declare interface ManifestActivity$burningThreadToken {
-    key: string;
-    burnedThreadCount: bigint;
+    key: string  /*minVariantField*/ ,
+    burnedThreadCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -10569,8 +10885,8 @@ declare interface ManifestActivity$burningThreadToken {
  * @public
  */
 declare interface ManifestActivity$burningThreadToken_2 {
-    key: string;
-    burnedThreadCount: bigint;
+    key: string  /*minVariantField*/ ,
+    burnedThreadCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -10582,8 +10898,8 @@ declare interface ManifestActivity$burningThreadToken_2 {
  * @public
  */
 declare interface ManifestActivity$burningThreadToken_3 {
-    key: string;
-    burnedThreadCount: bigint;
+    key: string  /*minVariantField*/ ,
+    burnedThreadCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -10595,8 +10911,8 @@ declare interface ManifestActivity$burningThreadToken_3 {
  * @public
  */
 declare interface ManifestActivity$burningThreadToken_4 {
-    key: string;
-    burnedThreadCount: bigint;
+    key: string  /*minVariantField*/ ,
+    burnedThreadCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -10608,8 +10924,8 @@ declare interface ManifestActivity$burningThreadToken_4 {
  * @public
  */
 declare interface ManifestActivity$burningThreadToken_5 {
-    key: string;
-    burnedThreadCount: bigint;
+    key: string  /*minVariantField*/ ,
+    burnedThreadCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -10619,8 +10935,8 @@ declare interface ManifestActivity$burningThreadToken_5 {
  * @public
  */
 declare interface ManifestActivity$burningThreadTokenLike {
-    key: string;
-    burnedThreadCount: IntLike;
+    key: string  /*minVariantField*/ ,
+    burnedThreadCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -10630,8 +10946,8 @@ declare interface ManifestActivity$burningThreadTokenLike {
  * @public
  */
 declare interface ManifestActivity$burningThreadTokenLike_2 {
-    key: string;
-    burnedThreadCount: IntLike;
+    key: string  /*minVariantField*/ ,
+    burnedThreadCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -10641,8 +10957,8 @@ declare interface ManifestActivity$burningThreadTokenLike_2 {
  * @public
  */
 declare interface ManifestActivity$burningThreadTokenLike_3 {
-    key: string;
-    burnedThreadCount: IntLike;
+    key: string  /*minVariantField*/ ,
+    burnedThreadCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -10652,8 +10968,8 @@ declare interface ManifestActivity$burningThreadTokenLike_3 {
  * @public
  */
 declare interface ManifestActivity$burningThreadTokenLike_4 {
-    key: string;
-    burnedThreadCount: IntLike;
+    key: string  /*minVariantField*/ ,
+    burnedThreadCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -10665,7 +10981,7 @@ declare interface ManifestActivity$burningThreadTokenLike_4 {
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$addingEntry = ManifestActivity$addingEntry;
+declare type ManifestActivity$Ergo$addingEntry = ManifestActivity$addingEntry
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$addingEntry
@@ -10676,7 +10992,7 @@ declare type ManifestActivity$Ergo$addingEntry = ManifestActivity$addingEntry;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$addingEntry_2 = ManifestActivity$addingEntry_2;
+declare type ManifestActivity$Ergo$addingEntry_2 = ManifestActivity$addingEntry_2
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$addingEntry
@@ -10687,7 +11003,7 @@ declare type ManifestActivity$Ergo$addingEntry_2 = ManifestActivity$addingEntry_
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$addingEntry_3 = ManifestActivity$addingEntry_3;
+declare type ManifestActivity$Ergo$addingEntry_3 = ManifestActivity$addingEntry_3
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$addingEntry
@@ -10698,7 +11014,7 @@ declare type ManifestActivity$Ergo$addingEntry_3 = ManifestActivity$addingEntry_
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$addingEntry_4 = ManifestActivity$addingEntry_4;
+declare type ManifestActivity$Ergo$addingEntry_4 = ManifestActivity$addingEntry_4
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$addingEntry
@@ -10709,7 +11025,7 @@ declare type ManifestActivity$Ergo$addingEntry_4 = ManifestActivity$addingEntry_
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$addingEntry_5 = ManifestActivity$addingEntry_5;
+declare type ManifestActivity$Ergo$addingEntry_5 = ManifestActivity$addingEntry_5
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
@@ -10720,7 +11036,7 @@ declare type ManifestActivity$Ergo$addingEntry_5 = ManifestActivity$addingEntry_
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$burningThreadToken = ManifestActivity$burningThreadToken;
+declare type ManifestActivity$Ergo$burningThreadToken = ManifestActivity$burningThreadToken
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
@@ -10731,7 +11047,7 @@ declare type ManifestActivity$Ergo$burningThreadToken = ManifestActivity$burning
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$burningThreadToken_2 = ManifestActivity$burningThreadToken_2;
+declare type ManifestActivity$Ergo$burningThreadToken_2 = ManifestActivity$burningThreadToken_2
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
@@ -10742,7 +11058,7 @@ declare type ManifestActivity$Ergo$burningThreadToken_2 = ManifestActivity$burni
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$burningThreadToken_3 = ManifestActivity$burningThreadToken_3;
+declare type ManifestActivity$Ergo$burningThreadToken_3 = ManifestActivity$burningThreadToken_3
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
@@ -10753,7 +11069,7 @@ declare type ManifestActivity$Ergo$burningThreadToken_3 = ManifestActivity$burni
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$burningThreadToken_4 = ManifestActivity$burningThreadToken_4;
+declare type ManifestActivity$Ergo$burningThreadToken_4 = ManifestActivity$burningThreadToken_4
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$burningThreadToken
@@ -10764,7 +11080,7 @@ declare type ManifestActivity$Ergo$burningThreadToken_4 = ManifestActivity$burni
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$burningThreadToken_5 = ManifestActivity$burningThreadToken_5;
+declare type ManifestActivity$Ergo$burningThreadToken_5 = ManifestActivity$burningThreadToken_5
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
@@ -10775,7 +11091,7 @@ declare type ManifestActivity$Ergo$burningThreadToken_5 = ManifestActivity$burni
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$forkingThreadToken = ManifestActivity$forkingThreadToken;
+declare type ManifestActivity$Ergo$forkingThreadToken = ManifestActivity$forkingThreadToken
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
@@ -10786,7 +11102,7 @@ declare type ManifestActivity$Ergo$forkingThreadToken = ManifestActivity$forking
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$forkingThreadToken_2 = ManifestActivity$forkingThreadToken_2;
+declare type ManifestActivity$Ergo$forkingThreadToken_2 = ManifestActivity$forkingThreadToken_2
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
@@ -10797,7 +11113,7 @@ declare type ManifestActivity$Ergo$forkingThreadToken_2 = ManifestActivity$forki
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$forkingThreadToken_3 = ManifestActivity$forkingThreadToken_3;
+declare type ManifestActivity$Ergo$forkingThreadToken_3 = ManifestActivity$forkingThreadToken_3
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
@@ -10808,7 +11124,7 @@ declare type ManifestActivity$Ergo$forkingThreadToken_3 = ManifestActivity$forki
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$forkingThreadToken_4 = ManifestActivity$forkingThreadToken_4;
+declare type ManifestActivity$Ergo$forkingThreadToken_4 = ManifestActivity$forkingThreadToken_4
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$forkingThreadToken
@@ -10819,7 +11135,7 @@ declare type ManifestActivity$Ergo$forkingThreadToken_4 = ManifestActivity$forki
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$forkingThreadToken_5 = ManifestActivity$forkingThreadToken_5;
+declare type ManifestActivity$Ergo$forkingThreadToken_5 = ManifestActivity$forkingThreadToken_5
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
@@ -10830,7 +11146,7 @@ declare type ManifestActivity$Ergo$forkingThreadToken_5 = ManifestActivity$forki
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$updatingEntry = ManifestActivity$updatingEntry;
+declare type ManifestActivity$Ergo$updatingEntry = ManifestActivity$updatingEntry
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
@@ -10841,7 +11157,7 @@ declare type ManifestActivity$Ergo$updatingEntry = ManifestActivity$updatingEntr
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$updatingEntry_2 = ManifestActivity$updatingEntry_2;
+declare type ManifestActivity$Ergo$updatingEntry_2 = ManifestActivity$updatingEntry_2
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
@@ -10852,7 +11168,7 @@ declare type ManifestActivity$Ergo$updatingEntry_2 = ManifestActivity$updatingEn
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$updatingEntry_3 = ManifestActivity$updatingEntry_3;
+declare type ManifestActivity$Ergo$updatingEntry_3 = ManifestActivity$updatingEntry_3
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
@@ -10863,7 +11179,7 @@ declare type ManifestActivity$Ergo$updatingEntry_3 = ManifestActivity$updatingEn
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$updatingEntry_4 = ManifestActivity$updatingEntry_4;
+declare type ManifestActivity$Ergo$updatingEntry_4 = ManifestActivity$updatingEntry_4
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestActivity$updatingEntry
@@ -10874,7 +11190,7 @@ declare type ManifestActivity$Ergo$updatingEntry_4 = ManifestActivity$updatingEn
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type ManifestActivity$Ergo$updatingEntry_5 = ManifestActivity$updatingEntry_5;
+declare type ManifestActivity$Ergo$updatingEntry_5 = ManifestActivity$updatingEntry_5
 
 /**
  * A strong type for the canonical form of ManifestActivity$forkingThreadToken
@@ -10885,8 +11201,8 @@ declare type ManifestActivity$Ergo$updatingEntry_5 = ManifestActivity$updatingEn
  * @public
  */
 declare interface ManifestActivity$forkingThreadToken {
-    key: string;
-    newThreadCount: bigint;
+    key: string  /*minVariantField*/ ,
+    newThreadCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -10898,8 +11214,8 @@ declare interface ManifestActivity$forkingThreadToken {
  * @public
  */
 declare interface ManifestActivity$forkingThreadToken_2 {
-    key: string;
-    newThreadCount: bigint;
+    key: string  /*minVariantField*/ ,
+    newThreadCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -10911,8 +11227,8 @@ declare interface ManifestActivity$forkingThreadToken_2 {
  * @public
  */
 declare interface ManifestActivity$forkingThreadToken_3 {
-    key: string;
-    newThreadCount: bigint;
+    key: string  /*minVariantField*/ ,
+    newThreadCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -10924,8 +11240,8 @@ declare interface ManifestActivity$forkingThreadToken_3 {
  * @public
  */
 declare interface ManifestActivity$forkingThreadToken_4 {
-    key: string;
-    newThreadCount: bigint;
+    key: string  /*minVariantField*/ ,
+    newThreadCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -10937,8 +11253,8 @@ declare interface ManifestActivity$forkingThreadToken_4 {
  * @public
  */
 declare interface ManifestActivity$forkingThreadToken_5 {
-    key: string;
-    newThreadCount: bigint;
+    key: string  /*minVariantField*/ ,
+    newThreadCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -10948,8 +11264,8 @@ declare interface ManifestActivity$forkingThreadToken_5 {
  * @public
  */
 declare interface ManifestActivity$forkingThreadTokenLike {
-    key: string;
-    newThreadCount: IntLike;
+    key: string  /*minVariantField*/ ,
+    newThreadCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -10959,8 +11275,8 @@ declare interface ManifestActivity$forkingThreadTokenLike {
  * @public
  */
 declare interface ManifestActivity$forkingThreadTokenLike_2 {
-    key: string;
-    newThreadCount: IntLike;
+    key: string  /*minVariantField*/ ,
+    newThreadCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -10970,8 +11286,8 @@ declare interface ManifestActivity$forkingThreadTokenLike_2 {
  * @public
  */
 declare interface ManifestActivity$forkingThreadTokenLike_3 {
-    key: string;
-    newThreadCount: IntLike;
+    key: string  /*minVariantField*/ ,
+    newThreadCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -10981,8 +11297,8 @@ declare interface ManifestActivity$forkingThreadTokenLike_3 {
  * @public
  */
 declare interface ManifestActivity$forkingThreadTokenLike_4 {
-    key: string;
-    newThreadCount: IntLike;
+    key: string  /*minVariantField*/ ,
+    newThreadCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -10994,8 +11310,8 @@ declare interface ManifestActivity$forkingThreadTokenLike_4 {
  * @public
  */
 declare interface ManifestActivity$updatingEntry {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -11007,8 +11323,8 @@ declare interface ManifestActivity$updatingEntry {
  * @public
  */
 declare interface ManifestActivity$updatingEntry_2 {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -11020,8 +11336,8 @@ declare interface ManifestActivity$updatingEntry_2 {
  * @public
  */
 declare interface ManifestActivity$updatingEntry_3 {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -11033,8 +11349,8 @@ declare interface ManifestActivity$updatingEntry_3 {
  * @public
  */
 declare interface ManifestActivity$updatingEntry_4 {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -11046,8 +11362,8 @@ declare interface ManifestActivity$updatingEntry_4 {
  * @public
  */
 declare interface ManifestActivity$updatingEntry_5 {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -11057,8 +11373,8 @@ declare interface ManifestActivity$updatingEntry_5 {
  * @public
  */
 declare interface ManifestActivity$updatingEntryLike {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -11068,8 +11384,8 @@ declare interface ManifestActivity$updatingEntryLike {
  * @public
  */
 declare interface ManifestActivity$updatingEntryLike_2 {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -11079,8 +11395,8 @@ declare interface ManifestActivity$updatingEntryLike_2 {
  * @public
  */
 declare interface ManifestActivity$updatingEntryLike_3 {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -11090,97 +11406,81 @@ declare interface ManifestActivity$updatingEntryLike_3 {
  * @public
  */
 declare interface ManifestActivity$updatingEntryLike_4 {
-    key: string;
-    tokenName: number[];
+    key: string  /*minVariantField*/ ,
+    tokenName: number[]  /*minVariantField*/ 
 }
 
 /**
  * ManifestActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **5 variant(s)** of the ManifestActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type ManifestActivity = {
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntry_2;
-} | {
-    addingEntry: ManifestActivity$addingEntry_2;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadToken_2;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadToken_2;
-};
+declare type ManifestActivity = 
+| { retiringEntry: /* implied wrapper { key: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { updatingEntry: ManifestActivity$updatingEntry_2 /*minEnumVariant*/ }
+| { addingEntry: ManifestActivity$addingEntry_2 /*minEnumVariant*/ }
+| { forkingThreadToken: ManifestActivity$forkingThreadToken_2 /*minEnumVariant*/ }
+| { burningThreadToken: ManifestActivity$burningThreadToken_2 /*minEnumVariant*/ }
 
 /**
  * ManifestActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **5 variant(s)** of the ManifestActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type ManifestActivity_2 = {
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntry_3;
-} | {
-    addingEntry: ManifestActivity$addingEntry_3;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadToken_3;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadToken_3;
-};
+declare type ManifestActivity_2 = 
+| { retiringEntry: /* implied wrapper { key: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { updatingEntry: ManifestActivity$updatingEntry_3 /*minEnumVariant*/ }
+| { addingEntry: ManifestActivity$addingEntry_3 /*minEnumVariant*/ }
+| { forkingThreadToken: ManifestActivity$forkingThreadToken_3 /*minEnumVariant*/ }
+| { burningThreadToken: ManifestActivity$burningThreadToken_3 /*minEnumVariant*/ }
 
 /**
  * ManifestActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **5 variant(s)** of the ManifestActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type ManifestActivity_3 = {
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntry_4;
-} | {
-    addingEntry: ManifestActivity$addingEntry_4;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadToken_4;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadToken_4;
-};
+declare type ManifestActivity_3 = 
+| { retiringEntry: /* implied wrapper { key: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { updatingEntry: ManifestActivity$updatingEntry_4 /*minEnumVariant*/ }
+| { addingEntry: ManifestActivity$addingEntry_4 /*minEnumVariant*/ }
+| { forkingThreadToken: ManifestActivity$forkingThreadToken_4 /*minEnumVariant*/ }
+| { burningThreadToken: ManifestActivity$burningThreadToken_4 /*minEnumVariant*/ }
 
 /**
  * ManifestActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **5 variant(s)** of the ManifestActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type ManifestActivity_4 = {
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntry_5;
-} | {
-    addingEntry: ManifestActivity$addingEntry_5;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadToken_5;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadToken_5;
-};
+declare type ManifestActivity_4 = 
+| { retiringEntry: /* implied wrapper { key: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { updatingEntry: ManifestActivity$updatingEntry_5 /*minEnumVariant*/ }
+| { addingEntry: ManifestActivity$addingEntry_5 /*minEnumVariant*/ }
+| { forkingThreadToken: ManifestActivity$forkingThreadToken_5 /*minEnumVariant*/ }
+| { burningThreadToken: ManifestActivity$burningThreadToken_5 /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***ManifestActivity*** enum type.
@@ -11700,121 +12000,123 @@ declare class ManifestActivityHelperNested_4 extends EnumBridge<isActivity> {
 
 /**
  * ManifestActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **5 variant(s)** of the ManifestActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type ManifestActivityLike = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntryLike;
-} | {
-    addingEntry: ManifestActivity$addingEntryLike;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadTokenLike;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadTokenLike;
-}>;
+declare type ManifestActivityLike = IntersectedEnum<
+| { retiringEntry: /* implied wrapper { key: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { updatingEntry: ManifestActivity$updatingEntryLike /*minEnumVariant*/ }
+| { addingEntry: ManifestActivity$addingEntryLike /*minEnumVariant*/ }
+| { forkingThreadToken: ManifestActivity$forkingThreadTokenLike /*minEnumVariant*/ }
+| { burningThreadToken: ManifestActivity$burningThreadTokenLike /*minEnumVariant*/ }
+>
 
 /**
  * ManifestActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **5 variant(s)** of the ManifestActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type ManifestActivityLike_2 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntryLike_2;
-} | {
-    addingEntry: ManifestActivity$addingEntryLike_2;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadTokenLike_2;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadTokenLike_2;
-}>;
+declare type ManifestActivityLike_2 = IntersectedEnum<
+| { retiringEntry: /* implied wrapper { key: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { updatingEntry: ManifestActivity$updatingEntryLike_2 /*minEnumVariant*/ }
+| { addingEntry: ManifestActivity$addingEntryLike_2 /*minEnumVariant*/ }
+| { forkingThreadToken: ManifestActivity$forkingThreadTokenLike_2 /*minEnumVariant*/ }
+| { burningThreadToken: ManifestActivity$burningThreadTokenLike_2 /*minEnumVariant*/ }
+>
 
 /**
  * ManifestActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **5 variant(s)** of the ManifestActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type ManifestActivityLike_3 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntryLike_3;
-} | {
-    addingEntry: ManifestActivity$addingEntryLike_3;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadTokenLike_3;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadTokenLike_3;
-}>;
+declare type ManifestActivityLike_3 = IntersectedEnum<
+| { retiringEntry: /* implied wrapper { key: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { updatingEntry: ManifestActivity$updatingEntryLike_3 /*minEnumVariant*/ }
+| { addingEntry: ManifestActivity$addingEntryLike_3 /*minEnumVariant*/ }
+| { forkingThreadToken: ManifestActivity$forkingThreadTokenLike_3 /*minEnumVariant*/ }
+| { burningThreadToken: ManifestActivity$burningThreadTokenLike_3 /*minEnumVariant*/ }
+>
 
 /**
  * ManifestActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **5 variant(s)** of the ManifestActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type ManifestActivityLike_4 = IntersectedEnum<{
-    retiringEntry: string;
-} | {
-    updatingEntry: ManifestActivity$updatingEntryLike_4;
-} | {
-    addingEntry: ManifestActivity$addingEntryLike_4;
-} | {
-    forkingThreadToken: ManifestActivity$forkingThreadTokenLike_4;
-} | {
-    burningThreadToken: ManifestActivity$burningThreadTokenLike_4;
-}>;
+declare type ManifestActivityLike_4 = IntersectedEnum<
+| { retiringEntry: /* implied wrapper { key: ... } for singleVariantField */ 
+    			string    /*minEnumVariant*/ }
+| { updatingEntry: ManifestActivity$updatingEntryLike_4 /*minEnumVariant*/ }
+| { addingEntry: ManifestActivity$addingEntryLike_4 /*minEnumVariant*/ }
+| { forkingThreadToken: ManifestActivity$forkingThreadTokenLike_4 /*minEnumVariant*/ }
+| { burningThreadToken: ManifestActivity$burningThreadTokenLike_4 /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type ManifestActivityMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "ManifestActivity";
-}, {
-    retiringEntry: singleEnumVariantMeta<ManifestActivityMeta, "retiringEntry", "Constr#0", "singletonField", /* implied wrapper { key: ... } for singleVariantField */ string, "noSpecialFlags">;
-    updatingEntry: singleEnumVariantMeta<ManifestActivityMeta, "updatingEntry", "Constr#1", "fields", ManifestActivity$updatingEntry_3, "noSpecialFlags">;
-    addingEntry: singleEnumVariantMeta<ManifestActivityMeta, "addingEntry", "Constr#2", "fields", ManifestActivity$addingEntry_3, "noSpecialFlags">;
-    forkingThreadToken: singleEnumVariantMeta<ManifestActivityMeta, "forkingThreadToken", "Constr#3", "fields", ManifestActivity$forkingThreadToken_3, "noSpecialFlags">;
-    burningThreadToken: singleEnumVariantMeta<ManifestActivityMeta, "burningThreadToken", "Constr#4", "fields", ManifestActivity$burningThreadToken_3, "noSpecialFlags">;
-}>;
+declare type ManifestActivityMeta = EnumTypeMeta<
+    {module: "CapoDelegateHelpers", enumName: "ManifestActivity"}, {
+    retiringEntry: singleEnumVariantMeta<ManifestActivityMeta, "retiringEntry",
+    "Constr#0", "singletonField", /* implied wrapper { key: ... } for singleVariantField */ 
+    			string   , "noSpecialFlags"
+    >,
+    updatingEntry: singleEnumVariantMeta<ManifestActivityMeta, "updatingEntry",
+    "Constr#1", 
+    "fields", ManifestActivity$updatingEntry_3, "noSpecialFlags"
+    >,
+    addingEntry: singleEnumVariantMeta<ManifestActivityMeta, "addingEntry",
+    "Constr#2", 
+    "fields", ManifestActivity$addingEntry_3, "noSpecialFlags"
+    >,
+    forkingThreadToken: singleEnumVariantMeta<ManifestActivityMeta, "forkingThreadToken",
+    "Constr#3", 
+    "fields", ManifestActivity$forkingThreadToken_3, "noSpecialFlags"
+    >,
+    burningThreadToken: singleEnumVariantMeta<ManifestActivityMeta, "burningThreadToken",
+    "Constr#4", 
+    "fields", ManifestActivity$burningThreadToken_3, "noSpecialFlags"
+    >
+}
+>;
 
 /**
  * A strong type for the canonical form of ManifestEntryType$DelegateThreads
@@ -11825,8 +12127,8 @@ declare type ManifestActivityMeta = EnumTypeMeta<{
  * @public
  */
 declare interface ManifestEntryType$DelegateThreads {
-    role: DelegateRole_2;
-    refCount: bigint;
+    role: DelegateRole_2  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -11838,8 +12140,8 @@ declare interface ManifestEntryType$DelegateThreads {
  * @public
  */
 declare interface ManifestEntryType$DelegateThreads_2 {
-    role: DelegateRole_3;
-    refCount: bigint;
+    role: DelegateRole_3  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -11851,8 +12153,8 @@ declare interface ManifestEntryType$DelegateThreads_2 {
  * @public
  */
 declare interface ManifestEntryType$DelegateThreads_3 {
-    role: DelegateRole_4;
-    refCount: bigint;
+    role: DelegateRole_4  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -11864,8 +12166,8 @@ declare interface ManifestEntryType$DelegateThreads_3 {
  * @public
  */
 declare interface ManifestEntryType$DelegateThreads_4 {
-    role: DelegateRole_5;
-    refCount: bigint;
+    role: DelegateRole_5  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -11875,8 +12177,8 @@ declare interface ManifestEntryType$DelegateThreads_4 {
  * @public
  */
 declare interface ManifestEntryType$DelegateThreadsLike {
-    role: DelegateRoleLike;
-    refCount: IntLike;
+    role: DelegateRoleLike  /*minVariantField*/ ,
+    refCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -11886,8 +12188,8 @@ declare interface ManifestEntryType$DelegateThreadsLike {
  * @public
  */
 declare interface ManifestEntryType$DelegateThreadsLike_2 {
-    role: DelegateRoleLike_2;
-    refCount: IntLike;
+    role: DelegateRoleLike_2  /*minVariantField*/ ,
+    refCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -11897,8 +12199,8 @@ declare interface ManifestEntryType$DelegateThreadsLike_2 {
  * @public
  */
 declare interface ManifestEntryType$DelegateThreadsLike_3 {
-    role: DelegateRoleLike_3;
-    refCount: IntLike;
+    role: DelegateRoleLike_3  /*minVariantField*/ ,
+    refCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -11908,8 +12210,8 @@ declare interface ManifestEntryType$DelegateThreadsLike_3 {
  * @public
  */
 declare interface ManifestEntryType$DelegateThreadsLike_4 {
-    role: DelegateRoleLike_4;
-    refCount: IntLike;
+    role: DelegateRoleLike_4  /*minVariantField*/ ,
+    refCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -11921,9 +12223,9 @@ declare interface ManifestEntryType$DelegateThreadsLike_4 {
  * @public
  */
 declare interface ManifestEntryType$DgDataPolicy {
-    policyLink: RelativeDelegateLink_2;
-    idPrefix: string;
-    refCount: bigint;
+    policyLink: RelativeDelegateLink_2  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -11935,9 +12237,9 @@ declare interface ManifestEntryType$DgDataPolicy {
  * @public
  */
 declare interface ManifestEntryType$DgDataPolicy_2 {
-    policyLink: RelativeDelegateLink_3;
-    idPrefix: string;
-    refCount: bigint;
+    policyLink: RelativeDelegateLink_3  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -11949,9 +12251,9 @@ declare interface ManifestEntryType$DgDataPolicy_2 {
  * @public
  */
 declare interface ManifestEntryType$DgDataPolicy_3 {
-    policyLink: RelativeDelegateLink_4;
-    idPrefix: string;
-    refCount: bigint;
+    policyLink: RelativeDelegateLink_4  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -11963,9 +12265,9 @@ declare interface ManifestEntryType$DgDataPolicy_3 {
  * @public
  */
 declare interface ManifestEntryType$DgDataPolicy_4 {
-    policyLink: RelativeDelegateLink_5;
-    idPrefix: string;
-    refCount: bigint;
+    policyLink: RelativeDelegateLink_5  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
 }
 
 /**
@@ -11975,9 +12277,9 @@ declare interface ManifestEntryType$DgDataPolicy_4 {
  * @public
  */
 declare interface ManifestEntryType$DgDataPolicyLike {
-    policyLink: RelativeDelegateLinkLike;
-    idPrefix: string;
-    refCount: IntLike;
+    policyLink: RelativeDelegateLinkLike  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    refCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -11987,9 +12289,9 @@ declare interface ManifestEntryType$DgDataPolicyLike {
  * @public
  */
 declare interface ManifestEntryType$DgDataPolicyLike_2 {
-    policyLink: RelativeDelegateLinkLike_2;
-    idPrefix: string;
-    refCount: IntLike;
+    policyLink: RelativeDelegateLinkLike_2  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    refCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -11999,9 +12301,9 @@ declare interface ManifestEntryType$DgDataPolicyLike_2 {
  * @public
  */
 declare interface ManifestEntryType$DgDataPolicyLike_3 {
-    policyLink: RelativeDelegateLinkLike_3;
-    idPrefix: string;
-    refCount: IntLike;
+    policyLink: RelativeDelegateLinkLike_3  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    refCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -12011,9 +12313,9 @@ declare interface ManifestEntryType$DgDataPolicyLike_3 {
  * @public
  */
 declare interface ManifestEntryType$DgDataPolicyLike_4 {
-    policyLink: RelativeDelegateLinkLike_4;
-    idPrefix: string;
-    refCount: IntLike;
+    policyLink: RelativeDelegateLinkLike_4  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    refCount: IntLike  /*minVariantField*/ 
 }
 
 /**
@@ -12026,9 +12328,9 @@ declare interface ManifestEntryType$DgDataPolicyLike_4 {
  * @public
  */
 declare type ManifestEntryType$Ergo$DelegateThreads = {
-    role: ErgoDelegateRole;
-    refCount: bigint;
-};
+    role: ErgoDelegateRole  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestEntryType$DelegateThreads
@@ -12040,9 +12342,9 @@ declare type ManifestEntryType$Ergo$DelegateThreads = {
  * @public
  */
 declare type ManifestEntryType$Ergo$DelegateThreads_2 = {
-    role: ErgoDelegateRole_2;
-    refCount: bigint;
-};
+    role: ErgoDelegateRole_2  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestEntryType$DelegateThreads
@@ -12054,9 +12356,9 @@ declare type ManifestEntryType$Ergo$DelegateThreads_2 = {
  * @public
  */
 declare type ManifestEntryType$Ergo$DelegateThreads_3 = {
-    role: ErgoDelegateRole_3;
-    refCount: bigint;
-};
+    role: ErgoDelegateRole_3  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestEntryType$DelegateThreads
@@ -12068,9 +12370,9 @@ declare type ManifestEntryType$Ergo$DelegateThreads_3 = {
  * @public
  */
 declare type ManifestEntryType$Ergo$DelegateThreads_4 = {
-    role: ErgoDelegateRole_4;
-    refCount: bigint;
-};
+    role: ErgoDelegateRole_4  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestEntryType$DelegateThreads
@@ -12082,9 +12384,9 @@ declare type ManifestEntryType$Ergo$DelegateThreads_4 = {
  * @public
  */
 declare type ManifestEntryType$Ergo$DelegateThreads_5 = {
-    role: ErgoDelegateRole_5;
-    refCount: bigint;
-};
+    role: ErgoDelegateRole_5  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestEntryType$DgDataPolicy
@@ -12096,10 +12398,10 @@ declare type ManifestEntryType$Ergo$DelegateThreads_5 = {
  * @public
  */
 declare type ManifestEntryType$Ergo$DgDataPolicy = {
-    policyLink: ErgoRelativeDelegateLink;
-    idPrefix: string;
-    refCount: bigint;
-};
+    policyLink: ErgoRelativeDelegateLink  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestEntryType$DgDataPolicy
@@ -12111,10 +12413,10 @@ declare type ManifestEntryType$Ergo$DgDataPolicy = {
  * @public
  */
 declare type ManifestEntryType$Ergo$DgDataPolicy_2 = {
-    policyLink: ErgoRelativeDelegateLink_2;
-    idPrefix: string;
-    refCount: bigint;
-};
+    policyLink: ErgoRelativeDelegateLink_2  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestEntryType$DgDataPolicy
@@ -12126,10 +12428,10 @@ declare type ManifestEntryType$Ergo$DgDataPolicy_2 = {
  * @public
  */
 declare type ManifestEntryType$Ergo$DgDataPolicy_3 = {
-    policyLink: ErgoRelativeDelegateLink_3;
-    idPrefix: string;
-    refCount: bigint;
-};
+    policyLink: ErgoRelativeDelegateLink_3  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestEntryType$DgDataPolicy
@@ -12141,10 +12443,10 @@ declare type ManifestEntryType$Ergo$DgDataPolicy_3 = {
  * @public
  */
 declare type ManifestEntryType$Ergo$DgDataPolicy_4 = {
-    policyLink: ErgoRelativeDelegateLink_4;
-    idPrefix: string;
-    refCount: bigint;
-};
+    policyLink: ErgoRelativeDelegateLink_4  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of ManifestEntryType$DgDataPolicy
@@ -12156,98 +12458,78 @@ declare type ManifestEntryType$Ergo$DgDataPolicy_4 = {
  * @public
  */
 declare type ManifestEntryType$Ergo$DgDataPolicy_5 = {
-    policyLink: ErgoRelativeDelegateLink_5;
-    idPrefix: string;
-    refCount: bigint;
-};
+    policyLink: ErgoRelativeDelegateLink_5  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    refCount: bigint  /*minVariantField*/ 
+}
 
 /**
  * ManifestEntryType enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **5 variant(s)** of the ManifestEntryType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type ManifestEntryType = {
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicy;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreads;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-};
+declare type ManifestEntryType = 
+| { NamedTokenRef: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: ManifestEntryType$DgDataPolicy /*minEnumVariant*/ }
+| { DelegateThreads: ManifestEntryType$DelegateThreads /*minEnumVariant*/ }
+| { MerkleMembership: tagOnly /*minEnumVariant*/ }
+| { MerkleStateRoot: tagOnly /*minEnumVariant*/ }
 
 /**
  * ManifestEntryType enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **5 variant(s)** of the ManifestEntryType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type ManifestEntryType_2 = {
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicy_2;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreads_2;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-};
+declare type ManifestEntryType_2 = 
+| { NamedTokenRef: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: ManifestEntryType$DgDataPolicy_2 /*minEnumVariant*/ }
+| { DelegateThreads: ManifestEntryType$DelegateThreads_2 /*minEnumVariant*/ }
+| { MerkleMembership: tagOnly /*minEnumVariant*/ }
+| { MerkleStateRoot: tagOnly /*minEnumVariant*/ }
 
 /**
  * ManifestEntryType enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **5 variant(s)** of the ManifestEntryType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type ManifestEntryType_3 = {
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicy_3;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreads_3;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-};
+declare type ManifestEntryType_3 = 
+| { NamedTokenRef: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: ManifestEntryType$DgDataPolicy_3 /*minEnumVariant*/ }
+| { DelegateThreads: ManifestEntryType$DelegateThreads_3 /*minEnumVariant*/ }
+| { MerkleMembership: tagOnly /*minEnumVariant*/ }
+| { MerkleStateRoot: tagOnly /*minEnumVariant*/ }
 
 /**
  * ManifestEntryType enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **5 variant(s)** of the ManifestEntryType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type ManifestEntryType_4 = {
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicy_4;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreads_4;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-};
+declare type ManifestEntryType_4 = 
+| { NamedTokenRef: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: ManifestEntryType$DgDataPolicy_4 /*minEnumVariant*/ }
+| { DelegateThreads: ManifestEntryType$DelegateThreads_4 /*minEnumVariant*/ }
+| { MerkleMembership: tagOnly /*minEnumVariant*/ }
+| { MerkleStateRoot: tagOnly /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***ManifestEntryType*** enum type.
@@ -12451,209 +12733,204 @@ declare class ManifestEntryTypeHelper_4 extends EnumBridge<JustAnEnum> {
 
 /**
  * ManifestEntryType enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **5 variant(s)** of the ManifestEntryType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type ManifestEntryTypeLike = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicyLike;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreadsLike;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
+declare type ManifestEntryTypeLike = IntersectedEnum<
+| { NamedTokenRef: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: ManifestEntryType$DgDataPolicyLike /*minEnumVariant*/ }
+| { DelegateThreads: ManifestEntryType$DelegateThreadsLike /*minEnumVariant*/ }
+| { MerkleMembership: tagOnly /*minEnumVariant*/ }
+| { MerkleStateRoot: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * ManifestEntryType enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **5 variant(s)** of the ManifestEntryType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type ManifestEntryTypeLike_2 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicyLike_2;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreadsLike_2;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
+declare type ManifestEntryTypeLike_2 = IntersectedEnum<
+| { NamedTokenRef: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: ManifestEntryType$DgDataPolicyLike_2 /*minEnumVariant*/ }
+| { DelegateThreads: ManifestEntryType$DelegateThreadsLike_2 /*minEnumVariant*/ }
+| { MerkleMembership: tagOnly /*minEnumVariant*/ }
+| { MerkleStateRoot: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * ManifestEntryType enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **5 variant(s)** of the ManifestEntryType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type ManifestEntryTypeLike_3 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicyLike_3;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreadsLike_3;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
+declare type ManifestEntryTypeLike_3 = IntersectedEnum<
+| { NamedTokenRef: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: ManifestEntryType$DgDataPolicyLike_3 /*minEnumVariant*/ }
+| { DelegateThreads: ManifestEntryType$DelegateThreadsLike_3 /*minEnumVariant*/ }
+| { MerkleMembership: tagOnly /*minEnumVariant*/ }
+| { MerkleStateRoot: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * ManifestEntryType enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **5 variant(s)** of the ManifestEntryType enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `ManifestEntryTypeHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type ManifestEntryTypeLike_4 = IntersectedEnum<{
-    NamedTokenRef: tagOnly;
-} | {
-    DgDataPolicy: ManifestEntryType$DgDataPolicyLike_4;
-} | {
-    DelegateThreads: ManifestEntryType$DelegateThreadsLike_4;
-} | {
-    MerkleMembership: tagOnly;
-} | {
-    MerkleStateRoot: tagOnly;
-}>;
+declare type ManifestEntryTypeLike_4 = IntersectedEnum<
+| { NamedTokenRef: tagOnly /*minEnumVariant*/ }
+| { DgDataPolicy: ManifestEntryType$DgDataPolicyLike_4 /*minEnumVariant*/ }
+| { DelegateThreads: ManifestEntryType$DelegateThreadsLike_4 /*minEnumVariant*/ }
+| { MerkleMembership: tagOnly /*minEnumVariant*/ }
+| { MerkleStateRoot: tagOnly /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type ManifestEntryTypeMeta = EnumTypeMeta<{
-    module: "CapoHelpers";
-    enumName: "ManifestEntryType";
-}, {
-    NamedTokenRef: singleEnumVariantMeta<ManifestEntryTypeMeta, "NamedTokenRef", "Constr#0", "tagOnly", tagOnly, "noSpecialFlags">;
-    DgDataPolicy: singleEnumVariantMeta<ManifestEntryTypeMeta, "DgDataPolicy", "Constr#1", "fields", ManifestEntryType$DgDataPolicy_2, "noSpecialFlags">;
-    DelegateThreads: singleEnumVariantMeta<ManifestEntryTypeMeta, "DelegateThreads", "Constr#2", "fields", ManifestEntryType$DelegateThreads_2, "noSpecialFlags">;
-    MerkleMembership: singleEnumVariantMeta<ManifestEntryTypeMeta, "MerkleMembership", "Constr#3", "tagOnly", tagOnly, "noSpecialFlags">;
-    MerkleStateRoot: singleEnumVariantMeta<ManifestEntryTypeMeta, "MerkleStateRoot", "Constr#4", "tagOnly", tagOnly, "noSpecialFlags">;
-}>;
+declare type ManifestEntryTypeMeta = EnumTypeMeta<
+    {module: "CapoHelpers", enumName: "ManifestEntryType"}, {
+    NamedTokenRef: singleEnumVariantMeta<ManifestEntryTypeMeta, "NamedTokenRef",
+    "Constr#0", "tagOnly", tagOnly, "noSpecialFlags"
+    >,
+    DgDataPolicy: singleEnumVariantMeta<ManifestEntryTypeMeta, "DgDataPolicy",
+    "Constr#1", 
+    "fields", ManifestEntryType$DgDataPolicy_2, "noSpecialFlags"
+    >,
+    DelegateThreads: singleEnumVariantMeta<ManifestEntryTypeMeta, "DelegateThreads",
+    "Constr#2", 
+    "fields", ManifestEntryType$DelegateThreads_2, "noSpecialFlags"
+    >,
+    MerkleMembership: singleEnumVariantMeta<ManifestEntryTypeMeta, "MerkleMembership",
+    "Constr#3", "tagOnly", tagOnly, "noSpecialFlags"
+    >,
+    MerkleStateRoot: singleEnumVariantMeta<ManifestEntryTypeMeta, "MerkleStateRoot",
+    "Constr#4", "tagOnly", tagOnly, "noSpecialFlags"
+    >
+}
+>;
 
 /**
  * expresses the essential fields needed for initiating creation of a AnyData
  * @public
  */
-declare type minimalAnyData = minimalData<AnyDataLike_2>;
+declare type minimalAnyData = minimalData<AnyDataLike_2>
 
 /**
  * expresses the essential fields needed for initiating creation of a DgDataDetails
  * @public
  */
-declare type minimalDgDataDetails = minimalData<DgDataDetailsLike>;
+declare type minimalDgDataDetails = minimalData<DgDataDetailsLike>
 
 /**
  * expresses the essential fields needed for initiating creation of a NeighborhoodData
  * @public
  */
-export declare type minimalNeighborhoodData = minimalData<NeighborhoodDataLike>;
+export declare type minimalNeighborhoodData = minimalData<NeighborhoodDataLike>
 
 /**
  * expresses the essential fields needed for initiating creation of a NodeRegistrationData
  * @public
  */
-export declare type minimalNodeRegistrationData = minimalData<NodeRegistrationDataLike>;
+export declare type minimalNodeRegistrationData = minimalData<NodeRegistrationDataLike>
 
 /**
  * expresses the essential fields needed for initiating creation of a ProtocolSettings
  * @public
  */
-declare type minimalProtocolSettings = minimalData<ProtocolSettingsLike>;
+declare type minimalProtocolSettings = minimalData<ProtocolSettingsLike>
 
 /**
  * MintingActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **2 variant(s)** of the MintingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type MintingActivity = {
-    MintingParticipantToken: TxOutputId;
-} | {
-    MintingFungibleTokens: number[];
-};
+declare type MintingActivity = 
+| { MintingParticipantToken: /* implied wrapper { seed: ... } for singleVariantField */ 
+    			TxOutputId    /*minEnumVariant*/ }
+| { MintingFungibleTokens: /* implied wrapper { tokenName: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
 
 /**
  * MintingActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **1 variant(s)** of the MintingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type MintingActivity_2 = {
-    CreatingRecord: TxOutputId;
-};
+declare type MintingActivity_2 = 
+| { CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ 
+    			TxOutputId    /*minEnumVariant*/ }
 
 /**
  * MintingActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **1 variant(s)** of the MintingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type MintingActivity_3 = {
-    CreatingRecord: TxOutputId;
-};
+declare type MintingActivity_3 = 
+| { CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ 
+    			TxOutputId    /*minEnumVariant*/ }
 
 /**
  * MintingActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **1 variant(s)** of the MintingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type MintingActivity_4 = {
-    CreatingRecord: TxOutputId;
-};
+declare type MintingActivity_4 = 
+| { CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ 
+    			TxOutputId    /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***MintingActivity*** enum type.
@@ -12676,7 +12953,7 @@ declare class MintingActivityHelper extends EnumBridge<JustAnEnum> {
      * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
      *  - to get a transaction context having the seed needed for this argument,
      *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-     * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+     * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
      *  - in a context providing an implicit seed utxo, use
      *    the `$seeded$MintingParticipantToken}` variant of this activity instead
      *
@@ -12725,7 +13002,7 @@ declare class MintingActivityHelper_2 extends EnumBridge<JustAnEnum> {
      * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
      *  - to get a transaction context having the seed needed for this argument,
      *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-     * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+     * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
      *  - in a context providing an implicit seed utxo, use
      *    the `$seeded$CreatingRecord}` variant of this activity instead
      *
@@ -12770,7 +13047,7 @@ declare class MintingActivityHelper_3 extends EnumBridge<JustAnEnum> {
      * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
      *  - to get a transaction context having the seed needed for this argument,
      *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-     * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+     * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
      *  - in a context providing an implicit seed utxo, use
      *    the `$seeded$CreatingRecord}` variant of this activity instead
      *
@@ -12815,7 +13092,7 @@ declare class MintingActivityHelper_4 extends EnumBridge<JustAnEnum> {
      * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
      *  - to get a transaction context having the seed needed for this argument,
      *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-     * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+     * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
      *  - in a context providing an implicit seed utxo, use
      *    the `$seeded$CreatingRecord}` variant of this activity instead
      *
@@ -12859,7 +13136,7 @@ declare class MintingActivityHelperNested extends EnumBridge<isActivity> {
      * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
      *  - to get a transaction context having the seed needed for this argument,
      *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-     * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+     * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
      *  - in a context providing an implicit seed utxo, use
      *    the `$seeded$MintingParticipantToken}` variant of this activity instead
      *
@@ -12921,7 +13198,7 @@ declare class MintingActivityHelperNested_2 extends EnumBridge<isActivity> {
      * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
      *  - to get a transaction context having the seed needed for this argument,
      *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-     * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+     * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
      *  - in a context providing an implicit seed utxo, use
      *    the `$seeded$CreatingRecord}` variant of this activity instead
      *
@@ -12974,7 +13251,7 @@ declare class MintingActivityHelperNested_3 extends EnumBridge<isActivity> {
      * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
      *  - to get a transaction context having the seed needed for this argument,
      *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-     * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+     * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
      *  - in a context providing an implicit seed utxo, use
      *    the `$seeded$CreatingRecord}` variant of this activity instead
      *
@@ -13027,7 +13304,7 @@ declare class MintingActivityHelperNested_4 extends EnumBridge<isActivity> {
      * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
      *  - to get a transaction context having the seed needed for this argument,
      *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-     * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+     * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
      *  - in a context providing an implicit seed utxo, use
      *    the `$seeded$CreatingRecord}` variant of this activity instead
      *
@@ -13060,87 +13337,93 @@ declare class MintingActivityHelperNested_4 extends EnumBridge<isActivity> {
 
 /**
  * MintingActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **2 variant(s)** of the MintingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type MintingActivityLike = IntersectedEnum<{
-    MintingParticipantToken: /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId | string;
-} | {
-    MintingFungibleTokens: number[];
-}>;
+declare type MintingActivityLike = IntersectedEnum<
+| { MintingParticipantToken: /* implied wrapper { seed: ... } for singleVariantField */ 
+    			TxOutputId | string    /*minEnumVariant*/ }
+| { MintingFungibleTokens: /* implied wrapper { tokenName: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+>
 
 /**
  * MintingActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **1 variant(s)** of the MintingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type MintingActivityLike_2 = IntersectedEnum<{
-    CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId | string;
-}>;
+declare type MintingActivityLike_2 = IntersectedEnum<
+| { CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ 
+    			TxOutputId | string    /*minEnumVariant*/ }
+>
 
 /**
  * MintingActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **1 variant(s)** of the MintingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type MintingActivityLike_3 = IntersectedEnum<{
-    CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId | string;
-}>;
+declare type MintingActivityLike_3 = IntersectedEnum<
+| { CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ 
+    			TxOutputId | string    /*minEnumVariant*/ }
+>
 
 /**
  * MintingActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **1 variant(s)** of the MintingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `MintingActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type MintingActivityLike_4 = IntersectedEnum<{
-    CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId | string;
-}>;
+declare type MintingActivityLike_4 = IntersectedEnum<
+| { CreatingRecord: /* implied wrapper { seed: ... } for singleVariantField */ 
+    			TxOutputId | string    /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type MintingActivityMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "MintingActivity";
-}, {
-    CreatingRecord: singleEnumVariantMeta<MintingActivityMeta, "CreatingRecord", "Constr#0", "singletonField", /* implied wrapper { seed: ... } for singleVariantField */ TxOutputId, "isSeededActivity">;
-}>;
+declare type MintingActivityMeta = EnumTypeMeta<
+    {module: "DredNodeRegistryPolicy", enumName: "MintingActivity"}, {
+    CreatingRecord: singleEnumVariantMeta<MintingActivityMeta, "CreatingRecord",
+    "Constr#0", "singletonField", /* implied wrapper { seed: ... } for singleVariantField */ 
+    			TxOutputId   , "isSeededActivity"
+    >
+}
+>;
 
 /**
  * @public
@@ -13148,7 +13431,7 @@ declare type MintingActivityMeta = EnumTypeMeta<{
 export declare class MyMintSpendDelegate extends STokMintDelegate {
     get delegateName(): string;
     dataBridgeClass: typeof MyMintSpendDelegateDataBridge;
-    scriptBundle(): CapoDelegateBundle;
+    scriptBundleClass(): Promise<ConcreteCapoDelegateBundle>;
 }
 
 /**
@@ -13610,20 +13893,125 @@ declare class MyMintSpendDelegateDataBridgeReader extends DataBridgeReaderClass 
 }
 
 /**
+ * An ergonomic, though less strictly-safe form of NbhDetails$NbhDetailsV1
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the NbhDetails$NbhDetailsV1Like type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type NbhDetails$Ergo$NbhDetailsV1 = {
+    state: ErgoNeighborhoodState  /*minVariantField*/ ,
+    appInfo: ErgoAppInfoV1  /*minVariantField*/ ,
+    opsInfo: ErgoNodeOpsInfoV1  /*minVariantField*/ ,
+    updateInfo: ErgoUpdateInfoV1 | undefined  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the canonical form of NbhDetails$NbhDetailsV1
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see NbhDetails$Ergo$NbhDetailsV1 instead.
+ * @public
+ */
+declare interface NbhDetails$NbhDetailsV1 {
+    state: NeighborhoodState  /*minVariantField*/ ,
+    appInfo: AppInfoV1  /*minVariantField*/ ,
+    opsInfo: NodeOpsInfoV1  /*minVariantField*/ ,
+    updateInfo: UpdateInfoV1 | undefined  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the permissive form of NbhDetails$NbhDetailsV1
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface NbhDetails$NbhDetailsV1Like {
+    state: NeighborhoodStateLike  /*minVariantField*/ ,
+    appInfo: AppInfoV1Like  /*minVariantField*/ ,
+    opsInfo: NodeOpsInfoV1Like  /*minVariantField*/ ,
+    updateInfo: UpdateInfoV1Like | undefined  /*minVariantField*/ 
+}
+
+/**
+ * NbhDetails enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the NbhDetails enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `NbhDetailsHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type NbhDetails = 
+| { NbhDetailsV1: NbhDetails$NbhDetailsV1 /*minEnumVariant*/ }
+
+/**
+ * Helper class for generating UplcData for variants of the ***NbhDetails*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class NbhDetailsHelper extends EnumBridge<JustAnEnum> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<{
+        NbhDetailsV1: NbhDetails$NbhDetailsV1;
+    }, {
+        NbhDetailsV1: NbhDetails$NbhDetailsV1Like;
+    }>;
+    /**
+     * generates  UplcData for ***"NeighborhoodData::NbhDetails.NbhDetailsV1"***
+     * @remarks - ***NbhDetails$NbhDetailsV1Like*** is the same as the expanded field-types.
+     */
+    NbhDetailsV1(fields: NbhDetails$NbhDetailsV1Like | {
+        state: NeighborhoodStateLike;
+        appInfo: AppInfoV1Like;
+        opsInfo: NodeOpsInfoV1Like;
+        updateInfo: {
+            name: string;
+            description: string;
+            url: string;
+        } | undefined;
+    }): UplcData;
+}
+
+/**
+ * NbhDetails enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the NbhDetails enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `NbhDetailsHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+declare type NbhDetailsLike = IntersectedEnum<
+| { NbhDetailsV1: NbhDetails$NbhDetailsV1Like /*minEnumVariant*/ }
+>
+
+/**
  * @public
  */
 export declare class NeighborhoodController extends DelegatedDataContract<ErgoNeighborhoodData, NeighborhoodDataLike> {
     dataBridgeClass: typeof NeighborhoodPolicyDataBridge;
-    scriptBundle(): any;
+    scriptBundleClass(): Promise<NeighborhoodRegistryBundle>;
     idPrefix: "nbhd";
     get delegateName(): string;
     get recordTypeName(): string;
     exampleData(): minimalNeighborhoodData;
     get capo(): DredCapo;
-    mkTxnRegisteringNeighborhood(this: NeighborhoodController, nbhReg: minimalNeighborhoodData, initialTcx?: StellarTxnContext): Promise<hasUutContext<"recordId" | "nbhd"> & StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo & hasCharterRef>;
+    mkTxnRegisteringNeighborhood(this: NeighborhoodController, nbhReg: minimalNeighborhoodData, initialTcx?: StellarTxnContext): Promise<hasUutContext<"recordId" | "nbhd"> & StellarTxnContext<anyState> & hasMemberToken & hasCharterRef & hasSeedUtxo>;
     mkTxnUpdatingNeighborhood(this: NeighborhoodController, txnName: string, nbh: FoundDatumUtxo<ErgoNeighborhoodData | NeighborhoodData>, options: Omit<DgDataUpdateOptions<NeighborhoodDataLike>, "activity"> & {
         activity?: DgDataUpdateOptions<NeighborhoodDataLike>["activity"];
-    }, initialTcx?: StellarTxnContext): Promise<StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo>;
+    }, initialTcx?: StellarTxnContext): Promise<StellarTxnContext<anyState> & hasMemberToken>;
     requirements(): ReqtsMap<never, never>;
 }
 
@@ -13636,13 +14024,10 @@ export declare class NeighborhoodController extends DelegatedDataContract<ErgoNe
  * @public
  */
 export declare interface NeighborhoodData {
-    id: number[];
-    type: string;
-    memberToken: string;
-    state: NeighborhoodState;
-    appInfo: AppInfo;
-    opsInfo: NodeOpsInfo;
-    updateInfo: /*minStructField*/ UpdateInfo | undefined;
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    memberToken: /*minStructField*/ string
+    details: /*minStructField*/ NbhDetails
 }
 
 /**
@@ -13652,13 +14037,10 @@ export declare interface NeighborhoodData {
  * @public
  */
 declare interface NeighborhoodDataLike {
-    id: number[];
-    type: string;
-    memberToken: string;
-    state: NeighborhoodStateLike;
-    appInfo: AppInfoLike;
-    opsInfo: NodeOpsInfoLike;
-    updateInfo: /*minStructField*/ UpdateInfoLike | undefined;
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    memberToken: /*minStructField*/ string
+    details: /*minStructField*/ NbhDetailsLike
 }
 
 /**
@@ -13719,6 +14101,10 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
          */
         RevenueModel: RevenueModelHelper;
         /**
+         * generates UplcData for the enum type ***NbhDetails*** for the `BasicDelegate` script
+         */
+        NbhDetails: NbhDetailsHelper;
+        /**
          * generates UplcData for the enum type ***DelegateDatum*** for the `BasicDelegate` script
          */
         DelegateDatum: DelegateDatumHelper_3;
@@ -13751,6 +14137,10 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
          */
         BurningActivity: BurningActivityHelper_3;
         /**
+         * generates UplcData for the enum type ***OtherActivity*** for the `BasicDelegate` script
+         */
+        OtherActivity: OtherActivityHelper_2;
+        /**
          * generates UplcData for the enum type ***DelegateActivity*** for the `BasicDelegate` script
          */
         DelegateActivity: DelegateActivityHelper_3;
@@ -13779,6 +14169,10 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
          */
         dgd_DataSrc: dgd_DataSrcHelper_2;
         /**
+         * generates UplcData for the enum type ***AbstractDelegateActivitiesEnum*** for the `BasicDelegate` script
+         */
+        AbstractDelegateActivitiesEnum: AbstractDelegateActivitiesEnumHelper_2;
+        /**
          * generates UplcData for the enum type ***AnyData*** for the `BasicDelegate` script
          */
         AnyData: (fields: AnyDataLike_3 | {
@@ -13794,18 +14188,18 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
             tn: number[];
         }) => UplcData;
         /**
-         * generates UplcData for the enum type ***AppInfo*** for the `BasicDelegate` script
+         * generates UplcData for the enum type ***AppInfoV1*** for the `BasicDelegate` script
          */
-        AppInfo: (fields: AppInfoLike | {
+        AppInfoV1: (fields: AppInfoV1Like | {
             url: string;
             revenueModel: Array<RevenueModelLike>;
             name: string;
             description: string;
         }) => UplcData;
         /**
-         * generates UplcData for the enum type ***NodeOpsInfo*** for the `BasicDelegate` script
+         * generates UplcData for the enum type ***NodeOpsInfoV1*** for the `BasicDelegate` script
          */
-        NodeOpsInfo: (fields: NodeOpsInfoLike | {
+        NodeOpsInfoV1: (fields: NodeOpsInfoV1Like | {
             minNodes: IntLike;
             maxNodes: IntLike;
             minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
@@ -13818,9 +14212,9 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
             minUptime: IntLike;
         }) => UplcData;
         /**
-         * generates UplcData for the enum type ***UpdateInfo*** for the `BasicDelegate` script
+         * generates UplcData for the enum type ***UpdateInfoV1*** for the `BasicDelegate` script
          */
-        UpdateInfo: (fields: UpdateInfoLike | {
+        UpdateInfoV1: (fields: UpdateInfoV1Like | {
             name: string;
             description: string;
             url: string;
@@ -13832,10 +14226,7 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
             id: number[];
             type: string;
             memberToken: string;
-            state: NeighborhoodStateLike;
-            appInfo: AppInfoLike;
-            opsInfo: NodeOpsInfoLike;
-            updateInfo: /*minStructField*/ UpdateInfoLike | undefined;
+            details: NbhDetailsLike;
         }) => UplcData;
         /**
          * generates UplcData for the enum type ***RelativeDelegateLink*** for the `BasicDelegate` script
@@ -13901,6 +14292,7 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
             id: number[];
             type: string;
             mph: /*minStructField*/ MintingPolicyHash | string | number[];
+            activity: /*minStructField*/ AbstractDelegateActivitiesEnumLike_2 | undefined;
         }) => UplcData;
     };
     /**
@@ -13911,13 +14303,13 @@ declare class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     ᱺᱺDelegationDetailCast: Cast<DelegationDetail_3, DelegationDetailLike_3>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺAppInfoCast: Cast<AppInfo, AppInfoLike>;
+    ᱺᱺAppInfoV1Cast: Cast<AppInfoV1, AppInfoV1Like>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺNodeOpsInfoCast: Cast<NodeOpsInfo, NodeOpsInfoLike>;
+    ᱺᱺNodeOpsInfoV1Cast: Cast<NodeOpsInfoV1, NodeOpsInfoV1Like>;
     /**
      * uses unicode U+1c7a - sorts to the end */
-    ᱺᱺUpdateInfoCast: Cast<UpdateInfo, UpdateInfoLike>;
+    ᱺᱺUpdateInfoV1Cast: Cast<UpdateInfoV1, UpdateInfoV1Like>;
     /**
      * uses unicode U+1c7a - sorts to the end */
     ᱺᱺNeighborhoodDataCast: Cast<NeighborhoodData, NeighborhoodDataLike>;
@@ -14010,6 +14402,21 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * causes some error later on in your code, when you try to use it.
      */
     RevenueModel(d: UplcData): ErgoRevenueModel;
+    /**
+     * reads UplcData *known to fit the **NbhDetails*** enum type,
+     * for the BasicDelegate script.
+     * #### Standard WARNING
+     *
+     * This is a low-level data-reader for use in ***advanced development scenarios***.
+     *
+     * Used correctly with data that matches the enum type, this reader
+     * returns strongly-typed data - your code using these types will be safe.
+     *
+     * On the other hand, reading non-matching data will not give you a valid result.
+     * It may throw an error, or it may throw no error, but return a value that
+     * causes some error later on in your code, when you try to use it.
+     */
+    NbhDetails(d: UplcData): ErgoNbhDetails;
     datum: (d: UplcData) => Partial<{
         Cip68RefToken: DelegateDatum$Ergo$Cip68RefToken_3;
         IsDelegation: ErgoDelegationDetail_3;
@@ -14136,6 +14543,21 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      */
     BurningActivity(d: UplcData): ErgoBurningActivity_3;
     /**
+     * reads UplcData *known to fit the **OtherActivity*** enum type,
+     * for the BasicDelegate script.
+     * #### Standard WARNING
+     *
+     * This is a low-level data-reader for use in ***advanced development scenarios***.
+     *
+     * Used correctly with data that matches the enum type, this reader
+     * returns strongly-typed data - your code using these types will be safe.
+     *
+     * On the other hand, reading non-matching data will not give you a valid result.
+     * It may throw an error, or it may throw no error, but return a value that
+     * causes some error later on in your code, when you try to use it.
+     */
+    OtherActivity(d: UplcData): ErgoOtherActivity_2;
+    /**
      * reads UplcData *known to fit the **DelegateActivity*** enum type,
      * for the BasicDelegate script.
      * #### Standard WARNING
@@ -14241,6 +14663,21 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      */
     dgd_DataSrc(d: UplcData): Ergodgd_DataSrc_2;
     /**
+     * reads UplcData *known to fit the **AbstractDelegateActivitiesEnum*** enum type,
+     * for the BasicDelegate script.
+     * #### Standard WARNING
+     *
+     * This is a low-level data-reader for use in ***advanced development scenarios***.
+     *
+     * Used correctly with data that matches the enum type, this reader
+     * returns strongly-typed data - your code using these types will be safe.
+     *
+     * On the other hand, reading non-matching data will not give you a valid result.
+     * It may throw an error, or it may throw no error, but return a value that
+     * causes some error later on in your code, when you try to use it.
+     */
+    AbstractDelegateActivitiesEnum(d: UplcData): ErgoAbstractDelegateActivitiesEnum_2;
+    /**
      * reads UplcData *known to fit the **AnyData*** struct type,
      * for the BasicDelegate script.
      * #### Standard WARNING
@@ -14271,7 +14708,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      */
     DelegationDetail(d: UplcData): DelegationDetail_3;
     /**
-     * reads UplcData *known to fit the **AppInfo*** struct type,
+     * reads UplcData *known to fit the **AppInfoV1*** struct type,
      * for the BasicDelegate script.
      * #### Standard WARNING
      *
@@ -14284,9 +14721,9 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    AppInfo(d: UplcData): AppInfo;
+    AppInfoV1(d: UplcData): AppInfoV1;
     /**
-     * reads UplcData *known to fit the **NodeOpsInfo*** struct type,
+     * reads UplcData *known to fit the **NodeOpsInfoV1*** struct type,
      * for the BasicDelegate script.
      * #### Standard WARNING
      *
@@ -14299,9 +14736,9 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    NodeOpsInfo(d: UplcData): NodeOpsInfo;
+    NodeOpsInfoV1(d: UplcData): NodeOpsInfoV1;
     /**
-     * reads UplcData *known to fit the **UpdateInfo*** struct type,
+     * reads UplcData *known to fit the **UpdateInfoV1*** struct type,
      * for the BasicDelegate script.
      * #### Standard WARNING
      *
@@ -14314,7 +14751,7 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
      * It may throw an error, or it may throw no error, but return a value that
      * causes some error later on in your code, when you try to use it.
      */
-    UpdateInfo(d: UplcData): UpdateInfo;
+    UpdateInfoV1(d: UplcData): UpdateInfoV1;
     /**
      * reads UplcData *known to fit the **NeighborhoodData*** struct type,
      * for the BasicDelegate script.
@@ -14439,31 +14876,31 @@ declare class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
 
 /**
  * NeighborhoodSettings enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **1 variant(s)** of the NeighborhoodSettings enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type NeighborhoodSettings = {
-    V1: NeighborhoodSettingsV1;
-};
+declare type NeighborhoodSettings = 
+| { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+    			NeighborhoodSettingsV1    /*minEnumVariant*/ }
 
 /**
  * NeighborhoodSettings enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **1 variant(s)** of the NeighborhoodSettings enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type NeighborhoodSettings_2 = {
-    V1: NeighborhoodSettingsV1_2;
-};
+declare type NeighborhoodSettings_2 = 
+| { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+    			NeighborhoodSettingsV1_2    /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***NeighborhoodSettings*** enum type.
@@ -14539,39 +14976,41 @@ declare class NeighborhoodSettingsHelper_2 extends EnumBridge<JustAnEnum> {
 
 /**
  * NeighborhoodSettings enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **1 variant(s)** of the NeighborhoodSettings enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type NeighborhoodSettingsLike = IntersectedEnum<{
-    V1: NeighborhoodSettingsV1Like;
-}>;
+declare type NeighborhoodSettingsLike = IntersectedEnum<
+| { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+    			NeighborhoodSettingsV1Like    /*minEnumVariant*/ }
+>
 
 /**
  * NeighborhoodSettings enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **1 variant(s)** of the NeighborhoodSettings enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodSettingsHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type NeighborhoodSettingsLike_2 = IntersectedEnum<{
-    V1: NeighborhoodSettingsV1Like_2;
-}>;
+declare type NeighborhoodSettingsLike_2 = IntersectedEnum<
+| { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+    			NeighborhoodSettingsV1Like_2    /*minEnumVariant*/ }
+>
 
 /**
  * A strong type for the canonical form of NeighborhoodSettingsV1
@@ -14582,8 +15021,8 @@ declare type NeighborhoodSettingsLike_2 = IntersectedEnum<{
  * @public
  */
 declare interface NeighborhoodSettingsV1 {
-    minRegistrationFee: Value;
-    minNbhStake: Value;
+    minRegistrationFee: /*minStructField*/ Value
+    minNbhStake: /*minStructField*/ Value
 }
 
 /**
@@ -14595,8 +15034,8 @@ declare interface NeighborhoodSettingsV1 {
  * @public
  */
 declare interface NeighborhoodSettingsV1_2 {
-    minRegistrationFee: Value;
-    minNbhStake: Value;
+    minRegistrationFee: /*minStructField*/ Value
+    minNbhStake: /*minStructField*/ Value
 }
 
 /**
@@ -14606,20 +15045,8 @@ declare interface NeighborhoodSettingsV1_2 {
  * @public
  */
 declare interface NeighborhoodSettingsV1Like {
-    minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-    minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
+    minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+    minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 
 /**
@@ -14629,43 +15056,26 @@ declare interface NeighborhoodSettingsV1Like {
  * @public
  */
 declare interface NeighborhoodSettingsV1Like_2 {
-    minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-    minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
+    minRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+    minNbhStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 
 /**
  * NeighborhoodState enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **5 variant(s)** of the NeighborhoodState enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodStateHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type NeighborhoodState = {
-    Preproduction: tagOnly;
-} | {
-    Active: tagOnly;
-} | {
-    UpdatePending: tagOnly;
-} | {
-    UpdateDisputed: tagOnly;
-} | {
-    Retired: tagOnly;
-};
+declare type NeighborhoodState = 
+| { Preproduction: tagOnly /*minEnumVariant*/ }
+| { Active: tagOnly /*minEnumVariant*/ }
+| { UpdatePending: tagOnly /*minEnumVariant*/ }
+| { UpdateDisputed: tagOnly /*minEnumVariant*/ }
+| { Retired: tagOnly /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***NeighborhoodState*** enum type.
@@ -14685,81 +15095,62 @@ declare class NeighborhoodStateHelper extends EnumBridge<JustAnEnum> {
     }>>;
     /**
      * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Preproduction"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4180***
      */
     get Preproduction(): UplcData;
     /**
      * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Active"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4181***
      */
     get Active(): UplcData;
     /**
      * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.UpdatePending"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4182***
      */
     get UpdatePending(): UplcData;
     /**
      * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.UpdateDisputed"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4183***
      */
     get UpdateDisputed(): UplcData;
     /**
      * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Retired"***
-     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4184***
      */
     get Retired(): UplcData;
 }
 
 /**
  * NeighborhoodState enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **5 variant(s)** of the NeighborhoodState enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `NeighborhoodStateHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type NeighborhoodStateLike = IntersectedEnum<{
-    Preproduction: tagOnly;
-} | {
-    Active: tagOnly;
-} | {
-    UpdatePending: tagOnly;
-} | {
-    UpdateDisputed: tagOnly;
-} | {
-    Retired: tagOnly;
-}>;
+declare type NeighborhoodStateLike = IntersectedEnum<
+| { Preproduction: tagOnly /*minEnumVariant*/ }
+| { Active: tagOnly /*minEnumVariant*/ }
+| { UpdatePending: tagOnly /*minEnumVariant*/ }
+| { UpdateDisputed: tagOnly /*minEnumVariant*/ }
+| { Retired: tagOnly /*minEnumVariant*/ }
+>
 
 /**
- * A strong type for the canonical form of NodeDetails
+ * A strong type for the canonical form of NodeDetailsV1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeDetails instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeDetailsV1 instead.
  * @public
  */
-declare interface NodeDetails {
-    address: string;
-    port: bigint;
-    pubKey: PubKey;
-    pubKeyHash: PubKeyHash;
-}
-
-/**
- * A strong type for the canonical form of NodeDetails
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeDetails instead.
- * @public
- */
-declare interface NodeDetails_2 {
+declare interface NodeDetailsV1 {
     address: /*minStructField*/ string
     port: /*minStructField*/ bigint
     pubKey: /*minStructField*/ PubKey
@@ -14767,45 +15158,60 @@ declare interface NodeDetails_2 {
 }
 
 /**
- * A strong type for the permissive form of NodeDetails
+ * A strong type for the canonical form of NodeDetailsV1
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeDetailsV1 instead.
+ * @public
+ */
+declare interface NodeDetailsV1_2 {
+    address: /*minStructField*/ string
+    port: /*minStructField*/ bigint
+    pubKey: /*minStructField*/ PubKey
+    pubKeyHash: /*minStructField*/ PubKeyHash
+}
+
+/**
+ * A strong type for the permissive form of NodeDetailsV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface NodeDetailsLike {
-    address: string;
-    port: IntLike;
-    pubKey: /*minStructField*/ PubKey | string | number[];
-    pubKeyHash: /*minStructField*/ PubKeyHash | string | number[];
+declare interface NodeDetailsV1Like {
+    address: /*minStructField*/ string
+    port: /*minStructField*/ IntLike
+    pubKey: /*minStructField*/ PubKey | string | number[]
+    pubKeyHash: /*minStructField*/ PubKeyHash | string | number[]
 }
 
 /**
  * NodeOperatorSettings enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **1 variant(s)** of the NodeOperatorSettings enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type NodeOperatorSettings = {
-    V1: NodeOperatorSettingsV1;
-};
+declare type NodeOperatorSettings = 
+| { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+    			NodeOperatorSettingsV1    /*minEnumVariant*/ }
 
 /**
  * NodeOperatorSettings enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **1 variant(s)** of the NodeOperatorSettings enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type NodeOperatorSettings_2 = {
-    V1: NodeOperatorSettingsV1_2;
-};
+declare type NodeOperatorSettings_2 = 
+| { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+    			NodeOperatorSettingsV1_2    /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***NodeOperatorSettings*** enum type.
@@ -14887,49 +15293,53 @@ declare class NodeOperatorSettingsHelper_2 extends EnumBridge<JustAnEnum> {
 
 /**
  * NodeOperatorSettings enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **1 variant(s)** of the NodeOperatorSettings enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type NodeOperatorSettingsLike = IntersectedEnum<{
-    V1: NodeOperatorSettingsV1Like;
-}>;
+declare type NodeOperatorSettingsLike = IntersectedEnum<
+| { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+    			NodeOperatorSettingsV1Like    /*minEnumVariant*/ }
+>
 
 /**
  * NodeOperatorSettings enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **1 variant(s)** of the NodeOperatorSettings enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `NodeOperatorSettingsHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type NodeOperatorSettingsLike_2 = IntersectedEnum<{
-    V1: NodeOperatorSettingsV1Like_2;
-}>;
+declare type NodeOperatorSettingsLike_2 = IntersectedEnum<
+| { V1: /* implied wrapper { s: ... } for singleVariantField */ 
+    			NodeOperatorSettingsV1Like_2    /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type NodeOperatorSettingsMeta = EnumTypeMeta<{
-    module: "NodeOperatorSettings";
-    enumName: "NodeOperatorSettings";
-}, {
-    V1: singleEnumVariantMeta<NodeOperatorSettingsMeta, "V1", "Constr#0", "singletonField", /* implied wrapper { s: ... } for singleVariantField */ NodeOperatorSettingsV1_2, "noSpecialFlags">;
-}>;
+declare type NodeOperatorSettingsMeta = EnumTypeMeta<
+    {module: "NodeOperatorSettings", enumName: "NodeOperatorSettings"}, {
+    V1: singleEnumVariantMeta<NodeOperatorSettingsMeta, "V1",
+    "Constr#0", "singletonField", /* implied wrapper { s: ... } for singleVariantField */ 
+    			NodeOperatorSettingsV1_2   , "noSpecialFlags"
+    >
+}
+>;
 
 /**
  * A strong type for the canonical form of NodeOperatorSettingsV1
@@ -14940,11 +15350,11 @@ declare type NodeOperatorSettingsMeta = EnumTypeMeta<{
  * @public
  */
 declare interface NodeOperatorSettingsV1 {
-    expectedHeartbeatInterval: bigint;
-    requiredNodeUptime: number;
-    minValidations: bigint;
-    minNodeRegistrationFee: Value;
-    minNodeOperatorStake: Value;
+    expectedHeartbeatInterval: /*minStructField*/ bigint
+    requiredNodeUptime: /*minStructField*/ number
+    minValidations: /*minStructField*/ bigint
+    minNodeRegistrationFee: /*minStructField*/ Value
+    minNodeOperatorStake: /*minStructField*/ Value
 }
 
 /**
@@ -14956,11 +15366,11 @@ declare interface NodeOperatorSettingsV1 {
  * @public
  */
 declare interface NodeOperatorSettingsV1_2 {
-    expectedHeartbeatInterval: bigint;
-    requiredNodeUptime: number;
-    minValidations: bigint;
-    minNodeRegistrationFee: Value;
-    minNodeOperatorStake: Value;
+    expectedHeartbeatInterval: /*minStructField*/ bigint
+    requiredNodeUptime: /*minStructField*/ number
+    minValidations: /*minStructField*/ bigint
+    minNodeRegistrationFee: /*minStructField*/ Value
+    minNodeOperatorStake: /*minStructField*/ Value
 }
 
 /**
@@ -14970,23 +15380,11 @@ declare interface NodeOperatorSettingsV1_2 {
  * @public
  */
 declare interface NodeOperatorSettingsV1Like {
-    expectedHeartbeatInterval: IntLike;
-    requiredNodeUptime: number;
-    minValidations: IntLike;
-    minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
+    expectedHeartbeatInterval: /*minStructField*/ IntLike
+    requiredNodeUptime: /*minStructField*/ number
+    minValidations: /*minStructField*/ IntLike
+    minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 
 /**
@@ -14996,57 +15394,39 @@ declare interface NodeOperatorSettingsV1Like {
  * @public
  */
 declare interface NodeOperatorSettingsV1Like_2 {
-    expectedHeartbeatInterval: IntLike;
-    requiredNodeUptime: number;
-    minValidations: IntLike;
-    minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
+    expectedHeartbeatInterval: /*minStructField*/ IntLike
+    requiredNodeUptime: /*minStructField*/ number
+    minValidations: /*minStructField*/ IntLike
+    minNodeRegistrationFee: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
 }
 
 /**
- * A strong type for the canonical form of NodeOpsInfo
+ * A strong type for the canonical form of NodeOpsInfoV1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOpsInfo instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoNodeOpsInfoV1 instead.
  * @public
  */
-declare interface NodeOpsInfo {
-    minNodes: bigint;
-    maxNodes: bigint;
-    minNodeOperatorStake: Value;
-    minUptime: bigint;
+declare interface NodeOpsInfoV1 {
+    minNodes: /*minStructField*/ bigint
+    maxNodes: /*minStructField*/ bigint
+    minNodeOperatorStake: /*minStructField*/ Value
+    minUptime: /*minStructField*/ bigint
 }
 
 /**
- * A strong type for the permissive form of NodeOpsInfo
+ * A strong type for the permissive form of NodeOpsInfoV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface NodeOpsInfoLike {
-    minNodes: IntLike;
-    maxNodes: IntLike;
-    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-    minUptime: IntLike;
+declare interface NodeOpsInfoV1Like {
+    minNodes: /*minStructField*/ IntLike
+    maxNodes: /*minStructField*/ IntLike
+    minNodeOperatorStake: /*minStructField*/ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]
+    minUptime: /*minStructField*/ IntLike
 }
 
 /**
@@ -15058,11 +15438,11 @@ declare interface NodeOpsInfoLike {
  * @public
  */
 export declare interface NodeRegistrationData {
-    id: number[];
-    type: string;
-    memberToken: string;
-    state: DredNodeState;
-    nodeDetails: NodeDetails;
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    memberToken: /*minStructField*/ string
+    state: /*minStructField*/ DredNodeState
+    nodeDetails: /*minStructField*/ NodeDetailsV1
 }
 
 /**
@@ -15072,11 +15452,11 @@ export declare interface NodeRegistrationData {
  * @public
  */
 declare interface NodeRegistrationDataLike {
-    id: number[];
-    type: string;
-    memberToken: string;
-    state: DredNodeStateLike;
-    nodeDetails: NodeDetailsLike;
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    memberToken: /*minStructField*/ string
+    state: /*minStructField*/ DredNodeStateLike
+    nodeDetails: /*minStructField*/ NodeDetailsV1Like
 }
 
 /**
@@ -15084,13 +15464,13 @@ declare interface NodeRegistrationDataLike {
  */
 export declare class NodeRegistryController extends DelegatedDataContract<ErgoNodeRegistrationData, NodeRegistrationDataLike> {
     dataBridgeClass: typeof DredNodeRegistryPolicyDataBridge;
-    scriptBundle(): any;
+    scriptBundleClass(): Promise<default_2>;
     idPrefix: "dredNode";
     get delegateName(): string;
     get recordTypeName(): string;
     exampleData(): minimalNodeRegistrationData;
     get capo(): DredCapo;
-    mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData, initialTcx?: StellarTxnContext): Promise<hasUutContext<"recordId" | "dredNode"> & StellarTxnContext<anyState> & hasMemberToken & hasSeedUtxo & hasSettingsRef<any, any> & hasCharterRef>;
+    mkTxnRegisteringNode(this: NodeRegistryController, nodeReg: minimalNodeRegistrationData, initialTcx?: StellarTxnContext): Promise<hasUutContext<"recordId" | "dredNode"> & StellarTxnContext<anyState> & hasMemberToken & hasSettingsRef<any, any> & hasCharterRef & hasSeedUtxo>;
     mkTxnActivatingNode(item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, options?: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
         activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"];
     }, initialTcx?: StellarTxnContext<anyState> | undefined): Promise<StellarTxnContext<anyState>>;
@@ -15106,6 +15486,242 @@ export declare class NodeRegistryController extends DelegatedDataContract<ErgoNo
 }
 
 /**
+ * OtherActivity enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the OtherActivity enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `OtherActivityHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type OtherActivity = 
+| { Placeholder: tagOnly /*minEnumVariant*/ }
+
+/**
+ * OtherActivity enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the OtherActivity enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `OtherActivityHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type OtherActivity_2 = 
+| { Placeholder: tagOnly /*minEnumVariant*/ }
+
+/**
+ * OtherActivity enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the OtherActivity enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `OtherActivityHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+declare type OtherActivity_3 = 
+| { Placeholder: tagOnly /*minEnumVariant*/ }
+
+/**
+ * Helper class for generating UplcData for variants of the ***OtherActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class OtherActivityHelper extends EnumBridge<JustAnEnum> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<{
+        Placeholder: tagOnly;
+    }, {
+        Placeholder: tagOnly;
+    }>;
+    /**
+     * (property getter): UplcData for ***"DredNodeRegistryPolicy::OtherActivity.Placeholder"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#42***
+     */
+    get Placeholder(): UplcData;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***OtherActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class OtherActivityHelper_2 extends EnumBridge<JustAnEnum> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<{
+        Placeholder: tagOnly;
+    }, {
+        Placeholder: tagOnly;
+    }>;
+    /**
+     * (property getter): UplcData for ***"NeighborhoodPolicy::OtherActivity.Placeholder"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#42***
+     */
+    get Placeholder(): UplcData;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***OtherActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class OtherActivityHelper_3 extends EnumBridge<JustAnEnum> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<{
+        Placeholder: tagOnly;
+    }, {
+        Placeholder: tagOnly;
+    }>;
+    /**
+     * (property getter): UplcData for ***"ProtocolSettingsPolicy::OtherActivity.Placeholder"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#42***
+     */
+    get Placeholder(): UplcData;
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***OtherActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class OtherActivityHelperNested extends EnumBridge<isActivity> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<{
+        Placeholder: tagOnly;
+    }, {
+        Placeholder: tagOnly;
+    }>;
+    /**
+     * (property getter): UplcData for ***"DredNodeRegistryPolicy::OtherActivity.Placeholder"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#42***
+     */
+    get Placeholder(): {
+        redeemer: UplcData;
+    };
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***OtherActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class OtherActivityHelperNested_2 extends EnumBridge<isActivity> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<{
+        Placeholder: tagOnly;
+    }, {
+        Placeholder: tagOnly;
+    }>;
+    /**
+     * (property getter): UplcData for ***"NeighborhoodPolicy::OtherActivity.Placeholder"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#42***
+     */
+    get Placeholder(): {
+        redeemer: UplcData;
+    };
+}
+
+/**
+ * Helper class for generating UplcData for variants of the ***OtherActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+declare class OtherActivityHelperNested_3 extends EnumBridge<isActivity> {
+    /**
+     * @internal
+     *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast: Cast<{
+        Placeholder: tagOnly;
+    }, {
+        Placeholder: tagOnly;
+    }>;
+    /**
+     * (property getter): UplcData for ***"ProtocolSettingsPolicy::OtherActivity.Placeholder"***
+     * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#42***
+     */
+    get Placeholder(): {
+        redeemer: UplcData;
+    };
+}
+
+/**
+ * OtherActivity enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the OtherActivity enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `OtherActivityHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+declare type OtherActivityLike = IntersectedEnum<
+| { Placeholder: tagOnly /*minEnumVariant*/ }
+>
+
+/**
+ * OtherActivity enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the OtherActivity enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `OtherActivityHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+declare type OtherActivityLike_2 = IntersectedEnum<
+| { Placeholder: tagOnly /*minEnumVariant*/ }
+>
+
+/**
+ * OtherActivity enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the OtherActivity enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `OtherActivityHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+declare type OtherActivityLike_3 = IntersectedEnum<
+| { Placeholder: tagOnly /*minEnumVariant*/ }
+>
+
+/**
+ * @internal
+ */
+declare type OtherActivityMeta = EnumTypeMeta<
+    {module: "DredNodeRegistryPolicy", enumName: "OtherActivity"}, {
+    Placeholder: singleEnumVariantMeta<OtherActivityMeta, "Placeholder",
+    "Constr#42", "tagOnly", tagOnly, "noSpecialFlags"
+    >
+}
+>;
+
+/**
  * An ergonomic, though less strictly-safe form of PendingCharterChange$otherManifestChange
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
@@ -15115,9 +15731,9 @@ export declare class NodeRegistryController extends DelegatedDataContract<ErgoNo
  * @public
  */
 declare type PendingCharterChange$Ergo$otherManifestChange = {
-    activity: ErgoManifestActivity;
-    remainingDelegateValidations: Array<ErgoDelegateRole>;
-};
+    activity: ErgoManifestActivity  /*minVariantField*/ ,
+    remainingDelegateValidations: Array<ErgoDelegateRole>  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of PendingCharterChange$otherManifestChange
@@ -15129,9 +15745,9 @@ declare type PendingCharterChange$Ergo$otherManifestChange = {
  * @public
  */
 declare type PendingCharterChange$Ergo$otherManifestChange_2 = {
-    activity: ErgoManifestActivity_2;
-    remainingDelegateValidations: Array<ErgoDelegateRole_2>;
-};
+    activity: ErgoManifestActivity_2  /*minVariantField*/ ,
+    remainingDelegateValidations: Array<ErgoDelegateRole_2>  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of PendingCharterChange$otherManifestChange
@@ -15143,9 +15759,9 @@ declare type PendingCharterChange$Ergo$otherManifestChange_2 = {
  * @public
  */
 declare type PendingCharterChange$Ergo$otherManifestChange_3 = {
-    activity: ErgoManifestActivity_3;
-    remainingDelegateValidations: Array<ErgoDelegateRole_3>;
-};
+    activity: ErgoManifestActivity_3  /*minVariantField*/ ,
+    remainingDelegateValidations: Array<ErgoDelegateRole_3>  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of PendingCharterChange$otherManifestChange
@@ -15157,9 +15773,9 @@ declare type PendingCharterChange$Ergo$otherManifestChange_3 = {
  * @public
  */
 declare type PendingCharterChange$Ergo$otherManifestChange_4 = {
-    activity: ErgoManifestActivity_4;
-    remainingDelegateValidations: Array<ErgoDelegateRole_4>;
-};
+    activity: ErgoManifestActivity_4  /*minVariantField*/ ,
+    remainingDelegateValidations: Array<ErgoDelegateRole_4>  /*minVariantField*/ 
+}
 
 /**
  * An ergonomic, though less strictly-safe form of PendingCharterChange$otherManifestChange
@@ -15171,9 +15787,9 @@ declare type PendingCharterChange$Ergo$otherManifestChange_4 = {
  * @public
  */
 declare type PendingCharterChange$Ergo$otherManifestChange_5 = {
-    activity: ErgoManifestActivity_5;
-    remainingDelegateValidations: Array<ErgoDelegateRole_5>;
-};
+    activity: ErgoManifestActivity_5  /*minVariantField*/ ,
+    remainingDelegateValidations: Array<ErgoDelegateRole_5>  /*minVariantField*/ 
+}
 
 /**
  * A strong type for the canonical form of PendingCharterChange$otherManifestChange
@@ -15184,8 +15800,8 @@ declare type PendingCharterChange$Ergo$otherManifestChange_5 = {
  * @public
  */
 declare interface PendingCharterChange$otherManifestChange {
-    activity: ManifestActivity;
-    remainingDelegateValidations: Array<DelegateRole_2>;
+    activity: ManifestActivity  /*minVariantField*/ ,
+    remainingDelegateValidations: Array<DelegateRole_2>  /*minVariantField*/ 
 }
 
 /**
@@ -15197,8 +15813,8 @@ declare interface PendingCharterChange$otherManifestChange {
  * @public
  */
 declare interface PendingCharterChange$otherManifestChange_2 {
-    activity: ManifestActivity_2;
-    remainingDelegateValidations: Array<DelegateRole_3>;
+    activity: ManifestActivity_2  /*minVariantField*/ ,
+    remainingDelegateValidations: Array<DelegateRole_3>  /*minVariantField*/ 
 }
 
 /**
@@ -15210,8 +15826,8 @@ declare interface PendingCharterChange$otherManifestChange_2 {
  * @public
  */
 declare interface PendingCharterChange$otherManifestChange_3 {
-    activity: ManifestActivity_3;
-    remainingDelegateValidations: Array<DelegateRole_4>;
+    activity: ManifestActivity_3  /*minVariantField*/ ,
+    remainingDelegateValidations: Array<DelegateRole_4>  /*minVariantField*/ 
 }
 
 /**
@@ -15223,8 +15839,8 @@ declare interface PendingCharterChange$otherManifestChange_3 {
  * @public
  */
 declare interface PendingCharterChange$otherManifestChange_4 {
-    activity: ManifestActivity_4;
-    remainingDelegateValidations: Array<DelegateRole_5>;
+    activity: ManifestActivity_4  /*minVariantField*/ ,
+    remainingDelegateValidations: Array<DelegateRole_5>  /*minVariantField*/ 
 }
 
 /**
@@ -15234,8 +15850,8 @@ declare interface PendingCharterChange$otherManifestChange_4 {
  * @public
  */
 declare interface PendingCharterChange$otherManifestChangeLike {
-    activity: ManifestActivityLike;
-    remainingDelegateValidations: Array<DelegateRoleLike>;
+    activity: ManifestActivityLike  /*minVariantField*/ ,
+    remainingDelegateValidations: Array<DelegateRoleLike>  /*minVariantField*/ 
 }
 
 /**
@@ -15245,8 +15861,8 @@ declare interface PendingCharterChange$otherManifestChangeLike {
  * @public
  */
 declare interface PendingCharterChange$otherManifestChangeLike_2 {
-    activity: ManifestActivityLike_2;
-    remainingDelegateValidations: Array<DelegateRoleLike_2>;
+    activity: ManifestActivityLike_2  /*minVariantField*/ ,
+    remainingDelegateValidations: Array<DelegateRoleLike_2>  /*minVariantField*/ 
 }
 
 /**
@@ -15256,8 +15872,8 @@ declare interface PendingCharterChange$otherManifestChangeLike_2 {
  * @public
  */
 declare interface PendingCharterChange$otherManifestChangeLike_3 {
-    activity: ManifestActivityLike_3;
-    remainingDelegateValidations: Array<DelegateRoleLike_3>;
+    activity: ManifestActivityLike_3  /*minVariantField*/ ,
+    remainingDelegateValidations: Array<DelegateRoleLike_3>  /*minVariantField*/ 
 }
 
 /**
@@ -15267,73 +15883,69 @@ declare interface PendingCharterChange$otherManifestChangeLike_3 {
  * @public
  */
 declare interface PendingCharterChange$otherManifestChangeLike_4 {
-    activity: ManifestActivityLike_4;
-    remainingDelegateValidations: Array<DelegateRoleLike_4>;
+    activity: ManifestActivityLike_4  /*minVariantField*/ ,
+    remainingDelegateValidations: Array<DelegateRoleLike_4>  /*minVariantField*/ 
 }
 
 /**
  * PendingCharterChange enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **2 variant(s)** of the PendingCharterChange enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type PendingCharterChange = {
-    delegateChange: PendingDelegateChange;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChange;
-};
+declare type PendingCharterChange = 
+| { delegateChange: /* implied wrapper { change: ... } for singleVariantField */ 
+    			PendingDelegateChange    /*minEnumVariant*/ }
+| { otherManifestChange: PendingCharterChange$otherManifestChange /*minEnumVariant*/ }
 
 /**
  * PendingCharterChange enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **2 variant(s)** of the PendingCharterChange enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type PendingCharterChange_2 = {
-    delegateChange: PendingDelegateChange_2;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChange_2;
-};
+declare type PendingCharterChange_2 = 
+| { delegateChange: /* implied wrapper { change: ... } for singleVariantField */ 
+    			PendingDelegateChange_2    /*minEnumVariant*/ }
+| { otherManifestChange: PendingCharterChange$otherManifestChange_2 /*minEnumVariant*/ }
 
 /**
  * PendingCharterChange enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **2 variant(s)** of the PendingCharterChange enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type PendingCharterChange_3 = {
-    delegateChange: PendingDelegateChange_3;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChange_3;
-};
+declare type PendingCharterChange_3 = 
+| { delegateChange: /* implied wrapper { change: ... } for singleVariantField */ 
+    			PendingDelegateChange_3    /*minEnumVariant*/ }
+| { otherManifestChange: PendingCharterChange$otherManifestChange_3 /*minEnumVariant*/ }
 
 /**
  * PendingCharterChange enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **2 variant(s)** of the PendingCharterChange enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type PendingCharterChange_4 = {
-    delegateChange: PendingDelegateChange_4;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChange_4;
-};
+declare type PendingCharterChange_4 = 
+| { delegateChange: /* implied wrapper { change: ... } for singleVariantField */ 
+    			PendingDelegateChange_4    /*minEnumVariant*/ }
+| { otherManifestChange: PendingCharterChange$otherManifestChange_4 /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***PendingCharterChange*** enum type.
@@ -15465,94 +16077,99 @@ declare class PendingCharterChangeHelper_4 extends EnumBridge<JustAnEnum> {
 
 /**
  * PendingCharterChange enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **2 variant(s)** of the PendingCharterChange enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type PendingCharterChangeLike = IntersectedEnum<{
-    delegateChange: PendingDelegateChangeLike;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChangeLike;
-}>;
+declare type PendingCharterChangeLike = IntersectedEnum<
+| { delegateChange: /* implied wrapper { change: ... } for singleVariantField */ 
+    			PendingDelegateChangeLike    /*minEnumVariant*/ }
+| { otherManifestChange: PendingCharterChange$otherManifestChangeLike /*minEnumVariant*/ }
+>
 
 /**
  * PendingCharterChange enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **2 variant(s)** of the PendingCharterChange enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type PendingCharterChangeLike_2 = IntersectedEnum<{
-    delegateChange: PendingDelegateChangeLike_2;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChangeLike_2;
-}>;
+declare type PendingCharterChangeLike_2 = IntersectedEnum<
+| { delegateChange: /* implied wrapper { change: ... } for singleVariantField */ 
+    			PendingDelegateChangeLike_2    /*minEnumVariant*/ }
+| { otherManifestChange: PendingCharterChange$otherManifestChangeLike_2 /*minEnumVariant*/ }
+>
 
 /**
  * PendingCharterChange enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **2 variant(s)** of the PendingCharterChange enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type PendingCharterChangeLike_3 = IntersectedEnum<{
-    delegateChange: PendingDelegateChangeLike_3;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChangeLike_3;
-}>;
+declare type PendingCharterChangeLike_3 = IntersectedEnum<
+| { delegateChange: /* implied wrapper { change: ... } for singleVariantField */ 
+    			PendingDelegateChangeLike_3    /*minEnumVariant*/ }
+| { otherManifestChange: PendingCharterChange$otherManifestChangeLike_3 /*minEnumVariant*/ }
+>
 
 /**
  * PendingCharterChange enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **2 variant(s)** of the PendingCharterChange enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingCharterChangeHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type PendingCharterChangeLike_4 = IntersectedEnum<{
-    delegateChange: PendingDelegateChangeLike_4;
-} | {
-    otherManifestChange: PendingCharterChange$otherManifestChangeLike_4;
-}>;
+declare type PendingCharterChangeLike_4 = IntersectedEnum<
+| { delegateChange: /* implied wrapper { change: ... } for singleVariantField */ 
+    			PendingDelegateChangeLike_4    /*minEnumVariant*/ }
+| { otherManifestChange: PendingCharterChange$otherManifestChangeLike_4 /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type PendingCharterChangeMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "PendingCharterChange";
-}, {
-    delegateChange: singleEnumVariantMeta<PendingCharterChangeMeta, "delegateChange", "Constr#0", "singletonField", /* implied wrapper { change: ... } for singleVariantField */ PendingDelegateChange_2, "noSpecialFlags">;
-    otherManifestChange: singleEnumVariantMeta<PendingCharterChangeMeta, "otherManifestChange", "Constr#1", "fields", PendingCharterChange$otherManifestChange_2, "noSpecialFlags">;
-}>;
+declare type PendingCharterChangeMeta = EnumTypeMeta<
+    {module: "CapoDelegateHelpers", enumName: "PendingCharterChange"}, {
+    delegateChange: singleEnumVariantMeta<PendingCharterChangeMeta, "delegateChange",
+    "Constr#0", "singletonField", /* implied wrapper { change: ... } for singleVariantField */ 
+    			PendingDelegateChange_2   , "noSpecialFlags"
+    >,
+    otherManifestChange: singleEnumVariantMeta<PendingCharterChangeMeta, "otherManifestChange",
+    "Constr#1", 
+    "fields", PendingCharterChange$otherManifestChange_2, "noSpecialFlags"
+    >
+}
+>;
 
 /**
  * A strong type for the canonical form of PendingDelegateAction$Add
@@ -15563,9 +16180,9 @@ declare type PendingCharterChangeMeta = EnumTypeMeta<{
  * @public
  */
 declare interface PendingDelegateAction$Add {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ 
 }
 
 /**
@@ -15577,9 +16194,9 @@ declare interface PendingDelegateAction$Add {
  * @public
  */
 declare interface PendingDelegateAction$Add_2 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ 
 }
 
 /**
@@ -15591,9 +16208,9 @@ declare interface PendingDelegateAction$Add_2 {
  * @public
  */
 declare interface PendingDelegateAction$Add_3 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ 
 }
 
 /**
@@ -15605,9 +16222,9 @@ declare interface PendingDelegateAction$Add_3 {
  * @public
  */
 declare interface PendingDelegateAction$Add_4 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ 
 }
 
 /**
@@ -15619,9 +16236,9 @@ declare interface PendingDelegateAction$Add_4 {
  * @public
  */
 declare interface PendingDelegateAction$Add_5 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ 
 }
 
 /**
@@ -15631,9 +16248,9 @@ declare interface PendingDelegateAction$Add_5 {
  * @public
  */
 declare interface PendingDelegateAction$AddLike {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ 
 }
 
 /**
@@ -15643,9 +16260,9 @@ declare interface PendingDelegateAction$AddLike {
  * @public
  */
 declare interface PendingDelegateAction$AddLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ 
 }
 
 /**
@@ -15655,9 +16272,9 @@ declare interface PendingDelegateAction$AddLike_2 {
  * @public
  */
 declare interface PendingDelegateAction$AddLike_3 {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ 
 }
 
 /**
@@ -15667,9 +16284,9 @@ declare interface PendingDelegateAction$AddLike_3 {
  * @public
  */
 declare interface PendingDelegateAction$AddLike_4 {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ 
 }
 
 /**
@@ -15681,7 +16298,7 @@ declare interface PendingDelegateAction$AddLike_4 {
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type PendingDelegateAction$Ergo$Add = PendingDelegateAction$Add;
+declare type PendingDelegateAction$Ergo$Add = PendingDelegateAction$Add
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Add
@@ -15692,7 +16309,7 @@ declare type PendingDelegateAction$Ergo$Add = PendingDelegateAction$Add;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type PendingDelegateAction$Ergo$Add_2 = PendingDelegateAction$Add_2;
+declare type PendingDelegateAction$Ergo$Add_2 = PendingDelegateAction$Add_2
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Add
@@ -15703,7 +16320,7 @@ declare type PendingDelegateAction$Ergo$Add_2 = PendingDelegateAction$Add_2;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type PendingDelegateAction$Ergo$Add_3 = PendingDelegateAction$Add_3;
+declare type PendingDelegateAction$Ergo$Add_3 = PendingDelegateAction$Add_3
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Add
@@ -15714,7 +16331,7 @@ declare type PendingDelegateAction$Ergo$Add_3 = PendingDelegateAction$Add_3;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type PendingDelegateAction$Ergo$Add_4 = PendingDelegateAction$Add_4;
+declare type PendingDelegateAction$Ergo$Add_4 = PendingDelegateAction$Add_4
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Add
@@ -15725,7 +16342,7 @@ declare type PendingDelegateAction$Ergo$Add_4 = PendingDelegateAction$Add_4;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type PendingDelegateAction$Ergo$Add_5 = PendingDelegateAction$Add_5;
+declare type PendingDelegateAction$Ergo$Add_5 = PendingDelegateAction$Add_5
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
@@ -15736,7 +16353,7 @@ declare type PendingDelegateAction$Ergo$Add_5 = PendingDelegateAction$Add_5;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type PendingDelegateAction$Ergo$Replace = PendingDelegateAction$Replace;
+declare type PendingDelegateAction$Ergo$Replace = PendingDelegateAction$Replace
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
@@ -15747,7 +16364,7 @@ declare type PendingDelegateAction$Ergo$Replace = PendingDelegateAction$Replace;
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type PendingDelegateAction$Ergo$Replace_2 = PendingDelegateAction$Replace_2;
+declare type PendingDelegateAction$Ergo$Replace_2 = PendingDelegateAction$Replace_2
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
@@ -15758,7 +16375,7 @@ declare type PendingDelegateAction$Ergo$Replace_2 = PendingDelegateAction$Replac
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type PendingDelegateAction$Ergo$Replace_3 = PendingDelegateAction$Replace_3;
+declare type PendingDelegateAction$Ergo$Replace_3 = PendingDelegateAction$Replace_3
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
@@ -15769,7 +16386,7 @@ declare type PendingDelegateAction$Ergo$Replace_3 = PendingDelegateAction$Replac
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type PendingDelegateAction$Ergo$Replace_4 = PendingDelegateAction$Replace_4;
+declare type PendingDelegateAction$Ergo$Replace_4 = PendingDelegateAction$Replace_4
 
 /**
  * An ergonomic, though less strictly-safe form of PendingDelegateAction$Replace
@@ -15780,7 +16397,7 @@ declare type PendingDelegateAction$Ergo$Replace_4 = PendingDelegateAction$Replac
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type PendingDelegateAction$Ergo$Replace_5 = PendingDelegateAction$Replace_5;
+declare type PendingDelegateAction$Ergo$Replace_5 = PendingDelegateAction$Replace_5
 
 /**
  * A strong type for the canonical form of PendingDelegateAction$Replace
@@ -15791,10 +16408,10 @@ declare type PendingDelegateAction$Ergo$Replace_5 = PendingDelegateAction$Replac
  * @public
  */
 declare interface PendingDelegateAction$Replace {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    replacesDgt: AssetClass  /*minVariantField*/ 
 }
 
 /**
@@ -15806,10 +16423,10 @@ declare interface PendingDelegateAction$Replace {
  * @public
  */
 declare interface PendingDelegateAction$Replace_2 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    replacesDgt: AssetClass  /*minVariantField*/ 
 }
 
 /**
@@ -15821,10 +16438,10 @@ declare interface PendingDelegateAction$Replace_2 {
  * @public
  */
 declare interface PendingDelegateAction$Replace_3 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    replacesDgt: AssetClass  /*minVariantField*/ 
 }
 
 /**
@@ -15836,10 +16453,10 @@ declare interface PendingDelegateAction$Replace_3 {
  * @public
  */
 declare interface PendingDelegateAction$Replace_4 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    replacesDgt: AssetClass  /*minVariantField*/ 
 }
 
 /**
@@ -15851,10 +16468,10 @@ declare interface PendingDelegateAction$Replace_4 {
  * @public
  */
 declare interface PendingDelegateAction$Replace_5 {
-    seed: TxOutputId;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass;
+    seed: TxOutputId  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    replacesDgt: AssetClass  /*minVariantField*/ 
 }
 
 /**
@@ -15864,13 +16481,10 @@ declare interface PendingDelegateAction$Replace_5 {
  * @public
  */
 declare interface PendingDelegateAction$ReplaceLike {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-        mph: MintingPolicyHash | string | number[];
-        tokenName: string | number[];
-    };
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {mph: MintingPolicyHash | string | number[], tokenName: string | number[]}  /*minVariantField*/ 
 }
 
 /**
@@ -15880,13 +16494,10 @@ declare interface PendingDelegateAction$ReplaceLike {
  * @public
  */
 declare interface PendingDelegateAction$ReplaceLike_2 {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-        mph: MintingPolicyHash | string | number[];
-        tokenName: string | number[];
-    };
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {mph: MintingPolicyHash | string | number[], tokenName: string | number[]}  /*minVariantField*/ 
 }
 
 /**
@@ -15896,13 +16507,10 @@ declare interface PendingDelegateAction$ReplaceLike_2 {
  * @public
  */
 declare interface PendingDelegateAction$ReplaceLike_3 {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-        mph: MintingPolicyHash | string | number[];
-        tokenName: string | number[];
-    };
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {mph: MintingPolicyHash | string | number[], tokenName: string | number[]}  /*minVariantField*/ 
 }
 
 /**
@@ -15912,86 +16520,71 @@ declare interface PendingDelegateAction$ReplaceLike_3 {
  * @public
  */
 declare interface PendingDelegateAction$ReplaceLike_4 {
-    seed: TxOutputId | string;
-    purpose: string;
-    idPrefix: string;
-    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {
-        mph: MintingPolicyHash | string | number[];
-        tokenName: string | number[];
-    };
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    purpose: string  /*minVariantField*/ ,
+    idPrefix: string  /*minVariantField*/ ,
+    replacesDgt: AssetClass | string | [string | MintingPolicyHash | number[], string | number[]] | {mph: MintingPolicyHash | string | number[], tokenName: string | number[]}  /*minVariantField*/ 
 }
 
 /**
  * PendingDelegateAction enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the PendingDelegateAction enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type PendingDelegateAction = {
-    Add: PendingDelegateAction$Add_2;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Replace_2;
-};
+declare type PendingDelegateAction = 
+| { Add: PendingDelegateAction$Add_2 /*minEnumVariant*/ }
+| { Remove: tagOnly /*minEnumVariant*/ }
+| { Replace: PendingDelegateAction$Replace_2 /*minEnumVariant*/ }
 
 /**
  * PendingDelegateAction enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the PendingDelegateAction enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type PendingDelegateAction_2 = {
-    Add: PendingDelegateAction$Add_3;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Replace_3;
-};
+declare type PendingDelegateAction_2 = 
+| { Add: PendingDelegateAction$Add_3 /*minEnumVariant*/ }
+| { Remove: tagOnly /*minEnumVariant*/ }
+| { Replace: PendingDelegateAction$Replace_3 /*minEnumVariant*/ }
 
 /**
  * PendingDelegateAction enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the PendingDelegateAction enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type PendingDelegateAction_3 = {
-    Add: PendingDelegateAction$Add_4;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Replace_4;
-};
+declare type PendingDelegateAction_3 = 
+| { Add: PendingDelegateAction$Add_4 /*minEnumVariant*/ }
+| { Remove: tagOnly /*minEnumVariant*/ }
+| { Replace: PendingDelegateAction$Replace_4 /*minEnumVariant*/ }
 
 /**
  * PendingDelegateAction enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the PendingDelegateAction enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type PendingDelegateAction_4 = {
-    Add: PendingDelegateAction$Add_5;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$Replace_5;
-};
+declare type PendingDelegateAction_4 = 
+| { Add: PendingDelegateAction$Add_5 /*minEnumVariant*/ }
+| { Remove: tagOnly /*minEnumVariant*/ }
+| { Replace: PendingDelegateAction$Replace_5 /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***PendingDelegateAction*** enum type.
@@ -16503,103 +17096,102 @@ declare class PendingDelegateActionHelper_4 extends EnumBridge<JustAnEnum> {
 
 /**
  * PendingDelegateAction enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **3 variant(s)** of the PendingDelegateAction enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type PendingDelegateActionLike = IntersectedEnum<{
-    Add: PendingDelegateAction$AddLike;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$ReplaceLike;
-}>;
+declare type PendingDelegateActionLike = IntersectedEnum<
+| { Add: PendingDelegateAction$AddLike /*minEnumVariant*/ }
+| { Remove: tagOnly /*minEnumVariant*/ }
+| { Replace: PendingDelegateAction$ReplaceLike /*minEnumVariant*/ }
+>
 
 /**
  * PendingDelegateAction enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **3 variant(s)** of the PendingDelegateAction enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type PendingDelegateActionLike_2 = IntersectedEnum<{
-    Add: PendingDelegateAction$AddLike_2;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$ReplaceLike_2;
-}>;
+declare type PendingDelegateActionLike_2 = IntersectedEnum<
+| { Add: PendingDelegateAction$AddLike_2 /*minEnumVariant*/ }
+| { Remove: tagOnly /*minEnumVariant*/ }
+| { Replace: PendingDelegateAction$ReplaceLike_2 /*minEnumVariant*/ }
+>
 
 /**
  * PendingDelegateAction enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **3 variant(s)** of the PendingDelegateAction enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type PendingDelegateActionLike_3 = IntersectedEnum<{
-    Add: PendingDelegateAction$AddLike_3;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$ReplaceLike_3;
-}>;
+declare type PendingDelegateActionLike_3 = IntersectedEnum<
+| { Add: PendingDelegateAction$AddLike_3 /*minEnumVariant*/ }
+| { Remove: tagOnly /*minEnumVariant*/ }
+| { Replace: PendingDelegateAction$ReplaceLike_3 /*minEnumVariant*/ }
+>
 
 /**
  * PendingDelegateAction enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **3 variant(s)** of the PendingDelegateAction enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `PendingDelegateActionHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type PendingDelegateActionLike_4 = IntersectedEnum<{
-    Add: PendingDelegateAction$AddLike_4;
-} | {
-    Remove: tagOnly;
-} | {
-    Replace: PendingDelegateAction$ReplaceLike_4;
-}>;
+declare type PendingDelegateActionLike_4 = IntersectedEnum<
+| { Add: PendingDelegateAction$AddLike_4 /*minEnumVariant*/ }
+| { Remove: tagOnly /*minEnumVariant*/ }
+| { Replace: PendingDelegateAction$ReplaceLike_4 /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type PendingDelegateActionMeta = EnumTypeMeta<{
-    module: "CapoDelegateHelpers";
-    enumName: "PendingDelegateAction";
-}, {
-    Add: singleEnumVariantMeta<PendingDelegateActionMeta, "Add", "Constr#0", "fields", PendingDelegateAction$Add_3, "isSeededActivity">;
-    Remove: singleEnumVariantMeta<PendingDelegateActionMeta, "Remove", "Constr#1", "tagOnly", tagOnly, "noSpecialFlags">;
-    Replace: singleEnumVariantMeta<PendingDelegateActionMeta, "Replace", "Constr#2", "fields", PendingDelegateAction$Replace_3, "isSeededActivity">;
-}>;
+declare type PendingDelegateActionMeta = EnumTypeMeta<
+    {module: "CapoDelegateHelpers", enumName: "PendingDelegateAction"}, {
+    Add: singleEnumVariantMeta<PendingDelegateActionMeta, "Add",
+    "Constr#0", 
+    "fields", PendingDelegateAction$Add_3, "isSeededActivity"
+    >,
+    Remove: singleEnumVariantMeta<PendingDelegateActionMeta, "Remove",
+    "Constr#1", "tagOnly", tagOnly, "noSpecialFlags"
+    >,
+    Replace: singleEnumVariantMeta<PendingDelegateActionMeta, "Replace",
+    "Constr#2", 
+    "fields", PendingDelegateAction$Replace_3, "isSeededActivity"
+    >
+}
+>;
 
 /**
  * A strong type for the canonical form of PendingDelegateChange
@@ -16610,9 +17202,9 @@ declare type PendingDelegateActionMeta = EnumTypeMeta<{
  * @public
  */
 declare interface PendingDelegateChange {
-    action: PendingDelegateAction;
-    role: DelegateRole_2;
-    dgtLink: /*minStructField*/ RelativeDelegateLink_2 | undefined;
+    action: /*minStructField*/ PendingDelegateAction
+    role: /*minStructField*/ DelegateRole_2
+    dgtLink: /*minStructField*/ RelativeDelegateLink_2 | undefined
 }
 
 /**
@@ -16624,9 +17216,9 @@ declare interface PendingDelegateChange {
  * @public
  */
 declare interface PendingDelegateChange_2 {
-    action: PendingDelegateAction_2;
-    role: DelegateRole_3;
-    dgtLink: /*minStructField*/ RelativeDelegateLink_3 | undefined;
+    action: /*minStructField*/ PendingDelegateAction_2
+    role: /*minStructField*/ DelegateRole_3
+    dgtLink: /*minStructField*/ RelativeDelegateLink_3 | undefined
 }
 
 /**
@@ -16638,9 +17230,9 @@ declare interface PendingDelegateChange_2 {
  * @public
  */
 declare interface PendingDelegateChange_3 {
-    action: PendingDelegateAction_3;
-    role: DelegateRole_4;
-    dgtLink: /*minStructField*/ RelativeDelegateLink_4 | undefined;
+    action: /*minStructField*/ PendingDelegateAction_3
+    role: /*minStructField*/ DelegateRole_4
+    dgtLink: /*minStructField*/ RelativeDelegateLink_4 | undefined
 }
 
 /**
@@ -16652,9 +17244,9 @@ declare interface PendingDelegateChange_3 {
  * @public
  */
 declare interface PendingDelegateChange_4 {
-    action: PendingDelegateAction_4;
-    role: DelegateRole_5;
-    dgtLink: /*minStructField*/ RelativeDelegateLink_5 | undefined;
+    action: /*minStructField*/ PendingDelegateAction_4
+    role: /*minStructField*/ DelegateRole_5
+    dgtLink: /*minStructField*/ RelativeDelegateLink_5 | undefined
 }
 
 /**
@@ -16664,9 +17256,9 @@ declare interface PendingDelegateChange_4 {
  * @public
  */
 declare interface PendingDelegateChangeLike {
-    action: PendingDelegateActionLike;
-    role: DelegateRoleLike;
-    dgtLink: /*minStructField*/ RelativeDelegateLinkLike | undefined;
+    action: /*minStructField*/ PendingDelegateActionLike
+    role: /*minStructField*/ DelegateRoleLike
+    dgtLink: /*minStructField*/ RelativeDelegateLinkLike | undefined
 }
 
 /**
@@ -16676,9 +17268,9 @@ declare interface PendingDelegateChangeLike {
  * @public
  */
 declare interface PendingDelegateChangeLike_2 {
-    action: PendingDelegateActionLike_2;
-    role: DelegateRoleLike_2;
-    dgtLink: /*minStructField*/ RelativeDelegateLinkLike_2 | undefined;
+    action: /*minStructField*/ PendingDelegateActionLike_2
+    role: /*minStructField*/ DelegateRoleLike_2
+    dgtLink: /*minStructField*/ RelativeDelegateLinkLike_2 | undefined
 }
 
 /**
@@ -16688,9 +17280,9 @@ declare interface PendingDelegateChangeLike_2 {
  * @public
  */
 declare interface PendingDelegateChangeLike_3 {
-    action: PendingDelegateActionLike_3;
-    role: DelegateRoleLike_3;
-    dgtLink: /*minStructField*/ RelativeDelegateLinkLike_3 | undefined;
+    action: /*minStructField*/ PendingDelegateActionLike_3
+    role: /*minStructField*/ DelegateRoleLike_3
+    dgtLink: /*minStructField*/ RelativeDelegateLinkLike_3 | undefined
 }
 
 /**
@@ -16700,9 +17292,9 @@ declare interface PendingDelegateChangeLike_3 {
  * @public
  */
 declare interface PendingDelegateChangeLike_4 {
-    action: PendingDelegateActionLike_4;
-    role: DelegateRoleLike_4;
-    dgtLink: /*minStructField*/ RelativeDelegateLinkLike_4 | undefined;
+    action: /*minStructField*/ PendingDelegateActionLike_4
+    role: /*minStructField*/ DelegateRoleLike_4
+    dgtLink: /*minStructField*/ RelativeDelegateLinkLike_4 | undefined
 }
 
 /**
@@ -16714,10 +17306,10 @@ declare interface PendingDelegateChangeLike_4 {
  * @public
  */
 declare interface ProtocolSettings {
-    id: number[];
-    type: string;
-    nodeOpSettings: NodeOperatorSettings;
-    nbhSettings: NeighborhoodSettings;
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    nodeOpSettings: /*minStructField*/ NodeOperatorSettings
+    nbhSettings: /*minStructField*/ NeighborhoodSettings
 }
 
 /**
@@ -16725,7 +17317,7 @@ declare interface ProtocolSettings {
  */
 export declare class ProtocolSettingsController extends DelegatedDataContract<ProtocolSettings, ProtocolSettingsLike> {
     dataBridgeClass: typeof ProtocolSettingsPolicyDataBridge;
-    scriptBundle(): any;
+    scriptBundleClass(): Promise<ProtocolSettingsBundle>;
     get capo(): DredCapo;
     get delegateName(): string;
     get idPrefix(): "set";
@@ -16745,10 +17337,10 @@ export declare class ProtocolSettingsController extends DelegatedDataContract<Pr
  * @public
  */
 declare interface ProtocolSettingsLike {
-    id: number[];
-    type: string;
-    nodeOpSettings: NodeOperatorSettingsLike_2;
-    nbhSettings: NeighborhoodSettingsLike_2;
+    id: /*minStructField*/ number[]
+    type: /*minStructField*/ string
+    nodeOpSettings: /*minStructField*/ NodeOperatorSettingsLike_2
+    nbhSettings: /*minStructField*/ NeighborhoodSettingsLike_2
 }
 
 /**
@@ -16832,6 +17424,10 @@ declare class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
          * generates UplcData for the enum type ***BurningActivity*** for the `BasicDelegate` script
          */
         BurningActivity: BurningActivityHelper_4;
+        /**
+         * generates UplcData for the enum type ***OtherActivity*** for the `BasicDelegate` script
+         */
+        OtherActivity: OtherActivityHelper_3;
         /**
          * generates UplcData for the enum type ***DelegateActivity*** for the `BasicDelegate` script
          */
@@ -17140,6 +17736,21 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
      */
     BurningActivity(d: UplcData): ErgoBurningActivity_4;
     /**
+     * reads UplcData *known to fit the **OtherActivity*** enum type,
+     * for the BasicDelegate script.
+     * #### Standard WARNING
+     *
+     * This is a low-level data-reader for use in ***advanced development scenarios***.
+     *
+     * Used correctly with data that matches the enum type, this reader
+     * returns strongly-typed data - your code using these types will be safe.
+     *
+     * On the other hand, reading non-matching data will not give you a valid result.
+     * It may throw an error, or it may throw no error, but return a value that
+     * causes some error later on in your code, when you try to use it.
+     */
+    OtherActivity(d: UplcData): ErgoOtherActivity_3;
+    /**
      * reads UplcData *known to fit the **DelegateActivity*** enum type,
      * for the BasicDelegate script.
      * #### Standard WARNING
@@ -17360,9 +17971,9 @@ declare class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderCla
  * @public
  */
 declare interface RelativeDelegateLink {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined;
-    config: number[];
+    uutName: /*minStructField*/ string
+    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined
+    config: /*minStructField*/ number[]
 }
 
 /**
@@ -17374,9 +17985,9 @@ declare interface RelativeDelegateLink {
  * @public
  */
 declare interface RelativeDelegateLink_2 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined;
-    config: number[];
+    uutName: /*minStructField*/ string
+    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined
+    config: /*minStructField*/ number[]
 }
 
 /**
@@ -17388,9 +17999,9 @@ declare interface RelativeDelegateLink_2 {
  * @public
  */
 declare interface RelativeDelegateLink_3 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined;
-    config: number[];
+    uutName: /*minStructField*/ string
+    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined
+    config: /*minStructField*/ number[]
 }
 
 /**
@@ -17402,9 +18013,9 @@ declare interface RelativeDelegateLink_3 {
  * @public
  */
 declare interface RelativeDelegateLink_4 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined;
-    config: number[];
+    uutName: /*minStructField*/ string
+    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined
+    config: /*minStructField*/ number[]
 }
 
 /**
@@ -17416,9 +18027,9 @@ declare interface RelativeDelegateLink_4 {
  * @public
  */
 declare interface RelativeDelegateLink_5 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined;
-    config: number[];
+    uutName: /*minStructField*/ string
+    delegateValidatorHash: /*minStructField*/ ValidatorHash | undefined
+    config: /*minStructField*/ number[]
 }
 
 /**
@@ -17428,9 +18039,9 @@ declare interface RelativeDelegateLink_5 {
  * @public
  */
 declare interface RelativeDelegateLinkLike {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
-    config: number[];
+    uutName: /*minStructField*/ string
+    delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined
+    config: /*minStructField*/ number[]
 }
 
 /**
@@ -17440,9 +18051,9 @@ declare interface RelativeDelegateLinkLike {
  * @public
  */
 declare interface RelativeDelegateLinkLike_2 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
-    config: number[];
+    uutName: /*minStructField*/ string
+    delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined
+    config: /*minStructField*/ number[]
 }
 
 /**
@@ -17452,9 +18063,9 @@ declare interface RelativeDelegateLinkLike_2 {
  * @public
  */
 declare interface RelativeDelegateLinkLike_3 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
-    config: number[];
+    uutName: /*minStructField*/ string
+    delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined
+    config: /*minStructField*/ number[]
 }
 
 /**
@@ -17464,79 +18075,106 @@ declare interface RelativeDelegateLinkLike_3 {
  * @public
  */
 declare interface RelativeDelegateLinkLike_4 {
-    uutName: string;
-    delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined;
-    config: number[];
+    uutName: /*minStructField*/ string
+    delegateValidatorHash: /*minStructField*/ ValidatorHash | string | number[] | undefined
+    config: /*minStructField*/ number[]
 }
 
 /**
- * An ergonomic, though less strictly-safe form of RevenueModel$TransactionBased
+ * An ergonomic, though less strictly-safe form of RevenueModel$SubscriptionV1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the RevenueModel$TransactionBasedLike type,
+ * conversion to on-chain use.  For creating such data, use the RevenueModel$SubscriptionV1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type RevenueModel$Ergo$TransactionBased = {
-    minTxFee: Value;
-    maxTxFee: Value | undefined;
-    chargeTo: ErgoFeeSource;
-};
-
-/**
- * A strong type for the canonical form of RevenueModel$TransactionBased
- * @remarks
- * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
- * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see RevenueModel$Ergo$TransactionBased instead.
- * @public
- */
-declare interface RevenueModel$TransactionBased {
-    minTxFee: Value;
-    maxTxFee: Value | undefined;
-    chargeTo: FeeSource;
+declare type RevenueModel$Ergo$SubscriptionV1 = {
+    subscriptionFee: Array<ErgoSubscriptionFeeFrequency>  /*minVariantField*/ ,
+    nodeOpShare: number  /*minVariantField*/ 
 }
 
 /**
- * A strong type for the permissive form of RevenueModel$TransactionBased
+ * An ergonomic, though less strictly-safe form of RevenueModel$TransactionBasedV1
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the RevenueModel$TransactionBasedV1Like type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+declare type RevenueModel$Ergo$TransactionBasedV1 = {
+    minTxFee: Value  /*minVariantField*/ ,
+    maxTxFee: Value | undefined  /*minVariantField*/ ,
+    chargeTo: ErgoFeeSource  /*minVariantField*/ ,
+    nodeOpShare: number  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the canonical form of RevenueModel$SubscriptionV1
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see RevenueModel$Ergo$SubscriptionV1 instead.
+ * @public
+ */
+declare interface RevenueModel$SubscriptionV1 {
+    subscriptionFee: Array<SubscriptionFeeFrequency>  /*minVariantField*/ ,
+    nodeOpShare: number  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the permissive form of RevenueModel$SubscriptionV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface RevenueModel$TransactionBasedLike {
-    minTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-    maxTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[] | undefined;
-    chargeTo: FeeSourceLike;
+declare interface RevenueModel$SubscriptionV1Like {
+    subscriptionFee: Array<SubscriptionFeeFrequencyLike>  /*minVariantField*/ ,
+    nodeOpShare: number  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the canonical form of RevenueModel$TransactionBasedV1
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see RevenueModel$Ergo$TransactionBasedV1 instead.
+ * @public
+ */
+declare interface RevenueModel$TransactionBasedV1 {
+    minTxFee: Value  /*minVariantField*/ ,
+    maxTxFee: Value | undefined  /*minVariantField*/ ,
+    chargeTo: FeeSource  /*minVariantField*/ ,
+    nodeOpShare: number  /*minVariantField*/ 
+}
+
+/**
+ * A strong type for the permissive form of RevenueModel$TransactionBasedV1
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+declare interface RevenueModel$TransactionBasedV1Like {
+    minTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]  /*minVariantField*/ ,
+    maxTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[] | undefined  /*minVariantField*/ ,
+    chargeTo: FeeSourceLike  /*minVariantField*/ ,
+    nodeOpShare: number  /*minVariantField*/ 
 }
 
 /**
  * RevenueModel enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **2 variant(s)** of the RevenueModel enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `RevenueModelHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type RevenueModel = {
-    TransactionBased: RevenueModel$TransactionBased;
-} | {
-    Subscription: Array<SubscriptionFeeFrequency>;
-};
+declare type RevenueModel = 
+| { TransactionBasedV1: RevenueModel$TransactionBasedV1 /*minEnumVariant*/ }
+| { SubscriptionV1: RevenueModel$SubscriptionV1 /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***RevenueModel*** enum type.
@@ -17548,14 +18186,14 @@ declare class RevenueModelHelper extends EnumBridge<JustAnEnum> {
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<RevenueModel, Partial<{
-        TransactionBased: RevenueModel$TransactionBasedLike;
-        Subscription: Array<SubscriptionFeeFrequencyLike>;
+        TransactionBasedV1: RevenueModel$TransactionBasedV1Like;
+        SubscriptionV1: RevenueModel$SubscriptionV1Like;
     }>>;
     /**
-     * generates  UplcData for ***"NeighborhoodData::RevenueModel.TransactionBased"***
-     * @remarks - ***RevenueModel$TransactionBasedLike*** is the same as the expanded field-types.
+     * generates  UplcData for ***"NeighborhoodData::RevenueModel.TransactionBasedV1"***
+     * @remarks - ***RevenueModel$TransactionBasedV1Like*** is the same as the expanded field-types.
      */
-    TransactionBased(fields: RevenueModel$TransactionBasedLike | {
+    TransactionBasedV1(fields: RevenueModel$TransactionBasedV1Like | {
         minTxFee: Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
             mph: MintingPolicyHash | string | number[];
             tokens: {
@@ -17571,32 +18209,36 @@ declare class RevenueModelHelper extends EnumBridge<JustAnEnum> {
             }[];
         }[] | undefined;
         chargeTo: FeeSourceLike;
+        nodeOpShare: number;
     }): UplcData;
     /**
-     * generates  UplcData for ***"NeighborhoodData::RevenueModel.Subscription"***
+     * generates  UplcData for ***"NeighborhoodData::RevenueModel.SubscriptionV1"***
+     * @remarks - ***RevenueModel$SubscriptionV1Like*** is the same as the expanded field-types.
      */
-    Subscription(subscriptionFee: Array<SubscriptionFeeFrequencyLike>): UplcData;
+    SubscriptionV1(fields: RevenueModel$SubscriptionV1Like | {
+        subscriptionFee: Array<SubscriptionFeeFrequencyLike>;
+        nodeOpShare: number;
+    }): UplcData;
 }
 
 /**
  * RevenueModel enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **2 variant(s)** of the RevenueModel enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `RevenueModelHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type RevenueModelLike = IntersectedEnum<{
-    TransactionBased: RevenueModel$TransactionBasedLike;
-} | {
-    Subscription: Array<SubscriptionFeeFrequencyLike>;
-}>;
+declare type RevenueModelLike = IntersectedEnum<
+| { TransactionBasedV1: RevenueModel$TransactionBasedV1Like /*minEnumVariant*/ }
+| { SubscriptionV1: RevenueModel$SubscriptionV1Like /*minEnumVariant*/ }
+>
 
 /**
  * An ergonomic, though less strictly-safe form of SpendingActivity$ValidatingNode
@@ -17607,7 +18249,7 @@ declare type RevenueModelLike = IntersectedEnum<{
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type SpendingActivity$Ergo$ValidatingNode = SpendingActivity$ValidatingNode;
+declare type SpendingActivity$Ergo$ValidatingNode = SpendingActivity$ValidatingNode
 
 /**
  * A strong type for the canonical form of SpendingActivity$ValidatingNode
@@ -17618,8 +18260,8 @@ declare type SpendingActivity$Ergo$ValidatingNode = SpendingActivity$ValidatingN
  * @public
  */
 declare interface SpendingActivity$ValidatingNode {
-    id: number[];
-    validatorId: number[];
+    id: number[]  /*minVariantField*/ ,
+    validatorId: number[]  /*minVariantField*/ 
 }
 
 /**
@@ -17629,75 +18271,74 @@ declare interface SpendingActivity$ValidatingNode {
  * @public
  */
 declare interface SpendingActivity$ValidatingNodeLike {
-    id: number[];
-    validatorId: number[];
+    id: number[]  /*minVariantField*/ ,
+    validatorId: number[]  /*minVariantField*/ 
 }
 
 /**
  * SpendingActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **1 variant(s)** of the SpendingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type SpendingActivity = {
-    _placeholder1SA: number[];
-};
+declare type SpendingActivity = 
+| { _placeholder1SA: /* implied wrapper { recId: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
 
 /**
  * SpendingActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **5 variant(s)** of the SpendingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type SpendingActivity_2 = {
-    UpdatingRecord: number[];
-} | {
-    ValidatingNode: SpendingActivity$ValidatingNode;
-} | {
-    ActivatingNode: number[];
-} | {
-    ReportingInactiveNode: number[];
-} | {
-    RefutingInactivity: number[];
-};
+declare type SpendingActivity_2 = 
+| { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+| { ValidatingNode: SpendingActivity$ValidatingNode /*minEnumVariant*/ }
+| { ActivatingNode: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+| { ReportingInactiveNode: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+| { RefutingInactivity: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
 
 /**
  * SpendingActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **2 variant(s)** of the SpendingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type SpendingActivity_3 = {
-    UpdatingRecord: number[];
-} | {
-    ActivatingNeighborhood: number[];
-};
+declare type SpendingActivity_3 = 
+| { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+| { ActivatingNeighborhood: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
 
 /**
  * SpendingActivity enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **1 variant(s)** of the SpendingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type SpendingActivity_4 = {
-    UpdatingRecord: number[];
-};
+declare type SpendingActivity_4 = 
+| { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***SpendingActivity*** enum type.
@@ -17955,117 +18596,134 @@ declare class SpendingActivityHelperNested_4 extends EnumBridge<isActivity> {
 
 /**
  * SpendingActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **1 variant(s)** of the SpendingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type SpendingActivityLike = IntersectedEnum<{
-    _placeholder1SA: number[];
-}>;
+declare type SpendingActivityLike = IntersectedEnum<
+| { _placeholder1SA: /* implied wrapper { recId: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+>
 
 /**
  * SpendingActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **5 variant(s)** of the SpendingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type SpendingActivityLike_2 = IntersectedEnum<{
-    UpdatingRecord: number[];
-} | {
-    ValidatingNode: SpendingActivity$ValidatingNodeLike;
-} | {
-    ActivatingNode: number[];
-} | {
-    ReportingInactiveNode: number[];
-} | {
-    RefutingInactivity: number[];
-}>;
+declare type SpendingActivityLike_2 = IntersectedEnum<
+| { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+| { ValidatingNode: SpendingActivity$ValidatingNodeLike /*minEnumVariant*/ }
+| { ActivatingNode: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+| { ReportingInactiveNode: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+| { RefutingInactivity: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+>
 
 /**
  * SpendingActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **2 variant(s)** of the SpendingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type SpendingActivityLike_3 = IntersectedEnum<{
-    UpdatingRecord: number[];
-} | {
-    ActivatingNeighborhood: number[];
-}>;
+declare type SpendingActivityLike_3 = IntersectedEnum<
+| { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+| { ActivatingNeighborhood: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+>
 
 /**
  * SpendingActivity enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **1 variant(s)** of the SpendingActivity enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `SpendingActivityHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type SpendingActivityLike_4 = IntersectedEnum<{
-    UpdatingRecord: number[];
-}>;
+declare type SpendingActivityLike_4 = IntersectedEnum<
+| { UpdatingRecord: /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]    /*minEnumVariant*/ }
+>
 
 /**
  * @internal
  */
-declare type SpendingActivityMeta = EnumTypeMeta<{
-    module: "DredNodeRegistryPolicy";
-    enumName: "SpendingActivity";
-}, {
-    UpdatingRecord: singleEnumVariantMeta<SpendingActivityMeta, "UpdatingRecord", "Constr#0", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ number[], "noSpecialFlags">;
-    ValidatingNode: singleEnumVariantMeta<SpendingActivityMeta, "ValidatingNode", "Constr#1", "fields", SpendingActivity$ValidatingNode, "noSpecialFlags">;
-    ActivatingNode: singleEnumVariantMeta<SpendingActivityMeta, "ActivatingNode", "Constr#2", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ number[], "noSpecialFlags">;
-    ReportingInactiveNode: singleEnumVariantMeta<SpendingActivityMeta, "ReportingInactiveNode", "Constr#3", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ number[], "noSpecialFlags">;
-    RefutingInactivity: singleEnumVariantMeta<SpendingActivityMeta, "RefutingInactivity", "Constr#4", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ number[], "noSpecialFlags">;
-}>;
+declare type SpendingActivityMeta = EnumTypeMeta<
+    {module: "DredNodeRegistryPolicy", enumName: "SpendingActivity"}, {
+    UpdatingRecord: singleEnumVariantMeta<SpendingActivityMeta, "UpdatingRecord",
+    "Constr#0", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]   , "noSpecialFlags"
+    >,
+    ValidatingNode: singleEnumVariantMeta<SpendingActivityMeta, "ValidatingNode",
+    "Constr#1", 
+    "fields", SpendingActivity$ValidatingNode, "noSpecialFlags"
+    >,
+    ActivatingNode: singleEnumVariantMeta<SpendingActivityMeta, "ActivatingNode",
+    "Constr#2", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]   , "noSpecialFlags"
+    >,
+    ReportingInactiveNode: singleEnumVariantMeta<SpendingActivityMeta, "ReportingInactiveNode",
+    "Constr#3", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]   , "noSpecialFlags"
+    >,
+    RefutingInactivity: singleEnumVariantMeta<SpendingActivityMeta, "RefutingInactivity",
+    "Constr#4", "singletonField", /* implied wrapper { id: ... } for singleVariantField */ 
+    			number[]   , "noSpecialFlags"
+    >
+}
+>;
 
 /**
  * SubscriptionFeeFrequency enum variants
- *
+ * 
  * @remarks - expresses the essential raw data structures
  * supporting the **3 variant(s)** of the SubscriptionFeeFrequency enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `SubscriptionFeeFrequencyHelper` class
  *     for generating UPLC data for this enum type
  * @public
  */
-declare type SubscriptionFeeFrequency = {
-    Epoch: Value;
-} | {
-    Monthly: Value;
-} | {
-    Yearly: Value;
-};
+declare type SubscriptionFeeFrequency = 
+| { Epoch: /* implied wrapper { fee: ... } for singleVariantField */ 
+    			Value    /*minEnumVariant*/ }
+| { Monthly: /* implied wrapper { fee: ... } for singleVariantField */ 
+    			Value    /*minEnumVariant*/ }
+| { Yearly: /* implied wrapper { fee: ... } for singleVariantField */ 
+    			Value    /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***SubscriptionFeeFrequency*** enum type.
@@ -18133,44 +18791,30 @@ declare class SubscriptionFeeFrequencyHelper extends EnumBridge<JustAnEnum> {
 
 /**
  * SubscriptionFeeFrequency enum variants (permissive)
- *
+ * 
  * @remarks - expresses the allowable data structure
  * for creating any of the **3 variant(s)** of the SubscriptionFeeFrequency enum type
- *
+ * 
  * - **Note**: Stellar Contracts provides a higher-level `SubscriptionFeeFrequencyHelper` class
  *     for generating UPLC data for this enum type
  *
  * #### Permissive Type
- * This is a permissive type that allows additional input data types, which are
+ * This is a permissive type that allows additional input data types, which are 
  * converted by convention to the canonical types used in the on-chain context.
  * @public
  */
-declare type SubscriptionFeeFrequencyLike = IntersectedEnum<{
-    Epoch: /* implied wrapper { fee: ... } for singleVariantField */ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-} | {
-    Monthly: /* implied wrapper { fee: ... } for singleVariantField */ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-} | {
-    Yearly: /* implied wrapper { fee: ... } for singleVariantField */ Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {
-        mph: MintingPolicyHash | string | number[];
-        tokens: {
-            name: number[] | string;
-            qty: IntLike;
-        }[];
-    }[];
-}>;
+declare type SubscriptionFeeFrequencyLike = IntersectedEnum<
+| { Epoch: /* implied wrapper { fee: ... } for singleVariantField */ 
+    			Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]    /*minEnumVariant*/ }
+| { Monthly: /* implied wrapper { fee: ... } for singleVariantField */ 
+    			Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]    /*minEnumVariant*/ }
+| { Yearly: /* implied wrapper { fee: ... } for singleVariantField */ 
+    			Value | [MintingPolicyHash | string | number[], [number[] | string, IntLike][]][] | {mph: MintingPolicyHash | string | number[], tokens: {name: number[] | string, qty: IntLike}[]}[]    /*minEnumVariant*/ }
+>
 
+/**
+ * @public
+ */
 declare type TimeLike = IntLike;
 
 /**
@@ -18180,6 +18824,7 @@ declare type TimeLike_2 = IntLike;
 
 declare namespace types {
     export {
+        TimeLike,
         AnyData_2 as AnyData,
         ErgoAnyData_2 as ErgoAnyData,
         AnyDataLike_2 as AnyDataLike,
@@ -18194,9 +18839,9 @@ declare namespace types {
         DredNodeState,
         ErgoDredNodeState,
         DredNodeStateLike,
-        NodeDetails,
-        ErgoNodeDetails,
-        NodeDetailsLike,
+        NodeDetailsV1,
+        ErgoNodeDetailsV1,
+        NodeDetailsV1Like,
         NodeRegistrationData,
         ErgoNodeRegistrationData,
         NodeRegistrationDataLike,
@@ -18272,6 +18917,10 @@ declare namespace types {
         DelegateActivity$DeletingDelegatedData_2 as DelegateActivity$DeletingDelegatedData,
         DelegateActivity$Ergo$DeletingDelegatedData_2 as DelegateActivity$Ergo$DeletingDelegatedData,
         DelegateActivity$DeletingDelegatedDataLike_2 as DelegateActivity$DeletingDelegatedDataLike,
+        OtherActivityMeta,
+        OtherActivity,
+        ErgoOtherActivity,
+        OtherActivityLike,
         DelegateActivityMeta,
         DelegateActivity_2 as DelegateActivity,
         ErgoDelegateActivity_2 as ErgoDelegateActivity,
@@ -18345,6 +18994,19 @@ declare namespace types {
         dgd_DataSrc,
         Ergodgd_DataSrc,
         dgd_DataSrcLike,
+        AbstractDelegateActivitiesEnum$CreatingDelegatedData,
+        AbstractDelegateActivitiesEnum$Ergo$CreatingDelegatedData,
+        AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike,
+        AbstractDelegateActivitiesEnum$UpdatingDelegatedData,
+        AbstractDelegateActivitiesEnum$Ergo$UpdatingDelegatedData,
+        AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike,
+        AbstractDelegateActivitiesEnum$DeletingDelegatedData,
+        AbstractDelegateActivitiesEnum$Ergo$DeletingDelegatedData,
+        AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike,
+        AbstractDelegateActivitiesEnumMeta,
+        AbstractDelegateActivitiesEnum,
+        ErgoAbstractDelegateActivitiesEnum,
+        AbstractDelegateActivitiesEnumLike,
         DgDataDetails,
         ErgoDgDataDetails,
         DgDataDetailsLike,
@@ -18353,29 +19015,29 @@ declare namespace types {
 }
 
 /**
- * A strong type for the canonical form of UpdateInfo
+ * A strong type for the canonical form of UpdateInfoV1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see ErgoUpdateInfo instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see ErgoUpdateInfoV1 instead.
  * @public
  */
-declare interface UpdateInfo {
-    name: string;
-    description: string;
-    url: string;
+declare interface UpdateInfoV1 {
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
+    url: /*minStructField*/ string
 }
 
 /**
- * A strong type for the permissive form of UpdateInfo
+ * A strong type for the permissive form of UpdateInfoV1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface UpdateInfoLike {
-    name: string;
-    description: string;
-    url: string;
+declare interface UpdateInfoV1Like {
+    name: /*minStructField*/ string
+    description: /*minStructField*/ string
+    url: /*minStructField*/ string
 }
 
 export { }
