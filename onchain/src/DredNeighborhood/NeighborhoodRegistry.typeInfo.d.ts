@@ -1753,6 +1753,59 @@ export interface DelegateActivity$DeletingDelegatedDataLike {
             /**
             * @internal
             */
+            export type OtherActivityMeta = EnumTypeMeta<
+    {module: "NeighborhoodPolicy", enumName: "OtherActivity"}, {
+        Placeholder: singleEnumVariantMeta<OtherActivityMeta, "Placeholder",
+            "Constr#42", "tagOnly", tagOnly, "noSpecialFlags"
+        >
+    }
+>;
+
+
+/**
+ * OtherActivity enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the OtherActivity enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `OtherActivityHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+export type OtherActivity = 
+        | { Placeholder: tagOnly /*minEnumVariant*/ }
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+export type ErgoOtherActivity = IntersectedEnum<OtherActivity/*like canon enum*/>
+
+/**
+ * OtherActivity enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the OtherActivity enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `OtherActivityHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+export type OtherActivityLike = IntersectedEnum<
+        | { Placeholder: tagOnly /*minEnumVariant*/ }
+>
+
+
+            /**
+            * @internal
+            */
             export type DelegateActivityMeta = EnumTypeMeta<
     {module: "NeighborhoodPolicy", enumName: "DelegateActivity"}, {
         CapoLifecycleActivities: singleEnumVariantMeta<DelegateActivityMeta, "CapoLifecycleActivities",
@@ -1790,6 +1843,10 @@ export interface DelegateActivity$DeletingDelegatedDataLike {
         MultipleDelegateActivities: singleEnumVariantMeta<DelegateActivityMeta, "MultipleDelegateActivities",
             "Constr#8", "singletonField", /* implied wrapper { activities: ... } for singleVariantField */ 
 			Array<UplcData>   , "noSpecialFlags"
+        >,
+        OtherActivities: singleEnumVariantMeta<DelegateActivityMeta, "OtherActivities",
+            "Constr#9", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+			OtherActivity   , "noSpecialFlags"
         >
     }
 >;
@@ -1799,7 +1856,7 @@ export interface DelegateActivity$DeletingDelegatedDataLike {
  * DelegateActivity enum variants
  * 
  * @remarks - expresses the essential raw data structures
- * supporting the **9 variant(s)** of the DelegateActivity enum type
+ * supporting the **10 variant(s)** of the DelegateActivity enum type
  * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -1821,6 +1878,8 @@ export type DelegateActivity =
         | { DeletingDelegatedData: DelegateActivity$DeletingDelegatedData /*minEnumVariant*/ }
         | { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
 			Array<UplcData>    /*minEnumVariant*/ }
+        | { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			OtherActivity    /*minEnumVariant*/ }
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -1845,13 +1904,15 @@ export type ErgoDelegateActivity = IntersectedEnum<
         | { DeletingDelegatedData: DelegateActivity$Ergo$DeletingDelegatedData /*minEnumVariant*/ }
         | { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
 			Array<UplcData>    /*minEnumVariant*/ }
+        | { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			ErgoOtherActivity    /*minEnumVariant*/ }
 >
 
 /**
  * DelegateActivity enum variants (permissive)
  * 
  * @remarks - expresses the allowable data structure
- * for creating any of the **9 variant(s)** of the DelegateActivity enum type
+ * for creating any of the **10 variant(s)** of the DelegateActivity enum type
  * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -1877,6 +1938,8 @@ export type DelegateActivityLike = IntersectedEnum<
         | { DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike /*minEnumVariant*/ }
         | { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
 			Array<UplcData>    /*minEnumVariant*/ }
+        | { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			OtherActivityLike    /*minEnumVariant*/ }
 >
 
 /**
@@ -2948,6 +3011,260 @@ export type dgd_DataSrcLike = IntersectedEnum<
 >
 
 /**
+ * A strong type for the canonical form of AbstractDelegateActivitiesEnum$CreatingDelegatedData
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see AbstractDelegateActivitiesEnum$Ergo$CreatingDelegatedData instead.
+ * @public
+ */
+export interface AbstractDelegateActivitiesEnum$CreatingDelegatedData {
+    seed: TxOutputId  /*minVariantField*/ ,
+    dataType: string  /*minVariantField*/ 
+}
+
+
+/**
+ * An ergonomic, though less strictly-safe form of AbstractDelegateActivitiesEnum$CreatingDelegatedData
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+export type AbstractDelegateActivitiesEnum$Ergo$CreatingDelegatedData = AbstractDelegateActivitiesEnum$CreatingDelegatedData  /*ergo like-canonical-this-variant*/
+
+/**
+ * A strong type for the permissive form of AbstractDelegateActivitiesEnum$CreatingDelegatedData
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+export interface AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike {
+    seed: TxOutputId | string  /*minVariantField*/ ,
+    dataType: string  /*minVariantField*/ 
+}
+
+
+
+/**
+ * A strong type for the canonical form of AbstractDelegateActivitiesEnum$UpdatingDelegatedData
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see AbstractDelegateActivitiesEnum$Ergo$UpdatingDelegatedData instead.
+ * @public
+ */
+export interface AbstractDelegateActivitiesEnum$UpdatingDelegatedData {
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
+}
+
+
+/**
+ * An ergonomic, though less strictly-safe form of AbstractDelegateActivitiesEnum$UpdatingDelegatedData
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+export type AbstractDelegateActivitiesEnum$Ergo$UpdatingDelegatedData = AbstractDelegateActivitiesEnum$UpdatingDelegatedData  /*ergo like-canonical-this-variant*/
+
+/**
+ * A strong type for the permissive form of AbstractDelegateActivitiesEnum$UpdatingDelegatedData
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+export interface AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike {
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
+}
+
+
+
+/**
+ * A strong type for the canonical form of AbstractDelegateActivitiesEnum$DeletingDelegatedData
+ * @remarks
+ * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
+ * enum data conforming to this type can be a bit of a pain.
+ * For a more ergonomic, though less strictly-safe form of this type, see AbstractDelegateActivitiesEnum$Ergo$DeletingDelegatedData instead.
+ * @public
+ */
+export interface AbstractDelegateActivitiesEnum$DeletingDelegatedData {
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
+}
+
+
+/**
+ * An ergonomic, though less strictly-safe form of AbstractDelegateActivitiesEnum$DeletingDelegatedData
+ * @remarks
+ * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
+ * as being "read-only", in that it's possible to create data with this type that would not be suitable for
+ * conversion to on-chain use.  For creating such data, use the AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike type,
+ * or the on-chain data-building helpers instead.
+ * @public
+ */
+export type AbstractDelegateActivitiesEnum$Ergo$DeletingDelegatedData = AbstractDelegateActivitiesEnum$DeletingDelegatedData  /*ergo like-canonical-this-variant*/
+
+/**
+ * A strong type for the permissive form of AbstractDelegateActivitiesEnum$DeletingDelegatedData
+ * @remarks
+ * The field types enable implicit conversion from various allowable input types (including the canonical form).
+ * @public
+ */
+export interface AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike {
+    dataType: string  /*minVariantField*/ ,
+    recId: number[]  /*minVariantField*/ 
+}
+
+
+
+
+            /**
+            * @internal
+            */
+            export type AbstractDelegateActivitiesEnumMeta = EnumTypeMeta<
+    {module: "CapoDelegateHelpers", enumName: "AbstractDelegateActivitiesEnum"}, {
+        CapoLifecycleActivities: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "CapoLifecycleActivities",
+            "Constr#0", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+			CapoLifecycleActivity   , "noSpecialFlags"
+        >,
+        DelegateLifecycleActivities: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "DelegateLifecycleActivities",
+            "Constr#1", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+			DelegateLifecycleActivity   , "noSpecialFlags"
+        >,
+        SpendingActivities: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "SpendingActivities",
+            "Constr#2", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData   , "noSpecialFlags"
+        >,
+        MintingActivities: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "MintingActivities",
+            "Constr#3", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData   , "noSpecialFlags"
+        >,
+        BurningActivities: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "BurningActivities",
+            "Constr#4", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData   , "noSpecialFlags"
+        >,
+        CreatingDelegatedData: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "CreatingDelegatedData",
+            "Constr#5", 
+            "fields", AbstractDelegateActivitiesEnum$CreatingDelegatedData, "isSeededActivity"
+        >,
+        UpdatingDelegatedData: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "UpdatingDelegatedData",
+            "Constr#6", 
+            "fields", AbstractDelegateActivitiesEnum$UpdatingDelegatedData, "noSpecialFlags"
+        >,
+        DeletingDelegatedData: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "DeletingDelegatedData",
+            "Constr#7", 
+            "fields", AbstractDelegateActivitiesEnum$DeletingDelegatedData, "noSpecialFlags"
+        >,
+        MultipleDelegateActivities: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "MultipleDelegateActivities",
+            "Constr#8", "singletonField", /* implied wrapper { activities: ... } for singleVariantField */ 
+			Array<UplcData>   , "noSpecialFlags"
+        >,
+        OtherActivities: singleEnumVariantMeta<AbstractDelegateActivitiesEnumMeta, "OtherActivities",
+            "Constr#9", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData   , "noSpecialFlags"
+        >
+    }
+>;
+
+
+/**
+ * AbstractDelegateActivitiesEnum enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **10 variant(s)** of the AbstractDelegateActivitiesEnum enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `AbstractDelegateActivitiesEnumHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+export type AbstractDelegateActivitiesEnum = 
+        | { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			CapoLifecycleActivity    /*minEnumVariant*/ }
+        | { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			DelegateLifecycleActivity    /*minEnumVariant*/ }
+        | { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData    /*minEnumVariant*/ }
+        | { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData    /*minEnumVariant*/ }
+        | { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData    /*minEnumVariant*/ }
+        | { CreatingDelegatedData: AbstractDelegateActivitiesEnum$CreatingDelegatedData /*minEnumVariant*/ }
+        | { UpdatingDelegatedData: AbstractDelegateActivitiesEnum$UpdatingDelegatedData /*minEnumVariant*/ }
+        | { DeletingDelegatedData: AbstractDelegateActivitiesEnum$DeletingDelegatedData /*minEnumVariant*/ }
+        | { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+			Array<UplcData>    /*minEnumVariant*/ }
+        | { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData    /*minEnumVariant*/ }
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+export type ErgoAbstractDelegateActivitiesEnum = IntersectedEnum<
+        | { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			ErgoCapoLifecycleActivity    /*minEnumVariant*/ }
+        | { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			ErgoDelegateLifecycleActivity    /*minEnumVariant*/ }
+        | { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData    /*minEnumVariant*/ }
+        | { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData    /*minEnumVariant*/ }
+        | { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData    /*minEnumVariant*/ }
+        | { CreatingDelegatedData: AbstractDelegateActivitiesEnum$Ergo$CreatingDelegatedData /*minEnumVariant*/ }
+        | { UpdatingDelegatedData: AbstractDelegateActivitiesEnum$Ergo$UpdatingDelegatedData /*minEnumVariant*/ }
+        | { DeletingDelegatedData: AbstractDelegateActivitiesEnum$Ergo$DeletingDelegatedData /*minEnumVariant*/ }
+        | { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+			Array<UplcData>    /*minEnumVariant*/ }
+        | { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData    /*minEnumVariant*/ }
+>
+
+/**
+ * AbstractDelegateActivitiesEnum enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **10 variant(s)** of the AbstractDelegateActivitiesEnum enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `AbstractDelegateActivitiesEnumHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+export type AbstractDelegateActivitiesEnumLike = IntersectedEnum<
+        | { CapoLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			CapoLifecycleActivityLike    /*minEnumVariant*/ }
+        | { DelegateLifecycleActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			DelegateLifecycleActivityLike    /*minEnumVariant*/ }
+        | { SpendingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData    /*minEnumVariant*/ }
+        | { MintingActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData    /*minEnumVariant*/ }
+        | { BurningActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData    /*minEnumVariant*/ }
+        | { CreatingDelegatedData: AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike /*minEnumVariant*/ }
+        | { UpdatingDelegatedData: AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike /*minEnumVariant*/ }
+        | { DeletingDelegatedData: AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike /*minEnumVariant*/ }
+        | { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
+			Array<UplcData>    /*minEnumVariant*/ }
+        | { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			UplcData    /*minEnumVariant*/ }
+>
+
+/**
  * A strong type for the canonical form of DgDataDetails
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
@@ -2960,6 +3277,7 @@ export interface DgDataDetails {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     mph: /*minStructField*/ MintingPolicyHash
+    activity: /*minStructField*/ AbstractDelegateActivitiesEnum | undefined
 }
 
 
@@ -2977,6 +3295,7 @@ export type ErgoDgDataDetails = {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     mph: /*minStructField*/ MintingPolicyHash
+    activity: /*minStructField*/ ErgoAbstractDelegateActivitiesEnum | undefined
 }
 
 
@@ -2991,6 +3310,7 @@ export interface DgDataDetailsLike {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     mph: /*minStructField*/ MintingPolicyHash | string | number[]
+    activity: /*minStructField*/ AbstractDelegateActivitiesEnumLike | undefined
 }
 
 

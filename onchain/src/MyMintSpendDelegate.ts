@@ -21,8 +21,9 @@ export class MyMintSpendDelegate extends STokMintDelegate {
     }
     dataBridgeClass = MyMintSpendDelegateDataBridge;
 
-    scriptBundle(): CapoDelegateBundle {
-        return MyMintSpendDelegateBundle.create();
+    async scriptBundleClass() {
+        const module = await import("./MyMintSpendDelegate.hlb.js")
+        return module.default
     }
 
 }

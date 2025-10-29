@@ -16,7 +16,6 @@ import type {
     DgDataUpdateOptions,
 } from "@donecollectively/stellar-contracts";
 
-import NodeRegistryBundle from "./NodeRegistry.hlb.js";
 import type { DredCapo } from "../DredCapo.js";
 import type { ErgoNodeRegistrationData, NodeRegistrationData, NodeRegistrationDataLike, minimalNodeRegistrationData } from "./NodeRegistry.typeInfo.js";
 import DredNodeRegistryPolicyDataBridge from "./NodeRegistry.bridge.js";
@@ -43,8 +42,9 @@ export class NodeRegistryController extends DelegatedDataContract<
 > {
     dataBridgeClass = DredNodeRegistryPolicyDataBridge;
 
-    scriptBundle() {
-        return NodeRegistryBundle.create();
+    async scriptBundleClass() {
+        const module = await import("./NodeRegistry.hlb.js");
+        return module.default
     }
     idPrefix = "dredNode" as const;
 

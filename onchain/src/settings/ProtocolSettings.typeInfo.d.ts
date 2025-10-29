@@ -1489,6 +1489,59 @@ export interface DelegateActivity$DeletingDelegatedDataLike {
             /**
             * @internal
             */
+            export type OtherActivityMeta = EnumTypeMeta<
+    {module: "ProtocolSettingsPolicy", enumName: "OtherActivity"}, {
+        Placeholder: singleEnumVariantMeta<OtherActivityMeta, "Placeholder",
+            "Constr#42", "tagOnly", tagOnly, "noSpecialFlags"
+        >
+    }
+>;
+
+
+/**
+ * OtherActivity enum variants
+ * 
+ * @remarks - expresses the essential raw data structures
+ * supporting the **1 variant(s)** of the OtherActivity enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `OtherActivityHelper` class
+ *     for generating UPLC data for this enum type
+ * @public
+ */
+export type OtherActivity = 
+        | { Placeholder: tagOnly /*minEnumVariant*/ }
+
+/**
+ * ergonomic type enabling easy access to values converted from the on-chain form
+ * @remarks
+ * The data will be expressed in canonical form, and enum variants are merged to a single type with optional fields.
+ * Nested enums are also merged in this ergonomic way.
+ * @public
+ */
+export type ErgoOtherActivity = IntersectedEnum<OtherActivity/*like canon enum*/>
+
+/**
+ * OtherActivity enum variants (permissive)
+ * 
+ * @remarks - expresses the allowable data structure
+ * for creating any of the **1 variant(s)** of the OtherActivity enum type
+ * 
+ * - **Note**: Stellar Contracts provides a higher-level `OtherActivityHelper` class
+ *     for generating UPLC data for this enum type
+ *
+ * #### Permissive Type
+ * This is a permissive type that allows additional input data types, which are 
+ * converted by convention to the canonical types used in the on-chain context.
+ * @public
+ */
+export type OtherActivityLike = IntersectedEnum<
+        | { Placeholder: tagOnly /*minEnumVariant*/ }
+>
+
+
+            /**
+            * @internal
+            */
             export type DelegateActivityMeta = EnumTypeMeta<
     {module: "ProtocolSettingsPolicy", enumName: "DelegateActivity"}, {
         CapoLifecycleActivities: singleEnumVariantMeta<DelegateActivityMeta, "CapoLifecycleActivities",
@@ -1526,6 +1579,10 @@ export interface DelegateActivity$DeletingDelegatedDataLike {
         MultipleDelegateActivities: singleEnumVariantMeta<DelegateActivityMeta, "MultipleDelegateActivities",
             "Constr#8", "singletonField", /* implied wrapper { activities: ... } for singleVariantField */ 
 			Array<UplcData>   , "noSpecialFlags"
+        >,
+        OtherActivities: singleEnumVariantMeta<DelegateActivityMeta, "OtherActivities",
+            "Constr#9", "singletonField", /* implied wrapper { activity: ... } for singleVariantField */ 
+			OtherActivity   , "noSpecialFlags"
         >
     }
 >;
@@ -1535,7 +1592,7 @@ export interface DelegateActivity$DeletingDelegatedDataLike {
  * DelegateActivity enum variants
  * 
  * @remarks - expresses the essential raw data structures
- * supporting the **9 variant(s)** of the DelegateActivity enum type
+ * supporting the **10 variant(s)** of the DelegateActivity enum type
  * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -1557,6 +1614,8 @@ export type DelegateActivity =
         | { DeletingDelegatedData: DelegateActivity$DeletingDelegatedData /*minEnumVariant*/ }
         | { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
 			Array<UplcData>    /*minEnumVariant*/ }
+        | { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			OtherActivity    /*minEnumVariant*/ }
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -1581,13 +1640,15 @@ export type ErgoDelegateActivity = IntersectedEnum<
         | { DeletingDelegatedData: DelegateActivity$Ergo$DeletingDelegatedData /*minEnumVariant*/ }
         | { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
 			Array<UplcData>    /*minEnumVariant*/ }
+        | { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			ErgoOtherActivity    /*minEnumVariant*/ }
 >
 
 /**
  * DelegateActivity enum variants (permissive)
  * 
  * @remarks - expresses the allowable data structure
- * for creating any of the **9 variant(s)** of the DelegateActivity enum type
+ * for creating any of the **10 variant(s)** of the DelegateActivity enum type
  * 
  * - **Note**: Stellar Contracts provides a higher-level `DelegateActivityHelper` class
  *     for generating UPLC data for this enum type
@@ -1613,6 +1674,8 @@ export type DelegateActivityLike = IntersectedEnum<
         | { DeletingDelegatedData: DelegateActivity$DeletingDelegatedDataLike /*minEnumVariant*/ }
         | { MultipleDelegateActivities: /* implied wrapper { activities: ... } for singleVariantField */ 
 			Array<UplcData>    /*minEnumVariant*/ }
+        | { OtherActivities: /* implied wrapper { activity: ... } for singleVariantField */ 
+			OtherActivityLike    /*minEnumVariant*/ }
 >
 
 /**

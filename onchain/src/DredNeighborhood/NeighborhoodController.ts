@@ -40,8 +40,9 @@ export class NeighborhoodController extends DelegatedDataContract<
 > {
     dataBridgeClass = NeighborhoodPolicyDataBridge;
 
-    scriptBundle() {
-        return NeighborhoodRegistryBundle.create();
+    async scriptBundleClass() {
+        const module = await import("./NeighborhoodRegistry.hlb.js")
+        return module.default
     }
     idPrefix = "nbhd" as const;
 

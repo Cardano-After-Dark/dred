@@ -36,8 +36,6 @@ import {
     hasReqts,
 } from "@donecollectively/stellar-contracts";
 import { ProtocolSettingsController } from "./settings/ProtocolSettingsController.js";
-import DredCapoBundle from "./DredCapo.hlb.js";
-
 import { MyMintSpendDelegate } from "./MyMintSpendDelegate.js";
 
 import type {
@@ -100,10 +98,9 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
         };
     }
 
-    scriptBundle(): CapoHeliosBundle {
-        return DredCapoBundle.create({
-            setup: this.setup,
-        });
+    async scriptBundleClass() {
+        const t = await import("./DredCapo.hlb.js");
+        return t.DredCapoBundle
     }
 
     /**

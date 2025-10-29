@@ -18,17 +18,22 @@ inBackground "typecheck all, prep for doc-gen and main .d.ts" \
       $* && playProgressSound
 } || logProblemWith "dAPI build with rollup"
 
-wait
+echo "build started at  $startTime"
+date
 exitIfError
 playCheckpointSound
+
+find src -type d | tail -n +2 | while read a ; do { mkdir -p .stellar/api/$a ; } done
+find src -name \*.typeInfo.d.ts | grep -v '/tests/' | while read a ; do { cp $a .stellar/api/$a ; } done
 
 echo -n "build finished at "
 date
 inBackground "dAPI docs" api-extractor run --local --verbose &
 wait
+
 exitIfError
 echo "build started at  $startTime"
-echo "build finished at $(date)"
+echo "docs build finished at $(date)"
 
 playSuccessSound
 

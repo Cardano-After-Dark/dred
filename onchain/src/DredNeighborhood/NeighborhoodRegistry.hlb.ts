@@ -8,7 +8,7 @@ import DredCapo from "../DredCapo.hlb.js";
 import NeighborhoodData from "./NeighborhoodData.hl";
 import type { Source } from "@helios-lang/compiler-utils";
 
-export default class NeighborhoodRegistryBundle 
+export class NeighborhoodRegistryBundle 
 extends DelegatedDataBundle.usingCapoBundleClass(DredCapo) {
     specializedDelegateModule = NeighborhoodPolicy;
     requiresGovAuthority = false;
@@ -44,3 +44,4 @@ extends DelegatedDataBundle.usingCapoBundleClass(DredCapo) {
     }
 }
 
+export default NeighborhoodRegistryBundle

@@ -1,6 +1,6 @@
 {
     "name": "dred-network-registry",
-    "version": "0.5.6",
+    "version": "0.7.0-beta.1",
     "description": "Onchain registry for DRED decentralized realtime messaging",
     "keywords": [],
     "author": "Cardano After Dark",
@@ -67,21 +67,21 @@
         "singleQuote": false
     },
     "peerFromWorkspace": {
-        "@donecollectively/stellar-contracts": "^0.9.1-beta.10",
-        "stellar-tokenomics": "^0.7.0-beta.3"
+        "@donecollectively/stellar-contracts": "^0.9.3-beta.1",
+        "stellar-tokenomics": "^0.8.0-beta.2"
     },
     "peerDependencies": {
         "@helios-lang/cbor": "^0.3.1",
         "@helios-lang/codec-utils": "^0.3.4",
-        "@helios-lang/compiler": "^0.17.22",
+        "@helios-lang/compiler": "^0.17.30",
         "@helios-lang/compiler-utils": "^0.5.15",
         "@helios-lang/contract-utils": "^0.3.21",
         "@helios-lang/crypto": "^0.2.3",
         "@helios-lang/ir": "^0.3.9",
-        "@helios-lang/ledger": "^0.7.11",
-        "@helios-lang/tx-utils": "^0.6.13",
+        "@helios-lang/ledger": "^0.7.19",
+        "@helios-lang/tx-utils": "^0.6.15",
         "@helios-lang/type-utils": "^0.3.0",
-        "@helios-lang/uplc": "^0.7.17"
+        "@helios-lang/uplc": "^0.7.20"
     },
     "dependencies": {
         "@microsoft/api-documenter": "^7.26.20",
@@ -91,23 +91,18 @@
         "react-markdown": "^10.1.0",
         "vitest": "^3.0.9"
     },
-    "fromWorkspace": {
-        "@donecollectively/stellar-contracts": "github:donecollectively/stellar-contracts#semver:0.9.1-beta.10",
-        "stellar-tokenomics": "github:donecollectively/stellar-tokenomics-next#semver:0.7.0-beta.3",
-        "prettier": "^...whatever"
-    },
     "devDependencies": {
         "@helios-lang/cbor": "^0.3.1",
         "@helios-lang/codec-utils": "^0.3.4",
-        "@helios-lang/compiler": "^0.17.22",
+        "@helios-lang/compiler": "^0.17.30",
         "@helios-lang/compiler-utils": "^0.5.15",
         "@helios-lang/contract-utils": "^0.3.21",
         "@helios-lang/crypto": "^0.2.3",
         "@helios-lang/ir": "^0.3.9",
-        "@helios-lang/ledger": "^0.7.11",
-        "@helios-lang/tx-utils": "^0.6.13",
+        "@helios-lang/ledger": "^0.7.19",
+        "@helios-lang/tx-utils": "^0.6.15",
         "@helios-lang/type-utils": "^0.3.0",
-        "@helios-lang/uplc": "^0.7.17",
+        "@helios-lang/uplc": "^0.7.20",
         "@microsoft/api-extractor": "^7.52.9",
         "@rollup/plugin-alias": "^4.0.4",
         "@rollup/plugin-json": "^6.1.0",

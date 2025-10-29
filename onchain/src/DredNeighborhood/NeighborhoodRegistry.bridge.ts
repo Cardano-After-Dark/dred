@@ -111,6 +111,10 @@ import type {
     AbstractSettingsForNeighborhood, ErgoAbstractSettingsForNeighborhood, AbstractSettingsForNeighborhoodLike,
     dgd_DataSrc$Both, dgd_DataSrc$Ergo$Both, dgd_DataSrc$BothLike,
     dgd_DataSrc, Ergodgd_DataSrc, dgd_DataSrcLike,
+    AbstractDelegateActivitiesEnum$CreatingDelegatedData, AbstractDelegateActivitiesEnum$Ergo$CreatingDelegatedData, AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike,
+    AbstractDelegateActivitiesEnum$UpdatingDelegatedData, AbstractDelegateActivitiesEnum$Ergo$UpdatingDelegatedData, AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike,
+    AbstractDelegateActivitiesEnum$DeletingDelegatedData, AbstractDelegateActivitiesEnum$Ergo$DeletingDelegatedData, AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike,
+    AbstractDelegateActivitiesEnum, ErgoAbstractDelegateActivitiesEnum, AbstractDelegateActivitiesEnumLike,
     DgDataDetails, ErgoDgDataDetails, DgDataDetailsLike
 } from "./NeighborhoodRegistry.typeInfo.js";
 
@@ -186,6 +190,10 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
        */
         RevenueModel: new RevenueModelHelper({isMainnet: this.isMainnet}),
       /**
+       * generates UplcData for the enum type ***NbhDetails*** for the `BasicDelegate` script
+       */
+        NbhDetails: new NbhDetailsHelper({isMainnet: this.isMainnet}),
+      /**
        * generates UplcData for the enum type ***DelegateDatum*** for the `BasicDelegate` script
        */
         DelegateDatum: new DelegateDatumHelper({isMainnet: this.isMainnet}),
@@ -218,6 +226,10 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
        */
         BurningActivity: new BurningActivityHelper({isMainnet: this.isMainnet}),
       /**
+       * generates UplcData for the enum type ***OtherActivity*** for the `BasicDelegate` script
+       */
+        OtherActivity: new OtherActivityHelper({isMainnet: this.isMainnet}),
+      /**
        * generates UplcData for the enum type ***DelegateActivity*** for the `BasicDelegate` script
        */
         DelegateActivity: new DelegateActivityHelper({isMainnet: this.isMainnet}),
@@ -245,6 +257,10 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
        * generates UplcData for the enum type ***dgd_DataSrc*** for the `BasicDelegate` script
        */
         dgd_DataSrc: new dgd_DataSrcHelper({isMainnet: this.isMainnet}),
+      /**
+       * generates UplcData for the enum type ***AbstractDelegateActivitiesEnum*** for the `BasicDelegate` script
+       */
+        AbstractDelegateActivitiesEnum: new AbstractDelegateActivitiesEnumHelper({isMainnet: this.isMainnet}),
 
       /**
        * generates UplcData for the enum type ***AnyData*** for the `BasicDelegate` script
@@ -387,6 +403,7 @@ export class NeighborhoodPolicyDataBridge extends ContractDataBridge {
     id: /*minStructField*/ number[]
     type: /*minStructField*/ string
     mph: /*minStructField*/ MintingPolicyHash | string | number[]
+    activity: /*minStructField*/ AbstractDelegateActivitiesEnumLike | undefined
 }
 ) => {
         return this.ᱺᱺDgDataDetailsCast.toUplcData(fields);
@@ -880,6 +897,27 @@ datum = (d: UplcData) => { return this.DelegateDatum(d) }
         const cast = typeHelper.ᱺᱺcast;  
 
         return cast.fromUplcData(d) as Ergodgd_DataSrc;        
+    } /* enumReader helper */
+
+    /**
+        * reads UplcData *known to fit the **AbstractDelegateActivitiesEnum*** enum type,
+        * for the BasicDelegate script.
+        * #### Standard WARNING
+        * 
+        * This is a low-level data-reader for use in ***advanced development scenarios***.
+        * 
+        * Used correctly with data that matches the enum type, this reader
+        * returns strongly-typed data - your code using these types will be safe.
+        * 
+        * On the other hand, reading non-matching data will not give you a valid result.  
+        * It may throw an error, or it may throw no error, but return a value that
+        * causes some error later on in your code, when you try to use it.
+        */
+    AbstractDelegateActivitiesEnum(d : UplcData) { 
+        const typeHelper = this.bridge.types.AbstractDelegateActivitiesEnum;
+        const cast = typeHelper.ᱺᱺcast;  
+
+        return cast.fromUplcData(d) as ErgoAbstractDelegateActivitiesEnum;        
     } /* enumReader helper */
 
     /**
@@ -1741,223 +1779,6 @@ export class ManifestActivityHelper extends EnumBridge<JustAnEnum> {
 
 
 /**
- * Helper class for generating UplcData for variants of the ***DelegateRole*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-export class DelegateRoleHelperNested extends EnumBridge<JustAnEnum> {
-    /*mkEnumHelperClass*/
-    /**
-            * @internal
-            *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast = makeCast<DelegateRole, DelegateRoleLike>(
-        DelegateRoleSchema,
-        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-    );
-
-/**
- * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
- */
-    get MintDgt() {
-        const uplc = this.mkUplcData({ MintDgt: {} }, 
-            "CapoDelegateHelpers::DelegateRole.MintDgt");
-        return uplc;
-    } /* tagOnly variant accessor */
-
-/**
- * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
- */
-    get SpendDgt() {
-        const uplc = this.mkUplcData({ SpendDgt: {} }, 
-            "CapoDelegateHelpers::DelegateRole.SpendDgt");
-        return uplc;
-    } /* tagOnly variant accessor */
-
-/**
- * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
- */
-    get MintInvariant() {
-        const uplc = this.mkUplcData({ MintInvariant: {} }, 
-            "CapoDelegateHelpers::DelegateRole.MintInvariant");
-        return uplc;
-    } /* tagOnly variant accessor */
-
-/**
- * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
- */
-    get SpendInvariant() {
-        const uplc = this.mkUplcData({ SpendInvariant: {} }, 
-            "CapoDelegateHelpers::DelegateRole.SpendInvariant");
-        return uplc;
-    } /* tagOnly variant accessor */
-
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-    * @remarks
-    * #### Nested activity: 
-    * this is connected to a nested-activity wrapper, so the details are piped through 
-    * the parent's uplc-encoder, producing a single uplc object with 
-    * a complete wrapper for this inner activity detail.
-     */
-    DgDataPolicy(
-        name: string
-    ) : UplcData {
-        const uplc = this.mkUplcData({ 
-           DgDataPolicy: name
-        }, "CapoDelegateHelpers::DelegateRole.DgDataPolicy"); /*singleField enum variant*/
-       return uplc;
-    }
-
-    /**
-     * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-    * @remarks
-    * #### Nested activity: 
-    * this is connected to a nested-activity wrapper, so the details are piped through 
-    * the parent's uplc-encoder, producing a single uplc object with 
-    * a complete wrapper for this inner activity detail.
-     */
-    OtherNamedDgt(
-        name: string
-    ) : UplcData {
-        const uplc = this.mkUplcData({ 
-           OtherNamedDgt: name
-        }, "CapoDelegateHelpers::DelegateRole.OtherNamedDgt"); /*singleField enum variant*/
-       return uplc;
-    }
-
-/**
- * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
- */
-    get BothMintAndSpendDgt() {
-        const uplc = this.mkUplcData({ BothMintAndSpendDgt: {} }, 
-            "CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt");
-        return uplc;
-    } /* tagOnly variant accessor */
-
-/**
- * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
- * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
- */
-    get HandledByCapoOnly() {
-        const uplc = this.mkUplcData({ HandledByCapoOnly: {} }, 
-            "CapoDelegateHelpers::DelegateRole.HandledByCapoOnly");
-        return uplc;
-    } /* tagOnly variant accessor */
-}/*mkEnumHelperClass*/
-
-
-/**
- * Helper class for generating UplcData for variants of the ***ManifestActivity*** enum type.
- * @public
- * @remarks
- * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
-export class ManifestActivityHelperNested extends EnumBridge<isActivity> {
-    /*mkEnumHelperClass*/
-    /**
-            * @internal
-            *  uses unicode U+1c7a - sorts to the end */
-    ᱺᱺcast = makeCast<ManifestActivity, ManifestActivityLike>(
-        ManifestActivitySchema,
-        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-    );
-
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
-    * @remarks
-    * #### Nested activity: 
-    * this is connected to a nested-activity wrapper, so the details are piped through 
-    * the parent's uplc-encoder, producing a single uplc object with 
-    * a complete wrapper for this inner activity detail.
-     */
-    retiringEntry(
-        key: string
-    ) : isActivity {
-        const uplc = this.mkUplcData({ 
-           retiringEntry: key
-        }, "CapoDelegateHelpers::ManifestActivity.retiringEntry"); /*singleField enum variant*/
-       return uplc;
-    }
-
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
-     * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
-    * ##### Nested activity: 
-    * this is connected to a nested-activity wrapper, so the details are piped through 
-    * the parent's uplc-encoder, producing a single uplc object with 
-    * a complete wrapper for this inner activity detail.
-     */
-    updatingEntry(fields: ManifestActivity$updatingEntryLike | { 
-        key: string,
-        tokenName: number[]
-    }) : isActivity {
-        const uplc = this.mkUplcData({
-            updatingEntry: fields 
-        }, "CapoDelegateHelpers::ManifestActivity.updatingEntry");
-       return uplc;
-    } /*multiFieldVariant enum accessor*/
-
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
-     * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
-    * ##### Nested activity: 
-    * this is connected to a nested-activity wrapper, so the details are piped through 
-    * the parent's uplc-encoder, producing a single uplc object with 
-    * a complete wrapper for this inner activity detail.
-     */
-    addingEntry(fields: ManifestActivity$addingEntryLike | { 
-        key: string,
-        tokenName: number[]
-    }) : isActivity {
-        const uplc = this.mkUplcData({
-            addingEntry: fields 
-        }, "CapoDelegateHelpers::ManifestActivity.addingEntry");
-       return uplc;
-    } /*multiFieldVariant enum accessor*/
-
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
-     * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
-    * ##### Nested activity: 
-    * this is connected to a nested-activity wrapper, so the details are piped through 
-    * the parent's uplc-encoder, producing a single uplc object with 
-    * a complete wrapper for this inner activity detail.
-     */
-    forkingThreadToken(fields: ManifestActivity$forkingThreadTokenLike | { 
-        key: string,
-        newThreadCount: IntLike
-    }) : isActivity {
-        const uplc = this.mkUplcData({
-            forkingThreadToken: fields 
-        }, "CapoDelegateHelpers::ManifestActivity.forkingThreadToken");
-       return uplc;
-    } /*multiFieldVariant enum accessor*/
-
-    /**
-     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
-     * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
-    * ##### Nested activity: 
-    * this is connected to a nested-activity wrapper, so the details are piped through 
-    * the parent's uplc-encoder, producing a single uplc object with 
-    * a complete wrapper for this inner activity detail.
-     */
-    burningThreadToken(fields: ManifestActivity$burningThreadTokenLike | { 
-        key: string,
-        burnedThreadCount: IntLike
-    }) : isActivity {
-        const uplc = this.mkUplcData({
-            burningThreadToken: fields 
-        }, "CapoDelegateHelpers::ManifestActivity.burningThreadToken");
-       return uplc;
-    } /*multiFieldVariant enum accessor*/
-}/*mkEnumHelperClass*/
-
-
-/**
  * Helper class for generating UplcData for variants of the ***CapoLifecycleActivity*** enum type.
  * @public
  * @remarks
@@ -2046,20 +1867,7 @@ export class CapoLifecycleActivityHelper extends EnumBridge<JustAnEnum> {
         return uplc;
     } /* tagOnly variant accessor */
 
-    /**
-     * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
-     */
-    get removePendingChange() {
-        const nestedAccessor = new DelegateRoleHelperNested({
-            isMainnet: this.isMainnet, isNested: true, isActivity: false 
-        });
-        nestedAccessor.mkDataVia(
-            (role: DelegateRoleLike) => {
-                return  this.mkUplcData({ removePendingChange: role }, 
-            "CapoDelegateHelpers::CapoLifecycleActivity.removePendingChange");
-        });
-        return nestedAccessor;
-    } /* nested enum accessor */
+
 
 /**
  * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
@@ -2199,20 +2007,7 @@ export class CapoLifecycleActivityHelper extends EnumBridge<JustAnEnum> {
     /* coda: seeded helper in same multiFieldVariant/seeded */
 
 
-    /**
-     * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
-     */
-    get updatingManifest() {
-        const nestedAccessor = new ManifestActivityHelperNested({
-            isMainnet: this.isMainnet, isNested: true, isActivity: false 
-        });
-        nestedAccessor.mkDataVia(
-            (activity: ManifestActivityLike) => {
-                return  this.mkUplcData({ updatingManifest: activity }, 
-            "CapoDelegateHelpers::CapoLifecycleActivity.updatingManifest");
-        });
-        return nestedAccessor;
-    } /* nested enum accessor */
+
 }/*mkEnumHelperClass*/
 
 
@@ -2381,7 +2176,7 @@ export class MintingActivityHelper extends EnumBridge<JustAnEnum> {
     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
     *  - to get a transaction context having the seed needed for this argument, 
     *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-    * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+    * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
     *  - in a context providing an implicit seed utxo, use 
     *    the `$seeded$CreatingRecord}` variant of this activity instead
     *
@@ -2442,6 +2237,33 @@ export class BurningActivityHelper extends EnumBridge<JustAnEnum> {
         }, "NeighborhoodPolicy::BurningActivity.DeletingRecord"); /*singleField enum variant*/
        return uplc;
     }
+}/*mkEnumHelperClass*/
+
+
+/**
+ * Helper class for generating UplcData for variants of the ***OtherActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+export class OtherActivityHelper extends EnumBridge<JustAnEnum> {
+    /*mkEnumHelperClass*/
+    /**
+            * @internal
+            *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<OtherActivity, OtherActivityLike>(
+        OtherActivitySchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+/**
+ * (property getter): UplcData for ***"NeighborhoodPolicy::OtherActivity.Placeholder"***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#42***
+ */
+    get Placeholder() {
+        const uplc = this.mkUplcData({ Placeholder: {} }, 
+            "NeighborhoodPolicy::OtherActivity.Placeholder");
+        return uplc;
+    } /* tagOnly variant accessor */
 }/*mkEnumHelperClass*/
 
 
@@ -2553,6 +2375,112 @@ export class ActivityDelegateRoleHelperNested extends EnumBridge<isActivity> {
             "CapoDelegateHelpers::DelegateRole.HandledByCapoOnly");
         return uplc;
     } /* tagOnly variant accessor */
+}/*mkEnumHelperClass*/
+
+
+/**
+ * Helper class for generating UplcData for variants of the ***ManifestActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+export class ManifestActivityHelperNested extends EnumBridge<isActivity> {
+    /*mkEnumHelperClass*/
+    /**
+            * @internal
+            *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<ManifestActivity, ManifestActivityLike>(
+        ManifestActivitySchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
+    * @remarks
+    * #### Nested activity: 
+    * this is connected to a nested-activity wrapper, so the details are piped through 
+    * the parent's uplc-encoder, producing a single uplc object with 
+    * a complete wrapper for this inner activity detail.
+     */
+    retiringEntry(
+        key: string
+    ) : isActivity {
+        const uplc = this.mkUplcData({ 
+           retiringEntry: key
+        }, "CapoDelegateHelpers::ManifestActivity.retiringEntry"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
+     * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
+    * ##### Nested activity: 
+    * this is connected to a nested-activity wrapper, so the details are piped through 
+    * the parent's uplc-encoder, producing a single uplc object with 
+    * a complete wrapper for this inner activity detail.
+     */
+    updatingEntry(fields: ManifestActivity$updatingEntryLike | { 
+        key: string,
+        tokenName: number[]
+    }) : isActivity {
+        const uplc = this.mkUplcData({
+            updatingEntry: fields 
+        }, "CapoDelegateHelpers::ManifestActivity.updatingEntry");
+       return uplc;
+    } /*multiFieldVariant enum accessor*/
+
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
+     * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
+    * ##### Nested activity: 
+    * this is connected to a nested-activity wrapper, so the details are piped through 
+    * the parent's uplc-encoder, producing a single uplc object with 
+    * a complete wrapper for this inner activity detail.
+     */
+    addingEntry(fields: ManifestActivity$addingEntryLike | { 
+        key: string,
+        tokenName: number[]
+    }) : isActivity {
+        const uplc = this.mkUplcData({
+            addingEntry: fields 
+        }, "CapoDelegateHelpers::ManifestActivity.addingEntry");
+       return uplc;
+    } /*multiFieldVariant enum accessor*/
+
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
+     * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
+    * ##### Nested activity: 
+    * this is connected to a nested-activity wrapper, so the details are piped through 
+    * the parent's uplc-encoder, producing a single uplc object with 
+    * a complete wrapper for this inner activity detail.
+     */
+    forkingThreadToken(fields: ManifestActivity$forkingThreadTokenLike | { 
+        key: string,
+        newThreadCount: IntLike
+    }) : isActivity {
+        const uplc = this.mkUplcData({
+            forkingThreadToken: fields 
+        }, "CapoDelegateHelpers::ManifestActivity.forkingThreadToken");
+       return uplc;
+    } /*multiFieldVariant enum accessor*/
+
+    /**
+     * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
+     * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
+    * ##### Nested activity: 
+    * this is connected to a nested-activity wrapper, so the details are piped through 
+    * the parent's uplc-encoder, producing a single uplc object with 
+    * a complete wrapper for this inner activity detail.
+     */
+    burningThreadToken(fields: ManifestActivity$burningThreadTokenLike | { 
+        key: string,
+        burnedThreadCount: IntLike
+    }) : isActivity {
+        const uplc = this.mkUplcData({
+            burningThreadToken: fields 
+        }, "CapoDelegateHelpers::ManifestActivity.burningThreadToken");
+       return uplc;
+    } /*multiFieldVariant enum accessor*/
 }/*mkEnumHelperClass*/
 
 
@@ -3022,7 +2950,7 @@ export class MintingActivityHelperNested extends EnumBridge<isActivity> {
     * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
     *  - to get a transaction context having the seed needed for this argument, 
     *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-    * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+    * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
     *  - in a context providing an implicit seed utxo, use 
     *    the `$seeded$CreatingRecord}` variant of this activity instead
     *
@@ -3098,6 +3026,33 @@ export class BurningActivityHelperNested extends EnumBridge<isActivity> {
         }, "NeighborhoodPolicy::BurningActivity.DeletingRecord"); /*singleField enum variant*/
        return uplc;
     }
+}/*mkEnumHelperClass*/
+
+
+/**
+ * Helper class for generating UplcData for variants of the ***OtherActivity*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+export class OtherActivityHelperNested extends EnumBridge<isActivity> {
+    /*mkEnumHelperClass*/
+    /**
+            * @internal
+            *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<OtherActivity, OtherActivityLike>(
+        OtherActivitySchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+/**
+ * (property getter): UplcData for ***"NeighborhoodPolicy::OtherActivity.Placeholder"***
+ * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#42***
+ */
+    get Placeholder() {
+        const uplc = this.mkUplcData({ Placeholder: {} }, 
+            "NeighborhoodPolicy::OtherActivity.Placeholder");
+        return uplc;
+    } /* tagOnly variant accessor */
 }/*mkEnumHelperClass*/
 
 
@@ -3294,6 +3249,21 @@ export class DelegateActivityHelper extends EnumBridge<isActivity> {
         }, "NeighborhoodPolicy::DelegateActivity.MultipleDelegateActivities"); /*singleField enum variant*/
        return uplc;
     }
+
+    /**
+     * access to different variants of the ***nested OtherActivity*** type needed for ***DelegateActivity:OtherActivities***.
+     */
+    get OtherActivities() {
+        const nestedAccessor = new OtherActivityHelperNested({
+            isMainnet: this.isMainnet, isNested: true, isActivity: true 
+        });
+        nestedAccessor.mkDataVia(
+            (activity: OtherActivityLike) => {
+                return  this.mkUplcData({ OtherActivities: activity }, 
+            "NeighborhoodPolicy::DelegateActivity.OtherActivities");
+        });
+        return nestedAccessor;
+    } /* nested enum accessor */
 }/*mkEnumHelperClass*/
 
 
@@ -3898,6 +3868,179 @@ export class dgd_DataSrcHelper extends EnumBridge<JustAnEnum> {
 
 
 /**
+ * Helper class for generating UplcData for variants of the ***AbstractDelegateActivitiesEnum*** enum type.
+ * @public
+ * @remarks
+ * this class is not intended to be used directly.  Its methods are available through automatic accesors in the parent struct, contract-datum- or contract-activity-bridges. */
+export class AbstractDelegateActivitiesEnumHelper extends EnumBridge<JustAnEnum> {
+    /*mkEnumHelperClass*/
+    /**
+            * @internal
+            *  uses unicode U+1c7a - sorts to the end */
+    ᱺᱺcast = makeCast<AbstractDelegateActivitiesEnum, AbstractDelegateActivitiesEnumLike>(
+        AbstractDelegateActivitiesEnumSchema,
+        { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+    );
+
+
+
+
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.SpendingActivities"***
+     */
+    SpendingActivities(
+        activity: UplcData
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           SpendingActivities: activity
+        }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.SpendingActivities"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MintingActivities"***
+     */
+    MintingActivities(
+        activity: UplcData
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           MintingActivities: activity
+        }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MintingActivities"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.BurningActivities"***
+     */
+    BurningActivities(
+        activity: UplcData
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           BurningActivities: activity
+        }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.BurningActivities"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData"***, 
+     * given a transaction-context ***with a seed utxo*** and other field details
+     * @remarks
+     * See the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass 
+     * to create a context satisfying `hasSeed`.
+     * See `$seeded$CreatingDelegatedData}` for use in a context
+     * providing an implicit seed utxo. 
+     */
+    CreatingDelegatedData(value: hasSeed, fields: { 
+        dataType: string 
+    } ) : UplcData
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData"*** 
+     * with raw seed details included in fields.
+     */
+    CreatingDelegatedData(fields: AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike | {
+            seed: TxOutputId | string,
+            dataType: string
+    } ): UplcData
+    CreatingDelegatedData(
+        seedOrUf: hasSeed | AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike, 
+        filteredFields?: { 
+            dataType: string
+    }) : UplcData {
+        if (filteredFields) {
+            const seedTxOutputId = this.getSeed(seedOrUf as hasSeed);
+            const uplc = this.mkUplcData({
+                CreatingDelegatedData: { seed: seedTxOutputId, ...filteredFields } 
+            }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData");
+           return uplc;
+        } else {
+            const fields = seedOrUf as AbstractDelegateActivitiesEnum$CreatingDelegatedDataLike; 
+           const uplc = this.mkUplcData({
+                CreatingDelegatedData: fields 
+            }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData");
+           return uplc;
+        }
+    } /*multiFieldVariant/seeded enum accessor*/ 
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData"***, 
+     * @param fields - \{ dataType: string \}
+     * @remarks
+    * ##### Seeded activity
+    * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+     * ##### Activity contains implied seed
+     * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+     * provided implicitly by a SeedActivity-supporting library function. 
+     *
+     * #### Usage
+     *   1. Call the `$seeded$CreatingDelegatedData({ dataType })`
+      *       method with the indicated (non-seed) details.
+     *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+     *       `mkTxnCreateRecord({activity})` method.
+     */
+    $seeded$CreatingDelegatedData = impliedSeedActivityMaker(this, 
+        this.CreatingDelegatedData as (value: hasSeed, fields: { 
+            dataType: string 
+        } ) => UplcData
+    )
+    /* coda: seeded helper in same multiFieldVariant/seeded */
+
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.UpdatingDelegatedData"***
+     * @remarks - ***AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike*** is the same as the expanded field-types.
+     */
+    UpdatingDelegatedData(fields: AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike | { 
+        dataType: string,
+        recId: number[]
+    }) : UplcData {
+        const uplc = this.mkUplcData({
+            UpdatingDelegatedData: fields 
+        }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.UpdatingDelegatedData");
+       return uplc;
+    } /*multiFieldVariant enum accessor*/
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.DeletingDelegatedData"***
+     * @remarks - ***AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike*** is the same as the expanded field-types.
+     */
+    DeletingDelegatedData(fields: AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike | { 
+        dataType: string,
+        recId: number[]
+    }) : UplcData {
+        const uplc = this.mkUplcData({
+            DeletingDelegatedData: fields 
+        }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.DeletingDelegatedData");
+       return uplc;
+    } /*multiFieldVariant enum accessor*/
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MultipleDelegateActivities"***
+     */
+    MultipleDelegateActivities(
+        activities: Array<UplcData>
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           MultipleDelegateActivities: activities
+        }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MultipleDelegateActivities"); /*singleField enum variant*/
+       return uplc;
+    }
+
+    /**
+     * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.OtherActivities"***
+     */
+    OtherActivities(
+        activity: UplcData
+    ) : UplcData {
+        const uplc = this.mkUplcData({ 
+           OtherActivities: activity
+        }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.OtherActivities"); /*singleField enum variant*/
+       return uplc;
+    }
+}/*mkEnumHelperClass*/
+
+
+/**
  * Helper class for generating UplcData for the struct ***DgDataDetails*** type.
  * @public
  */
@@ -3985,35 +4128,35 @@ export const NeighborhoodStateSchema : EnumTypeSchema = {
     "variantTypes": [
         {
             "kind": "variant",
-            "tag": 0,
+            "tag": 4180,
             "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
             "name": "Preproduction",
             "fieldTypes": []
         },
         {
             "kind": "variant",
-            "tag": 1,
+            "tag": 4181,
             "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
             "name": "Active",
             "fieldTypes": []
         },
         {
             "kind": "variant",
-            "tag": 2,
+            "tag": 4182,
             "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
             "name": "UpdatePending",
             "fieldTypes": []
         },
         {
             "kind": "variant",
-            "tag": 3,
+            "tag": 4183,
             "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
             "name": "UpdateDisputed",
             "fieldTypes": []
         },
         {
             "kind": "variant",
-            "tag": 4,
+            "tag": 4184,
             "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
             "name": "Retired",
             "fieldTypes": []
@@ -4028,14 +4171,14 @@ export const FeeSourceSchema : EnumTypeSchema = {
     "variantTypes": [
         {
             "kind": "variant",
-            "tag": 0,
+            "tag": 4160,
             "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
             "name": "EndUser",
             "fieldTypes": []
         },
         {
             "kind": "variant",
-            "tag": 1,
+            "tag": 4161,
             "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
             "name": "SponsorContract",
             "fieldTypes": [
@@ -4058,7 +4201,7 @@ export const SubscriptionFeeFrequencySchema : EnumTypeSchema = {
     "variantTypes": [
         {
             "kind": "variant",
-            "tag": 0,
+            "tag": 4150,
             "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
             "name": "Epoch",
             "fieldTypes": [
@@ -4073,7 +4216,7 @@ export const SubscriptionFeeFrequencySchema : EnumTypeSchema = {
         },
         {
             "kind": "variant",
-            "tag": 1,
+            "tag": 4151,
             "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
             "name": "Monthly",
             "fieldTypes": [
@@ -4088,7 +4231,7 @@ export const SubscriptionFeeFrequencySchema : EnumTypeSchema = {
         },
         {
             "kind": "variant",
-            "tag": 2,
+            "tag": 4152,
             "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
             "name": "Yearly",
             "fieldTypes": [
@@ -4111,9 +4254,9 @@ export const RevenueModelSchema : EnumTypeSchema = {
     "variantTypes": [
         {
             "kind": "variant",
-            "tag": 0,
-            "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBased",
-            "name": "TransactionBased",
+            "tag": 4120,
+            "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBasedV1",
+            "name": "TransactionBasedV1",
             "fieldTypes": [
                 {
                     "name": "minTxFee",
@@ -4141,14 +4284,14 @@ export const RevenueModelSchema : EnumTypeSchema = {
                         "variantTypes": [
                             {
                                 "kind": "variant",
-                                "tag": 0,
+                                "tag": 4160,
                                 "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
                                 "name": "EndUser",
                                 "fieldTypes": []
                             },
                             {
                                 "kind": "variant",
-                                "tag": 1,
+                                "tag": 4161,
                                 "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
                                 "name": "SponsorContract",
                                 "fieldTypes": [
@@ -4163,14 +4306,21 @@ export const RevenueModelSchema : EnumTypeSchema = {
                             }
                         ]
                     }
+                },
+                {
+                    "name": "nodeOpShare",
+                    "type": {
+                        "kind": "internal",
+                        "name": "Real"
+                    }
                 }
             ]
         },
         {
             "kind": "variant",
-            "tag": 1,
-            "id": "__module__NeighborhoodData__RevenueModel[]__Subscription",
-            "name": "Subscription",
+            "tag": 4121,
+            "id": "__module__NeighborhoodData__RevenueModel[]__SubscriptionV1",
+            "name": "SubscriptionV1",
             "fieldTypes": [
                 {
                     "name": "subscriptionFee",
@@ -4183,7 +4333,7 @@ export const RevenueModelSchema : EnumTypeSchema = {
                             "variantTypes": [
                                 {
                                     "kind": "variant",
-                                    "tag": 0,
+                                    "tag": 4150,
                                     "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
                                     "name": "Epoch",
                                     "fieldTypes": [
@@ -4198,7 +4348,7 @@ export const RevenueModelSchema : EnumTypeSchema = {
                                 },
                                 {
                                     "kind": "variant",
-                                    "tag": 1,
+                                    "tag": 4151,
                                     "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
                                     "name": "Monthly",
                                     "fieldTypes": [
@@ -4213,7 +4363,7 @@ export const RevenueModelSchema : EnumTypeSchema = {
                                 },
                                 {
                                     "kind": "variant",
-                                    "tag": 2,
+                                    "tag": 4152,
                                     "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
                                     "name": "Yearly",
                                     "fieldTypes": [
@@ -4229,17 +4379,24 @@ export const RevenueModelSchema : EnumTypeSchema = {
                             ]
                         }
                     }
+                },
+                {
+                    "name": "nodeOpShare",
+                    "type": {
+                        "kind": "internal",
+                        "name": "Real"
+                    }
                 }
             ]
         }
     ]
 };
 
-export const AppInfoSchema : StructTypeSchema = {
+export const AppInfoV1Schema : StructTypeSchema = {
     "kind": "struct",
     "format": "list",
-    "id": "__module__NeighborhoodData__AppInfo[]",
-    "name": "AppInfo",
+    "id": "__module__NeighborhoodData__AppInfoV1[]",
+    "name": "AppInfoV1",
     "fieldTypes": [
         {
             "name": "url",
@@ -4259,9 +4416,9 @@ export const AppInfoSchema : StructTypeSchema = {
                     "variantTypes": [
                         {
                             "kind": "variant",
-                            "tag": 0,
-                            "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBased",
-                            "name": "TransactionBased",
+                            "tag": 4120,
+                            "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBasedV1",
+                            "name": "TransactionBasedV1",
                             "fieldTypes": [
                                 {
                                     "name": "minTxFee",
@@ -4289,14 +4446,14 @@ export const AppInfoSchema : StructTypeSchema = {
                                         "variantTypes": [
                                             {
                                                 "kind": "variant",
-                                                "tag": 0,
+                                                "tag": 4160,
                                                 "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
                                                 "name": "EndUser",
                                                 "fieldTypes": []
                                             },
                                             {
                                                 "kind": "variant",
-                                                "tag": 1,
+                                                "tag": 4161,
                                                 "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
                                                 "name": "SponsorContract",
                                                 "fieldTypes": [
@@ -4311,14 +4468,21 @@ export const AppInfoSchema : StructTypeSchema = {
                                             }
                                         ]
                                     }
+                                },
+                                {
+                                    "name": "nodeOpShare",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "Real"
+                                    }
                                 }
                             ]
                         },
                         {
                             "kind": "variant",
-                            "tag": 1,
-                            "id": "__module__NeighborhoodData__RevenueModel[]__Subscription",
-                            "name": "Subscription",
+                            "tag": 4121,
+                            "id": "__module__NeighborhoodData__RevenueModel[]__SubscriptionV1",
+                            "name": "SubscriptionV1",
                             "fieldTypes": [
                                 {
                                     "name": "subscriptionFee",
@@ -4331,7 +4495,7 @@ export const AppInfoSchema : StructTypeSchema = {
                                             "variantTypes": [
                                                 {
                                                     "kind": "variant",
-                                                    "tag": 0,
+                                                    "tag": 4150,
                                                     "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
                                                     "name": "Epoch",
                                                     "fieldTypes": [
@@ -4346,7 +4510,7 @@ export const AppInfoSchema : StructTypeSchema = {
                                                 },
                                                 {
                                                     "kind": "variant",
-                                                    "tag": 1,
+                                                    "tag": 4151,
                                                     "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
                                                     "name": "Monthly",
                                                     "fieldTypes": [
@@ -4361,7 +4525,7 @@ export const AppInfoSchema : StructTypeSchema = {
                                                 },
                                                 {
                                                     "kind": "variant",
-                                                    "tag": 2,
+                                                    "tag": 4152,
                                                     "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
                                                     "name": "Yearly",
                                                     "fieldTypes": [
@@ -4376,6 +4540,13 @@ export const AppInfoSchema : StructTypeSchema = {
                                                 }
                                             ]
                                         }
+                                    }
+                                },
+                                {
+                                    "name": "nodeOpShare",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "Real"
                                     }
                                 }
                             ]
@@ -4401,11 +4572,11 @@ export const AppInfoSchema : StructTypeSchema = {
     ]
 };
 
-export const NodeOpsInfoSchema : StructTypeSchema = {
+export const NodeOpsInfoV1Schema : StructTypeSchema = {
     "kind": "struct",
     "format": "map",
-    "id": "__module__NeighborhoodData__NodeOpsInfo[]",
-    "name": "NodeOpsInfo",
+    "id": "__module__NeighborhoodData__NodeOpsInfoV1[]",
+    "name": "NodeOpsInfoV1",
     "fieldTypes": [
         {
             "name": "minNodes",
@@ -4442,11 +4613,11 @@ export const NodeOpsInfoSchema : StructTypeSchema = {
     ]
 };
 
-export const UpdateInfoSchema : StructTypeSchema = {
+export const UpdateInfoV1Schema : StructTypeSchema = {
     "kind": "struct",
     "format": "map",
-    "id": "__module__NeighborhoodData__UpdateInfo[]",
-    "name": "UpdateInfo",
+    "id": "__module__NeighborhoodData__UpdateInfoV1[]",
+    "name": "UpdateInfoV1",
     "fieldTypes": [
         {
             "name": "name",
@@ -4471,6 +4642,330 @@ export const UpdateInfoSchema : StructTypeSchema = {
                 "name": "String"
             },
             "key": "url"
+        }
+    ]
+};
+
+export const NbhDetailsSchema : EnumTypeSchema = {
+    "kind": "enum",
+    "name": "NbhDetails",
+    "id": "__module__NeighborhoodData__NbhDetails[]",
+    "variantTypes": [
+        {
+            "kind": "variant",
+            "tag": 4100,
+            "id": "__module__NeighborhoodData__NbhDetails[]__NbhDetailsV1",
+            "name": "NbhDetailsV1",
+            "fieldTypes": [
+                {
+                    "name": "state",
+                    "type": {
+                        "kind": "enum",
+                        "name": "NeighborhoodState",
+                        "id": "__module__NeighborhoodData__NeighborhoodState[]",
+                        "variantTypes": [
+                            {
+                                "kind": "variant",
+                                "tag": 4180,
+                                "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
+                                "name": "Preproduction",
+                                "fieldTypes": []
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 4181,
+                                "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
+                                "name": "Active",
+                                "fieldTypes": []
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 4182,
+                                "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
+                                "name": "UpdatePending",
+                                "fieldTypes": []
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 4183,
+                                "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
+                                "name": "UpdateDisputed",
+                                "fieldTypes": []
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 4184,
+                                "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
+                                "name": "Retired",
+                                "fieldTypes": []
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "appInfo",
+                    "type": {
+                        "kind": "struct",
+                        "format": "list",
+                        "id": "__module__NeighborhoodData__AppInfoV1[]",
+                        "name": "AppInfoV1",
+                        "fieldTypes": [
+                            {
+                                "name": "url",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "String"
+                                }
+                            },
+                            {
+                                "name": "revenueModel",
+                                "type": {
+                                    "kind": "list",
+                                    "itemType": {
+                                        "kind": "enum",
+                                        "name": "RevenueModel",
+                                        "id": "__module__NeighborhoodData__RevenueModel[]",
+                                        "variantTypes": [
+                                            {
+                                                "kind": "variant",
+                                                "tag": 4120,
+                                                "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBasedV1",
+                                                "name": "TransactionBasedV1",
+                                                "fieldTypes": [
+                                                    {
+                                                        "name": "minTxFee",
+                                                        "type": {
+                                                            "kind": "internal",
+                                                            "name": "Value"
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "maxTxFee",
+                                                        "type": {
+                                                            "kind": "option",
+                                                            "someType": {
+                                                                "kind": "internal",
+                                                                "name": "Value"
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "chargeTo",
+                                                        "type": {
+                                                            "kind": "enum",
+                                                            "name": "FeeSource",
+                                                            "id": "__module__NeighborhoodData__FeeSource[]",
+                                                            "variantTypes": [
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 4160,
+                                                                    "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
+                                                                    "name": "EndUser",
+                                                                    "fieldTypes": []
+                                                                },
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 4161,
+                                                                    "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
+                                                                    "name": "SponsorContract",
+                                                                    "fieldTypes": [
+                                                                        {
+                                                                            "name": "sponsorContract",
+                                                                            "type": {
+                                                                                "kind": "internal",
+                                                                                "name": "ScriptHash"
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "nodeOpShare",
+                                                        "type": {
+                                                            "kind": "internal",
+                                                            "name": "Real"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "kind": "variant",
+                                                "tag": 4121,
+                                                "id": "__module__NeighborhoodData__RevenueModel[]__SubscriptionV1",
+                                                "name": "SubscriptionV1",
+                                                "fieldTypes": [
+                                                    {
+                                                        "name": "subscriptionFee",
+                                                        "type": {
+                                                            "kind": "list",
+                                                            "itemType": {
+                                                                "kind": "enum",
+                                                                "name": "SubscriptionFeeFrequency",
+                                                                "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
+                                                                "variantTypes": [
+                                                                    {
+                                                                        "kind": "variant",
+                                                                        "tag": 4150,
+                                                                        "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
+                                                                        "name": "Epoch",
+                                                                        "fieldTypes": [
+                                                                            {
+                                                                                "name": "fee",
+                                                                                "type": {
+                                                                                    "kind": "internal",
+                                                                                    "name": "Value"
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "kind": "variant",
+                                                                        "tag": 4151,
+                                                                        "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
+                                                                        "name": "Monthly",
+                                                                        "fieldTypes": [
+                                                                            {
+                                                                                "name": "fee",
+                                                                                "type": {
+                                                                                    "kind": "internal",
+                                                                                    "name": "Value"
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "kind": "variant",
+                                                                        "tag": 4152,
+                                                                        "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
+                                                                        "name": "Yearly",
+                                                                        "fieldTypes": [
+                                                                            {
+                                                                                "name": "fee",
+                                                                                "type": {
+                                                                                    "kind": "internal",
+                                                                                    "name": "Value"
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "nodeOpShare",
+                                                        "type": {
+                                                            "kind": "internal",
+                                                            "name": "Real"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "name": "name",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "String"
+                                }
+                            },
+                            {
+                                "name": "description",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "String"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "opsInfo",
+                    "type": {
+                        "kind": "struct",
+                        "format": "map",
+                        "id": "__module__NeighborhoodData__NodeOpsInfoV1[]",
+                        "name": "NodeOpsInfoV1",
+                        "fieldTypes": [
+                            {
+                                "name": "minNodes",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "Int"
+                                },
+                                "key": "cMin"
+                            },
+                            {
+                                "name": "maxNodes",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "Int"
+                                },
+                                "key": "cMax"
+                            },
+                            {
+                                "name": "minNodeOperatorStake",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "Value"
+                                },
+                                "key": "minStk"
+                            },
+                            {
+                                "name": "minUptime",
+                                "type": {
+                                    "kind": "internal",
+                                    "name": "Int"
+                                },
+                                "key": "minUpt"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "updateInfo",
+                    "type": {
+                        "kind": "option",
+                        "someType": {
+                            "kind": "struct",
+                            "format": "map",
+                            "id": "__module__NeighborhoodData__UpdateInfoV1[]",
+                            "name": "UpdateInfoV1",
+                            "fieldTypes": [
+                                {
+                                    "name": "name",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                    },
+                                    "key": "nm"
+                                },
+                                {
+                                    "name": "description",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                    },
+                                    "key": "dsc"
+                                },
+                                {
+                                    "name": "url",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                    },
+                                    "key": "url"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
         }
     ]
 };
@@ -4506,123 +5001,220 @@ export const NeighborhoodDataSchema : StructTypeSchema = {
             "key": "mt"
         },
         {
-            "name": "state",
+            "name": "details",
             "type": {
                 "kind": "enum",
-                "name": "NeighborhoodState",
-                "id": "__module__NeighborhoodData__NeighborhoodState[]",
+                "name": "NbhDetails",
+                "id": "__module__NeighborhoodData__NbhDetails[]",
                 "variantTypes": [
                     {
                         "kind": "variant",
-                        "tag": 0,
-                        "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
-                        "name": "Preproduction",
-                        "fieldTypes": []
-                    },
-                    {
-                        "kind": "variant",
-                        "tag": 1,
-                        "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
-                        "name": "Active",
-                        "fieldTypes": []
-                    },
-                    {
-                        "kind": "variant",
-                        "tag": 2,
-                        "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
-                        "name": "UpdatePending",
-                        "fieldTypes": []
-                    },
-                    {
-                        "kind": "variant",
-                        "tag": 3,
-                        "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
-                        "name": "UpdateDisputed",
-                        "fieldTypes": []
-                    },
-                    {
-                        "kind": "variant",
-                        "tag": 4,
-                        "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
-                        "name": "Retired",
-                        "fieldTypes": []
-                    }
-                ]
-            },
-            "key": "st"
-        },
-        {
-            "name": "appInfo",
-            "type": {
-                "kind": "struct",
-                "format": "list",
-                "id": "__module__NeighborhoodData__AppInfo[]",
-                "name": "AppInfo",
-                "fieldTypes": [
-                    {
-                        "name": "url",
-                        "type": {
-                            "kind": "internal",
-                            "name": "String"
-                        }
-                    },
-                    {
-                        "name": "revenueModel",
-                        "type": {
-                            "kind": "list",
-                            "itemType": {
-                                "kind": "enum",
-                                "name": "RevenueModel",
-                                "id": "__module__NeighborhoodData__RevenueModel[]",
-                                "variantTypes": [
-                                    {
-                                        "kind": "variant",
-                                        "tag": 0,
-                                        "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBased",
-                                        "name": "TransactionBased",
-                                        "fieldTypes": [
-                                            {
-                                                "name": "minTxFee",
-                                                "type": {
-                                                    "kind": "internal",
-                                                    "name": "Value"
-                                                }
-                                            },
-                                            {
-                                                "name": "maxTxFee",
-                                                "type": {
-                                                    "kind": "option",
-                                                    "someType": {
-                                                        "kind": "internal",
-                                                        "name": "Value"
-                                                    }
-                                                }
-                                            },
-                                            {
-                                                "name": "chargeTo",
-                                                "type": {
+                        "tag": 4100,
+                        "id": "__module__NeighborhoodData__NbhDetails[]__NbhDetailsV1",
+                        "name": "NbhDetailsV1",
+                        "fieldTypes": [
+                            {
+                                "name": "state",
+                                "type": {
+                                    "kind": "enum",
+                                    "name": "NeighborhoodState",
+                                    "id": "__module__NeighborhoodData__NeighborhoodState[]",
+                                    "variantTypes": [
+                                        {
+                                            "kind": "variant",
+                                            "tag": 4180,
+                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
+                                            "name": "Preproduction",
+                                            "fieldTypes": []
+                                        },
+                                        {
+                                            "kind": "variant",
+                                            "tag": 4181,
+                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
+                                            "name": "Active",
+                                            "fieldTypes": []
+                                        },
+                                        {
+                                            "kind": "variant",
+                                            "tag": 4182,
+                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
+                                            "name": "UpdatePending",
+                                            "fieldTypes": []
+                                        },
+                                        {
+                                            "kind": "variant",
+                                            "tag": 4183,
+                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
+                                            "name": "UpdateDisputed",
+                                            "fieldTypes": []
+                                        },
+                                        {
+                                            "kind": "variant",
+                                            "tag": 4184,
+                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
+                                            "name": "Retired",
+                                            "fieldTypes": []
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "appInfo",
+                                "type": {
+                                    "kind": "struct",
+                                    "format": "list",
+                                    "id": "__module__NeighborhoodData__AppInfoV1[]",
+                                    "name": "AppInfoV1",
+                                    "fieldTypes": [
+                                        {
+                                            "name": "url",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "String"
+                                            }
+                                        },
+                                        {
+                                            "name": "revenueModel",
+                                            "type": {
+                                                "kind": "list",
+                                                "itemType": {
                                                     "kind": "enum",
-                                                    "name": "FeeSource",
-                                                    "id": "__module__NeighborhoodData__FeeSource[]",
+                                                    "name": "RevenueModel",
+                                                    "id": "__module__NeighborhoodData__RevenueModel[]",
                                                     "variantTypes": [
                                                         {
                                                             "kind": "variant",
-                                                            "tag": 0,
-                                                            "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
-                                                            "name": "EndUser",
-                                                            "fieldTypes": []
+                                                            "tag": 4120,
+                                                            "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBasedV1",
+                                                            "name": "TransactionBasedV1",
+                                                            "fieldTypes": [
+                                                                {
+                                                                    "name": "minTxFee",
+                                                                    "type": {
+                                                                        "kind": "internal",
+                                                                        "name": "Value"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "name": "maxTxFee",
+                                                                    "type": {
+                                                                        "kind": "option",
+                                                                        "someType": {
+                                                                            "kind": "internal",
+                                                                            "name": "Value"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "name": "chargeTo",
+                                                                    "type": {
+                                                                        "kind": "enum",
+                                                                        "name": "FeeSource",
+                                                                        "id": "__module__NeighborhoodData__FeeSource[]",
+                                                                        "variantTypes": [
+                                                                            {
+                                                                                "kind": "variant",
+                                                                                "tag": 4160,
+                                                                                "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
+                                                                                "name": "EndUser",
+                                                                                "fieldTypes": []
+                                                                            },
+                                                                            {
+                                                                                "kind": "variant",
+                                                                                "tag": 4161,
+                                                                                "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
+                                                                                "name": "SponsorContract",
+                                                                                "fieldTypes": [
+                                                                                    {
+                                                                                        "name": "sponsorContract",
+                                                                                        "type": {
+                                                                                            "kind": "internal",
+                                                                                            "name": "ScriptHash"
+                                                                                        }
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "name": "nodeOpShare",
+                                                                    "type": {
+                                                                        "kind": "internal",
+                                                                        "name": "Real"
+                                                                    }
+                                                                }
+                                                            ]
                                                         },
                                                         {
                                                             "kind": "variant",
-                                                            "tag": 1,
-                                                            "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
-                                                            "name": "SponsorContract",
+                                                            "tag": 4121,
+                                                            "id": "__module__NeighborhoodData__RevenueModel[]__SubscriptionV1",
+                                                            "name": "SubscriptionV1",
                                                             "fieldTypes": [
                                                                 {
-                                                                    "name": "sponsorContract",
+                                                                    "name": "subscriptionFee",
+                                                                    "type": {
+                                                                        "kind": "list",
+                                                                        "itemType": {
+                                                                            "kind": "enum",
+                                                                            "name": "SubscriptionFeeFrequency",
+                                                                            "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
+                                                                            "variantTypes": [
+                                                                                {
+                                                                                    "kind": "variant",
+                                                                                    "tag": 4150,
+                                                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
+                                                                                    "name": "Epoch",
+                                                                                    "fieldTypes": [
+                                                                                        {
+                                                                                            "name": "fee",
+                                                                                            "type": {
+                                                                                                "kind": "internal",
+                                                                                                "name": "Value"
+                                                                                            }
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "kind": "variant",
+                                                                                    "tag": 4151,
+                                                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
+                                                                                    "name": "Monthly",
+                                                                                    "fieldTypes": [
+                                                                                        {
+                                                                                            "name": "fee",
+                                                                                            "type": {
+                                                                                                "kind": "internal",
+                                                                                                "name": "Value"
+                                                                                            }
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "kind": "variant",
+                                                                                    "tag": 4152,
+                                                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
+                                                                                    "name": "Yearly",
+                                                                                    "fieldTypes": [
+                                                                                        {
+                                                                                            "name": "fee",
+                                                                                            "type": {
+                                                                                                "kind": "internal",
+                                                                                                "name": "Value"
+                                                                                            }
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "name": "nodeOpShare",
                                                                     "type": {
                                                                         "kind": "internal",
-                                                                        "name": "ScriptHash"
+                                                                        "name": "Real"
                                                                     }
                                                                 }
                                                             ]
@@ -4630,178 +5222,110 @@ export const NeighborhoodDataSchema : StructTypeSchema = {
                                                     ]
                                                 }
                                             }
-                                        ]
-                                    },
-                                    {
-                                        "kind": "variant",
-                                        "tag": 1,
-                                        "id": "__module__NeighborhoodData__RevenueModel[]__Subscription",
-                                        "name": "Subscription",
+                                        },
+                                        {
+                                            "name": "name",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "String"
+                                            }
+                                        },
+                                        {
+                                            "name": "description",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "String"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "opsInfo",
+                                "type": {
+                                    "kind": "struct",
+                                    "format": "map",
+                                    "id": "__module__NeighborhoodData__NodeOpsInfoV1[]",
+                                    "name": "NodeOpsInfoV1",
+                                    "fieldTypes": [
+                                        {
+                                            "name": "minNodes",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Int"
+                                            },
+                                            "key": "cMin"
+                                        },
+                                        {
+                                            "name": "maxNodes",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Int"
+                                            },
+                                            "key": "cMax"
+                                        },
+                                        {
+                                            "name": "minNodeOperatorStake",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                            },
+                                            "key": "minStk"
+                                        },
+                                        {
+                                            "name": "minUptime",
+                                            "type": {
+                                                "kind": "internal",
+                                                "name": "Int"
+                                            },
+                                            "key": "minUpt"
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "updateInfo",
+                                "type": {
+                                    "kind": "option",
+                                    "someType": {
+                                        "kind": "struct",
+                                        "format": "map",
+                                        "id": "__module__NeighborhoodData__UpdateInfoV1[]",
+                                        "name": "UpdateInfoV1",
                                         "fieldTypes": [
                                             {
-                                                "name": "subscriptionFee",
+                                                "name": "name",
                                                 "type": {
-                                                    "kind": "list",
-                                                    "itemType": {
-                                                        "kind": "enum",
-                                                        "name": "SubscriptionFeeFrequency",
-                                                        "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
-                                                        "variantTypes": [
-                                                            {
-                                                                "kind": "variant",
-                                                                "tag": 0,
-                                                                "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
-                                                                "name": "Epoch",
-                                                                "fieldTypes": [
-                                                                    {
-                                                                        "name": "fee",
-                                                                        "type": {
-                                                                            "kind": "internal",
-                                                                            "name": "Value"
-                                                                        }
-                                                                    }
-                                                                ]
-                                                            },
-                                                            {
-                                                                "kind": "variant",
-                                                                "tag": 1,
-                                                                "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
-                                                                "name": "Monthly",
-                                                                "fieldTypes": [
-                                                                    {
-                                                                        "name": "fee",
-                                                                        "type": {
-                                                                            "kind": "internal",
-                                                                            "name": "Value"
-                                                                        }
-                                                                    }
-                                                                ]
-                                                            },
-                                                            {
-                                                                "kind": "variant",
-                                                                "tag": 2,
-                                                                "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
-                                                                "name": "Yearly",
-                                                                "fieldTypes": [
-                                                                    {
-                                                                        "name": "fee",
-                                                                        "type": {
-                                                                            "kind": "internal",
-                                                                            "name": "Value"
-                                                                        }
-                                                                    }
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                }
+                                                    "kind": "internal",
+                                                    "name": "String"
+                                                },
+                                                "key": "nm"
+                                            },
+                                            {
+                                                "name": "description",
+                                                "type": {
+                                                    "kind": "internal",
+                                                    "name": "String"
+                                                },
+                                                "key": "dsc"
+                                            },
+                                            {
+                                                "name": "url",
+                                                "type": {
+                                                    "kind": "internal",
+                                                    "name": "String"
+                                                },
+                                                "key": "url"
                                             }
                                         ]
                                     }
-                                ]
+                                }
                             }
-                        }
-                    },
-                    {
-                        "name": "name",
-                        "type": {
-                            "kind": "internal",
-                            "name": "String"
-                        }
-                    },
-                    {
-                        "name": "description",
-                        "type": {
-                            "kind": "internal",
-                            "name": "String"
-                        }
+                        ]
                     }
                 ]
             },
-            "key": "app"
-        },
-        {
-            "name": "opsInfo",
-            "type": {
-                "kind": "struct",
-                "format": "map",
-                "id": "__module__NeighborhoodData__NodeOpsInfo[]",
-                "name": "NodeOpsInfo",
-                "fieldTypes": [
-                    {
-                        "name": "minNodes",
-                        "type": {
-                            "kind": "internal",
-                            "name": "Int"
-                        },
-                        "key": "cMin"
-                    },
-                    {
-                        "name": "maxNodes",
-                        "type": {
-                            "kind": "internal",
-                            "name": "Int"
-                        },
-                        "key": "cMax"
-                    },
-                    {
-                        "name": "minNodeOperatorStake",
-                        "type": {
-                            "kind": "internal",
-                            "name": "Value"
-                        },
-                        "key": "minStk"
-                    },
-                    {
-                        "name": "minUptime",
-                        "type": {
-                            "kind": "internal",
-                            "name": "Int"
-                        },
-                        "key": "minUpt"
-                    }
-                ]
-            },
-            "key": "ops"
-        },
-        {
-            "name": "updateInfo",
-            "type": {
-                "kind": "option",
-                "someType": {
-                    "kind": "struct",
-                    "format": "map",
-                    "id": "__module__NeighborhoodData__UpdateInfo[]",
-                    "name": "UpdateInfo",
-                    "fieldTypes": [
-                        {
-                            "name": "name",
-                            "type": {
-                                "kind": "internal",
-                                "name": "String"
-                            },
-                            "key": "nm"
-                        },
-                        {
-                            "name": "description",
-                            "type": {
-                                "kind": "internal",
-                                "name": "String"
-                            },
-                            "key": "dsc"
-                        },
-                        {
-                            "name": "url",
-                            "type": {
-                                "kind": "internal",
-                                "name": "String"
-                            },
-                            "key": "url"
-                        }
-                    ]
-                }
-            },
-            "key": "upd"
+            "key": "dtl"
         }
     ]
 };
@@ -4939,123 +5463,220 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                 "key": "mt"
                             },
                             {
-                                "name": "state",
+                                "name": "details",
                                 "type": {
                                     "kind": "enum",
-                                    "name": "NeighborhoodState",
-                                    "id": "__module__NeighborhoodData__NeighborhoodState[]",
+                                    "name": "NbhDetails",
+                                    "id": "__module__NeighborhoodData__NbhDetails[]",
                                     "variantTypes": [
                                         {
                                             "kind": "variant",
-                                            "tag": 0,
-                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
-                                            "name": "Preproduction",
-                                            "fieldTypes": []
-                                        },
-                                        {
-                                            "kind": "variant",
-                                            "tag": 1,
-                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
-                                            "name": "Active",
-                                            "fieldTypes": []
-                                        },
-                                        {
-                                            "kind": "variant",
-                                            "tag": 2,
-                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
-                                            "name": "UpdatePending",
-                                            "fieldTypes": []
-                                        },
-                                        {
-                                            "kind": "variant",
-                                            "tag": 3,
-                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
-                                            "name": "UpdateDisputed",
-                                            "fieldTypes": []
-                                        },
-                                        {
-                                            "kind": "variant",
-                                            "tag": 4,
-                                            "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
-                                            "name": "Retired",
-                                            "fieldTypes": []
-                                        }
-                                    ]
-                                },
-                                "key": "st"
-                            },
-                            {
-                                "name": "appInfo",
-                                "type": {
-                                    "kind": "struct",
-                                    "format": "list",
-                                    "id": "__module__NeighborhoodData__AppInfo[]",
-                                    "name": "AppInfo",
-                                    "fieldTypes": [
-                                        {
-                                            "name": "url",
-                                            "type": {
-                                                "kind": "internal",
-                                                "name": "String"
-                                            }
-                                        },
-                                        {
-                                            "name": "revenueModel",
-                                            "type": {
-                                                "kind": "list",
-                                                "itemType": {
-                                                    "kind": "enum",
-                                                    "name": "RevenueModel",
-                                                    "id": "__module__NeighborhoodData__RevenueModel[]",
-                                                    "variantTypes": [
-                                                        {
-                                                            "kind": "variant",
-                                                            "tag": 0,
-                                                            "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBased",
-                                                            "name": "TransactionBased",
-                                                            "fieldTypes": [
-                                                                {
-                                                                    "name": "minTxFee",
-                                                                    "type": {
-                                                                        "kind": "internal",
-                                                                        "name": "Value"
-                                                                    }
-                                                                },
-                                                                {
-                                                                    "name": "maxTxFee",
-                                                                    "type": {
-                                                                        "kind": "option",
-                                                                        "someType": {
-                                                                            "kind": "internal",
-                                                                            "name": "Value"
-                                                                        }
-                                                                    }
-                                                                },
-                                                                {
-                                                                    "name": "chargeTo",
-                                                                    "type": {
+                                            "tag": 4100,
+                                            "id": "__module__NeighborhoodData__NbhDetails[]__NbhDetailsV1",
+                                            "name": "NbhDetailsV1",
+                                            "fieldTypes": [
+                                                {
+                                                    "name": "state",
+                                                    "type": {
+                                                        "kind": "enum",
+                                                        "name": "NeighborhoodState",
+                                                        "id": "__module__NeighborhoodData__NeighborhoodState[]",
+                                                        "variantTypes": [
+                                                            {
+                                                                "kind": "variant",
+                                                                "tag": 4180,
+                                                                "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
+                                                                "name": "Preproduction",
+                                                                "fieldTypes": []
+                                                            },
+                                                            {
+                                                                "kind": "variant",
+                                                                "tag": 4181,
+                                                                "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
+                                                                "name": "Active",
+                                                                "fieldTypes": []
+                                                            },
+                                                            {
+                                                                "kind": "variant",
+                                                                "tag": 4182,
+                                                                "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
+                                                                "name": "UpdatePending",
+                                                                "fieldTypes": []
+                                                            },
+                                                            {
+                                                                "kind": "variant",
+                                                                "tag": 4183,
+                                                                "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
+                                                                "name": "UpdateDisputed",
+                                                                "fieldTypes": []
+                                                            },
+                                                            {
+                                                                "kind": "variant",
+                                                                "tag": 4184,
+                                                                "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
+                                                                "name": "Retired",
+                                                                "fieldTypes": []
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "name": "appInfo",
+                                                    "type": {
+                                                        "kind": "struct",
+                                                        "format": "list",
+                                                        "id": "__module__NeighborhoodData__AppInfoV1[]",
+                                                        "name": "AppInfoV1",
+                                                        "fieldTypes": [
+                                                            {
+                                                                "name": "url",
+                                                                "type": {
+                                                                    "kind": "internal",
+                                                                    "name": "String"
+                                                                }
+                                                            },
+                                                            {
+                                                                "name": "revenueModel",
+                                                                "type": {
+                                                                    "kind": "list",
+                                                                    "itemType": {
                                                                         "kind": "enum",
-                                                                        "name": "FeeSource",
-                                                                        "id": "__module__NeighborhoodData__FeeSource[]",
+                                                                        "name": "RevenueModel",
+                                                                        "id": "__module__NeighborhoodData__RevenueModel[]",
                                                                         "variantTypes": [
                                                                             {
                                                                                 "kind": "variant",
-                                                                                "tag": 0,
-                                                                                "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
-                                                                                "name": "EndUser",
-                                                                                "fieldTypes": []
+                                                                                "tag": 4120,
+                                                                                "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBasedV1",
+                                                                                "name": "TransactionBasedV1",
+                                                                                "fieldTypes": [
+                                                                                    {
+                                                                                        "name": "minTxFee",
+                                                                                        "type": {
+                                                                                            "kind": "internal",
+                                                                                            "name": "Value"
+                                                                                        }
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "maxTxFee",
+                                                                                        "type": {
+                                                                                            "kind": "option",
+                                                                                            "someType": {
+                                                                                                "kind": "internal",
+                                                                                                "name": "Value"
+                                                                                            }
+                                                                                        }
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "chargeTo",
+                                                                                        "type": {
+                                                                                            "kind": "enum",
+                                                                                            "name": "FeeSource",
+                                                                                            "id": "__module__NeighborhoodData__FeeSource[]",
+                                                                                            "variantTypes": [
+                                                                                                {
+                                                                                                    "kind": "variant",
+                                                                                                    "tag": 4160,
+                                                                                                    "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
+                                                                                                    "name": "EndUser",
+                                                                                                    "fieldTypes": []
+                                                                                                },
+                                                                                                {
+                                                                                                    "kind": "variant",
+                                                                                                    "tag": 4161,
+                                                                                                    "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
+                                                                                                    "name": "SponsorContract",
+                                                                                                    "fieldTypes": [
+                                                                                                        {
+                                                                                                            "name": "sponsorContract",
+                                                                                                            "type": {
+                                                                                                                "kind": "internal",
+                                                                                                                "name": "ScriptHash"
+                                                                                                            }
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "nodeOpShare",
+                                                                                        "type": {
+                                                                                            "kind": "internal",
+                                                                                            "name": "Real"
+                                                                                        }
+                                                                                    }
+                                                                                ]
                                                                             },
                                                                             {
                                                                                 "kind": "variant",
-                                                                                "tag": 1,
-                                                                                "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
-                                                                                "name": "SponsorContract",
+                                                                                "tag": 4121,
+                                                                                "id": "__module__NeighborhoodData__RevenueModel[]__SubscriptionV1",
+                                                                                "name": "SubscriptionV1",
                                                                                 "fieldTypes": [
                                                                                     {
-                                                                                        "name": "sponsorContract",
+                                                                                        "name": "subscriptionFee",
+                                                                                        "type": {
+                                                                                            "kind": "list",
+                                                                                            "itemType": {
+                                                                                                "kind": "enum",
+                                                                                                "name": "SubscriptionFeeFrequency",
+                                                                                                "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
+                                                                                                "variantTypes": [
+                                                                                                    {
+                                                                                                        "kind": "variant",
+                                                                                                        "tag": 4150,
+                                                                                                        "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
+                                                                                                        "name": "Epoch",
+                                                                                                        "fieldTypes": [
+                                                                                                            {
+                                                                                                                "name": "fee",
+                                                                                                                "type": {
+                                                                                                                    "kind": "internal",
+                                                                                                                    "name": "Value"
+                                                                                                                }
+                                                                                                            }
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "kind": "variant",
+                                                                                                        "tag": 4151,
+                                                                                                        "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
+                                                                                                        "name": "Monthly",
+                                                                                                        "fieldTypes": [
+                                                                                                            {
+                                                                                                                "name": "fee",
+                                                                                                                "type": {
+                                                                                                                    "kind": "internal",
+                                                                                                                    "name": "Value"
+                                                                                                                }
+                                                                                                            }
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "kind": "variant",
+                                                                                                        "tag": 4152,
+                                                                                                        "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
+                                                                                                        "name": "Yearly",
+                                                                                                        "fieldTypes": [
+                                                                                                            {
+                                                                                                                "name": "fee",
+                                                                                                                "type": {
+                                                                                                                    "kind": "internal",
+                                                                                                                    "name": "Value"
+                                                                                                                }
+                                                                                                            }
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        }
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "nodeOpShare",
                                                                                         "type": {
                                                                                             "kind": "internal",
-                                                                                            "name": "ScriptHash"
+                                                                                            "name": "Real"
                                                                                         }
                                                                                     }
                                                                                 ]
@@ -5063,178 +5684,110 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                                                         ]
                                                                     }
                                                                 }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "kind": "variant",
-                                                            "tag": 1,
-                                                            "id": "__module__NeighborhoodData__RevenueModel[]__Subscription",
-                                                            "name": "Subscription",
+                                                            },
+                                                            {
+                                                                "name": "name",
+                                                                "type": {
+                                                                    "kind": "internal",
+                                                                    "name": "String"
+                                                                }
+                                                            },
+                                                            {
+                                                                "name": "description",
+                                                                "type": {
+                                                                    "kind": "internal",
+                                                                    "name": "String"
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "name": "opsInfo",
+                                                    "type": {
+                                                        "kind": "struct",
+                                                        "format": "map",
+                                                        "id": "__module__NeighborhoodData__NodeOpsInfoV1[]",
+                                                        "name": "NodeOpsInfoV1",
+                                                        "fieldTypes": [
+                                                            {
+                                                                "name": "minNodes",
+                                                                "type": {
+                                                                    "kind": "internal",
+                                                                    "name": "Int"
+                                                                },
+                                                                "key": "cMin"
+                                                            },
+                                                            {
+                                                                "name": "maxNodes",
+                                                                "type": {
+                                                                    "kind": "internal",
+                                                                    "name": "Int"
+                                                                },
+                                                                "key": "cMax"
+                                                            },
+                                                            {
+                                                                "name": "minNodeOperatorStake",
+                                                                "type": {
+                                                                    "kind": "internal",
+                                                                    "name": "Value"
+                                                                },
+                                                                "key": "minStk"
+                                                            },
+                                                            {
+                                                                "name": "minUptime",
+                                                                "type": {
+                                                                    "kind": "internal",
+                                                                    "name": "Int"
+                                                                },
+                                                                "key": "minUpt"
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "name": "updateInfo",
+                                                    "type": {
+                                                        "kind": "option",
+                                                        "someType": {
+                                                            "kind": "struct",
+                                                            "format": "map",
+                                                            "id": "__module__NeighborhoodData__UpdateInfoV1[]",
+                                                            "name": "UpdateInfoV1",
                                                             "fieldTypes": [
                                                                 {
-                                                                    "name": "subscriptionFee",
+                                                                    "name": "name",
                                                                     "type": {
-                                                                        "kind": "list",
-                                                                        "itemType": {
-                                                                            "kind": "enum",
-                                                                            "name": "SubscriptionFeeFrequency",
-                                                                            "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
-                                                                            "variantTypes": [
-                                                                                {
-                                                                                    "kind": "variant",
-                                                                                    "tag": 0,
-                                                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
-                                                                                    "name": "Epoch",
-                                                                                    "fieldTypes": [
-                                                                                        {
-                                                                                            "name": "fee",
-                                                                                            "type": {
-                                                                                                "kind": "internal",
-                                                                                                "name": "Value"
-                                                                                            }
-                                                                                        }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    "kind": "variant",
-                                                                                    "tag": 1,
-                                                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
-                                                                                    "name": "Monthly",
-                                                                                    "fieldTypes": [
-                                                                                        {
-                                                                                            "name": "fee",
-                                                                                            "type": {
-                                                                                                "kind": "internal",
-                                                                                                "name": "Value"
-                                                                                            }
-                                                                                        }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    "kind": "variant",
-                                                                                    "tag": 2,
-                                                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
-                                                                                    "name": "Yearly",
-                                                                                    "fieldTypes": [
-                                                                                        {
-                                                                                            "name": "fee",
-                                                                                            "type": {
-                                                                                                "kind": "internal",
-                                                                                                "name": "Value"
-                                                                                            }
-                                                                                        }
-                                                                                    ]
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    }
+                                                                        "kind": "internal",
+                                                                        "name": "String"
+                                                                    },
+                                                                    "key": "nm"
+                                                                },
+                                                                {
+                                                                    "name": "description",
+                                                                    "type": {
+                                                                        "kind": "internal",
+                                                                        "name": "String"
+                                                                    },
+                                                                    "key": "dsc"
+                                                                },
+                                                                {
+                                                                    "name": "url",
+                                                                    "type": {
+                                                                        "kind": "internal",
+                                                                        "name": "String"
+                                                                    },
+                                                                    "key": "url"
                                                                 }
                                                             ]
                                                         }
-                                                    ]
+                                                    }
                                                 }
-                                            }
-                                        },
-                                        {
-                                            "name": "name",
-                                            "type": {
-                                                "kind": "internal",
-                                                "name": "String"
-                                            }
-                                        },
-                                        {
-                                            "name": "description",
-                                            "type": {
-                                                "kind": "internal",
-                                                "name": "String"
-                                            }
+                                            ]
                                         }
                                     ]
                                 },
-                                "key": "app"
-                            },
-                            {
-                                "name": "opsInfo",
-                                "type": {
-                                    "kind": "struct",
-                                    "format": "map",
-                                    "id": "__module__NeighborhoodData__NodeOpsInfo[]",
-                                    "name": "NodeOpsInfo",
-                                    "fieldTypes": [
-                                        {
-                                            "name": "minNodes",
-                                            "type": {
-                                                "kind": "internal",
-                                                "name": "Int"
-                                            },
-                                            "key": "cMin"
-                                        },
-                                        {
-                                            "name": "maxNodes",
-                                            "type": {
-                                                "kind": "internal",
-                                                "name": "Int"
-                                            },
-                                            "key": "cMax"
-                                        },
-                                        {
-                                            "name": "minNodeOperatorStake",
-                                            "type": {
-                                                "kind": "internal",
-                                                "name": "Value"
-                                            },
-                                            "key": "minStk"
-                                        },
-                                        {
-                                            "name": "minUptime",
-                                            "type": {
-                                                "kind": "internal",
-                                                "name": "Int"
-                                            },
-                                            "key": "minUpt"
-                                        }
-                                    ]
-                                },
-                                "key": "ops"
-                            },
-                            {
-                                "name": "updateInfo",
-                                "type": {
-                                    "kind": "option",
-                                    "someType": {
-                                        "kind": "struct",
-                                        "format": "map",
-                                        "id": "__module__NeighborhoodData__UpdateInfo[]",
-                                        "name": "UpdateInfo",
-                                        "fieldTypes": [
-                                            {
-                                                "name": "name",
-                                                "type": {
-                                                    "kind": "internal",
-                                                    "name": "String"
-                                                },
-                                                "key": "nm"
-                                            },
-                                            {
-                                                "name": "description",
-                                                "type": {
-                                                    "kind": "internal",
-                                                    "name": "String"
-                                                },
-                                                "key": "dsc"
-                                            },
-                                            {
-                                                "name": "url",
-                                                "type": {
-                                                    "kind": "internal",
-                                                    "name": "String"
-                                                },
-                                                "key": "url"
-                                            }
-                                        ]
-                                    }
-                                },
-                                "key": "upd"
+                                "key": "dtl"
                             }
                         ]
                     }
@@ -5876,6 +6429,21 @@ export const BurningActivitySchema : EnumTypeSchema = {
     ]
 };
 
+export const OtherActivitySchema : EnumTypeSchema = {
+    "kind": "enum",
+    "name": "OtherActivity",
+    "id": "__module__NeighborhoodPolicy__OtherActivity[]",
+    "variantTypes": [
+        {
+            "kind": "variant",
+            "tag": 42,
+            "id": "__module__NeighborhoodPolicy__OtherActivity[]__Placeholder",
+            "name": "Placeholder",
+            "fieldTypes": []
+        }
+    ]
+};
+
 export const DelegateActivitySchema : EnumTypeSchema = {
     "kind": "enum",
     "name": "DelegateActivity",
@@ -6438,6 +7006,31 @@ export const DelegateActivitySchema : EnumTypeSchema = {
                             "kind": "internal",
                             "name": "Data"
                         }
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 9,
+            "id": "__module__NeighborhoodPolicy__DelegateActivity[]__OtherActivities",
+            "name": "OtherActivities",
+            "fieldTypes": [
+                {
+                    "name": "activity",
+                    "type": {
+                        "kind": "enum",
+                        "name": "OtherActivity",
+                        "id": "__module__NeighborhoodPolicy__OtherActivity[]",
+                        "variantTypes": [
+                            {
+                                "kind": "variant",
+                                "tag": 42,
+                                "id": "__module__NeighborhoodPolicy__OtherActivity[]__Placeholder",
+                                "name": "Placeholder",
+                                "fieldTypes": []
+                            }
+                        ]
                     }
                 }
             ]
@@ -11482,6 +12075,521 @@ export const dgd_DataSrcSchema : EnumTypeSchema = {
     ]
 };
 
+export const AbstractDelegateActivitiesEnumSchema : EnumTypeSchema = {
+    "kind": "enum",
+    "name": "AbstractDelegateActivitiesEnum",
+    "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]",
+    "variantTypes": [
+        {
+            "kind": "variant",
+            "tag": 0,
+            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__CapoLifecycleActivities",
+            "name": "CapoLifecycleActivities",
+            "fieldTypes": [
+                {
+                    "name": "activity",
+                    "type": {
+                        "kind": "enum",
+                        "name": "CapoLifecycleActivity",
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]",
+                        "variantTypes": [
+                            {
+                                "kind": "variant",
+                                "tag": 0,
+                                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__CreatingDelegate",
+                                "name": "CreatingDelegate",
+                                "fieldTypes": [
+                                    {
+                                        "name": "seed",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "TxOutputId"
+                                        }
+                                    },
+                                    {
+                                        "name": "purpose",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "String"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 1,
+                                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__queuePendingChange",
+                                "name": "queuePendingChange",
+                                "fieldTypes": []
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 2,
+                                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__removePendingChange",
+                                "name": "removePendingChange",
+                                "fieldTypes": [
+                                    {
+                                        "name": "role",
+                                        "type": {
+                                            "kind": "enum",
+                                            "name": "DelegateRole",
+                                            "id": "__module__CapoDelegateHelpers__DelegateRole[]",
+                                            "variantTypes": [
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 0,
+                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__MintDgt",
+                                                    "name": "MintDgt",
+                                                    "fieldTypes": []
+                                                },
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 1,
+                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__SpendDgt",
+                                                    "name": "SpendDgt",
+                                                    "fieldTypes": []
+                                                },
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 2,
+                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__MintInvariant",
+                                                    "name": "MintInvariant",
+                                                    "fieldTypes": []
+                                                },
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 3,
+                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__SpendInvariant",
+                                                    "name": "SpendInvariant",
+                                                    "fieldTypes": []
+                                                },
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 4,
+                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__DgDataPolicy",
+                                                    "name": "DgDataPolicy",
+                                                    "fieldTypes": [
+                                                        {
+                                                            "name": "name",
+                                                            "type": {
+                                                                "kind": "internal",
+                                                                "name": "String"
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 5,
+                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__OtherNamedDgt",
+                                                    "name": "OtherNamedDgt",
+                                                    "fieldTypes": [
+                                                        {
+                                                            "name": "name",
+                                                            "type": {
+                                                                "kind": "internal",
+                                                                "name": "String"
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 6,
+                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__BothMintAndSpendDgt",
+                                                    "name": "BothMintAndSpendDgt",
+                                                    "fieldTypes": []
+                                                },
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 7,
+                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__HandledByCapoOnly",
+                                                    "name": "HandledByCapoOnly",
+                                                    "fieldTypes": []
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 3,
+                                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__commitPendingChanges",
+                                "name": "commitPendingChanges",
+                                "fieldTypes": []
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 4,
+                                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__forcingNewSpendDelegate",
+                                "name": "forcingNewSpendDelegate",
+                                "fieldTypes": [
+                                    {
+                                        "name": "seed",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "TxOutputId"
+                                        }
+                                    },
+                                    {
+                                        "name": "purpose",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "String"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 5,
+                                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__forcingNewMintDelegate",
+                                "name": "forcingNewMintDelegate",
+                                "fieldTypes": [
+                                    {
+                                        "name": "seed",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "TxOutputId"
+                                        }
+                                    },
+                                    {
+                                        "name": "purpose",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "String"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 6,
+                                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__updatingManifest",
+                                "name": "updatingManifest",
+                                "fieldTypes": [
+                                    {
+                                        "name": "activity",
+                                        "type": {
+                                            "kind": "enum",
+                                            "name": "ManifestActivity",
+                                            "id": "__module__CapoDelegateHelpers__ManifestActivity[]",
+                                            "variantTypes": [
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 0,
+                                                    "id": "__module__CapoDelegateHelpers__ManifestActivity[]__retiringEntry",
+                                                    "name": "retiringEntry",
+                                                    "fieldTypes": [
+                                                        {
+                                                            "name": "key",
+                                                            "type": {
+                                                                "kind": "internal",
+                                                                "name": "String"
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 1,
+                                                    "id": "__module__CapoDelegateHelpers__ManifestActivity[]__updatingEntry",
+                                                    "name": "updatingEntry",
+                                                    "fieldTypes": [
+                                                        {
+                                                            "name": "key",
+                                                            "type": {
+                                                                "kind": "internal",
+                                                                "name": "String"
+                                                            }
+                                                        },
+                                                        {
+                                                            "name": "tokenName",
+                                                            "type": {
+                                                                "kind": "internal",
+                                                                "name": "ByteArray"
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 2,
+                                                    "id": "__module__CapoDelegateHelpers__ManifestActivity[]__addingEntry",
+                                                    "name": "addingEntry",
+                                                    "fieldTypes": [
+                                                        {
+                                                            "name": "key",
+                                                            "type": {
+                                                                "kind": "internal",
+                                                                "name": "String"
+                                                            }
+                                                        },
+                                                        {
+                                                            "name": "tokenName",
+                                                            "type": {
+                                                                "kind": "internal",
+                                                                "name": "ByteArray"
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 3,
+                                                    "id": "__module__CapoDelegateHelpers__ManifestActivity[]__forkingThreadToken",
+                                                    "name": "forkingThreadToken",
+                                                    "fieldTypes": [
+                                                        {
+                                                            "name": "key",
+                                                            "type": {
+                                                                "kind": "internal",
+                                                                "name": "String"
+                                                            }
+                                                        },
+                                                        {
+                                                            "name": "newThreadCount",
+                                                            "type": {
+                                                                "kind": "internal",
+                                                                "name": "Int"
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "kind": "variant",
+                                                    "tag": 4,
+                                                    "id": "__module__CapoDelegateHelpers__ManifestActivity[]__burningThreadToken",
+                                                    "name": "burningThreadToken",
+                                                    "fieldTypes": [
+                                                        {
+                                                            "name": "key",
+                                                            "type": {
+                                                                "kind": "internal",
+                                                                "name": "String"
+                                                            }
+                                                        },
+                                                        {
+                                                            "name": "burnedThreadCount",
+                                                            "type": {
+                                                                "kind": "internal",
+                                                                "name": "Int"
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 1,
+            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__DelegateLifecycleActivities",
+            "name": "DelegateLifecycleActivities",
+            "fieldTypes": [
+                {
+                    "name": "activity",
+                    "type": {
+                        "kind": "enum",
+                        "name": "DelegateLifecycleActivity",
+                        "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]",
+                        "variantTypes": [
+                            {
+                                "kind": "variant",
+                                "tag": 0,
+                                "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__ReplacingMe",
+                                "name": "ReplacingMe",
+                                "fieldTypes": [
+                                    {
+                                        "name": "seed",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "TxOutputId"
+                                        }
+                                    },
+                                    {
+                                        "name": "purpose",
+                                        "type": {
+                                            "kind": "internal",
+                                            "name": "String"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 1,
+                                "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__Retiring",
+                                "name": "Retiring",
+                                "fieldTypes": []
+                            },
+                            {
+                                "kind": "variant",
+                                "tag": 2,
+                                "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__ValidatingSettings",
+                                "name": "ValidatingSettings",
+                                "fieldTypes": []
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 2,
+            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__SpendingActivities",
+            "name": "SpendingActivities",
+            "fieldTypes": [
+                {
+                    "name": "activity",
+                    "type": {
+                        "kind": "internal",
+                        "name": "Data"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 3,
+            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__MintingActivities",
+            "name": "MintingActivities",
+            "fieldTypes": [
+                {
+                    "name": "activity",
+                    "type": {
+                        "kind": "internal",
+                        "name": "Data"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 4,
+            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__BurningActivities",
+            "name": "BurningActivities",
+            "fieldTypes": [
+                {
+                    "name": "activity",
+                    "type": {
+                        "kind": "internal",
+                        "name": "Data"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 5,
+            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__CreatingDelegatedData",
+            "name": "CreatingDelegatedData",
+            "fieldTypes": [
+                {
+                    "name": "seed",
+                    "type": {
+                        "kind": "internal",
+                        "name": "TxOutputId"
+                    }
+                },
+                {
+                    "name": "dataType",
+                    "type": {
+                        "kind": "internal",
+                        "name": "String"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 6,
+            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__UpdatingDelegatedData",
+            "name": "UpdatingDelegatedData",
+            "fieldTypes": [
+                {
+                    "name": "dataType",
+                    "type": {
+                        "kind": "internal",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "recId",
+                    "type": {
+                        "kind": "internal",
+                        "name": "ByteArray"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 7,
+            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__DeletingDelegatedData",
+            "name": "DeletingDelegatedData",
+            "fieldTypes": [
+                {
+                    "name": "dataType",
+                    "type": {
+                        "kind": "internal",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "recId",
+                    "type": {
+                        "kind": "internal",
+                        "name": "ByteArray"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 8,
+            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__MultipleDelegateActivities",
+            "name": "MultipleDelegateActivities",
+            "fieldTypes": [
+                {
+                    "name": "activities",
+                    "type": {
+                        "kind": "list",
+                        "itemType": {
+                            "kind": "internal",
+                            "name": "Data"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "variant",
+            "tag": 9,
+            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__OtherActivities",
+            "name": "OtherActivities",
+            "fieldTypes": [
+                {
+                    "name": "activity",
+                    "type": {
+                        "kind": "internal",
+                        "name": "Data"
+                    }
+                }
+            ]
+        }
+    ]
+};
+
 export const DgDataDetailsSchema : StructTypeSchema = {
     "kind": "struct",
     "format": "list",
@@ -11576,6 +12684,526 @@ export const DgDataDetailsSchema : StructTypeSchema = {
             "type": {
                 "kind": "internal",
                 "name": "MintingPolicyHash"
+            }
+        },
+        {
+            "name": "activity",
+            "type": {
+                "kind": "option",
+                "someType": {
+                    "kind": "enum",
+                    "name": "AbstractDelegateActivitiesEnum",
+                    "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]",
+                    "variantTypes": [
+                        {
+                            "kind": "variant",
+                            "tag": 0,
+                            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__CapoLifecycleActivities",
+                            "name": "CapoLifecycleActivities",
+                            "fieldTypes": [
+                                {
+                                    "name": "activity",
+                                    "type": {
+                                        "kind": "enum",
+                                        "name": "CapoLifecycleActivity",
+                                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]",
+                                        "variantTypes": [
+                                            {
+                                                "kind": "variant",
+                                                "tag": 0,
+                                                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__CreatingDelegate",
+                                                "name": "CreatingDelegate",
+                                                "fieldTypes": [
+                                                    {
+                                                        "name": "seed",
+                                                        "type": {
+                                                            "kind": "internal",
+                                                            "name": "TxOutputId"
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "purpose",
+                                                        "type": {
+                                                            "kind": "internal",
+                                                            "name": "String"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "kind": "variant",
+                                                "tag": 1,
+                                                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__queuePendingChange",
+                                                "name": "queuePendingChange",
+                                                "fieldTypes": []
+                                            },
+                                            {
+                                                "kind": "variant",
+                                                "tag": 2,
+                                                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__removePendingChange",
+                                                "name": "removePendingChange",
+                                                "fieldTypes": [
+                                                    {
+                                                        "name": "role",
+                                                        "type": {
+                                                            "kind": "enum",
+                                                            "name": "DelegateRole",
+                                                            "id": "__module__CapoDelegateHelpers__DelegateRole[]",
+                                                            "variantTypes": [
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 0,
+                                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__MintDgt",
+                                                                    "name": "MintDgt",
+                                                                    "fieldTypes": []
+                                                                },
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 1,
+                                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__SpendDgt",
+                                                                    "name": "SpendDgt",
+                                                                    "fieldTypes": []
+                                                                },
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 2,
+                                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__MintInvariant",
+                                                                    "name": "MintInvariant",
+                                                                    "fieldTypes": []
+                                                                },
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 3,
+                                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__SpendInvariant",
+                                                                    "name": "SpendInvariant",
+                                                                    "fieldTypes": []
+                                                                },
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 4,
+                                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__DgDataPolicy",
+                                                                    "name": "DgDataPolicy",
+                                                                    "fieldTypes": [
+                                                                        {
+                                                                            "name": "name",
+                                                                            "type": {
+                                                                                "kind": "internal",
+                                                                                "name": "String"
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 5,
+                                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__OtherNamedDgt",
+                                                                    "name": "OtherNamedDgt",
+                                                                    "fieldTypes": [
+                                                                        {
+                                                                            "name": "name",
+                                                                            "type": {
+                                                                                "kind": "internal",
+                                                                                "name": "String"
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 6,
+                                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__BothMintAndSpendDgt",
+                                                                    "name": "BothMintAndSpendDgt",
+                                                                    "fieldTypes": []
+                                                                },
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 7,
+                                                                    "id": "__module__CapoDelegateHelpers__DelegateRole[]__HandledByCapoOnly",
+                                                                    "name": "HandledByCapoOnly",
+                                                                    "fieldTypes": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "kind": "variant",
+                                                "tag": 3,
+                                                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__commitPendingChanges",
+                                                "name": "commitPendingChanges",
+                                                "fieldTypes": []
+                                            },
+                                            {
+                                                "kind": "variant",
+                                                "tag": 4,
+                                                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__forcingNewSpendDelegate",
+                                                "name": "forcingNewSpendDelegate",
+                                                "fieldTypes": [
+                                                    {
+                                                        "name": "seed",
+                                                        "type": {
+                                                            "kind": "internal",
+                                                            "name": "TxOutputId"
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "purpose",
+                                                        "type": {
+                                                            "kind": "internal",
+                                                            "name": "String"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "kind": "variant",
+                                                "tag": 5,
+                                                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__forcingNewMintDelegate",
+                                                "name": "forcingNewMintDelegate",
+                                                "fieldTypes": [
+                                                    {
+                                                        "name": "seed",
+                                                        "type": {
+                                                            "kind": "internal",
+                                                            "name": "TxOutputId"
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "purpose",
+                                                        "type": {
+                                                            "kind": "internal",
+                                                            "name": "String"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "kind": "variant",
+                                                "tag": 6,
+                                                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__updatingManifest",
+                                                "name": "updatingManifest",
+                                                "fieldTypes": [
+                                                    {
+                                                        "name": "activity",
+                                                        "type": {
+                                                            "kind": "enum",
+                                                            "name": "ManifestActivity",
+                                                            "id": "__module__CapoDelegateHelpers__ManifestActivity[]",
+                                                            "variantTypes": [
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 0,
+                                                                    "id": "__module__CapoDelegateHelpers__ManifestActivity[]__retiringEntry",
+                                                                    "name": "retiringEntry",
+                                                                    "fieldTypes": [
+                                                                        {
+                                                                            "name": "key",
+                                                                            "type": {
+                                                                                "kind": "internal",
+                                                                                "name": "String"
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 1,
+                                                                    "id": "__module__CapoDelegateHelpers__ManifestActivity[]__updatingEntry",
+                                                                    "name": "updatingEntry",
+                                                                    "fieldTypes": [
+                                                                        {
+                                                                            "name": "key",
+                                                                            "type": {
+                                                                                "kind": "internal",
+                                                                                "name": "String"
+                                                                            }
+                                                                        },
+                                                                        {
+                                                                            "name": "tokenName",
+                                                                            "type": {
+                                                                                "kind": "internal",
+                                                                                "name": "ByteArray"
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 2,
+                                                                    "id": "__module__CapoDelegateHelpers__ManifestActivity[]__addingEntry",
+                                                                    "name": "addingEntry",
+                                                                    "fieldTypes": [
+                                                                        {
+                                                                            "name": "key",
+                                                                            "type": {
+                                                                                "kind": "internal",
+                                                                                "name": "String"
+                                                                            }
+                                                                        },
+                                                                        {
+                                                                            "name": "tokenName",
+                                                                            "type": {
+                                                                                "kind": "internal",
+                                                                                "name": "ByteArray"
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 3,
+                                                                    "id": "__module__CapoDelegateHelpers__ManifestActivity[]__forkingThreadToken",
+                                                                    "name": "forkingThreadToken",
+                                                                    "fieldTypes": [
+                                                                        {
+                                                                            "name": "key",
+                                                                            "type": {
+                                                                                "kind": "internal",
+                                                                                "name": "String"
+                                                                            }
+                                                                        },
+                                                                        {
+                                                                            "name": "newThreadCount",
+                                                                            "type": {
+                                                                                "kind": "internal",
+                                                                                "name": "Int"
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "kind": "variant",
+                                                                    "tag": 4,
+                                                                    "id": "__module__CapoDelegateHelpers__ManifestActivity[]__burningThreadToken",
+                                                                    "name": "burningThreadToken",
+                                                                    "fieldTypes": [
+                                                                        {
+                                                                            "name": "key",
+                                                                            "type": {
+                                                                                "kind": "internal",
+                                                                                "name": "String"
+                                                                            }
+                                                                        },
+                                                                        {
+                                                                            "name": "burnedThreadCount",
+                                                                            "type": {
+                                                                                "kind": "internal",
+                                                                                "name": "Int"
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "kind": "variant",
+                            "tag": 1,
+                            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__DelegateLifecycleActivities",
+                            "name": "DelegateLifecycleActivities",
+                            "fieldTypes": [
+                                {
+                                    "name": "activity",
+                                    "type": {
+                                        "kind": "enum",
+                                        "name": "DelegateLifecycleActivity",
+                                        "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]",
+                                        "variantTypes": [
+                                            {
+                                                "kind": "variant",
+                                                "tag": 0,
+                                                "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__ReplacingMe",
+                                                "name": "ReplacingMe",
+                                                "fieldTypes": [
+                                                    {
+                                                        "name": "seed",
+                                                        "type": {
+                                                            "kind": "internal",
+                                                            "name": "TxOutputId"
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "purpose",
+                                                        "type": {
+                                                            "kind": "internal",
+                                                            "name": "String"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "kind": "variant",
+                                                "tag": 1,
+                                                "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__Retiring",
+                                                "name": "Retiring",
+                                                "fieldTypes": []
+                                            },
+                                            {
+                                                "kind": "variant",
+                                                "tag": 2,
+                                                "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__ValidatingSettings",
+                                                "name": "ValidatingSettings",
+                                                "fieldTypes": []
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "kind": "variant",
+                            "tag": 2,
+                            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__SpendingActivities",
+                            "name": "SpendingActivities",
+                            "fieldTypes": [
+                                {
+                                    "name": "activity",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "Data"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "kind": "variant",
+                            "tag": 3,
+                            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__MintingActivities",
+                            "name": "MintingActivities",
+                            "fieldTypes": [
+                                {
+                                    "name": "activity",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "Data"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "kind": "variant",
+                            "tag": 4,
+                            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__BurningActivities",
+                            "name": "BurningActivities",
+                            "fieldTypes": [
+                                {
+                                    "name": "activity",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "Data"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "kind": "variant",
+                            "tag": 5,
+                            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__CreatingDelegatedData",
+                            "name": "CreatingDelegatedData",
+                            "fieldTypes": [
+                                {
+                                    "name": "seed",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "TxOutputId"
+                                    }
+                                },
+                                {
+                                    "name": "dataType",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "kind": "variant",
+                            "tag": 6,
+                            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__UpdatingDelegatedData",
+                            "name": "UpdatingDelegatedData",
+                            "fieldTypes": [
+                                {
+                                    "name": "dataType",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                    }
+                                },
+                                {
+                                    "name": "recId",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "ByteArray"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "kind": "variant",
+                            "tag": 7,
+                            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__DeletingDelegatedData",
+                            "name": "DeletingDelegatedData",
+                            "fieldTypes": [
+                                {
+                                    "name": "dataType",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                    }
+                                },
+                                {
+                                    "name": "recId",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "ByteArray"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "kind": "variant",
+                            "tag": 8,
+                            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__MultipleDelegateActivities",
+                            "name": "MultipleDelegateActivities",
+                            "fieldTypes": [
+                                {
+                                    "name": "activities",
+                                    "type": {
+                                        "kind": "list",
+                                        "itemType": {
+                                            "kind": "internal",
+                                            "name": "Data"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "kind": "variant",
+                            "tag": 9,
+                            "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__OtherActivities",
+                            "name": "OtherActivities",
+                            "fieldTypes": [
+                                {
+                                    "name": "activity",
+                                    "type": {
+                                        "kind": "internal",
+                                        "name": "Data"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
             }
         }
     ]
