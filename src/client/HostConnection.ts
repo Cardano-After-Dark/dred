@@ -81,7 +81,7 @@ export interface HostConnectionEventTypes {
         },
     ) => void;
     replacedBy: [ConnectionEvent & { replacement: HostConnection }];
-    message: [ConnectionEvent & DredChannelMessage & DredMessage];
+    message: [DredMessage & ConnectionEvent & DredChannelMessage ];
     disconnected: [ConnectionEvent & DredError];
 }
 
