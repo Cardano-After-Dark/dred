@@ -586,18 +586,18 @@ export class Replicant {
 
         // Use mapped subscription to handle _chans separately
         // DredClient automatically subscribes to _chans, so we need to override its handler
+        // Create single shared handler reference to avoid creating new functions in loop
+        const sharedMessageHandler = this.messageHandler.bind(this);
+        const channelEventHandler = this.handleChannelEvent.bind(this);
+
         const subscriptionMap: Record<string, (message: FullDredMessage) => void> = {
             // Dedicated handler for _chans to monitor channel creation events
-            '_chans': (message: FullDredMessage) => {
-                this.handleChannelEvent(message);
-            }
+            '_chans': channelEventHandler
         };
 
-        // Add mass handler for regular channels
+        // Map all regular channels to the same shared handler instance
         for (const channel of channels) {
-            subscriptionMap[channel] = (message: FullDredMessage) => {
-                this.messageHandler(message);
-            };
+            subscriptionMap[channel] = sharedMessageHandler;
         }
 
         this.log(`🎯 Subscribing to ${channels.length} channels + _chans`);
@@ -742,11 +742,11 @@ export class Replicant {
                 const data = JSON.parse(msg);
                 const { channel, options } = data;
 
-                this.log(`📢 Channel creation detected on ${this.targetHost.serverId}: ${channel}`);
+                this.log(`📢 Channel creation detected: %s`, channel);
 
                 // Skip meta channels (they start with _)
                 if (channel.startsWith('_')) {
-                    this.debug(`Skipping meta channel: ${channel}`);
+                    this.debug(`Skipping meta channel: %s`, channel);
                     return;
                 }
 
@@ -769,11 +769,11 @@ export class Replicant {
             const hasChannel = await this.homeServer.channelList.has(channelName);
 
             if (hasChannel) {
-                this.debug(`Channel ${channelName} already exists on home server`);
+                this.debug(`Channel %s already exists on home server`, channelName);
                 return;
             }
 
-            this.log(`🆕 Creating channel ${channelName} on home server ${this.homeServer.serverId}`);
+            this.log(`🆕 Creating channel %s on home server`, channelName);
 
             // Create channel on home server using the same options
             await this.homeServer.channelList.set(channelName, '1');
@@ -782,9 +782,9 @@ export class Replicant {
             // Subscribe to this new channel for message replication
             await this.subscribeToNewChannel(channelName);
 
-            this.log(`✅ Channel ${channelName} created and subscribed on home server`);
+            this.log(`✅ Channel %s created and subscribed on home server`, channelName);
         } catch (error) {
-            this.warn(`Failed to handle channel addition for ${channelName}: ${error}`);
+            this.warn(`Failed to handle channel addition for %s: %s`, channelName, error);
         }
     }
 
@@ -803,18 +803,18 @@ export class Replicant {
             const commonChannels = await this.findCommonChannels();
 
             // Create subscription map including _chans and all channels
+            // Use single shared handler reference to avoid creating new functions in loop
+            const sharedMessageHandler = this.messageHandler.bind(this);
+            const channelEventHandler = this.handleChannelEvent.bind(this);
+
             const subscriptionMap: Record<string, (message: FullDredMessage) => void> = {
                 // Dedicated handler for _chans to monitor channel creation events
-                '_chans': (message: FullDredMessage) => {
-                    this.handleChannelEvent(message);
-                }
+                '_chans': channelEventHandler
             };
 
-            // Add handlers for all regular channels (including the new one)
+            // Map all regular channels to the same shared handler instance
             for (const channel of commonChannels) {
-                subscriptionMap[channel] = (message: FullDredMessage) => {
-                    this.messageHandler(message);
-                };
+                subscriptionMap[channel] = sharedMessageHandler;
             }
 
             this.progress(`re-subscribing to ${commonChannels.length} channels + _chans (including new: ${channelName})`);

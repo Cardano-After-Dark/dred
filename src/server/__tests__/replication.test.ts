@@ -291,7 +291,7 @@ describe("Message Replication", () => {
             testLogger.progress(`✅ Dynamic channel replication successful!`);
         });
 
-        fit("should deliver historical messages when a new server connects to an existing channel", async () => {
+        it("should deliver historical messages when a new server connects to an existing channel", async () => {
             testLogger.info("═══════════════════════════════════════════════════════════════════");
             testLogger.info("🧪 TEST START: Cross-Server Replication - deliver historical messages on new connection");
             testLogger.info("═══════════════════════════════════════════════════════════════════");
