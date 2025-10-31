@@ -1,6 +1,6 @@
 {
     "name": "dred-network-registry",
-    "version": "0.7.0-beta.1",
+    "version": "0.7.0-beta.2",
     "description": "Onchain registry for DRED decentralized realtime messaging",
     "keywords": [],
     "author": "Cardano After Dark",
@@ -67,8 +67,8 @@
         "singleQuote": false
     },
     "peerFromWorkspace": {
-        "@donecollectively/stellar-contracts": "^0.9.3-beta.1",
-        "stellar-tokenomics": "^0.8.0-beta.2"
+        "@donecollectively/stellar-contracts": "^0.9.3-beta.5",
+        "stellar-tokenomics": "^0.8.0-beta.5"
     },
     "peerDependencies": {
         "@helios-lang/cbor": "^0.3.1",

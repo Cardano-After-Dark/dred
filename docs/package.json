@@ -13,8 +13,8 @@
   "browserslist": "defaults, not ie <= 11",
 
   "depsFromWorkspace": {
-    "@donecollectively/stellar-contracts": "github:donecollectively/stellar-contracts#semver:0.9.3-beta.1",
-    "stellar-tokenomics": "github:donecollectively/stellar-tokenomics-next#semver:0.8.0-beta.2"
+    "@donecollectively/stellar-contracts": "github:donecollectively/stellar-contracts#semver:0.9.3-beta.5",
+    "stellar-tokenomics": "github:donecollectively/stellar-tokenomics-next#semver:0.8.0-beta.5"
   },
   "depsNotNeeded?": {
     "@helios-lang/codec-utils": "^0.3.4",
