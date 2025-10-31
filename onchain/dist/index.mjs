@@ -40616,16 +40616,9 @@ class DredCapo extends StellarTokenomicsCapo {
           "has staking-reward settings",
           "provides a 'settings' struct in a module that other contracts import to access parameters"
         ],
-        requires: ["can update the settings"]
-      },
-      "can update the settings": {
-        purpose: "to allow for future adjustments to protocol parameters",
-        details: [
-          "When the settings are updated, the new settings are used in all future transactions referencing settings`"
-        ],
-        mech: [
-          "applies the new settings on-chain",
-          "won't update the settings without capo govAuthority approval"
+        requiresInherited: [
+          "Has a settings data structure where tokenomics plugins can store protocol parameters",
+          "Can upgrade the Settings data"
         ]
       },
       "Provides a Node Operator registry, in which node operators can maintain their node registrations": {
@@ -40635,7 +40628,10 @@ class DredCapo extends StellarTokenomicsCapo {
           "Allows registering a node operator record with the DRED.nodeOperator token",
           "Registers the member-* id with the node registration record"
         ],
-        requires: []
+        requires: [],
+        requiresInherited: [
+          "supports the Delegation pattern using roles and strategy-variants"
+        ]
       }
     });
   }
