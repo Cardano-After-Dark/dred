@@ -44,7 +44,7 @@
         // "outFile": ".api-extractor-temp/stellar-tokenomics-raw.d.ts",
         "paths": {
             // "@/*": ["./src/*"],
-            "dred-network-registry": ["./src/index.ts"],
+//            "dred-network-registry": ["./src/index.ts"],
             // "@donecollectively/stellar-contracts": [
             //     "../stellar-contracts/src/index.ts"
             // ]

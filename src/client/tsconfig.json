@@ -3,9 +3,12 @@
 {
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
+        "skipLibCheck": true,
         "experimentalDecorators": true,
         "paths": {
             "@platform/*": ["../../platform/browser/*"]
         }
-    }
+    },
+    "include": ["index.ts", "../../platform/browser/**/*.ts"]
+
 }

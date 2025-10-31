@@ -31,22 +31,17 @@
 
         "outDir": "./.api-extractor-temp",
         // "outFile": ".api-extractor-temp/raw.d.ts",
-        // "importHelpers": true,
         "rootDir": "../..",
         
         // "exactOptionalPropertyTypes": true,        
         "noImplicitAny": false,
-        // "noErrorTruncation": true,
+        "noErrorTruncation": true,
 
-        // "isolatedModules": true,
         // "importHelpers": true,
-        // "baseUrl": ".",
 
-        // "skipLibCheck": true,
-
-        // "emitDeclarationOnly": true,
         // "noResolve": true,
-        // "disableReferencedProjectLoad": false,
+
+        "disableReferencedProjectLoad": true,
         "paths": {
             "@cardano-after-dark/dred-client": ["./index.ts"],
             "@platform/ReadableStream.js": ["../../platform/browser/ReadableStream.ts"],
@@ -65,6 +60,7 @@
     // ],
     "exclude": [
         "node_modules/**/*",
-        "**/node_modules/"
+        "**/node_modules/**/*",
+        "../../node_modules/**/*"
     ]
 }

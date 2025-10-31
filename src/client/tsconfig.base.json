@@ -25,6 +25,13 @@
             // "sXXrc/*": ["../../src/*"]
         }
     },
-    "include": [ "../**/*.ts", "../../platform/browser/**/*.ts" ],
-    "exclude": [ "../server/**/*.ts" ]
+    "include": [ 
+        "../**/*.ts", 
+        "../../platform/browser/**/*.ts" 
+    ],
+    "exclude": [ 
+        "../server/**/*.ts",
+        "**/node_modules/**",
+        "../../node_modules/**"
+    ]
 }
