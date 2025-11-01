@@ -909,7 +909,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<\"Provides a single entry point dApps can use to get tokenomics for their project\" | \"Uses the Capo (leader) to gather tokenomics-related contracts together\" | \"Defines a tokenomics minting delegate\" | \"Has a settings data structure where tokenomics plugins can store protocol parameters\" | \"issues 'membership card' tokens to participants\" | \"Can upgrade the Settings data\" | \"the settings data can be updated to have new details if backward compatible\" | \"Can find membership card tokens for participants\" | \"has custom settings for protocol parameters\" | \"can update the settings\" | \"Provides a Node Operator registry, in which node operators can maintain their node registrations\", \"Provides a single entry point dApps can use to get tokenomics for their project\" | \"Uses the Capo (leader) to gather tokenomics-related contracts together\" | \"Defines a tokenomics minting delegate\" | \"Has a settings data structure where tokenomics plugins can store protocol parameters\" | \"issues 'membership card' tokens to participants\" | \"Can upgrade the Settings data\" | \"the settings data can be updated to have new details if backward compatible\" | \"Can find membership card tokens for participants\"> & import(\"@donecollectively/stellar-contracts\")."
+                  "text": "<\"is a base class for leader/Capo pattern\" | \"can create unique utility tokens\" | \"supports the Delegation pattern using roles and strategy-variants\" | \"supports well-typed role declarations and strategy-adding\" | \"supports just-in-time strategy-selection using txnCreateDelegateLink()\" | \"given a configured delegate-link, it can create a ready-to-use Stellar subclass with all the right settings\" | \"supports concrete resolution of existing role delegates\" | \"Each role uses a RoleVariants structure which can accept new variants\" | \"provides a Strategy type for binding a contract to a strategy-variant name\" | \"can locate UUTs in the user's wallet\" | \"positively governs all administrative actions\" | \"has a unique, permanent charter token\" | \"has a unique, permanent treasury address\" | \"the charter token is always kept in the contract\" | \"the charter details can be updated by authority of the capoGov-* token\" | \"can mint other tokens, on the authority of the charter's registered mintDgt- token\" | \"can handle large transactions with reference scripts\" | \"has a singleton minting policy\" | \"can update the minting delegate in the charter data\" | \"can update the spending delegate in the charter data\" | \"can add invariant minting delegates to the charter data\" | \"can add invariant spending delegates to the charter data\" | \"supports an abstract Settings structure stored in the contact\" | \"added and updated delegates always validate the present configuration data\" | \"can commit new delegates\" | \"supports storing new types of datum not pre-defined in the Capo's on-chain script\" | \"the charter has a namedDelegates structure for semantic delegate links\" | \"CreatingDelegatedDatum: creates a UTxO with any custom datum\" | \"UpdatingDelegatedDatum: checks that a custom data element can be updated\" | \"Provides a single entry point dApps can use to get tokenomics for their project\" | \"Uses the Capo (leader) to gather tokenomics-related contracts together\" | \"Defines a tokenomics minting delegate\" | \"Has a settings data structure where tokenomics plugins can store protocol parameters\" | \"issues 'membership card' tokens to participants\" | \"Can upgrade the Settings data\" | \"the settings data can be updated to have new details if backward compatible\" | \"Can find membership card tokens for participants\" | \"has custom settings for protocol parameters\" | \"Provides a Node Operator registry, in which node operators can maintain their node registrations\", {\n        inheriting: \"is a base class for leader/Capo pattern\" | \"can create unique utility tokens\" | \"supports the Delegation pattern using roles and strategy-variants\" | \"supports well-typed role declarations and strategy-adding\" | \"supports just-in-time strategy-selection using txnCreateDelegateLink()\" | \"given a configured delegate-link, it can create a ready-to-use Stellar subclass with all the right settings\" | \"supports concrete resolution of existing role delegates\" | \"Each role uses a RoleVariants structure which can accept new variants\" | \"provides a Strategy type for binding a contract to a strategy-variant name\" | \"can locate UUTs in the user's wallet\" | \"positively governs all administrative actions\" | \"has a unique, permanent charter token\" | \"has a unique, permanent treasury address\" | \"the charter token is always kept in the contract\" | \"the charter details can be updated by authority of the capoGov-* token\" | \"can mint other tokens, on the authority of the charter's registered mintDgt- token\" | \"can handle large transactions with reference scripts\" | \"has a singleton minting policy\" | \"can update the minting delegate in the charter data\" | \"can update the spending delegate in the charter data\" | \"can add invariant minting delegates to the charter data\" | \"can add invariant spending delegates to the charter data\" | \"supports an abstract Settings structure stored in the contact\" | \"added and updated delegates always validate the present configuration data\" | \"can commit new delegates\" | \"supports storing new types of datum not pre-defined in the Capo's on-chain script\" | \"the charter has a namedDelegates structure for semantic delegate links\" | \"CreatingDelegatedDatum: creates a UTxO with any custom datum\" | \"UpdatingDelegatedDatum: checks that a custom data element can be updated\" | \"Provides a single entry point dApps can use to get tokenomics for their project\" | \"Uses the Capo (leader) to gather tokenomics-related contracts together\" | \"Defines a tokenomics minting delegate\" | \"Has a settings data structure where tokenomics plugins can store protocol parameters\" | \"issues 'membership card' tokens to participants\" | \"Can upgrade the Settings data\" | \"the settings data can be updated to have new details if backward compatible\" | \"Can find membership card tokens for participants\";\n    }> & import(\"@donecollectively/stellar-contracts\")."
                 },
                 {
                   "kind": "Reference",
@@ -918,7 +918,16 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<\"Provides a single entry point dApps can use to get tokenomics for their project\" | \"Uses the Capo (leader) to gather tokenomics-related contracts together\" | \"Defines a tokenomics minting delegate\" | \"Has a settings data structure where tokenomics plugins can store protocol parameters\" | \"issues 'membership card' tokens to participants\" | \"Can upgrade the Settings data\" | \"the settings data can be updated to have new details if backward compatible\" | \"Can find membership card tokens for participants\", never>"
+                  "text": "<\"is a base class for leader/Capo pattern\" | \"can create unique utility tokens\" | \"supports the Delegation pattern using roles and strategy-variants\" | \"supports well-typed role declarations and strategy-adding\" | \"supports just-in-time strategy-selection using txnCreateDelegateLink()\" | \"given a configured delegate-link, it can create a ready-to-use Stellar subclass with all the right settings\" | \"supports concrete resolution of existing role delegates\" | \"Each role uses a RoleVariants structure which can accept new variants\" | \"provides a Strategy type for binding a contract to a strategy-variant name\" | \"can locate UUTs in the user's wallet\" | \"positively governs all administrative actions\" | \"has a unique, permanent charter token\" | \"has a unique, permanent treasury address\" | \"the charter token is always kept in the contract\" | \"the charter details can be updated by authority of the capoGov-* token\" | \"can mint other tokens, on the authority of the charter's registered mintDgt- token\" | \"can handle large transactions with reference scripts\" | \"has a singleton minting policy\" | \"can update the minting delegate in the charter data\" | \"can update the spending delegate in the charter data\" | \"can add invariant minting delegates to the charter data\" | \"can add invariant spending delegates to the charter data\" | \"supports an abstract Settings structure stored in the contact\" | \"added and updated delegates always validate the present configuration data\" | \"can commit new delegates\" | \"supports storing new types of datum not pre-defined in the Capo's on-chain script\" | \"the charter has a namedDelegates structure for semantic delegate links\" | \"CreatingDelegatedDatum: creates a UTxO with any custom datum\" | \"UpdatingDelegatedDatum: checks that a custom data element can be updated\" | \"Provides a single entry point dApps can use to get tokenomics for their project\" | \"Uses the Capo (leader) to gather tokenomics-related contracts together\" | \"Defines a tokenomics minting delegate\" | \"Has a settings data structure where tokenomics plugins can store protocol parameters\" | \"issues 'membership card' tokens to participants\" | \"Can upgrade the Settings data\" | \"the settings data can be updated to have new details if backward compatible\" | \"Can find membership card tokens for participants\", {\n        inheriting: \"is a base class for leader/Capo pattern\" | \"can create unique utility tokens\" | \"supports the Delegation pattern using roles and strategy-variants\" | \"supports well-typed role declarations and strategy-adding\" | \"supports just-in-time strategy-selection using txnCreateDelegateLink()\" | \"given a configured delegate-link, it can create a ready-to-use Stellar subclass with all the right settings\" | \"supports concrete resolution of existing role delegates\" | \"Each role uses a RoleVariants structure which can accept new variants\" | \"provides a Strategy type for binding a contract to a strategy-variant name\" | \"can locate UUTs in the user's wallet\" | \"positively governs all administrative actions\" | \"has a unique, permanent charter token\" | \"has a unique, permanent treasury address\" | \"the charter token is always kept in the contract\" | \"the charter details can be updated by authority of the capoGov-* token\" | \"can mint other tokens, on the authority of the charter's registered mintDgt- token\" | \"can handle large transactions with reference scripts\" | \"has a singleton minting policy\" | \"can update the minting delegate in the charter data\" | \"can update the spending delegate in the charter data\" | \"can add invariant minting delegates to the charter data\" | \"can add invariant spending delegates to the charter data\" | \"supports an abstract Settings structure stored in the contact\" | \"added and updated delegates always validate the present configuration data\" | \"can commit new delegates\" | \"supports storing new types of datum not pre-defined in the Capo's on-chain script\" | \"the charter has a namedDelegates structure for semantic delegate links\" | \"CreatingDelegatedDatum: creates a UTxO with any custom datum\" | \"UpdatingDelegatedDatum: checks that a custom data element can be updated\";\n    }> & import(\"@donecollectively/stellar-contracts\")."
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ReqtsMap",
+                  "canonicalReference": "@donecollectively/stellar-contracts!ReqtsMap:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<\"is a base class for leader/Capo pattern\" | \"can create unique utility tokens\" | \"supports the Delegation pattern using roles and strategy-variants\" | \"supports well-typed role declarations and strategy-adding\" | \"supports just-in-time strategy-selection using txnCreateDelegateLink()\" | \"given a configured delegate-link, it can create a ready-to-use Stellar subclass with all the right settings\" | \"supports concrete resolution of existing role delegates\" | \"Each role uses a RoleVariants structure which can accept new variants\" | \"provides a Strategy type for binding a contract to a strategy-variant name\" | \"can locate UUTs in the user's wallet\" | \"positively governs all administrative actions\" | \"has a unique, permanent charter token\" | \"has a unique, permanent treasury address\" | \"the charter token is always kept in the contract\" | \"the charter details can be updated by authority of the capoGov-* token\" | \"can mint other tokens, on the authority of the charter's registered mintDgt- token\" | \"can handle large transactions with reference scripts\" | \"has a singleton minting policy\" | \"can update the minting delegate in the charter data\" | \"can update the spending delegate in the charter data\" | \"can add invariant minting delegates to the charter data\" | \"can add invariant spending delegates to the charter data\" | \"supports an abstract Settings structure stored in the contact\" | \"added and updated delegates always validate the present configuration data\" | \"can commit new delegates\" | \"supports storing new types of datum not pre-defined in the Capo's on-chain script\" | \"the charter has a namedDelegates structure for semantic delegate links\" | \"CreatingDelegatedDatum: creates a UTxO with any custom datum\" | \"UpdatingDelegatedDatum: checks that a custom data element can be updated\", {\n        inheriting: \"\\u2039empty/base class\\u203A\";\n    }>"
                 },
                 {
                   "kind": "Content",
@@ -928,7 +937,7 @@
               "isStatic": false,
               "returnTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 6
+                "endIndex": 8
               },
               "releaseTag": "Public",
               "isProtected": false,
@@ -954,12 +963,12 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<typeof import(\"./DredCapo.hlb.js\")."
+                  "text": "<typeof "
                 },
                 {
                   "kind": "Reference",
-                  "text": "DredCapoBundle",
-                  "canonicalReference": "dred-network-registry!~DredCapoBundle:class"
+                  "text": "CapoHeliosBundle",
+                  "canonicalReference": "@donecollectively/stellar-contracts!CapoHeliosBundle:class"
                 },
                 {
                   "kind": "Content",
@@ -1672,7 +1681,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<import(\"@donecollectively/stellar-contracts\")."
+                  "text": "<"
                 },
                 {
                   "kind": "Reference",
@@ -2315,7 +2324,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<never, never>"
+                  "text": "<never, {\n        inheriting: \"\\u2039empty/base class\\u203A\";\n    }>"
                 },
                 {
                   "kind": "Content",
@@ -2351,12 +2360,12 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<typeof import(\"./NeighborhoodRegistry.hlb.js\")."
+                  "text": "<typeof "
                 },
                 {
                   "kind": "Reference",
-                  "text": "NeighborhoodRegistryBundle",
-                  "canonicalReference": "dred-network-registry!~NeighborhoodRegistryBundle:class"
+                  "text": "DelegatedDataBundle",
+                  "canonicalReference": "@donecollectively/stellar-contracts!DelegatedDataBundle:class"
                 },
                 {
                   "kind": "Content",
@@ -3738,7 +3747,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<never, never>"
+                  "text": "<never, {\n        inheriting: \"\\u2039empty/base class\\u203A\";\n    }>"
                 },
                 {
                   "kind": "Content",
@@ -3774,12 +3783,12 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<typeof import(\"./NodeRegistry.hlb.js\")."
+                  "text": "<typeof "
                 },
                 {
                   "kind": "Reference",
-                  "text": "default",
-                  "canonicalReference": "dred-network-registry!~default:class"
+                  "text": "DelegatedDataBundle",
+                  "canonicalReference": "@donecollectively/stellar-contracts!DelegatedDataBundle:class"
                 },
                 {
                   "kind": "Content",
@@ -4110,7 +4119,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<never, never>"
+                  "text": "<never, {\n        inheriting: \"\\u2039empty/base class\\u203A\";\n    }>"
                 },
                 {
                   "kind": "Content",
@@ -4146,12 +4155,12 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<typeof import(\"./ProtocolSettings.hlb.js\")."
+                  "text": "<typeof "
                 },
                 {
                   "kind": "Reference",
-                  "text": "ProtocolSettingsBundle",
-                  "canonicalReference": "dred-network-registry!~ProtocolSettingsBundle:class"
+                  "text": "DelegatedDataBundle",
+                  "canonicalReference": "@donecollectively/stellar-contracts!DelegatedDataBundle:class"
                 },
                 {
                   "kind": "Content",

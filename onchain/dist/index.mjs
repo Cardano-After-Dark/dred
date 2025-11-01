@@ -28167,9 +28167,7 @@ class NodeRegistryController extends DelegatedDataContract {
   async mkTxnRegisteringNode(nodeReg, initialTcx) {
     await this.capo.getMintDelegate();
     const { capo } = this;
-    const tcx0 = initialTcx || this.mkTcx(
-      "register dred node"
-    );
+    const tcx0 = initialTcx || this.mkTcx("register dred node");
     const tcx1 = await capo.mkTxnWithMemberInfo(void 0, tcx0);
     const capoUtxos = await capo.findCapoUtxos();
     const charterData = await capo.findCharterData(void 0, {
@@ -28200,28 +28198,29 @@ class NodeRegistryController extends DelegatedDataContract {
     ).then((tcx) => tcx);
   }
   async mkTxnActivatingNode(item, options = { updatedFields: {} }, initialTcx) {
-    const tcx0 = initialTcx || this.mkTcx(
-      "activating dred node"
-    );
+    const tcx0 = initialTcx || this.mkTcx("activating dred node");
     tcx0.addSigners(this.actorContext.wallet.pubKey.hash());
     if (!item.data) {
       debugger;
       throw new Error("node not found");
     }
-    return this.mkTxnUpdatingNodeRegistration("activating dred node", item, {
-      ...options,
-      withMemberToken: false,
-      activity: this.activity.SpendingActivities.ActivatingNode(item.data.id),
-      updatedFields: {
-        state: { Active: tcx0.txnTime.getTime() },
-        ...options.updatedFields
-      }
-    }, tcx0);
+    return this.mkTxnUpdatingNodeRegistration(
+      "activating dred node",
+      item,
+      {
+        ...options,
+        withMemberToken: false,
+        activity: this.activity.SpendingActivities.ActivatingNode(item.data.id),
+        updatedFields: {
+          state: { Active: tcx0.txnTime.getTime() },
+          ...options.updatedFields
+        }
+      },
+      tcx0
+    );
   }
   async mkTxnUpdatingNodeRegistration(txnName, item, options, initialTcx) {
-    const tcx0 = initialTcx || this.mkTcx(
-      "update node registration"
-    );
+    const tcx0 = initialTcx || this.mkTcx("update node registration");
     const withMemberToken = options.withMemberToken ?? true;
     const tcx1 = withMemberToken ? await this.capo.mkTxnWithMemberInfo(void 0, tcx0) : tcx0;
     const capoUtxos = await this.capo.findCapoUtxos();
@@ -28234,42 +28233,50 @@ class NodeRegistryController extends DelegatedDataContract {
     });
     const pubKey = options.updatedFields.nodeDetails?.pubKey ?? item.data?.nodeDetails.pubKey;
     if (!pubKey) throw new Error("missing required pubKey");
-    return super.mkTxnUpdateRecord(txnName, item, {
-      // default activity
-      activity: this.activity.SpendingActivities.UpdatingRecord(item.data.id),
-      // ..., can be overridden by options
-      ...options,
-      updatedFields: {
-        ...options.updatedFields,
-        nodeDetails: {
-          ...item.data.nodeDetails,
-          ...options.updatedFields.nodeDetails,
-          pubKey: makePubKey(pubKey).toHex()
+    return super.mkTxnUpdateRecord(
+      txnName,
+      item,
+      {
+        // default activity
+        activity: this.activity.SpendingActivities.UpdatingRecord(item.data.id),
+        // ..., can be overridden by options
+        ...options,
+        updatedFields: {
+          ...options.updatedFields,
+          nodeDetails: {
+            ...item.data.nodeDetails,
+            ...options.updatedFields.nodeDetails,
+            pubKey: makePubKey(pubKey).toHex()
+          }
         }
-      }
-    }, tcx2);
+      },
+      tcx2
+    );
   }
   async mkTxnValidatingNode(txnName, item, options, initialTcx) {
-    const tcx0 = initialTcx || this.mkTcx(
-      "validating dred node"
-    );
+    const tcx0 = initialTcx || this.mkTcx("validating dred node");
     const existingNeedsValidation = (item.data?.state).NeedsValidation;
     if (!existingNeedsValidation) throw new Error("node is not in need of validation");
     const { validatorReg } = options;
     const tcx1 = await this.addValidatorRef(tcx0, validatorReg);
-    const tcx2 = await this.mkTxnUpdatingNodeRegistration(txnName, item, {
-      ...options,
-      withMemberToken: false,
-      updatedFields: {
-        state: {
-          NeedsValidation: [validatorReg.data.id, ...existingNeedsValidation]
-        }
+    const tcx2 = await this.mkTxnUpdatingNodeRegistration(
+      txnName,
+      item,
+      {
+        ...options,
+        withMemberToken: false,
+        updatedFields: {
+          state: {
+            NeedsValidation: [validatorReg.data.id, ...existingNeedsValidation]
+          }
+        },
+        activity: this.activity.SpendingActivities.ValidatingNode({
+          id: item.data.id,
+          validatorId: validatorReg.data.id
+        })
       },
-      activity: this.activity.SpendingActivities.ValidatingNode({
-        id: item.data.id,
-        validatorId: validatorReg.data.id
-      })
-    }, tcx1);
+      tcx1
+    );
     tcx2.addSigners(validatorReg.data.nodeDetails.pubKeyHash);
     return tcx2;
   }
