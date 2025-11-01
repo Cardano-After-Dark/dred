@@ -61,11 +61,7 @@ describe("Message Replication", () => {
         c1 = dred1.mkClient("first");
         c2 = dred2.mkClient("second");
         c3 = dred3.mkClient("third");
-        await Promise.all([
-            c1.generateKey(),
-            c2.generateKey(),
-            c3.generateKey(),
-        ]);
+        await Promise.all([c1.generateKey(), c2.generateKey(), c3.generateKey()]);
 
         await startReplication();
     });
@@ -73,7 +69,9 @@ describe("Message Replication", () => {
     describe("Setup Validation", () => {
         it("should have properly configured servers and clients", async () => {
             testLogger.info("═══════════════════════════════════════════════════════════════════");
-            testLogger.info("🧪 TEST START: Setup Validation - properly configured servers and clients");
+            testLogger.info(
+                "🧪 TEST START: Setup Validation - properly configured servers and clients",
+            );
             testLogger.info("═══════════════════════════════════════════════════════════════════");
 
             expect(dred1).toBeDefined();
@@ -93,10 +91,10 @@ describe("Message Replication", () => {
             expect(c2).not.toBe(c3);
             expect(c1).not.toBe(c3);
 
-            await c1.subscribeToChannels({})
-            await c1.subscribeToChannels({})
-            await c1.subscribeToChannels({})
-            
+            await c1.subscribeToChannels({});
+            await c1.subscribeToChannels({});
+            await c1.subscribeToChannels({});
+
             expect(c1.channels).toContain(CHANNEL_NAME);
             expect(c2.channels).toContain(CHANNEL_NAME);
             expect(c3.channels).toContain(CHANNEL_NAME);
@@ -106,25 +104,27 @@ describe("Message Replication", () => {
     describe("Basic Messaging", () => {
         it("delivers messages within the same server", async () => {
             testLogger.info("═══════════════════════════════════════════════════════════════════");
-            testLogger.info("🧪 TEST START: Basic Messaging - delivers messages within the same server");
+            testLogger.info(
+                "🧪 TEST START: Basic Messaging - delivers messages within the same server",
+            );
             testLogger.info("═══════════════════════════════════════════════════════════════════");
 
             const testMessage = {
                 msg: "Hello from test!",
                 type: "greeting",
-                ocid: "test-001"
+                ocid: "test-001",
             };
 
             let success = false;
 
             await c1.subscribeToChannels({
                 [CHANNEL_NAME]: (message: FullDredMessage) => {
-                    const {type, msg, ocid} = message
+                    const { type, msg, ocid } = message;
 
                     testLogger.info(`🎉 📥 CLIENT c1 received: ${message.msg}`);
                     expect(message).toMatchObject(testMessage);
                     success = true;
-                }
+                },
             });
 
             // Not needed because subscribeToChannels is (now) always fully ready
@@ -150,35 +150,38 @@ describe("Message Replication", () => {
         // For detailed Redis functionality testing, see redis.test.ts
         it("should have working Redis connections for replication", async () => {
             testLogger.info("═══════════════════════════════════════════════════════════════════");
-            testLogger.info("🧪 TEST START: Redis Integration - working Redis connections for replication");
+            testLogger.info(
+                "🧪 TEST START: Redis Integration - working Redis connections for replication",
+            );
             testLogger.info("═══════════════════════════════════════════════════════════════════");
 
             // Verify Redis connections exist
             expect(dred1.redis).toBeDefined();
             expect(dred2.redis).toBeDefined();
             expect(dred3.redis).toBeDefined();
-            
+
             // Simple Redis connectivity test
             const testKey = "replication-redis-test";
             await dred1.redis!.call("SET", testKey, "test-value");
             const result = await dred1.redis!.call("GET", testKey);
             expect(result).toBe("test-value");
-            
+
             // Clean up
             await dred1.redis!.call("DEL", testKey);
         });
     });
 
     describe("Cross-Server Replication", () => {
-
         it("replicates messages between all three servers", async () => {
             testLogger.info("═══════════════════════════════════════════════════════════════════");
-            testLogger.info("🧪 TEST START: Cross-Server Replication - replicate messages between all three servers");
+            testLogger.info(
+                "🧪 TEST START: Cross-Server Replication - replicate messages between all three servers",
+            );
             testLogger.info("═══════════════════════════════════════════════════════════════════");
 
             const clientMessage: TestMessage = {
                 msg: "Hello from c1 client!",
-                type: "client-greeting"
+                type: "client-greeting",
             };
 
             let c2Received = 0;
@@ -195,7 +198,7 @@ describe("Message Replication", () => {
                     testLogger.progress(`🎉 📥 CLIENT c2 received: ${message.msg}`);
                     expect(message).toMatchObject(clientMessage);
                     c2Received++;
-                }
+                },
             });
 
             const s3 = c3.subscribeToChannels({
@@ -203,7 +206,7 @@ describe("Message Replication", () => {
                     testLogger.progress(`🎉 📥 CLIENT c3 received: ${message.msg}`);
                     expect(message).toMatchObject(clientMessage);
                     c3Received++;
-                }
+                },
             });
             await Promise.all([s2, s3]);
             testLogger.info("all listeners set up");
@@ -223,12 +226,16 @@ describe("Message Replication", () => {
 
         it("replicates new channels added after replication starts", async () => {
             testLogger.info("═══════════════════════════════════════════════════════════════════");
-            testLogger.info("🧪 TEST START: Cross-Server Replication - replicate new channels added after replication starts");
+            testLogger.info(
+                "🧪 TEST START: Cross-Server Replication - replicate new channels added after replication starts",
+            );
             testLogger.info("═══════════════════════════════════════════════════════════════════");
 
             const dynamicChannelName = "dynamic-chan";
 
-            testLogger.info(`🔧 Creating new channel '${dynamicChannelName}' on dred1 after replication started`);
+            testLogger.info(
+                `🔧 Creating new channel '${dynamicChannelName}' on dred1 after replication started`,
+            );
 
             // Create a new channel on dred1 (first server) after replication has already started
             await c1.createChannel(dynamicChannelName);
@@ -238,13 +245,13 @@ describe("Message Replication", () => {
 
             // Verify the channel exists on all servers
             testLogger.info("Verifying channel exists on all servers");
-            const dred1Channels = await dred1.channelList.keys() as string[];
-            const dred2Channels = await dred2.channelList.keys() as string[];
-            const dred3Channels = await dred3.channelList.keys() as string[];
+            const dred1Channels = (await dred1.channelList.keys()) as string[];
+            const dred2Channels = (await dred2.channelList.keys()) as string[];
+            const dred3Channels = (await dred3.channelList.keys()) as string[];
 
-            testLogger.info(`dred1 channels: ${dred1Channels.join(', ')}`);
-            testLogger.info(`dred2 channels: ${dred2Channels.join(', ')}`);
-            testLogger.info(`dred3 channels: ${dred3Channels.join(', ')}`);
+            testLogger.info(`dred1 channels: ${dred1Channels.join(", ")}`);
+            testLogger.info(`dred2 channels: ${dred2Channels.join(", ")}`);
+            testLogger.info(`dred3 channels: ${dred3Channels.join(", ")}`);
 
             expect(dred1Channels).toContain(dynamicChannelName);
             expect(dred2Channels).toContain(dynamicChannelName);
@@ -253,7 +260,7 @@ describe("Message Replication", () => {
             // Now test message replication in the dynamically created channel
             const testMessage: TestMessage = {
                 msg: "Message in dynamic channel",
-                type: "dynamic-test"
+                type: "dynamic-test",
             };
 
             let c2DynamicReceived = 0;
@@ -265,18 +272,22 @@ describe("Message Replication", () => {
             await Promise.all([
                 c2.subscribeToChannels({
                     [dynamicChannelName]: (message) => {
-                        testLogger.progress(`📥 c2 received in ${dynamicChannelName}: ${message.msg}`);
+                        testLogger.progress(
+                            `📥 c2 received in ${dynamicChannelName}: ${message.msg}`,
+                        );
                         expect(message).toMatchObject(testMessage);
                         c2DynamicReceived++;
-                    }
+                    },
                 }),
                 c3.subscribeToChannels({
                     [dynamicChannelName]: (message) => {
-                        testLogger.progress(`📥 c3 received in ${dynamicChannelName}: ${message.msg}`);
+                        testLogger.progress(
+                            `📥 c3 received in ${dynamicChannelName}: ${message.msg}`,
+                        );
                         expect(message).toMatchObject(testMessage);
                         c3DynamicReceived++;
-                    }
-                })
+                    },
+                }),
             ]);
 
             testLogger.info(`Posting message to ${dynamicChannelName}`);
@@ -293,7 +304,9 @@ describe("Message Replication", () => {
 
         it("delivers historical messages when a new server connects to an existing channel", async () => {
             testLogger.info("═══════════════════════════════════════════════════════════════════");
-            testLogger.info("🧪 TEST START: Cross-Server Replication - deliver historical messages on new connection");
+            testLogger.info(
+                "🧪 TEST START: Cross-Server Replication - deliver historical messages on new connection",
+            );
             testLogger.info("═══════════════════════════════════════════════════════════════════");
 
             const historyChannelName = "history-test";
@@ -308,11 +321,11 @@ describe("Message Replication", () => {
 
             const message1: TestMessage = {
                 msg: "Historical message 1",
-                type: "history-test"
+                type: "history-test",
             };
             const message2: TestMessage = {
                 msg: "Historical message 2",
-                type: "history-test"
+                type: "history-test",
             };
 
             // Subscribe c2 to the channel
@@ -321,7 +334,7 @@ describe("Message Replication", () => {
                 [historyChannelName]: (message) => {
                     c2Messages.push(message.msg);
                     testLogger.progress(`📥 c2 received: ${message.msg}`);
-                }
+                },
             });
 
             // Post messages from c1
@@ -341,7 +354,7 @@ describe("Message Replication", () => {
                 [historyChannelName]: (message) => {
                     c3Messages.push(message.msg);
                     testLogger.progress(`📥 c3 received historical: ${message.msg}`);
-                }
+                },
             });
 
             // Wait a bit for historical messages to be delivered
@@ -356,7 +369,7 @@ describe("Message Replication", () => {
             // Step 4: Send a new message to verify real-time delivery still works
             const message3: TestMessage = {
                 msg: "New message after c3 joined",
-                type: "history-test"
+                type: "history-test",
             };
 
             const c2NewMessages: string[] = [];
@@ -368,7 +381,7 @@ describe("Message Replication", () => {
                         c2NewMessages.push(message.msg);
                         testLogger.progress(`📥 c2 received new: ${message.msg}`);
                     }
-                }
+                },
             });
 
             await c3.subscribeToChannels({
@@ -377,7 +390,7 @@ describe("Message Replication", () => {
                         c3NewMessages.push(message.msg);
                         testLogger.progress(`📥 c3 received new: ${message.msg}`);
                     }
-                }
+                },
             });
 
             await c1.postMessage(historyChannelName, message3);
@@ -388,6 +401,5 @@ describe("Message Replication", () => {
 
             testLogger.progress(`✅ Historical message delivery successful!`);
         });
-
     });
 });
