@@ -98,7 +98,7 @@ export class DredCapo extends StellarTokenomicsCapo<DredCapo, DredCapoFeatures> 
         };
     }
 
-    async scriptBundleClass() {
+    async scriptBundleClass() : Promise<typeof CapoHeliosBundle> {
         const t = await import("./DredCapo.hlb.js");
         return t.DredCapoBundle
     }

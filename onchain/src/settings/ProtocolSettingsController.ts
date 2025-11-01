@@ -1,4 +1,5 @@
 import {
+    DelegatedDataBundle,
     DelegatedDataContract,
     hasReqts,
     // use this if you need an off-chain class and not just well-typed data
@@ -26,7 +27,7 @@ export class ProtocolSettingsController extends DelegatedDataContract<
     ProtocolSettingsLike
 > {
     dataBridgeClass = ProtocolSettingsDataBridge;
-    async scriptBundleClass() {
+    async scriptBundleClass() : Promise<typeof DelegatedDataBundle> {
         const module = await import("./ProtocolSettings.hlb.js")
         return module.default
     }

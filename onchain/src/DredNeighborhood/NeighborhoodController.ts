@@ -13,6 +13,7 @@ import type {
     hasSettingsRef,
     minimalData,
     DgDataUpdateOptions,
+    DelegatedDataBundle,
 } from "@donecollectively/stellar-contracts";
 
 import type { DredCapo } from "../DredCapo.js";
@@ -39,7 +40,7 @@ export class NeighborhoodController extends DelegatedDataContract<
 > {
     dataBridgeClass = NeighborhoodPolicyDataBridge;
 
-    async scriptBundleClass() {
+    async scriptBundleClass() : Promise<typeof DelegatedDataBundle> {
         const module = await import("./NeighborhoodRegistry.hlb.js")
         return module.default
     }

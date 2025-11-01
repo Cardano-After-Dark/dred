@@ -42,9 +42,9 @@ export class NodeRegistryController extends DelegatedDataContract<
 > {
     dataBridgeClass = DredNodeRegistryPolicyDataBridge;
 
-    async scriptBundleClass() {
+    async scriptBundleClass(): Promise<typeof DelegatedDataBundle> {
         const module = await import("./NodeRegistry.hlb.js");
-        return module.default
+        return module.default;
     }
     idPrefix = "dredNode" as const;
 
