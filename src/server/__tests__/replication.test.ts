@@ -171,7 +171,7 @@ describe("Message Replication", () => {
 
     describe("Cross-Server Replication", () => {
 
-        it("should replicate messages between all three servers", async () => {
+        it("replicates messages between all three servers", async () => {
             testLogger.info("═══════════════════════════════════════════════════════════════════");
             testLogger.info("🧪 TEST START: Cross-Server Replication - replicate messages between all three servers");
             testLogger.info("═══════════════════════════════════════════════════════════════════");
@@ -221,7 +221,7 @@ describe("Message Replication", () => {
             testLogger.progress(`🎉  success`);
         });
 
-        it("should replicate new channels added after replication starts", async () => {
+        it("replicates new channels added after replication starts", async () => {
             testLogger.info("═══════════════════════════════════════════════════════════════════");
             testLogger.info("🧪 TEST START: Cross-Server Replication - replicate new channels added after replication starts");
             testLogger.info("═══════════════════════════════════════════════════════════════════");
@@ -291,7 +291,7 @@ describe("Message Replication", () => {
             testLogger.progress(`✅ Dynamic channel replication successful!`);
         });
 
-        it("should deliver historical messages when a new server connects to an existing channel", async () => {
+        it("delivers historical messages when a new server connects to an existing channel", async () => {
             testLogger.info("═══════════════════════════════════════════════════════════════════");
             testLogger.info("🧪 TEST START: Cross-Server Replication - deliver historical messages on new connection");
             testLogger.info("═══════════════════════════════════════════════════════════════════");

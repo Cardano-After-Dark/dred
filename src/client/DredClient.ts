@@ -112,6 +112,7 @@ export type eventHasChannels = DredEvent & {
 export type eventChannelInfo = DredEvent & {
     nbh: NbhId;
     channel: ChanId;
+    options: ChannelOptions;
 };
 
 /**
@@ -480,9 +481,34 @@ export class DredClient extends StateMachine.withDefinition(clientStates, "clien
     }
 
     @autobind
-    processChannelsMsg(m: DredChannelMessage) {
-        this.bookmarkStorage.setBookmark(nbhChannelListChannel, m.mid)
-        //!!! todo: it notifies client listeners about created or removed channels
+    processChannelsMsg(m: FullDredMessage) {
+        this.bookmarkStorage.setBookmark(nbhChannelListChannel, m.mid);
+
+        if (m.type === "chanCreated") {
+            const { options } = JSON.parse(m.msg);
+            if (!options) {
+                this.warn("ignoring faulty channel creation message without 'options' field", m);
+                return;
+            }
+            this.events.emit("channel:created", {
+                message: "channel created",
+                [devMessage]: "a new channel has been created/discovered",
+                nbh: this.neighborhood,   
+                channel: m.channel,
+                options,
+            });
+        }
+
+        //!!! todo: it notifies client listeners about removed channels
+        // if (m.type === "removed") {
+        //     this.events.emit("channel:removed", {
+        //         channel: m.channel,
+        //         message: "channel removed",
+        //         [devMessage]: "a channel has been removed",
+        //         nbh: this.neighborhood,
+        //     });
+        // }
+
         //!!! todo: it emits the generic state-updated event with updated channel list
     }
 

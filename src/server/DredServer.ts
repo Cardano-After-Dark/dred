@@ -343,7 +343,6 @@ export class DredServer {
     }
 
     async doChannelSetup(channel: ChanId, options: Partial<ChannelOptions> = {}) {
-        // debugger
         const chan = await this.channelList.has(channel);
         if (!chan) {
             await this.channelList.set(channel, "1");
