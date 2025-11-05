@@ -2425,8 +2425,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "DredChannelMessage",
-                  "canonicalReference": "@cardano-after-dark/dred-client!DredChannelMessage:type"
+                  "text": "FullDredMessage",
+                  "canonicalReference": "@cardano-after-dark/dred-client!FullDredMessage:type"
                 },
                 {
                   "kind": "Content",
@@ -3695,6 +3695,15 @@
             },
             {
               "kind": "Content",
+              "text": ";\n    options: "
+            },
+            {
+              "kind": "Reference",
+              "text": "ChannelOptions",
+              "canonicalReference": "@cardano-after-dark/dred-client!~ChannelOptions:type"
+            },
+            {
+              "kind": "Content",
               "text": ";\n}"
             },
             {
@@ -3707,7 +3716,7 @@
           "name": "eventChannelInfo",
           "typeTokenRange": {
             "startIndex": 1,
-            "endIndex": 7
+            "endIndex": 9
           }
         },
         {

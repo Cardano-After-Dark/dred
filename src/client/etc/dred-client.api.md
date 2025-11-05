@@ -204,7 +204,7 @@ export class DredClient extends DredClient_base {
     // (undocumented)
     processAuthMsg(m: DredChannelMessage): void;
     // (undocumented)
-    processChannelsMsg(m: DredChannelMessage): void;
+    processChannelsMsg(m: FullDredMessage): void;
     // (undocumented)
     progress(a1: string, ...args: any[]): void;
     // (undocumented)
@@ -302,6 +302,7 @@ export type EncryptedDredMessage = DredMessage & {
 export type eventChannelInfo = DredEvent & {
     nbh: NbhId;
     channel: ChanId;
+    options: ChannelOptions;
 };
 
 // @public (undocumented)

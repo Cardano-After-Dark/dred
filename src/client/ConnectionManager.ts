@@ -527,7 +527,6 @@ export class ConnectionManager extends StateMachine.withDefinition(
                 `missing channelSubs; should already have a reasonable default value`,
             );
 
-        debugger
         //! it gathers a list of channels and subscription settings to use for this connection
         const subscriptions: SubscriptionList = [];
         for (const sub of Object.values(this.channelListeners.subs)) {

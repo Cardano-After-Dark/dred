@@ -37,7 +37,7 @@ import { DredServer } from "./DredServer.js";
 import { EventEmitter } from "eventemitter3";
 import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 
-import type { FullDredMessage } from "../client/DredClient.js";
+import type { eventChannelInfo, FullDredMessage } from "../client/DredClient.js";
 import type { DredHostDetails } from "../types/DredHosts.js";
 import type { ConnectionManagerOptions } from "../types/PeerDiscovery.js";
 import type { Logger } from "../types/Logger.js";
@@ -132,6 +132,7 @@ export class DredReplicator {
                     replicant.eventEmitter.once("replicator:connected", resolve);
                 }),
             );
+
             try {
                 // Start connection loop in background
                 replicant.startConnectionLoop();
@@ -355,6 +356,10 @@ export class Replicant {
      * Attempt to establish connection and set up replication (async, non-blocking)
      */
     private async attemptConnection(): Promise<void> {
+        // todo: audit the downstream code to see how it may already do retry behavior
+        // without the need for this layer to fuss with it.  Refactor this code to just make the client
+        // and initialize it simply.  Maybe listen to some events it emits if we need to react
+        // to something it does.
         try {
             this.retryState.lastAttemptTime = new Date();
 
@@ -364,6 +369,7 @@ export class Replicant {
                 // Error message already logged in checkServerAvailability with semantic format
                 throw new Error(`Target server ${this.targetHost.serverId} is not available`);
             }
+
             const focusedDiscovery = new StaticHostDiscovery({
                 hosts: [this.targetHost],
                 neighborhood: this.homeServer.nbh,
@@ -381,6 +387,12 @@ export class Replicant {
                     this.homeServer.redis!,
                 ),
             });
+
+            this.repClient!.events.on("channel:created", this.channelWasAdded, this);
+            // !!! todo: add channel:removed handling
+            // this.repClient.events.on("channel:removed", (event) => {
+            //     this.log(`🎯 Channel removed: ${event.channel}`);
+            // });
 
             // Set max listeners to prevent memory leak warnings on various components
             if (this.repClient) {
@@ -431,6 +443,7 @@ export class Replicant {
             // Clean up failed client
             if (this.repClient) {
                 try {
+                    this.repClient.events.removeAllListeners();
                     this.repClient.disconnect();
                 } catch (cleanupError) {
                     // Ignore cleanup errors
@@ -543,9 +556,11 @@ export class Replicant {
         this.retryState.nextRetryTime = undefined;
     }
 
-    private async findCommonChannels(): Promise<string[]> {
+    private async findCommonChannels(
+        forceFreshen: "forceFreshen" | false = false,
+    ): Promise<string[]> {
         // Trigger channel discovery if not already done
-        if (!this.repClient!.channels || this.repClient!.channels.length === 0) {
+        if (forceFreshen || !this.repClient!.channels || this.repClient!.channels.length === 0) {
             this.debug(`finding remote channels`);
             this.repClient!.channels = await this.repClient!.connManager.getChannelList();
         }
@@ -559,10 +574,15 @@ export class Replicant {
         this.trace(`my channels: ${homeChannels.join(", ")}`);
 
         // Find intersection (channels that exist on both servers)
+        // Skip ALL meta channels (those starting with _)
         const commonChannels = targetChannels.filter(
-            (channel) => homeChannels.includes(channel) && !channel.startsWith("_"), // Skip meta channels for now
+            (channel) => homeChannels.includes(channel) && !channel.startsWith("_"),
         );
-        
+
+        // Note: We do NOT add _chans here. It will be subscribed to separately
+        // because DredClient automatically subscribes to _chans with its own handler.
+        // We'll override that handler in subscribeToCommonChannels().
+
         this.trace(`common channels: ${commonChannels.join(", ")}`);
         this.progress(`${commonChannels.length} common channels`);
 
@@ -579,13 +599,14 @@ export class Replicant {
           - Waiting for connection...
           - After wait - RepClient: ${this.repClient!.currentState}, ConnManager: ${this.repClient!.connManager.currentState}`);
 
+        this.log(`🎯 Subscribing to ${channels.length} channels`);
         await this.repClient!.subscribeToChannels({
             type: "mass",
             channels,
             massHandler: this.messageHandler.bind(this),
         });
 
-        this.progress(`subscribed to ${channels.length} channels`);
+        this.progress(`subscribed to ${channels.length} channels + _chans meta channel`);
     }
 
     /**
@@ -632,12 +653,7 @@ export class Replicant {
                 return;
             }
 
-            const {
-                msg,
-                type,
-                "content-type": contentType,
-                encryptedMsg,
-            } = inboundMessage
+            const { msg, type, "content-type": contentType, encryptedMsg } = inboundMessage;
 
             const replicatedMessage: DredMessage & ReplicatedMessage = {
                 // type: message.type || "replicated",'
@@ -688,11 +704,15 @@ export class Replicant {
         return true;
     }
 
-    private async addMessage(channelId: string, mid: string, messageDetails: DredMessage & ReplicatedMessage): Promise<void> {
+    private async addMessage(
+        channelId: string,
+        mid: string,
+        messageDetails: DredMessage & ReplicatedMessage,
+    ): Promise<void> {
         try {
+            const { ocid } = messageDetails;
             // this.warn(`📤 REPLICATION: Publishing to home server '${this.homeServer.serverId}' in channel '${channelId}' (ocid: ${messageDetails.ocid})`);
 
-            const { ocid } = messageDetails
             // Use the DredServer's deduplication system to prevent duplicate messages
             const result = await this.homeServer.ensureMessageProcessedOnce(
                 channelId,
@@ -710,6 +730,72 @@ export class Replicant {
         } catch (error) {
             this.logger.error(`while adding to channel ${channelId}: ${error}`);
             throw error;
+        }
+    }
+
+    /**
+     * Handle channel events from _chans meta channel
+     */
+    private channelWasAdded(message: eventChannelInfo): void {
+        try {
+            const {
+                nbh,
+                options,
+                options: { channelId },
+            } = message;
+
+            this.progress(`📢 Channel creation detected: %s`, channelId);
+
+            // Skip meta channels (they start with _)
+            if (channelId.startsWith("_")) {
+                this.debug(`Skipping meta channel: %s`, channelId);
+                return;
+            }
+            if (this.repClient!.channels.includes(channelId)) {
+                this.trace(`ignoring channel (already known): %s`, channelId);
+                return;
+            }
+
+            // Handle asynchronously but don't await to avoid blocking
+            this.replicateNewChannel(channelId, options).catch((error) => {
+                this.warn(`Error handling channel addition: ${error}`);
+            });
+        } catch (error) {
+            //eslint-disable-next-line no-debugger
+            debugger; 
+            this.warn(`Error handling channel event: ${error}`);
+        }
+    }
+
+    /**
+     * Handle a new channel being added on the target server
+     */
+    private async replicateNewChannel(channelName: string, options: any): Promise<void> {
+        try {
+            // Check if home server already has this channel
+            const hasChannel = await this.homeServer.channelList.has(channelName);
+
+            if (hasChannel) {
+                this.debug(`Channel %s already exists on home server`, channelName);
+                return;
+            }
+
+            this.log(`🆕 Creating channel %s on home server`, channelName);
+
+            // Create channel on home server using the same options
+            await this.homeServer.channelList.set(channelName, "1");
+            await this.homeServer.setChanOptions(channelName, options);
+
+            const commonChannels = await this.findCommonChannels("forceFreshen");
+            await this.subscribeToCommonChannels(commonChannels);
+
+            this.log(`✅ Channel created; will replicate: %s`, channelName);
+        } catch (error: any) {
+            this.logger.error(
+                `Failed handling new channel '%s': %s`,
+                channelName,
+                (error as Error).message,
+            );
         }
     }
 
@@ -732,6 +818,7 @@ export class Replicant {
         this.retryState.nextRetryTime = undefined;
 
         if (this.repClient) {
+            this.repClient.events.removeAllListeners();
             this.repClient.disconnect();
 
             // Doesn't try to clear subscriptions - DredClient subscription setter is incomplete
