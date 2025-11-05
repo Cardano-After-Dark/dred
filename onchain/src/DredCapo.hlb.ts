@@ -13,6 +13,7 @@ import NeighborhoodSettings from "./DredNeighborhood/NeighborhoodSettings.hl";
 // ...  as it can cause unintended side effects (see more below)
 
 export class DredCapoBundle extends CapoHeliosBundle {
+    static currentRev = 1n;
     preConfigured = capoConfigurationDetails;
 
     get modules() {

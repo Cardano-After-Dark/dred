@@ -67,8 +67,8 @@
         "singleQuote": false
     },
     "peerFromWorkspace": {
-        "@donecollectively/stellar-contracts": "^0.9.3-beta.5",
-        "stellar-tokenomics": "^0.8.0-beta.5"
+        "@donecollectively/stellar-contracts": "^0.9.3-beta.8",
+        "stellar-tokenomics": "^0.8.0-beta.8"
     },
     "peerDependencies": {
         "@helios-lang/cbor": "^0.3.1",
