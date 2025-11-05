@@ -69,7 +69,7 @@ import type {
     AppInfoV1, ErgoAppInfoV1, AppInfoV1Like,
     NodeOpsInfoV1, ErgoNodeOpsInfoV1, NodeOpsInfoV1Like,
     UpdateInfoV1, ErgoUpdateInfoV1, UpdateInfoV1Like,
-    NbhDetails$NbhDetailsV1, NbhDetails$Ergo$NbhDetailsV1, NbhDetails$NbhDetailsV1Like,
+    NbhDetails$V1, NbhDetails$Ergo$V1, NbhDetails$V1Like,
     NbhDetails, ErgoNbhDetails, NbhDetailsLike,
     NeighborhoodData, ErgoNeighborhoodData, NeighborhoodDataLike,
     DelegateDatum$capoStoredData, DelegateDatum$Ergo$capoStoredData, DelegateDatum$capoStoredDataLike,
@@ -1564,10 +1564,10 @@ export class NbhDetailsHelper extends EnumBridge<JustAnEnum> {
     );
 
     /**
-     * generates  UplcData for ***"NeighborhoodData::NbhDetails.NbhDetailsV1"***
-     * @remarks - ***NbhDetails$NbhDetailsV1Like*** is the same as the expanded field-types.
+     * generates  UplcData for ***"NeighborhoodData::NbhDetails.V1"***
+     * @remarks - ***NbhDetails$V1Like*** is the same as the expanded field-types.
      */
-    NbhDetailsV1(fields: NbhDetails$NbhDetailsV1Like | { 
+    V1(fields: NbhDetails$V1Like | { 
         state: NeighborhoodStateLike,
         appInfo: AppInfoV1Like,
         opsInfo: NodeOpsInfoV1Like,
@@ -1579,8 +1579,8 @@ export class NbhDetailsHelper extends EnumBridge<JustAnEnum> {
  | undefined
     }) : UplcData {
         const uplc = this.mkUplcData({
-            NbhDetailsV1: fields 
-        }, "NeighborhoodData::NbhDetails.NbhDetailsV1");
+            V1: fields 
+        }, "NeighborhoodData::NbhDetails.V1");
        return uplc;
     } /*multiFieldVariant enum accessor*/
 }/*mkEnumHelperClass*/
@@ -4738,8 +4738,8 @@ export const NbhDetailsSchema : EnumTypeSchema = {
         {
             "kind": "variant",
             "tag": 4100,
-            "id": "__module__NeighborhoodData__NbhDetails[]__NbhDetailsV1",
-            "name": "NbhDetailsV1",
+            "id": "__module__NeighborhoodData__NbhDetails[]__V1",
+            "name": "V1",
             "fieldTypes": [
                 {
                     "name": "state",
@@ -5094,8 +5094,8 @@ export const NeighborhoodDataSchema : StructTypeSchema = {
                     {
                         "kind": "variant",
                         "tag": 4100,
-                        "id": "__module__NeighborhoodData__NbhDetails[]__NbhDetailsV1",
-                        "name": "NbhDetailsV1",
+                        "id": "__module__NeighborhoodData__NbhDetails[]__V1",
+                        "name": "V1",
                         "fieldTypes": [
                             {
                                 "name": "state",
@@ -5556,8 +5556,8 @@ export const DelegateDatumSchema : EnumTypeSchema = {
                                         {
                                             "kind": "variant",
                                             "tag": 4100,
-                                            "id": "__module__NeighborhoodData__NbhDetails[]__NbhDetailsV1",
-                                            "name": "NbhDetailsV1",
+                                            "id": "__module__NeighborhoodData__NbhDetails[]__V1",
+                                            "name": "V1",
                                             "fieldTypes": [
                                                 {
                                                     "name": "state",

@@ -75,14 +75,14 @@ enum NeighborhoodState {
 }
 
 enum NbhDetails {
-    4100: NbhDetailsV1 {
+    4100: V1 {
         state: NeighborhoodState
         appInfo: AppInfoV1
         opsInfo: NodeOpsInfoV1
         updateInfo: Option[UpdateInfoV1]
     }
     // future room for growth:
-    // 4101: NbhDetailsV2 {
+    // 4101: V2 {
     // }
 
     func validate(self) -> Bool {
@@ -105,9 +105,9 @@ struct NeighborhoodData {
         true
     }
 
-    func detailsV1(self) -> NbhDetails::NbhDetailsV1 {
+    func detailsV1(self) -> NbhDetails::V1 {
         self.details.switch {
-            x: NbhDetailsV1 => x
+            x: V1 => x
         }
     }
 

@@ -10,6 +10,8 @@ import type { Source } from "@helios-lang/compiler-utils";
 
 export class NeighborhoodRegistryBundle 
 extends DelegatedDataBundle.usingCapoBundleClass(DredCapo) {
+    static currentRev = 1n;
+
     specializedDelegateModule = NeighborhoodPolicy;
     requiresGovAuthority = false;
 

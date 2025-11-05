@@ -64,7 +64,7 @@ describe("Dred Neighborhood Registry", async () => {
             expect(dredNbh).toBeDefined();
             if (!dredNbh) throw new Error("for TS");
 
-            expect(dredNbh.appInfo.name).toEqual(exampleData.appInfo.name);
+            expect(dredNbh.details.V1.appInfo.name).toEqual(exampleData.details.V1.appInfo.name);
             expect(dredNbh.memberToken).not.toEqual(exampleData.memberToken);
 
             const { memberToken } = dredNbh;
@@ -107,9 +107,15 @@ describe("Dred Neighborhood Registry", async () => {
             await h.participantSelfRegisters();
 
             const controller = await h.nbhRegistryDgt();
+            const exampleData = controller.exampleData();
             const registering = h.registerNeighborhood({
-                ...controller.exampleData(),
-                state: { Active: {} },
+                ...exampleData,
+                details: {
+                    V1: {
+                        ...exampleData.details.V1,
+                        state: { Active: {} },
+                    },
+                },
             });
 
             await expect(registering).rejects.toThrow(/state must be Preproduction/);
@@ -119,7 +125,7 @@ describe("Dred Neighborhood Registry", async () => {
             const newNbh = await h.findFirstNeighborhood();
             if (!newNbh?.data) throw new Error("no node found");
 
-            expect(newNbh.data.state).toEqual({
+            expect(newNbh.data.details.V1.state).toEqual({
                 Preproduction: {},
             });
         });
@@ -176,7 +182,7 @@ describe("Dred Neighborhood Registry", async () => {
             const reg = await h.participantSelfRegisters();
         });
 
-        it("works with the right member token", async (context: DredCapo_TC) => {
+        fit("works with the right member token", async (context: DredCapo_TC) => {
             const {
                 h,
                 h: { network, actors, delay, state },

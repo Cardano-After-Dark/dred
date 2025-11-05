@@ -667,14 +667,14 @@ export interface UpdateInfoV1Like {
 
 
 /**
- * A strong type for the canonical form of NbhDetails$NbhDetailsV1
+ * A strong type for the canonical form of NbhDetails$V1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see NbhDetails$Ergo$NbhDetailsV1 instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see NbhDetails$Ergo$V1 instead.
  * @public
  */
-export interface NbhDetails$NbhDetailsV1 {
+export interface NbhDetails$V1 {
     state: NeighborhoodState  /*minVariantField*/ ,
     appInfo: AppInfoV1  /*minVariantField*/ ,
     opsInfo: NodeOpsInfoV1  /*minVariantField*/ ,
@@ -683,15 +683,15 @@ export interface NbhDetails$NbhDetailsV1 {
 
 
 /**
- * An ergonomic, though less strictly-safe form of NbhDetails$NbhDetailsV1
+ * An ergonomic, though less strictly-safe form of NbhDetails$V1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NbhDetails$NbhDetailsV1Like type,
+ * conversion to on-chain use.  For creating such data, use the NbhDetails$V1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-export type NbhDetails$Ergo$NbhDetailsV1 = {
+export type NbhDetails$Ergo$V1 = {
     state: ErgoNeighborhoodState  /*minVariantField*/ ,
     appInfo: ErgoAppInfoV1  /*minVariantField*/ ,
     opsInfo: ErgoNodeOpsInfoV1  /*minVariantField*/ ,
@@ -700,12 +700,12 @@ export type NbhDetails$Ergo$NbhDetailsV1 = {
 
 
 /**
- * A strong type for the permissive form of NbhDetails$NbhDetailsV1
+ * A strong type for the permissive form of NbhDetails$V1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-export interface NbhDetails$NbhDetailsV1Like {
+export interface NbhDetails$V1Like {
     state: NeighborhoodStateLike  /*minVariantField*/ ,
     appInfo: AppInfoV1Like  /*minVariantField*/ ,
     opsInfo: NodeOpsInfoV1Like  /*minVariantField*/ ,
@@ -720,9 +720,9 @@ export interface NbhDetails$NbhDetailsV1Like {
             */
             export type NbhDetailsMeta = EnumTypeMeta<
     {module: "NeighborhoodData", enumName: "NbhDetails"}, {
-        NbhDetailsV1: singleEnumVariantMeta<NbhDetailsMeta, "NbhDetailsV1",
+        V1: singleEnumVariantMeta<NbhDetailsMeta, "V1",
             "Constr#4100", 
-            "fields", NbhDetails$NbhDetailsV1, "noSpecialFlags"
+            "fields", NbhDetails$V1, "noSpecialFlags"
         >
     }
 >;
@@ -739,7 +739,7 @@ export interface NbhDetails$NbhDetailsV1Like {
  * @public
  */
 export type NbhDetails = 
-        | { NbhDetailsV1: NbhDetails$NbhDetailsV1 /*minEnumVariant*/ }
+        | { V1: NbhDetails$V1 /*minEnumVariant*/ }
 
 /**
  * ergonomic type enabling easy access to values converted from the on-chain form
@@ -749,7 +749,7 @@ export type NbhDetails =
  * @public
  */
 export type ErgoNbhDetails = IntersectedEnum<
-        | { NbhDetailsV1: NbhDetails$Ergo$NbhDetailsV1 /*minEnumVariant*/ }
+        | { V1: NbhDetails$Ergo$V1 /*minEnumVariant*/ }
 >
 
 /**
@@ -767,7 +767,7 @@ export type ErgoNbhDetails = IntersectedEnum<
  * @public
  */
 export type NbhDetailsLike = IntersectedEnum<
-        | { NbhDetailsV1: NbhDetails$NbhDetailsV1Like /*minEnumVariant*/ }
+        | { V1: NbhDetails$V1Like /*minEnumVariant*/ }
 >
 
 /**

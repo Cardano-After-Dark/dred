@@ -370,8 +370,11 @@ enum DelegateActivity {
                     tx.inputs.find_safe((i: TxInput) -> Bool {
                         i.value.get_safe(memberTokenAc) == 1
                     }).switch {
-                        None => error("missing member token " + memberTokenAc.show()),
-                        Some => true
+                        None => error("missing member token: " + memberToken),
+                        Some => {
+                            print("  -- member token found: "+ memberToken);
+                            true
+                        }
                     } &&
                     reg.validate() &&
                     mintingOk
