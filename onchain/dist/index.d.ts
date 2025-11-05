@@ -19279,7 +19279,7 @@ declare type ErgoMintingActivity_5 = IntersectedEnum<MintingActivity_5/*like can
  * @public
  */
 declare type ErgoNbhDetails = IntersectedEnum<
-| { NbhDetailsV1: NbhDetails$Ergo$NbhDetailsV1 /*minEnumVariant*/ }
+| { V1: NbhDetails$Ergo$V1 /*minEnumVariant*/ }
 >
 
 /**
@@ -19290,7 +19290,7 @@ declare type ErgoNbhDetails = IntersectedEnum<
  * @public
  */
 declare type ErgoNbhDetails_2 = IntersectedEnum<
-| { NbhDetailsV1: NbhDetails$Ergo$NbhDetailsV1_2 /*minEnumVariant*/ }
+| { V1: NbhDetails$Ergo$V1_2 /*minEnumVariant*/ }
 >
 
 /**
@@ -26751,15 +26751,15 @@ declare class MyMintSpendDelegateDataBridgeReader_2 extends DataBridgeReaderClas
 }
 
 /**
- * An ergonomic, though less strictly-safe form of NbhDetails$NbhDetailsV1
+ * An ergonomic, though less strictly-safe form of NbhDetails$V1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NbhDetails$NbhDetailsV1Like type,
+ * conversion to on-chain use.  For creating such data, use the NbhDetails$V1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type NbhDetails$Ergo$NbhDetailsV1 = {
+declare type NbhDetails$Ergo$V1 = {
     state: ErgoNeighborhoodState  /*minVariantField*/ ,
     appInfo: ErgoAppInfoV1  /*minVariantField*/ ,
     opsInfo: ErgoNodeOpsInfoV1  /*minVariantField*/ ,
@@ -26767,15 +26767,15 @@ declare type NbhDetails$Ergo$NbhDetailsV1 = {
 }
 
 /**
- * An ergonomic, though less strictly-safe form of NbhDetails$NbhDetailsV1
+ * An ergonomic, though less strictly-safe form of NbhDetails$V1
  * @remarks
  * This type can use enums expressed as merged unions of the enum variants.  You might think of this type
  * as being "read-only", in that it's possible to create data with this type that would not be suitable for
- * conversion to on-chain use.  For creating such data, use the NbhDetails$NbhDetailsV1Like type,
+ * conversion to on-chain use.  For creating such data, use the NbhDetails$V1Like type,
  * or the on-chain data-building helpers instead.
  * @public
  */
-declare type NbhDetails$Ergo$NbhDetailsV1_2 = {
+declare type NbhDetails$Ergo$V1_2 = {
     state: ErgoNeighborhoodState_2  /*minVariantField*/ ,
     appInfo: ErgoAppInfoV1_2  /*minVariantField*/ ,
     opsInfo: ErgoNodeOpsInfoV1_2  /*minVariantField*/ ,
@@ -26783,14 +26783,14 @@ declare type NbhDetails$Ergo$NbhDetailsV1_2 = {
 }
 
 /**
- * A strong type for the canonical form of NbhDetails$NbhDetailsV1
+ * A strong type for the canonical form of NbhDetails$V1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see NbhDetails$Ergo$NbhDetailsV1 instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see NbhDetails$Ergo$V1 instead.
  * @public
  */
-declare interface NbhDetails$NbhDetailsV1 {
+declare interface NbhDetails$V1 {
     state: NeighborhoodState  /*minVariantField*/ ,
     appInfo: AppInfoV1  /*minVariantField*/ ,
     opsInfo: NodeOpsInfoV1  /*minVariantField*/ ,
@@ -26798,14 +26798,14 @@ declare interface NbhDetails$NbhDetailsV1 {
 }
 
 /**
- * A strong type for the canonical form of NbhDetails$NbhDetailsV1
+ * A strong type for the canonical form of NbhDetails$V1
  * @remarks
  * Note that any enum fields in this type are expressed as a disjoint union of the enum variants.  Processing
  * enum data conforming to this type can be a bit of a pain.
- * For a more ergonomic, though less strictly-safe form of this type, see NbhDetails$Ergo$NbhDetailsV1 instead.
+ * For a more ergonomic, though less strictly-safe form of this type, see NbhDetails$Ergo$V1 instead.
  * @public
  */
-declare interface NbhDetails$NbhDetailsV1_2 {
+declare interface NbhDetails$V1_2 {
     state: NeighborhoodState_2  /*minVariantField*/ ,
     appInfo: AppInfoV1_2  /*minVariantField*/ ,
     opsInfo: NodeOpsInfoV1_2  /*minVariantField*/ ,
@@ -26813,12 +26813,12 @@ declare interface NbhDetails$NbhDetailsV1_2 {
 }
 
 /**
- * A strong type for the permissive form of NbhDetails$NbhDetailsV1
+ * A strong type for the permissive form of NbhDetails$V1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface NbhDetails$NbhDetailsV1Like {
+declare interface NbhDetails$V1Like {
     state: NeighborhoodStateLike  /*minVariantField*/ ,
     appInfo: AppInfoV1Like  /*minVariantField*/ ,
     opsInfo: NodeOpsInfoV1Like  /*minVariantField*/ ,
@@ -26826,12 +26826,12 @@ declare interface NbhDetails$NbhDetailsV1Like {
 }
 
 /**
- * A strong type for the permissive form of NbhDetails$NbhDetailsV1
+ * A strong type for the permissive form of NbhDetails$V1
  * @remarks
  * The field types enable implicit conversion from various allowable input types (including the canonical form).
  * @public
  */
-declare interface NbhDetails$NbhDetailsV1Like_2 {
+declare interface NbhDetails$V1Like_2 {
     state: NeighborhoodStateLike_2  /*minVariantField*/ ,
     appInfo: AppInfoV1Like_2  /*minVariantField*/ ,
     opsInfo: NodeOpsInfoV1Like_2  /*minVariantField*/ ,
@@ -26849,7 +26849,7 @@ declare interface NbhDetails$NbhDetailsV1Like_2 {
  * @public
  */
 declare type NbhDetails = 
-| { NbhDetailsV1: NbhDetails$NbhDetailsV1 /*minEnumVariant*/ }
+| { V1: NbhDetails$V1 /*minEnumVariant*/ }
 
 /**
  * NbhDetails enum variants
@@ -26862,7 +26862,7 @@ declare type NbhDetails =
  * @public
  */
 declare type NbhDetails_2 = 
-| { NbhDetailsV1: NbhDetails$NbhDetailsV1_2 /*minEnumVariant*/ }
+| { V1: NbhDetails$V1_2 /*minEnumVariant*/ }
 
 /**
  * Helper class for generating UplcData for variants of the ***NbhDetails*** enum type.
@@ -26874,15 +26874,15 @@ declare class NbhDetailsHelper extends EnumBridge<JustAnEnum> {
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
-        NbhDetailsV1: NbhDetails$NbhDetailsV1;
+        V1: NbhDetails$V1;
     }, {
-        NbhDetailsV1: NbhDetails$NbhDetailsV1Like;
+        V1: NbhDetails$V1Like;
     }>;
     /**
-     * generates  UplcData for ***"NeighborhoodData::NbhDetails.NbhDetailsV1"***
-     * @remarks - ***NbhDetails$NbhDetailsV1Like*** is the same as the expanded field-types.
+     * generates  UplcData for ***"NeighborhoodData::NbhDetails.V1"***
+     * @remarks - ***NbhDetails$V1Like*** is the same as the expanded field-types.
      */
-    NbhDetailsV1(fields: NbhDetails$NbhDetailsV1Like | {
+    V1(fields: NbhDetails$V1Like | {
         state: NeighborhoodStateLike;
         appInfo: AppInfoV1Like;
         opsInfo: NodeOpsInfoV1Like;
@@ -26904,15 +26904,15 @@ declare class NbhDetailsHelper_2 extends EnumBridge<JustAnEnum> {
      * @internal
      *  uses unicode U+1c7a - sorts to the end */
     ᱺᱺcast: Cast<{
-        NbhDetailsV1: NbhDetails$NbhDetailsV1_2;
+        V1: NbhDetails$V1_2;
     }, {
-        NbhDetailsV1: NbhDetails$NbhDetailsV1Like_2;
+        V1: NbhDetails$V1Like_2;
     }>;
     /**
-     * generates  UplcData for ***"NeighborhoodData::NbhDetails.NbhDetailsV1"***
-     * @remarks - ***NbhDetails$NbhDetailsV1Like*** is the same as the expanded field-types.
+     * generates  UplcData for ***"NeighborhoodData::NbhDetails.V1"***
+     * @remarks - ***NbhDetails$V1Like*** is the same as the expanded field-types.
      */
-    NbhDetailsV1(fields: NbhDetails$NbhDetailsV1Like_2 | {
+    V1(fields: NbhDetails$V1Like_2 | {
         state: NeighborhoodStateLike_2;
         appInfo: AppInfoV1Like_2;
         opsInfo: NodeOpsInfoV1Like_2;
@@ -26939,7 +26939,7 @@ declare class NbhDetailsHelper_2 extends EnumBridge<JustAnEnum> {
  * @public
  */
 declare type NbhDetailsLike = IntersectedEnum<
-| { NbhDetailsV1: NbhDetails$NbhDetailsV1Like /*minEnumVariant*/ }
+| { V1: NbhDetails$V1Like /*minEnumVariant*/ }
 >
 
 /**
@@ -26957,7 +26957,7 @@ declare type NbhDetailsLike = IntersectedEnum<
  * @public
  */
 declare type NbhDetailsLike_2 = IntersectedEnum<
-| { NbhDetailsV1: NbhDetails$NbhDetailsV1Like_2 /*minEnumVariant*/ }
+| { V1: NbhDetails$V1Like_2 /*minEnumVariant*/ }
 >
 
 /**

@@ -29449,13 +29449,13 @@ class NbhDetailsHelper extends EnumBridge {
     { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
   );
   /**
-   * generates  UplcData for ***"NeighborhoodData::NbhDetails.NbhDetailsV1"***
-   * @remarks - ***NbhDetails$NbhDetailsV1Like*** is the same as the expanded field-types.
+   * generates  UplcData for ***"NeighborhoodData::NbhDetails.V1"***
+   * @remarks - ***NbhDetails$V1Like*** is the same as the expanded field-types.
    */
-  NbhDetailsV1(fields) {
+  V1(fields) {
     const uplc = this.mkUplcData({
-      NbhDetailsV1: fields
-    }, "NeighborhoodData::NbhDetails.NbhDetailsV1");
+      V1: fields
+    }, "NeighborhoodData::NbhDetails.V1");
     return uplc;
   }
   /*multiFieldVariant enum accessor*/
@@ -31801,8 +31801,8 @@ const NbhDetailsSchema = {
     {
       "kind": "variant",
       "tag": 4100,
-      "id": "__module__NeighborhoodData__NbhDetails[]__NbhDetailsV1",
-      "name": "NbhDetailsV1",
+      "id": "__module__NeighborhoodData__NbhDetails[]__V1",
+      "name": "V1",
       "fieldTypes": [
         {
           "name": "state",
@@ -32156,8 +32156,8 @@ const NeighborhoodDataSchema = {
           {
             "kind": "variant",
             "tag": 4100,
-            "id": "__module__NeighborhoodData__NbhDetails[]__NbhDetailsV1",
-            "name": "NbhDetailsV1",
+            "id": "__module__NeighborhoodData__NbhDetails[]__V1",
+            "name": "V1",
             "fieldTypes": [
               {
                 "name": "state",
@@ -32617,8 +32617,8 @@ const DelegateDatumSchema = {
                     {
                       "kind": "variant",
                       "tag": 4100,
-                      "id": "__module__NeighborhoodData__NbhDetails[]__NbhDetailsV1",
-                      "name": "NbhDetailsV1",
+                      "id": "__module__NeighborhoodData__NbhDetails[]__V1",
+                      "name": "V1",
                       "fieldTypes": [
                         {
                           "name": "state",
@@ -40350,7 +40350,7 @@ class NeighborhoodController extends DelegatedDataContract {
       // type: "dredNbh",
       memberToken: "member-owner",
       details: {
-        NbhDetailsV1: {
+        V1: {
           state: { Preproduction: {} },
           appInfo: {
             name: "Default Neighborhood",
@@ -40386,9 +40386,7 @@ class NeighborhoodController extends DelegatedDataContract {
   async mkTxnRegisteringNeighborhood(nbhReg, initialTcx) {
     await this.capo.getMintDelegate();
     const { capo } = this;
-    const tcx0 = initialTcx || this.mkTcx(
-      "registering dred neighborhood"
-    );
+    const tcx0 = initialTcx || this.mkTcx("registering dred neighborhood");
     const tcx1 = await capo.mkTxnWithMemberInfo(void 0, tcx0);
     return this.mkTxnCreateRecord(
       {
@@ -40407,9 +40405,7 @@ class NeighborhoodController extends DelegatedDataContract {
       activity = this.activity.SpendingActivities.UpdatingRecord(nbh.data.id),
       ...otherOptions
     } = options;
-    const tcx0 = initialTcx || this.mkTcx(
-      "updating dred neighborhood"
-    );
+    const tcx0 = initialTcx || this.mkTcx("updating dred neighborhood");
     const tcx1 = await this.capo.mkTxnWithMemberInfo(void 0, tcx0);
     return this.mkTxnUpdateRecord(
       txnName,
@@ -40467,6 +40463,7 @@ class DredCapo extends StellarTokenomicsCapo {
     if (!charterData) {
       charterData = await this.findCharterData();
     }
+    debugger;
     return this.getDgDataController("DredNode", {
       charterData
     });

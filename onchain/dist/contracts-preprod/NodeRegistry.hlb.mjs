@@ -19,6 +19,7 @@ const NodeRegistrationData_hl = makeSource(
 });
 
 class NodeRegistryBundle extends DelegatedDataBundle.usingCapoBundleClass(DredCapoBundle) {
+  static currentRev = 1n;
   precompiledScriptDetails = {
     singleton: {
       scriptHash: "fe62ebaa2d2dde06bf3492f43f4bef4d33da7af6f99d6293b9da9ebe",
@@ -51,6 +52,10 @@ class NodeRegistryBundle extends DelegatedDataBundle.usingCapoBundleClass(DredCa
   //         isDgDataPolicy: true,
   //     }
   // }
+  get params() {
+    debugger;
+    return super.params;
+  }
   get modules() {
     return [
       ...super.modules,

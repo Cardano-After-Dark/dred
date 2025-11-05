@@ -14,6 +14,7 @@ const ProtocolSettingsPolicy_hl = makeSource(
 class ProtocolSettingsBundle extends DelegatedDataBundle.usingCapoBundleClass(
   DredCapoBundle
 ) {
+  static currentRev = 1n;
   precompiledScriptDetails = {
     singleton: {
       scriptHash: "59f18fd53b3cbfc1988866226f1b9f8dc283405568b7bbe38b7f5822",
