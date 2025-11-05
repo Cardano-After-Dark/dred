@@ -10,6 +10,8 @@ import type { Source } from "@helios-lang/compiler-utils";
 
 export default class NodeRegistryBundle 
 extends DelegatedDataBundle.usingCapoBundleClass(DredCapoBundle) {
+    static currentRev = 1n;
+
     specializedDelegateModule = NodeRegistryPolicy;
     requiresGovAuthority = false;
 

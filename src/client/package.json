@@ -38,7 +38,7 @@
         "build:watch": "concurrently --names \"initial,client:browser,client:node.js\" -c \"bgYellow.bold,bgBlue.bold,bgMagenta.bold\" \"./scripts/build\" \"rollup --importAttributesKey \"with\"  -c rollup.browser.config.js -w\" \"rollup -c  rollup.nodejs.config.js -w\"  "
     },
     "dependencies": {
-        "@donecollectively/stellar-contracts": "github:donecollectively/stellar-contracts#semver:0.9.1-beta.10",
+        "@donecollectively/stellar-contracts": "github:donecollectively/stellar-contracts#semver:0.9.3-beta.8",
         "dred-network-registry": "../../onchain",
         "@poshplum/poshplum": "^0.8.9",
         "@poshplum/utils": "^0.8.2",

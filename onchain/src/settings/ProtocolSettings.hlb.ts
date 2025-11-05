@@ -10,6 +10,8 @@ import NeighborhoodSettings from "../DredNeighborhood/NeighborhoodSettings.hl";
 export  class ProtocolSettingsBundle extends DelegatedDataBundle.usingCapoBundleClass(
     DredCapoBundle
 ) {
+    static currentRev = 1n;
+
     specializedDelegateModule = ProtocolSettingsPolicy;
     requiresGovAuthority = true;
     

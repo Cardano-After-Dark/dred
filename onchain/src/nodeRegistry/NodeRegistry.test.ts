@@ -344,7 +344,7 @@ describe("Dred NodeRegistry", async () => {
                 });
 
                 // should fail if the pubKeyHash isn't found in one of the dredNode-* records in refInputs.
-                await expect(validating).rejects.toThrow(/refDD: not found/);
+                await expect(validating).rejects.toThrow(/delegated-data ref not found:/);
             },
         );
     });

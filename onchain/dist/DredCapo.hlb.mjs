@@ -18,6 +18,7 @@ const NeighborhoodSettings_hl = makeSource(
 });
 
 class DredCapoBundle extends CapoHeliosBundle {
+  static currentRev = 1n;
   precompiledScriptDetails = this.constructor.precompiledScriptDetails;
   static precompiledScriptDetails = {
     capo: {
