@@ -7,9 +7,11 @@ import NeighborhoodSettings from "../DredNeighborhood/NeighborhoodSettings.hl";
 
 // import FundedPurposeSettings from "./FundedPurposeSettings.hl";
 
-export default class ProtocolSettingsBundle extends DelegatedDataBundle.usingCapoBundleClass(
+export  class ProtocolSettingsBundle extends DelegatedDataBundle.usingCapoBundleClass(
     DredCapoBundle
 ) {
+    static currentRev = 1n;
+
     specializedDelegateModule = ProtocolSettingsPolicy;
     requiresGovAuthority = true;
     
@@ -23,3 +25,4 @@ export default class ProtocolSettingsBundle extends DelegatedDataBundle.usingCap
         ];
     }
 }
+export default ProtocolSettingsBundle

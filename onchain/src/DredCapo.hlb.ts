@@ -12,7 +12,8 @@ import NeighborhoodSettings from "./DredNeighborhood/NeighborhoodSettings.hl";
 // import ProtocolSettings from "./settings/ProtocolSettings.hl";
 // ...  as it can cause unintended side effects (see more below)
 
-export default class DredCapoBundle extends CapoHeliosBundle {
+export class DredCapoBundle extends CapoHeliosBundle {
+    static currentRev = 1n;
     preConfigured = capoConfigurationDetails;
 
     get modules() {
@@ -37,3 +38,5 @@ export default class DredCapoBundle extends CapoHeliosBundle {
         ];
     }
 }
+
+export default DredCapoBundle;

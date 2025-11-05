@@ -196,6 +196,10 @@ enum BurningActivity {
         id: ByteArray
     }
 }
+enum OtherActivity {
+    42: Placeholder
+} 
+
 
 enum DelegateActivity {
     // must ALWAYS be at Enum position 0
@@ -247,6 +251,11 @@ enum DelegateActivity {
         // todo: change this back when the recursive enum's `__is_valid_data not found` error is resolved
         activities: []Data // actually a DelegateActivity
     }
+
+    OtherActivities {
+        activity: OtherActivity
+    }
+
     // this function gives a general-purpose implementation of checking for 
     // valid uut minting. 
     //

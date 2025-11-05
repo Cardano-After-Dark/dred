@@ -35,7 +35,7 @@ enum DredNodeState {
     Inactive
 }
 
-struct NodeDetails {
+struct NodeDetailsV1 {
     address: String
     port: Int
     pubKey: PubKey
@@ -48,7 +48,7 @@ struct NodeRegistrationData {
 
     memberToken: String "mt"
     state: DredNodeState "state"
-    nodeDetails: NodeDetails "nd"
+    nodeDetails: NodeDetailsV1 "nd"
     // todo
     // nextNodeDetails: NodeDetails "nd'"
 

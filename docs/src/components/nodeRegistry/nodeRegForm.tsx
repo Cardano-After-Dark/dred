@@ -75,7 +75,9 @@ type ChangeHandler = (event: eventArg) => void;
 
 const defaultRegData: minimalNodeRegistrationData = {
   memberToken: "foo-xxx",
-  state: { NeedsValidation: [] },
+  state: {
+    NeedsValidation: [] // no validators yet
+  },
   nodeDetails: {
     address: "example.com",
     port: 443,

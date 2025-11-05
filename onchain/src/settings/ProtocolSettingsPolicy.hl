@@ -112,6 +112,11 @@ enum SpendingActivity {
     }
 }
 
+
+enum OtherActivity {
+    42: Placeholder
+} 
+
 enum DelegateActivity {
     // must ALWAYS be at Enum position 0
     CapoLifecycleActivities {
@@ -162,6 +167,11 @@ enum DelegateActivity {
     MultipleDelegateActivities {
         activities: []Data
     }
+
+    OtherActivities {
+        activity: OtherActivity
+    }
+
     
     //! used only for validating IsDelegation datum, that is,
     //   ... to approve minting requests or any customize spending modes 

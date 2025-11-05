@@ -909,7 +909,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<\"Provides a single entry point dApps can use to get tokenomics for their project\" | \"Uses the Capo (leader) to gather tokenomics-related contracts together\" | \"Defines a tokenomics minting delegate\" | \"Has a settings data structure where tokenomics plugins can store protocol parameters\" | \"issues 'membership card' tokens to participants\" | \"Can upgrade the Settings data\" | \"the settings data can be updated to have new details if backward compatible\" | \"Can find membership card tokens for participants\" | \"has custom settings for protocol parameters\" | \"can update the settings\" | \"Provides a Node Operator registry, in which node operators can maintain their node registrations\", \"Provides a single entry point dApps can use to get tokenomics for their project\" | \"Uses the Capo (leader) to gather tokenomics-related contracts together\" | \"Defines a tokenomics minting delegate\" | \"Has a settings data structure where tokenomics plugins can store protocol parameters\" | \"issues 'membership card' tokens to participants\" | \"Can upgrade the Settings data\" | \"the settings data can be updated to have new details if backward compatible\" | \"Can find membership card tokens for participants\"> & import(\"@donecollectively/stellar-contracts\")."
+                  "text": "<\"is a base class for leader/Capo pattern\" | \"can create unique utility tokens\" | \"supports the Delegation pattern using roles and strategy-variants\" | \"supports well-typed role declarations and strategy-adding\" | \"supports just-in-time strategy-selection using txnCreateDelegateLink()\" | \"given a configured delegate-link, it can create a ready-to-use Stellar subclass with all the right settings\" | \"supports concrete resolution of existing role delegates\" | \"Each role uses a RoleVariants structure which can accept new variants\" | \"provides a Strategy type for binding a contract to a strategy-variant name\" | \"can locate UUTs in the user's wallet\" | \"positively governs all administrative actions\" | \"has a unique, permanent charter token\" | \"has a unique, permanent treasury address\" | \"the charter token is always kept in the contract\" | \"the charter details can be updated by authority of the capoGov-* token\" | \"can mint other tokens, on the authority of the charter's registered mintDgt- token\" | \"can handle large transactions with reference scripts\" | \"has a singleton minting policy\" | \"can update the minting delegate in the charter data\" | \"can update the spending delegate in the charter data\" | \"can add invariant minting delegates to the charter data\" | \"can add invariant spending delegates to the charter data\" | \"supports an abstract Settings structure stored in the contact\" | \"added and updated delegates always validate the present configuration data\" | \"can commit new delegates\" | \"supports storing new types of datum not pre-defined in the Capo's on-chain script\" | \"the charter has a namedDelegates structure for semantic delegate links\" | \"CreatingDelegatedDatum: creates a UTxO with any custom datum\" | \"UpdatingDelegatedDatum: checks that a custom data element can be updated\" | \"Provides a single entry point dApps can use to get tokenomics for their project\" | \"Uses the Capo (leader) to gather tokenomics-related contracts together\" | \"Defines a tokenomics minting delegate\" | \"Has a settings data structure where tokenomics plugins can store protocol parameters\" | \"issues 'membership card' tokens to participants\" | \"Can upgrade the Settings data\" | \"the settings data can be updated to have new details if backward compatible\" | \"Can find membership card tokens for participants\" | \"has custom settings for protocol parameters\" | \"Provides a Node Operator registry, in which node operators can maintain their node registrations\", {\n        inheriting: \"is a base class for leader/Capo pattern\" | \"can create unique utility tokens\" | \"supports the Delegation pattern using roles and strategy-variants\" | \"supports well-typed role declarations and strategy-adding\" | \"supports just-in-time strategy-selection using txnCreateDelegateLink()\" | \"given a configured delegate-link, it can create a ready-to-use Stellar subclass with all the right settings\" | \"supports concrete resolution of existing role delegates\" | \"Each role uses a RoleVariants structure which can accept new variants\" | \"provides a Strategy type for binding a contract to a strategy-variant name\" | \"can locate UUTs in the user's wallet\" | \"positively governs all administrative actions\" | \"has a unique, permanent charter token\" | \"has a unique, permanent treasury address\" | \"the charter token is always kept in the contract\" | \"the charter details can be updated by authority of the capoGov-* token\" | \"can mint other tokens, on the authority of the charter's registered mintDgt- token\" | \"can handle large transactions with reference scripts\" | \"has a singleton minting policy\" | \"can update the minting delegate in the charter data\" | \"can update the spending delegate in the charter data\" | \"can add invariant minting delegates to the charter data\" | \"can add invariant spending delegates to the charter data\" | \"supports an abstract Settings structure stored in the contact\" | \"added and updated delegates always validate the present configuration data\" | \"can commit new delegates\" | \"supports storing new types of datum not pre-defined in the Capo's on-chain script\" | \"the charter has a namedDelegates structure for semantic delegate links\" | \"CreatingDelegatedDatum: creates a UTxO with any custom datum\" | \"UpdatingDelegatedDatum: checks that a custom data element can be updated\" | \"Provides a single entry point dApps can use to get tokenomics for their project\" | \"Uses the Capo (leader) to gather tokenomics-related contracts together\" | \"Defines a tokenomics minting delegate\" | \"Has a settings data structure where tokenomics plugins can store protocol parameters\" | \"issues 'membership card' tokens to participants\" | \"Can upgrade the Settings data\" | \"the settings data can be updated to have new details if backward compatible\" | \"Can find membership card tokens for participants\";\n    }> & import(\"@donecollectively/stellar-contracts\")."
                 },
                 {
                   "kind": "Reference",
@@ -918,7 +918,16 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<\"Provides a single entry point dApps can use to get tokenomics for their project\" | \"Uses the Capo (leader) to gather tokenomics-related contracts together\" | \"Defines a tokenomics minting delegate\" | \"Has a settings data structure where tokenomics plugins can store protocol parameters\" | \"issues 'membership card' tokens to participants\" | \"Can upgrade the Settings data\" | \"the settings data can be updated to have new details if backward compatible\" | \"Can find membership card tokens for participants\", never>"
+                  "text": "<\"is a base class for leader/Capo pattern\" | \"can create unique utility tokens\" | \"supports the Delegation pattern using roles and strategy-variants\" | \"supports well-typed role declarations and strategy-adding\" | \"supports just-in-time strategy-selection using txnCreateDelegateLink()\" | \"given a configured delegate-link, it can create a ready-to-use Stellar subclass with all the right settings\" | \"supports concrete resolution of existing role delegates\" | \"Each role uses a RoleVariants structure which can accept new variants\" | \"provides a Strategy type for binding a contract to a strategy-variant name\" | \"can locate UUTs in the user's wallet\" | \"positively governs all administrative actions\" | \"has a unique, permanent charter token\" | \"has a unique, permanent treasury address\" | \"the charter token is always kept in the contract\" | \"the charter details can be updated by authority of the capoGov-* token\" | \"can mint other tokens, on the authority of the charter's registered mintDgt- token\" | \"can handle large transactions with reference scripts\" | \"has a singleton minting policy\" | \"can update the minting delegate in the charter data\" | \"can update the spending delegate in the charter data\" | \"can add invariant minting delegates to the charter data\" | \"can add invariant spending delegates to the charter data\" | \"supports an abstract Settings structure stored in the contact\" | \"added and updated delegates always validate the present configuration data\" | \"can commit new delegates\" | \"supports storing new types of datum not pre-defined in the Capo's on-chain script\" | \"the charter has a namedDelegates structure for semantic delegate links\" | \"CreatingDelegatedDatum: creates a UTxO with any custom datum\" | \"UpdatingDelegatedDatum: checks that a custom data element can be updated\" | \"Provides a single entry point dApps can use to get tokenomics for their project\" | \"Uses the Capo (leader) to gather tokenomics-related contracts together\" | \"Defines a tokenomics minting delegate\" | \"Has a settings data structure where tokenomics plugins can store protocol parameters\" | \"issues 'membership card' tokens to participants\" | \"Can upgrade the Settings data\" | \"the settings data can be updated to have new details if backward compatible\" | \"Can find membership card tokens for participants\", {\n        inheriting: \"is a base class for leader/Capo pattern\" | \"can create unique utility tokens\" | \"supports the Delegation pattern using roles and strategy-variants\" | \"supports well-typed role declarations and strategy-adding\" | \"supports just-in-time strategy-selection using txnCreateDelegateLink()\" | \"given a configured delegate-link, it can create a ready-to-use Stellar subclass with all the right settings\" | \"supports concrete resolution of existing role delegates\" | \"Each role uses a RoleVariants structure which can accept new variants\" | \"provides a Strategy type for binding a contract to a strategy-variant name\" | \"can locate UUTs in the user's wallet\" | \"positively governs all administrative actions\" | \"has a unique, permanent charter token\" | \"has a unique, permanent treasury address\" | \"the charter token is always kept in the contract\" | \"the charter details can be updated by authority of the capoGov-* token\" | \"can mint other tokens, on the authority of the charter's registered mintDgt- token\" | \"can handle large transactions with reference scripts\" | \"has a singleton minting policy\" | \"can update the minting delegate in the charter data\" | \"can update the spending delegate in the charter data\" | \"can add invariant minting delegates to the charter data\" | \"can add invariant spending delegates to the charter data\" | \"supports an abstract Settings structure stored in the contact\" | \"added and updated delegates always validate the present configuration data\" | \"can commit new delegates\" | \"supports storing new types of datum not pre-defined in the Capo's on-chain script\" | \"the charter has a namedDelegates structure for semantic delegate links\" | \"CreatingDelegatedDatum: creates a UTxO with any custom datum\" | \"UpdatingDelegatedDatum: checks that a custom data element can be updated\";\n    }> & import(\"@donecollectively/stellar-contracts\")."
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ReqtsMap",
+                  "canonicalReference": "@donecollectively/stellar-contracts!ReqtsMap:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<\"is a base class for leader/Capo pattern\" | \"can create unique utility tokens\" | \"supports the Delegation pattern using roles and strategy-variants\" | \"supports well-typed role declarations and strategy-adding\" | \"supports just-in-time strategy-selection using txnCreateDelegateLink()\" | \"given a configured delegate-link, it can create a ready-to-use Stellar subclass with all the right settings\" | \"supports concrete resolution of existing role delegates\" | \"Each role uses a RoleVariants structure which can accept new variants\" | \"provides a Strategy type for binding a contract to a strategy-variant name\" | \"can locate UUTs in the user's wallet\" | \"positively governs all administrative actions\" | \"has a unique, permanent charter token\" | \"has a unique, permanent treasury address\" | \"the charter token is always kept in the contract\" | \"the charter details can be updated by authority of the capoGov-* token\" | \"can mint other tokens, on the authority of the charter's registered mintDgt- token\" | \"can handle large transactions with reference scripts\" | \"has a singleton minting policy\" | \"can update the minting delegate in the charter data\" | \"can update the spending delegate in the charter data\" | \"can add invariant minting delegates to the charter data\" | \"can add invariant spending delegates to the charter data\" | \"supports an abstract Settings structure stored in the contact\" | \"added and updated delegates always validate the present configuration data\" | \"can commit new delegates\" | \"supports storing new types of datum not pre-defined in the Capo's on-chain script\" | \"the charter has a namedDelegates structure for semantic delegate links\" | \"CreatingDelegatedDatum: creates a UTxO with any custom datum\" | \"UpdatingDelegatedDatum: checks that a custom data element can be updated\", {\n        inheriting: \"\\u2039empty/base class\\u203A\";\n    }>"
                 },
                 {
                   "kind": "Content",
@@ -928,7 +937,7 @@
               "isStatic": false,
               "returnTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 6
+                "endIndex": 8
               },
               "releaseTag": "Public",
               "isProtected": false,
@@ -940,17 +949,30 @@
             },
             {
               "kind": "Method",
-              "canonicalReference": "dred-network-registry!DredCapo#scriptBundle:member(1)",
+              "canonicalReference": "dred-network-registry!DredCapo#scriptBundleClass:member(1)",
               "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "scriptBundle(): "
+                  "text": "scriptBundleClass(): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Promise",
+                  "canonicalReference": "!Promise:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<typeof "
                 },
                 {
                   "kind": "Reference",
                   "text": "CapoHeliosBundle",
                   "canonicalReference": "@donecollectively/stellar-contracts!CapoHeliosBundle:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
                 },
                 {
                   "kind": "Content",
@@ -960,7 +982,7 @@
               "isStatic": false,
               "returnTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 2
+                "endIndex": 5
               },
               "releaseTag": "Public",
               "isProtected": false,
@@ -968,7 +990,7 @@
               "parameters": [],
               "isOptional": false,
               "isAbstract": false,
-              "name": "scriptBundle"
+              "name": "scriptBundleClass"
             },
             {
               "kind": "Method",
@@ -1381,55 +1403,24 @@
             },
             {
               "kind": "Content",
-              "text": "{\n    id: number[];\n    type: string;\n    memberToken: string;\n    state: "
+              "text": "{\n    id: /*minStructField*/ number[]\n    type: /*minStructField*/ string\n    memberToken: /*minStructField*/ string\n    details: /*minStructField*/ "
             },
             {
               "kind": "Reference",
-              "text": "ErgoNeighborhoodState",
-              "canonicalReference": "dred-network-registry!~ErgoNeighborhoodState:type"
+              "text": "ErgoNbhDetails",
+              "canonicalReference": "dred-network-registry!~ErgoNbhDetails:type"
             },
             {
               "kind": "Content",
-              "text": ";\n    appInfo: "
-            },
-            {
-              "kind": "Reference",
-              "text": "ErgoAppInfo",
-              "canonicalReference": "dred-network-registry!~ErgoAppInfo:type"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    opsInfo: "
-            },
-            {
-              "kind": "Reference",
-              "text": "ErgoNodeOpsInfo",
-              "canonicalReference": "dred-network-registry!~ErgoNodeOpsInfo:type"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    updateInfo: /*minStructField*/ "
-            },
-            {
-              "kind": "Reference",
-              "text": "ErgoUpdateInfo",
-              "canonicalReference": "dred-network-registry!~ErgoUpdateInfo:type"
-            },
-            {
-              "kind": "Content",
-              "text": " | undefined;\n}"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
+              "text": "\n}"
             }
           ],
-          "fileUrlPath": ".api-extractor-temp/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts",
+          "fileUrlPath": ".stellar/api/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts",
           "releaseTag": "Public",
           "name": "ErgoNeighborhoodData",
           "typeTokenRange": {
             "startIndex": 1,
-            "endIndex": 10
+            "endIndex": 4
           }
         },
         {
@@ -1443,7 +1434,7 @@
             },
             {
               "kind": "Content",
-              "text": "{\n    id: number[];\n    type: string;\n    memberToken: string;\n    state: "
+              "text": "{\n    id: /*minStructField*/ number[]\n    type: /*minStructField*/ string\n    memberToken: /*minStructField*/ string\n    state: /*minStructField*/ "
             },
             {
               "kind": "Reference",
@@ -1452,23 +1443,19 @@
             },
             {
               "kind": "Content",
-              "text": ";\n    nodeDetails: "
+              "text": "\n    nodeDetails: /*minStructField*/ "
             },
             {
               "kind": "Reference",
-              "text": "ErgoNodeDetails",
-              "canonicalReference": "dred-network-registry!~ErgoNodeDetails:type"
+              "text": "ErgoNodeDetailsV1",
+              "canonicalReference": "dred-network-registry!~ErgoNodeDetailsV1:type"
             },
             {
               "kind": "Content",
-              "text": ";\n}"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
+              "text": "\n}"
             }
           ],
-          "fileUrlPath": ".api-extractor-temp/src/nodeRegistry/NodeRegistry.typeInfo.d.ts",
+          "fileUrlPath": ".stellar/api/src/nodeRegistry/NodeRegistry.typeInfo.d.ts",
           "releaseTag": "Public",
           "name": "ErgoNodeRegistrationData",
           "typeTokenRange": {
@@ -1487,7 +1474,7 @@
             },
             {
               "kind": "Content",
-              "text": "{\n    id: number[];\n    type: string;\n    nodeOpSettings: "
+              "text": "{\n    id: /*minStructField*/ number[]\n    type: /*minStructField*/ string\n    nodeOpSettings: /*minStructField*/ "
             },
             {
               "kind": "Reference",
@@ -1496,7 +1483,7 @@
             },
             {
               "kind": "Content",
-              "text": ";\n    nbhSettings: "
+              "text": "\n    nbhSettings: /*minStructField*/ "
             },
             {
               "kind": "Reference",
@@ -1505,14 +1492,10 @@
             },
             {
               "kind": "Content",
-              "text": ";\n}"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
+              "text": "\n}"
             }
           ],
-          "fileUrlPath": ".api-extractor-temp/src/settings/ProtocolSettings.typeInfo.d.ts",
+          "fileUrlPath": ".stellar/api/src/settings/ProtocolSettings.typeInfo.d.ts",
           "releaseTag": "Public",
           "name": "ErgoProtocolSettings",
           "typeTokenRange": {
@@ -1546,13 +1529,9 @@
             {
               "kind": "Content",
               "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
             }
           ],
-          "fileUrlPath": ".api-extractor-temp/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts",
+          "fileUrlPath": ".stellar/api/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts",
           "releaseTag": "Public",
           "name": "minimalNeighborhoodData",
           "typeTokenRange": {
@@ -1586,13 +1565,9 @@
             {
               "kind": "Content",
               "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
             }
           ],
-          "fileUrlPath": ".api-extractor-temp/src/nodeRegistry/NodeRegistry.typeInfo.d.ts",
+          "fileUrlPath": ".stellar/api/src/nodeRegistry/NodeRegistry.typeInfo.d.ts",
           "releaseTag": "Public",
           "name": "minimalNodeRegistrationData",
           "typeTokenRange": {
@@ -1692,17 +1667,30 @@
             },
             {
               "kind": "Method",
-              "canonicalReference": "dred-network-registry!MyMintSpendDelegate#scriptBundle:member(1)",
+              "canonicalReference": "dred-network-registry!MyMintSpendDelegate#scriptBundleClass:member(1)",
               "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "scriptBundle(): "
+                  "text": "scriptBundleClass(): "
                 },
                 {
                   "kind": "Reference",
-                  "text": "CapoDelegateBundle",
-                  "canonicalReference": "@donecollectively/stellar-contracts!CapoDelegateBundle:class"
+                  "text": "Promise",
+                  "canonicalReference": "!Promise:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ConcreteCapoDelegateBundle",
+                  "canonicalReference": "@donecollectively/stellar-contracts!ConcreteCapoDelegateBundle:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
                 },
                 {
                   "kind": "Content",
@@ -1712,7 +1700,7 @@
               "isStatic": false,
               "returnTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 2
+                "endIndex": 5
               },
               "releaseTag": "Public",
               "isProtected": false,
@@ -1720,7 +1708,7 @@
               "parameters": [],
               "isOptional": false,
               "isAbstract": false,
-              "name": "scriptBundle"
+              "name": "scriptBundleClass"
             }
           ],
           "extendsTokenRange": {
@@ -2017,8 +2005,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "hasSeedUtxo",
-                  "canonicalReference": "@donecollectively/stellar-contracts!hasSeedUtxo:type"
+                  "text": "hasCharterRef",
+                  "canonicalReference": "@donecollectively/stellar-contracts!hasCharterRef:type"
                 },
                 {
                   "kind": "Content",
@@ -2026,8 +2014,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "hasCharterRef",
-                  "canonicalReference": "@donecollectively/stellar-contracts!hasCharterRef:type"
+                  "text": "hasSeedUtxo",
+                  "canonicalReference": "@donecollectively/stellar-contracts!hasSeedUtxo:type"
                 },
                 {
                   "kind": "Content",
@@ -2225,15 +2213,6 @@
                 },
                 {
                   "kind": "Content",
-                  "text": " & import(\"@donecollectively/stellar-contracts\")."
-                },
-                {
-                  "kind": "Reference",
-                  "text": "hasSeedUtxo",
-                  "canonicalReference": "@donecollectively/stellar-contracts!hasSeedUtxo:type"
-                },
-                {
-                  "kind": "Content",
                   "text": ">"
                 },
                 {
@@ -2244,7 +2223,7 @@
               "isStatic": false,
               "returnTypeTokenRange": {
                 "startIndex": 25,
-                "endIndex": 35
+                "endIndex": 33
               },
               "releaseTag": "Public",
               "isProtected": false,
@@ -2345,7 +2324,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<never, never>"
+                  "text": "<never, {\n        inheriting: \"\\u2039empty/base class\\u203A\";\n    }>"
                 },
                 {
                   "kind": "Content",
@@ -2367,16 +2346,30 @@
             },
             {
               "kind": "Method",
-              "canonicalReference": "dred-network-registry!NeighborhoodController#scriptBundle:member(1)",
+              "canonicalReference": "dred-network-registry!NeighborhoodController#scriptBundleClass:member(1)",
               "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "scriptBundle(): "
+                  "text": "scriptBundleClass(): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Promise",
+                  "canonicalReference": "!Promise:interface"
                 },
                 {
                   "kind": "Content",
-                  "text": "any"
+                  "text": "<typeof "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "DelegatedDataBundle",
+                  "canonicalReference": "@donecollectively/stellar-contracts!DelegatedDataBundle:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
                 },
                 {
                   "kind": "Content",
@@ -2386,7 +2379,7 @@
               "isStatic": false,
               "returnTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 2
+                "endIndex": 5
               },
               "releaseTag": "Public",
               "isProtected": false,
@@ -2394,7 +2387,7 @@
               "parameters": [],
               "isOptional": false,
               "isAbstract": false,
-              "name": "scriptBundle"
+              "name": "scriptBundleClass"
             }
           ],
           "extendsTokenRange": {
@@ -2413,34 +2406,30 @@
               "text": "export interface NeighborhoodData "
             }
           ],
-          "fileUrlPath": ".api-extractor-temp/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts",
+          "fileUrlPath": ".stellar/api/src/DredNeighborhood/NeighborhoodRegistry.typeInfo.d.ts",
           "releaseTag": "Public",
           "name": "NeighborhoodData",
           "preserveMemberOrder": false,
           "members": [
             {
               "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NeighborhoodData#appInfo:member",
+              "canonicalReference": "dred-network-registry!NeighborhoodData#details:member",
               "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "appInfo: "
+                  "text": "details: /*minStructField*/ "
                 },
                 {
                   "kind": "Reference",
-                  "text": "AppInfo",
-                  "canonicalReference": "dred-network-registry!~AppInfo:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
+                  "text": "NbhDetails",
+                  "canonicalReference": "dred-network-registry!~NbhDetails:type"
                 }
               ],
               "isReadonly": false,
               "isOptional": false,
               "releaseTag": "Public",
-              "name": "appInfo",
+              "name": "details",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
@@ -2453,15 +2442,11 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "id: "
+                  "text": "id: /*minStructField*/ "
                 },
                 {
                   "kind": "Content",
                   "text": "number[]"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
                 }
               ],
               "isReadonly": false,
@@ -2480,15 +2465,11 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "memberToken: "
+                  "text": "memberToken: /*minStructField*/ "
                 },
                 {
                   "kind": "Content",
                   "text": "string"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
                 }
               ],
               "isReadonly": false,
@@ -2502,76 +2483,16 @@
             },
             {
               "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NeighborhoodData#opsInfo:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "opsInfo: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "NodeOpsInfo",
-                  "canonicalReference": "dred-network-registry!~NodeOpsInfo:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "opsInfo",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NeighborhoodData#state:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "state: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "NeighborhoodState",
-                  "canonicalReference": "dred-network-registry!~NeighborhoodState:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "state",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
               "canonicalReference": "dred-network-registry!NeighborhoodData#type:member",
               "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "type: "
+                  "text": "type: /*minStructField*/ "
                 },
                 {
                   "kind": "Content",
                   "text": "string"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
                 }
               ],
               "isReadonly": false,
@@ -2581,38 +2502,6 @@
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "dred-network-registry!NeighborhoodData#updateInfo:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "updateInfo: /*minStructField*/ "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "UpdateInfo",
-                  "canonicalReference": "dred-network-registry!~UpdateInfo:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": " | undefined"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "updateInfo",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 3
               }
             }
           ],
@@ -2628,7 +2517,7 @@
               "text": "export interface NodeRegistrationData "
             }
           ],
-          "fileUrlPath": ".api-extractor-temp/src/nodeRegistry/NodeRegistry.typeInfo.d.ts",
+          "fileUrlPath": ".stellar/api/src/nodeRegistry/NodeRegistry.typeInfo.d.ts",
           "releaseTag": "Public",
           "name": "NodeRegistrationData",
           "preserveMemberOrder": false,
@@ -2640,15 +2529,11 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "id: "
+                  "text": "id: /*minStructField*/ "
                 },
                 {
                   "kind": "Content",
                   "text": "number[]"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
                 }
               ],
               "isReadonly": false,
@@ -2667,15 +2552,11 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "memberToken: "
+                  "text": "memberToken: /*minStructField*/ "
                 },
                 {
                   "kind": "Content",
                   "text": "string"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
                 }
               ],
               "isReadonly": false,
@@ -2694,16 +2575,12 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "nodeDetails: "
+                  "text": "nodeDetails: /*minStructField*/ "
                 },
                 {
                   "kind": "Reference",
-                  "text": "NodeDetails",
-                  "canonicalReference": "dred-network-registry!~NodeDetails:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
+                  "text": "NodeDetailsV1",
+                  "canonicalReference": "dred-network-registry!~NodeDetailsV1:interface"
                 }
               ],
               "isReadonly": false,
@@ -2722,16 +2599,12 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "state: "
+                  "text": "state: /*minStructField*/ "
                 },
                 {
                   "kind": "Reference",
                   "text": "DredNodeState",
                   "canonicalReference": "dred-network-registry!~DredNodeState:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
                 }
               ],
               "isReadonly": false,
@@ -2750,15 +2623,11 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "type: "
+                  "text": "type: /*minStructField*/ "
                 },
                 {
                   "kind": "Content",
                   "text": "string"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
                 }
               ],
               "isReadonly": false,
@@ -3353,15 +3222,6 @@
                 },
                 {
                   "kind": "Content",
-                  "text": " & import(\"@donecollectively/stellar-contracts\")."
-                },
-                {
-                  "kind": "Reference",
-                  "text": "hasSeedUtxo",
-                  "canonicalReference": "@donecollectively/stellar-contracts!hasSeedUtxo:type"
-                },
-                {
-                  "kind": "Content",
                   "text": " & "
                 },
                 {
@@ -3377,6 +3237,15 @@
                   "kind": "Reference",
                   "text": "hasCharterRef",
                   "canonicalReference": "@donecollectively/stellar-contracts!hasCharterRef:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": " & import(\"@donecollectively/stellar-contracts\")."
+                },
+                {
+                  "kind": "Reference",
+                  "text": "hasSeedUtxo",
+                  "canonicalReference": "@donecollectively/stellar-contracts!hasSeedUtxo:type"
                 },
                 {
                   "kind": "Content",
@@ -3878,7 +3747,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<never, never>"
+                  "text": "<never, {\n        inheriting: \"\\u2039empty/base class\\u203A\";\n    }>"
                 },
                 {
                   "kind": "Content",
@@ -3900,16 +3769,30 @@
             },
             {
               "kind": "Method",
-              "canonicalReference": "dred-network-registry!NodeRegistryController#scriptBundle:member(1)",
+              "canonicalReference": "dred-network-registry!NodeRegistryController#scriptBundleClass:member(1)",
               "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "scriptBundle(): "
+                  "text": "scriptBundleClass(): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Promise",
+                  "canonicalReference": "!Promise:interface"
                 },
                 {
                   "kind": "Content",
-                  "text": "any"
+                  "text": "<typeof "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "DelegatedDataBundle",
+                  "canonicalReference": "@donecollectively/stellar-contracts!DelegatedDataBundle:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
                 },
                 {
                   "kind": "Content",
@@ -3919,7 +3802,7 @@
               "isStatic": false,
               "returnTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 2
+                "endIndex": 5
               },
               "releaseTag": "Public",
               "isProtected": false,
@@ -3927,7 +3810,7 @@
               "parameters": [],
               "isOptional": false,
               "isAbstract": false,
-              "name": "scriptBundle"
+              "name": "scriptBundleClass"
             }
           ],
           "extendsTokenRange": {
@@ -4236,7 +4119,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<never, never>"
+                  "text": "<never, {\n        inheriting: \"\\u2039empty/base class\\u203A\";\n    }>"
                 },
                 {
                   "kind": "Content",
@@ -4258,16 +4141,30 @@
             },
             {
               "kind": "Method",
-              "canonicalReference": "dred-network-registry!ProtocolSettingsController#scriptBundle:member(1)",
+              "canonicalReference": "dred-network-registry!ProtocolSettingsController#scriptBundleClass:member(1)",
               "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "scriptBundle(): "
+                  "text": "scriptBundleClass(): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Promise",
+                  "canonicalReference": "!Promise:interface"
                 },
                 {
                   "kind": "Content",
-                  "text": "any"
+                  "text": "<typeof "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "DelegatedDataBundle",
+                  "canonicalReference": "@donecollectively/stellar-contracts!DelegatedDataBundle:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
                 },
                 {
                   "kind": "Content",
@@ -4277,7 +4174,7 @@
               "isStatic": false,
               "returnTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 2
+                "endIndex": 5
               },
               "releaseTag": "Public",
               "isProtected": false,
@@ -4285,7 +4182,7 @@
               "parameters": [],
               "isOptional": false,
               "isAbstract": false,
-              "name": "scriptBundle"
+              "name": "scriptBundleClass"
             }
           ],
           "extendsTokenRange": {

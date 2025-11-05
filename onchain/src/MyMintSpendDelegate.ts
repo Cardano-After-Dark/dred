@@ -6,6 +6,9 @@ import {
     type SeedAttrs,
     type isActivity,
     type hasSeed,
+    DelegatedDataBundle,
+    MintSpendDelegateBundle,
+    type ConcreteCapoDelegateBundle,
 } from "@donecollectively/stellar-contracts";
 import { STokMintDelegate } from "stellar-tokenomics";
 
@@ -21,8 +24,9 @@ export class MyMintSpendDelegate extends STokMintDelegate {
     }
     dataBridgeClass = MyMintSpendDelegateDataBridge;
 
-    scriptBundle(): CapoDelegateBundle {
-        return MyMintSpendDelegateBundle.create();
+    async scriptBundleClass() : Promise<ConcreteCapoDelegateBundle> {
+        const module = await import("./MyMintSpendDelegate.hlb.js")
+        return module.default
     }
 
 }

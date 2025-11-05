@@ -1,4 +1,11 @@
-import { makeDummyPubKey, makePubKey, makeTxOutput, makeValue, type PubKeyHash, type Value } from "@helios-lang/ledger";
+import {
+    makeDummyPubKey,
+    makePubKey,
+    makeTxOutput,
+    makeValue,
+    type PubKeyHash,
+    type Value,
+} from "@helios-lang/ledger";
 import {
     Activity,
     DelegatedDataContract,
@@ -14,25 +21,31 @@ import type {
     minimalData,
     anyState,
     DgDataUpdateOptions,
+    DelegatedDataBundle,
 } from "@donecollectively/stellar-contracts";
 
-import NodeRegistryBundle from "./NodeRegistry.hlb.js";
 import type { DredCapo } from "../DredCapo.js";
-import type { ErgoNodeRegistrationData, NodeRegistrationData, NodeRegistrationDataLike, minimalNodeRegistrationData } from "./NodeRegistry.typeInfo.js";
+import type {
+    ErgoNodeRegistrationData,
+    NodeRegistrationData,
+    NodeRegistrationDataLike,
+    minimalNodeRegistrationData,
+} from "./NodeRegistry.typeInfo.js";
 import DredNodeRegistryPolicyDataBridge from "./NodeRegistry.bridge.js";
 
 export type PartialPartialData<T extends AnyDataTemplate<any, any>> = Partial<{
     [K in keyof T]: T[K] extends Array<any>
         ? T[K]
         : T[K] extends Record<any, any>
-        ? Partial<T[K]>
-        : T[K];
+          ? Partial<T[K]>
+          : T[K];
 }>;
 
 // export type minimalNodeRegistrationData = minimalData<ErgoNodeRegistrationData>;
 
-export type partialMinimalData<T extends AnyDataTemplate<any, any>> =
-    PartialPartialData<minimalData<T>>;
+export type partialMinimalData<T extends AnyDataTemplate<any, any>> = PartialPartialData<
+    minimalData<T>
+>;
 
 /**
  * @public
@@ -43,8 +56,9 @@ export class NodeRegistryController extends DelegatedDataContract<
 > {
     dataBridgeClass = DredNodeRegistryPolicyDataBridge;
 
-    scriptBundle() {
-        return NodeRegistryBundle.create();
+    async scriptBundleClass(): Promise<typeof DelegatedDataBundle> {
+        const module = await import("./NodeRegistry.hlb.js");
+        return module.default;
     }
     idPrefix = "dredNode" as const;
 
@@ -60,7 +74,7 @@ export class NodeRegistryController extends DelegatedDataContract<
         const nodePublicKey = makeDummyPubKey();
         const pubKeyHash = nodePublicKey.hash();
 
-        return {       
+        return {
             // id: textToBytes("dredNode-1234"),
             // type: "dredNode",
 
@@ -69,13 +83,13 @@ export class NodeRegistryController extends DelegatedDataContract<
                 address: "1.2.4.3.example.com",
                 port: 13337n,
                 pubKey: nodePublicKey,
-                pubKeyHash
+                pubKeyHash,
             },
             state: { NeedsValidation: [] },
         };
     }
 
-    get capo() : DredCapo {
+    get capo(): DredCapo {
         return super.capo as unknown as DredCapo;
     }
 
@@ -83,16 +97,14 @@ export class NodeRegistryController extends DelegatedDataContract<
         this: NodeRegistryController,
         nodeReg: minimalNodeRegistrationData,
         // initialVaultStake: bigint,
-        initialTcx?: StellarTxnContext
+        initialTcx?: StellarTxnContext,
     ) {
         const mintDelegate = await this.capo.getMintDelegate();
-        const {capo} = this
-        const tcx0 = initialTcx || this.mkTcx(
-            "register dred node"
-        );
+        const { capo } = this;
+        const tcx0 = initialTcx || this.mkTcx("register dred node");
 
         const tcx1 = await capo.mkTxnWithMemberInfo(undefined, tcx0);
-        
+
         const capoUtxos = await capo.findCapoUtxos();
         const charterData = await capo.findCharterData(undefined, {
             capoUtxos,
@@ -103,7 +115,7 @@ export class NodeRegistryController extends DelegatedDataContract<
             charterData,
         });
 
-        const nodeReg2 : minimalNodeRegistrationData = {
+        const nodeReg2: minimalNodeRegistrationData = {
             ...nodeReg,
             nodeDetails: {
                 ...nodeReg.nodeDetails,
@@ -114,60 +126,58 @@ export class NodeRegistryController extends DelegatedDataContract<
         // const tcx = await this.capo.mkTxnWithMemberInfo();
         return this.mkTxnCreateRecord(
             {
-                activity:
-                    this.activity.MintingActivities.$seeded$CreatingRecord,
+                activity: this.activity.MintingActivities.$seeded$CreatingRecord,
                 data: {
                     ...nodeReg2,
                     memberToken: tcx2.state.memberToken.name,
                 },
                 // addedUtxoValue: makeValue(initialVaultStake),
             },
-            tcx2
-        ).then((tcx) => tcx)
+            tcx2,
+        ).then((tcx) => tcx);
     }
 
     async mkTxnActivatingNode(
         item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>,
         options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
-            activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"]
-        }={updatedFields: {}},
-        initialTcx?: StellarTxnContext<anyState> | undefined
+            activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"];
+        } = { updatedFields: {} },
+        initialTcx?: StellarTxnContext<anyState> | undefined,
     ) {
-        const tcx0 = initialTcx || this.mkTcx(
-            "activating dred node"
-        );
+        const tcx0 = initialTcx || this.mkTcx("activating dred node");
         tcx0.addSigners(this.actorContext.wallet.pubKey.hash());
 
         if (!item.data) {
-            debugger
+            debugger;
             throw new Error("node not found");
         }
-        
-        return this.mkTxnUpdatingNodeRegistration("activating dred node", item, {
-            ...options,
-            withMemberToken: false,
-            activity: this.activity.SpendingActivities.ActivatingNode(item.data!.id),
-            updatedFields: {
-                state: { Active: tcx0.txnTime.getTime() } ,
-                ...options.updatedFields,
-            }
-        }, tcx0)
+
+        return this.mkTxnUpdatingNodeRegistration(
+            "activating dred node",
+            item,
+            {
+                ...options,
+                withMemberToken: false,
+                activity: this.activity.SpendingActivities.ActivatingNode(item.data!.id),
+                updatedFields: {
+                    state: { Active: tcx0.txnTime.getTime() },
+                    ...options.updatedFields,
+                },
+            },
+            tcx0,
+        );
     }
 
-    async mkTxnUpdatingNodeRegistration( 
-        txnName: string, 
-        item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>, 
-        options: Omit<DgDataUpdateOptions<
-            NodeRegistrationDataLike
-        >, "activity"> & {
-            activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"],
-            withMemberToken?: boolean,
-        }, 
-        initialTcx?: StellarTxnContext<anyState> | undefined
+    async mkTxnUpdatingNodeRegistration(
+        txnName: string,
+        item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>,
+        options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity"> & {
+            activity?: DgDataUpdateOptions<NodeRegistrationDataLike>["activity"];
+            withMemberToken?: boolean;
+        },
+        initialTcx?: StellarTxnContext<anyState> | undefined,
     ): Promise<StellarTxnContext<anyState>> {
-        const tcx0 = initialTcx || this.mkTcx(
-            "update node registration"
-        );
+        const tcx0 = initialTcx || this.mkTcx("update node registration");
         const withMemberToken = options.withMemberToken ?? true;
         const tcx1 = withMemberToken ? await this.capo.mkTxnWithMemberInfo(undefined, tcx0) : tcx0;
 
@@ -178,66 +188,80 @@ export class NodeRegistryController extends DelegatedDataContract<
                 capoUtxos,
                 optional: false,
             }),
-        })
+        });
 
         const pubKey = options.updatedFields.nodeDetails?.pubKey ?? item.data?.nodeDetails.pubKey;
         if (!pubKey) throw new Error("missing required pubKey");
 
-        return super.mkTxnUpdateRecord(txnName, item, {
-            // default activity
-            activity: this.activity.SpendingActivities.UpdatingRecord(item.data!.id),
-            // ..., can be overridden by options
-            ...options,
-            updatedFields: {
-                ...options.updatedFields,
-                nodeDetails: {
-                    ...item.data!.nodeDetails,
-                    ...options.updatedFields.nodeDetails,
-                    pubKey: makePubKey(pubKey).toHex(),
-                }
-            }
-        }, tcx2)
+        return super.mkTxnUpdateRecord(
+            txnName,
+            item,
+            {
+                // default activity
+                activity: this.activity.SpendingActivities.UpdatingRecord(item.data!.id),
+                // ..., can be overridden by options
+                ...options,
+                updatedFields: {
+                    ...options.updatedFields,
+                    nodeDetails: {
+                        ...item.data!.nodeDetails,
+                        ...options.updatedFields.nodeDetails,
+                        pubKey: makePubKey(pubKey).toHex(),
+                    },
+                },
+            },
+            tcx2,
+        );
     }
 
     async mkTxnValidatingNode(
         txnName: string,
         item: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>,
-        options: Omit<DgDataUpdateOptions<NodeRegistrationDataLike>, "activity" | "updatedFields"> & {
-            validatorReg: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>
+        options: Omit<
+            DgDataUpdateOptions<NodeRegistrationDataLike>,
+            "activity" | "updatedFields"
+        > & {
+            validatorReg: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>;
         },
-        initialTcx?: StellarTxnContext<anyState> | undefined
+        initialTcx?: StellarTxnContext<anyState> | undefined,
     ): Promise<StellarTxnContext<anyState>> {
         // const { validatorPkh } = options;
 
-        const tcx0 = initialTcx || this.mkTcx(
-            "validating dred node"
-        );
+        const tcx0 = initialTcx || this.mkTcx("validating dred node");
         const existingNeedsValidation = (item.data?.state as any).NeedsValidation;
         if (!existingNeedsValidation) throw new Error("node is not in need of validation");
 
-        const { validatorReg } = options;        
+        const { validatorReg } = options;
 
         const tcx1 = await this.addValidatorRef(tcx0, validatorReg);
 
-        const tcx2 = await this.mkTxnUpdatingNodeRegistration(txnName, item, {
-            ...options,
-            withMemberToken: false,
-            updatedFields: {
-                state: {
-                    NeedsValidation: [validatorReg.data!.id, ...existingNeedsValidation],
+        const tcx2 = await this.mkTxnUpdatingNodeRegistration(
+            txnName,
+            item,
+            {
+                ...options,
+                withMemberToken: false,
+                updatedFields: {
+                    state: {
+                        NeedsValidation: [validatorReg.data!.id, ...existingNeedsValidation],
+                    },
                 },
+                activity: this.activity.SpendingActivities.ValidatingNode({
+                    id: item.data!.id,
+                    validatorId: validatorReg.data!.id,
+                }),
             },
-            activity: this.activity.SpendingActivities.ValidatingNode({
-                id: item.data!.id,
-                validatorId: validatorReg.data!.id,
-            }),
-        }, tcx1);
+            tcx1,
+        );
         tcx2.addSigners(validatorReg.data!.nodeDetails.pubKeyHash);
 
         return tcx2;
     }
 
-    addValidatorRef(tcx: StellarTxnContext<anyState>, validatorReg: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>) {
+    addValidatorRef(
+        tcx: StellarTxnContext<anyState>,
+        validatorReg: FoundDatumUtxo<NodeRegistrationData | ErgoNodeRegistrationData, any>,
+    ) {
         const foundPkh = validatorReg.data!.nodeDetails.pubKeyHash;
         if (!foundPkh) throw new Error("validator's node-reg record has no pubKeyHash");
 
@@ -249,7 +273,7 @@ export class NodeRegistryController extends DelegatedDataContract<
             throw new Error("validator's node-reg record has a different pubKeyHash");
         }
 
-        return tcx.addRefInput(validatorReg.utxo)
+        return tcx.addRefInput(validatorReg.utxo);
     }
 
     requirements() {

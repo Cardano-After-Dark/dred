@@ -1,11 +1,11 @@
 import {
+    DelegatedDataBundle,
     DelegatedDataContract,
     hasReqts,
     // use this if you need an off-chain class and not just well-typed data
     // WrappedDgDataContract,
 } from "@donecollectively/stellar-contracts";
 
-import ProtocolSettingsBundle from "./ProtocolSettings.hlb.js";
 import type {
     ErgoProtocolSettings,
     minimalProtocolSettings,
@@ -27,8 +27,9 @@ export class ProtocolSettingsController extends DelegatedDataContract<
     ProtocolSettingsLike
 > {
     dataBridgeClass = ProtocolSettingsDataBridge;
-    scriptBundle() {
-        return ProtocolSettingsBundle.create();
+    async scriptBundleClass() : Promise<typeof DelegatedDataBundle> {
+        const module = await import("./ProtocolSettings.hlb.js")
+        return module.default
     }
     
     get capo() : DredCapo {

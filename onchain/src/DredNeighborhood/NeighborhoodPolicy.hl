@@ -193,6 +193,9 @@ enum BurningActivity {
         id: ByteArray
     }
 }
+enum OtherActivity {
+    42: Placeholder
+} 
 
 enum DelegateActivity {
     // must ALWAYS be at Enum position 0
@@ -244,6 +247,12 @@ enum DelegateActivity {
         // todo: change this back when the recursive enum's `__is_valid_data not found` error is resolved
         activities: []Data // actually a DelegateActivity
     }
+
+
+    OtherActivities {
+        activity: OtherActivity
+    }
+
     // this function gives a general-purpose implementation of checking for 
     // valid uut minting. 
     //
@@ -352,7 +361,7 @@ enum DelegateActivity {
                     );
 
                     REQT("only allows creation with state Preproduction");
-                    reg.state.switch {
+                    reg.detailsV1().state.switch {
                         Preproduction => print("  -- state Preproduction: ok!"),
                         _ => error("state must be Preproduction during creation")
                     };
@@ -361,8 +370,11 @@ enum DelegateActivity {
                     tx.inputs.find_safe((i: TxInput) -> Bool {
                         i.value.get_safe(memberTokenAc) == 1
                     }).switch {
-                        None => error("missing member token " + memberTokenAc.show()),
-                        Some => true
+                        None => error("missing member token: " + memberToken),
+                        Some => {
+                            print("  -- member token found: "+ memberToken);
+                            true
+                        }
                     } &&
                     reg.validate() &&
                     mintingOk

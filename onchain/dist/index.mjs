@@ -4,16 +4,14 @@ import { makeInlineTxOutputDatum, makeValue, makeDummyPubKey, makePubKey } from 
 import '@helios-lang/uplc';
 import { STokMintDelegate, StellarTokenomicsCapo } from 'stellar-tokenomics';
 import { ContractDataBridge, EnumBridge, impliedSeedActivityMaker, DataBridgeReaderClass, DelegatedDataContract, hasReqts, delegateRoles, defineRole, textToBytes, mkValuesEntry, mergesInheritedReqts } from '@donecollectively/stellar-contracts';
-import ProtocolSettingsBundle from 'dred-network-registry/contracts-preprod/ProtocolSettings.hlb';
 import { makeCast } from '@helios-lang/contract-utils';
-import DredCapoBundle from 'dred-network-registry/contracts-preprod/DredCapo.hlb';
-import MyMintSpendDelegateBundle from 'dred-network-registry/contracts-preprod/MyMintSpendDelegate.hlb';
-import NodeRegistryBundle from 'dred-network-registry/contracts-preprod/NodeRegistry.hlb';
-import NeighborhoodRegistryBundle from 'dred-network-registry/contracts-preprod/NeighborhoodRegistry.hlb';
+import './contracts-preprod/MyMintSpendDelegate.hlb.mjs';
 import { signal, effect, computed } from '@preact/signals-react';
 import React from 'react';
 import { CapoDAppProvider } from '@donecollectively/stellar-contracts/ui';
 import { DredCapo as DredCapo$1 } from 'dred-network-registry';
+import './DredCapo.hlb.mjs';
+import '@helios-lang/compiler-utils';
 
 class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
   static isAbstract = false;
@@ -83,6 +81,10 @@ class ProtocolSettingsPolicyDataBridge extends ContractDataBridge {
      * generates UplcData for the enum type ***BurningActivity*** for the `BasicDelegate` script
      */
     BurningActivity: new BurningActivityHelper$3({ isMainnet: this.isMainnet }),
+    /**
+     * generates UplcData for the enum type ***OtherActivity*** for the `BasicDelegate` script
+     */
+    OtherActivity: new OtherActivityHelper$2({ isMainnet: this.isMainnet }),
     /**
      * generates UplcData for the enum type ***DelegateActivity*** for the `BasicDelegate` script
      */
@@ -417,6 +419,26 @@ class ProtocolSettingsPolicyDataBridgeReader extends DataBridgeReaderClass {
       */
   BurningActivity(d) {
     const typeHelper = this.bridge.types.BurningActivity;
+    const cast = typeHelper["\u1C7A\u1C7Acast"];
+    return cast.fromUplcData(d);
+  }
+  /* enumReader helper */
+  /**
+      * reads UplcData *known to fit the **OtherActivity*** enum type,
+      * for the BasicDelegate script.
+      * #### Standard WARNING
+      * 
+      * This is a low-level data-reader for use in ***advanced development scenarios***.
+      * 
+      * Used correctly with data that matches the enum type, this reader
+      * returns strongly-typed data - your code using these types will be safe.
+      * 
+      * On the other hand, reading non-matching data will not give you a valid result.  
+      * It may throw an error, or it may throw no error, but return a value that
+      * causes some error later on in your code, when you try to use it.
+      */
+  OtherActivity(d) {
+    const typeHelper = this.bridge.types.OtherActivity;
     const cast = typeHelper["\u1C7A\u1C7Acast"];
     return cast.fromUplcData(d);
   }
@@ -938,7 +960,330 @@ let ManifestActivityHelper$3 = class ManifestActivityHelper extends EnumBridge {
   }
   /*multiFieldVariant enum accessor*/
 };
-let DelegateRoleHelperNested$3 = class DelegateRoleHelperNested extends EnumBridge {
+let CapoLifecycleActivityHelper$3 = class CapoLifecycleActivityHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    CapoLifecycleActivitySchema$3,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  CreatingDelegate(seedOrUf, filteredFields) {
+    if (filteredFields) {
+      const seedTxOutputId = this.getSeed(seedOrUf);
+      const uplc = this.mkUplcData({
+        CreatingDelegate: { seed: seedTxOutputId, ...filteredFields }
+      }, "CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate");
+      return uplc;
+    } else {
+      const fields = seedOrUf;
+      const uplc = this.mkUplcData({
+        CreatingDelegate: fields
+      }, "CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate");
+      return uplc;
+    }
+  }
+  /*multiFieldVariant/seeded enum accessor*/
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***, 
+   * @param fields - \{ purpose: string \}
+   * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+   * ##### Activity contains implied seed
+   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+   * provided implicitly by a SeedActivity-supporting library function. 
+   *
+   * #### Usage
+   *   1. Call the `$seeded$CreatingDelegate({ purpose })`
+    *       method with the indicated (non-seed) details.
+   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+   *       `mkTxnCreateRecord({activity})` method.
+   */
+  $seeded$CreatingDelegate = impliedSeedActivityMaker(
+    this,
+    this.CreatingDelegate
+  );
+  /* coda: seeded helper in same multiFieldVariant/seeded */
+  /**
+   * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+   */
+  get queuePendingChange() {
+    const uplc = this.mkUplcData(
+      { queuePendingChange: {} },
+      "CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
+  /**
+   * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+   */
+  get commitPendingChanges() {
+    const uplc = this.mkUplcData(
+      { commitPendingChanges: {} },
+      "CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"
+    );
+    return uplc;
+  }
+  forcingNewSpendDelegate(seedOrUf, filteredFields) {
+    if (filteredFields) {
+      const seedTxOutputId = this.getSeed(seedOrUf);
+      const uplc = this.mkUplcData({
+        forcingNewSpendDelegate: { seed: seedTxOutputId, ...filteredFields }
+      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate");
+      return uplc;
+    } else {
+      const fields = seedOrUf;
+      const uplc = this.mkUplcData({
+        forcingNewSpendDelegate: fields
+      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate");
+      return uplc;
+    }
+  }
+  /*multiFieldVariant/seeded enum accessor*/
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***, 
+   * @param fields - \{ purpose: string \}
+   * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+   * ##### Activity contains implied seed
+   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+   * provided implicitly by a SeedActivity-supporting library function. 
+   *
+   * #### Usage
+   *   1. Call the `$seeded$forcingNewSpendDelegate({ purpose })`
+    *       method with the indicated (non-seed) details.
+   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+   *       `mkTxnCreateRecord({activity})` method.
+   */
+  $seeded$forcingNewSpendDelegate = impliedSeedActivityMaker(
+    this,
+    this.forcingNewSpendDelegate
+  );
+  forcingNewMintDelegate(seedOrUf, filteredFields) {
+    if (filteredFields) {
+      const seedTxOutputId = this.getSeed(seedOrUf);
+      const uplc = this.mkUplcData({
+        forcingNewMintDelegate: { seed: seedTxOutputId, ...filteredFields }
+      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate");
+      return uplc;
+    } else {
+      const fields = seedOrUf;
+      const uplc = this.mkUplcData({
+        forcingNewMintDelegate: fields
+      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate");
+      return uplc;
+    }
+  }
+  /*multiFieldVariant/seeded enum accessor*/
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***, 
+   * @param fields - \{ purpose: string \}
+   * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+   * ##### Activity contains implied seed
+   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+   * provided implicitly by a SeedActivity-supporting library function. 
+   *
+   * #### Usage
+   *   1. Call the `$seeded$forcingNewMintDelegate({ purpose })`
+    *       method with the indicated (non-seed) details.
+   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+   *       `mkTxnCreateRecord({activity})` method.
+   */
+  $seeded$forcingNewMintDelegate = impliedSeedActivityMaker(
+    this,
+    this.forcingNewMintDelegate
+  );
+  /* coda: seeded helper in same multiFieldVariant/seeded */
+};
+let DelegateLifecycleActivityHelper$3 = class DelegateLifecycleActivityHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    DelegateLifecycleActivitySchema$3,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  ReplacingMe(seedOrUf, filteredFields) {
+    if (filteredFields) {
+      const seedTxOutputId = this.getSeed(seedOrUf);
+      const uplc = this.mkUplcData({
+        ReplacingMe: { seed: seedTxOutputId, ...filteredFields }
+      }, "CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe");
+      return uplc;
+    } else {
+      const fields = seedOrUf;
+      const uplc = this.mkUplcData({
+        ReplacingMe: fields
+      }, "CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe");
+      return uplc;
+    }
+  }
+  /*multiFieldVariant/seeded enum accessor*/
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe"***, 
+   * @param fields - \{ purpose: string \}
+   * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+   * ##### Activity contains implied seed
+   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+   * provided implicitly by a SeedActivity-supporting library function. 
+   *
+   * #### Usage
+   *   1. Call the `$seeded$ReplacingMe({ purpose })`
+    *       method with the indicated (non-seed) details.
+   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+   *       `mkTxnCreateRecord({activity})` method.
+   */
+  $seeded$ReplacingMe = impliedSeedActivityMaker(
+    this,
+    this.ReplacingMe
+  );
+  /* coda: seeded helper in same multiFieldVariant/seeded */
+  /**
+   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.Retiring"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+   */
+  get Retiring() {
+    const uplc = this.mkUplcData(
+      { Retiring: {} },
+      "CapoDelegateHelpers::DelegateLifecycleActivity.Retiring"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
+  /**
+   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.ValidatingSettings"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+   */
+  get ValidatingSettings() {
+    const uplc = this.mkUplcData(
+      { ValidatingSettings: {} },
+      "CapoDelegateHelpers::DelegateLifecycleActivity.ValidatingSettings"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
+};
+let SpendingActivityHelper$3 = class SpendingActivityHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    SpendingActivitySchema$3,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * generates  UplcData for ***"ProtocolSettingsPolicy::SpendingActivity.UpdatingRecord"***
+   */
+  UpdatingRecord(id) {
+    const uplc = this.mkUplcData({
+      UpdatingRecord: id
+    }, "ProtocolSettingsPolicy::SpendingActivity.UpdatingRecord");
+    return uplc;
+  }
+};
+let MintingActivityHelper$3 = class MintingActivityHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    MintingActivitySchema$3,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+  * generates  UplcData for ***"ProtocolSettingsPolicy::MintingActivity.CreatingRecord"***, 
+  * given a transaction-context (or direct arg) with a ***seed utxo*** 
+  * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+  *  - to get a transaction context having the seed needed for this argument, 
+  *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
+  * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
+  *  - in a context providing an implicit seed utxo, use 
+  *    the `$seeded$CreatingRecord}` variant of this activity instead
+  *
+   */
+  CreatingRecord(thingWithSeed) {
+    const seedTxOutputId = this.getSeed(thingWithSeed);
+    const uplc = this.mkUplcData({
+      CreatingRecord: seedTxOutputId
+    }, "ProtocolSettingsPolicy::MintingActivity.CreatingRecord");
+    return uplc;
+  }
+  /*singleField/seeded enum variant*/
+  /**
+   * generates  UplcData for ***"ProtocolSettingsPolicy::MintingActivity.CreatingRecord"***
+   * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+   * ##### Activity contains implied seed
+   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+   * provided implicitly by a SeedActivity-supporting library function. 
+   * #### Usage
+   * Access the activity-creator as a getter: `$seeded$CreatingRecord`
+   *
+   * Use the resulting activity-creator in a seed-providing context, such as the delegated-data-controller's
+   * `mkTxnCreateRecord({activity, ...})` method.
+   */
+  get $seeded$CreatingRecord() {
+    return impliedSeedActivityMaker(this, this.CreatingRecord)();
+  }
+  /* coda: seeded helper in same singleField/seeded enum variant*/
+};
+let BurningActivityHelper$3 = class BurningActivityHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    BurningActivitySchema$3,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * generates  UplcData for ***"ProtocolSettingsPolicy::BurningActivity.DeletingRecord"***
+   */
+  DeletingRecord(id) {
+    const uplc = this.mkUplcData({
+      DeletingRecord: id
+    }, "ProtocolSettingsPolicy::BurningActivity.DeletingRecord");
+    return uplc;
+  }
+};
+let OtherActivityHelper$2 = class OtherActivityHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    OtherActivitySchema$2,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * (property getter): UplcData for ***"ProtocolSettingsPolicy::OtherActivity.Placeholder"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#42***
+   */
+  get Placeholder() {
+    const uplc = this.mkUplcData(
+      { Placeholder: {} },
+      "ProtocolSettingsPolicy::OtherActivity.Placeholder"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
+};
+let ActivityDelegateRoleHelperNested$3 = class ActivityDelegateRoleHelperNested extends EnumBridge {
   /*mkEnumHelperClass*/
   /**
           * @internal
@@ -996,7 +1341,7 @@ let DelegateRoleHelperNested$3 = class DelegateRoleHelperNested extends EnumBrid
   }
   /* tagOnly variant accessor */
   /**
-   * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
+   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
   * @remarks
   * #### Nested activity: 
   * this is connected to a nested-activity wrapper, so the details are piped through 
@@ -1010,7 +1355,7 @@ let DelegateRoleHelperNested$3 = class DelegateRoleHelperNested extends EnumBrid
     return uplc;
   }
   /**
-   * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
+   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
   * @remarks
   * #### Nested activity: 
   * this is connected to a nested-activity wrapper, so the details are piped through 
@@ -1131,457 +1476,6 @@ let ManifestActivityHelperNested$3 = class ManifestActivityHelperNested extends 
     return uplc;
   }
   /*multiFieldVariant enum accessor*/
-};
-let CapoLifecycleActivityHelper$3 = class CapoLifecycleActivityHelper extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    CapoLifecycleActivitySchema$3,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  CreatingDelegate(seedOrUf, filteredFields) {
-    if (filteredFields) {
-      const seedTxOutputId = this.getSeed(seedOrUf);
-      const uplc = this.mkUplcData({
-        CreatingDelegate: { seed: seedTxOutputId, ...filteredFields }
-      }, "CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate");
-      return uplc;
-    } else {
-      const fields = seedOrUf;
-      const uplc = this.mkUplcData({
-        CreatingDelegate: fields
-      }, "CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate");
-      return uplc;
-    }
-  }
-  /*multiFieldVariant/seeded enum accessor*/
-  /**
-   * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***, 
-   * @param fields - \{ purpose: string \}
-   * @remarks
-  * ##### Seeded activity
-  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-   * ##### Activity contains implied seed
-   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
-   * provided implicitly by a SeedActivity-supporting library function. 
-   *
-   * #### Usage
-   *   1. Call the `$seeded$CreatingDelegate({ purpose })`
-    *       method with the indicated (non-seed) details.
-   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-   *       `mkTxnCreateRecord({activity})` method.
-   */
-  $seeded$CreatingDelegate = impliedSeedActivityMaker(
-    this,
-    this.CreatingDelegate
-  );
-  /* coda: seeded helper in same multiFieldVariant/seeded */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-   */
-  get queuePendingChange() {
-    const uplc = this.mkUplcData(
-      { queuePendingChange: {} },
-      "CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
-   */
-  get removePendingChange() {
-    const nestedAccessor = new DelegateRoleHelperNested$3({
-      isMainnet: this.isMainnet,
-      isNested: true,
-      isActivity: false
-    });
-    nestedAccessor.mkDataVia(
-      (role) => {
-        return this.mkUplcData(
-          { removePendingChange: role },
-          "CapoDelegateHelpers::CapoLifecycleActivity.removePendingChange"
-        );
-      }
-    );
-    return nestedAccessor;
-  }
-  /* nested enum accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-   */
-  get commitPendingChanges() {
-    const uplc = this.mkUplcData(
-      { commitPendingChanges: {} },
-      "CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"
-    );
-    return uplc;
-  }
-  forcingNewSpendDelegate(seedOrUf, filteredFields) {
-    if (filteredFields) {
-      const seedTxOutputId = this.getSeed(seedOrUf);
-      const uplc = this.mkUplcData({
-        forcingNewSpendDelegate: { seed: seedTxOutputId, ...filteredFields }
-      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate");
-      return uplc;
-    } else {
-      const fields = seedOrUf;
-      const uplc = this.mkUplcData({
-        forcingNewSpendDelegate: fields
-      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate");
-      return uplc;
-    }
-  }
-  /*multiFieldVariant/seeded enum accessor*/
-  /**
-   * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***, 
-   * @param fields - \{ purpose: string \}
-   * @remarks
-  * ##### Seeded activity
-  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-   * ##### Activity contains implied seed
-   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
-   * provided implicitly by a SeedActivity-supporting library function. 
-   *
-   * #### Usage
-   *   1. Call the `$seeded$forcingNewSpendDelegate({ purpose })`
-    *       method with the indicated (non-seed) details.
-   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-   *       `mkTxnCreateRecord({activity})` method.
-   */
-  $seeded$forcingNewSpendDelegate = impliedSeedActivityMaker(
-    this,
-    this.forcingNewSpendDelegate
-  );
-  forcingNewMintDelegate(seedOrUf, filteredFields) {
-    if (filteredFields) {
-      const seedTxOutputId = this.getSeed(seedOrUf);
-      const uplc = this.mkUplcData({
-        forcingNewMintDelegate: { seed: seedTxOutputId, ...filteredFields }
-      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate");
-      return uplc;
-    } else {
-      const fields = seedOrUf;
-      const uplc = this.mkUplcData({
-        forcingNewMintDelegate: fields
-      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate");
-      return uplc;
-    }
-  }
-  /*multiFieldVariant/seeded enum accessor*/
-  /**
-   * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***, 
-   * @param fields - \{ purpose: string \}
-   * @remarks
-  * ##### Seeded activity
-  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-   * ##### Activity contains implied seed
-   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
-   * provided implicitly by a SeedActivity-supporting library function. 
-   *
-   * #### Usage
-   *   1. Call the `$seeded$forcingNewMintDelegate({ purpose })`
-    *       method with the indicated (non-seed) details.
-   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-   *       `mkTxnCreateRecord({activity})` method.
-   */
-  $seeded$forcingNewMintDelegate = impliedSeedActivityMaker(
-    this,
-    this.forcingNewMintDelegate
-  );
-  /* coda: seeded helper in same multiFieldVariant/seeded */
-  /**
-   * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
-   */
-  get updatingManifest() {
-    const nestedAccessor = new ManifestActivityHelperNested$3({
-      isMainnet: this.isMainnet,
-      isNested: true,
-      isActivity: false
-    });
-    nestedAccessor.mkDataVia(
-      (activity) => {
-        return this.mkUplcData(
-          { updatingManifest: activity },
-          "CapoDelegateHelpers::CapoLifecycleActivity.updatingManifest"
-        );
-      }
-    );
-    return nestedAccessor;
-  }
-  /* nested enum accessor */
-};
-let DelegateLifecycleActivityHelper$3 = class DelegateLifecycleActivityHelper extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    DelegateLifecycleActivitySchema$3,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  ReplacingMe(seedOrUf, filteredFields) {
-    if (filteredFields) {
-      const seedTxOutputId = this.getSeed(seedOrUf);
-      const uplc = this.mkUplcData({
-        ReplacingMe: { seed: seedTxOutputId, ...filteredFields }
-      }, "CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe");
-      return uplc;
-    } else {
-      const fields = seedOrUf;
-      const uplc = this.mkUplcData({
-        ReplacingMe: fields
-      }, "CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe");
-      return uplc;
-    }
-  }
-  /*multiFieldVariant/seeded enum accessor*/
-  /**
-   * generates  UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe"***, 
-   * @param fields - \{ purpose: string \}
-   * @remarks
-  * ##### Seeded activity
-  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-   * ##### Activity contains implied seed
-   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
-   * provided implicitly by a SeedActivity-supporting library function. 
-   *
-   * #### Usage
-   *   1. Call the `$seeded$ReplacingMe({ purpose })`
-    *       method with the indicated (non-seed) details.
-   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-   *       `mkTxnCreateRecord({activity})` method.
-   */
-  $seeded$ReplacingMe = impliedSeedActivityMaker(
-    this,
-    this.ReplacingMe
-  );
-  /* coda: seeded helper in same multiFieldVariant/seeded */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.Retiring"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-   */
-  get Retiring() {
-    const uplc = this.mkUplcData(
-      { Retiring: {} },
-      "CapoDelegateHelpers::DelegateLifecycleActivity.Retiring"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.ValidatingSettings"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-   */
-  get ValidatingSettings() {
-    const uplc = this.mkUplcData(
-      { ValidatingSettings: {} },
-      "CapoDelegateHelpers::DelegateLifecycleActivity.ValidatingSettings"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-};
-let SpendingActivityHelper$3 = class SpendingActivityHelper extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    SpendingActivitySchema$3,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  /**
-   * generates  UplcData for ***"ProtocolSettingsPolicy::SpendingActivity.UpdatingRecord"***
-   */
-  UpdatingRecord(id) {
-    const uplc = this.mkUplcData({
-      UpdatingRecord: id
-    }, "ProtocolSettingsPolicy::SpendingActivity.UpdatingRecord");
-    return uplc;
-  }
-};
-let MintingActivityHelper$3 = class MintingActivityHelper extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    MintingActivitySchema$3,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  /**
-  * generates  UplcData for ***"ProtocolSettingsPolicy::MintingActivity.CreatingRecord"***, 
-  * given a transaction-context (or direct arg) with a ***seed utxo*** 
-  * @remarks
-  * ##### Seeded activity
-  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-  *  - to get a transaction context having the seed needed for this argument, 
-  *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-  * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
-  *  - in a context providing an implicit seed utxo, use 
-  *    the `$seeded$CreatingRecord}` variant of this activity instead
-  *
-   */
-  CreatingRecord(thingWithSeed) {
-    const seedTxOutputId = this.getSeed(thingWithSeed);
-    const uplc = this.mkUplcData({
-      CreatingRecord: seedTxOutputId
-    }, "ProtocolSettingsPolicy::MintingActivity.CreatingRecord");
-    return uplc;
-  }
-  /*singleField/seeded enum variant*/
-  /**
-   * generates  UplcData for ***"ProtocolSettingsPolicy::MintingActivity.CreatingRecord"***
-   * @remarks
-  * ##### Seeded activity
-  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-   * ##### Activity contains implied seed
-   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
-   * provided implicitly by a SeedActivity-supporting library function. 
-   * #### Usage
-   * Access the activity-creator as a getter: `$seeded$CreatingRecord`
-   *
-   * Use the resulting activity-creator in a seed-providing context, such as the delegated-data-controller's
-   * `mkTxnCreateRecord({activity, ...})` method.
-   */
-  get $seeded$CreatingRecord() {
-    return impliedSeedActivityMaker(this, this.CreatingRecord)();
-  }
-  /* coda: seeded helper in same singleField/seeded enum variant*/
-};
-let BurningActivityHelper$3 = class BurningActivityHelper extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    BurningActivitySchema$3,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  /**
-   * generates  UplcData for ***"ProtocolSettingsPolicy::BurningActivity.DeletingRecord"***
-   */
-  DeletingRecord(id) {
-    const uplc = this.mkUplcData({
-      DeletingRecord: id
-    }, "ProtocolSettingsPolicy::BurningActivity.DeletingRecord");
-    return uplc;
-  }
-};
-let ActivityDelegateRoleHelperNested$3 = class ActivityDelegateRoleHelperNested extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    DelegateRoleSchema$3,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-   */
-  get MintDgt() {
-    const uplc = this.mkUplcData(
-      { MintDgt: {} },
-      "CapoDelegateHelpers::DelegateRole.MintDgt"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-   */
-  get SpendDgt() {
-    const uplc = this.mkUplcData(
-      { SpendDgt: {} },
-      "CapoDelegateHelpers::DelegateRole.SpendDgt"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-   */
-  get MintInvariant() {
-    const uplc = this.mkUplcData(
-      { MintInvariant: {} },
-      "CapoDelegateHelpers::DelegateRole.MintInvariant"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-   */
-  get SpendInvariant() {
-    const uplc = this.mkUplcData(
-      { SpendInvariant: {} },
-      "CapoDelegateHelpers::DelegateRole.SpendInvariant"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-  * @remarks
-  * #### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  DgDataPolicy(name) {
-    const uplc = this.mkUplcData({
-      DgDataPolicy: name
-    }, "CapoDelegateHelpers::DelegateRole.DgDataPolicy");
-    return uplc;
-  }
-  /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-  * @remarks
-  * #### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  OtherNamedDgt(name) {
-    const uplc = this.mkUplcData({
-      OtherNamedDgt: name
-    }, "CapoDelegateHelpers::DelegateRole.OtherNamedDgt");
-    return uplc;
-  }
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
-   */
-  get BothMintAndSpendDgt() {
-    const uplc = this.mkUplcData(
-      { BothMintAndSpendDgt: {} },
-      "CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
-   */
-  get HandledByCapoOnly() {
-    const uplc = this.mkUplcData(
-      { HandledByCapoOnly: {} },
-      "CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
 };
 let CapoLifecycleActivityHelperNested$3 = class CapoLifecycleActivityHelperNested extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -1894,7 +1788,7 @@ let MintingActivityHelperNested$3 = class MintingActivityHelperNested extends En
   * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
   *  - to get a transaction context having the seed needed for this argument, 
   *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-  * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+  * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
   *  - in a context providing an implicit seed utxo, use 
   *    the `$seeded$CreatingRecord}` variant of this activity instead
   *
@@ -1957,6 +1851,28 @@ let BurningActivityHelperNested$3 = class BurningActivityHelperNested extends En
     }, "ProtocolSettingsPolicy::BurningActivity.DeletingRecord");
     return uplc;
   }
+};
+let OtherActivityHelperNested$2 = class OtherActivityHelperNested extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    OtherActivitySchema$2,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * (property getter): UplcData for ***"ProtocolSettingsPolicy::OtherActivity.Placeholder"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#42***
+   */
+  get Placeholder() {
+    const uplc = this.mkUplcData(
+      { Placeholder: {} },
+      "ProtocolSettingsPolicy::OtherActivity.Placeholder"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
 };
 let DelegateActivityHelper$3 = class DelegateActivityHelper extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -2134,6 +2050,26 @@ let DelegateActivityHelper$3 = class DelegateActivityHelper extends EnumBridge {
     }, "ProtocolSettingsPolicy::DelegateActivity.MultipleDelegateActivities");
     return uplc;
   }
+  /**
+   * access to different variants of the ***nested OtherActivity*** type needed for ***DelegateActivity:OtherActivities***.
+   */
+  get OtherActivities() {
+    const nestedAccessor = new OtherActivityHelperNested$2({
+      isMainnet: this.isMainnet,
+      isNested: true,
+      isActivity: true
+    });
+    nestedAccessor.mkDataVia(
+      (activity) => {
+        return this.mkUplcData(
+          { OtherActivities: activity },
+          "ProtocolSettingsPolicy::DelegateActivity.OtherActivities"
+        );
+      }
+    );
+    return nestedAccessor;
+  }
+  /* nested enum accessor */
 };
 let PendingDelegateActionHelper$3 = class PendingDelegateActionHelper extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -3603,6 +3539,20 @@ const BurningActivitySchema$3 = {
     }
   ]
 };
+const OtherActivitySchema$2 = {
+  "kind": "enum",
+  "name": "OtherActivity",
+  "id": "__module__ProtocolSettingsPolicy__OtherActivity[]",
+  "variantTypes": [
+    {
+      "kind": "variant",
+      "tag": 42,
+      "id": "__module__ProtocolSettingsPolicy__OtherActivity[]__Placeholder",
+      "name": "Placeholder",
+      "fieldTypes": []
+    }
+  ]
+};
 const DelegateActivitySchema$3 = {
   "kind": "enum",
   "name": "DelegateActivity",
@@ -4150,6 +4100,31 @@ const DelegateActivitySchema$3 = {
               "kind": "internal",
               "name": "Data"
             }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 9,
+      "id": "__module__ProtocolSettingsPolicy__DelegateActivity[]__OtherActivities",
+      "name": "OtherActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "enum",
+            "name": "OtherActivity",
+            "id": "__module__ProtocolSettingsPolicy__OtherActivity[]",
+            "variantTypes": [
+              {
+                "kind": "variant",
+                "tag": 42,
+                "id": "__module__ProtocolSettingsPolicy__OtherActivity[]__Placeholder",
+                "name": "Placeholder",
+                "fieldTypes": []
+              }
+            ]
           }
         }
       ]
@@ -8998,8 +8973,9 @@ const CapoCtxSchema$3 = {
 
 class ProtocolSettingsController extends DelegatedDataContract {
   dataBridgeClass = ProtocolSettingsPolicyDataBridge;
-  scriptBundle() {
-    return ProtocolSettingsBundle.create();
+  async scriptBundleClass() {
+    const module = await import('./contracts-preprod/ProtocolSettings.hlb.mjs');
+    return module.default;
   }
   get capo() {
     return super.capo;
@@ -9792,200 +9768,6 @@ let ManifestActivityHelper$2 = class ManifestActivityHelper extends EnumBridge {
   }
   /*multiFieldVariant enum accessor*/
 };
-let DelegateRoleHelperNested$2 = class DelegateRoleHelperNested extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    DelegateRoleSchema$2,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-   */
-  get MintDgt() {
-    const uplc = this.mkUplcData(
-      { MintDgt: {} },
-      "CapoDelegateHelpers::DelegateRole.MintDgt"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-   */
-  get SpendDgt() {
-    const uplc = this.mkUplcData(
-      { SpendDgt: {} },
-      "CapoDelegateHelpers::DelegateRole.SpendDgt"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-   */
-  get MintInvariant() {
-    const uplc = this.mkUplcData(
-      { MintInvariant: {} },
-      "CapoDelegateHelpers::DelegateRole.MintInvariant"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-   */
-  get SpendInvariant() {
-    const uplc = this.mkUplcData(
-      { SpendInvariant: {} },
-      "CapoDelegateHelpers::DelegateRole.SpendInvariant"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-  * @remarks
-  * #### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  DgDataPolicy(name) {
-    const uplc = this.mkUplcData({
-      DgDataPolicy: name
-    }, "CapoDelegateHelpers::DelegateRole.DgDataPolicy");
-    return uplc;
-  }
-  /**
-   * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-  * @remarks
-  * #### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  OtherNamedDgt(name) {
-    const uplc = this.mkUplcData({
-      OtherNamedDgt: name
-    }, "CapoDelegateHelpers::DelegateRole.OtherNamedDgt");
-    return uplc;
-  }
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
-   */
-  get BothMintAndSpendDgt() {
-    const uplc = this.mkUplcData(
-      { BothMintAndSpendDgt: {} },
-      "CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
-   */
-  get HandledByCapoOnly() {
-    const uplc = this.mkUplcData(
-      { HandledByCapoOnly: {} },
-      "CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-};
-let ManifestActivityHelperNested$2 = class ManifestActivityHelperNested extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    ManifestActivitySchema$2,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
-  * @remarks
-  * #### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  retiringEntry(key) {
-    const uplc = this.mkUplcData({
-      retiringEntry: key
-    }, "CapoDelegateHelpers::ManifestActivity.retiringEntry");
-    return uplc;
-  }
-  /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
-   * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
-  * ##### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  updatingEntry(fields) {
-    const uplc = this.mkUplcData({
-      updatingEntry: fields
-    }, "CapoDelegateHelpers::ManifestActivity.updatingEntry");
-    return uplc;
-  }
-  /*multiFieldVariant enum accessor*/
-  /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
-   * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
-  * ##### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  addingEntry(fields) {
-    const uplc = this.mkUplcData({
-      addingEntry: fields
-    }, "CapoDelegateHelpers::ManifestActivity.addingEntry");
-    return uplc;
-  }
-  /*multiFieldVariant enum accessor*/
-  /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
-   * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
-  * ##### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  forkingThreadToken(fields) {
-    const uplc = this.mkUplcData({
-      forkingThreadToken: fields
-    }, "CapoDelegateHelpers::ManifestActivity.forkingThreadToken");
-    return uplc;
-  }
-  /*multiFieldVariant enum accessor*/
-  /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
-   * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
-  * ##### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  burningThreadToken(fields) {
-    const uplc = this.mkUplcData({
-      burningThreadToken: fields
-    }, "CapoDelegateHelpers::ManifestActivity.burningThreadToken");
-    return uplc;
-  }
-  /*multiFieldVariant enum accessor*/
-};
 let CapoLifecycleActivityHelper$2 = class CapoLifecycleActivityHelper extends EnumBridge {
   /*mkEnumHelperClass*/
   /**
@@ -10044,26 +9826,6 @@ let CapoLifecycleActivityHelper$2 = class CapoLifecycleActivityHelper extends En
     return uplc;
   }
   /* tagOnly variant accessor */
-  /**
-   * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
-   */
-  get removePendingChange() {
-    const nestedAccessor = new DelegateRoleHelperNested$2({
-      isMainnet: this.isMainnet,
-      isNested: true,
-      isActivity: false
-    });
-    nestedAccessor.mkDataVia(
-      (role) => {
-        return this.mkUplcData(
-          { removePendingChange: role },
-          "CapoDelegateHelpers::CapoLifecycleActivity.removePendingChange"
-        );
-      }
-    );
-    return nestedAccessor;
-  }
-  /* nested enum accessor */
   /**
    * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
    * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
@@ -10148,26 +9910,6 @@ let CapoLifecycleActivityHelper$2 = class CapoLifecycleActivityHelper extends En
     this.forcingNewMintDelegate
   );
   /* coda: seeded helper in same multiFieldVariant/seeded */
-  /**
-   * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
-   */
-  get updatingManifest() {
-    const nestedAccessor = new ManifestActivityHelperNested$2({
-      isMainnet: this.isMainnet,
-      isNested: true,
-      isActivity: false
-    });
-    nestedAccessor.mkDataVia(
-      (activity) => {
-        return this.mkUplcData(
-          { updatingManifest: activity },
-          "CapoDelegateHelpers::CapoLifecycleActivity.updatingManifest"
-        );
-      }
-    );
-    return nestedAccessor;
-  }
-  /* nested enum accessor */
 };
 let DelegateLifecycleActivityHelper$2 = class DelegateLifecycleActivityHelper extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -10276,7 +10018,7 @@ let MintingActivityHelper$2 = class MintingActivityHelper extends EnumBridge {
   * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
   *  - to get a transaction context having the seed needed for this argument, 
   *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-  * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+  * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
   *  - in a context providing an implicit seed utxo, use 
   *    the `$seeded$MintingParticipantToken}` variant of this activity instead
   *
@@ -10445,6 +10187,90 @@ let ActivityDelegateRoleHelperNested$2 = class ActivityDelegateRoleHelperNested 
     return uplc;
   }
   /* tagOnly variant accessor */
+};
+let ManifestActivityHelperNested$2 = class ManifestActivityHelperNested extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    ManifestActivitySchema$2,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
+  * @remarks
+  * #### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  retiringEntry(key) {
+    const uplc = this.mkUplcData({
+      retiringEntry: key
+    }, "CapoDelegateHelpers::ManifestActivity.retiringEntry");
+    return uplc;
+  }
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
+   * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
+  * ##### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  updatingEntry(fields) {
+    const uplc = this.mkUplcData({
+      updatingEntry: fields
+    }, "CapoDelegateHelpers::ManifestActivity.updatingEntry");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
+   * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
+  * ##### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  addingEntry(fields) {
+    const uplc = this.mkUplcData({
+      addingEntry: fields
+    }, "CapoDelegateHelpers::ManifestActivity.addingEntry");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
+   * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
+  * ##### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  forkingThreadToken(fields) {
+    const uplc = this.mkUplcData({
+      forkingThreadToken: fields
+    }, "CapoDelegateHelpers::ManifestActivity.forkingThreadToken");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
+   * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
+  * ##### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  burningThreadToken(fields) {
+    const uplc = this.mkUplcData({
+      burningThreadToken: fields
+    }, "CapoDelegateHelpers::ManifestActivity.burningThreadToken");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
 };
 let CapoLifecycleActivityHelperNested$2 = class CapoLifecycleActivityHelperNested extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -10757,7 +10583,7 @@ let MintingActivityHelperNested$2 = class MintingActivityHelperNested extends En
   * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
   *  - to get a transaction context having the seed needed for this argument, 
   *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-  * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+  * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
   *  - in a context providing an implicit seed utxo, use 
   *    the `$seeded$MintingParticipantToken}` variant of this activity instead
   *
@@ -11009,6 +10835,15 @@ let DelegateActivityHelper$2 = class DelegateActivityHelper extends EnumBridge {
     const uplc = this.mkUplcData({
       MultipleDelegateActivities: activities
     }, "STokMintDelegate::DelegateActivity.MultipleDelegateActivities");
+    return uplc;
+  }
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"STokMintDelegate::DelegateActivity.OtherActivities"***
+   */
+  OtherActivities(activity) {
+    const uplc = this.mkUplcData({
+      OtherActivities: activity
+    }, "STokMintDelegate::DelegateActivity.OtherActivities");
     return uplc;
   }
 };
@@ -12621,6 +12456,21 @@ const DelegateActivitySchema$2 = {
               "kind": "internal",
               "name": "Data"
             }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 9,
+      "id": "__module__STokMintDelegate__DelegateActivity[]__OtherActivities",
+      "name": "OtherActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "internal",
+            "name": "Data"
           }
         }
       ]
@@ -17472,8 +17322,9 @@ class MyMintSpendDelegate extends STokMintDelegate {
     return "MyMintSpendDelegate";
   }
   dataBridgeClass = MyMintSpendDelegateDataBridge;
-  scriptBundle() {
-    return MyMintSpendDelegateBundle.create();
+  async scriptBundleClass() {
+    const module = await import('./contracts-preprod/MyMintSpendDelegate.hlb.mjs');
+    return module.default;
   }
 }
 
@@ -17542,6 +17393,10 @@ class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
      */
     BurningActivity: new BurningActivityHelper$1({ isMainnet: this.isMainnet }),
     /**
+     * generates UplcData for the enum type ***OtherActivity*** for the `BasicDelegate` script
+     */
+    OtherActivity: new OtherActivityHelper$1({ isMainnet: this.isMainnet }),
+    /**
      * generates UplcData for the enum type ***DelegateActivity*** for the `BasicDelegate` script
      */
     DelegateActivity: new DelegateActivityHelper$1({ isMainnet: this.isMainnet }),
@@ -17570,6 +17425,10 @@ class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
      */
     dgd_DataSrc: new dgd_DataSrcHelper$1({ isMainnet: this.isMainnet }),
     /**
+     * generates UplcData for the enum type ***AbstractDelegateActivitiesEnum*** for the `BasicDelegate` script
+     */
+    AbstractDelegateActivitiesEnum: new AbstractDelegateActivitiesEnumHelper$1({ isMainnet: this.isMainnet }),
+    /**
      * generates UplcData for the enum type ***AnyData*** for the `BasicDelegate` script
      */
     AnyData: (fields) => {
@@ -17582,10 +17441,10 @@ class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
       return this["\u1C7A\u1C7ADelegationDetailCast"].toUplcData(fields);
     },
     /**
-     * generates UplcData for the enum type ***NodeDetails*** for the `BasicDelegate` script
+     * generates UplcData for the enum type ***NodeDetailsV1*** for the `BasicDelegate` script
      */
-    NodeDetails: (fields) => {
-      return this["\u1C7A\u1C7ANodeDetailsCast"].toUplcData(fields);
+    NodeDetailsV1: (fields) => {
+      return this["\u1C7A\u1C7ANodeDetailsV1Cast"].toUplcData(fields);
     },
     /**
      * generates UplcData for the enum type ***NodeRegistrationData*** for the `BasicDelegate` script
@@ -17650,8 +17509,8 @@ class DredNodeRegistryPolicyDataBridge extends ContractDataBridge {
   );
   /**
               * uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7ANodeDetailsCast" = makeCast(
-    NodeDetailsSchema,
+  "\u1C7A\u1C7ANodeDetailsV1Cast" = makeCast(
+    NodeDetailsV1Schema,
     { isMainnet: true, unwrapSingleFieldEnumVariants: true }
   );
   /**
@@ -17892,6 +17751,26 @@ class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderClass {
   }
   /* enumReader helper */
   /**
+      * reads UplcData *known to fit the **OtherActivity*** enum type,
+      * for the BasicDelegate script.
+      * #### Standard WARNING
+      * 
+      * This is a low-level data-reader for use in ***advanced development scenarios***.
+      * 
+      * Used correctly with data that matches the enum type, this reader
+      * returns strongly-typed data - your code using these types will be safe.
+      * 
+      * On the other hand, reading non-matching data will not give you a valid result.  
+      * It may throw an error, or it may throw no error, but return a value that
+      * causes some error later on in your code, when you try to use it.
+      */
+  OtherActivity(d) {
+    const typeHelper = this.bridge.types.OtherActivity;
+    const cast = typeHelper["\u1C7A\u1C7Acast"];
+    return cast.fromUplcData(d);
+  }
+  /* enumReader helper */
+  /**
       * reads UplcData *known to fit the **DelegateActivity*** enum type,
       * for the BasicDelegate script.
       * #### Standard WARNING
@@ -18032,6 +17911,26 @@ class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderClass {
   }
   /* enumReader helper */
   /**
+      * reads UplcData *known to fit the **AbstractDelegateActivitiesEnum*** enum type,
+      * for the BasicDelegate script.
+      * #### Standard WARNING
+      * 
+      * This is a low-level data-reader for use in ***advanced development scenarios***.
+      * 
+      * Used correctly with data that matches the enum type, this reader
+      * returns strongly-typed data - your code using these types will be safe.
+      * 
+      * On the other hand, reading non-matching data will not give you a valid result.  
+      * It may throw an error, or it may throw no error, but return a value that
+      * causes some error later on in your code, when you try to use it.
+      */
+  AbstractDelegateActivitiesEnum(d) {
+    const typeHelper = this.bridge.types.AbstractDelegateActivitiesEnum;
+    const cast = typeHelper["\u1C7A\u1C7Acast"];
+    return cast.fromUplcData(d);
+  }
+  /* enumReader helper */
+  /**
       * reads UplcData *known to fit the **AnyData*** struct type,
       * for the BasicDelegate script.
       * #### Standard WARNING
@@ -18070,7 +17969,7 @@ class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderClass {
   }
   /* structReader helper */
   /**
-      * reads UplcData *known to fit the **NodeDetails*** struct type,
+      * reads UplcData *known to fit the **NodeDetailsV1*** struct type,
       * for the BasicDelegate script.
       * #### Standard WARNING
       * 
@@ -18083,8 +17982,8 @@ class DredNodeRegistryPolicyDataBridgeReader extends DataBridgeReaderClass {
       * It may throw an error, or it may throw no error, but return a value that
       * causes some error later on in your code, when you try to use it.
       */
-  NodeDetails(d) {
-    const cast = this.bridge["\u1C7A\u1C7ANodeDetailsCast"];
+  NodeDetailsV1(d) {
+    const cast = this.bridge["\u1C7A\u1C7ANodeDetailsV1Cast"];
     return cast.fromUplcData(d);
   }
   /* structReader helper */
@@ -18495,200 +18394,6 @@ let ManifestActivityHelper$1 = class ManifestActivityHelper extends EnumBridge {
   }
   /*multiFieldVariant enum accessor*/
 };
-let DelegateRoleHelperNested$1 = class DelegateRoleHelperNested extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    DelegateRoleSchema$1,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-   */
-  get MintDgt() {
-    const uplc = this.mkUplcData(
-      { MintDgt: {} },
-      "CapoDelegateHelpers::DelegateRole.MintDgt"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-   */
-  get SpendDgt() {
-    const uplc = this.mkUplcData(
-      { SpendDgt: {} },
-      "CapoDelegateHelpers::DelegateRole.SpendDgt"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-   */
-  get MintInvariant() {
-    const uplc = this.mkUplcData(
-      { MintInvariant: {} },
-      "CapoDelegateHelpers::DelegateRole.MintInvariant"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-   */
-  get SpendInvariant() {
-    const uplc = this.mkUplcData(
-      { SpendInvariant: {} },
-      "CapoDelegateHelpers::DelegateRole.SpendInvariant"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-  * @remarks
-  * #### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  DgDataPolicy(name) {
-    const uplc = this.mkUplcData({
-      DgDataPolicy: name
-    }, "CapoDelegateHelpers::DelegateRole.DgDataPolicy");
-    return uplc;
-  }
-  /**
-   * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-  * @remarks
-  * #### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  OtherNamedDgt(name) {
-    const uplc = this.mkUplcData({
-      OtherNamedDgt: name
-    }, "CapoDelegateHelpers::DelegateRole.OtherNamedDgt");
-    return uplc;
-  }
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
-   */
-  get BothMintAndSpendDgt() {
-    const uplc = this.mkUplcData(
-      { BothMintAndSpendDgt: {} },
-      "CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
-   */
-  get HandledByCapoOnly() {
-    const uplc = this.mkUplcData(
-      { HandledByCapoOnly: {} },
-      "CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-};
-let ManifestActivityHelperNested$1 = class ManifestActivityHelperNested extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    ManifestActivitySchema$1,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
-  * @remarks
-  * #### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  retiringEntry(key) {
-    const uplc = this.mkUplcData({
-      retiringEntry: key
-    }, "CapoDelegateHelpers::ManifestActivity.retiringEntry");
-    return uplc;
-  }
-  /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
-   * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
-  * ##### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  updatingEntry(fields) {
-    const uplc = this.mkUplcData({
-      updatingEntry: fields
-    }, "CapoDelegateHelpers::ManifestActivity.updatingEntry");
-    return uplc;
-  }
-  /*multiFieldVariant enum accessor*/
-  /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
-   * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
-  * ##### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  addingEntry(fields) {
-    const uplc = this.mkUplcData({
-      addingEntry: fields
-    }, "CapoDelegateHelpers::ManifestActivity.addingEntry");
-    return uplc;
-  }
-  /*multiFieldVariant enum accessor*/
-  /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
-   * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
-  * ##### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  forkingThreadToken(fields) {
-    const uplc = this.mkUplcData({
-      forkingThreadToken: fields
-    }, "CapoDelegateHelpers::ManifestActivity.forkingThreadToken");
-    return uplc;
-  }
-  /*multiFieldVariant enum accessor*/
-  /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
-   * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
-  * ##### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  burningThreadToken(fields) {
-    const uplc = this.mkUplcData({
-      burningThreadToken: fields
-    }, "CapoDelegateHelpers::ManifestActivity.burningThreadToken");
-    return uplc;
-  }
-  /*multiFieldVariant enum accessor*/
-};
 let CapoLifecycleActivityHelper$1 = class CapoLifecycleActivityHelper extends EnumBridge {
   /*mkEnumHelperClass*/
   /**
@@ -18747,26 +18452,6 @@ let CapoLifecycleActivityHelper$1 = class CapoLifecycleActivityHelper extends En
     return uplc;
   }
   /* tagOnly variant accessor */
-  /**
-   * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
-   */
-  get removePendingChange() {
-    const nestedAccessor = new DelegateRoleHelperNested$1({
-      isMainnet: this.isMainnet,
-      isNested: true,
-      isActivity: false
-    });
-    nestedAccessor.mkDataVia(
-      (role) => {
-        return this.mkUplcData(
-          { removePendingChange: role },
-          "CapoDelegateHelpers::CapoLifecycleActivity.removePendingChange"
-        );
-      }
-    );
-    return nestedAccessor;
-  }
-  /* nested enum accessor */
   /**
    * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
    * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
@@ -18851,26 +18536,6 @@ let CapoLifecycleActivityHelper$1 = class CapoLifecycleActivityHelper extends En
     this.forcingNewMintDelegate
   );
   /* coda: seeded helper in same multiFieldVariant/seeded */
-  /**
-   * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
-   */
-  get updatingManifest() {
-    const nestedAccessor = new ManifestActivityHelperNested$1({
-      isMainnet: this.isMainnet,
-      isNested: true,
-      isActivity: false
-    });
-    nestedAccessor.mkDataVia(
-      (activity) => {
-        return this.mkUplcData(
-          { updatingManifest: activity },
-          "CapoDelegateHelpers::CapoLifecycleActivity.updatingManifest"
-        );
-      }
-    );
-    return nestedAccessor;
-  }
-  /* nested enum accessor */
 };
 let DelegateLifecycleActivityHelper$1 = class DelegateLifecycleActivityHelper extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -19017,7 +18682,7 @@ let MintingActivityHelper$1 = class MintingActivityHelper extends EnumBridge {
   * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
   *  - to get a transaction context having the seed needed for this argument, 
   *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-  * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+  * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
   *  - in a context providing an implicit seed utxo, use 
   *    the `$seeded$CreatingRecord}` variant of this activity instead
   *
@@ -19067,6 +18732,28 @@ let BurningActivityHelper$1 = class BurningActivityHelper extends EnumBridge {
     }, "DredNodeRegistryPolicy::BurningActivity.DeletingRecord");
     return uplc;
   }
+};
+let OtherActivityHelper$1 = class OtherActivityHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    OtherActivitySchema$1,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * (property getter): UplcData for ***"DredNodeRegistryPolicy::OtherActivity.Placeholder"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#42***
+   */
+  get Placeholder() {
+    const uplc = this.mkUplcData(
+      { Placeholder: {} },
+      "DredNodeRegistryPolicy::OtherActivity.Placeholder"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
 };
 let ActivityDelegateRoleHelperNested$1 = class ActivityDelegateRoleHelperNested extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -19177,6 +18864,90 @@ let ActivityDelegateRoleHelperNested$1 = class ActivityDelegateRoleHelperNested 
     return uplc;
   }
   /* tagOnly variant accessor */
+};
+let ManifestActivityHelperNested$1 = class ManifestActivityHelperNested extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    ManifestActivitySchema$1,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.retiringEntry"***
+  * @remarks
+  * #### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  retiringEntry(key) {
+    const uplc = this.mkUplcData({
+      retiringEntry: key
+    }, "CapoDelegateHelpers::ManifestActivity.retiringEntry");
+    return uplc;
+  }
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.updatingEntry"***
+   * @remarks - ***ManifestActivity$updatingEntryLike*** is the same as the expanded field-types.
+  * ##### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  updatingEntry(fields) {
+    const uplc = this.mkUplcData({
+      updatingEntry: fields
+    }, "CapoDelegateHelpers::ManifestActivity.updatingEntry");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.addingEntry"***
+   * @remarks - ***ManifestActivity$addingEntryLike*** is the same as the expanded field-types.
+  * ##### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  addingEntry(fields) {
+    const uplc = this.mkUplcData({
+      addingEntry: fields
+    }, "CapoDelegateHelpers::ManifestActivity.addingEntry");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.forkingThreadToken"***
+   * @remarks - ***ManifestActivity$forkingThreadTokenLike*** is the same as the expanded field-types.
+  * ##### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  forkingThreadToken(fields) {
+    const uplc = this.mkUplcData({
+      forkingThreadToken: fields
+    }, "CapoDelegateHelpers::ManifestActivity.forkingThreadToken");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
+  /**
+   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::ManifestActivity.burningThreadToken"***
+   * @remarks - ***ManifestActivity$burningThreadTokenLike*** is the same as the expanded field-types.
+  * ##### Nested activity: 
+  * this is connected to a nested-activity wrapper, so the details are piped through 
+  * the parent's uplc-encoder, producing a single uplc object with 
+  * a complete wrapper for this inner activity detail.
+   */
+  burningThreadToken(fields) {
+    const uplc = this.mkUplcData({
+      burningThreadToken: fields
+    }, "CapoDelegateHelpers::ManifestActivity.burningThreadToken");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
 };
 let CapoLifecycleActivityHelperNested$1 = class CapoLifecycleActivityHelperNested extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -19546,7 +19317,7 @@ let MintingActivityHelperNested$1 = class MintingActivityHelperNested extends En
   * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
   *  - to get a transaction context having the seed needed for this argument, 
   *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-  * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+  * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
   *  - in a context providing an implicit seed utxo, use 
   *    the `$seeded$CreatingRecord}` variant of this activity instead
   *
@@ -19609,6 +19380,28 @@ let BurningActivityHelperNested$1 = class BurningActivityHelperNested extends En
     }, "DredNodeRegistryPolicy::BurningActivity.DeletingRecord");
     return uplc;
   }
+};
+let OtherActivityHelperNested$1 = class OtherActivityHelperNested extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    OtherActivitySchema$1,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * (property getter): UplcData for ***"DredNodeRegistryPolicy::OtherActivity.Placeholder"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#42***
+   */
+  get Placeholder() {
+    const uplc = this.mkUplcData(
+      { Placeholder: {} },
+      "DredNodeRegistryPolicy::OtherActivity.Placeholder"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
 };
 let DelegateActivityHelper$1 = class DelegateActivityHelper extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -19786,6 +19579,26 @@ let DelegateActivityHelper$1 = class DelegateActivityHelper extends EnumBridge {
     }, "DredNodeRegistryPolicy::DelegateActivity.MultipleDelegateActivities");
     return uplc;
   }
+  /**
+   * access to different variants of the ***nested OtherActivity*** type needed for ***DelegateActivity:OtherActivities***.
+   */
+  get OtherActivities() {
+    const nestedAccessor = new OtherActivityHelperNested$1({
+      isMainnet: this.isMainnet,
+      isNested: true,
+      isActivity: true
+    });
+    nestedAccessor.mkDataVia(
+      (activity) => {
+        return this.mkUplcData(
+          { OtherActivities: activity },
+          "DredNodeRegistryPolicy::DelegateActivity.OtherActivities"
+        );
+      }
+    );
+    return nestedAccessor;
+  }
+  /* nested enum accessor */
 };
 let PendingDelegateActionHelper$1 = class PendingDelegateActionHelper extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -20096,6 +19909,120 @@ let dgd_DataSrcHelper$1 = class dgd_DataSrcHelper extends EnumBridge {
   }
   /*multiFieldVariant enum accessor*/
 };
+let AbstractDelegateActivitiesEnumHelper$1 = class AbstractDelegateActivitiesEnumHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    AbstractDelegateActivitiesEnumSchema$1,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.SpendingActivities"***
+   */
+  SpendingActivities(activity) {
+    const uplc = this.mkUplcData({
+      SpendingActivities: activity
+    }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.SpendingActivities");
+    return uplc;
+  }
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MintingActivities"***
+   */
+  MintingActivities(activity) {
+    const uplc = this.mkUplcData({
+      MintingActivities: activity
+    }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MintingActivities");
+    return uplc;
+  }
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.BurningActivities"***
+   */
+  BurningActivities(activity) {
+    const uplc = this.mkUplcData({
+      BurningActivities: activity
+    }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.BurningActivities");
+    return uplc;
+  }
+  CreatingDelegatedData(seedOrUf, filteredFields) {
+    if (filteredFields) {
+      const seedTxOutputId = this.getSeed(seedOrUf);
+      const uplc = this.mkUplcData({
+        CreatingDelegatedData: { seed: seedTxOutputId, ...filteredFields }
+      }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData");
+      return uplc;
+    } else {
+      const fields = seedOrUf;
+      const uplc = this.mkUplcData({
+        CreatingDelegatedData: fields
+      }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData");
+      return uplc;
+    }
+  }
+  /*multiFieldVariant/seeded enum accessor*/
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData"***, 
+   * @param fields - \{ dataType: string \}
+   * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+   * ##### Activity contains implied seed
+   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+   * provided implicitly by a SeedActivity-supporting library function. 
+   *
+   * #### Usage
+   *   1. Call the `$seeded$CreatingDelegatedData({ dataType })`
+    *       method with the indicated (non-seed) details.
+   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+   *       `mkTxnCreateRecord({activity})` method.
+   */
+  $seeded$CreatingDelegatedData = impliedSeedActivityMaker(
+    this,
+    this.CreatingDelegatedData
+  );
+  /* coda: seeded helper in same multiFieldVariant/seeded */
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.UpdatingDelegatedData"***
+   * @remarks - ***AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike*** is the same as the expanded field-types.
+   */
+  UpdatingDelegatedData(fields) {
+    const uplc = this.mkUplcData({
+      UpdatingDelegatedData: fields
+    }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.UpdatingDelegatedData");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.DeletingDelegatedData"***
+   * @remarks - ***AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike*** is the same as the expanded field-types.
+   */
+  DeletingDelegatedData(fields) {
+    const uplc = this.mkUplcData({
+      DeletingDelegatedData: fields
+    }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.DeletingDelegatedData");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MultipleDelegateActivities"***
+   */
+  MultipleDelegateActivities(activities) {
+    const uplc = this.mkUplcData({
+      MultipleDelegateActivities: activities
+    }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MultipleDelegateActivities");
+    return uplc;
+  }
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.OtherActivities"***
+   */
+  OtherActivities(activity) {
+    const uplc = this.mkUplcData({
+      OtherActivities: activity
+    }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.OtherActivities");
+    return uplc;
+  }
+};
 const AnyDataSchema$1 = {
   "kind": "struct",
   "format": "map",
@@ -20214,11 +20141,11 @@ const DredNodeStateSchema = {
     }
   ]
 };
-const NodeDetailsSchema = {
+const NodeDetailsV1Schema = {
   "kind": "struct",
   "format": "list",
-  "id": "__module__NodeRegistrationData__NodeDetails[]",
-  "name": "NodeDetails",
+  "id": "__module__NodeRegistrationData__NodeDetailsV1[]",
+  "name": "NodeDetailsV1",
   "fieldTypes": [
     {
       "name": "address",
@@ -20354,8 +20281,8 @@ const NodeRegistrationDataSchema = {
       "type": {
         "kind": "struct",
         "format": "list",
-        "id": "__module__NodeRegistrationData__NodeDetails[]",
-        "name": "NodeDetails",
+        "id": "__module__NodeRegistrationData__NodeDetailsV1[]",
+        "name": "NodeDetailsV1",
         "fieldTypes": [
           {
             "name": "address",
@@ -20597,8 +20524,8 @@ const DelegateDatumSchema$1 = {
                 "type": {
                   "kind": "struct",
                   "format": "list",
-                  "id": "__module__NodeRegistrationData__NodeDetails[]",
-                  "name": "NodeDetails",
+                  "id": "__module__NodeRegistrationData__NodeDetailsV1[]",
+                  "name": "NodeDetailsV1",
                   "fieldTypes": [
                     {
                       "name": "address",
@@ -21316,6 +21243,20 @@ const BurningActivitySchema$1 = {
     }
   ]
 };
+const OtherActivitySchema$1 = {
+  "kind": "enum",
+  "name": "OtherActivity",
+  "id": "__module__DredNodeRegistryPolicy__OtherActivity[]",
+  "variantTypes": [
+    {
+      "kind": "variant",
+      "tag": 42,
+      "id": "__module__DredNodeRegistryPolicy__OtherActivity[]__Placeholder",
+      "name": "Placeholder",
+      "fieldTypes": []
+    }
+  ]
+};
 const DelegateActivitySchema$1 = {
   "kind": "enum",
   "name": "DelegateActivity",
@@ -21930,6 +21871,31 @@ const DelegateActivitySchema$1 = {
               "kind": "internal",
               "name": "Data"
             }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 9,
+      "id": "__module__DredNodeRegistryPolicy__DelegateActivity[]__OtherActivities",
+      "name": "OtherActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "enum",
+            "name": "OtherActivity",
+            "id": "__module__DredNodeRegistryPolicy__OtherActivity[]",
+            "variantTypes": [
+              {
+                "kind": "variant",
+                "tag": 42,
+                "id": "__module__DredNodeRegistryPolicy__OtherActivity[]__Placeholder",
+                "name": "Placeholder",
+                "fieldTypes": []
+              }
+            ]
           }
         }
       ]
@@ -27033,6 +26999,520 @@ const dgd_DataSrcSchema$1 = {
     }
   ]
 };
+const AbstractDelegateActivitiesEnumSchema$1 = {
+  "kind": "enum",
+  "name": "AbstractDelegateActivitiesEnum",
+  "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]",
+  "variantTypes": [
+    {
+      "kind": "variant",
+      "tag": 0,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__CapoLifecycleActivities",
+      "name": "CapoLifecycleActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "enum",
+            "name": "CapoLifecycleActivity",
+            "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]",
+            "variantTypes": [
+              {
+                "kind": "variant",
+                "tag": 0,
+                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__CreatingDelegate",
+                "name": "CreatingDelegate",
+                "fieldTypes": [
+                  {
+                    "name": "seed",
+                    "type": {
+                      "kind": "internal",
+                      "name": "TxOutputId"
+                    }
+                  },
+                  {
+                    "name": "purpose",
+                    "type": {
+                      "kind": "internal",
+                      "name": "String"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 1,
+                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__queuePendingChange",
+                "name": "queuePendingChange",
+                "fieldTypes": []
+              },
+              {
+                "kind": "variant",
+                "tag": 2,
+                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__removePendingChange",
+                "name": "removePendingChange",
+                "fieldTypes": [
+                  {
+                    "name": "role",
+                    "type": {
+                      "kind": "enum",
+                      "name": "DelegateRole",
+                      "id": "__module__CapoDelegateHelpers__DelegateRole[]",
+                      "variantTypes": [
+                        {
+                          "kind": "variant",
+                          "tag": 0,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__MintDgt",
+                          "name": "MintDgt",
+                          "fieldTypes": []
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 1,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__SpendDgt",
+                          "name": "SpendDgt",
+                          "fieldTypes": []
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 2,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__MintInvariant",
+                          "name": "MintInvariant",
+                          "fieldTypes": []
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 3,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__SpendInvariant",
+                          "name": "SpendInvariant",
+                          "fieldTypes": []
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 4,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__DgDataPolicy",
+                          "name": "DgDataPolicy",
+                          "fieldTypes": [
+                            {
+                              "name": "name",
+                              "type": {
+                                "kind": "internal",
+                                "name": "String"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 5,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__OtherNamedDgt",
+                          "name": "OtherNamedDgt",
+                          "fieldTypes": [
+                            {
+                              "name": "name",
+                              "type": {
+                                "kind": "internal",
+                                "name": "String"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 6,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__BothMintAndSpendDgt",
+                          "name": "BothMintAndSpendDgt",
+                          "fieldTypes": []
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 7,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__HandledByCapoOnly",
+                          "name": "HandledByCapoOnly",
+                          "fieldTypes": []
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 3,
+                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__commitPendingChanges",
+                "name": "commitPendingChanges",
+                "fieldTypes": []
+              },
+              {
+                "kind": "variant",
+                "tag": 4,
+                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__forcingNewSpendDelegate",
+                "name": "forcingNewSpendDelegate",
+                "fieldTypes": [
+                  {
+                    "name": "seed",
+                    "type": {
+                      "kind": "internal",
+                      "name": "TxOutputId"
+                    }
+                  },
+                  {
+                    "name": "purpose",
+                    "type": {
+                      "kind": "internal",
+                      "name": "String"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 5,
+                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__forcingNewMintDelegate",
+                "name": "forcingNewMintDelegate",
+                "fieldTypes": [
+                  {
+                    "name": "seed",
+                    "type": {
+                      "kind": "internal",
+                      "name": "TxOutputId"
+                    }
+                  },
+                  {
+                    "name": "purpose",
+                    "type": {
+                      "kind": "internal",
+                      "name": "String"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 6,
+                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__updatingManifest",
+                "name": "updatingManifest",
+                "fieldTypes": [
+                  {
+                    "name": "activity",
+                    "type": {
+                      "kind": "enum",
+                      "name": "ManifestActivity",
+                      "id": "__module__CapoDelegateHelpers__ManifestActivity[]",
+                      "variantTypes": [
+                        {
+                          "kind": "variant",
+                          "tag": 0,
+                          "id": "__module__CapoDelegateHelpers__ManifestActivity[]__retiringEntry",
+                          "name": "retiringEntry",
+                          "fieldTypes": [
+                            {
+                              "name": "key",
+                              "type": {
+                                "kind": "internal",
+                                "name": "String"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 1,
+                          "id": "__module__CapoDelegateHelpers__ManifestActivity[]__updatingEntry",
+                          "name": "updatingEntry",
+                          "fieldTypes": [
+                            {
+                              "name": "key",
+                              "type": {
+                                "kind": "internal",
+                                "name": "String"
+                              }
+                            },
+                            {
+                              "name": "tokenName",
+                              "type": {
+                                "kind": "internal",
+                                "name": "ByteArray"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 2,
+                          "id": "__module__CapoDelegateHelpers__ManifestActivity[]__addingEntry",
+                          "name": "addingEntry",
+                          "fieldTypes": [
+                            {
+                              "name": "key",
+                              "type": {
+                                "kind": "internal",
+                                "name": "String"
+                              }
+                            },
+                            {
+                              "name": "tokenName",
+                              "type": {
+                                "kind": "internal",
+                                "name": "ByteArray"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 3,
+                          "id": "__module__CapoDelegateHelpers__ManifestActivity[]__forkingThreadToken",
+                          "name": "forkingThreadToken",
+                          "fieldTypes": [
+                            {
+                              "name": "key",
+                              "type": {
+                                "kind": "internal",
+                                "name": "String"
+                              }
+                            },
+                            {
+                              "name": "newThreadCount",
+                              "type": {
+                                "kind": "internal",
+                                "name": "Int"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 4,
+                          "id": "__module__CapoDelegateHelpers__ManifestActivity[]__burningThreadToken",
+                          "name": "burningThreadToken",
+                          "fieldTypes": [
+                            {
+                              "name": "key",
+                              "type": {
+                                "kind": "internal",
+                                "name": "String"
+                              }
+                            },
+                            {
+                              "name": "burnedThreadCount",
+                              "type": {
+                                "kind": "internal",
+                                "name": "Int"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 1,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__DelegateLifecycleActivities",
+      "name": "DelegateLifecycleActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "enum",
+            "name": "DelegateLifecycleActivity",
+            "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]",
+            "variantTypes": [
+              {
+                "kind": "variant",
+                "tag": 0,
+                "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__ReplacingMe",
+                "name": "ReplacingMe",
+                "fieldTypes": [
+                  {
+                    "name": "seed",
+                    "type": {
+                      "kind": "internal",
+                      "name": "TxOutputId"
+                    }
+                  },
+                  {
+                    "name": "purpose",
+                    "type": {
+                      "kind": "internal",
+                      "name": "String"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 1,
+                "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__Retiring",
+                "name": "Retiring",
+                "fieldTypes": []
+              },
+              {
+                "kind": "variant",
+                "tag": 2,
+                "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__ValidatingSettings",
+                "name": "ValidatingSettings",
+                "fieldTypes": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 2,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__SpendingActivities",
+      "name": "SpendingActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "internal",
+            "name": "Data"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 3,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__MintingActivities",
+      "name": "MintingActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "internal",
+            "name": "Data"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 4,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__BurningActivities",
+      "name": "BurningActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "internal",
+            "name": "Data"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 5,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__CreatingDelegatedData",
+      "name": "CreatingDelegatedData",
+      "fieldTypes": [
+        {
+          "name": "seed",
+          "type": {
+            "kind": "internal",
+            "name": "TxOutputId"
+          }
+        },
+        {
+          "name": "dataType",
+          "type": {
+            "kind": "internal",
+            "name": "String"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 6,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__UpdatingDelegatedData",
+      "name": "UpdatingDelegatedData",
+      "fieldTypes": [
+        {
+          "name": "dataType",
+          "type": {
+            "kind": "internal",
+            "name": "String"
+          }
+        },
+        {
+          "name": "recId",
+          "type": {
+            "kind": "internal",
+            "name": "ByteArray"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 7,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__DeletingDelegatedData",
+      "name": "DeletingDelegatedData",
+      "fieldTypes": [
+        {
+          "name": "dataType",
+          "type": {
+            "kind": "internal",
+            "name": "String"
+          }
+        },
+        {
+          "name": "recId",
+          "type": {
+            "kind": "internal",
+            "name": "ByteArray"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 8,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__MultipleDelegateActivities",
+      "name": "MultipleDelegateActivities",
+      "fieldTypes": [
+        {
+          "name": "activities",
+          "type": {
+            "kind": "list",
+            "itemType": {
+              "kind": "internal",
+              "name": "Data"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 9,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__OtherActivities",
+      "name": "OtherActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "internal",
+            "name": "Data"
+          }
+        }
+      ]
+    }
+  ]
+};
 const DgDataDetailsSchema$1 = {
   "kind": "struct",
   "format": "list",
@@ -27128,14 +27608,535 @@ const DgDataDetailsSchema$1 = {
         "kind": "internal",
         "name": "MintingPolicyHash"
       }
+    },
+    {
+      "name": "activity",
+      "type": {
+        "kind": "option",
+        "someType": {
+          "kind": "enum",
+          "name": "AbstractDelegateActivitiesEnum",
+          "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]",
+          "variantTypes": [
+            {
+              "kind": "variant",
+              "tag": 0,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__CapoLifecycleActivities",
+              "name": "CapoLifecycleActivities",
+              "fieldTypes": [
+                {
+                  "name": "activity",
+                  "type": {
+                    "kind": "enum",
+                    "name": "CapoLifecycleActivity",
+                    "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]",
+                    "variantTypes": [
+                      {
+                        "kind": "variant",
+                        "tag": 0,
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__CreatingDelegate",
+                        "name": "CreatingDelegate",
+                        "fieldTypes": [
+                          {
+                            "name": "seed",
+                            "type": {
+                              "kind": "internal",
+                              "name": "TxOutputId"
+                            }
+                          },
+                          {
+                            "name": "purpose",
+                            "type": {
+                              "kind": "internal",
+                              "name": "String"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 1,
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__queuePendingChange",
+                        "name": "queuePendingChange",
+                        "fieldTypes": []
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 2,
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__removePendingChange",
+                        "name": "removePendingChange",
+                        "fieldTypes": [
+                          {
+                            "name": "role",
+                            "type": {
+                              "kind": "enum",
+                              "name": "DelegateRole",
+                              "id": "__module__CapoDelegateHelpers__DelegateRole[]",
+                              "variantTypes": [
+                                {
+                                  "kind": "variant",
+                                  "tag": 0,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__MintDgt",
+                                  "name": "MintDgt",
+                                  "fieldTypes": []
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 1,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__SpendDgt",
+                                  "name": "SpendDgt",
+                                  "fieldTypes": []
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 2,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__MintInvariant",
+                                  "name": "MintInvariant",
+                                  "fieldTypes": []
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 3,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__SpendInvariant",
+                                  "name": "SpendInvariant",
+                                  "fieldTypes": []
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 4,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__DgDataPolicy",
+                                  "name": "DgDataPolicy",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "name",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 5,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__OtherNamedDgt",
+                                  "name": "OtherNamedDgt",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "name",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 6,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__BothMintAndSpendDgt",
+                                  "name": "BothMintAndSpendDgt",
+                                  "fieldTypes": []
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 7,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__HandledByCapoOnly",
+                                  "name": "HandledByCapoOnly",
+                                  "fieldTypes": []
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 3,
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__commitPendingChanges",
+                        "name": "commitPendingChanges",
+                        "fieldTypes": []
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 4,
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__forcingNewSpendDelegate",
+                        "name": "forcingNewSpendDelegate",
+                        "fieldTypes": [
+                          {
+                            "name": "seed",
+                            "type": {
+                              "kind": "internal",
+                              "name": "TxOutputId"
+                            }
+                          },
+                          {
+                            "name": "purpose",
+                            "type": {
+                              "kind": "internal",
+                              "name": "String"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 5,
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__forcingNewMintDelegate",
+                        "name": "forcingNewMintDelegate",
+                        "fieldTypes": [
+                          {
+                            "name": "seed",
+                            "type": {
+                              "kind": "internal",
+                              "name": "TxOutputId"
+                            }
+                          },
+                          {
+                            "name": "purpose",
+                            "type": {
+                              "kind": "internal",
+                              "name": "String"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 6,
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__updatingManifest",
+                        "name": "updatingManifest",
+                        "fieldTypes": [
+                          {
+                            "name": "activity",
+                            "type": {
+                              "kind": "enum",
+                              "name": "ManifestActivity",
+                              "id": "__module__CapoDelegateHelpers__ManifestActivity[]",
+                              "variantTypes": [
+                                {
+                                  "kind": "variant",
+                                  "tag": 0,
+                                  "id": "__module__CapoDelegateHelpers__ManifestActivity[]__retiringEntry",
+                                  "name": "retiringEntry",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "key",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 1,
+                                  "id": "__module__CapoDelegateHelpers__ManifestActivity[]__updatingEntry",
+                                  "name": "updatingEntry",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "key",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                      }
+                                    },
+                                    {
+                                      "name": "tokenName",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "ByteArray"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 2,
+                                  "id": "__module__CapoDelegateHelpers__ManifestActivity[]__addingEntry",
+                                  "name": "addingEntry",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "key",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                      }
+                                    },
+                                    {
+                                      "name": "tokenName",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "ByteArray"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 3,
+                                  "id": "__module__CapoDelegateHelpers__ManifestActivity[]__forkingThreadToken",
+                                  "name": "forkingThreadToken",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "key",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                      }
+                                    },
+                                    {
+                                      "name": "newThreadCount",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "Int"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 4,
+                                  "id": "__module__CapoDelegateHelpers__ManifestActivity[]__burningThreadToken",
+                                  "name": "burningThreadToken",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "key",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                      }
+                                    },
+                                    {
+                                      "name": "burnedThreadCount",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "Int"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 1,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__DelegateLifecycleActivities",
+              "name": "DelegateLifecycleActivities",
+              "fieldTypes": [
+                {
+                  "name": "activity",
+                  "type": {
+                    "kind": "enum",
+                    "name": "DelegateLifecycleActivity",
+                    "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]",
+                    "variantTypes": [
+                      {
+                        "kind": "variant",
+                        "tag": 0,
+                        "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__ReplacingMe",
+                        "name": "ReplacingMe",
+                        "fieldTypes": [
+                          {
+                            "name": "seed",
+                            "type": {
+                              "kind": "internal",
+                              "name": "TxOutputId"
+                            }
+                          },
+                          {
+                            "name": "purpose",
+                            "type": {
+                              "kind": "internal",
+                              "name": "String"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 1,
+                        "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__Retiring",
+                        "name": "Retiring",
+                        "fieldTypes": []
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 2,
+                        "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__ValidatingSettings",
+                        "name": "ValidatingSettings",
+                        "fieldTypes": []
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 2,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__SpendingActivities",
+              "name": "SpendingActivities",
+              "fieldTypes": [
+                {
+                  "name": "activity",
+                  "type": {
+                    "kind": "internal",
+                    "name": "Data"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 3,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__MintingActivities",
+              "name": "MintingActivities",
+              "fieldTypes": [
+                {
+                  "name": "activity",
+                  "type": {
+                    "kind": "internal",
+                    "name": "Data"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 4,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__BurningActivities",
+              "name": "BurningActivities",
+              "fieldTypes": [
+                {
+                  "name": "activity",
+                  "type": {
+                    "kind": "internal",
+                    "name": "Data"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 5,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__CreatingDelegatedData",
+              "name": "CreatingDelegatedData",
+              "fieldTypes": [
+                {
+                  "name": "seed",
+                  "type": {
+                    "kind": "internal",
+                    "name": "TxOutputId"
+                  }
+                },
+                {
+                  "name": "dataType",
+                  "type": {
+                    "kind": "internal",
+                    "name": "String"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 6,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__UpdatingDelegatedData",
+              "name": "UpdatingDelegatedData",
+              "fieldTypes": [
+                {
+                  "name": "dataType",
+                  "type": {
+                    "kind": "internal",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "recId",
+                  "type": {
+                    "kind": "internal",
+                    "name": "ByteArray"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 7,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__DeletingDelegatedData",
+              "name": "DeletingDelegatedData",
+              "fieldTypes": [
+                {
+                  "name": "dataType",
+                  "type": {
+                    "kind": "internal",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "recId",
+                  "type": {
+                    "kind": "internal",
+                    "name": "ByteArray"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 8,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__MultipleDelegateActivities",
+              "name": "MultipleDelegateActivities",
+              "fieldTypes": [
+                {
+                  "name": "activities",
+                  "type": {
+                    "kind": "list",
+                    "itemType": {
+                      "kind": "internal",
+                      "name": "Data"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 9,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__OtherActivities",
+              "name": "OtherActivities",
+              "fieldTypes": [
+                {
+                  "name": "activity",
+                  "type": {
+                    "kind": "internal",
+                    "name": "Data"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
     }
   ]
 };
 
 class NodeRegistryController extends DelegatedDataContract {
   dataBridgeClass = DredNodeRegistryPolicyDataBridge;
-  scriptBundle() {
-    return NodeRegistryBundle.create();
+  async scriptBundleClass() {
+    const module = await import('./contracts-preprod/NodeRegistry.hlb.mjs');
+    return module.default;
   }
   idPrefix = "dredNode";
   get delegateName() {
@@ -27166,9 +28167,7 @@ class NodeRegistryController extends DelegatedDataContract {
   async mkTxnRegisteringNode(nodeReg, initialTcx) {
     await this.capo.getMintDelegate();
     const { capo } = this;
-    const tcx0 = initialTcx || this.mkTcx(
-      "register dred node"
-    );
+    const tcx0 = initialTcx || this.mkTcx("register dred node");
     const tcx1 = await capo.mkTxnWithMemberInfo(void 0, tcx0);
     const capoUtxos = await capo.findCapoUtxos();
     const charterData = await capo.findCharterData(void 0, {
@@ -27199,28 +28198,29 @@ class NodeRegistryController extends DelegatedDataContract {
     ).then((tcx) => tcx);
   }
   async mkTxnActivatingNode(item, options = { updatedFields: {} }, initialTcx) {
-    const tcx0 = initialTcx || this.mkTcx(
-      "activating dred node"
-    );
+    const tcx0 = initialTcx || this.mkTcx("activating dred node");
     tcx0.addSigners(this.actorContext.wallet.pubKey.hash());
     if (!item.data) {
       debugger;
       throw new Error("node not found");
     }
-    return this.mkTxnUpdatingNodeRegistration("activating dred node", item, {
-      ...options,
-      withMemberToken: false,
-      activity: this.activity.SpendingActivities.ActivatingNode(item.data.id),
-      updatedFields: {
-        state: { Active: tcx0.txnTime.getTime() },
-        ...options.updatedFields
-      }
-    }, tcx0);
+    return this.mkTxnUpdatingNodeRegistration(
+      "activating dred node",
+      item,
+      {
+        ...options,
+        withMemberToken: false,
+        activity: this.activity.SpendingActivities.ActivatingNode(item.data.id),
+        updatedFields: {
+          state: { Active: tcx0.txnTime.getTime() },
+          ...options.updatedFields
+        }
+      },
+      tcx0
+    );
   }
   async mkTxnUpdatingNodeRegistration(txnName, item, options, initialTcx) {
-    const tcx0 = initialTcx || this.mkTcx(
-      "update node registration"
-    );
+    const tcx0 = initialTcx || this.mkTcx("update node registration");
     const withMemberToken = options.withMemberToken ?? true;
     const tcx1 = withMemberToken ? await this.capo.mkTxnWithMemberInfo(void 0, tcx0) : tcx0;
     const capoUtxos = await this.capo.findCapoUtxos();
@@ -27233,42 +28233,50 @@ class NodeRegistryController extends DelegatedDataContract {
     });
     const pubKey = options.updatedFields.nodeDetails?.pubKey ?? item.data?.nodeDetails.pubKey;
     if (!pubKey) throw new Error("missing required pubKey");
-    return super.mkTxnUpdateRecord(txnName, item, {
-      // default activity
-      activity: this.activity.SpendingActivities.UpdatingRecord(item.data.id),
-      // ..., can be overridden by options
-      ...options,
-      updatedFields: {
-        ...options.updatedFields,
-        nodeDetails: {
-          ...item.data.nodeDetails,
-          ...options.updatedFields.nodeDetails,
-          pubKey: makePubKey(pubKey).toHex()
+    return super.mkTxnUpdateRecord(
+      txnName,
+      item,
+      {
+        // default activity
+        activity: this.activity.SpendingActivities.UpdatingRecord(item.data.id),
+        // ..., can be overridden by options
+        ...options,
+        updatedFields: {
+          ...options.updatedFields,
+          nodeDetails: {
+            ...item.data.nodeDetails,
+            ...options.updatedFields.nodeDetails,
+            pubKey: makePubKey(pubKey).toHex()
+          }
         }
-      }
-    }, tcx2);
+      },
+      tcx2
+    );
   }
   async mkTxnValidatingNode(txnName, item, options, initialTcx) {
-    const tcx0 = initialTcx || this.mkTcx(
-      "validating dred node"
-    );
+    const tcx0 = initialTcx || this.mkTcx("validating dred node");
     const existingNeedsValidation = (item.data?.state).NeedsValidation;
     if (!existingNeedsValidation) throw new Error("node is not in need of validation");
     const { validatorReg } = options;
     const tcx1 = await this.addValidatorRef(tcx0, validatorReg);
-    const tcx2 = await this.mkTxnUpdatingNodeRegistration(txnName, item, {
-      ...options,
-      withMemberToken: false,
-      updatedFields: {
-        state: {
-          NeedsValidation: [validatorReg.data.id, ...existingNeedsValidation]
-        }
+    const tcx2 = await this.mkTxnUpdatingNodeRegistration(
+      txnName,
+      item,
+      {
+        ...options,
+        withMemberToken: false,
+        updatedFields: {
+          state: {
+            NeedsValidation: [validatorReg.data.id, ...existingNeedsValidation]
+          }
+        },
+        activity: this.activity.SpendingActivities.ValidatingNode({
+          id: item.data.id,
+          validatorId: validatorReg.data.id
+        })
       },
-      activity: this.activity.SpendingActivities.ValidatingNode({
-        id: item.data.id,
-        validatorId: validatorReg.data.id
-      })
-    }, tcx1);
+      tcx1
+    );
     tcx2.addSigners(validatorReg.data.nodeDetails.pubKeyHash);
     return tcx2;
   }
@@ -27336,6 +28344,10 @@ class NeighborhoodPolicyDataBridge extends ContractDataBridge {
      */
     RevenueModel: new RevenueModelHelper({ isMainnet: this.isMainnet }),
     /**
+     * generates UplcData for the enum type ***NbhDetails*** for the `BasicDelegate` script
+     */
+    NbhDetails: new NbhDetailsHelper({ isMainnet: this.isMainnet }),
+    /**
      * generates UplcData for the enum type ***DelegateDatum*** for the `BasicDelegate` script
      */
     DelegateDatum: new DelegateDatumHelper({ isMainnet: this.isMainnet }),
@@ -27368,6 +28380,10 @@ class NeighborhoodPolicyDataBridge extends ContractDataBridge {
      */
     BurningActivity: new BurningActivityHelper({ isMainnet: this.isMainnet }),
     /**
+     * generates UplcData for the enum type ***OtherActivity*** for the `BasicDelegate` script
+     */
+    OtherActivity: new OtherActivityHelper({ isMainnet: this.isMainnet }),
+    /**
      * generates UplcData for the enum type ***DelegateActivity*** for the `BasicDelegate` script
      */
     DelegateActivity: new DelegateActivityHelper({ isMainnet: this.isMainnet }),
@@ -27396,6 +28412,10 @@ class NeighborhoodPolicyDataBridge extends ContractDataBridge {
      */
     dgd_DataSrc: new dgd_DataSrcHelper({ isMainnet: this.isMainnet }),
     /**
+     * generates UplcData for the enum type ***AbstractDelegateActivitiesEnum*** for the `BasicDelegate` script
+     */
+    AbstractDelegateActivitiesEnum: new AbstractDelegateActivitiesEnumHelper({ isMainnet: this.isMainnet }),
+    /**
      * generates UplcData for the enum type ***AnyData*** for the `BasicDelegate` script
      */
     AnyData: (fields) => {
@@ -27408,22 +28428,22 @@ class NeighborhoodPolicyDataBridge extends ContractDataBridge {
       return this["\u1C7A\u1C7ADelegationDetailCast"].toUplcData(fields);
     },
     /**
-     * generates UplcData for the enum type ***AppInfo*** for the `BasicDelegate` script
+     * generates UplcData for the enum type ***AppInfoV1*** for the `BasicDelegate` script
      */
-    AppInfo: (fields) => {
-      return this["\u1C7A\u1C7AAppInfoCast"].toUplcData(fields);
+    AppInfoV1: (fields) => {
+      return this["\u1C7A\u1C7AAppInfoV1Cast"].toUplcData(fields);
     },
     /**
-     * generates UplcData for the enum type ***NodeOpsInfo*** for the `BasicDelegate` script
+     * generates UplcData for the enum type ***NodeOpsInfoV1*** for the `BasicDelegate` script
      */
-    NodeOpsInfo: (fields) => {
-      return this["\u1C7A\u1C7ANodeOpsInfoCast"].toUplcData(fields);
+    NodeOpsInfoV1: (fields) => {
+      return this["\u1C7A\u1C7ANodeOpsInfoV1Cast"].toUplcData(fields);
     },
     /**
-     * generates UplcData for the enum type ***UpdateInfo*** for the `BasicDelegate` script
+     * generates UplcData for the enum type ***UpdateInfoV1*** for the `BasicDelegate` script
      */
-    UpdateInfo: (fields) => {
-      return this["\u1C7A\u1C7AUpdateInfoCast"].toUplcData(fields);
+    UpdateInfoV1: (fields) => {
+      return this["\u1C7A\u1C7AUpdateInfoV1Cast"].toUplcData(fields);
     },
     /**
      * generates UplcData for the enum type ***NeighborhoodData*** for the `BasicDelegate` script
@@ -27488,20 +28508,20 @@ class NeighborhoodPolicyDataBridge extends ContractDataBridge {
   );
   /**
               * uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7AAppInfoCast" = makeCast(
-    AppInfoSchema,
+  "\u1C7A\u1C7AAppInfoV1Cast" = makeCast(
+    AppInfoV1Schema,
     { isMainnet: true, unwrapSingleFieldEnumVariants: true }
   );
   /**
               * uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7ANodeOpsInfoCast" = makeCast(
-    NodeOpsInfoSchema,
+  "\u1C7A\u1C7ANodeOpsInfoV1Cast" = makeCast(
+    NodeOpsInfoV1Schema,
     { isMainnet: true, unwrapSingleFieldEnumVariants: true }
   );
   /**
               * uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7AUpdateInfoCast" = makeCast(
-    UpdateInfoSchema,
+  "\u1C7A\u1C7AUpdateInfoV1Cast" = makeCast(
+    UpdateInfoV1Schema,
     { isMainnet: true, unwrapSingleFieldEnumVariants: true }
   );
   /**
@@ -27634,6 +28654,26 @@ class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
       */
   RevenueModel(d) {
     const typeHelper = this.bridge.types.RevenueModel;
+    const cast = typeHelper["\u1C7A\u1C7Acast"];
+    return cast.fromUplcData(d);
+  }
+  /* enumReader helper */
+  /**
+      * reads UplcData *known to fit the **NbhDetails*** enum type,
+      * for the BasicDelegate script.
+      * #### Standard WARNING
+      * 
+      * This is a low-level data-reader for use in ***advanced development scenarios***.
+      * 
+      * Used correctly with data that matches the enum type, this reader
+      * returns strongly-typed data - your code using these types will be safe.
+      * 
+      * On the other hand, reading non-matching data will not give you a valid result.  
+      * It may throw an error, or it may throw no error, but return a value that
+      * causes some error later on in your code, when you try to use it.
+      */
+  NbhDetails(d) {
+    const typeHelper = this.bridge.types.NbhDetails;
     const cast = typeHelper["\u1C7A\u1C7Acast"];
     return cast.fromUplcData(d);
   }
@@ -27802,6 +28842,26 @@ class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
   }
   /* enumReader helper */
   /**
+      * reads UplcData *known to fit the **OtherActivity*** enum type,
+      * for the BasicDelegate script.
+      * #### Standard WARNING
+      * 
+      * This is a low-level data-reader for use in ***advanced development scenarios***.
+      * 
+      * Used correctly with data that matches the enum type, this reader
+      * returns strongly-typed data - your code using these types will be safe.
+      * 
+      * On the other hand, reading non-matching data will not give you a valid result.  
+      * It may throw an error, or it may throw no error, but return a value that
+      * causes some error later on in your code, when you try to use it.
+      */
+  OtherActivity(d) {
+    const typeHelper = this.bridge.types.OtherActivity;
+    const cast = typeHelper["\u1C7A\u1C7Acast"];
+    return cast.fromUplcData(d);
+  }
+  /* enumReader helper */
+  /**
       * reads UplcData *known to fit the **DelegateActivity*** enum type,
       * for the BasicDelegate script.
       * #### Standard WARNING
@@ -27942,6 +29002,26 @@ class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
   }
   /* enumReader helper */
   /**
+      * reads UplcData *known to fit the **AbstractDelegateActivitiesEnum*** enum type,
+      * for the BasicDelegate script.
+      * #### Standard WARNING
+      * 
+      * This is a low-level data-reader for use in ***advanced development scenarios***.
+      * 
+      * Used correctly with data that matches the enum type, this reader
+      * returns strongly-typed data - your code using these types will be safe.
+      * 
+      * On the other hand, reading non-matching data will not give you a valid result.  
+      * It may throw an error, or it may throw no error, but return a value that
+      * causes some error later on in your code, when you try to use it.
+      */
+  AbstractDelegateActivitiesEnum(d) {
+    const typeHelper = this.bridge.types.AbstractDelegateActivitiesEnum;
+    const cast = typeHelper["\u1C7A\u1C7Acast"];
+    return cast.fromUplcData(d);
+  }
+  /* enumReader helper */
+  /**
       * reads UplcData *known to fit the **AnyData*** struct type,
       * for the BasicDelegate script.
       * #### Standard WARNING
@@ -27980,7 +29060,7 @@ class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
   }
   /* structReader helper */
   /**
-      * reads UplcData *known to fit the **AppInfo*** struct type,
+      * reads UplcData *known to fit the **AppInfoV1*** struct type,
       * for the BasicDelegate script.
       * #### Standard WARNING
       * 
@@ -27993,13 +29073,13 @@ class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
       * It may throw an error, or it may throw no error, but return a value that
       * causes some error later on in your code, when you try to use it.
       */
-  AppInfo(d) {
-    const cast = this.bridge["\u1C7A\u1C7AAppInfoCast"];
+  AppInfoV1(d) {
+    const cast = this.bridge["\u1C7A\u1C7AAppInfoV1Cast"];
     return cast.fromUplcData(d);
   }
   /* structReader helper */
   /**
-      * reads UplcData *known to fit the **NodeOpsInfo*** struct type,
+      * reads UplcData *known to fit the **NodeOpsInfoV1*** struct type,
       * for the BasicDelegate script.
       * #### Standard WARNING
       * 
@@ -28012,13 +29092,13 @@ class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
       * It may throw an error, or it may throw no error, but return a value that
       * causes some error later on in your code, when you try to use it.
       */
-  NodeOpsInfo(d) {
-    const cast = this.bridge["\u1C7A\u1C7ANodeOpsInfoCast"];
+  NodeOpsInfoV1(d) {
+    const cast = this.bridge["\u1C7A\u1C7ANodeOpsInfoV1Cast"];
     return cast.fromUplcData(d);
   }
   /* structReader helper */
   /**
-      * reads UplcData *known to fit the **UpdateInfo*** struct type,
+      * reads UplcData *known to fit the **UpdateInfoV1*** struct type,
       * for the BasicDelegate script.
       * #### Standard WARNING
       * 
@@ -28031,8 +29111,8 @@ class NeighborhoodPolicyDataBridgeReader extends DataBridgeReaderClass {
       * It may throw an error, or it may throw no error, but return a value that
       * causes some error later on in your code, when you try to use it.
       */
-  UpdateInfo(d) {
-    const cast = this.bridge["\u1C7A\u1C7AUpdateInfoCast"];
+  UpdateInfoV1(d) {
+    const cast = this.bridge["\u1C7A\u1C7AUpdateInfoV1Cast"];
     return cast.fromUplcData(d);
   }
   /* structReader helper */
@@ -28200,7 +29280,7 @@ class NeighborhoodStateHelper extends EnumBridge {
   );
   /**
    * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Preproduction"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4180***
    */
   get Preproduction() {
     const uplc = this.mkUplcData(
@@ -28212,7 +29292,7 @@ class NeighborhoodStateHelper extends EnumBridge {
   /* tagOnly variant accessor */
   /**
    * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Active"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4181***
    */
   get Active() {
     const uplc = this.mkUplcData(
@@ -28224,7 +29304,7 @@ class NeighborhoodStateHelper extends EnumBridge {
   /* tagOnly variant accessor */
   /**
    * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.UpdatePending"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4182***
    */
   get UpdatePending() {
     const uplc = this.mkUplcData(
@@ -28236,7 +29316,7 @@ class NeighborhoodStateHelper extends EnumBridge {
   /* tagOnly variant accessor */
   /**
    * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.UpdateDisputed"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4183***
    */
   get UpdateDisputed() {
     const uplc = this.mkUplcData(
@@ -28248,7 +29328,7 @@ class NeighborhoodStateHelper extends EnumBridge {
   /* tagOnly variant accessor */
   /**
    * (property getter): UplcData for ***"NeighborhoodData::NeighborhoodState.Retired"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4184***
    */
   get Retired() {
     const uplc = this.mkUplcData(
@@ -28270,7 +29350,7 @@ class FeeSourceHelper extends EnumBridge {
   );
   /**
    * (property getter): UplcData for ***"NeighborhoodData::FeeSource.EndUser"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#4160***
    */
   get EndUser() {
     const uplc = this.mkUplcData(
@@ -28337,25 +29417,48 @@ class RevenueModelHelper extends EnumBridge {
     { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
   );
   /**
-   * generates  UplcData for ***"NeighborhoodData::RevenueModel.TransactionBased"***
-   * @remarks - ***RevenueModel$TransactionBasedLike*** is the same as the expanded field-types.
+   * generates  UplcData for ***"NeighborhoodData::RevenueModel.TransactionBasedV1"***
+   * @remarks - ***RevenueModel$TransactionBasedV1Like*** is the same as the expanded field-types.
    */
-  TransactionBased(fields) {
+  TransactionBasedV1(fields) {
     const uplc = this.mkUplcData({
-      TransactionBased: fields
-    }, "NeighborhoodData::RevenueModel.TransactionBased");
+      TransactionBasedV1: fields
+    }, "NeighborhoodData::RevenueModel.TransactionBasedV1");
     return uplc;
   }
   /*multiFieldVariant enum accessor*/
   /**
-   * generates  UplcData for ***"NeighborhoodData::RevenueModel.Subscription"***
+   * generates  UplcData for ***"NeighborhoodData::RevenueModel.SubscriptionV1"***
+   * @remarks - ***RevenueModel$SubscriptionV1Like*** is the same as the expanded field-types.
    */
-  Subscription(subscriptionFee) {
+  SubscriptionV1(fields) {
     const uplc = this.mkUplcData({
-      Subscription: subscriptionFee
-    }, "NeighborhoodData::RevenueModel.Subscription");
+      SubscriptionV1: fields
+    }, "NeighborhoodData::RevenueModel.SubscriptionV1");
     return uplc;
   }
+  /*multiFieldVariant enum accessor*/
+}
+class NbhDetailsHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    NbhDetailsSchema,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * generates  UplcData for ***"NeighborhoodData::NbhDetails.V1"***
+   * @remarks - ***NbhDetails$V1Like*** is the same as the expanded field-types.
+   */
+  V1(fields) {
+    const uplc = this.mkUplcData({
+      V1: fields
+    }, "NeighborhoodData::NbhDetails.V1");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
 }
 class DelegateDatumHelper extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -28562,7 +29665,339 @@ class ManifestActivityHelper extends EnumBridge {
   }
   /*multiFieldVariant enum accessor*/
 }
-class DelegateRoleHelperNested extends EnumBridge {
+class CapoLifecycleActivityHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    CapoLifecycleActivitySchema,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  CreatingDelegate(seedOrUf, filteredFields) {
+    if (filteredFields) {
+      const seedTxOutputId = this.getSeed(seedOrUf);
+      const uplc = this.mkUplcData({
+        CreatingDelegate: { seed: seedTxOutputId, ...filteredFields }
+      }, "CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate");
+      return uplc;
+    } else {
+      const fields = seedOrUf;
+      const uplc = this.mkUplcData({
+        CreatingDelegate: fields
+      }, "CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate");
+      return uplc;
+    }
+  }
+  /*multiFieldVariant/seeded enum accessor*/
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***, 
+   * @param fields - \{ purpose: string \}
+   * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+   * ##### Activity contains implied seed
+   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+   * provided implicitly by a SeedActivity-supporting library function. 
+   *
+   * #### Usage
+   *   1. Call the `$seeded$CreatingDelegate({ purpose })`
+    *       method with the indicated (non-seed) details.
+   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+   *       `mkTxnCreateRecord({activity})` method.
+   */
+  $seeded$CreatingDelegate = impliedSeedActivityMaker(
+    this,
+    this.CreatingDelegate
+  );
+  /* coda: seeded helper in same multiFieldVariant/seeded */
+  /**
+   * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+   */
+  get queuePendingChange() {
+    const uplc = this.mkUplcData(
+      { queuePendingChange: {} },
+      "CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
+  /**
+   * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
+   */
+  get commitPendingChanges() {
+    const uplc = this.mkUplcData(
+      { commitPendingChanges: {} },
+      "CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"
+    );
+    return uplc;
+  }
+  forcingNewSpendDelegate(seedOrUf, filteredFields) {
+    if (filteredFields) {
+      const seedTxOutputId = this.getSeed(seedOrUf);
+      const uplc = this.mkUplcData({
+        forcingNewSpendDelegate: { seed: seedTxOutputId, ...filteredFields }
+      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate");
+      return uplc;
+    } else {
+      const fields = seedOrUf;
+      const uplc = this.mkUplcData({
+        forcingNewSpendDelegate: fields
+      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate");
+      return uplc;
+    }
+  }
+  /*multiFieldVariant/seeded enum accessor*/
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***, 
+   * @param fields - \{ purpose: string \}
+   * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+   * ##### Activity contains implied seed
+   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+   * provided implicitly by a SeedActivity-supporting library function. 
+   *
+   * #### Usage
+   *   1. Call the `$seeded$forcingNewSpendDelegate({ purpose })`
+    *       method with the indicated (non-seed) details.
+   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+   *       `mkTxnCreateRecord({activity})` method.
+   */
+  $seeded$forcingNewSpendDelegate = impliedSeedActivityMaker(
+    this,
+    this.forcingNewSpendDelegate
+  );
+  forcingNewMintDelegate(seedOrUf, filteredFields) {
+    if (filteredFields) {
+      const seedTxOutputId = this.getSeed(seedOrUf);
+      const uplc = this.mkUplcData({
+        forcingNewMintDelegate: { seed: seedTxOutputId, ...filteredFields }
+      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate");
+      return uplc;
+    } else {
+      const fields = seedOrUf;
+      const uplc = this.mkUplcData({
+        forcingNewMintDelegate: fields
+      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate");
+      return uplc;
+    }
+  }
+  /*multiFieldVariant/seeded enum accessor*/
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***, 
+   * @param fields - \{ purpose: string \}
+   * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+   * ##### Activity contains implied seed
+   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+   * provided implicitly by a SeedActivity-supporting library function. 
+   *
+   * #### Usage
+   *   1. Call the `$seeded$forcingNewMintDelegate({ purpose })`
+    *       method with the indicated (non-seed) details.
+   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+   *       `mkTxnCreateRecord({activity})` method.
+   */
+  $seeded$forcingNewMintDelegate = impliedSeedActivityMaker(
+    this,
+    this.forcingNewMintDelegate
+  );
+  /* coda: seeded helper in same multiFieldVariant/seeded */
+}
+class DelegateLifecycleActivityHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    DelegateLifecycleActivitySchema,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  ReplacingMe(seedOrUf, filteredFields) {
+    if (filteredFields) {
+      const seedTxOutputId = this.getSeed(seedOrUf);
+      const uplc = this.mkUplcData({
+        ReplacingMe: { seed: seedTxOutputId, ...filteredFields }
+      }, "CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe");
+      return uplc;
+    } else {
+      const fields = seedOrUf;
+      const uplc = this.mkUplcData({
+        ReplacingMe: fields
+      }, "CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe");
+      return uplc;
+    }
+  }
+  /*multiFieldVariant/seeded enum accessor*/
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe"***, 
+   * @param fields - \{ purpose: string \}
+   * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+   * ##### Activity contains implied seed
+   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+   * provided implicitly by a SeedActivity-supporting library function. 
+   *
+   * #### Usage
+   *   1. Call the `$seeded$ReplacingMe({ purpose })`
+    *       method with the indicated (non-seed) details.
+   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+   *       `mkTxnCreateRecord({activity})` method.
+   */
+  $seeded$ReplacingMe = impliedSeedActivityMaker(
+    this,
+    this.ReplacingMe
+  );
+  /* coda: seeded helper in same multiFieldVariant/seeded */
+  /**
+   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.Retiring"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
+   */
+  get Retiring() {
+    const uplc = this.mkUplcData(
+      { Retiring: {} },
+      "CapoDelegateHelpers::DelegateLifecycleActivity.Retiring"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
+  /**
+   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.ValidatingSettings"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
+   */
+  get ValidatingSettings() {
+    const uplc = this.mkUplcData(
+      { ValidatingSettings: {} },
+      "CapoDelegateHelpers::DelegateLifecycleActivity.ValidatingSettings"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
+}
+class SpendingActivityHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    SpendingActivitySchema,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * generates  UplcData for ***"NeighborhoodPolicy::SpendingActivity.UpdatingRecord"***
+   */
+  UpdatingRecord(id) {
+    const uplc = this.mkUplcData({
+      UpdatingRecord: id
+    }, "NeighborhoodPolicy::SpendingActivity.UpdatingRecord");
+    return uplc;
+  }
+  /**
+   * generates  UplcData for ***"NeighborhoodPolicy::SpendingActivity.ActivatingNeighborhood"***
+   */
+  ActivatingNeighborhood(id) {
+    const uplc = this.mkUplcData({
+      ActivatingNeighborhood: id
+    }, "NeighborhoodPolicy::SpendingActivity.ActivatingNeighborhood");
+    return uplc;
+  }
+}
+class MintingActivityHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    MintingActivitySchema,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+  * generates  UplcData for ***"NeighborhoodPolicy::MintingActivity.CreatingRecord"***, 
+  * given a transaction-context (or direct arg) with a ***seed utxo*** 
+  * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+  *  - to get a transaction context having the seed needed for this argument, 
+  *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
+  * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
+  *  - in a context providing an implicit seed utxo, use 
+  *    the `$seeded$CreatingRecord}` variant of this activity instead
+  *
+   */
+  CreatingRecord(thingWithSeed) {
+    const seedTxOutputId = this.getSeed(thingWithSeed);
+    const uplc = this.mkUplcData({
+      CreatingRecord: seedTxOutputId
+    }, "NeighborhoodPolicy::MintingActivity.CreatingRecord");
+    return uplc;
+  }
+  /*singleField/seeded enum variant*/
+  /**
+   * generates  UplcData for ***"NeighborhoodPolicy::MintingActivity.CreatingRecord"***
+   * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+   * ##### Activity contains implied seed
+   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+   * provided implicitly by a SeedActivity-supporting library function. 
+   * #### Usage
+   * Access the activity-creator as a getter: `$seeded$CreatingRecord`
+   *
+   * Use the resulting activity-creator in a seed-providing context, such as the delegated-data-controller's
+   * `mkTxnCreateRecord({activity, ...})` method.
+   */
+  get $seeded$CreatingRecord() {
+    return impliedSeedActivityMaker(this, this.CreatingRecord)();
+  }
+  /* coda: seeded helper in same singleField/seeded enum variant*/
+}
+class BurningActivityHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    BurningActivitySchema,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * generates  UplcData for ***"NeighborhoodPolicy::BurningActivity.DeletingRecord"***
+   */
+  DeletingRecord(id) {
+    const uplc = this.mkUplcData({
+      DeletingRecord: id
+    }, "NeighborhoodPolicy::BurningActivity.DeletingRecord");
+    return uplc;
+  }
+}
+class OtherActivityHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    OtherActivitySchema,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * (property getter): UplcData for ***"NeighborhoodPolicy::OtherActivity.Placeholder"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#42***
+   */
+  get Placeholder() {
+    const uplc = this.mkUplcData(
+      { Placeholder: {} },
+      "NeighborhoodPolicy::OtherActivity.Placeholder"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
+}
+class ActivityDelegateRoleHelperNested extends EnumBridge {
   /*mkEnumHelperClass*/
   /**
           * @internal
@@ -28620,7 +30055,7 @@ class DelegateRoleHelperNested extends EnumBridge {
   }
   /* tagOnly variant accessor */
   /**
-   * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
+   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
   * @remarks
   * #### Nested activity: 
   * this is connected to a nested-activity wrapper, so the details are piped through 
@@ -28634,7 +30069,7 @@ class DelegateRoleHelperNested extends EnumBridge {
     return uplc;
   }
   /**
-   * generates  UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
+   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
   * @remarks
   * #### Nested activity: 
   * this is connected to a nested-activity wrapper, so the details are piped through 
@@ -28755,466 +30190,6 @@ class ManifestActivityHelperNested extends EnumBridge {
     return uplc;
   }
   /*multiFieldVariant enum accessor*/
-}
-class CapoLifecycleActivityHelper extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    CapoLifecycleActivitySchema,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  CreatingDelegate(seedOrUf, filteredFields) {
-    if (filteredFields) {
-      const seedTxOutputId = this.getSeed(seedOrUf);
-      const uplc = this.mkUplcData({
-        CreatingDelegate: { seed: seedTxOutputId, ...filteredFields }
-      }, "CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate");
-      return uplc;
-    } else {
-      const fields = seedOrUf;
-      const uplc = this.mkUplcData({
-        CreatingDelegate: fields
-      }, "CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate");
-      return uplc;
-    }
-  }
-  /*multiFieldVariant/seeded enum accessor*/
-  /**
-   * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.CreatingDelegate"***, 
-   * @param fields - \{ purpose: string \}
-   * @remarks
-  * ##### Seeded activity
-  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-   * ##### Activity contains implied seed
-   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
-   * provided implicitly by a SeedActivity-supporting library function. 
-   *
-   * #### Usage
-   *   1. Call the `$seeded$CreatingDelegate({ purpose })`
-    *       method with the indicated (non-seed) details.
-   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-   *       `mkTxnCreateRecord({activity})` method.
-   */
-  $seeded$CreatingDelegate = impliedSeedActivityMaker(
-    this,
-    this.CreatingDelegate
-  );
-  /* coda: seeded helper in same multiFieldVariant/seeded */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-   */
-  get queuePendingChange() {
-    const uplc = this.mkUplcData(
-      { queuePendingChange: {} },
-      "CapoDelegateHelpers::CapoLifecycleActivity.queuePendingChange"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * access to different variants of the ***nested DelegateRole*** type needed for ***CapoLifecycleActivity:removePendingChange***.
-   */
-  get removePendingChange() {
-    const nestedAccessor = new DelegateRoleHelperNested({
-      isMainnet: this.isMainnet,
-      isNested: true,
-      isActivity: false
-    });
-    nestedAccessor.mkDataVia(
-      (role) => {
-        return this.mkUplcData(
-          { removePendingChange: role },
-          "CapoDelegateHelpers::CapoLifecycleActivity.removePendingChange"
-        );
-      }
-    );
-    return nestedAccessor;
-  }
-  /* nested enum accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-   */
-  get commitPendingChanges() {
-    const uplc = this.mkUplcData(
-      { commitPendingChanges: {} },
-      "CapoDelegateHelpers::CapoLifecycleActivity.commitPendingChanges"
-    );
-    return uplc;
-  }
-  forcingNewSpendDelegate(seedOrUf, filteredFields) {
-    if (filteredFields) {
-      const seedTxOutputId = this.getSeed(seedOrUf);
-      const uplc = this.mkUplcData({
-        forcingNewSpendDelegate: { seed: seedTxOutputId, ...filteredFields }
-      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate");
-      return uplc;
-    } else {
-      const fields = seedOrUf;
-      const uplc = this.mkUplcData({
-        forcingNewSpendDelegate: fields
-      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate");
-      return uplc;
-    }
-  }
-  /*multiFieldVariant/seeded enum accessor*/
-  /**
-   * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewSpendDelegate"***, 
-   * @param fields - \{ purpose: string \}
-   * @remarks
-  * ##### Seeded activity
-  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-   * ##### Activity contains implied seed
-   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
-   * provided implicitly by a SeedActivity-supporting library function. 
-   *
-   * #### Usage
-   *   1. Call the `$seeded$forcingNewSpendDelegate({ purpose })`
-    *       method with the indicated (non-seed) details.
-   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-   *       `mkTxnCreateRecord({activity})` method.
-   */
-  $seeded$forcingNewSpendDelegate = impliedSeedActivityMaker(
-    this,
-    this.forcingNewSpendDelegate
-  );
-  forcingNewMintDelegate(seedOrUf, filteredFields) {
-    if (filteredFields) {
-      const seedTxOutputId = this.getSeed(seedOrUf);
-      const uplc = this.mkUplcData({
-        forcingNewMintDelegate: { seed: seedTxOutputId, ...filteredFields }
-      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate");
-      return uplc;
-    } else {
-      const fields = seedOrUf;
-      const uplc = this.mkUplcData({
-        forcingNewMintDelegate: fields
-      }, "CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate");
-      return uplc;
-    }
-  }
-  /*multiFieldVariant/seeded enum accessor*/
-  /**
-   * generates  UplcData for ***"CapoDelegateHelpers::CapoLifecycleActivity.forcingNewMintDelegate"***, 
-   * @param fields - \{ purpose: string \}
-   * @remarks
-  * ##### Seeded activity
-  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-   * ##### Activity contains implied seed
-   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
-   * provided implicitly by a SeedActivity-supporting library function. 
-   *
-   * #### Usage
-   *   1. Call the `$seeded$forcingNewMintDelegate({ purpose })`
-    *       method with the indicated (non-seed) details.
-   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-   *       `mkTxnCreateRecord({activity})` method.
-   */
-  $seeded$forcingNewMintDelegate = impliedSeedActivityMaker(
-    this,
-    this.forcingNewMintDelegate
-  );
-  /* coda: seeded helper in same multiFieldVariant/seeded */
-  /**
-   * access to different variants of the ***nested ManifestActivity*** type needed for ***CapoLifecycleActivity:updatingManifest***.
-   */
-  get updatingManifest() {
-    const nestedAccessor = new ManifestActivityHelperNested({
-      isMainnet: this.isMainnet,
-      isNested: true,
-      isActivity: false
-    });
-    nestedAccessor.mkDataVia(
-      (activity) => {
-        return this.mkUplcData(
-          { updatingManifest: activity },
-          "CapoDelegateHelpers::CapoLifecycleActivity.updatingManifest"
-        );
-      }
-    );
-    return nestedAccessor;
-  }
-  /* nested enum accessor */
-}
-class DelegateLifecycleActivityHelper extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    DelegateLifecycleActivitySchema,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  ReplacingMe(seedOrUf, filteredFields) {
-    if (filteredFields) {
-      const seedTxOutputId = this.getSeed(seedOrUf);
-      const uplc = this.mkUplcData({
-        ReplacingMe: { seed: seedTxOutputId, ...filteredFields }
-      }, "CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe");
-      return uplc;
-    } else {
-      const fields = seedOrUf;
-      const uplc = this.mkUplcData({
-        ReplacingMe: fields
-      }, "CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe");
-      return uplc;
-    }
-  }
-  /*multiFieldVariant/seeded enum accessor*/
-  /**
-   * generates  UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.ReplacingMe"***, 
-   * @param fields - \{ purpose: string \}
-   * @remarks
-  * ##### Seeded activity
-  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-   * ##### Activity contains implied seed
-   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
-   * provided implicitly by a SeedActivity-supporting library function. 
-   *
-   * #### Usage
-   *   1. Call the `$seeded$ReplacingMe({ purpose })`
-    *       method with the indicated (non-seed) details.
-   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
-   *       `mkTxnCreateRecord({activity})` method.
-   */
-  $seeded$ReplacingMe = impliedSeedActivityMaker(
-    this,
-    this.ReplacingMe
-  );
-  /* coda: seeded helper in same multiFieldVariant/seeded */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.Retiring"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-   */
-  get Retiring() {
-    const uplc = this.mkUplcData(
-      { Retiring: {} },
-      "CapoDelegateHelpers::DelegateLifecycleActivity.Retiring"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateLifecycleActivity.ValidatingSettings"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-   */
-  get ValidatingSettings() {
-    const uplc = this.mkUplcData(
-      { ValidatingSettings: {} },
-      "CapoDelegateHelpers::DelegateLifecycleActivity.ValidatingSettings"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-}
-class SpendingActivityHelper extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    SpendingActivitySchema,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  /**
-   * generates  UplcData for ***"NeighborhoodPolicy::SpendingActivity.UpdatingRecord"***
-   */
-  UpdatingRecord(id) {
-    const uplc = this.mkUplcData({
-      UpdatingRecord: id
-    }, "NeighborhoodPolicy::SpendingActivity.UpdatingRecord");
-    return uplc;
-  }
-  /**
-   * generates  UplcData for ***"NeighborhoodPolicy::SpendingActivity.ActivatingNeighborhood"***
-   */
-  ActivatingNeighborhood(id) {
-    const uplc = this.mkUplcData({
-      ActivatingNeighborhood: id
-    }, "NeighborhoodPolicy::SpendingActivity.ActivatingNeighborhood");
-    return uplc;
-  }
-}
-class MintingActivityHelper extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    MintingActivitySchema,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  /**
-  * generates  UplcData for ***"NeighborhoodPolicy::MintingActivity.CreatingRecord"***, 
-  * given a transaction-context (or direct arg) with a ***seed utxo*** 
-  * @remarks
-  * ##### Seeded activity
-  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-  *  - to get a transaction context having the seed needed for this argument, 
-  *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-  * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
-  *  - in a context providing an implicit seed utxo, use 
-  *    the `$seeded$CreatingRecord}` variant of this activity instead
-  *
-   */
-  CreatingRecord(thingWithSeed) {
-    const seedTxOutputId = this.getSeed(thingWithSeed);
-    const uplc = this.mkUplcData({
-      CreatingRecord: seedTxOutputId
-    }, "NeighborhoodPolicy::MintingActivity.CreatingRecord");
-    return uplc;
-  }
-  /*singleField/seeded enum variant*/
-  /**
-   * generates  UplcData for ***"NeighborhoodPolicy::MintingActivity.CreatingRecord"***
-   * @remarks
-  * ##### Seeded activity
-  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
-   * ##### Activity contains implied seed
-   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
-   * provided implicitly by a SeedActivity-supporting library function. 
-   * #### Usage
-   * Access the activity-creator as a getter: `$seeded$CreatingRecord`
-   *
-   * Use the resulting activity-creator in a seed-providing context, such as the delegated-data-controller's
-   * `mkTxnCreateRecord({activity, ...})` method.
-   */
-  get $seeded$CreatingRecord() {
-    return impliedSeedActivityMaker(this, this.CreatingRecord)();
-  }
-  /* coda: seeded helper in same singleField/seeded enum variant*/
-}
-class BurningActivityHelper extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    BurningActivitySchema,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  /**
-   * generates  UplcData for ***"NeighborhoodPolicy::BurningActivity.DeletingRecord"***
-   */
-  DeletingRecord(id) {
-    const uplc = this.mkUplcData({
-      DeletingRecord: id
-    }, "NeighborhoodPolicy::BurningActivity.DeletingRecord");
-    return uplc;
-  }
-}
-class ActivityDelegateRoleHelperNested extends EnumBridge {
-  /*mkEnumHelperClass*/
-  /**
-          * @internal
-          *  uses unicode U+1c7a - sorts to the end */
-  "\u1C7A\u1C7Acast" = makeCast(
-    DelegateRoleSchema,
-    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
-  );
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintDgt"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#0***
-   */
-  get MintDgt() {
-    const uplc = this.mkUplcData(
-      { MintDgt: {} },
-      "CapoDelegateHelpers::DelegateRole.MintDgt"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendDgt"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#1***
-   */
-  get SpendDgt() {
-    const uplc = this.mkUplcData(
-      { SpendDgt: {} },
-      "CapoDelegateHelpers::DelegateRole.SpendDgt"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.MintInvariant"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#2***
-   */
-  get MintInvariant() {
-    const uplc = this.mkUplcData(
-      { MintInvariant: {} },
-      "CapoDelegateHelpers::DelegateRole.MintInvariant"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.SpendInvariant"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#3***
-   */
-  get SpendInvariant() {
-    const uplc = this.mkUplcData(
-      { SpendInvariant: {} },
-      "CapoDelegateHelpers::DelegateRole.SpendInvariant"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.DgDataPolicy"***
-  * @remarks
-  * #### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  DgDataPolicy(name) {
-    const uplc = this.mkUplcData({
-      DgDataPolicy: name
-    }, "CapoDelegateHelpers::DelegateRole.DgDataPolicy");
-    return uplc;
-  }
-  /**
-   * generates isActivity/redeemer wrapper with UplcData for ***"CapoDelegateHelpers::DelegateRole.OtherNamedDgt"***
-  * @remarks
-  * #### Nested activity: 
-  * this is connected to a nested-activity wrapper, so the details are piped through 
-  * the parent's uplc-encoder, producing a single uplc object with 
-  * a complete wrapper for this inner activity detail.
-   */
-  OtherNamedDgt(name) {
-    const uplc = this.mkUplcData({
-      OtherNamedDgt: name
-    }, "CapoDelegateHelpers::DelegateRole.OtherNamedDgt");
-    return uplc;
-  }
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#6***
-   */
-  get BothMintAndSpendDgt() {
-    const uplc = this.mkUplcData(
-      { BothMintAndSpendDgt: {} },
-      "CapoDelegateHelpers::DelegateRole.BothMintAndSpendDgt"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
-  /**
-   * (property getter): UplcData for ***"CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"***
-   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#7***
-   */
-  get HandledByCapoOnly() {
-    const uplc = this.mkUplcData(
-      { HandledByCapoOnly: {} },
-      "CapoDelegateHelpers::DelegateRole.HandledByCapoOnly"
-    );
-    return uplc;
-  }
-  /* tagOnly variant accessor */
 }
 class CapoLifecycleActivityHelperNested extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -29541,7 +30516,7 @@ class MintingActivityHelperNested extends EnumBridge {
   * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
   *  - to get a transaction context having the seed needed for this argument, 
   *    see the `tcxWithSeedUtxo()` method in your contract's off-chain StellarContracts subclass.
-  * - or see the {@link hasSeed} type for other ways to feed it with a TxOutputId.
+  * - or see Stellar Contracts' `hasSeed` type for other ways to feed it with a TxOutputId.
   *  - in a context providing an implicit seed utxo, use 
   *    the `$seeded$CreatingRecord}` variant of this activity instead
   *
@@ -29604,6 +30579,28 @@ class BurningActivityHelperNested extends EnumBridge {
     }, "NeighborhoodPolicy::BurningActivity.DeletingRecord");
     return uplc;
   }
+}
+class OtherActivityHelperNested extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    OtherActivitySchema,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * (property getter): UplcData for ***"NeighborhoodPolicy::OtherActivity.Placeholder"***
+   * @remarks - ***tagOnly*** variant accessor returns an empty ***constrData#42***
+   */
+  get Placeholder() {
+    const uplc = this.mkUplcData(
+      { Placeholder: {} },
+      "NeighborhoodPolicy::OtherActivity.Placeholder"
+    );
+    return uplc;
+  }
+  /* tagOnly variant accessor */
 }
 class DelegateActivityHelper extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -29781,6 +30778,26 @@ class DelegateActivityHelper extends EnumBridge {
     }, "NeighborhoodPolicy::DelegateActivity.MultipleDelegateActivities");
     return uplc;
   }
+  /**
+   * access to different variants of the ***nested OtherActivity*** type needed for ***DelegateActivity:OtherActivities***.
+   */
+  get OtherActivities() {
+    const nestedAccessor = new OtherActivityHelperNested({
+      isMainnet: this.isMainnet,
+      isNested: true,
+      isActivity: true
+    });
+    nestedAccessor.mkDataVia(
+      (activity) => {
+        return this.mkUplcData(
+          { OtherActivities: activity },
+          "NeighborhoodPolicy::DelegateActivity.OtherActivities"
+        );
+      }
+    );
+    return nestedAccessor;
+  }
+  /* nested enum accessor */
 }
 class PendingDelegateActionHelper extends EnumBridge {
   /*mkEnumHelperClass*/
@@ -30091,6 +31108,120 @@ class dgd_DataSrcHelper extends EnumBridge {
   }
   /*multiFieldVariant enum accessor*/
 }
+class AbstractDelegateActivitiesEnumHelper extends EnumBridge {
+  /*mkEnumHelperClass*/
+  /**
+          * @internal
+          *  uses unicode U+1c7a - sorts to the end */
+  "\u1C7A\u1C7Acast" = makeCast(
+    AbstractDelegateActivitiesEnumSchema,
+    { isMainnet: this.isMainnet, unwrapSingleFieldEnumVariants: true }
+  );
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.SpendingActivities"***
+   */
+  SpendingActivities(activity) {
+    const uplc = this.mkUplcData({
+      SpendingActivities: activity
+    }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.SpendingActivities");
+    return uplc;
+  }
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MintingActivities"***
+   */
+  MintingActivities(activity) {
+    const uplc = this.mkUplcData({
+      MintingActivities: activity
+    }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MintingActivities");
+    return uplc;
+  }
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.BurningActivities"***
+   */
+  BurningActivities(activity) {
+    const uplc = this.mkUplcData({
+      BurningActivities: activity
+    }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.BurningActivities");
+    return uplc;
+  }
+  CreatingDelegatedData(seedOrUf, filteredFields) {
+    if (filteredFields) {
+      const seedTxOutputId = this.getSeed(seedOrUf);
+      const uplc = this.mkUplcData({
+        CreatingDelegatedData: { seed: seedTxOutputId, ...filteredFields }
+      }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData");
+      return uplc;
+    } else {
+      const fields = seedOrUf;
+      const uplc = this.mkUplcData({
+        CreatingDelegatedData: fields
+      }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData");
+      return uplc;
+    }
+  }
+  /*multiFieldVariant/seeded enum accessor*/
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.CreatingDelegatedData"***, 
+   * @param fields - \{ dataType: string \}
+   * @remarks
+  * ##### Seeded activity
+  * This activity  uses the pattern of spending a utxo to provide a uniqueness seed.
+   * ##### Activity contains implied seed
+   * Creates a SeedActivity based on the provided args, reserving space for a seed to be 
+   * provided implicitly by a SeedActivity-supporting library function. 
+   *
+   * #### Usage
+   *   1. Call the `$seeded$CreatingDelegatedData({ dataType })`
+    *       method with the indicated (non-seed) details.
+   *   2. Use the resulting activity in a seed-providing context, such as the delegated-data-controller's
+   *       `mkTxnCreateRecord({activity})` method.
+   */
+  $seeded$CreatingDelegatedData = impliedSeedActivityMaker(
+    this,
+    this.CreatingDelegatedData
+  );
+  /* coda: seeded helper in same multiFieldVariant/seeded */
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.UpdatingDelegatedData"***
+   * @remarks - ***AbstractDelegateActivitiesEnum$UpdatingDelegatedDataLike*** is the same as the expanded field-types.
+   */
+  UpdatingDelegatedData(fields) {
+    const uplc = this.mkUplcData({
+      UpdatingDelegatedData: fields
+    }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.UpdatingDelegatedData");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.DeletingDelegatedData"***
+   * @remarks - ***AbstractDelegateActivitiesEnum$DeletingDelegatedDataLike*** is the same as the expanded field-types.
+   */
+  DeletingDelegatedData(fields) {
+    const uplc = this.mkUplcData({
+      DeletingDelegatedData: fields
+    }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.DeletingDelegatedData");
+    return uplc;
+  }
+  /*multiFieldVariant enum accessor*/
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MultipleDelegateActivities"***
+   */
+  MultipleDelegateActivities(activities) {
+    const uplc = this.mkUplcData({
+      MultipleDelegateActivities: activities
+    }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.MultipleDelegateActivities");
+    return uplc;
+  }
+  /**
+   * generates  UplcData for ***"CapoDelegateHelpers::AbstractDelegateActivitiesEnum.OtherActivities"***
+   */
+  OtherActivities(activity) {
+    const uplc = this.mkUplcData({
+      OtherActivities: activity
+    }, "CapoDelegateHelpers::AbstractDelegateActivitiesEnum.OtherActivities");
+    return uplc;
+  }
+}
 const AnyDataSchema = {
   "kind": "struct",
   "format": "map",
@@ -30151,35 +31282,35 @@ const NeighborhoodStateSchema = {
   "variantTypes": [
     {
       "kind": "variant",
-      "tag": 0,
+      "tag": 4180,
       "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
       "name": "Preproduction",
       "fieldTypes": []
     },
     {
       "kind": "variant",
-      "tag": 1,
+      "tag": 4181,
       "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
       "name": "Active",
       "fieldTypes": []
     },
     {
       "kind": "variant",
-      "tag": 2,
+      "tag": 4182,
       "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
       "name": "UpdatePending",
       "fieldTypes": []
     },
     {
       "kind": "variant",
-      "tag": 3,
+      "tag": 4183,
       "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
       "name": "UpdateDisputed",
       "fieldTypes": []
     },
     {
       "kind": "variant",
-      "tag": 4,
+      "tag": 4184,
       "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
       "name": "Retired",
       "fieldTypes": []
@@ -30193,14 +31324,14 @@ const FeeSourceSchema = {
   "variantTypes": [
     {
       "kind": "variant",
-      "tag": 0,
+      "tag": 4160,
       "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
       "name": "EndUser",
       "fieldTypes": []
     },
     {
       "kind": "variant",
-      "tag": 1,
+      "tag": 4161,
       "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
       "name": "SponsorContract",
       "fieldTypes": [
@@ -30222,7 +31353,7 @@ const SubscriptionFeeFrequencySchema = {
   "variantTypes": [
     {
       "kind": "variant",
-      "tag": 0,
+      "tag": 4150,
       "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
       "name": "Epoch",
       "fieldTypes": [
@@ -30237,7 +31368,7 @@ const SubscriptionFeeFrequencySchema = {
     },
     {
       "kind": "variant",
-      "tag": 1,
+      "tag": 4151,
       "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
       "name": "Monthly",
       "fieldTypes": [
@@ -30252,7 +31383,7 @@ const SubscriptionFeeFrequencySchema = {
     },
     {
       "kind": "variant",
-      "tag": 2,
+      "tag": 4152,
       "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
       "name": "Yearly",
       "fieldTypes": [
@@ -30274,9 +31405,9 @@ const RevenueModelSchema = {
   "variantTypes": [
     {
       "kind": "variant",
-      "tag": 0,
-      "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBased",
-      "name": "TransactionBased",
+      "tag": 4120,
+      "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBasedV1",
+      "name": "TransactionBasedV1",
       "fieldTypes": [
         {
           "name": "minTxFee",
@@ -30304,14 +31435,14 @@ const RevenueModelSchema = {
             "variantTypes": [
               {
                 "kind": "variant",
-                "tag": 0,
+                "tag": 4160,
                 "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
                 "name": "EndUser",
                 "fieldTypes": []
               },
               {
                 "kind": "variant",
-                "tag": 1,
+                "tag": 4161,
                 "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
                 "name": "SponsorContract",
                 "fieldTypes": [
@@ -30326,14 +31457,21 @@ const RevenueModelSchema = {
               }
             ]
           }
+        },
+        {
+          "name": "nodeOpShare",
+          "type": {
+            "kind": "internal",
+            "name": "Real"
+          }
         }
       ]
     },
     {
       "kind": "variant",
-      "tag": 1,
-      "id": "__module__NeighborhoodData__RevenueModel[]__Subscription",
-      "name": "Subscription",
+      "tag": 4121,
+      "id": "__module__NeighborhoodData__RevenueModel[]__SubscriptionV1",
+      "name": "SubscriptionV1",
       "fieldTypes": [
         {
           "name": "subscriptionFee",
@@ -30346,7 +31484,7 @@ const RevenueModelSchema = {
               "variantTypes": [
                 {
                   "kind": "variant",
-                  "tag": 0,
+                  "tag": 4150,
                   "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
                   "name": "Epoch",
                   "fieldTypes": [
@@ -30361,7 +31499,7 @@ const RevenueModelSchema = {
                 },
                 {
                   "kind": "variant",
-                  "tag": 1,
+                  "tag": 4151,
                   "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
                   "name": "Monthly",
                   "fieldTypes": [
@@ -30376,7 +31514,7 @@ const RevenueModelSchema = {
                 },
                 {
                   "kind": "variant",
-                  "tag": 2,
+                  "tag": 4152,
                   "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
                   "name": "Yearly",
                   "fieldTypes": [
@@ -30392,16 +31530,23 @@ const RevenueModelSchema = {
               ]
             }
           }
+        },
+        {
+          "name": "nodeOpShare",
+          "type": {
+            "kind": "internal",
+            "name": "Real"
+          }
         }
       ]
     }
   ]
 };
-const AppInfoSchema = {
+const AppInfoV1Schema = {
   "kind": "struct",
   "format": "list",
-  "id": "__module__NeighborhoodData__AppInfo[]",
-  "name": "AppInfo",
+  "id": "__module__NeighborhoodData__AppInfoV1[]",
+  "name": "AppInfoV1",
   "fieldTypes": [
     {
       "name": "url",
@@ -30421,9 +31566,9 @@ const AppInfoSchema = {
           "variantTypes": [
             {
               "kind": "variant",
-              "tag": 0,
-              "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBased",
-              "name": "TransactionBased",
+              "tag": 4120,
+              "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBasedV1",
+              "name": "TransactionBasedV1",
               "fieldTypes": [
                 {
                   "name": "minTxFee",
@@ -30451,14 +31596,14 @@ const AppInfoSchema = {
                     "variantTypes": [
                       {
                         "kind": "variant",
-                        "tag": 0,
+                        "tag": 4160,
                         "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
                         "name": "EndUser",
                         "fieldTypes": []
                       },
                       {
                         "kind": "variant",
-                        "tag": 1,
+                        "tag": 4161,
                         "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
                         "name": "SponsorContract",
                         "fieldTypes": [
@@ -30473,14 +31618,21 @@ const AppInfoSchema = {
                       }
                     ]
                   }
+                },
+                {
+                  "name": "nodeOpShare",
+                  "type": {
+                    "kind": "internal",
+                    "name": "Real"
+                  }
                 }
               ]
             },
             {
               "kind": "variant",
-              "tag": 1,
-              "id": "__module__NeighborhoodData__RevenueModel[]__Subscription",
-              "name": "Subscription",
+              "tag": 4121,
+              "id": "__module__NeighborhoodData__RevenueModel[]__SubscriptionV1",
+              "name": "SubscriptionV1",
               "fieldTypes": [
                 {
                   "name": "subscriptionFee",
@@ -30493,7 +31645,7 @@ const AppInfoSchema = {
                       "variantTypes": [
                         {
                           "kind": "variant",
-                          "tag": 0,
+                          "tag": 4150,
                           "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
                           "name": "Epoch",
                           "fieldTypes": [
@@ -30508,7 +31660,7 @@ const AppInfoSchema = {
                         },
                         {
                           "kind": "variant",
-                          "tag": 1,
+                          "tag": 4151,
                           "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
                           "name": "Monthly",
                           "fieldTypes": [
@@ -30523,7 +31675,7 @@ const AppInfoSchema = {
                         },
                         {
                           "kind": "variant",
-                          "tag": 2,
+                          "tag": 4152,
                           "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
                           "name": "Yearly",
                           "fieldTypes": [
@@ -30538,6 +31690,13 @@ const AppInfoSchema = {
                         }
                       ]
                     }
+                  }
+                },
+                {
+                  "name": "nodeOpShare",
+                  "type": {
+                    "kind": "internal",
+                    "name": "Real"
                   }
                 }
               ]
@@ -30562,11 +31721,11 @@ const AppInfoSchema = {
     }
   ]
 };
-const NodeOpsInfoSchema = {
+const NodeOpsInfoV1Schema = {
   "kind": "struct",
   "format": "map",
-  "id": "__module__NeighborhoodData__NodeOpsInfo[]",
-  "name": "NodeOpsInfo",
+  "id": "__module__NeighborhoodData__NodeOpsInfoV1[]",
+  "name": "NodeOpsInfoV1",
   "fieldTypes": [
     {
       "name": "minNodes",
@@ -30602,11 +31761,11 @@ const NodeOpsInfoSchema = {
     }
   ]
 };
-const UpdateInfoSchema = {
+const UpdateInfoV1Schema = {
   "kind": "struct",
   "format": "map",
-  "id": "__module__NeighborhoodData__UpdateInfo[]",
-  "name": "UpdateInfo",
+  "id": "__module__NeighborhoodData__UpdateInfoV1[]",
+  "name": "UpdateInfoV1",
   "fieldTypes": [
     {
       "name": "name",
@@ -30631,6 +31790,329 @@ const UpdateInfoSchema = {
         "name": "String"
       },
       "key": "url"
+    }
+  ]
+};
+const NbhDetailsSchema = {
+  "kind": "enum",
+  "name": "NbhDetails",
+  "id": "__module__NeighborhoodData__NbhDetails[]",
+  "variantTypes": [
+    {
+      "kind": "variant",
+      "tag": 4100,
+      "id": "__module__NeighborhoodData__NbhDetails[]__V1",
+      "name": "V1",
+      "fieldTypes": [
+        {
+          "name": "state",
+          "type": {
+            "kind": "enum",
+            "name": "NeighborhoodState",
+            "id": "__module__NeighborhoodData__NeighborhoodState[]",
+            "variantTypes": [
+              {
+                "kind": "variant",
+                "tag": 4180,
+                "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
+                "name": "Preproduction",
+                "fieldTypes": []
+              },
+              {
+                "kind": "variant",
+                "tag": 4181,
+                "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
+                "name": "Active",
+                "fieldTypes": []
+              },
+              {
+                "kind": "variant",
+                "tag": 4182,
+                "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
+                "name": "UpdatePending",
+                "fieldTypes": []
+              },
+              {
+                "kind": "variant",
+                "tag": 4183,
+                "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
+                "name": "UpdateDisputed",
+                "fieldTypes": []
+              },
+              {
+                "kind": "variant",
+                "tag": 4184,
+                "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
+                "name": "Retired",
+                "fieldTypes": []
+              }
+            ]
+          }
+        },
+        {
+          "name": "appInfo",
+          "type": {
+            "kind": "struct",
+            "format": "list",
+            "id": "__module__NeighborhoodData__AppInfoV1[]",
+            "name": "AppInfoV1",
+            "fieldTypes": [
+              {
+                "name": "url",
+                "type": {
+                  "kind": "internal",
+                  "name": "String"
+                }
+              },
+              {
+                "name": "revenueModel",
+                "type": {
+                  "kind": "list",
+                  "itemType": {
+                    "kind": "enum",
+                    "name": "RevenueModel",
+                    "id": "__module__NeighborhoodData__RevenueModel[]",
+                    "variantTypes": [
+                      {
+                        "kind": "variant",
+                        "tag": 4120,
+                        "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBasedV1",
+                        "name": "TransactionBasedV1",
+                        "fieldTypes": [
+                          {
+                            "name": "minTxFee",
+                            "type": {
+                              "kind": "internal",
+                              "name": "Value"
+                            }
+                          },
+                          {
+                            "name": "maxTxFee",
+                            "type": {
+                              "kind": "option",
+                              "someType": {
+                                "kind": "internal",
+                                "name": "Value"
+                              }
+                            }
+                          },
+                          {
+                            "name": "chargeTo",
+                            "type": {
+                              "kind": "enum",
+                              "name": "FeeSource",
+                              "id": "__module__NeighborhoodData__FeeSource[]",
+                              "variantTypes": [
+                                {
+                                  "kind": "variant",
+                                  "tag": 4160,
+                                  "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
+                                  "name": "EndUser",
+                                  "fieldTypes": []
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 4161,
+                                  "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
+                                  "name": "SponsorContract",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "sponsorContract",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "ScriptHash"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "nodeOpShare",
+                            "type": {
+                              "kind": "internal",
+                              "name": "Real"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 4121,
+                        "id": "__module__NeighborhoodData__RevenueModel[]__SubscriptionV1",
+                        "name": "SubscriptionV1",
+                        "fieldTypes": [
+                          {
+                            "name": "subscriptionFee",
+                            "type": {
+                              "kind": "list",
+                              "itemType": {
+                                "kind": "enum",
+                                "name": "SubscriptionFeeFrequency",
+                                "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
+                                "variantTypes": [
+                                  {
+                                    "kind": "variant",
+                                    "tag": 4150,
+                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
+                                    "name": "Epoch",
+                                    "fieldTypes": [
+                                      {
+                                        "name": "fee",
+                                        "type": {
+                                          "kind": "internal",
+                                          "name": "Value"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "variant",
+                                    "tag": 4151,
+                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
+                                    "name": "Monthly",
+                                    "fieldTypes": [
+                                      {
+                                        "name": "fee",
+                                        "type": {
+                                          "kind": "internal",
+                                          "name": "Value"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "variant",
+                                    "tag": 4152,
+                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
+                                    "name": "Yearly",
+                                    "fieldTypes": [
+                                      {
+                                        "name": "fee",
+                                        "type": {
+                                          "kind": "internal",
+                                          "name": "Value"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          {
+                            "name": "nodeOpShare",
+                            "type": {
+                              "kind": "internal",
+                              "name": "Real"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "name": "name",
+                "type": {
+                  "kind": "internal",
+                  "name": "String"
+                }
+              },
+              {
+                "name": "description",
+                "type": {
+                  "kind": "internal",
+                  "name": "String"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "opsInfo",
+          "type": {
+            "kind": "struct",
+            "format": "map",
+            "id": "__module__NeighborhoodData__NodeOpsInfoV1[]",
+            "name": "NodeOpsInfoV1",
+            "fieldTypes": [
+              {
+                "name": "minNodes",
+                "type": {
+                  "kind": "internal",
+                  "name": "Int"
+                },
+                "key": "cMin"
+              },
+              {
+                "name": "maxNodes",
+                "type": {
+                  "kind": "internal",
+                  "name": "Int"
+                },
+                "key": "cMax"
+              },
+              {
+                "name": "minNodeOperatorStake",
+                "type": {
+                  "kind": "internal",
+                  "name": "Value"
+                },
+                "key": "minStk"
+              },
+              {
+                "name": "minUptime",
+                "type": {
+                  "kind": "internal",
+                  "name": "Int"
+                },
+                "key": "minUpt"
+              }
+            ]
+          }
+        },
+        {
+          "name": "updateInfo",
+          "type": {
+            "kind": "option",
+            "someType": {
+              "kind": "struct",
+              "format": "map",
+              "id": "__module__NeighborhoodData__UpdateInfoV1[]",
+              "name": "UpdateInfoV1",
+              "fieldTypes": [
+                {
+                  "name": "name",
+                  "type": {
+                    "kind": "internal",
+                    "name": "String"
+                  },
+                  "key": "nm"
+                },
+                {
+                  "name": "description",
+                  "type": {
+                    "kind": "internal",
+                    "name": "String"
+                  },
+                  "key": "dsc"
+                },
+                {
+                  "name": "url",
+                  "type": {
+                    "kind": "internal",
+                    "name": "String"
+                  },
+                  "key": "url"
+                }
+              ]
+            }
+          }
+        }
+      ]
     }
   ]
 };
@@ -30665,123 +32147,220 @@ const NeighborhoodDataSchema = {
       "key": "mt"
     },
     {
-      "name": "state",
+      "name": "details",
       "type": {
         "kind": "enum",
-        "name": "NeighborhoodState",
-        "id": "__module__NeighborhoodData__NeighborhoodState[]",
+        "name": "NbhDetails",
+        "id": "__module__NeighborhoodData__NbhDetails[]",
         "variantTypes": [
           {
             "kind": "variant",
-            "tag": 0,
-            "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
-            "name": "Preproduction",
-            "fieldTypes": []
-          },
-          {
-            "kind": "variant",
-            "tag": 1,
-            "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
-            "name": "Active",
-            "fieldTypes": []
-          },
-          {
-            "kind": "variant",
-            "tag": 2,
-            "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
-            "name": "UpdatePending",
-            "fieldTypes": []
-          },
-          {
-            "kind": "variant",
-            "tag": 3,
-            "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
-            "name": "UpdateDisputed",
-            "fieldTypes": []
-          },
-          {
-            "kind": "variant",
-            "tag": 4,
-            "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
-            "name": "Retired",
-            "fieldTypes": []
-          }
-        ]
-      },
-      "key": "st"
-    },
-    {
-      "name": "appInfo",
-      "type": {
-        "kind": "struct",
-        "format": "list",
-        "id": "__module__NeighborhoodData__AppInfo[]",
-        "name": "AppInfo",
-        "fieldTypes": [
-          {
-            "name": "url",
-            "type": {
-              "kind": "internal",
-              "name": "String"
-            }
-          },
-          {
-            "name": "revenueModel",
-            "type": {
-              "kind": "list",
-              "itemType": {
-                "kind": "enum",
-                "name": "RevenueModel",
-                "id": "__module__NeighborhoodData__RevenueModel[]",
-                "variantTypes": [
-                  {
-                    "kind": "variant",
-                    "tag": 0,
-                    "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBased",
-                    "name": "TransactionBased",
-                    "fieldTypes": [
-                      {
-                        "name": "minTxFee",
-                        "type": {
-                          "kind": "internal",
-                          "name": "Value"
-                        }
-                      },
-                      {
-                        "name": "maxTxFee",
-                        "type": {
-                          "kind": "option",
-                          "someType": {
-                            "kind": "internal",
-                            "name": "Value"
-                          }
-                        }
-                      },
-                      {
-                        "name": "chargeTo",
-                        "type": {
+            "tag": 4100,
+            "id": "__module__NeighborhoodData__NbhDetails[]__V1",
+            "name": "V1",
+            "fieldTypes": [
+              {
+                "name": "state",
+                "type": {
+                  "kind": "enum",
+                  "name": "NeighborhoodState",
+                  "id": "__module__NeighborhoodData__NeighborhoodState[]",
+                  "variantTypes": [
+                    {
+                      "kind": "variant",
+                      "tag": 4180,
+                      "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
+                      "name": "Preproduction",
+                      "fieldTypes": []
+                    },
+                    {
+                      "kind": "variant",
+                      "tag": 4181,
+                      "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
+                      "name": "Active",
+                      "fieldTypes": []
+                    },
+                    {
+                      "kind": "variant",
+                      "tag": 4182,
+                      "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
+                      "name": "UpdatePending",
+                      "fieldTypes": []
+                    },
+                    {
+                      "kind": "variant",
+                      "tag": 4183,
+                      "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
+                      "name": "UpdateDisputed",
+                      "fieldTypes": []
+                    },
+                    {
+                      "kind": "variant",
+                      "tag": 4184,
+                      "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
+                      "name": "Retired",
+                      "fieldTypes": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "appInfo",
+                "type": {
+                  "kind": "struct",
+                  "format": "list",
+                  "id": "__module__NeighborhoodData__AppInfoV1[]",
+                  "name": "AppInfoV1",
+                  "fieldTypes": [
+                    {
+                      "name": "url",
+                      "type": {
+                        "kind": "internal",
+                        "name": "String"
+                      }
+                    },
+                    {
+                      "name": "revenueModel",
+                      "type": {
+                        "kind": "list",
+                        "itemType": {
                           "kind": "enum",
-                          "name": "FeeSource",
-                          "id": "__module__NeighborhoodData__FeeSource[]",
+                          "name": "RevenueModel",
+                          "id": "__module__NeighborhoodData__RevenueModel[]",
                           "variantTypes": [
                             {
                               "kind": "variant",
-                              "tag": 0,
-                              "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
-                              "name": "EndUser",
-                              "fieldTypes": []
+                              "tag": 4120,
+                              "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBasedV1",
+                              "name": "TransactionBasedV1",
+                              "fieldTypes": [
+                                {
+                                  "name": "minTxFee",
+                                  "type": {
+                                    "kind": "internal",
+                                    "name": "Value"
+                                  }
+                                },
+                                {
+                                  "name": "maxTxFee",
+                                  "type": {
+                                    "kind": "option",
+                                    "someType": {
+                                      "kind": "internal",
+                                      "name": "Value"
+                                    }
+                                  }
+                                },
+                                {
+                                  "name": "chargeTo",
+                                  "type": {
+                                    "kind": "enum",
+                                    "name": "FeeSource",
+                                    "id": "__module__NeighborhoodData__FeeSource[]",
+                                    "variantTypes": [
+                                      {
+                                        "kind": "variant",
+                                        "tag": 4160,
+                                        "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
+                                        "name": "EndUser",
+                                        "fieldTypes": []
+                                      },
+                                      {
+                                        "kind": "variant",
+                                        "tag": 4161,
+                                        "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
+                                        "name": "SponsorContract",
+                                        "fieldTypes": [
+                                          {
+                                            "name": "sponsorContract",
+                                            "type": {
+                                              "kind": "internal",
+                                              "name": "ScriptHash"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "name": "nodeOpShare",
+                                  "type": {
+                                    "kind": "internal",
+                                    "name": "Real"
+                                  }
+                                }
+                              ]
                             },
                             {
                               "kind": "variant",
-                              "tag": 1,
-                              "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
-                              "name": "SponsorContract",
+                              "tag": 4121,
+                              "id": "__module__NeighborhoodData__RevenueModel[]__SubscriptionV1",
+                              "name": "SubscriptionV1",
                               "fieldTypes": [
                                 {
-                                  "name": "sponsorContract",
+                                  "name": "subscriptionFee",
+                                  "type": {
+                                    "kind": "list",
+                                    "itemType": {
+                                      "kind": "enum",
+                                      "name": "SubscriptionFeeFrequency",
+                                      "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
+                                      "variantTypes": [
+                                        {
+                                          "kind": "variant",
+                                          "tag": 4150,
+                                          "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
+                                          "name": "Epoch",
+                                          "fieldTypes": [
+                                            {
+                                              "name": "fee",
+                                              "type": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                              }
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "kind": "variant",
+                                          "tag": 4151,
+                                          "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
+                                          "name": "Monthly",
+                                          "fieldTypes": [
+                                            {
+                                              "name": "fee",
+                                              "type": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                              }
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "kind": "variant",
+                                          "tag": 4152,
+                                          "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
+                                          "name": "Yearly",
+                                          "fieldTypes": [
+                                            {
+                                              "name": "fee",
+                                              "type": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  }
+                                },
+                                {
+                                  "name": "nodeOpShare",
                                   "type": {
                                     "kind": "internal",
-                                    "name": "ScriptHash"
+                                    "name": "Real"
                                   }
                                 }
                               ]
@@ -30789,178 +32368,110 @@ const NeighborhoodDataSchema = {
                           ]
                         }
                       }
-                    ]
-                  },
-                  {
-                    "kind": "variant",
-                    "tag": 1,
-                    "id": "__module__NeighborhoodData__RevenueModel[]__Subscription",
-                    "name": "Subscription",
+                    },
+                    {
+                      "name": "name",
+                      "type": {
+                        "kind": "internal",
+                        "name": "String"
+                      }
+                    },
+                    {
+                      "name": "description",
+                      "type": {
+                        "kind": "internal",
+                        "name": "String"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "opsInfo",
+                "type": {
+                  "kind": "struct",
+                  "format": "map",
+                  "id": "__module__NeighborhoodData__NodeOpsInfoV1[]",
+                  "name": "NodeOpsInfoV1",
+                  "fieldTypes": [
+                    {
+                      "name": "minNodes",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Int"
+                      },
+                      "key": "cMin"
+                    },
+                    {
+                      "name": "maxNodes",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Int"
+                      },
+                      "key": "cMax"
+                    },
+                    {
+                      "name": "minNodeOperatorStake",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Value"
+                      },
+                      "key": "minStk"
+                    },
+                    {
+                      "name": "minUptime",
+                      "type": {
+                        "kind": "internal",
+                        "name": "Int"
+                      },
+                      "key": "minUpt"
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "updateInfo",
+                "type": {
+                  "kind": "option",
+                  "someType": {
+                    "kind": "struct",
+                    "format": "map",
+                    "id": "__module__NeighborhoodData__UpdateInfoV1[]",
+                    "name": "UpdateInfoV1",
                     "fieldTypes": [
                       {
-                        "name": "subscriptionFee",
+                        "name": "name",
                         "type": {
-                          "kind": "list",
-                          "itemType": {
-                            "kind": "enum",
-                            "name": "SubscriptionFeeFrequency",
-                            "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
-                            "variantTypes": [
-                              {
-                                "kind": "variant",
-                                "tag": 0,
-                                "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
-                                "name": "Epoch",
-                                "fieldTypes": [
-                                  {
-                                    "name": "fee",
-                                    "type": {
-                                      "kind": "internal",
-                                      "name": "Value"
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "variant",
-                                "tag": 1,
-                                "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
-                                "name": "Monthly",
-                                "fieldTypes": [
-                                  {
-                                    "name": "fee",
-                                    "type": {
-                                      "kind": "internal",
-                                      "name": "Value"
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "variant",
-                                "tag": 2,
-                                "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
-                                "name": "Yearly",
-                                "fieldTypes": [
-                                  {
-                                    "name": "fee",
-                                    "type": {
-                                      "kind": "internal",
-                                      "name": "Value"
-                                    }
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        }
+                          "kind": "internal",
+                          "name": "String"
+                        },
+                        "key": "nm"
+                      },
+                      {
+                        "name": "description",
+                        "type": {
+                          "kind": "internal",
+                          "name": "String"
+                        },
+                        "key": "dsc"
+                      },
+                      {
+                        "name": "url",
+                        "type": {
+                          "kind": "internal",
+                          "name": "String"
+                        },
+                        "key": "url"
                       }
                     ]
                   }
-                ]
+                }
               }
-            }
-          },
-          {
-            "name": "name",
-            "type": {
-              "kind": "internal",
-              "name": "String"
-            }
-          },
-          {
-            "name": "description",
-            "type": {
-              "kind": "internal",
-              "name": "String"
-            }
+            ]
           }
         ]
       },
-      "key": "app"
-    },
-    {
-      "name": "opsInfo",
-      "type": {
-        "kind": "struct",
-        "format": "map",
-        "id": "__module__NeighborhoodData__NodeOpsInfo[]",
-        "name": "NodeOpsInfo",
-        "fieldTypes": [
-          {
-            "name": "minNodes",
-            "type": {
-              "kind": "internal",
-              "name": "Int"
-            },
-            "key": "cMin"
-          },
-          {
-            "name": "maxNodes",
-            "type": {
-              "kind": "internal",
-              "name": "Int"
-            },
-            "key": "cMax"
-          },
-          {
-            "name": "minNodeOperatorStake",
-            "type": {
-              "kind": "internal",
-              "name": "Value"
-            },
-            "key": "minStk"
-          },
-          {
-            "name": "minUptime",
-            "type": {
-              "kind": "internal",
-              "name": "Int"
-            },
-            "key": "minUpt"
-          }
-        ]
-      },
-      "key": "ops"
-    },
-    {
-      "name": "updateInfo",
-      "type": {
-        "kind": "option",
-        "someType": {
-          "kind": "struct",
-          "format": "map",
-          "id": "__module__NeighborhoodData__UpdateInfo[]",
-          "name": "UpdateInfo",
-          "fieldTypes": [
-            {
-              "name": "name",
-              "type": {
-                "kind": "internal",
-                "name": "String"
-              },
-              "key": "nm"
-            },
-            {
-              "name": "description",
-              "type": {
-                "kind": "internal",
-                "name": "String"
-              },
-              "key": "dsc"
-            },
-            {
-              "name": "url",
-              "type": {
-                "kind": "internal",
-                "name": "String"
-              },
-              "key": "url"
-            }
-          ]
-        }
-      },
-      "key": "upd"
+      "key": "dtl"
     }
   ]
 };
@@ -31097,123 +32608,220 @@ const DelegateDatumSchema = {
                 "key": "mt"
               },
               {
-                "name": "state",
+                "name": "details",
                 "type": {
                   "kind": "enum",
-                  "name": "NeighborhoodState",
-                  "id": "__module__NeighborhoodData__NeighborhoodState[]",
+                  "name": "NbhDetails",
+                  "id": "__module__NeighborhoodData__NbhDetails[]",
                   "variantTypes": [
                     {
                       "kind": "variant",
-                      "tag": 0,
-                      "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
-                      "name": "Preproduction",
-                      "fieldTypes": []
-                    },
-                    {
-                      "kind": "variant",
-                      "tag": 1,
-                      "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
-                      "name": "Active",
-                      "fieldTypes": []
-                    },
-                    {
-                      "kind": "variant",
-                      "tag": 2,
-                      "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
-                      "name": "UpdatePending",
-                      "fieldTypes": []
-                    },
-                    {
-                      "kind": "variant",
-                      "tag": 3,
-                      "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
-                      "name": "UpdateDisputed",
-                      "fieldTypes": []
-                    },
-                    {
-                      "kind": "variant",
-                      "tag": 4,
-                      "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
-                      "name": "Retired",
-                      "fieldTypes": []
-                    }
-                  ]
-                },
-                "key": "st"
-              },
-              {
-                "name": "appInfo",
-                "type": {
-                  "kind": "struct",
-                  "format": "list",
-                  "id": "__module__NeighborhoodData__AppInfo[]",
-                  "name": "AppInfo",
-                  "fieldTypes": [
-                    {
-                      "name": "url",
-                      "type": {
-                        "kind": "internal",
-                        "name": "String"
-                      }
-                    },
-                    {
-                      "name": "revenueModel",
-                      "type": {
-                        "kind": "list",
-                        "itemType": {
-                          "kind": "enum",
-                          "name": "RevenueModel",
-                          "id": "__module__NeighborhoodData__RevenueModel[]",
-                          "variantTypes": [
-                            {
-                              "kind": "variant",
-                              "tag": 0,
-                              "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBased",
-                              "name": "TransactionBased",
-                              "fieldTypes": [
-                                {
-                                  "name": "minTxFee",
-                                  "type": {
-                                    "kind": "internal",
-                                    "name": "Value"
-                                  }
-                                },
-                                {
-                                  "name": "maxTxFee",
-                                  "type": {
-                                    "kind": "option",
-                                    "someType": {
-                                      "kind": "internal",
-                                      "name": "Value"
-                                    }
-                                  }
-                                },
-                                {
-                                  "name": "chargeTo",
-                                  "type": {
+                      "tag": 4100,
+                      "id": "__module__NeighborhoodData__NbhDetails[]__V1",
+                      "name": "V1",
+                      "fieldTypes": [
+                        {
+                          "name": "state",
+                          "type": {
+                            "kind": "enum",
+                            "name": "NeighborhoodState",
+                            "id": "__module__NeighborhoodData__NeighborhoodState[]",
+                            "variantTypes": [
+                              {
+                                "kind": "variant",
+                                "tag": 4180,
+                                "id": "__module__NeighborhoodData__NeighborhoodState[]__Preproduction",
+                                "name": "Preproduction",
+                                "fieldTypes": []
+                              },
+                              {
+                                "kind": "variant",
+                                "tag": 4181,
+                                "id": "__module__NeighborhoodData__NeighborhoodState[]__Active",
+                                "name": "Active",
+                                "fieldTypes": []
+                              },
+                              {
+                                "kind": "variant",
+                                "tag": 4182,
+                                "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdatePending",
+                                "name": "UpdatePending",
+                                "fieldTypes": []
+                              },
+                              {
+                                "kind": "variant",
+                                "tag": 4183,
+                                "id": "__module__NeighborhoodData__NeighborhoodState[]__UpdateDisputed",
+                                "name": "UpdateDisputed",
+                                "fieldTypes": []
+                              },
+                              {
+                                "kind": "variant",
+                                "tag": 4184,
+                                "id": "__module__NeighborhoodData__NeighborhoodState[]__Retired",
+                                "name": "Retired",
+                                "fieldTypes": []
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "name": "appInfo",
+                          "type": {
+                            "kind": "struct",
+                            "format": "list",
+                            "id": "__module__NeighborhoodData__AppInfoV1[]",
+                            "name": "AppInfoV1",
+                            "fieldTypes": [
+                              {
+                                "name": "url",
+                                "type": {
+                                  "kind": "internal",
+                                  "name": "String"
+                                }
+                              },
+                              {
+                                "name": "revenueModel",
+                                "type": {
+                                  "kind": "list",
+                                  "itemType": {
                                     "kind": "enum",
-                                    "name": "FeeSource",
-                                    "id": "__module__NeighborhoodData__FeeSource[]",
+                                    "name": "RevenueModel",
+                                    "id": "__module__NeighborhoodData__RevenueModel[]",
                                     "variantTypes": [
                                       {
                                         "kind": "variant",
-                                        "tag": 0,
-                                        "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
-                                        "name": "EndUser",
-                                        "fieldTypes": []
+                                        "tag": 4120,
+                                        "id": "__module__NeighborhoodData__RevenueModel[]__TransactionBasedV1",
+                                        "name": "TransactionBasedV1",
+                                        "fieldTypes": [
+                                          {
+                                            "name": "minTxFee",
+                                            "type": {
+                                              "kind": "internal",
+                                              "name": "Value"
+                                            }
+                                          },
+                                          {
+                                            "name": "maxTxFee",
+                                            "type": {
+                                              "kind": "option",
+                                              "someType": {
+                                                "kind": "internal",
+                                                "name": "Value"
+                                              }
+                                            }
+                                          },
+                                          {
+                                            "name": "chargeTo",
+                                            "type": {
+                                              "kind": "enum",
+                                              "name": "FeeSource",
+                                              "id": "__module__NeighborhoodData__FeeSource[]",
+                                              "variantTypes": [
+                                                {
+                                                  "kind": "variant",
+                                                  "tag": 4160,
+                                                  "id": "__module__NeighborhoodData__FeeSource[]__EndUser",
+                                                  "name": "EndUser",
+                                                  "fieldTypes": []
+                                                },
+                                                {
+                                                  "kind": "variant",
+                                                  "tag": 4161,
+                                                  "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
+                                                  "name": "SponsorContract",
+                                                  "fieldTypes": [
+                                                    {
+                                                      "name": "sponsorContract",
+                                                      "type": {
+                                                        "kind": "internal",
+                                                        "name": "ScriptHash"
+                                                      }
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "name": "nodeOpShare",
+                                            "type": {
+                                              "kind": "internal",
+                                              "name": "Real"
+                                            }
+                                          }
+                                        ]
                                       },
                                       {
                                         "kind": "variant",
-                                        "tag": 1,
-                                        "id": "__module__NeighborhoodData__FeeSource[]__SponsorContract",
-                                        "name": "SponsorContract",
+                                        "tag": 4121,
+                                        "id": "__module__NeighborhoodData__RevenueModel[]__SubscriptionV1",
+                                        "name": "SubscriptionV1",
                                         "fieldTypes": [
                                           {
-                                            "name": "sponsorContract",
+                                            "name": "subscriptionFee",
+                                            "type": {
+                                              "kind": "list",
+                                              "itemType": {
+                                                "kind": "enum",
+                                                "name": "SubscriptionFeeFrequency",
+                                                "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
+                                                "variantTypes": [
+                                                  {
+                                                    "kind": "variant",
+                                                    "tag": 4150,
+                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
+                                                    "name": "Epoch",
+                                                    "fieldTypes": [
+                                                      {
+                                                        "name": "fee",
+                                                        "type": {
+                                                          "kind": "internal",
+                                                          "name": "Value"
+                                                        }
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "kind": "variant",
+                                                    "tag": 4151,
+                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
+                                                    "name": "Monthly",
+                                                    "fieldTypes": [
+                                                      {
+                                                        "name": "fee",
+                                                        "type": {
+                                                          "kind": "internal",
+                                                          "name": "Value"
+                                                        }
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "kind": "variant",
+                                                    "tag": 4152,
+                                                    "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
+                                                    "name": "Yearly",
+                                                    "fieldTypes": [
+                                                      {
+                                                        "name": "fee",
+                                                        "type": {
+                                                          "kind": "internal",
+                                                          "name": "Value"
+                                                        }
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          },
+                                          {
+                                            "name": "nodeOpShare",
                                             "type": {
                                               "kind": "internal",
-                                              "name": "ScriptHash"
+                                              "name": "Real"
                                             }
                                           }
                                         ]
@@ -31221,178 +32829,110 @@ const DelegateDatumSchema = {
                                     ]
                                   }
                                 }
-                              ]
-                            },
-                            {
-                              "kind": "variant",
-                              "tag": 1,
-                              "id": "__module__NeighborhoodData__RevenueModel[]__Subscription",
-                              "name": "Subscription",
+                              },
+                              {
+                                "name": "name",
+                                "type": {
+                                  "kind": "internal",
+                                  "name": "String"
+                                }
+                              },
+                              {
+                                "name": "description",
+                                "type": {
+                                  "kind": "internal",
+                                  "name": "String"
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "name": "opsInfo",
+                          "type": {
+                            "kind": "struct",
+                            "format": "map",
+                            "id": "__module__NeighborhoodData__NodeOpsInfoV1[]",
+                            "name": "NodeOpsInfoV1",
+                            "fieldTypes": [
+                              {
+                                "name": "minNodes",
+                                "type": {
+                                  "kind": "internal",
+                                  "name": "Int"
+                                },
+                                "key": "cMin"
+                              },
+                              {
+                                "name": "maxNodes",
+                                "type": {
+                                  "kind": "internal",
+                                  "name": "Int"
+                                },
+                                "key": "cMax"
+                              },
+                              {
+                                "name": "minNodeOperatorStake",
+                                "type": {
+                                  "kind": "internal",
+                                  "name": "Value"
+                                },
+                                "key": "minStk"
+                              },
+                              {
+                                "name": "minUptime",
+                                "type": {
+                                  "kind": "internal",
+                                  "name": "Int"
+                                },
+                                "key": "minUpt"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "name": "updateInfo",
+                          "type": {
+                            "kind": "option",
+                            "someType": {
+                              "kind": "struct",
+                              "format": "map",
+                              "id": "__module__NeighborhoodData__UpdateInfoV1[]",
+                              "name": "UpdateInfoV1",
                               "fieldTypes": [
                                 {
-                                  "name": "subscriptionFee",
+                                  "name": "name",
                                   "type": {
-                                    "kind": "list",
-                                    "itemType": {
-                                      "kind": "enum",
-                                      "name": "SubscriptionFeeFrequency",
-                                      "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]",
-                                      "variantTypes": [
-                                        {
-                                          "kind": "variant",
-                                          "tag": 0,
-                                          "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Epoch",
-                                          "name": "Epoch",
-                                          "fieldTypes": [
-                                            {
-                                              "name": "fee",
-                                              "type": {
-                                                "kind": "internal",
-                                                "name": "Value"
-                                              }
-                                            }
-                                          ]
-                                        },
-                                        {
-                                          "kind": "variant",
-                                          "tag": 1,
-                                          "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Monthly",
-                                          "name": "Monthly",
-                                          "fieldTypes": [
-                                            {
-                                              "name": "fee",
-                                              "type": {
-                                                "kind": "internal",
-                                                "name": "Value"
-                                              }
-                                            }
-                                          ]
-                                        },
-                                        {
-                                          "kind": "variant",
-                                          "tag": 2,
-                                          "id": "__module__NeighborhoodData__SubscriptionFeeFrequency[]__Yearly",
-                                          "name": "Yearly",
-                                          "fieldTypes": [
-                                            {
-                                              "name": "fee",
-                                              "type": {
-                                                "kind": "internal",
-                                                "name": "Value"
-                                              }
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  }
+                                    "kind": "internal",
+                                    "name": "String"
+                                  },
+                                  "key": "nm"
+                                },
+                                {
+                                  "name": "description",
+                                  "type": {
+                                    "kind": "internal",
+                                    "name": "String"
+                                  },
+                                  "key": "dsc"
+                                },
+                                {
+                                  "name": "url",
+                                  "type": {
+                                    "kind": "internal",
+                                    "name": "String"
+                                  },
+                                  "key": "url"
                                 }
                               ]
                             }
-                          ]
+                          }
                         }
-                      }
-                    },
-                    {
-                      "name": "name",
-                      "type": {
-                        "kind": "internal",
-                        "name": "String"
-                      }
-                    },
-                    {
-                      "name": "description",
-                      "type": {
-                        "kind": "internal",
-                        "name": "String"
-                      }
+                      ]
                     }
                   ]
                 },
-                "key": "app"
-              },
-              {
-                "name": "opsInfo",
-                "type": {
-                  "kind": "struct",
-                  "format": "map",
-                  "id": "__module__NeighborhoodData__NodeOpsInfo[]",
-                  "name": "NodeOpsInfo",
-                  "fieldTypes": [
-                    {
-                      "name": "minNodes",
-                      "type": {
-                        "kind": "internal",
-                        "name": "Int"
-                      },
-                      "key": "cMin"
-                    },
-                    {
-                      "name": "maxNodes",
-                      "type": {
-                        "kind": "internal",
-                        "name": "Int"
-                      },
-                      "key": "cMax"
-                    },
-                    {
-                      "name": "minNodeOperatorStake",
-                      "type": {
-                        "kind": "internal",
-                        "name": "Value"
-                      },
-                      "key": "minStk"
-                    },
-                    {
-                      "name": "minUptime",
-                      "type": {
-                        "kind": "internal",
-                        "name": "Int"
-                      },
-                      "key": "minUpt"
-                    }
-                  ]
-                },
-                "key": "ops"
-              },
-              {
-                "name": "updateInfo",
-                "type": {
-                  "kind": "option",
-                  "someType": {
-                    "kind": "struct",
-                    "format": "map",
-                    "id": "__module__NeighborhoodData__UpdateInfo[]",
-                    "name": "UpdateInfo",
-                    "fieldTypes": [
-                      {
-                        "name": "name",
-                        "type": {
-                          "kind": "internal",
-                          "name": "String"
-                        },
-                        "key": "nm"
-                      },
-                      {
-                        "name": "description",
-                        "type": {
-                          "kind": "internal",
-                          "name": "String"
-                        },
-                        "key": "dsc"
-                      },
-                      {
-                        "name": "url",
-                        "type": {
-                          "kind": "internal",
-                          "name": "String"
-                        },
-                        "key": "url"
-                      }
-                    ]
-                  }
-                },
-                "key": "upd"
+                "key": "dtl"
               }
             ]
           }
@@ -32026,6 +33566,20 @@ const BurningActivitySchema = {
     }
   ]
 };
+const OtherActivitySchema = {
+  "kind": "enum",
+  "name": "OtherActivity",
+  "id": "__module__NeighborhoodPolicy__OtherActivity[]",
+  "variantTypes": [
+    {
+      "kind": "variant",
+      "tag": 42,
+      "id": "__module__NeighborhoodPolicy__OtherActivity[]__Placeholder",
+      "name": "Placeholder",
+      "fieldTypes": []
+    }
+  ]
+};
 const DelegateActivitySchema = {
   "kind": "enum",
   "name": "DelegateActivity",
@@ -32588,6 +34142,31 @@ const DelegateActivitySchema = {
               "kind": "internal",
               "name": "Data"
             }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 9,
+      "id": "__module__NeighborhoodPolicy__DelegateActivity[]__OtherActivities",
+      "name": "OtherActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "enum",
+            "name": "OtherActivity",
+            "id": "__module__NeighborhoodPolicy__OtherActivity[]",
+            "variantTypes": [
+              {
+                "kind": "variant",
+                "tag": 42,
+                "id": "__module__NeighborhoodPolicy__OtherActivity[]__Placeholder",
+                "name": "Placeholder",
+                "fieldTypes": []
+              }
+            ]
           }
         }
       ]
@@ -37619,6 +39198,520 @@ const dgd_DataSrcSchema = {
     }
   ]
 };
+const AbstractDelegateActivitiesEnumSchema = {
+  "kind": "enum",
+  "name": "AbstractDelegateActivitiesEnum",
+  "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]",
+  "variantTypes": [
+    {
+      "kind": "variant",
+      "tag": 0,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__CapoLifecycleActivities",
+      "name": "CapoLifecycleActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "enum",
+            "name": "CapoLifecycleActivity",
+            "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]",
+            "variantTypes": [
+              {
+                "kind": "variant",
+                "tag": 0,
+                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__CreatingDelegate",
+                "name": "CreatingDelegate",
+                "fieldTypes": [
+                  {
+                    "name": "seed",
+                    "type": {
+                      "kind": "internal",
+                      "name": "TxOutputId"
+                    }
+                  },
+                  {
+                    "name": "purpose",
+                    "type": {
+                      "kind": "internal",
+                      "name": "String"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 1,
+                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__queuePendingChange",
+                "name": "queuePendingChange",
+                "fieldTypes": []
+              },
+              {
+                "kind": "variant",
+                "tag": 2,
+                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__removePendingChange",
+                "name": "removePendingChange",
+                "fieldTypes": [
+                  {
+                    "name": "role",
+                    "type": {
+                      "kind": "enum",
+                      "name": "DelegateRole",
+                      "id": "__module__CapoDelegateHelpers__DelegateRole[]",
+                      "variantTypes": [
+                        {
+                          "kind": "variant",
+                          "tag": 0,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__MintDgt",
+                          "name": "MintDgt",
+                          "fieldTypes": []
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 1,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__SpendDgt",
+                          "name": "SpendDgt",
+                          "fieldTypes": []
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 2,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__MintInvariant",
+                          "name": "MintInvariant",
+                          "fieldTypes": []
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 3,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__SpendInvariant",
+                          "name": "SpendInvariant",
+                          "fieldTypes": []
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 4,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__DgDataPolicy",
+                          "name": "DgDataPolicy",
+                          "fieldTypes": [
+                            {
+                              "name": "name",
+                              "type": {
+                                "kind": "internal",
+                                "name": "String"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 5,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__OtherNamedDgt",
+                          "name": "OtherNamedDgt",
+                          "fieldTypes": [
+                            {
+                              "name": "name",
+                              "type": {
+                                "kind": "internal",
+                                "name": "String"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 6,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__BothMintAndSpendDgt",
+                          "name": "BothMintAndSpendDgt",
+                          "fieldTypes": []
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 7,
+                          "id": "__module__CapoDelegateHelpers__DelegateRole[]__HandledByCapoOnly",
+                          "name": "HandledByCapoOnly",
+                          "fieldTypes": []
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 3,
+                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__commitPendingChanges",
+                "name": "commitPendingChanges",
+                "fieldTypes": []
+              },
+              {
+                "kind": "variant",
+                "tag": 4,
+                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__forcingNewSpendDelegate",
+                "name": "forcingNewSpendDelegate",
+                "fieldTypes": [
+                  {
+                    "name": "seed",
+                    "type": {
+                      "kind": "internal",
+                      "name": "TxOutputId"
+                    }
+                  },
+                  {
+                    "name": "purpose",
+                    "type": {
+                      "kind": "internal",
+                      "name": "String"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 5,
+                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__forcingNewMintDelegate",
+                "name": "forcingNewMintDelegate",
+                "fieldTypes": [
+                  {
+                    "name": "seed",
+                    "type": {
+                      "kind": "internal",
+                      "name": "TxOutputId"
+                    }
+                  },
+                  {
+                    "name": "purpose",
+                    "type": {
+                      "kind": "internal",
+                      "name": "String"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 6,
+                "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__updatingManifest",
+                "name": "updatingManifest",
+                "fieldTypes": [
+                  {
+                    "name": "activity",
+                    "type": {
+                      "kind": "enum",
+                      "name": "ManifestActivity",
+                      "id": "__module__CapoDelegateHelpers__ManifestActivity[]",
+                      "variantTypes": [
+                        {
+                          "kind": "variant",
+                          "tag": 0,
+                          "id": "__module__CapoDelegateHelpers__ManifestActivity[]__retiringEntry",
+                          "name": "retiringEntry",
+                          "fieldTypes": [
+                            {
+                              "name": "key",
+                              "type": {
+                                "kind": "internal",
+                                "name": "String"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 1,
+                          "id": "__module__CapoDelegateHelpers__ManifestActivity[]__updatingEntry",
+                          "name": "updatingEntry",
+                          "fieldTypes": [
+                            {
+                              "name": "key",
+                              "type": {
+                                "kind": "internal",
+                                "name": "String"
+                              }
+                            },
+                            {
+                              "name": "tokenName",
+                              "type": {
+                                "kind": "internal",
+                                "name": "ByteArray"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 2,
+                          "id": "__module__CapoDelegateHelpers__ManifestActivity[]__addingEntry",
+                          "name": "addingEntry",
+                          "fieldTypes": [
+                            {
+                              "name": "key",
+                              "type": {
+                                "kind": "internal",
+                                "name": "String"
+                              }
+                            },
+                            {
+                              "name": "tokenName",
+                              "type": {
+                                "kind": "internal",
+                                "name": "ByteArray"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 3,
+                          "id": "__module__CapoDelegateHelpers__ManifestActivity[]__forkingThreadToken",
+                          "name": "forkingThreadToken",
+                          "fieldTypes": [
+                            {
+                              "name": "key",
+                              "type": {
+                                "kind": "internal",
+                                "name": "String"
+                              }
+                            },
+                            {
+                              "name": "newThreadCount",
+                              "type": {
+                                "kind": "internal",
+                                "name": "Int"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "variant",
+                          "tag": 4,
+                          "id": "__module__CapoDelegateHelpers__ManifestActivity[]__burningThreadToken",
+                          "name": "burningThreadToken",
+                          "fieldTypes": [
+                            {
+                              "name": "key",
+                              "type": {
+                                "kind": "internal",
+                                "name": "String"
+                              }
+                            },
+                            {
+                              "name": "burnedThreadCount",
+                              "type": {
+                                "kind": "internal",
+                                "name": "Int"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 1,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__DelegateLifecycleActivities",
+      "name": "DelegateLifecycleActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "enum",
+            "name": "DelegateLifecycleActivity",
+            "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]",
+            "variantTypes": [
+              {
+                "kind": "variant",
+                "tag": 0,
+                "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__ReplacingMe",
+                "name": "ReplacingMe",
+                "fieldTypes": [
+                  {
+                    "name": "seed",
+                    "type": {
+                      "kind": "internal",
+                      "name": "TxOutputId"
+                    }
+                  },
+                  {
+                    "name": "purpose",
+                    "type": {
+                      "kind": "internal",
+                      "name": "String"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "variant",
+                "tag": 1,
+                "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__Retiring",
+                "name": "Retiring",
+                "fieldTypes": []
+              },
+              {
+                "kind": "variant",
+                "tag": 2,
+                "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__ValidatingSettings",
+                "name": "ValidatingSettings",
+                "fieldTypes": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 2,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__SpendingActivities",
+      "name": "SpendingActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "internal",
+            "name": "Data"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 3,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__MintingActivities",
+      "name": "MintingActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "internal",
+            "name": "Data"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 4,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__BurningActivities",
+      "name": "BurningActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "internal",
+            "name": "Data"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 5,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__CreatingDelegatedData",
+      "name": "CreatingDelegatedData",
+      "fieldTypes": [
+        {
+          "name": "seed",
+          "type": {
+            "kind": "internal",
+            "name": "TxOutputId"
+          }
+        },
+        {
+          "name": "dataType",
+          "type": {
+            "kind": "internal",
+            "name": "String"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 6,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__UpdatingDelegatedData",
+      "name": "UpdatingDelegatedData",
+      "fieldTypes": [
+        {
+          "name": "dataType",
+          "type": {
+            "kind": "internal",
+            "name": "String"
+          }
+        },
+        {
+          "name": "recId",
+          "type": {
+            "kind": "internal",
+            "name": "ByteArray"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 7,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__DeletingDelegatedData",
+      "name": "DeletingDelegatedData",
+      "fieldTypes": [
+        {
+          "name": "dataType",
+          "type": {
+            "kind": "internal",
+            "name": "String"
+          }
+        },
+        {
+          "name": "recId",
+          "type": {
+            "kind": "internal",
+            "name": "ByteArray"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 8,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__MultipleDelegateActivities",
+      "name": "MultipleDelegateActivities",
+      "fieldTypes": [
+        {
+          "name": "activities",
+          "type": {
+            "kind": "list",
+            "itemType": {
+              "kind": "internal",
+              "name": "Data"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "tag": 9,
+      "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__OtherActivities",
+      "name": "OtherActivities",
+      "fieldTypes": [
+        {
+          "name": "activity",
+          "type": {
+            "kind": "internal",
+            "name": "Data"
+          }
+        }
+      ]
+    }
+  ]
+};
 const DgDataDetailsSchema = {
   "kind": "struct",
   "format": "list",
@@ -37714,14 +39807,535 @@ const DgDataDetailsSchema = {
         "kind": "internal",
         "name": "MintingPolicyHash"
       }
+    },
+    {
+      "name": "activity",
+      "type": {
+        "kind": "option",
+        "someType": {
+          "kind": "enum",
+          "name": "AbstractDelegateActivitiesEnum",
+          "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]",
+          "variantTypes": [
+            {
+              "kind": "variant",
+              "tag": 0,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__CapoLifecycleActivities",
+              "name": "CapoLifecycleActivities",
+              "fieldTypes": [
+                {
+                  "name": "activity",
+                  "type": {
+                    "kind": "enum",
+                    "name": "CapoLifecycleActivity",
+                    "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]",
+                    "variantTypes": [
+                      {
+                        "kind": "variant",
+                        "tag": 0,
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__CreatingDelegate",
+                        "name": "CreatingDelegate",
+                        "fieldTypes": [
+                          {
+                            "name": "seed",
+                            "type": {
+                              "kind": "internal",
+                              "name": "TxOutputId"
+                            }
+                          },
+                          {
+                            "name": "purpose",
+                            "type": {
+                              "kind": "internal",
+                              "name": "String"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 1,
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__queuePendingChange",
+                        "name": "queuePendingChange",
+                        "fieldTypes": []
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 2,
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__removePendingChange",
+                        "name": "removePendingChange",
+                        "fieldTypes": [
+                          {
+                            "name": "role",
+                            "type": {
+                              "kind": "enum",
+                              "name": "DelegateRole",
+                              "id": "__module__CapoDelegateHelpers__DelegateRole[]",
+                              "variantTypes": [
+                                {
+                                  "kind": "variant",
+                                  "tag": 0,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__MintDgt",
+                                  "name": "MintDgt",
+                                  "fieldTypes": []
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 1,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__SpendDgt",
+                                  "name": "SpendDgt",
+                                  "fieldTypes": []
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 2,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__MintInvariant",
+                                  "name": "MintInvariant",
+                                  "fieldTypes": []
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 3,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__SpendInvariant",
+                                  "name": "SpendInvariant",
+                                  "fieldTypes": []
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 4,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__DgDataPolicy",
+                                  "name": "DgDataPolicy",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "name",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 5,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__OtherNamedDgt",
+                                  "name": "OtherNamedDgt",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "name",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 6,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__BothMintAndSpendDgt",
+                                  "name": "BothMintAndSpendDgt",
+                                  "fieldTypes": []
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 7,
+                                  "id": "__module__CapoDelegateHelpers__DelegateRole[]__HandledByCapoOnly",
+                                  "name": "HandledByCapoOnly",
+                                  "fieldTypes": []
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 3,
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__commitPendingChanges",
+                        "name": "commitPendingChanges",
+                        "fieldTypes": []
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 4,
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__forcingNewSpendDelegate",
+                        "name": "forcingNewSpendDelegate",
+                        "fieldTypes": [
+                          {
+                            "name": "seed",
+                            "type": {
+                              "kind": "internal",
+                              "name": "TxOutputId"
+                            }
+                          },
+                          {
+                            "name": "purpose",
+                            "type": {
+                              "kind": "internal",
+                              "name": "String"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 5,
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__forcingNewMintDelegate",
+                        "name": "forcingNewMintDelegate",
+                        "fieldTypes": [
+                          {
+                            "name": "seed",
+                            "type": {
+                              "kind": "internal",
+                              "name": "TxOutputId"
+                            }
+                          },
+                          {
+                            "name": "purpose",
+                            "type": {
+                              "kind": "internal",
+                              "name": "String"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 6,
+                        "id": "__module__CapoDelegateHelpers__CapoLifecycleActivity[]__updatingManifest",
+                        "name": "updatingManifest",
+                        "fieldTypes": [
+                          {
+                            "name": "activity",
+                            "type": {
+                              "kind": "enum",
+                              "name": "ManifestActivity",
+                              "id": "__module__CapoDelegateHelpers__ManifestActivity[]",
+                              "variantTypes": [
+                                {
+                                  "kind": "variant",
+                                  "tag": 0,
+                                  "id": "__module__CapoDelegateHelpers__ManifestActivity[]__retiringEntry",
+                                  "name": "retiringEntry",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "key",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 1,
+                                  "id": "__module__CapoDelegateHelpers__ManifestActivity[]__updatingEntry",
+                                  "name": "updatingEntry",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "key",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                      }
+                                    },
+                                    {
+                                      "name": "tokenName",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "ByteArray"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 2,
+                                  "id": "__module__CapoDelegateHelpers__ManifestActivity[]__addingEntry",
+                                  "name": "addingEntry",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "key",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                      }
+                                    },
+                                    {
+                                      "name": "tokenName",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "ByteArray"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 3,
+                                  "id": "__module__CapoDelegateHelpers__ManifestActivity[]__forkingThreadToken",
+                                  "name": "forkingThreadToken",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "key",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                      }
+                                    },
+                                    {
+                                      "name": "newThreadCount",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "Int"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "variant",
+                                  "tag": 4,
+                                  "id": "__module__CapoDelegateHelpers__ManifestActivity[]__burningThreadToken",
+                                  "name": "burningThreadToken",
+                                  "fieldTypes": [
+                                    {
+                                      "name": "key",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "String"
+                                      }
+                                    },
+                                    {
+                                      "name": "burnedThreadCount",
+                                      "type": {
+                                        "kind": "internal",
+                                        "name": "Int"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 1,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__DelegateLifecycleActivities",
+              "name": "DelegateLifecycleActivities",
+              "fieldTypes": [
+                {
+                  "name": "activity",
+                  "type": {
+                    "kind": "enum",
+                    "name": "DelegateLifecycleActivity",
+                    "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]",
+                    "variantTypes": [
+                      {
+                        "kind": "variant",
+                        "tag": 0,
+                        "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__ReplacingMe",
+                        "name": "ReplacingMe",
+                        "fieldTypes": [
+                          {
+                            "name": "seed",
+                            "type": {
+                              "kind": "internal",
+                              "name": "TxOutputId"
+                            }
+                          },
+                          {
+                            "name": "purpose",
+                            "type": {
+                              "kind": "internal",
+                              "name": "String"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 1,
+                        "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__Retiring",
+                        "name": "Retiring",
+                        "fieldTypes": []
+                      },
+                      {
+                        "kind": "variant",
+                        "tag": 2,
+                        "id": "__module__CapoDelegateHelpers__DelegateLifecycleActivity[]__ValidatingSettings",
+                        "name": "ValidatingSettings",
+                        "fieldTypes": []
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 2,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__SpendingActivities",
+              "name": "SpendingActivities",
+              "fieldTypes": [
+                {
+                  "name": "activity",
+                  "type": {
+                    "kind": "internal",
+                    "name": "Data"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 3,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__MintingActivities",
+              "name": "MintingActivities",
+              "fieldTypes": [
+                {
+                  "name": "activity",
+                  "type": {
+                    "kind": "internal",
+                    "name": "Data"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 4,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__BurningActivities",
+              "name": "BurningActivities",
+              "fieldTypes": [
+                {
+                  "name": "activity",
+                  "type": {
+                    "kind": "internal",
+                    "name": "Data"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 5,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__CreatingDelegatedData",
+              "name": "CreatingDelegatedData",
+              "fieldTypes": [
+                {
+                  "name": "seed",
+                  "type": {
+                    "kind": "internal",
+                    "name": "TxOutputId"
+                  }
+                },
+                {
+                  "name": "dataType",
+                  "type": {
+                    "kind": "internal",
+                    "name": "String"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 6,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__UpdatingDelegatedData",
+              "name": "UpdatingDelegatedData",
+              "fieldTypes": [
+                {
+                  "name": "dataType",
+                  "type": {
+                    "kind": "internal",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "recId",
+                  "type": {
+                    "kind": "internal",
+                    "name": "ByteArray"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 7,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__DeletingDelegatedData",
+              "name": "DeletingDelegatedData",
+              "fieldTypes": [
+                {
+                  "name": "dataType",
+                  "type": {
+                    "kind": "internal",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "recId",
+                  "type": {
+                    "kind": "internal",
+                    "name": "ByteArray"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 8,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__MultipleDelegateActivities",
+              "name": "MultipleDelegateActivities",
+              "fieldTypes": [
+                {
+                  "name": "activities",
+                  "type": {
+                    "kind": "list",
+                    "itemType": {
+                      "kind": "internal",
+                      "name": "Data"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "variant",
+              "tag": 9,
+              "id": "__module__CapoDelegateHelpers__AbstractDelegateActivitiesEnum[]__OtherActivities",
+              "name": "OtherActivities",
+              "fieldTypes": [
+                {
+                  "name": "activity",
+                  "type": {
+                    "kind": "internal",
+                    "name": "Data"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
     }
   ]
 };
 
 class NeighborhoodController extends DelegatedDataContract {
   dataBridgeClass = NeighborhoodPolicyDataBridge;
-  scriptBundle() {
-    return NeighborhoodRegistryBundle.create();
+  async scriptBundleClass() {
+    const module = await import('./contracts-preprod/NeighborhoodRegistry.hlb.mjs');
+    return module.default;
   }
   idPrefix = "nbhd";
   get delegateName() {
@@ -37735,29 +40349,34 @@ class NeighborhoodController extends DelegatedDataContract {
       // id: "nbhd-0000000000",
       // type: "dredNbh",
       memberToken: "member-owner",
-      state: { Preproduction: {} },
-      appInfo: {
-        name: "Default Neighborhood",
-        description: "A default neighborhood for Dred services",
-        url: "https://dred.com",
-        revenueModel: [
-          {
-            TransactionBased: {
-              chargeTo: {
-                EndUser: {}
-              },
-              minTxFee: makeValue(42000000n),
-              maxTxFee: void 0
-            }
-          }
-        ]
-      },
-      updateInfo: void 0,
-      opsInfo: {
-        minNodes: 3n,
-        maxNodes: 13n,
-        minNodeOperatorStake: makeValue(42000000n),
-        minUptime: 90n
+      details: {
+        V1: {
+          state: { Preproduction: {} },
+          appInfo: {
+            name: "Default Neighborhood",
+            description: "A default neighborhood for Dred services",
+            url: "https://dred.com",
+            revenueModel: [
+              {
+                TransactionBasedV1: {
+                  chargeTo: {
+                    EndUser: {}
+                  },
+                  minTxFee: makeValue(42000000n),
+                  maxTxFee: void 0,
+                  nodeOpShare: 0.1
+                }
+              }
+            ]
+          },
+          opsInfo: {
+            minNodes: 3n,
+            maxNodes: 13n,
+            minNodeOperatorStake: makeValue(42000000n),
+            minUptime: 90n
+          },
+          updateInfo: void 0
+        }
       }
     };
   }
@@ -37767,9 +40386,7 @@ class NeighborhoodController extends DelegatedDataContract {
   async mkTxnRegisteringNeighborhood(nbhReg, initialTcx) {
     await this.capo.getMintDelegate();
     const { capo } = this;
-    const tcx0 = initialTcx || this.mkTcx(
-      "registering dred neighborhood"
-    );
+    const tcx0 = initialTcx || this.mkTcx("registering dred neighborhood");
     const tcx1 = await capo.mkTxnWithMemberInfo(void 0, tcx0);
     return this.mkTxnCreateRecord(
       {
@@ -37788,9 +40405,7 @@ class NeighborhoodController extends DelegatedDataContract {
       activity = this.activity.SpendingActivities.UpdatingRecord(nbh.data.id),
       ...otherOptions
     } = options;
-    const tcx0 = initialTcx || this.mkTcx(
-      "updating dred neighborhood"
-    );
+    const tcx0 = initialTcx || this.mkTcx("updating dred neighborhood");
     const tcx1 = await this.capo.mkTxnWithMemberInfo(void 0, tcx0);
     return this.mkTxnUpdateRecord(
       txnName,
@@ -37819,10 +40434,9 @@ class DredCapo extends StellarTokenomicsCapo {
       /* Add other feature-flag defaults here */
     };
   }
-  scriptBundle() {
-    return DredCapoBundle.create({
-      setup: this.setup
-    });
+  async scriptBundleClass() {
+    const t = await import('./contracts-preprod/DredCapo.hlb.mjs');
+    return t.DredCapoBundle;
   }
   /**
    * locates the current settings for the capo
@@ -37849,6 +40463,7 @@ class DredCapo extends StellarTokenomicsCapo {
     if (!charterData) {
       charterData = await this.findCharterData();
     }
+    debugger;
     return this.getDgDataController("DredNode", {
       charterData
     });
@@ -38005,16 +40620,9 @@ class DredCapo extends StellarTokenomicsCapo {
           "has staking-reward settings",
           "provides a 'settings' struct in a module that other contracts import to access parameters"
         ],
-        requires: ["can update the settings"]
-      },
-      "can update the settings": {
-        purpose: "to allow for future adjustments to protocol parameters",
-        details: [
-          "When the settings are updated, the new settings are used in all future transactions referencing settings`"
-        ],
-        mech: [
-          "applies the new settings on-chain",
-          "won't update the settings without capo govAuthority approval"
+        requiresInherited: [
+          "Has a settings data structure where tokenomics plugins can store protocol parameters",
+          "Can upgrade the Settings data"
         ]
       },
       "Provides a Node Operator registry, in which node operators can maintain their node registrations": {
@@ -38024,7 +40632,10 @@ class DredCapo extends StellarTokenomicsCapo {
           "Allows registering a node operator record with the DRED.nodeOperator token",
           "Registers the member-* id with the node registration record"
         ],
-        requires: []
+        requires: [],
+        requiresInherited: [
+          "supports the Delegation pattern using roles and strategy-variants"
+        ]
       }
     });
   }

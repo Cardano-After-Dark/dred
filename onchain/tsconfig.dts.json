@@ -29,7 +29,7 @@
         "emitDecoratorMetadata": true,
         "jsx": "preserve",
 
-        "outDir": "./.api-extractor-temp",
+        "outDir": "./.stellar/api",
         // "outFile": ".api-extractor-temp/raw.d.ts",
         // "importHelpers": true,
         "rootDir": ".",
