@@ -1,8 +1,8 @@
 {
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
-        "module": "es6",
-        "moduleResolution": "bundler",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
         "paths": {
             "@platform/ReadableStream.js": ["../../platform/browser/ReadableStream.ts"],
             "@platform/ReadableStream": ["../../platform/browser/ReadableStream.ts"],
@@ -11,5 +11,8 @@
             // "sXXrc/*": ["../../src/*"]
         }
     },
+    "files": [
+        "./index.ts"
+    ],
     "include": ["index.ts", "../../platform/browser/**/*.ts"]
 }
