@@ -1,6 +1,6 @@
 services:
   dred:
-    image: cardanoafterdark/dred-node:v0.8.3
+    image: cardanoafterdark/dred-node:v0.8.2
     container_name: dred_server
     expose:
       - "3029"  # Only accessible within dred_net network
