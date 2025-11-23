@@ -5,12 +5,21 @@
 
 ## Setup Steps
 
+Start by cloning the repository, and change to the docker folder
+
+```bash
+git clone https://github.com/Cardano-After-Dark/dred.git
+cd dred
+git checkout infra/containerization-v2
+```
+
 ### 1. Install Docker
 Run the installation script to set up Docker and any dependencies:
 
 ```bash
+cd docker 
 chmod u+x ./scripts/docker-install.sh
-./scripts/docker-install.sh
+sudo ./scripts/docker-install.sh
 ```
 
 
@@ -36,6 +45,13 @@ cp .env.example .env
 
 ```
 Then edit the `.env` file to set your specific environment variables according to your requirements.
+
+```bash
+# typically, we change just these
+DOMAIN=xx.pp.node-01.dred.network
+BF_API_KEY=preprodwj3I80hV2...
+DRED_NODE_ID=xx.pp.node-01
+```
 
 ### 3. Start Services with Docker Compose
 Build and start the Docker containers in detached mode with:
@@ -80,3 +96,26 @@ docker logs -f <container_name>
 
 With these steps, your environment should be ready to run the project successfully.  
 Make sure that the `.env` file is properly configured before starting the containers.
+
+### 5. Verifyh DRED Operations
+
+As last step, verify DRED operations are working properly
+
+Assuming your server can be reached at the address defined in the `DOMAIN`,
+
+Check you can see the channels
+
+```bash
+curl https://uk.pp.node-01.dred.network/channels
+```
+
+Check you can send a message
+
+```bash
+  curl -X POST https://uk.pp.node-01.dred.network/channel/news/message \
+    -H "Content-Type: application/json" \
+    -d '{"msg":"Hello from UK","type":"text"}'
+```
+
+When all the above works, DRED is fully operational, and you can proceed registering the node 
+- [cardano-after-dark.github.io/dred/operator](https://cardano-after-dark.github.io/dred/operator)
