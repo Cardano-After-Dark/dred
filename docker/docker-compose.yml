@@ -1,33 +1,64 @@
 services:
-  dred-node:
-    #image: dred-node:latest
-    build:
-      context: .
-      args:
-        BRANCH: ${GIT_BRANCH}
-      dockerfile: Dockerfile
-    container_name: dred-node
+  dred:
+    image: cardanoafterdark/dred-node:v0.8.2
+    container_name: dred_server
+    expose:
+      - "3029"  # Only accessible within dred_net network
+    env_file:
+      - .env  
+    volumes:
+      - ./letsencrypt:/etc/letsencrypt   # Persist certificates
+      - ./logs:/var/log                  # Persist Logs
+      - ./keystore:/dred/keystore        # Persist Keys
+    depends_on:
+      - redis
+    networks:
+      - dred_net
+    
+
+  redis:
+    image: redis:alpine
+    container_name: redis_server
+    expose:
+      - "6379"  # Only accessible within dred_net network
+    volumes:
+      - ./redis-data:/var/lib/redis      # Persist Redis data
+    networks:
+      - dred_net
+
+  # Nginx - HTTPS termination and reverse proxy
+  # Unified configuration for all environments (local/dev/prod)
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_proxy
+    # environment:
+      # - DOMAIN=${HOST_DOMAIN}
+    env_file:
+      - .env  
+    volumes:
+      # Unified configuration files
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/nginx.default.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./letsencrypt:/etc/letsencrypt
+      - ./scripts/generate-certs.sh:/docker-entrypoint.d/generate-certs.sh
     ports:
       - "80:80"
       - "443:443"
-    environment:
-      - HOST_DOMAIN=${HOST_DOMAIN}         # Domain for LetsEncrypt SSL certificate
-      - EMAIL=admin@${HOST_DOMAIN}         # Email for LetsEncrypt SSL certificate
-      - NODE_ENV=production                # Node Environment
-      - CARDANO_NETWORK=${CARDANO_NETWORK} # Use one out of {preview,preprod,mainnet}
-      - BF_API_KEY=${BF_API_KEY}           # Blockfrost API Key
-    volumes:
-      - ./letsencrypt:/etc/letsencrypt   # Persist certificates
-      - ./nginx-ssl:/etc/nginx/ssl       # Persist SSL config
-      - ./redis-data:/var/lib/redis      # Persist Redis data
-      - ./logs:/var/log                  # Persist Logs
-      - ./keystore:/dred/keystore        # Persist Keys
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=1
-      - net.ipv6.conf.default.disable_ipv6=1
+    networks:
+      - dred_net
+    restart: unless-stopped
+    depends_on:
+      - dred
+
 
 networks:
-  dred-network:
+  dred_net:
     driver: bridge
     enable_ipv6: false
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24
+          gateway: 172.16.238.1
+
 
