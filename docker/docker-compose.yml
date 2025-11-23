@@ -8,8 +8,6 @@ services:
       - .env  
     volumes:
       - ./letsencrypt:/etc/letsencrypt   # Persist certificates
-      - ./nginx-ssl:/etc/nginx/ssl       # Persist SSL config
-      - ./redis-data:/var/lib/redis      # Persist Redis data
       - ./logs:/var/log                  # Persist Logs
       - ./keystore:/dred/keystore        # Persist Keys
     depends_on:
