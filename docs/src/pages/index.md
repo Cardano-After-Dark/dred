@@ -102,7 +102,7 @@ export default {
 }
 ```
 
-See [Node Operations](docs/node-operations) for complete setup instructions.
+See [Node Operations](/dred/docs/node-operations) for complete setup instructions.
 
 ---
 
@@ -195,7 +195,7 @@ We welcome contributions:
 - **Node Operations**: Run a node and strengthen the network
 - **Feedback**: Share your experience and suggestions
 
-See [How to Contribute](docs/how-to-contribute) for details.
+See [How to Contribute](/dred/docs/how-to-contribute) for details.
 
 ---
 
