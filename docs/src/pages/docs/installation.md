@@ -32,7 +32,7 @@ const dred = new DredClient({ neighborhood: "your-app" });
 await dred.connect();
 ```
 
-See the [API Reference](/docs/api-reference) for complete usage details.
+See the [API Reference](api-reference) for complete usage details.
 
 ---
 
@@ -310,15 +310,15 @@ DRED_USE_INSECURE=false
 
 ### For Developers
 
-1. Read [Understanding DRED](/docs/understanding-dred)
-2. Explore the [API Reference](/docs/api-reference)
-3. Check the [Architecture Guide](/docs/architecture-guide)
+1. Read [Understanding DRED](understanding-dred)
+2. Explore the [API Reference](api-reference)
+3. Check the [Architecture Guide](architecture-guide)
 4. Review the sample application in `/sampleApp`
 
 ### For Node Operators
 
-1. Complete [Node Operations](/docs/node-operations) guide
-2. Register your node in the [Node Registry](/docs/dred-node-registry)
+1. Complete [Node Operations](node-operations) guide
+2. Register your node in the [Node Registry](dred-node-registry)
 3. Monitor your node's health and performance
 4. Join the community on [Discord](https://discord.gg/VwxRdEBwBE)
 
