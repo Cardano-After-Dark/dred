@@ -1,65 +1,372 @@
 ---
 title: Installation
-description: Install prerequisites, clone the code, run the server and demo application, access the documentation.
+description: Install DRED for development or deploy a production node
 ---
 
-This section is about installing the prerequisites, clone the code and run the application
-- *prerequisites*: Docker, node, npm, pnpm
-- *code*: https://github.com/Cardano-After-Dark/dred
-- *run*: pnpm install, pnpm dev
-- *run* [demo application](http://localhost:3031/) and *access* [documentation](http://localhost:3031/)
+This guide covers installing DRED for local development and deploying production nodes.
 
 ---
 
+## For Application Developers
 
+### Prerequisites
 
-## Install docker
+- **Node.js**: Version 18 or higher (managed via nvm recommended)
+- **npm**: Comes with Node.js
+- **pnpm**: Version 10.11.0 or higher
 
-If you haven’t already, install Docker for [windows](https://docs.docker.com/desktop/install/windows-install/), [macos](https://docs.docker.com/desktop/install/mac-install/) or [linux](https://docs.docker.com/desktop/install/linux-install/).**
+### Install the Client Library
 
-## Install nvm & pnpm
+For applications using DRED, install the client package:
 
-See if nvm is installed with `nvm -v`
-
-If not already configured, install nvm, and then run `nvm install --lts` to install both **node** and **npm**. Then, If not already configured, install **pnpm** with the following command `npm install -g pnpm` .
-
-## Clone the  [project](https://github.com/Cardano-After-Dark/dred)
-
-We assume SSH cloning, so you need a KeyPair. In case you need to set it up, check this [page about creating an SSH keypair](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) , specifically this [section about adding your Public key to github](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
-
-Once authentication is done pull the main branch with the below command.
-
-``` bash
-git clone git@github.com:Cardano-After-Dark/dred.git
+```bash
+npm install @cardano-after-dark/dred-client
 ```
 
+Start using DRED in your application:
 
-## Build and Run
+```javascript
+import { DredClient } from '@cardano-after-dark/dred-client';
 
-In order to build and run the project change to the project directory and run the below commands: 
+const dred = new DredClient({ neighborhood: "your-app" });
+await dred.connect();
+```
 
-``` bash
-pnpm install  
+See the [API Reference](/docs/api-reference) for complete usage details.
+
+---
+
+## For Local Development
+
+### Prerequisites
+
+- **Docker**: For running Redis
+- **Node.js**: Version 18 (see `.nvmrc`)
+- **npm**: Comes with Node.js
+- **pnpm**: Version 10.11.0 or higher
+
+### Install nvm and pnpm
+
+Check if nvm is installed:
+
+```bash
+nvm -v
+```
+
+If not installed, install nvm and then install Node.js:
+
+```bash
+nvm install --lts
+```
+
+Install pnpm globally:
+
+```bash
+npm install -g pnpm
+```
+
+### Clone the Repository
+
+Using SSH (recommended):
+
+```bash
+git clone git@github.com:Cardano-After-Dark/dred.git
+cd dred
+```
+
+Using HTTPS:
+
+```bash
+git clone https://github.com/Cardano-After-Dark/dred.git
+cd dred
+```
+
+### Build and Run
+
+Install dependencies and start the development environment:
+
+```bash
+pnpm install
 pnpm dev
 ```
 
-pnpm dev is a shortcut that does the following
-* run *redis* in a *docker* container
-* un **dred server** listening on *localhost* and communicating to *redis*
-* run a [**dred client app**](http://localhost:3030/) that communicates with the *dred server*.
-* run a [**dred documentation site**](http://localhost:3031/) 
+This command:
 
-## Testing
-You can always build and run the application with the command `pnpm install` followed by `pnpm dev`.
+- Starts Redis in a Docker container
+- Runs the DRED server on localhost
+- Launches a [demo client app](http://localhost:3030/)
+- Serves [documentation](http://localhost:3034/)
 
-When done, you should be able to access the client application at [localhost:3030/](http://localhost:3030/), and you will see the server diagnostics on the command line
+### Verify Installation
 
-### Dred Demo Application
+Once running, access:
 
-The DRED Demo Application is a simple client application which uses the DRED client library to communicate with the DRED Server. In the development environment the DRED Server runs within Docker, but in the real world it typically runs on some server accessible on internet.
+- **Demo Application**: [http://localhost:3030](http://localhost:3030/)
+- **Documentation**: [http://localhost:3034](http://localhost:3034/)
 
-![DRED demo application ](/attachments/dred-demo-application-screenshot-20230419.png)
+The demo application shows the DRED client connecting to the local server and managing message channels.
 
-### DRED Documentation
-Once started the dev environment with `pnpm dev`, the documentation is accessible at [localhost:3031/](http://localhost:3031/) . 
+---
 
+## For Node Operators
+
+### Deploy with Docker (Recommended)
+
+The easiest way to run a production DRED node is using Docker.
+
+#### Prerequisites
+
+- **Docker**: Install for [Windows](https://docs.docker.com/desktop/install/windows-install/), [macOS](https://docs.docker.com/desktop/install/mac-install/), or [Linux](https://docs.docker.com/desktop/install/linux-install/)
+- **Server**: Public IP or domain name
+- **Resources**: 2+ CPU cores, 4+ GB RAM, 50+ GB storage
+
+#### Quick Deployment
+
+Pull the official DRED node image:
+
+```bash
+docker pull cardanoafterdark/dred-node:latest
+```
+
+Create a configuration directory:
+
+```bash
+mkdir -p /opt/dred-node
+cd /opt/dred-node
+```
+
+Download the example configuration:
+
+```bash
+curl -o .env.example https://raw.githubusercontent.com/Cardano-After-Dark/dred/main/.env.example
+cp .env.example .env
+```
+
+Edit `.env` with your settings:
+
+```bash
+nano .env
+```
+
+Key settings to configure:
+
+- `DRED_NODE_ID`: Your unique node identifier
+- `SERVER_IP`: Your server's public IP or domain
+- `CARDANO_NETWORK`: Network to use (preprod/mainnet)
+- `BF_API_KEY`: Your Blockfrost API key
+
+Start the node using Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+Check node status:
+
+```bash
+docker-compose ps
+docker-compose logs -f dred-server
+```
+
+For complete deployment instructions, see:
+
+- [Deployment Guide](https://github.com/Cardano-After-Dark/dred/blob/main/devops/DEPLOYMENT-GUIDE.md)
+- [Quick Start](https://github.com/Cardano-After-Dark/dred/blob/main/devops/QUICKSTART.md)
+
+### Build from Source
+
+Clone the repository:
+
+```bash
+git clone git@github.com:Cardano-After-Dark/dred.git
+cd dred
+```
+
+Install dependencies:
+
+```bash
+pnpm install
+```
+
+Build all packages:
+
+```bash
+pnpm build:all
+```
+
+This builds:
+
+- DRED server
+- Client library (browser and Node.js)
+- Documentation site
+- On-chain contracts
+
+Run the server:
+
+```bash
+pnpm start
+```
+
+---
+
+## Testing Your Installation
+
+### Run Tests
+
+Execute the test suite:
+
+```bash
+# Run all tests
+pnpm test
+
+# Run specific tests
+pnpm test replication
+
+# Run tests in watch mode
+pnpm testing
+
+# Run with coverage
+pnpm test:coverage
+```
+
+### Type Checking
+
+Verify TypeScript types:
+
+```bash
+pnpm typecheck
+```
+
+### Linting
+
+Check code style:
+
+```bash
+pnpm lint
+```
+
+---
+
+## Environment Configuration
+
+### Development Environment
+
+Create a `.env` file in the project root:
+
+```bash
+# Redis connection
+REDIS_URL=redis://localhost:6379
+
+# Server configuration
+DRED_PORT=3029
+DRED_HOST=0.0.0.0
+SERVER_IP=127.0.0.1
+
+# Environment mode
+NODE_ENV=development
+
+# Logging
+LOGGING=default:info,discovery:debug
+
+# Node identification
+DRED_NODE_ID=local-dev
+
+# Allow insecure HTTP (development only)
+DRED_USE_INSECURE=true
+```
+
+### Production Environment
+
+For production nodes, configure:
+
+```bash
+# Redis connection
+REDIS_URL=redis://localhost:6379
+
+# Server configuration
+DRED_PORT=3029
+SERVER_IP=your-public-ip-or-domain
+
+# Environment mode
+NODE_ENV=production
+
+# Cardano Network
+CARDANO_NETWORK=preprod
+BF_API_KEY=your_blockfrost_api_key
+
+# Node identification
+DRED_NODE_ID=your-unique-node-id
+
+# Discovery method
+USE_STATIC_DISCOVERY=true
+
+# Security (NEVER use insecure in production)
+DRED_USE_INSECURE=false
+```
+
+---
+
+## Next Steps
+
+### For Developers
+
+1. Read [Understanding DRED](/docs/understanding-dred)
+2. Explore the [API Reference](/docs/api-reference)
+3. Check the [Architecture Guide](/docs/architecture-guide)
+4. Review the sample application in `/sampleApp`
+
+### For Node Operators
+
+1. Complete [Node Operations](/docs/node-operations) guide
+2. Register your node in the [Node Registry](/docs/dred-node-registry)
+3. Monitor your node's health and performance
+4. Join the community on [Discord](https://discord.gg/VwxRdEBwBE)
+
+---
+
+## Troubleshooting
+
+### Docker Issues
+
+If Redis container fails to start:
+
+```bash
+# Check Docker status
+docker ps -a
+
+# View Redis logs
+docker logs dred_redis
+
+# Restart Redis
+docker restart dred_redis
+```
+
+### Build Issues
+
+If build fails:
+
+```bash
+# Clean and rebuild
+rm -rf node_modules dist
+pnpm install
+pnpm build
+```
+
+### Port Conflicts
+
+If ports are already in use, update `.env`:
+
+```bash
+DRED_PORT=3030  # Change to an available port
+```
+
+---
+
+## Getting Help
+
+Need assistance?
+
+- **Documentation**: Browse all guides on this site
+- **Discord**: Join our [Discord server](https://discord.gg/VwxRdEBwBE) for discussions and support
+- **GitHub Issues**: [Report issues](https://github.com/Cardano-After-Dark/dred/issues) for bugs and feature requests
+- **Telegram**: Connect with the community on [Telegram](https://t.me/CardanoAfterDark)
