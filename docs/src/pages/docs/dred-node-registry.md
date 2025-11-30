@@ -140,6 +140,6 @@ await dred.connect();
 
 ## Related Resources
 
-- [Node Operations](/docs/node-operations) - Guide for operating a Dred node
-- [Registering a Neighbor](/docs/register-neighbor) - Detailed registration process
-- [Understanding Dred](/docs/understanding-dred) - Overview of the Dred network architecture 
+- [Node Operations](node-operations) - Guide for operating a Dred node
+- [Registering a Neighbor](register-neighbor) - Detailed registration process
+- [Understanding Dred](understanding-dred) - Overview of the Dred network architecture 

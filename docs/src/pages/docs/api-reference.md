@@ -449,6 +449,6 @@ try {
 
 ## Further Reading
 
-- [Understanding DRED](/docs/understanding-dred) - Learn how DRED works
-- [Architecture Guide](/docs/architecture-guide) - Explore the technical architecture
+- [Understanding DRED](understanding-dred) - Learn how DRED works
+- [Architecture Guide](architecture-guide) - Explore the technical architecture
 - [GitHub Repository](https://github.com/Cardano-After-Dark/dred) - View source code and examples
