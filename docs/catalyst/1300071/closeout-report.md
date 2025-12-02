@@ -1,10 +1,9 @@
 # cPoker DRED Development (Cardano After Dark)
 
 **Project URL (Catalyst):**  
-https://github.com/Cardano-After-Dark/hydra-poc/blob/main/docs/blog/close-out.md#cpoker-hydra-case-study-cardano-after-dark
+https://projectcatalyst.io/funds/13/cardano-open-developers/cpoker-dred-development
 
 **Project Number**: 1300071 - cPoker DRED Development
-https://projectcatalyst.io/funds/13/cardano-open-developers/cpoker-dred-development
 **Project Manager:** Seomon **Date Project Started:** 15.04.2025 **Date Project Completed:** 2.12.2025
 ---
 
