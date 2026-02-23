@@ -6,49 +6,23 @@ You are an expert in integrating web applications with the DRED decentralized me
 
 Load this skill when building a web application that needs real-time messaging through DRED — connecting to neighborhoods, subscribing to channels, posting messages, handling events, or managing encrypted channels.
 
+**Do NOT reference `docs/src/pages/docs/api-reference.md`** — it contains fictional methods and incorrect event names. The reference docs in this directory are the authoritative source, derived from actual source code.
+
 ## Critical Constraints
 
 1. **`msg` must be a string** — `postMessage()` requires `msg` to be a string, not JSON. Use `JSON.stringify()` for structured data, base64 for binary.
 2. **`bookmarkStorage` is required** — The constructor requires a `BookmarkStorage` implementation. Use `{ getBookmark: async () => '0', setBookmark: async () => {} }` for no-op.
-3. **State machine drives the lifecycle** — Don't call channel operations before the client reaches `ready` state. Listen for `hasChannels` to know when channels are available.
-4. **Event-driven, not polling** — Wire up `client.events.on()` handlers. The client emits typed events for all state changes, messages, and errors.
+3. **State machine drives the lifecycle** — Channel operations fail before `ready` state. See [Event Reference](./reference/events.md) for the lifecycle states and what signals readiness.
+4. **Event-driven, not polling** — DredClient uses typed EventEmitters for all notifications. See [Event Reference](./reference/events.md) for the full event catalog and when each fires.
 5. **`postEncrypted()` is not yet implemented** — Encrypted channels can be created and joined, but message encryption is pending.
 
 ## Reference Documents
 
 Load these as needed — don't load all at once:
 
-- **[API Reference](./reference/api.md)** — Constructor, methods, types, imports, Discovery, BookmarkStorage
-- **[Event Reference](./reference/events.md)** — Event catalog, state machine lifecycle, connection health states
-- **[Integration Patterns](./reference/patterns.md)** — Working code for setup, subscriptions, posting, encrypted channels, error handling
-
-## Quick Start
-
-```typescript
-import { DredClient, StaticHostDiscovery } from '@cardano-after-dark/dred-client';
-
-const client = new DredClient({
-  discovery: new StaticHostDiscovery({}),
-  neighborhood: 'my-app',
-  waitFor: 'minimal',
-  bookmarkStorage: { getBookmark: async () => '0', setBookmark: async () => {} },
-});
-
-client.events.on('hasChannels', ({ channels }) => {
-  // channels are ready — subscribe
-  client.subscribeToChannels({
-    type: 'mass',
-    channels,
-    massHandler: (msg) => console.log(msg.channel, msg.type, msg.msg),
-  });
-});
-
-// Post a message (after subscribed)
-await client.postMessage('my-channel', {
-  type: 'chat',
-  msg: JSON.stringify({ text: 'hello' }),
-});
-```
+- **[API Reference](./reference/api.md)** — When you need constructor args, method signatures, or type definitions — what does each method actually accept and return?
+- **[Event Reference](./reference/events.md)** — When wiring up event handlers — which events exist, what triggers them, and what does the state machine lifecycle look like?
+- **[Integration Patterns](./reference/patterns.md)** — When writing application code — what does a working setup, subscription, or encrypted channel flow actually look like end to end? **Start here for your first integration.**
 
 ## Architecture Context
 

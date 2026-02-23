@@ -143,9 +143,12 @@ interface BookmarkStorage {
 }
 ```
 
-**NoBookmarkMemory** — no-op implementation (always returns `"0"`, discards writes):
+**No-op implementation** (always returns `"0"`, discards writes) — use for dev/testing when resumability isn't needed:
 ```typescript
-import { NoBookmarkMemory } from '@cardano-after-dark/dred-client'; // check export availability
-// Or implement inline:
-const noBookmarks = { getBookmark: async () => '0', setBookmark: async () => {} };
+const noBookmarks: BookmarkStorage = {
+  getBookmark: async () => '0',
+  setBookmark: async () => {},
+};
 ```
+
+Note: `NoBookmarkMemory` exists in the server package (`src/server/NoBookmarkMemory.ts`) but is not exported from the client package. Use the inline form above.
