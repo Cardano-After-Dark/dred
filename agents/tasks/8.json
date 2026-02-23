@@ -1,0 +1,11 @@
+{
+  "id": "8",
+  "subject": "2.4: Key guiding principles",
+  "description": "Core principles that shape behavior — event-driven thinking, state machine respect, etc.",
+  "status": "completed",
+  "blocks": [],
+  "blockedBy": [],
+  "metadata": {
+    "owner": "kenji"
+  }
+}

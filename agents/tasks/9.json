@@ -1,0 +1,11 @@
+{
+  "id": "9",
+  "subject": "3.1: Core activities the skill covers",
+  "description": "What API operations and patterns does the skill need to teach? Connection, channels, messaging, crypto, events, discovery setup.",
+  "status": "completed",
+  "blocks": [],
+  "blockedBy": [],
+  "metadata": {
+    "owner": "kenji"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "7",
+  "subject": "2.3: Boundaries of authority",
+  "description": "What does the skill decide vs defer? E.g. does it make architectural choices or just guide API usage?",
+  "status": "completed",
+  "blocks": [],
+  "blockedBy": [],
+  "metadata": {
+    "owner": "kenji"
+  }
+}

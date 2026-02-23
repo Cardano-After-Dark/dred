@@ -1,0 +1,11 @@
+{
+  "id": "5",
+  "subject": "2.1: Domain expertise the skill projects",
+  "description": "What kind of expert does this skill make the agent? Distributed systems, real-time messaging, Cardano dApp development?",
+  "status": "completed",
+  "blocks": [],
+  "blockedBy": [],
+  "metadata": {
+    "owner": "kenji"
+  }
+}

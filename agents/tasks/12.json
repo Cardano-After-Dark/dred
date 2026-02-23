@@ -1,0 +1,11 @@
+{
+  "id": "12",
+  "subject": "3.4: Dependencies on other skills/tools",
+  "description": "Does this skill depend on or reference any other skills or external resources?",
+  "status": "completed",
+  "blocks": [],
+  "blockedBy": [],
+  "metadata": {
+    "owner": "kenji"
+  }
+}
