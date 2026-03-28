@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "toon-writer": {
+      "command": "./skillz/toon-writer/node_modules/.bin/tsx",
+      "args": ["./skillz/toon-writer/mcp-server/server.ts"],
+      "cwd": "/home/san/dev/dred2"
+    }
+  }
+}
