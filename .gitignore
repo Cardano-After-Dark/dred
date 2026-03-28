@@ -7,3 +7,6 @@ devdb
 docs/out/
 docs/.next/
 .ai/
+/.proj
+/.trees
+/.assets
