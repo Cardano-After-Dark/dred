@@ -82,6 +82,8 @@ State machine managing connections to multiple hosts with health thresholds (min
 - **Responsibility**: Call notifySubscribers() to route messages from HostConnections to channel listeners
 
 
+**Data Flows**: [Message Posting & Delivery](#dataflow-ARCH-3nbmnx6tpt)
+
 
 
 ---
@@ -276,7 +278,7 @@ Node process — Express HTTP + Redis Streams message relay, channel management,
 
 **Interfaces**: [Client-Server Communication](#interface-ARCH-a5x82d6cpa), [Server-to-Server Replication](#interface-ARCH-brvwt30z8f), [Replicant Channel Discovery](#interface-ARCH-1ardm81zb5), [Replicant Readiness Signal](#interface-ARCH-x3mwe20j93), [System Topology](#interface-ARCH-7njdc3bc9x)
 
-**Data Flows**: [Message Posting & Delivery](#dataflow-ARCH-3nbmnx6tpt), [Replication](#dataflow-ARCH-zmmn6tsrb3), [Client Connection & Discovery](#dataflow-ARCH-9nsyshbc0s), [Channel Creation (Encrypted)](#dataflow-ARCH-8xy57xjz2r), [Channel Join (Encrypted)](#dataflow-ARCH-78hxmr8h6k), [Node Registration (On-chain)](#dataflow-ARCH-h5s5e84788)
+**Data Flows**: [Replication](#dataflow-ARCH-zmmn6tsrb3), [Client Connection & Discovery](#dataflow-ARCH-9nsyshbc0s), [Channel Creation (Encrypted)](#dataflow-ARCH-8xy57xjz2r), [Channel Join (Encrypted)](#dataflow-ARCH-78hxmr8h6k), [Node Registration (On-chain)](#dataflow-ARCH-h5s5e84788)
 
 
 
@@ -300,6 +302,8 @@ HTTP request handler — Express 4.17 routes for channel CRUD, message posting, 
 - **Responsibility**: Manage chunked HTTP connections for NDJSON streaming
 
 
+**Data Flows**: [Message Posting & Delivery](#dataflow-ARCH-3nbmnx6tpt)
+
 
 
 ---
@@ -321,6 +325,8 @@ Single persistent NDJSON stream connection to one DredServer — handles connect
 - **Responsibility**: Monitor heartbeats — watchdog triggers after 3× missed intervals
 - **Responsibility**: Reconnect with configurable delay on disconnection
 
+
+**Data Flows**: [Message Posting & Delivery](#dataflow-ARCH-3nbmnx6tpt)
 
 
 
@@ -450,6 +456,8 @@ Redis data access — forked @hearit-io/redis-channels for Streams produce/consu
 - **Responsibility**: Sole component with direct Redis (ioredis) access
 - **Responsibility**: Maintain connection to Redis over TCP
 
+
+**Data Flows**: [Message Posting & Delivery](#dataflow-ARCH-3nbmnx6tpt)
 
 
 
@@ -728,16 +736,18 @@ Overall DRED component topology showing how clients, servers, discovery, on-chai
 
 ### Message Posting & Delivery (draft - ARCH-3nbmnx6tpt)
 
-Full lifecycle of a message from client POST through Redis Stream to all listening clients. Data shape transitions: {type, msg, ocid} → HTTP JSON body → Redis Stream entry → NDJSON line {mid, channel, type, nbh, msg, ocid} → FullDredMessage with {connection, ts, neighborhood, details}.
+Full lifecycle of a message from client POST through Redis Stream to all listening clients. Data shape transitions: {type, msg, ocid} → HTTP JSON body → Redis Stream entry → NDJSON line {mid, channel, type, nbh, msg, ocid} → FullDredMessage with {connection, ts, neighborhood, details}. The posting client gets a synchronous confirmation; delivery to subscribers is async via the Redis Stream consumer loop.
 **Trigger**: DredClient posts message via POST /channel/:id/message with {type, msg, ocid}
 
-1. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[DredServer](#dredserver-arch-ahm6njveq4)**: POST message — POST /channel/:id/message with {type, msg, ocid}
-2. **[DredServer](#dredserver-arch-ahm6njveq4)** → **[DredServer](#dredserver-arch-ahm6njveq4)**: Validate & dedup — Validates channel exists, strips reserved _type/_data keys, calls ensureMessageProcessedOnce(channel, ocid, msg) — checks Redis dedup set via composite key channel/ocid
-3. **[DredServer](#dredserver-arch-ahm6njveq4)** → **[DredServer](#dredserver-arch-ahm6njveq4)**: Publish to Redis — Publishes to Redis Stream via channelConn.produce() — Redis assigns stream message ID (mid)
-4. **[DredServer](#dredserver-arch-ahm6njveq4)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Return confirmation — Returns {id, status: "created", ocid} to posting client
-5. **[DredServer](#dredserver-arch-ahm6njveq4)** → **[DredServer](#dredserver-arch-ahm6njveq4)**: Consumer reads Stream — Listener loop: consumers read Redis Stream
-6. **[DredServer](#dredserver-arch-ahm6njveq4)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Stream NDJSON — Writes NDJSON lines {mid, channel, type, nbh, msg, ocid, ...meta} to all clients with active /channels/listen connections
-7. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[dApp (Consumer Application)](#actors)**: Route to subscriber — HostConnection parses NDJSON, ConnectionManager routes to ChannelSubscriptionListener, client-side dedup via rotating Set pairs (30s rotation), app callback invoked
+1. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: POST message — POST /channel/:id/message with {type, msg, ocid}
+2. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Dedup check — ensureMessageProcessedOnce(channel, ocid, msg) — checks Redis Set via composite key channel/ocid
+3. **[Redis Layer](#redis-layer-arch-wr1and2aqv)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Publish to Stream — channelConn.produce() writes to Redis Stream — Redis assigns stream message ID (mid)
+4. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Return confirmation — Returns {id, status: "created", ocid} to posting client
+5. **[Redis Layer](#redis-layer-arch-wr1and2aqv)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Consumer reads Stream — Listener loop: Redis Stream consumer delivers message to Express API
+6. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[HostConnection](#hostconnection-arch-svn7yd8jpe)**: Stream NDJSON — Writes NDJSON line {mid, channel, type, nbh, msg, ocid, ...meta} to each HostConnection with active /channels/listen
+7. **[HostConnection](#hostconnection-arch-svn7yd8jpe)** → **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)**: Deliver message — HostConnection parses NDJSON line, emits message event
+8. **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)** → **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)**: Dedup & route — ConnectionManager deduplicates via rotating Set pairs (30s rotation), calls notifySubscribers() to route to ChannelSubscriptionListener
+9. **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)** → **[dApp (Consumer Application)](#actors)**: Invoke callback — App callback invoked with FullDredMessage {connection, ts, neighborhood, details}
 
 
 
