@@ -744,18 +744,18 @@ Overall DRED component topology showing how clients, servers, discovery, on-chai
 
 ### Message Posting & Delivery (draft - ARCH-3nbmnx6tpt)
 
-Full lifecycle of a message from client POST through Redis Stream to all listening clients. Data shape transitions: {type, msg, ocid} → HTTP JSON body → Redis Stream entry (XADD) → NDJSON line {mid, channel, type, nbh, msg, ocid} �� FullDredMessage with {connection, ts, neighborhood, details}. The posting client gets a synchronous confirmation; delivery to subscribers is async via the Redis Stream consumer loop (XREAD).
+Full lifecycle of a message from client POST through Redis Stream to all listening clients. Data shape transitions: {type, msg, ocid} → HTTP JSON body → Redis Stream entry (XADD) → NDJSON line {mid, channel, type, nbh, msg, ocid} → FullDredMessage with {connection, ts, neighborhood, details}. The posting client gets a synchronous confirmation; delivery to subscribers is async via the Redis Stream consumer loop (XREAD). Server-side: postMessageInChannel() validates fields and strips reserved _type/_data keys, then ensureMessageProcessedOnce() checks Redis Set via composite key channel/ocid before publishMessageToChannel() → channelConn.produce() → XADD. Client-side: HostConnection.monitorSubscriptions() parses NDJSON via betterJsonStream, ConnectionManager.notifySubscribers() routes by channel, filtering genesis events.
 **Trigger**: DredClient posts message via POST /channel/:id/message with {type, msg, ocid}
 
-1. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: POST message — POST /channel/:id/message with {type, msg, ocid}
-2. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Validate request — postMessageInChannel() checks for msg, ocid, type fields; strips reserved _type/_data keys
-3. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Dedup & publish — ensureMessageProcessedOnce(channel, ocid, msg) checks Redis Set via composite key channel/ocid; if new, publishMessageToChannel() calls channelConn.produce() → Redis XADD to stream
-4. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Return confirmation — Returns {id, status: "created", ocid} to posting client
-5. **[Redis Layer](#redis-layer-arch-wr1and2aqv)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Consumer reads Stream — monitorChannelChanges() async loop: channelConn.consume() calls Redis XREAD, yields message batches
-6. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[HostConnection](#hostconnection-arch-svn7yd8jpe)**: Write NDJSON line — Writes NDJSON line {mid, channel, type, nbh, msg, ocid, ...meta} + newline to each HostConnection with active /channels/listen response
-7. **[HostConnection](#hostconnection-arch-svn7yd8jpe)** → **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)**: Emit message event — HostConnection's monitorSubscriptions() parses NDJSON via betterJsonStream, emits typed message event
-8. **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)** → **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)**: Route to subscriber — notifySubscribers() routes to ChannelSubscriptionListener by channel (or mass handler); filters out genesis events
-9. **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)** → **[dApp (Consumer Application)](#actors)**: Invoke callback — Subscriber's notify() invokes app callback with FullDredMessage {connection, ts, neighborhood, details}
+1. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: POST message
+2. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Validate request
+3. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Dedup & publish
+4. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Return confirmation
+5. **[Redis Layer](#redis-layer-arch-wr1and2aqv)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Consumer reads Stream
+6. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[HostConnection](#hostconnection-arch-svn7yd8jpe)**: Write NDJSON line
+7. **[HostConnection](#hostconnection-arch-svn7yd8jpe)** → **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)**: Emit message event
+8. **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)** → **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)**: Route to subscriber
+9. **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)** → **[dApp (Consumer Application)](#actors)**: Invoke callback
 
 
 
@@ -766,20 +766,20 @@ Full lifecycle of a message from client POST through Redis Stream to all listeni
 
 ### Replication (draft - ARCH-zmmn6tsrb3)
 
-Server-to-server message replication via internal DredClient instances. DredReplicator discovers peers (filtering out own serverId), spawns one Replicant per peer. Each Replicant creates a DredClient with StaticHostDiscovery focused on the target, subscribes via mass listener. DredClient auto-subscribes to _chans meta-channel. Messages flow through loop prevention (origSrvId + replFrom checks) and dedup before publishing to home Redis Streams. Bookmarks in Redis hash per source pair (key: bookmarks:repl<localId>-at-<remoteId>-#) enable resumability.
+Server-to-server message replication via internal DredClient instances. DredReplicator discovers peers (filtering out own serverId), spawns one Replicant per peer. Each Replicant creates a DredClient with StaticHostDiscovery focused on the target, subscribes via mass listener. DredClient auto-subscribes to _chans meta-channel. Messages flow through loop prevention (origSrvId + replFrom checks) and dedup before publishing to home Redis Streams. Bookmarks in Redis hash per source pair (key: bookmarks:repl<localId>-at-<remoteId>-#) enable resumability. Loop prevention detail: Check 1 drops if origSrvId === homeServer.serverId; Check 2 drops if replFrom is set (logs UNEXPECTED warning). Repl metadata attached: {replFrom: targetHost.serverId, replAt: timestamp, origMsgId: mid, origSrvId: targetHost.serverId}.
 **Trigger**: DredServer.listen() calls startReplicating() when args.replicate is true (default)
 
-1. **[DredReplicator](#dredreplicator-arch-19cm38bgqx)** → **[Discovery](#discovery-arch-56nvf2nfc3)**: Get host list — discovery.getHostList() returns all hosts; DredReplicator filters out own serverId
-2. **[DredReplicator](#dredreplicator-arch-19cm38bgqx)** → **[Replicant](#replicant-arch-gvx8j2dp6j)**: Spawn Replicant — Creates one Replicant per peer host; each starts a connection loop
-3. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Peer Server](#actors)**: Check availability — HTTP GET to peer server to verify it's reachable before connecting
-4. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Peer Server](#actors)**: Create DredClient — Creates DredClient with StaticHostDiscovery focused on target, generates NaCl keys, finds common channels (excluding _ meta-channels), subscribes via mass listener. DredClient auto-subscribes to _chans. 10-second timeout.
-5. **[Peer Server](#actors)** → **[Replicant](#replicant-arch-gvx8j2dp6j)**: Stream messages — Peer streams NDJSON messages to Replicant's DredClient
-6. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Replicant](#replicant-arch-gvx8j2dp6j)**: Loop prevention — Check 1: drops if origSrvId === homeServer.serverId. Check 2: drops if replFrom is set (logs UNEXPECTED warning — shouldn't normally happen).
-7. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Replicant](#replicant-arch-gvx8j2dp6j)**: Attach repl metadata — Builds replicated message: original {msg, type, ocid} + {replFrom: targetHost.serverId, replAt: timestamp, origMsgId: mid, origSrvId: targetHost.serverId}
-8. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Dedup & publish — addMessage() calls homeServer.ensureMessageProcessedOnce() with replicated message details — same dedup pipeline as direct posting
-9. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Store bookmark — ReplicationSourceBookmarks.setBookmark() writes mid to Redis hash for resumability
-10. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Replicant](#replicant-arch-gvx8j2dp6j)**: Detect new channel — DredClient's _chans listener fires channel:created event → Replicant.channelWasAdded() checks if home server has it
-11. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Create local channel — homeServer.channelList.set() + homeServer.setChanOptions() in Redis; refreshes common channels and re-subscribes
+1. **[DredReplicator](#dredreplicator-arch-19cm38bgqx)** → **[Discovery](#discovery-arch-56nvf2nfc3)**: Get host list — Filters out own serverId
+2. **[DredReplicator](#dredreplicator-arch-19cm38bgqx)** → **[Replicant](#replicant-arch-gvx8j2dp6j)**: Spawn Replicant — One per peer host
+3. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Peer Server](#actors)**: Check availability — HTTP GET before connecting
+4. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Peer Server](#actors)**: Create DredClient — StaticHostDiscovery focused on target, 10s timeout
+5. **[Peer Server](#actors)** → **[Replicant](#replicant-arch-gvx8j2dp6j)**: Stream messages — Via NDJSON subscription
+6. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Replicant](#replicant-arch-gvx8j2dp6j)**: Loop prevention — Drops on origSrvId match or replFrom set
+7. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Replicant](#replicant-arch-gvx8j2dp6j)**: Attach repl metadata
+8. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Dedup & publish — Same pipeline as direct posting
+9. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Store bookmark — Redis hash per source pair
+10. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Replicant](#replicant-arch-gvx8j2dp6j)**: Detect new channel — Via _chans meta-channel event
+11. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Create local channel — Writes to Redis then re-subscribes
 
 
 
@@ -790,19 +790,19 @@ Server-to-server message replication via internal DredClient instances. DredRepl
 
 ### Client Connection & Discovery (draft - ARCH-9nsyshbc0s)
 
-Client lifecycle from creation through host discovery to ready state. State machine: default → nbhSelected → discoveringHosts → discoveringChannels → hasChannels → ready. ConnectionManager creates one HostConnection per host, monitors aggregate health via threshold comparison (sufficient/partial/unhealthy).
+Client lifecycle from creation through host discovery to ready state. State machine: default → nbhSelected → discoveringHosts → discoveringChannels → hasChannels → ready. ConnectionManager creates one HostConnection per host, monitors aggregate health via threshold comparison (sufficient/partial/unhealthy). getChannelList() iterates hosts calling GET /channels with exponential backoff after 2nd host. ConnectionManager.connectTo() creates HostConnection per host, registers event listeners, stores in hostToConn map. checkConnectionState() compares active count against thresholds.healthy and thresholds.minimal. Heartbeat watchdog: 3× heartbeatInterval (default 10s = 30s), currently logs warning but TODO: emit dead event.
 **Trigger**: App creates DredClient with neighborhood name
 
-1. **[dApp (Consumer Application)](#actors)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Create DredClient — Constructor initializes state machine at 'default', creates ConnectionManager via mkConnectionManager()
-2. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Advance to nbhSelected — default.onEntry: if neighborhood provided, transitions to nbhSelected → discoveringHosts
-3. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[Discovery](#discovery-arch-56nvf2nfc3)**: Get host list — discoveringHosts.onEntry calls discovery.getHostList()
-4. **[Discovery](#discovery-arch-56nvf2nfc3)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Return hosts — Resolves DredHostDetails[]; triggers transition to discoveringChannels
-5. **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: GET /channels — ConnectionManager.getChannelList() iterates hosts calling GET /channels on each (exponential backoff after 2nd host)
-6. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[dApp (Consumer Application)](#actors)**: Emit hasChannels — Transitions to hasChannels → ready; emits hasChannels event with {nbh, channels[], message}
-7. **[dApp (Consumer Application)](#actors)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Subscribe channels — App calls subscribeToChannels(listeners) → connManager.setSubscriptions()
-8. **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)** → **[HostConnection](#hostconnection-arch-svn7yd8jpe)**: Create connections — ConnectionManager.connectTo() creates HostConnection per host, registers connected/disconnected/message event listeners, stores in hostToConn map
-9. **[HostConnection](#hostconnection-arch-svn7yd8jpe)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Open NDJSON stream — Each HostConnection fetches POST /channels/listen with subscription list; starts monitorSubscriptions() async loop
-10. **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)** → **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)**: Monitor health — checkConnectionState() compares active connection count against thresholds.healthy and thresholds.minimal → sufficient/partial/unhealthy transitions. Heartbeat watchdog: 3× heartbeatInterval (default 10s = 30s), currently logs warning but TODO: emit dead event.
+1. **[dApp (Consumer Application)](#actors)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Create DredClient
+2. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Advance to nbhSelected
+3. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[Discovery](#discovery-arch-56nvf2nfc3)**: Get host list
+4. **[Discovery](#discovery-arch-56nvf2nfc3)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Return hosts
+5. **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: GET /channels — Exponential backoff after 2nd host
+6. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[dApp (Consumer Application)](#actors)**: Emit hasChannels
+7. **[dApp (Consumer Application)](#actors)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Subscribe channels
+8. **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)** → **[HostConnection](#hostconnection-arch-svn7yd8jpe)**: Create connections — One HostConnection per host
+9. **[HostConnection](#hostconnection-arch-svn7yd8jpe)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Open NDJSON stream — POST /channels/listen
+10. **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)** → **[ConnectionManager](#connectionmanager-arch-e1189hsjm9)**: Monitor health — Threshold comparison: sufficient/partial/unhealthy
 
 
 
@@ -813,18 +813,18 @@ Client lifecycle from creation through host discovery to ready state. State mach
 
 ### Channel Creation (Encrypted) (draft - ARCH-8xy57xjz2r)
 
-Encrypted channel creation: client generates NaCl keypair (StringNacl.newKeyPair via watsign), signs channel name, POSTs to server. Server validates owner + signature via verifySig() (watsign verify), sanitizes options (rebuilds from destructured fields, validates expiresAt), stores in Redis Hash + channel list. Emits chanCreated to _chans meta-channel. Peer Replicants auto-subscribe to _chans via DredClient, receive event, create channel on home server.
+Encrypted channel creation: client generates NaCl keypair (StringNacl.newKeyPair via watsign), signs channel name, POSTs to server. Server validates owner + signature via verifySig() (watsign verify), sanitizes options (rebuilds from destructured fields, validates expiresAt), stores in Redis Hash + channel list. Emits chanCreated to _chans meta-channel. Peer Replicants auto-subscribe to _chans via DredClient, receive event, create channel on home server. Server createChannel handler: if encrypted, requires owner + signature, calls verifier.verifySig(channelId, signature, owner). Sanitization destructures body and rebuilds ChannelOptions with only approved fields; validates expiresAt not in past (422). channelCreated() produces to _chans: {type: chanCreated, ocid: nanoid(8), msg: JSON.stringify({channel, options})}.
 **Trigger**: App calls DredClient.generateKey() then createChannel(name, {encrypted: true, ...})
 
-1. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Generate keypair — generateKey() creates NaCl keypair via StringNacl.newKeyPair() (watsign); stores in this.identity, encodes pubkey to base64 in this.pubKeyString, initializes StringNacl signer
-2. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Sign channel name — createChannel() calls this.signString(channelName); sets options.owner = pubKeyString, options.signature = signed channelName
-3. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: POST create channel — POST /channel/:channelId with JSON body containing owner, signature, encrypted, members, allowJoining, approveJoins, memberLimit, expiresAt
-4. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Validate & verify — createChannel handler: if encrypted, requires owner + signature; calls this.verifier.verifySig(channelId, signature, owner) — decodes UTF8/base64, calls watsign verify(). Returns 400 on missing or bad signature.
-5. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Sanitize options — Destructures request body, rebuilds ChannelOptions with only approved fields. Validates expiresAt not in past (422 if so). Adds createdAt timestamp.
-6. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Store in Redis — setChanOptions() writes to channelOptions Redis Hash; channelList.set(channelId, "1") adds to channel list
-7. **[Redis Layer](#redis-layer-arch-wr1and2aqv)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Emit to _chans — channelCreated() produces to _chans stream: {type: "chanCreated", ocid: nanoid(8), msg: JSON.stringify({channel, options})}
-8. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Replicant](#replicant-arch-gvx8j2dp6j)**: Receive chanCreated — Replicant's DredClient auto-subscribes to _chans; processChannelsMsg() parses chanCreated, emits channel:created event → channelWasAdded() skips meta-channels and already-known
-9. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Replicate channel — replicateNewChannel(): homeServer.channelList.set() + homeServer.setChanOptions() in Redis; refreshes common channels, re-subscribes
+1. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Generate keypair — Via watsign NaCl
+2. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Sign channel name — Sets owner + signature in options
+3. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: POST create channel
+4. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Validate & verify — 400 on missing owner, signature, or bad sig
+5. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Sanitize options — 422 if expiresAt in past
+6. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Store in Redis
+7. **[Redis Layer](#redis-layer-arch-wr1and2aqv)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Emit to _chans
+8. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Replicant](#replicant-arch-gvx8j2dp6j)**: Receive chanCreated — Via _chans auto-subscription
+9. **[Replicant](#replicant-arch-gvx8j2dp6j)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Replicate channel — Writes to home Redis then re-subscribes
 
 **Postconditions**: Note: message encryption (postEncrypted, KeyExchanger integration, plain-text guards) is not yet implemented — see audit finding zq5mpgpda6
 
@@ -837,17 +837,17 @@ Encrypted channel creation: client generates NaCl keypair (StringNacl.newKeyPair
 
 ### Channel Join (Encrypted) (draft - ARCH-78hxmr8h6k)
 
-Encrypted channel join: client signs the member's public key (not channel name) with own keypair, POSTs {myId, member, signature}. Server validates channel exists/not expired/is encrypted, applies authorization rules (owner bypasses memberLimit, member-approved if approveJoins:'member', self-join if allowJoining + approveJoins:'open', else request-only), verifies signature via verifySig(member, signature, approvedVerifier), checks memberLimit, updates options.
+Encrypted channel join: client signs the member's public key (not channel name) with own keypair, POSTs {myId, member, signature}. Server validates channel exists/not expired/is encrypted, applies authorization rules (owner bypasses memberLimit, member-approved if approveJoins:'member', self-join if allowJoining + approveJoins:'open', else request-only), verifies signature via verifySig(member, signature, approvedVerifier), checks memberLimit, updates options. joinChannel() is a wrapper that joins own pubkey. addMemberToChannel() signs memberKeyBase64 and sends {myId: pubKeyString, member: memberKeyBase64, signature}. Non-member self-joins with approveJoins != 'open' become requestOnly (pushed to opts.requests with TODO for approval messages).
 **Trigger**: App calls DredClient.joinChannel(name) or addMemberToChannel(name, pubKey)
 
-1. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Sign member key — addMemberToChannel() calls this.signString(memberKeyBase64) — signs the member's public key with client's own keypair
-2. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: POST join — POST /channel/:channelId/join with {myId: pubKeyString, member: memberKeyBase64, signature}
-3. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Validate channel — Checks channelList.has(channelId), getChanOptions() — 400 if not found; 422 if expiresAt past; 400 if not encrypted; 400 if no signature
-4. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Determine authorizer — Owner (myId == opts.owner): bypasses memberLimit, approvedVerifier = myId. Member (approveJoins:'member' + member list includes myId): approvedVerifier = myId. Self-join (allowJoining + member == myId): if approveJoins:'open' → approved, else → requestOnly (added to requests). No match → 403 unauthorized.
-5. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Check memberLimit — If member already in list → skip limit. Otherwise, 403 'channel is full' if members.length >= memberLimit (owner exempt).
-6. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Verify signature — verifySig(member, signature, approvedVerifier) — verifies the member key was signed by the approved party. 400 on failure.
-7. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Update options — If requestOnly: pushes myId to opts.requests. Otherwise: pushes member to opts.members. setChanOptions() writes updated options to Redis Hash.
-8. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Return status — Returns {status: 'joined'}
+1. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Sign member key — Signs member pubkey (not channel name)
+2. **[DredClient](#dredclient-arch-yjznx2s7w1)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: POST join
+3. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Validate channel — 400/422 if missing, expired, or unencrypted
+4. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Determine authorizer — Owner/member/self-join rules; 403 if none
+5. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Check memberLimit — 403 'channel is full' (owner exempt)
+6. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Express API](#express-api-arch-jzxbmbm3ak)**: Verify signature — 400 on failure
+7. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[Redis Layer](#redis-layer-arch-wr1and2aqv)**: Update options — Member or request added
+8. **[Express API](#express-api-arch-jzxbmbm3ak)** → **[DredClient](#dredclient-arch-yjznx2s7w1)**: Return status
 
 
 
@@ -858,16 +858,16 @@ Encrypted channel join: client signs the member's public key (not channel name) 
 
 ### Node Registration (On-chain) (draft - ARCH-h5s5e84788)
 
-On-chain node registration: operator builds transaction via NodeRegistryController, which delegates to mkTxnCreateRecord() with node details (address, port, pubKey). Transaction submitted via TxBatcher through Blockfrost. Registration stored as UTxO with inline DelegateDatum containing NodeRegistrationData. Initial state is NeedsValidation with empty validators; transitions to Active after minValidations threshold. NeighborhoodDiscovery.getHostList() queries via findRecords() + findNodeOpEntries(), transforms to DredHostDetails[].
+On-chain node registration: operator builds transaction via NodeRegistryController.mkTxnRegisteringNode(), which gets mintDelegate, creates tx context, adds member token info, finds Capo UTxOs + Charter data, adds Settings reference, computes pubKeyHash, then delegates to mkTxnCreateRecord(). Transaction submitted via DredCapo's TxBatcher (configured with Blockfrost submitter + GenericSigner). Registration stored as UTxO with inline DelegateDatum: {data: NodeRegistrationData, version: 2n}. On-chain validation (NodeRegistrationData.hl) enforces state = NeedsValidation with empty validators on creation; transitions to Active after minValidations threshold. NeighborhoodDiscovery.getHostList() calls registryController.findRecords() + capo.findNodeOpEntries(), maps to DredHostDetails[] with address, port, pubKey, serverId.
 **Trigger**: Node operator invokes NodeRegistryController.mkTxnRegisteringNode() with {memberToken, nodeDetails: {address, port, pubKey, pubKeyHash}, state: NeedsValidation}
 
-1. **[Node Operator](#actors)** → **[NodeRegistryController](#noderegistrycontroller-arch-1p3vb542wn)**: Build registration tx — mkTxnRegisteringNode(): gets mintDelegate, creates tx context 'register dred node', adds member token info, finds Capo UTxOs + Charter data, adds Settings reference, computes pubKeyHash, delegates to mkTxnCreateRecord()
-2. **[NodeRegistryController](#noderegistrycontroller-arch-1p3vb542wn)** → **[DredCapo](#dredcapo-arch-jvh91qt0tq)**: Submit via TxBatcher — DredCapo's TxBatcher (configured with Blockfrost submitter + GenericSigner) queues and submits transaction to Cardano L1
-3. **[On-chain Node Registry](#on-chain-node-registry-arch-6hkc6h0c0s)** → **[On-chain Node Registry](#on-chain-node-registry-arch-6hkc6h0c0s)**: Store as UTxO — Registration stored as UTxO with inline DelegateDatum: {data: NodeRegistrationData, version: 2n}. On-chain validation (NodeRegistrationData.hl) enforces state = NeedsValidation with empty validators on creation.
-4. **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)** → **[DredCapo](#dredcapo-arch-jvh91qt0tq)**: Query node records — NeighborhoodDiscovery.getHostList() calls registryController.findRecords(), capo.findCapoUtxos(), capo.findCharterData()
-5. **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)** → **[DredCapo](#dredcapo-arch-jvh91qt0tq)**: Find node entries — capo.findNodeOpEntries({capoUtxos, charterData}) returns all registered node operation entries
-6. **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)** → **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)**: Transform to hosts — Maps node entries to DredHostDetails[] with address, port, pubKey, serverId
-7. **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)** → **[DredReplicator](#dredreplicator-arch-19cm38bgqx)**: Emit host list — New node appears in getHostList() results; DredReplicator discovers peer on next cycle, begins replication
+1. **[Node Operator](#actors)** → **[NodeRegistryController](#noderegistrycontroller-arch-1p3vb542wn)**: Build registration tx
+2. **[NodeRegistryController](#noderegistrycontroller-arch-1p3vb542wn)** → **[DredCapo](#dredcapo-arch-jvh91qt0tq)**: Submit via TxBatcher — Via Blockfrost
+3. **[On-chain Node Registry](#on-chain-node-registry-arch-6hkc6h0c0s)** → **[On-chain Node Registry](#on-chain-node-registry-arch-6hkc6h0c0s)**: Store as UTxO — Initial state: NeedsValidation
+4. **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)** → **[DredCapo](#dredcapo-arch-jvh91qt0tq)**: Query node records
+5. **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)** → **[DredCapo](#dredcapo-arch-jvh91qt0tq)**: Find node entries
+6. **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)** → **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)**: Transform to hosts — → DredHostDetails[]
+7. **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)** → **[DredReplicator](#dredreplicator-arch-19cm38bgqx)**: Emit host list — Replicator discovers on next cycle
 
 
 
