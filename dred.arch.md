@@ -112,7 +112,7 @@ Pluggable host discovery — bridges on-chain registry to runtime
 
 **Interfaces**: [On-chain Registry Query](#interface-ARCH-5s8s78gtrk), [Discovery API](#interface-ARCH-g669z8jjpv), [Host Discovery Events](#interface-ARCH-b42zj3kmp6), [System Topology](#interface-ARCH-7njdc3bc9x)
 
-**Data Flows**: [Replication](#dataflow-ARCH-zmmn6tsrb3), [Client Connection & Discovery](#dataflow-ARCH-9nsyshbc0s), [Node Registration (On-chain)](#dataflow-ARCH-h5s5e84788)
+**Data Flows**: [Replication](#dataflow-ARCH-zmmn6tsrb3), [Client Connection & Discovery](#dataflow-ARCH-9nsyshbc0s)
 
 
 
@@ -180,6 +180,8 @@ Central on-chain coordinator extending StellarTokenomicsCapo — orchestrates co
 - **Responsibility**: Serve as the single entry point for all on-chain DRED operations
 
 
+**Data Flows**: [Node Registration (On-chain)](#dataflow-ARCH-h5s5e84788)
+
 
 
 ---
@@ -239,7 +241,7 @@ Replication orchestrator — discovers peers, spawns one Replicant per peer, col
 - **Responsibility**: Restart replication when peer topology changes
 
 
-**Data Flows**: [Replication](#dataflow-ARCH-zmmn6tsrb3)
+**Data Flows**: [Replication](#dataflow-ARCH-zmmn6tsrb3), [Node Registration (On-chain)](#dataflow-ARCH-h5s5e84788)
 
 
 
@@ -279,8 +281,6 @@ Node process — Express HTTP + Redis Streams message relay, channel management,
 
 
 **Interfaces**: [Client-Server Communication](#interface-ARCH-a5x82d6cpa), [Server-to-Server Replication](#interface-ARCH-brvwt30z8f), [Replicant Channel Discovery](#interface-ARCH-1ardm81zb5), [Replicant Readiness Signal](#interface-ARCH-x3mwe20j93), [System Topology](#interface-ARCH-7njdc3bc9x)
-
-**Data Flows**: [Node Registration (On-chain)](#dataflow-ARCH-h5s5e84788)
 
 
 
@@ -370,6 +370,8 @@ Production Discovery implementation — queries Blockfrost HTTP API to read Node
 - **Responsibility**: Emit hosts:updated events when on-chain state changes
 
 
+**Data Flows**: [Node Registration (On-chain)](#dataflow-ARCH-h5s5e84788)
+
 
 
 ---
@@ -388,6 +390,8 @@ Node registration CRUD — builds transactions for registering/updating DRED nod
 **Concerns and Responsibilities**:
 - **Responsibility**: Validate node registration data (nodeAddress, nodePort, nodePublicKey) before transaction construction
 
+
+**Data Flows**: [Node Registration (On-chain)](#dataflow-ARCH-h5s5e84788)
 
 
 
@@ -854,14 +858,16 @@ Encrypted channel join: client signs the member's public key (not channel name) 
 
 ### Node Registration (On-chain) (draft - ARCH-h5s5e84788)
 
-On-chain node registration flow from operator transaction building through Cardano L1 submission to discovery by peers.
-**Trigger**: Node operator builds transaction via NodeRegistryController.mkTxnRegisteringNode() with {nodeAddress, nodePort, nodePublicKey}
+On-chain node registration: operator builds transaction via NodeRegistryController, which delegates to mkTxnCreateRecord() with node details (address, port, pubKey). Transaction submitted via TxBatcher through Blockfrost. Registration stored as UTxO with inline DelegateDatum containing NodeRegistrationData. Initial state is NeedsValidation with empty validators; transitions to Active after minValidations threshold. NeighborhoodDiscovery.getHostList() queries via findRecords() + findNodeOpEntries(), transforms to DredHostDetails[].
+**Trigger**: Node operator invokes NodeRegistryController.mkTxnRegisteringNode() with {memberToken, nodeDetails: {address, port, pubKey, pubKeyHash}, state: NeedsValidation}
 
-1. **[Node Operator](#actors)** → **[On-chain Node Registry](#on-chain-node-registry-arch-6hkc6h0c0s)**: Build transaction — Builds via NodeRegistryController.mkTxnRegisteringNode() with {nodeAddress, nodePort, nodePublicKey}
-2. **[On-chain Node Registry](#on-chain-node-registry-arch-6hkc6h0c0s)** → **[On-chain Node Registry](#on-chain-node-registry-arch-6hkc6h0c0s)**: Submit to L1 — Transaction submitted to Cardano L1 via stellar-contracts TxBatcher
-3. **[On-chain Node Registry](#on-chain-node-registry-arch-6hkc6h0c0s)** → **[On-chain Node Registry](#on-chain-node-registry-arch-6hkc6h0c0s)**: Store as UTxO — Registration data stored as UTxO with node details datum
-4. **[Discovery](#discovery-arch-56nvf2nfc3)** → **[On-chain Node Registry](#on-chain-node-registry-arch-6hkc6h0c0s)**: Query registry — NeighborhoodDiscovery.getHostList() queries Blockfrost, reads NodeRegistrationData from UTxOs
-5. **[Discovery](#discovery-arch-56nvf2nfc3)** → **[DredServer](#dredserver-arch-ahm6njveq4)**: Update host list — Node appears in discovered host list, peers begin replication
+1. **[Node Operator](#actors)** → **[NodeRegistryController](#noderegistrycontroller-arch-1p3vb542wn)**: Build registration tx — mkTxnRegisteringNode(): gets mintDelegate, creates tx context 'register dred node', adds member token info, finds Capo UTxOs + Charter data, adds Settings reference, computes pubKeyHash, delegates to mkTxnCreateRecord()
+2. **[NodeRegistryController](#noderegistrycontroller-arch-1p3vb542wn)** → **[DredCapo](#dredcapo-arch-jvh91qt0tq)**: Submit via TxBatcher — DredCapo's TxBatcher (configured with Blockfrost submitter + GenericSigner) queues and submits transaction to Cardano L1
+3. **[On-chain Node Registry](#on-chain-node-registry-arch-6hkc6h0c0s)** → **[On-chain Node Registry](#on-chain-node-registry-arch-6hkc6h0c0s)**: Store as UTxO — Registration stored as UTxO with inline DelegateDatum: {data: NodeRegistrationData, version: 2n}. On-chain validation (NodeRegistrationData.hl) enforces state = NeedsValidation with empty validators on creation.
+4. **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)** → **[DredCapo](#dredcapo-arch-jvh91qt0tq)**: Query node records — NeighborhoodDiscovery.getHostList() calls registryController.findRecords(), capo.findCapoUtxos(), capo.findCharterData()
+5. **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)** → **[DredCapo](#dredcapo-arch-jvh91qt0tq)**: Find node entries — capo.findNodeOpEntries({capoUtxos, charterData}) returns all registered node operation entries
+6. **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)** → **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)**: Transform to hosts — Maps node entries to DredHostDetails[] with address, port, pubKey, serverId
+7. **[NeighborhoodDiscovery](#neighborhooddiscovery-arch-tbw469ej0t)** → **[DredReplicator](#dredreplicator-arch-19cm38bgqx)**: Emit host list — New node appears in getHostList() results; DredReplicator discovers peer on next cycle, begins replication
 
 
 
