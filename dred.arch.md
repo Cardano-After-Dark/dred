@@ -21,7 +21,7 @@
 
 
 - [ConnectionManager](#connectionmanager-arch-e1189hsjm9) (internal): State machine managing connections to multiple hosts with health thresholds (minimal/healthy/degraded/disconnected)
-- [Discovery](#discovery-arch-56nvf2nfc3) (local): Pluggable host discovery — bridges on-chain registry to runtime
+- [Discovery](#discovery-arch-56nvf2nfc3) (local): Abstract base class for host discovery — defines getHostList(), getNeighborhoods(), getConnectionThresholds() interface. Two implementations: StaticHostDiscovery (dev/testing) and NeighborhoodDiscovery (production via Blockfrost).
 - [Docs Site](#docs-site-arch-ev6tt1ct8q) (external): Next.js static documentation site on GitHub Pages
 - [DRED](#dred-arch-ar4skk7d55) (remote): Decentralized Redis State Channels — a distributed real-time messaging system for Cardano dApps, providing shared communication channels served by a decentralized network of nodes.
 - [DredCapo](#dredcapo-arch-jvh91qt0tq) (internal): Central on-chain coordinator extending StellarTokenomicsCapo — orchestrates controllers and tokenomics
@@ -92,7 +92,7 @@ State machine managing connections to multiple hosts with health thresholds (min
 
 ### Component: Discovery (local; draft - ARCH-56nvf2nfc3)
 
-Pluggable host discovery — bridges on-chain registry to runtime
+Abstract base class for host discovery — defines getHostList(), getNeighborhoods(), getConnectionThresholds() interface. Two implementations: StaticHostDiscovery (dev/testing) and NeighborhoodDiscovery (production via Blockfrost).
 
 **Activities**:
 
