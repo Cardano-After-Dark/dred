@@ -835,17 +835,20 @@ fn classify_message(
 // DredListener
 // ---------------------------------------------------------------------------
 
-/// A streaming listener spawned from a [`DredClient`].
+/// Internal streaming listener spawned by [`DredClient::subscribe`].
 ///
 /// Connects to the server's `/channels/listen` endpoint, deduplicates
-/// messages, and routes them to per-channel `mpsc` receivers. Handles
-/// reconnection with exponential backoff and heartbeat-based dead
-/// connection detection.
+/// messages via [`classify_message`], and routes them to per-channel
+/// `mpsc` receivers. Handles reconnection with exponential backoff and
+/// heartbeat-based dead connection detection.
 ///
 /// Each listener has its own `CancellationToken` (a child of the client's).
 /// Cancel the listener's token to stop just this listener; cancel the
 /// client's token to stop all listeners.
-pub struct DredListener {
+///
+/// Not part of the public API — consumers interact through
+/// [`DredSubscription`] which manages the listener lifecycle.
+pub(crate) struct DredListener {
     shared: Arc<SharedInner>,
     channels: Vec<String>,
     senders: HashMap<String, mpsc::Sender<DredMessage>>,
@@ -860,7 +863,7 @@ impl DredListener {
     /// Get a cancellation token for this listener.
     /// Cancelling it stops only this listener; cancelling the client's token
     /// stops all listeners.
-    pub fn cancellation_token(&self) -> CancellationToken {
+    pub(crate) fn cancellation_token(&self) -> CancellationToken {
         self.cancel.clone()
     }
 
@@ -1008,7 +1011,7 @@ impl DredListener {
     }
 
     /// Run the listener with auto-reconnect. Loops until cancelled.
-    pub async fn run(mut self) -> DredError {
+    pub(crate) async fn run(mut self) -> DredError {
         let mut backoff = self.shared.backoff_initial;
 
         loop {
