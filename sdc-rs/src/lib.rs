@@ -27,7 +27,17 @@ pub enum DredError {
         status: reqwest::StatusCode,
         body: String,
     },
-    /// Failed to decode a chunk as UTF-8 or parse a JSON line.
+    /// Caller-supplied bytes failed validation (wrong length, invalid base64,
+    /// etc.). Raised before any network activity.
+    InvalidInput(String),
+    /// Caller invoked the wrong API entry point for the intended operation
+    /// (e.g. calling `create_channel` with `encrypted: true`).
+    ApiUsage(String),
+    /// A bounded wait elapsed without success — covers connection-setup
+    /// timeouts and rotation-handoff failures in `update_channels`.
+    Timeout(String),
+    /// Server emitted data violating the wire protocol (malformed JSON in a
+    /// success response, oversized/unterminated stream messages, etc.).
     Protocol(String),
     /// The stream was closed by the server.
     StreamEnded,
@@ -45,6 +55,9 @@ impl fmt::Display for DredError {
             Self::ServerStatus { status, body } => {
                 write!(f, "server returned {status}: {body}")
             }
+            Self::InvalidInput(msg) => write!(f, "invalid input: {msg}"),
+            Self::ApiUsage(msg) => write!(f, "api usage error: {msg}"),
+            Self::Timeout(msg) => write!(f, "timeout: {msg}"),
             Self::Protocol(msg) => write!(f, "protocol error: {msg}"),
             Self::StreamEnded => write!(f, "stream ended"),
             Self::Cancelled => write!(f, "cancelled"),
@@ -260,17 +273,17 @@ impl Identity {
         let engine = base64::engine::general_purpose::STANDARD;
         let pk_bytes = engine
             .decode(public_key_b64)
-            .map_err(|e| DredError::Protocol(format!("invalid public key b64: {e}")))?;
+            .map_err(|e| DredError::InvalidInput(format!("invalid public key b64: {e}")))?;
         let sk_bytes = engine
             .decode(secret_key_b64)
-            .map_err(|e| DredError::Protocol(format!("invalid secret key b64: {e}")))?;
+            .map_err(|e| DredError::InvalidInput(format!("invalid secret key b64: {e}")))?;
 
         let public_key: [u8; 32] = pk_bytes
             .try_into()
-            .map_err(|_| DredError::Protocol("public key must be 32 bytes".into()))?;
+            .map_err(|_| DredError::InvalidInput("public key must be 32 bytes".into()))?;
         let secret_key: [u8; 64] = sk_bytes
             .try_into()
-            .map_err(|_| DredError::Protocol("secret key must be 64 bytes".into()))?;
+            .map_err(|_| DredError::InvalidInput("secret key must be 64 bytes".into()))?;
 
         Ok(Self {
             public_key,
@@ -650,7 +663,7 @@ impl DredClient {
         options: CreateChannelOptions,
     ) -> Result<CreateChannelResponse, DredError> {
         if options.encrypted {
-            return Err(DredError::Protocol(
+            return Err(DredError::ApiUsage(
                 "use create_encrypted_channel for encrypted channels".into(),
             ));
         }
@@ -1125,7 +1138,7 @@ impl DredSubscription {
                 for ch in &added_channels {
                     self.receivers.remove(ch);
                 }
-                Err(DredError::Protocol(
+                Err(DredError::Timeout(
                     "new listener exited before establishing connection".into(),
                 ))
             }
@@ -1134,7 +1147,7 @@ impl DredSubscription {
                 for ch in &added_channels {
                     self.receivers.remove(ch);
                 }
-                Err(DredError::Protocol(format!(
+                Err(DredError::Timeout(format!(
                     "new connection not established within {:?}",
                     self.connect_timeout
                 )))
@@ -1452,6 +1465,18 @@ mod tests {
         assert_eq!(
             DredError::Protocol("bad json".into()).to_string(),
             "protocol error: bad json"
+        );
+        assert_eq!(
+            DredError::InvalidInput("bad key".into()).to_string(),
+            "invalid input: bad key"
+        );
+        assert_eq!(
+            DredError::ApiUsage("wrong method".into()).to_string(),
+            "api usage error: wrong method"
+        );
+        assert_eq!(
+            DredError::Timeout("connect elapsed".into()).to_string(),
+            "timeout: connect elapsed"
         );
         assert_eq!(
             DredError::ServerStatus {
