@@ -6,6 +6,7 @@ use std::time::{Duration, Instant};
 use bytes::BytesMut;
 use futures::StreamExt;
 use reqwest::Client;
+use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
@@ -574,6 +575,52 @@ impl DredClient {
         }
     }
 
+    /// GET a JSON resource from the server.
+    ///
+    /// Applies standard headers (`accept`, `clientid`), sends, runs
+    /// [`check_status`], and parses the body as `R`.
+    async fn get_json<R: DeserializeOwned>(&self, path: &str) -> Result<R, DredError> {
+        let resp = self
+            .inner
+            .http
+            .get(format!("{}{}", self.inner.base_url, path))
+            .header("accept", "application/json")
+            .header("clientid", &self.inner.client_id)
+            .send()
+            .await?;
+        let resp = check_status(resp).await?;
+        resp.json().await.map_err(|e| {
+            warn!(error = %e, path, "invalid response json");
+            DredError::Protocol(format!("invalid response json from {path}: {e}"))
+        })
+    }
+
+    /// POST a JSON body to the server and decode the JSON response.
+    ///
+    /// Applies standard headers (`content-type`, `accept`, `clientid`), sends,
+    /// runs [`check_status`], and parses the body as `R`.
+    async fn post_json<B: Serialize + ?Sized, R: DeserializeOwned>(
+        &self,
+        path: &str,
+        body: &B,
+    ) -> Result<R, DredError> {
+        let resp = self
+            .inner
+            .http
+            .post(format!("{}{}", self.inner.base_url, path))
+            .header("content-type", "application/json")
+            .header("accept", "application/json")
+            .header("clientid", &self.inner.client_id)
+            .json(body)
+            .send()
+            .await?;
+        let resp = check_status(resp).await?;
+        resp.json().await.map_err(|e| {
+            warn!(error = %e, path, "invalid response json");
+            DredError::Protocol(format!("invalid response json from {path}: {e}"))
+        })
+    }
+
     /// Post a message to a channel.
     ///
     /// Auto-generates `ocid` if not provided. Pre-registers the ocid in
@@ -600,28 +647,8 @@ impl DredClient {
             "ocid": ocid,
         });
 
-        let resp = self
-            .inner
-            .http
-            .post(format!("{}/channel/{}/message", self.inner.base_url, channel))
-            .header("content-type", "application/json")
-            .header("accept", "application/json")
-            .header("clientid", &self.inner.client_id)
-            .json(&body)
-            .send()
-            .await?;
-
-        let resp = check_status(resp).await?;
-
-        let result: PostMessageResponse = resp
-            .json()
+        self.post_json(&format!("/channel/{channel}/message"), &body)
             .await
-            .map_err(|e| {
-                warn!(error = %e, "post_message: invalid response json");
-                DredError::Protocol(format!("invalid response json: {e}"))
-            })?;
-
-        Ok(result)
     }
 
     /// List the channels currently available on the server.
@@ -632,25 +659,7 @@ impl DredClient {
         struct ChannelsResp {
             channels: Vec<String>,
         }
-
-        let resp = self
-            .inner
-            .http
-            .get(format!("{}/channels", self.inner.base_url))
-            .header("clientid", &self.inner.client_id)
-            .send()
-            .await?;
-
-        let resp = check_status(resp).await?;
-
-        let result: ChannelsResp = resp
-            .json()
-            .await
-            .map_err(|e| {
-                warn!(error = %e, "list_channels: invalid response json");
-                DredError::Protocol(format!("invalid channels response: {e}"))
-            })?;
-
+        let result: ChannelsResp = self.get_json("/channels").await?;
         Ok(result.channels)
     }
 
@@ -695,28 +704,7 @@ impl DredClient {
         name: &str,
         options: &CreateChannelOptions,
     ) -> Result<CreateChannelResponse, DredError> {
-        let resp = self
-            .inner
-            .http
-            .post(format!("{}/channel/{}", self.inner.base_url, name))
-            .header("content-type", "application/json")
-            .header("accept", "application/json")
-            .header("clientid", &self.inner.client_id)
-            .json(options)
-            .send()
-            .await?;
-
-        let resp = check_status(resp).await?;
-
-        let result: CreateChannelResponse = resp
-            .json()
-            .await
-            .map_err(|e| {
-                warn!(error = %e, "create_channel: invalid response json");
-                DredError::Protocol(format!("invalid create response: {e}"))
-            })?;
-
-        Ok(result)
+        self.post_json(&format!("/channel/{name}"), options).await
     }
 }
 
