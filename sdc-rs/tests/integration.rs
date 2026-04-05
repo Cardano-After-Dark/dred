@@ -5,7 +5,7 @@
 
 use std::time::Duration;
 
-use sdc_rs::{CreateChannelOptions, DredClient, DredMessage};
+use sdc_rs::{CreateChannelOptions, DredClient, DredMessage, Identity};
 
 fn server_url() -> String {
     std::env::var("DRED_URL").unwrap_or_else(|_| "http://localhost:3029".into())
@@ -335,15 +335,84 @@ async fn create_channel_duplicate_fails() {
 }
 
 #[tokio::test]
-async fn create_encrypted_channel_not_supported() {
+async fn create_channel_rejects_encrypted_opts_without_identity() {
     let client = DredClient::builder("http://127.0.0.1:1").build();
     let opts = CreateChannelOptions {
         encrypted: true,
         ..Default::default()
     };
 
+    // create_channel (plaintext) rejects encrypted=true
     let result = client.create_channel("x", opts).await;
-    assert!(result.is_err(), "encrypted channels should return an error");
+    assert!(
+        result.is_err(),
+        "create_channel should redirect to create_encrypted_channel"
+    );
+}
+
+#[tokio::test]
+async fn create_encrypted_channel_with_signed_identity() {
+    if !server_available().await {
+        eprintln!("DRED server not running, skipping");
+        return;
+    }
+
+    let client = DredClient::builder(server_url()).build();
+    let identity = Identity::generate();
+
+    let channel_name = format!("enc-test-{}", sdc_rs::gen_id(8));
+    let opts = CreateChannelOptions {
+        allow_joining: Some(true),
+        ..Default::default()
+    };
+
+    let resp = client
+        .create_encrypted_channel(&channel_name, &identity, opts)
+        .await
+        .expect("encrypted channel creation failed");
+
+    assert_eq!(resp.id, channel_name);
+    assert_eq!(resp.status, "created");
+}
+
+#[tokio::test]
+async fn create_encrypted_channel_rejects_bad_signature() {
+    if !server_available().await {
+        eprintln!("DRED server not running, skipping");
+        return;
+    }
+
+    let client = DredClient::builder(server_url()).build();
+    let id1 = Identity::generate();
+    let id2 = Identity::generate();
+
+    let channel_name = format!("bad-sig-{}", sdc_rs::gen_id(8));
+
+    // Construct manually: sign with id1 but claim owner=id2's pubkey
+    let bad_opts = CreateChannelOptions {
+        encrypted: true,
+        owner: Some(id2.public_key_base64()),
+        signature: Some(id1.sign_string(&channel_name)),
+        allow_joining: Some(true),
+        ..Default::default()
+    };
+
+    // create_channel() won't accept encrypted=true, so we bypass it by
+    // calling the low-level HTTP directly. But we don't expose that. So
+    // use create_encrypted_channel with id2 but then... actually simpler:
+    // just use the server directly with curl-style body.
+    let resp = reqwest::Client::new()
+        .post(format!("{}/channel/{}", server_url(), channel_name))
+        .header("content-type", "application/json")
+        .json(&bad_opts)
+        .send()
+        .await
+        .expect("request failed");
+
+    assert!(
+        !resp.status().is_success(),
+        "server should reject mismatched signature"
+    );
 }
 
 #[tokio::test]

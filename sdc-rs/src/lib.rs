@@ -186,6 +186,109 @@ pub fn gen_id(len: usize) -> String {
 }
 
 // ---------------------------------------------------------------------------
+// Identity — Ed25519 signing
+// ---------------------------------------------------------------------------
+
+use base64::Engine;
+use dryoc::classic::crypto_sign::{
+    crypto_sign_detached, crypto_sign_keypair, crypto_sign_verify_detached,
+};
+
+/// An Ed25519 signing identity used for channel-ownership proofs and
+/// other places where the TS client uses tweetnacl's sign/verify primitives.
+///
+/// Keys are generated fresh with [`Identity::generate`]. A public/secret
+/// keypair can be restored from base64-encoded bytes via [`Identity::from_base64`].
+///
+/// The wire format matches the TS client's `StringNacl`:
+/// signatures are base64-encoded 64-byte detached signatures over the
+/// UTF-8 bytes of the signed string; public keys are base64-encoded 32 bytes.
+#[derive(Debug, Clone)]
+pub struct Identity {
+    public_key: [u8; 32],
+    secret_key: [u8; 64],
+}
+
+impl Identity {
+    /// Generate a fresh Ed25519 identity.
+    pub fn generate() -> Self {
+        let (public_key, secret_key) = crypto_sign_keypair();
+        Self {
+            public_key,
+            secret_key,
+        }
+    }
+
+    /// Restore an identity from base64-encoded public and secret keys.
+    pub fn from_base64(public_key_b64: &str, secret_key_b64: &str) -> Result<Self, DredError> {
+        let engine = base64::engine::general_purpose::STANDARD;
+        let pk_bytes = engine
+            .decode(public_key_b64)
+            .map_err(|e| DredError::Protocol(format!("invalid public key b64: {e}")))?;
+        let sk_bytes = engine
+            .decode(secret_key_b64)
+            .map_err(|e| DredError::Protocol(format!("invalid secret key b64: {e}")))?;
+
+        let public_key: [u8; 32] = pk_bytes
+            .try_into()
+            .map_err(|_| DredError::Protocol("public key must be 32 bytes".into()))?;
+        let secret_key: [u8; 64] = sk_bytes
+            .try_into()
+            .map_err(|_| DredError::Protocol("secret key must be 64 bytes".into()))?;
+
+        Ok(Self {
+            public_key,
+            secret_key,
+        })
+    }
+
+    /// The public key as base64 (what the server sees as `owner`).
+    pub fn public_key_base64(&self) -> String {
+        base64::engine::general_purpose::STANDARD.encode(self.public_key)
+    }
+
+    /// The secret key as base64 (for persistence; treat as highly sensitive).
+    pub fn secret_key_base64(&self) -> String {
+        base64::engine::general_purpose::STANDARD.encode(self.secret_key)
+    }
+
+    /// Sign a UTF-8 string and return the base64-encoded detached signature.
+    /// Matches the TS client's `StringNacl.sign(s)`.
+    pub fn sign_string(&self, s: &str) -> String {
+        let mut sig = [0u8; 64];
+        // crypto_sign_detached can only fail on invalid key size, which
+        // we guarantee at construction.
+        crypto_sign_detached(&mut sig, s.as_bytes(), &self.secret_key)
+            .expect("crypto_sign_detached failed on validated key");
+        base64::engine::general_purpose::STANDARD.encode(sig)
+    }
+
+    /// Verify a base64-encoded detached signature against a string and a
+    /// base64-encoded public key. Matches the TS client's
+    /// `StringNacl.verifySig(s, sigBase64, keyBase64)`.
+    pub fn verify_signature(s: &str, signature_b64: &str, public_key_b64: &str) -> bool {
+        let engine = base64::engine::general_purpose::STANDARD;
+        let sig_bytes = match engine.decode(signature_b64) {
+            Ok(b) => b,
+            Err(_) => return false,
+        };
+        let pk_bytes = match engine.decode(public_key_b64) {
+            Ok(b) => b,
+            Err(_) => return false,
+        };
+        let sig: [u8; 64] = match sig_bytes.try_into() {
+            Ok(a) => a,
+            Err(_) => return false,
+        };
+        let pk: [u8; 32] = match pk_bytes.try_into() {
+            Ok(a) => a,
+            Err(_) => return false,
+        };
+        crypto_sign_verify_detached(&sig, s.as_bytes(), &pk).is_ok()
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Wire types
 // ---------------------------------------------------------------------------
 
@@ -457,10 +560,9 @@ impl DredClient {
         Ok(result.channels)
     }
 
-    /// Create a new channel.
+    /// Create a new plaintext channel.
     ///
-    /// For now only plaintext (unencrypted) channels are supported.
-    /// Encrypted channels require NaCl signing (see task 4).
+    /// For encrypted channels, use [`Self::create_encrypted_channel`].
     pub async fn create_channel(
         &self,
         name: &str,
@@ -468,10 +570,37 @@ impl DredClient {
     ) -> Result<CreateChannelResponse, DredError> {
         if options.encrypted {
             return Err(DredError::Protocol(
-                "encrypted channels not yet supported (requires NaCl signing)".into(),
+                "use create_encrypted_channel for encrypted channels".into(),
             ));
         }
+        self.post_create_channel(name, &options).await
+    }
 
+    /// Create an encrypted channel, signing the channel name with the
+    /// provided identity. The signature proves channel ownership to the
+    /// server, which validates it against the `owner` public key.
+    ///
+    /// Matches the TS client's `createChannel(name, {encrypted: true})`.
+    ///
+    /// Requires `allow_joining: Some(true)` or a non-empty members list
+    /// (otherwise the channel would be unreachable).
+    pub async fn create_encrypted_channel(
+        &self,
+        name: &str,
+        identity: &Identity,
+        mut options: CreateChannelOptions,
+    ) -> Result<CreateChannelResponse, DredError> {
+        options.encrypted = true;
+        options.owner = Some(identity.public_key_base64());
+        options.signature = Some(identity.sign_string(name));
+        self.post_create_channel(name, &options).await
+    }
+
+    async fn post_create_channel(
+        &self,
+        name: &str,
+        options: &CreateChannelOptions,
+    ) -> Result<CreateChannelResponse, DredError> {
         let resp = self
             .inner
             .http
@@ -479,7 +608,7 @@ impl DredClient {
             .header("content-type", "application/json")
             .header("accept", "application/json")
             .header("clientid", &self.inner.client_id)
-            .json(&options)
+            .json(options)
             .send()
             .await?;
 
@@ -513,6 +642,18 @@ pub struct CreateChannelOptions {
     pub expires_at: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "messageLifetime")]
     pub message_lifetime: Option<u64>,
+    /// Base64 public key of the channel owner — set automatically by
+    /// `create_encrypted_channel`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owner: Option<String>,
+    /// Base64 detached signature over the channel name — set automatically
+    /// by `create_encrypted_channel`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub signature: Option<String>,
+    /// Initial member list (base64 public keys). Required if `allow_joining`
+    /// is not true.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub members: Vec<String>,
 }
 
 /// Server response to channel creation.
@@ -932,6 +1073,65 @@ impl Drop for CancelGuard {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn identity_sign_and_verify_roundtrip() {
+        let id = Identity::generate();
+        let sig = id.sign_string("my-channel-name");
+        let pk = id.public_key_base64();
+        assert!(Identity::verify_signature("my-channel-name", &sig, &pk));
+    }
+
+    #[test]
+    fn identity_verify_rejects_wrong_string() {
+        let id = Identity::generate();
+        let sig = id.sign_string("original");
+        let pk = id.public_key_base64();
+        assert!(!Identity::verify_signature("tampered", &sig, &pk));
+    }
+
+    #[test]
+    fn identity_verify_rejects_wrong_pubkey() {
+        let id1 = Identity::generate();
+        let id2 = Identity::generate();
+        let sig = id1.sign_string("hello");
+        assert!(!Identity::verify_signature(
+            "hello",
+            &sig,
+            &id2.public_key_base64()
+        ));
+    }
+
+    #[test]
+    fn identity_verify_rejects_garbage_base64() {
+        assert!(!Identity::verify_signature("x", "not-base64!@#", "also-bad!@#"));
+    }
+
+    #[test]
+    fn identity_from_base64_roundtrip() {
+        let id1 = Identity::generate();
+        let pk_b64 = id1.public_key_base64();
+        let sk_b64 = id1.secret_key_base64();
+        let id2 = Identity::from_base64(&pk_b64, &sk_b64).expect("restore failed");
+        assert_eq!(id2.public_key_base64(), pk_b64);
+
+        // Both should produce identical signatures for the same input
+        let sig1 = id1.sign_string("test");
+        let sig2 = id2.sign_string("test");
+        assert_eq!(sig1, sig2);
+    }
+
+    #[test]
+    fn identity_from_base64_rejects_wrong_length() {
+        let short = base64::engine::general_purpose::STANDARD.encode([0u8; 16]);
+        assert!(Identity::from_base64(&short, &short).is_err());
+    }
+
+    #[test]
+    fn identity_is_send_sync() {
+        fn assert_send_sync<T: Send + Sync>() {}
+        assert_send_sync::<Identity>();
+    }
 
     #[test]
     fn dedup_basic_new_and_duplicate() {

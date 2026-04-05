@@ -71,6 +71,14 @@ DredClient::builder(url)      DredClient                  DredSubscription
   variants for transport failures, server status codes, protocol errors,
   stream termination, and cancellation.
 
+- **`Identity`** -- Ed25519 signing keypair for channel-ownership proofs.
+  Wraps dryoc's `crypto_sign_detached` / `crypto_sign_verify_detached`.
+  Wire format matches the TS client's `StringNacl`: base64-encoded
+  64-byte detached signatures over the UTF-8 bytes of the signed string.
+  Used by `create_encrypted_channel(name, identity, options)` which signs
+  the channel name and sends `owner` (pubkey b64) + `signature` (sig b64)
+  in the channel creation body.
+
 ### Connection lifecycle
 
 1. POST to `/channels/listen` with JSON subscription list and `clientid` header
@@ -121,22 +129,26 @@ repository:
 **Channel management** (`src/server/DredServer.ts:202, 211`)
 - **List**: `GET /channels` → `{"channels": [...]}` (public channels only)
 - **Create**: `POST /channel/{name}` with options body → `{"id", "status": "created", ...}`
+- **Encrypted create**: same endpoint with `{encrypted: true, owner, signature, ...}`
+  where `signature = sign_detached(channel_name, owner_sk)` (base64), and the
+  server verifies `signature` against `owner` pubkey before accepting
 
 ## Test coverage
 
-### Unit tests (22)
+### Unit tests (29)
 
 | Area | Tests |
 |------|-------|
 | Deduplicator | basic insert/duplicate, rotation drops old generation, empty/len, shared across clones, survives poisoned mutex |
 | DredMessage | full deserialization, minimal (heartbeat), extra fields, roundtrip serialize |
 | DredError | display formatting |
-| Auto-traits | `Send + Sync` assertions for `DredError`, `Deduplicator`, `DredMessage`, `DredClient` |
+| Auto-traits | `Send + Sync` for `DredError`, `Deduplicator`, `DredMessage`, `DredClient`, `Identity` |
 | ID generation | Crockford alphabet compliance, excluded letters never appear |
 | Client | shares dedup across listeners, clone shares state |
 | Subscription | cancels on drop, cancellation stops listener, take_receiver behavior, update_channels fails on unreachable server |
+| Identity | sign/verify roundtrip, rejects wrong string, rejects wrong pubkey, rejects garbage b64, from_base64 roundtrip, rejects wrong length |
 
-### Integration tests (14, against live DRED server)
+### Integration tests (16, against live DRED server)
 
 | Test | What it verifies |
 |------|-----------------|
@@ -151,7 +163,9 @@ repository:
 | `list_channels_returns_channels` | GET /channels returns public channels, excludes `_` prefixed |
 | `create_channel_then_post_and_receive` | Create → list → subscribe → post end-to-end |
 | `create_channel_duplicate_fails` | Creating an existing channel returns an error |
-| `create_encrypted_channel_not_supported` | Encrypted channels error until NaCl signing lands |
+| `create_channel_rejects_encrypted_opts_without_identity` | Plaintext create rejects encrypted=true, directs to create_encrypted_channel |
+| `create_encrypted_channel_with_signed_identity` | End-to-end: sign channel name, server verifies, channel created |
+| `create_encrypted_channel_rejects_bad_signature` | Server rejects signature made with wrong private key |
 | `update_channels_adds_channel_without_losing_existing` | Rotation adds new channel while preserving existing receiver |
 | `update_channels_removes_channel` | Rotation removes a channel; remaining channel still receives |
 
@@ -166,6 +180,8 @@ repository:
 | `futures` | `StreamExt` for byte stream consumption |
 | `tracing`, `tracing-subscriber` | Structured logging |
 | `nanoid` | Crockford Base32 ID generation |
+| `dryoc` | NaCl-compatible Ed25519 sign/verify (wraps libsodium primitives) |
+| `base64` | Base64 encoding for signatures and public keys |
 
 ## Design decisions
 
