@@ -766,6 +766,72 @@ pub struct PostMessageResponse {
 }
 
 // ---------------------------------------------------------------------------
+// Message classification — pure logic extracted for testability
+// ---------------------------------------------------------------------------
+
+/// Action determined by [`classify_message`] for each parsed NDJSON message.
+/// Separates protocol decision logic from transport I/O so it can be
+/// unit-tested without a live server.
+#[derive(Debug)]
+enum MessageAction {
+    /// heartbeat-info: caller should adopt this interval and reset deadline.
+    HeartbeatConfig(Duration),
+    /// heartbeat: caller should reset the deadline using current interval.
+    HeartbeatReset,
+    /// Duplicate ocid — skip silently.
+    Duplicate,
+    /// Message should be delivered to its channel's sender.
+    Route(DredMessage),
+    /// Message has a channel but no matching sender — log and drop.
+    Unroutable(DredMessage),
+}
+
+/// Classify a parsed [`DredMessage`] into an action for the transport loop.
+///
+/// Pure decision logic: no I/O, no mutation of shared state beyond the
+/// deduplicator (which is behind a mutex and designed for concurrent use).
+fn classify_message(
+    msg: DredMessage,
+    dedup: &Deduplicator,
+    senders: &HashMap<String, mpsc::Sender<DredMessage>>,
+) -> MessageAction {
+    // Heartbeat protocol
+    match msg.msg_type.as_deref() {
+        Some("heartbeat-info") => {
+            if let Some(interval) = msg
+                .extra
+                .get("timerInterval")
+                .and_then(|v| v.as_u64())
+            {
+                return MessageAction::HeartbeatConfig(Duration::from_millis(interval));
+            }
+            // heartbeat-info without timerInterval — treat as plain heartbeat
+            return MessageAction::HeartbeatReset;
+        }
+        Some("heartbeat") => return MessageAction::HeartbeatReset,
+        _ => {}
+    }
+
+    // Dedup on ocid
+    if let Some(ref ocid) = msg.ocid {
+        if !dedup.check(ocid) {
+            return MessageAction::Duplicate;
+        }
+    }
+
+    // Route to per-channel receiver
+    if msg
+        .channel
+        .as_deref()
+        .map_or(false, |ch| senders.contains_key(ch))
+    {
+        MessageAction::Route(msg)
+    } else {
+        MessageAction::Unroutable(msg)
+    }
+}
+
+// ---------------------------------------------------------------------------
 // DredListener
 // ---------------------------------------------------------------------------
 
@@ -896,48 +962,36 @@ impl DredListener {
                                     let _ = tx.send(());
                                 }
 
-                                // Handle heartbeat protocol
-                                match msg.msg_type.as_deref() {
-                                    Some("heartbeat-info") => {
-                                        if let Some(interval) = msg.extra.get("timerInterval")
-                                            .and_then(|v| v.as_u64())
-                                        {
-                                            heartbeat_interval = Duration::from_millis(interval);
-                                            let timeout = heartbeat_interval * HEARTBEAT_MULTIPLIER as u32;
-                                            heartbeat_deadline = tokio::time::Instant::now() + timeout;
-                                            info!(interval_ms = interval, "heartbeat interval configured");
-                                        }
+                                match classify_message(msg, &self.shared.dedup, &self.senders) {
+                                    MessageAction::HeartbeatConfig(interval) => {
+                                        heartbeat_interval = interval;
+                                        let timeout = heartbeat_interval * HEARTBEAT_MULTIPLIER as u32;
+                                        heartbeat_deadline = tokio::time::Instant::now() + timeout;
+                                        info!(interval_ms = interval.as_millis() as u64, "heartbeat interval configured");
                                         continue;
                                     }
-                                    Some("heartbeat") => {
+                                    MessageAction::HeartbeatReset => {
                                         let timeout = heartbeat_interval * HEARTBEAT_MULTIPLIER as u32;
                                         heartbeat_deadline = tokio::time::Instant::now() + timeout;
                                         debug!("heartbeat received");
                                         continue;
                                     }
-                                    _ => {}
-                                }
-
-                                // Dedup on ocid
-                                if let Some(ref ocid) = msg.ocid {
-                                    if !self.shared.dedup.check(ocid) {
-                                        debug!(ocid, "duplicate, skipping");
+                                    MessageAction::Duplicate => {
+                                        debug!("duplicate, skipping");
                                         continue;
                                     }
-                                }
-
-                                // Route to per-channel receiver
-                                if let Some(tx) = msg.channel.as_deref()
-                                    .and_then(|ch| self.senders.get(ch))
-                                {
-                                    if tx.send(msg).await.is_err() {
-                                        debug!("receiver dropped for channel");
+                                    MessageAction::Route(msg) => {
+                                        let tx = self.senders.get(msg.channel.as_deref().unwrap()).unwrap();
+                                        if tx.send(msg).await.is_err() {
+                                            debug!("receiver dropped for channel");
+                                        }
                                     }
-                                } else {
-                                    debug!(
-                                        channel = msg.channel.as_deref().unwrap_or("(none)"),
-                                        "no receiver for channel, dropping message"
-                                    );
+                                    MessageAction::Unroutable(msg) => {
+                                        debug!(
+                                            channel = msg.channel.as_deref().unwrap_or("(none)"),
+                                            "no receiver for channel, dropping message"
+                                        );
+                                    }
                                 }
                             }
                             Err(e) => {
@@ -1592,5 +1646,116 @@ mod tests {
         assert_eq!(sub.channels(), &["a"]);
         // The failed-new-channel receiver should have been cleaned up
         assert!(sub.take_receiver("b").is_none(), "b receiver should not exist");
+    }
+
+    // -- classify_message unit tests ------------------------------------------
+
+    fn make_msg(msg_type: Option<&str>, channel: Option<&str>, ocid: Option<&str>) -> DredMessage {
+        DredMessage {
+            mid: None,
+            channel: channel.map(String::from),
+            msg_type: msg_type.map(String::from),
+            nbh: None,
+            msg: None,
+            ocid: ocid.map(String::from),
+            extra: serde_json::Map::new(),
+        }
+    }
+
+    fn make_heartbeat_info(interval_ms: u64) -> DredMessage {
+        let mut msg = make_msg(Some("heartbeat-info"), None, None);
+        msg.extra.insert(
+            "timerInterval".into(),
+            serde_json::Value::Number(interval_ms.into()),
+        );
+        msg
+    }
+
+    fn test_senders(channels: &[&str]) -> HashMap<String, mpsc::Sender<DredMessage>> {
+        channels
+            .iter()
+            .map(|ch| {
+                let (tx, _rx) = mpsc::channel(8);
+                (ch.to_string(), tx)
+            })
+            .collect()
+    }
+
+    #[test]
+    fn classify_heartbeat_info_returns_config() {
+        let dedup = Deduplicator::new();
+        let senders = test_senders(&[]);
+        let msg = make_heartbeat_info(7000);
+        match classify_message(msg, &dedup, &senders) {
+            MessageAction::HeartbeatConfig(d) => assert_eq!(d, Duration::from_millis(7000)),
+            other => panic!("expected HeartbeatConfig, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn classify_heartbeat_info_without_interval_resets() {
+        let dedup = Deduplicator::new();
+        let senders = test_senders(&[]);
+        let msg = make_msg(Some("heartbeat-info"), None, None);
+        assert!(matches!(
+            classify_message(msg, &dedup, &senders),
+            MessageAction::HeartbeatReset
+        ));
+    }
+
+    #[test]
+    fn classify_heartbeat_resets() {
+        let dedup = Deduplicator::new();
+        let senders = test_senders(&[]);
+        let msg = make_msg(Some("heartbeat"), None, None);
+        assert!(matches!(
+            classify_message(msg, &dedup, &senders),
+            MessageAction::HeartbeatReset
+        ));
+    }
+
+    #[test]
+    fn classify_duplicate_ocid() {
+        let dedup = Deduplicator::new();
+        let senders = test_senders(&["news"]);
+        dedup.check("dup1"); // seed
+        let msg = make_msg(Some("chat"), Some("news"), Some("dup1"));
+        assert!(matches!(
+            classify_message(msg, &dedup, &senders),
+            MessageAction::Duplicate
+        ));
+    }
+
+    #[test]
+    fn classify_routes_to_channel() {
+        let dedup = Deduplicator::new();
+        let senders = test_senders(&["news"]);
+        let msg = make_msg(Some("chat"), Some("news"), Some("unique1"));
+        assert!(matches!(
+            classify_message(msg, &dedup, &senders),
+            MessageAction::Route(_)
+        ));
+    }
+
+    #[test]
+    fn classify_unroutable_channel() {
+        let dedup = Deduplicator::new();
+        let senders = test_senders(&["news"]);
+        let msg = make_msg(Some("chat"), Some("other"), Some("unique2"));
+        assert!(matches!(
+            classify_message(msg, &dedup, &senders),
+            MessageAction::Unroutable(_)
+        ));
+    }
+
+    #[test]
+    fn classify_no_ocid_still_routes() {
+        let dedup = Deduplicator::new();
+        let senders = test_senders(&["ch"]);
+        let msg = make_msg(Some("chat"), Some("ch"), None);
+        assert!(matches!(
+            classify_message(msg, &dedup, &senders),
+            MessageAction::Route(_)
+        ));
     }
 }
