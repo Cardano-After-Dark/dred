@@ -1,15 +1,20 @@
 # sdc-rs Implementation
 
-A Rust client library for DRED (Decentralized Redis State Channels), implementing
-a pragmatic subset of the TypeScript `dred-client` focused on channel listening,
-message deduplication, and reliable reconnection.
+A Rust client library for DRED (Decentralized Redis State Channels),
+implementing a pragmatic subset of the TypeScript `dred-client`:
+channel subscription, message posting, channel management, Ed25519
+ownership signing, and reliable reconnection.
 
 ## What it does
 
-`sdc-rs` connects to a DRED server's NDJSON streaming endpoint, subscribes to
-named channels, deduplicates messages by their `ocid` field, and delivers them
-to per-channel async receivers. It handles connection failures, server heartbeat
-monitoring, and exponential backoff transparently.
+`sdc-rs` connects to a DRED server's NDJSON streaming endpoint, subscribes
+to named channels, deduplicates messages by their `ocid` field, and
+delivers them to per-channel async receivers. It posts messages (with
+echo suppression via pre-dedup), lists and creates channels (plaintext
+or encrypted with Ed25519 ownership proofs), and rotates connections
+gracefully when the subscribed channel set changes. Connection failures,
+server heartbeat monitoring, and exponential backoff are handled
+transparently.
 
 ## Architecture
 
@@ -211,7 +216,7 @@ continues operating.
 
 ### Skills
 
-The implementation was shaped by skills from the ODIN skillz library:
+The implementation was shaped by skills from the EIDOS Advanced Skills library:
 
 - **Architect (archie)** -- `skillz/architect/architect.SKILL.md`. The DRED
   architecture in `dred.arch.jsonl` was authored and maintained using this skill's
@@ -242,16 +247,37 @@ The implementation was shaped by skills from the ODIN skillz library:
 ### Tools
 
 - **Claude Code** -- Anthropic's CLI coding agent (Claude Opus 4.6, 1M context).
-  The entire implementation was developed interactively in a single Claude Code
-  session: codebase exploration, protocol analysis, code generation, iterative
-  review with loaded skills, test authoring, and integration testing against the
-  live DRED server.
+  The implementation was developed across two interactive Claude Code sessions:
+  codebase exploration, protocol analysis, code generation, iterative review
+  with loaded skills (Architect, Code Whisperer, Rust Coder, REQM), test
+  authoring, and integration testing against the live DRED server. Session 2
+  was driven entirely via the loaded skills — each API-shape decision was
+  proposed in-character by Rust Coder or Code Whisperer before being
+  implemented.
 
 ### Timeline
 
-The Rust implementation took **21 minutes** (22:50 - 23:12, April 4 2026),
-producing 6 commits across a single session. But that speed was only possible
-because of prior investment in structured system documentation:
+**Session 1 — first working client** (April 4 2026, 22:50 - 23:19, ~29 min,
+6 commits). NDJSON subscription, two-generation deduplication, heartbeat
+watchdog, exponential-backoff reconnection, per-channel routing, nanoid
+crockford IDs, unit + integration tests against the live server, and the
+first pass of this document.
+
+**Session 2 — production shaping** (April 4 2026 23:37 - April 5 00:13,
+~36 min, 5 commits). Extracted `DredClient` from `DredListener` (shared
+`Arc`-backed state, child cancellation tokens per listener), aligned the
+API with the TS client (`subscribe` / `post_message` / `list_channels`
+/ `create_channel`), added connection rotation via `DredSubscription`
+with graceful old→new handoff (new connects before old cancels, both
+routing through the same dedup so no messages are lost), and Ed25519
+signing via `dryoc` for encrypted channel ownership proofs — verified
+end-to-end against the TS server's `StringNacl` verifier.
+
+Total across both sessions: **~65 minutes, 11 commits, 47 tests** (29 unit
++ 16 integration + 2 doc-tests, all passing against a live DRED server).
+
+The speed was only possible because of prior investment in structured
+system documentation:
 
 **Architecture discovery** -- March 28, 2026, 15:08 - 16:19 (~71 minutes).
 A single focused session using the Architect skill produced 84 structured
@@ -271,9 +297,15 @@ tools, and diagrams covering the full DRED system.
 The architecture file provided the system map (which components exist, what
 they own, how they interact). The requirements files provided exact protocol
 specs (wire format fields, dedup key composition, endpoint contracts). Together
-they made it possible to write a working Rust client in 21 minutes that would
-otherwise have required hours of source-code archaeology across a TypeScript
-codebase the author had never worked in.
+they made it possible to ship a production-shaped Rust client in roughly an
+hour of work that would otherwise have required hours of source-code
+archaeology across a TypeScript codebase the author had never worked in.
+
+Session 2 also benefited from loading the **Code Whisperer** and **Rust
+Coder** skills as review lenses: they surfaced the API-shape issues in the
+session-1 lib (free functions with too many parameters, callback-based
+output blocking async consumers, `Box<dyn Error>` not being `Send`) before
+any of that code had to be rewritten under production pressure.
 
 ### Source material
 
