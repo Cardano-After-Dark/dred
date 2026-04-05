@@ -332,7 +332,7 @@ impl DredListener {
     }
 
     /// Run a single connection to the server. Returns when the stream ends,
-    /// an error occurs, or cancellation is requested.
+    /// an error occurs, cancellation is requested, or heartbeat times out.
     async fn connect_once(&self) -> Result<(), DredError> {
         let subs: Vec<ChannelSubConfig> = self
             .channels
@@ -367,11 +367,27 @@ impl DredListener {
         let mut stream = resp.bytes_stream();
         let mut buf = String::new();
 
+        // Heartbeat watchdog: the server sends {"type":"heartbeat-info","timerInterval":7000}
+        // as its first message. We expect a heartbeat within 3x that interval; if not,
+        // the connection is dead.
+        const HEARTBEAT_MULTIPLIER: u64 = 3;
+        const DEFAULT_HEARTBEAT_TIMEOUT: Duration = Duration::from_secs(30);
+        let mut heartbeat_deadline =
+            tokio::time::Instant::now() + DEFAULT_HEARTBEAT_TIMEOUT;
+        let mut heartbeat_interval = DEFAULT_HEARTBEAT_TIMEOUT;
+
         loop {
             tokio::select! {
                 _ = self.cancel.cancelled() => {
                     info!("cancellation requested");
                     return Err(DredError::Cancelled);
+                }
+                _ = tokio::time::sleep_until(heartbeat_deadline) => {
+                    warn!(
+                        timeout_ms = heartbeat_interval.as_millis() * HEARTBEAT_MULTIPLIER as u128,
+                        "heartbeat timeout — connection presumed dead"
+                    );
+                    return Err(DredError::StreamEnded);
                 }
                 chunk = stream.next() => {
                     let chunk = match chunk {
@@ -393,12 +409,36 @@ impl DredListener {
 
                         match serde_json::from_str::<DredMessage>(line) {
                             Ok(msg) => {
+                                // Handle heartbeat protocol
+                                match msg.msg_type.as_deref() {
+                                    Some("heartbeat-info") => {
+                                        if let Some(interval) = msg.extra.get("timerInterval")
+                                            .and_then(|v| v.as_u64())
+                                        {
+                                            heartbeat_interval = Duration::from_millis(interval);
+                                            let timeout = heartbeat_interval * HEARTBEAT_MULTIPLIER as u32;
+                                            heartbeat_deadline = tokio::time::Instant::now() + timeout;
+                                            info!(interval_ms = interval, "heartbeat interval configured");
+                                        }
+                                        continue;
+                                    }
+                                    Some("heartbeat") => {
+                                        let timeout = heartbeat_interval * HEARTBEAT_MULTIPLIER as u32;
+                                        heartbeat_deadline = tokio::time::Instant::now() + timeout;
+                                        debug!("heartbeat received");
+                                        continue;
+                                    }
+                                    _ => {}
+                                }
+
+                                // Dedup on ocid
                                 if let Some(ref ocid) = msg.ocid {
                                     if !self.dedup.check(ocid) {
                                         debug!(ocid, "duplicate, skipping");
                                         continue;
                                     }
                                 }
+
                                 // If the receiver is dropped, stop streaming.
                                 if self.tx.send(msg).await.is_err() {
                                     info!("receiver dropped, stopping");
@@ -418,8 +458,9 @@ impl DredListener {
     /// Run the listener with auto-reconnect. Loops until cancelled.
     pub async fn run(&self) -> DredError {
         let mut backoff = self.backoff_initial;
-
         loop {
+            let connected_at = tokio::time::Instant::now();
+
             match self.connect_once().await {
                 Err(DredError::Cancelled) => return DredError::Cancelled,
                 Err(DredError::StreamEnded) => {
@@ -428,6 +469,11 @@ impl DredListener {
                 }
                 Err(e) => {
                     error!("connection error: {e}");
+                    // If we were connected for a while, this isn't a persistent
+                    // failure — reset backoff so we reconnect quickly.
+                    if connected_at.elapsed() > self.backoff_max {
+                        backoff = self.backoff_initial;
+                    }
                 }
                 Ok(()) => unreachable!(),
             }
