@@ -3,6 +3,7 @@ use std::fmt;
 use std::sync::{Arc, Mutex, PoisonError};
 use std::time::{Duration, Instant};
 
+use bytes::BytesMut;
 use futures::StreamExt;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
@@ -306,6 +307,40 @@ struct ChannelSubOptions {
 }
 
 // ---------------------------------------------------------------------------
+// ListenerBufferConfig
+// ---------------------------------------------------------------------------
+
+/// Sizing policy for the NDJSON-stream read buffer used by a listener.
+///
+/// - `max_message_bytes` caps a single message (protocol error if exceeded).
+///   Messages are lines *because* the current wire framing is NDJSON/JSONL;
+///   this cap stays meaningful under alternate framings because it is a
+///   message-level limit, not a line-level one.
+/// - `initial_capacity` is the initial capacity of the persistent read buffer.
+///   Sized for burst headroom: a minimum of `2 * max_message_bytes` plus a
+///   couple of network packets, and ideally an order of magnitude larger so
+///   that bursts of max-sized messages do not trigger `BytesMut`'s
+///   single-case compacting memcpy.
+///
+/// These same sizing decisions apply — with heavier impact — to a server-side
+/// replication listener (fans in streams from many peers concurrently; each
+/// stream holds its own buffer).
+#[derive(Debug, Clone)]
+pub struct ListenerBufferConfig {
+    pub max_message_bytes: usize,
+    pub initial_capacity: usize,
+}
+
+impl Default for ListenerBufferConfig {
+    fn default() -> Self {
+        Self {
+            max_message_bytes: 1 << 20,       // 1 MiB
+            initial_capacity: 16 * (1 << 20), // 16 MiB (~10x minimum viable)
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
 // DredClient
 // ---------------------------------------------------------------------------
 
@@ -320,6 +355,7 @@ struct SharedInner {
     backoff_initial: Duration,
     backoff_max: Duration,
     channel_buf: usize,
+    buffer_config: ListenerBufferConfig,
 }
 
 /// A DRED client that connects to a server, spawns listeners for channel
@@ -357,6 +393,7 @@ pub struct DredClientBuilder {
     channel_buf: usize,
     backoff_initial: Duration,
     backoff_max: Duration,
+    buffer_config: ListenerBufferConfig,
 }
 
 impl DredClientBuilder {
@@ -369,6 +406,7 @@ impl DredClientBuilder {
             channel_buf: 256,
             backoff_initial: Duration::from_millis(500),
             backoff_max: Duration::from_secs(30),
+            buffer_config: ListenerBufferConfig::default(),
         }
     }
 
@@ -398,6 +436,11 @@ impl DredClientBuilder {
         self
     }
 
+    pub fn buffer_config(mut self, config: ListenerBufferConfig) -> Self {
+        self.buffer_config = config;
+        self
+    }
+
     pub fn build(self) -> DredClient {
         DredClient {
             inner: Arc::new(SharedInner {
@@ -409,6 +452,7 @@ impl DredClientBuilder {
                 backoff_initial: self.backoff_initial,
                 backoff_max: self.backoff_max,
                 channel_buf: self.channel_buf,
+                buffer_config: self.buffer_config,
             }),
         }
     }
@@ -749,7 +793,8 @@ impl DredListener {
         info!("connected, streaming messages");
 
         let mut stream = resp.bytes_stream();
-        let mut buf = String::new();
+        let cfg = &self.shared.buffer_config;
+        let mut buf = BytesMut::with_capacity(cfg.initial_capacity);
 
         const HEARTBEAT_MULTIPLIER: u64 = 3;
         const DEFAULT_HEARTBEAT_TIMEOUT: Duration = Duration::from_secs(30);
@@ -777,18 +822,36 @@ impl DredListener {
                         None => return Err(DredError::StreamEnded),
                     };
 
-                    let text = String::from_utf8_lossy(&chunk);
-                    buf.push_str(&text);
+                    // DoS guard: bound unparsed buffer size. No terminator in
+                    // 2× the per-message cap means a misbehaving peer.
+                    if buf.len() + chunk.len() > cfg.max_message_bytes * 2 {
+                        return Err(DredError::Protocol(format!(
+                            "unparsed buffer exceeded {} bytes without message terminator",
+                            cfg.max_message_bytes * 2
+                        )));
+                    }
+                    buf.extend_from_slice(&chunk);
 
-                    while let Some(newline_pos) = buf.find('\n') {
-                        let line: String = buf.drain(..=newline_pos).collect();
-                        let line = line.trim();
+                    while let Some(pos) = buf.iter().position(|&b| b == b'\n') {
+                        if pos > cfg.max_message_bytes {
+                            return Err(DredError::Protocol(format!(
+                                "message exceeds {} bytes", cfg.max_message_bytes
+                            )));
+                        }
+                        // O(1) refcount split; drops at end of scope.
+                        let line = buf.split_to(pos + 1);
+                        let trimmed = &line[..pos];
+                        let trimmed = if trimmed.last() == Some(&b'\r') {
+                            &trimmed[..trimmed.len() - 1]
+                        } else {
+                            trimmed
+                        };
 
-                        if line.is_empty() {
+                        if trimmed.is_empty() {
                             continue;
                         }
 
-                        match serde_json::from_str::<DredMessage>(line) {
+                        match serde_json::from_slice::<DredMessage>(trimmed) {
                             Ok(msg) => {
                                 // Signal first-message-received to anyone waiting
                                 // for us to be connected (see DredSubscription).
@@ -841,7 +904,10 @@ impl DredListener {
                                 }
                             }
                             Err(e) => {
-                                warn!(line, "failed to parse NDJSON line: {e}");
+                                warn!(
+                                    line = %String::from_utf8_lossy(trimmed),
+                                    "failed to parse NDJSON line: {e}"
+                                );
                             }
                         }
                     }
@@ -1194,6 +1260,90 @@ mod tests {
 
         assert!(!d.check("before_panic"), "should see entry from before panic");
         assert!(d.check("after_panic"), "should accept new entries after poison");
+    }
+
+    // Simulates the buffer-drain pattern from DredListener::connect_once:
+    // accumulates chunks into a BytesMut, splits on '\n' bytes, parses
+    // complete lines from the borrowed byte slice. This is what the
+    // streaming loop does — extracted so chunk-boundary cases are unit-testable.
+    fn drain_messages(buf: &mut BytesMut, chunk: &[u8]) -> Vec<DredMessage> {
+        let mut out = Vec::new();
+        buf.extend_from_slice(chunk);
+        while let Some(pos) = buf.iter().position(|&b| b == b'\n') {
+            let line = buf.split_to(pos + 1);
+            let trimmed = &line[..pos];
+            let trimmed = if trimmed.last() == Some(&b'\r') {
+                &trimmed[..trimmed.len() - 1]
+            } else {
+                trimmed
+            };
+            if trimmed.is_empty() {
+                continue;
+            }
+            if let Ok(msg) = serde_json::from_slice::<DredMessage>(trimmed) {
+                out.push(msg);
+            }
+        }
+        out
+    }
+
+    #[test]
+    fn buffer_preserves_utf8_split_across_chunks() {
+        // "日本語" is 9 UTF-8 bytes (3 bytes per char). Split one char in half.
+        let full = r#"{"type":"t","msg":"日本語"}"#;
+        let bytes = full.as_bytes();
+        // Pick a split point inside a multi-byte char. Find '日' (0xE6 0x97 0xA5) position.
+        let split = bytes.iter().position(|&b| b == 0xE6).unwrap() + 2; // mid-codepoint
+        let chunk1 = &bytes[..split];
+        // chunk2 = rest + newline
+        let mut chunk2 = bytes[split..].to_vec();
+        chunk2.push(b'\n');
+
+        let mut buf = BytesMut::new();
+        let msgs1 = drain_messages(&mut buf, chunk1);
+        assert!(msgs1.is_empty(), "no newline yet; nothing to emit");
+        let msgs2 = drain_messages(&mut buf, &chunk2);
+        assert_eq!(msgs2.len(), 1, "one message after newline arrives");
+        assert_eq!(
+            msgs2[0].msg.as_ref().and_then(|v| v.as_str()),
+            Some("日本語"),
+            "multi-byte codepoint preserved across chunk boundary"
+        );
+    }
+
+    #[test]
+    fn buffer_processes_multiple_messages_in_one_chunk() {
+        let chunk = b"{\"type\":\"a\"}\n{\"type\":\"b\"}\n{\"type\":\"c\"}\n";
+        let mut buf = BytesMut::new();
+        let msgs = drain_messages(&mut buf, chunk);
+        assert_eq!(msgs.len(), 3);
+        assert_eq!(msgs[0].msg_type.as_deref(), Some("a"));
+        assert_eq!(msgs[1].msg_type.as_deref(), Some("b"));
+        assert_eq!(msgs[2].msg_type.as_deref(), Some("c"));
+        assert_eq!(buf.len(), 0, "all bytes consumed");
+    }
+
+    #[test]
+    fn buffer_retains_partial_tail_across_chunks() {
+        let mut buf = BytesMut::new();
+        let msgs1 = drain_messages(&mut buf, b"{\"type\":\"first\"}\n{\"type\":");
+        assert_eq!(msgs1.len(), 1);
+        assert_eq!(msgs1[0].msg_type.as_deref(), Some("first"));
+        assert!(!buf.is_empty(), "partial tail retained");
+        let msgs2 = drain_messages(&mut buf, b"\"second\"}\n");
+        assert_eq!(msgs2.len(), 1);
+        assert_eq!(msgs2[0].msg_type.as_deref(), Some("second"));
+        assert_eq!(buf.len(), 0);
+    }
+
+    #[test]
+    fn buffer_handles_cr_lf_terminator() {
+        // Tolerant of servers that emit CRLF even though NDJSON spec says LF.
+        let chunk = b"{\"type\":\"a\"}\r\n";
+        let mut buf = BytesMut::new();
+        let msgs = drain_messages(&mut buf, chunk);
+        assert_eq!(msgs.len(), 1);
+        assert_eq!(msgs[0].msg_type.as_deref(), Some("a"));
     }
 
     #[test]
