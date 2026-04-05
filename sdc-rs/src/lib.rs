@@ -223,7 +223,7 @@ struct SharedInner {
 /// subscriptions, and will support publishing messages.
 ///
 /// The client owns the shared connection pool, deduplicator, and config.
-/// Listeners created via `.listen()` share these resources.
+/// Listeners created via `.subscribe()` share these resources.
 ///
 /// # Example
 /// ```no_run
@@ -232,7 +232,7 @@ struct SharedInner {
 /// # async fn run() {
 /// let client = DredClient::builder("http://localhost:3029").build();
 ///
-/// let (listener, mut rxs) = client.listen(vec!["news".into(), "discussion".into()]);
+/// let (listener, mut rxs) = client.subscribe(vec!["news".into(), "discussion".into()]);
 /// let mut news_rx = rxs.remove("news").unwrap();
 ///
 /// // Spawn the listener
@@ -329,11 +329,11 @@ impl DredClient {
         &self.inner.dedup
     }
 
-    /// Create a listener for the given channels.
+    /// Subscribe to the given channels.
     ///
     /// Returns a `DredListener` (spawn it with `tokio::spawn(listener.run())`)
     /// and a `HashMap` of per-channel receivers.
-    pub fn listen(
+    pub fn subscribe(
         &self,
         channels: Vec<String>,
     ) -> (DredListener, HashMap<String, mpsc::Receiver<DredMessage>>) {
@@ -352,6 +352,66 @@ impl DredClient {
         };
         (listener, receivers)
     }
+
+    /// Post a message to a channel.
+    ///
+    /// Auto-generates `ocid` if not provided. Pre-registers the ocid in
+    /// the deduplicator so the sender's own echo is suppressed.
+    ///
+    /// Returns the server's response containing the assigned message id.
+    pub async fn post_message(
+        &self,
+        channel: &str,
+        msg: &str,
+        msg_type: &str,
+        ocid: Option<&str>,
+    ) -> Result<PostMessageResponse, DredError> {
+        let ocid = ocid
+            .map(|s| s.to_string())
+            .unwrap_or_else(|| gen_id(10));
+
+        // Pre-register in dedup so our own echo gets suppressed
+        self.inner.dedup.check(&ocid);
+
+        let body = serde_json::json!({
+            "msg": msg,
+            "type": msg_type,
+            "ocid": ocid,
+        });
+
+        let resp = self
+            .inner
+            .http
+            .post(format!("{}/channel/{}/message", self.inner.base_url, channel))
+            .header("content-type", "application/json")
+            .header("accept", "application/json")
+            .header("clientid", &self.inner.client_id)
+            .json(&body)
+            .send()
+            .await?;
+
+        if !resp.status().is_success() {
+            return Err(DredError::ServerStatus(resp.status()));
+        }
+
+        let result: PostMessageResponse = resp
+            .json()
+            .await
+            .map_err(|e| DredError::Protocol(format!("invalid response json: {e}")))?;
+
+        Ok(result)
+    }
+}
+
+/// Server response to a posted message.
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct PostMessageResponse {
+    /// Server-assigned message id (Redis stream id).
+    pub id: String,
+    /// Status string, typically "created".
+    pub status: String,
+    /// The ocid that was sent (or auto-generated).
+    pub ocid: String,
 }
 
 // ---------------------------------------------------------------------------
@@ -727,7 +787,7 @@ mod tests {
         // The dedup is shared — checking from the client affects all listeners
         client.dedup().check("seen-via-client");
 
-        let (_listener, _rxs) = client.listen(vec!["ch".into()]);
+        let (_listener, _rxs) = client.subscribe(vec!["ch".into()]);
 
         // The dedup is the same instance
         assert!(!client.dedup().check("seen-via-client"));
@@ -748,7 +808,7 @@ mod tests {
             .backoff(Duration::from_millis(10), Duration::from_millis(10))
             .build();
 
-        let (listener, _rxs) = client.listen(vec!["x".into()]);
+        let (listener, _rxs) = client.subscribe(vec!["x".into()]);
         let token = listener.cancellation_token();
         token.cancel();
 
@@ -762,7 +822,7 @@ mod tests {
             .backoff(Duration::from_millis(10), Duration::from_millis(10))
             .build();
 
-        let (listener, rxs) = client.listen(vec!["x".into()]);
+        let (listener, rxs) = client.subscribe(vec!["x".into()]);
         let token = listener.cancellation_token();
         drop(rxs);
 

@@ -19,7 +19,7 @@ async fn main() {
     let client = DredClient::builder(&base_url).build();
     let token = client.cancellation_token();
 
-    let (listener, mut rxs) = client.listen(channels);
+    let (listener, mut rxs) = client.subscribe(channels);
 
     // Cancel on Ctrl-C
     tokio::spawn(async move {

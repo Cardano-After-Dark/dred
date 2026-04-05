@@ -79,7 +79,7 @@ async fn connects_and_receives_messages() {
     }
 
     let client = DredClient::builder(server_url()).build();
-    let (listener, mut rxs) = client.listen(vec!["news".into()]);
+    let (listener, mut rxs) = client.subscribe(vec!["news".into()]);
     let mut news_rx = rxs.remove("news").unwrap();
     let token = client.cancellation_token();
 
@@ -110,7 +110,7 @@ async fn deduplicates_across_reconnections() {
     let client = DredClient::builder(server_url()).build();
 
     // First connection
-    let (listener1, mut rxs1) = client.listen(vec!["news".into()]);
+    let (listener1, mut rxs1) = client.subscribe(vec!["news".into()]);
     let mut news_rx1 = rxs1.remove("news").unwrap();
     let token1 = listener1.cancellation_token();
 
@@ -124,7 +124,7 @@ async fn deduplicates_across_reconnections() {
     let dedup_count_after_first = client.dedup().len();
 
     // Second connection — same client, same dedup
-    let (listener2, mut rxs2) = client.listen(vec!["news".into()]);
+    let (listener2, mut rxs2) = client.subscribe(vec!["news".into()]);
     let mut news_rx2 = rxs2.remove("news").unwrap();
 
     tokio::spawn(async move { listener2.run().await });
@@ -159,7 +159,7 @@ async fn cancellation_stops_listener() {
     }
 
     let client = DredClient::builder(server_url()).build();
-    let (listener, mut rxs) = client.listen(vec!["news".into()]);
+    let (listener, mut rxs) = client.subscribe(vec!["news".into()]);
     let mut news_rx = rxs.remove("news").unwrap();
 
     let handle = tokio::spawn(async move { listener.run().await });
@@ -182,7 +182,7 @@ async fn per_channel_routing() {
     }
 
     let client = DredClient::builder(server_url()).build();
-    let (listener, mut rxs) = client.listen(vec!["news".into(), "discussion".into()]);
+    let (listener, mut rxs) = client.subscribe(vec!["news".into(), "discussion".into()]);
     let mut news_rx = rxs.remove("news").unwrap();
     let mut disc_rx = rxs.remove("discussion").unwrap();
 
@@ -225,8 +225,8 @@ async fn multiple_listeners_share_dedup() {
     let client = DredClient::builder(server_url()).build();
 
     // Two listeners on the same channel, same client
-    let (listener1, mut rxs1) = client.listen(vec!["news".into()]);
-    let (listener2, mut rxs2) = client.listen(vec!["news".into()]);
+    let (listener1, mut rxs1) = client.subscribe(vec!["news".into()]);
+    let (listener2, mut rxs2) = client.subscribe(vec!["news".into()]);
     let mut rx1 = rxs1.remove("news").unwrap();
     let mut rx2 = rxs2.remove("news").unwrap();
 
@@ -244,6 +244,75 @@ async fn multiple_listeners_share_dedup() {
     // Exactly one should receive it (dedup is shared)
     let got_count = msg1.is_some() as u8 + msg2.is_some() as u8;
     assert_eq!(got_count, 1, "exactly one listener should receive a given ocid");
+
+    client.cancellation_token().cancel();
+}
+
+#[tokio::test]
+async fn post_message_returns_id() {
+    if !server_available().await {
+        eprintln!("DRED server not running, skipping");
+        return;
+    }
+
+    let client = DredClient::builder(server_url()).build();
+
+    let resp = client
+        .post_message("news", "post_message test", "test", None)
+        .await
+        .expect("post_message failed");
+
+    assert_eq!(resp.status, "created");
+    assert!(!resp.id.is_empty(), "should get a server-assigned id");
+    assert!(!resp.ocid.is_empty(), "should get an ocid back");
+}
+
+#[tokio::test]
+async fn post_message_with_explicit_ocid() {
+    if !server_available().await {
+        eprintln!("DRED server not running, skipping");
+        return;
+    }
+
+    let client = DredClient::builder(server_url()).build();
+    let my_ocid = format!("explicit-{}", uuid::Uuid::new_v4());
+
+    let resp = client
+        .post_message("news", "explicit ocid test", "test", Some(&my_ocid))
+        .await
+        .expect("post_message failed");
+
+    assert_eq!(resp.ocid, my_ocid);
+    assert_eq!(resp.status, "created");
+}
+
+#[tokio::test]
+async fn post_message_echo_suppressed() {
+    if !server_available().await {
+        eprintln!("DRED server not running, skipping");
+        return;
+    }
+
+    let client = DredClient::builder(server_url()).build();
+    let (listener, mut rxs) = client.subscribe(vec!["news".into()]);
+    let mut news_rx = rxs.remove("news").unwrap();
+
+    tokio::spawn(async move { listener.run().await });
+    tokio::time::sleep(Duration::from_millis(500)).await;
+
+    // Post via the same client — echo should be suppressed by pre-dedup
+    let resp = client
+        .post_message("news", "echo test", "test", None)
+        .await
+        .expect("post_message failed");
+
+    // The message with this ocid should NOT arrive on our receiver
+    let echoed = wait_for_ocid(&mut news_rx, &resp.ocid, Duration::from_secs(2)).await;
+    assert!(
+        echoed.is_none(),
+        "own message should be suppressed by pre-dedup, ocid: {}",
+        resp.ocid,
+    );
 
     client.cancellation_token().cancel();
 }
