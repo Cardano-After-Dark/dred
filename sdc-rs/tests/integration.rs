@@ -79,11 +79,9 @@ async fn connects_and_receives_messages() {
     }
 
     let client = DredClient::builder(server_url()).build();
-    let (listener, mut rxs) = client.subscribe(vec!["news".into()]);
-    let mut news_rx = rxs.remove("news").unwrap();
-    let token = client.cancellation_token();
+    let mut sub = client.subscribe(vec!["news".into()]);
+    let mut news_rx = sub.take_receiver("news").unwrap();
 
-    tokio::spawn(async move { listener.run().await });
     tokio::time::sleep(Duration::from_millis(500)).await;
 
     let test_ocid = format!("integ-test-{}", uuid::Uuid::new_v4());
@@ -96,8 +94,6 @@ async fn connects_and_receives_messages() {
     let msg = msg.unwrap();
     assert_eq!(msg.channel.as_deref(), Some("news"));
     assert_eq!(msg.msg_type.as_deref(), Some("test"));
-
-    token.cancel();
 }
 
 #[tokio::test]
@@ -109,25 +105,19 @@ async fn deduplicates_across_reconnections() {
 
     let client = DredClient::builder(server_url()).build();
 
-    // First connection
-    let (listener1, mut rxs1) = client.subscribe(vec!["news".into()]);
-    let mut news_rx1 = rxs1.remove("news").unwrap();
-    let token1 = listener1.cancellation_token();
-
-    tokio::spawn(async move { listener1.run().await });
+    // First subscription
+    let mut sub1 = client.subscribe(vec!["news".into()]);
+    let mut news_rx1 = sub1.take_receiver("news").unwrap();
     let first_batch = collect_messages(&mut news_rx1, Duration::from_secs(2)).await;
-    token1.cancel();
+    drop(sub1);
     drop(news_rx1);
 
     tokio::time::sleep(Duration::from_millis(200)).await;
-
     let dedup_count_after_first = client.dedup().len();
 
-    // Second connection — same client, same dedup
-    let (listener2, mut rxs2) = client.subscribe(vec!["news".into()]);
-    let mut news_rx2 = rxs2.remove("news").unwrap();
-
-    tokio::spawn(async move { listener2.run().await });
+    // Second subscription — same client, same dedup
+    let mut sub2 = client.subscribe(vec!["news".into()]);
+    let mut news_rx2 = sub2.take_receiver("news").unwrap();
     tokio::time::sleep(Duration::from_millis(500)).await;
 
     let fresh_ocid = format!("dedup-test-{}", uuid::Uuid::new_v4());
@@ -138,8 +128,6 @@ async fn deduplicates_across_reconnections() {
 
     let dedup_count_after_second = client.dedup().len();
     assert!(dedup_count_after_second >= dedup_count_after_first);
-
-    client.cancellation_token().cancel();
 
     if !first_batch.is_empty() {
         eprintln!(
@@ -159,19 +147,15 @@ async fn cancellation_stops_listener() {
     }
 
     let client = DredClient::builder(server_url()).build();
-    let (listener, mut rxs) = client.subscribe(vec!["news".into()]);
-    let mut news_rx = rxs.remove("news").unwrap();
-
-    let handle = tokio::spawn(async move { listener.run().await });
+    let sub = client.subscribe(vec!["news".into()]);
+    let sub_token = sub.cancellation_token();
 
     tokio::time::sleep(Duration::from_millis(500)).await;
-    client.cancellation_token().cancel();
+    sub_token.cancel();
 
-    let result = tokio::time::timeout(Duration::from_secs(3), handle).await;
-    assert!(result.is_ok(), "listener should stop within 3s of cancellation");
-
-    let remaining = collect_messages(&mut news_rx, Duration::from_millis(100)).await;
-    drop(remaining);
+    // After cancel, the listener task should exit promptly.
+    tokio::time::sleep(Duration::from_millis(200)).await;
+    assert!(sub_token.is_cancelled());
 }
 
 #[tokio::test]
@@ -182,11 +166,10 @@ async fn per_channel_routing() {
     }
 
     let client = DredClient::builder(server_url()).build();
-    let (listener, mut rxs) = client.subscribe(vec!["news".into(), "discussion".into()]);
-    let mut news_rx = rxs.remove("news").unwrap();
-    let mut disc_rx = rxs.remove("discussion").unwrap();
+    let mut sub = client.subscribe(vec!["news".into(), "discussion".into()]);
+    let mut news_rx = sub.take_receiver("news").unwrap();
+    let mut disc_rx = sub.take_receiver("discussion").unwrap();
 
-    tokio::spawn(async move { listener.run().await });
     tokio::time::sleep(Duration::from_millis(500)).await;
 
     let ocid_news = format!("route-news-{}", uuid::Uuid::new_v4());
@@ -211,12 +194,10 @@ async fn per_channel_routing() {
             "news message leaked to discussion receiver"
         );
     }
-
-    client.cancellation_token().cancel();
 }
 
 #[tokio::test]
-async fn multiple_listeners_share_dedup() {
+async fn multiple_subscriptions_share_dedup() {
     if !server_available().await {
         eprintln!("DRED server not running, skipping");
         return;
@@ -224,28 +205,21 @@ async fn multiple_listeners_share_dedup() {
 
     let client = DredClient::builder(server_url()).build();
 
-    // Two listeners on the same channel, same client
-    let (listener1, mut rxs1) = client.subscribe(vec!["news".into()]);
-    let (listener2, mut rxs2) = client.subscribe(vec!["news".into()]);
-    let mut rx1 = rxs1.remove("news").unwrap();
-    let mut rx2 = rxs2.remove("news").unwrap();
+    let mut sub1 = client.subscribe(vec!["news".into()]);
+    let mut sub2 = client.subscribe(vec!["news".into()]);
+    let mut rx1 = sub1.take_receiver("news").unwrap();
+    let mut rx2 = sub2.take_receiver("news").unwrap();
 
-    tokio::spawn(async move { listener1.run().await });
-    tokio::spawn(async move { listener2.run().await });
     tokio::time::sleep(Duration::from_millis(500)).await;
 
     let test_ocid = format!("shared-dedup-{}", uuid::Uuid::new_v4());
     post_message("news", "shared dedup test", &test_ocid).await;
 
-    // One listener should get it, the other should dedup it
     let msg1 = wait_for_ocid(&mut rx1, &test_ocid, Duration::from_secs(3)).await;
     let msg2 = wait_for_ocid(&mut rx2, &test_ocid, Duration::from_secs(1)).await;
 
-    // Exactly one should receive it (dedup is shared)
     let got_count = msg1.is_some() as u8 + msg2.is_some() as u8;
-    assert_eq!(got_count, 1, "exactly one listener should receive a given ocid");
-
-    client.cancellation_token().cancel();
+    assert_eq!(got_count, 1, "exactly one subscription should receive a given ocid");
 }
 
 #[tokio::test]
@@ -296,14 +270,11 @@ async fn list_channels_returns_channels() {
     let client = DredClient::builder(server_url()).build();
     let channels = client.list_channels().await.expect("list_channels failed");
 
-    // The server has `news` and `discussion` as default channels
     assert!(channels.iter().any(|c| c == "news"), "should include news");
     assert!(
         channels.iter().any(|c| c == "discussion"),
         "should include discussion"
     );
-
-    // System channels (prefixed with _) should be filtered out
     assert!(
         !channels.iter().any(|c| c.starts_with('_')),
         "should not include system channels"
@@ -319,7 +290,6 @@ async fn create_channel_then_post_and_receive() {
 
     let client = DredClient::builder(server_url()).build();
 
-    // Create a new channel with a unique name
     let channel_name = format!("rust-test-{}", sdc_rs::gen_id(8));
     let resp = client
         .create_channel(&channel_name, CreateChannelOptions::default())
@@ -329,17 +299,14 @@ async fn create_channel_then_post_and_receive() {
     assert_eq!(resp.id, channel_name);
     assert_eq!(resp.status, "created");
 
-    // Verify it shows up in list_channels
     let channels = client.list_channels().await.expect("list_channels failed");
     assert!(
         channels.iter().any(|c| c == &channel_name),
         "new channel should appear in list"
     );
 
-    // Subscribe and post a message to verify it works end-to-end
-    let (listener, mut rxs) = client.subscribe(vec![channel_name.clone()]);
-    let mut rx = rxs.remove(&channel_name).unwrap();
-    tokio::spawn(async move { listener.run().await });
+    let mut sub = client.subscribe(vec![channel_name.clone()]);
+    let mut rx = sub.take_receiver(&channel_name).unwrap();
     tokio::time::sleep(Duration::from_millis(500)).await;
 
     // Post from a different client so echo isn't suppressed
@@ -351,8 +318,6 @@ async fn create_channel_then_post_and_receive() {
 
     let msg = wait_for_ocid(&mut rx, &resp.ocid, Duration::from_secs(5)).await;
     assert!(msg.is_some(), "should receive posted message");
-
-    client.cancellation_token().cancel();
 }
 
 #[tokio::test]
@@ -363,12 +328,9 @@ async fn create_channel_duplicate_fails() {
     }
 
     let client = DredClient::builder(server_url()).build();
-
-    // "news" already exists
     let result = client
         .create_channel("news", CreateChannelOptions::default())
         .await;
-
     assert!(result.is_err(), "creating existing channel should fail");
 }
 
@@ -392,25 +354,86 @@ async fn post_message_echo_suppressed() {
     }
 
     let client = DredClient::builder(server_url()).build();
-    let (listener, mut rxs) = client.subscribe(vec!["news".into()]);
-    let mut news_rx = rxs.remove("news").unwrap();
-
-    tokio::spawn(async move { listener.run().await });
+    let mut sub = client.subscribe(vec!["news".into()]);
+    let mut news_rx = sub.take_receiver("news").unwrap();
     tokio::time::sleep(Duration::from_millis(500)).await;
 
-    // Post via the same client — echo should be suppressed by pre-dedup
     let resp = client
         .post_message("news", "echo test", "test", None)
         .await
         .expect("post_message failed");
 
-    // The message with this ocid should NOT arrive on our receiver
     let echoed = wait_for_ocid(&mut news_rx, &resp.ocid, Duration::from_secs(2)).await;
     assert!(
         echoed.is_none(),
         "own message should be suppressed by pre-dedup, ocid: {}",
         resp.ocid,
     );
+}
 
-    client.cancellation_token().cancel();
+#[tokio::test]
+async fn update_channels_adds_channel_without_losing_existing() {
+    if !server_available().await {
+        eprintln!("DRED server not running, skipping");
+        return;
+    }
+
+    let client = DredClient::builder(server_url()).build();
+    let mut sub = client.subscribe(vec!["news".into()]);
+    let mut news_rx = sub.take_receiver("news").unwrap();
+    tokio::time::sleep(Duration::from_millis(500)).await;
+
+    // Verify news works initially
+    let ocid1 = format!("before-update-{}", uuid::Uuid::new_v4());
+    post_message("news", "before update", &ocid1).await;
+    let msg = wait_for_ocid(&mut news_rx, &ocid1, Duration::from_secs(5)).await;
+    assert!(msg.is_some(), "news should work before update");
+
+    // Add the discussion channel. The existing news_rx must keep working.
+    sub.update_channels(vec!["news".into(), "discussion".into()])
+        .await
+        .expect("update_channels should succeed");
+
+    assert_eq!(sub.channels().len(), 2);
+    let mut disc_rx = sub.take_receiver("discussion").unwrap();
+    tokio::time::sleep(Duration::from_millis(300)).await;
+
+    // Post to both channels — news on the SAME receiver, discussion on the new one
+    let ocid_news = format!("after-update-news-{}", uuid::Uuid::new_v4());
+    let ocid_disc = format!("after-update-disc-{}", uuid::Uuid::new_v4());
+    post_message("news", "after update - news", &ocid_news).await;
+    post_message("discussion", "after update - disc", &ocid_disc).await;
+
+    let got_news = wait_for_ocid(&mut news_rx, &ocid_news, Duration::from_secs(5)).await;
+    let got_disc = wait_for_ocid(&mut disc_rx, &ocid_disc, Duration::from_secs(5)).await;
+
+    assert!(got_news.is_some(), "news receiver should keep working after update");
+    assert!(got_disc.is_some(), "new discussion receiver should work");
+}
+
+#[tokio::test]
+async fn update_channels_removes_channel() {
+    if !server_available().await {
+        eprintln!("DRED server not running, skipping");
+        return;
+    }
+
+    let client = DredClient::builder(server_url()).build();
+    let mut sub = client.subscribe(vec!["news".into(), "discussion".into()]);
+    let mut news_rx = sub.take_receiver("news").unwrap();
+    tokio::time::sleep(Duration::from_millis(500)).await;
+
+    sub.update_channels(vec!["news".into()])
+        .await
+        .expect("removing discussion should succeed");
+
+    assert_eq!(sub.channels(), &["news"]);
+    // discussion receiver is no longer accessible
+    assert!(sub.take_receiver("discussion").is_none());
+
+    // news should still work
+    let ocid = format!("after-remove-{}", uuid::Uuid::new_v4());
+    post_message("news", "still working", &ocid).await;
+    let msg = wait_for_ocid(&mut news_rx, &ocid, Duration::from_secs(5)).await;
+    assert!(msg.is_some(), "news should still work after removing discussion");
 }

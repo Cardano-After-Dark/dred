@@ -18,8 +18,7 @@ async fn main() {
 
     let client = DredClient::builder(&base_url).build();
     let token = client.cancellation_token();
-
-    let (listener, mut rxs) = client.subscribe(channels);
+    let mut sub = client.subscribe(channels.clone());
 
     // Cancel on Ctrl-C
     tokio::spawn(async move {
@@ -28,20 +27,19 @@ async fn main() {
         token.cancel();
     });
 
-    // Spawn the listener
-    tokio::spawn(async move { listener.run().await });
-
     // Merge all per-channel receivers into a single print loop
     let (merged_tx, mut merged_rx) = tokio::sync::mpsc::channel(256);
-    for (_name, mut rx) in rxs.drain() {
-        let tx = merged_tx.clone();
-        tokio::spawn(async move {
-            while let Some(msg) = rx.recv().await {
-                if tx.send(msg).await.is_err() {
-                    break;
+    for ch in &channels {
+        if let Some(mut rx) = sub.take_receiver(ch) {
+            let tx = merged_tx.clone();
+            tokio::spawn(async move {
+                while let Some(msg) = rx.recv().await {
+                    if tx.send(msg).await.is_err() {
+                        break;
+                    }
                 }
-            }
-        });
+            });
+        }
     }
     drop(merged_tx);
 

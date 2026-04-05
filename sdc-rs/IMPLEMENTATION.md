@@ -13,21 +13,26 @@ monitoring, and exponential backoff transparently.
 
 ## Architecture
 
-The library is structured around two primary types:
+The library is structured around three primary types:
 
 **`DredClient`** -- owns shared state (base_url, client_id, reqwest::Client,
 Deduplicator, CancellationToken). Provides request/response methods
-(`post_message`, `list_channels`, `create_channel`) and spawns listeners
-via `subscribe(channels)`.
+(`post_message`, `list_channels`, `create_channel`) and creates
+subscriptions via `subscribe(channels)`.
 
-**`DredListener`** -- spawned from a `DredClient`, maintains a persistent
-streaming connection for the subscribed channels. Runs as an async task.
+**`DredSubscription`** -- returned from `client.subscribe()`. Owns the
+streaming listener task and exposes per-channel receivers. Supports
+`update_channels()` for rotation without losing messages.
+
+**`DredListener`** -- internal streaming listener. Maintains the persistent
+connection to `/channels/listen`, parses NDJSON, deduplicates, and routes
+to per-channel senders.
 
 ```
-DredClient::builder(url)      DredClient                Per-channel
-    .build()              -->   .subscribe(...)  -->  mpsc::Receiver
-                                (spawns DredListener)  (one per channel)
-                                .post_message(...)
+DredClient::builder(url)      DredClient                  DredSubscription
+    .build()              -->   .subscribe(...)   -->    .take_receiver(ch)
+                                (returns Sub)             .update_channels(new)
+                                .post_message(...)        .cancellation_token()
                                 .list_channels()
                                 .create_channel(...)
 ```
@@ -38,10 +43,19 @@ DredClient::builder(url)      DredClient                Per-channel
   connection pool and deduplicator. Cloneable (`Arc`-backed) so it can be
   passed between tasks.
 
-- **`DredListener`** -- spawned via `client.subscribe(channels)`. Its
-  `run()` method handles the connection lifecycle including reconnection.
-  Each listener has its own child `CancellationToken` — cancel it to stop
-  just that listener; cancel the client's to stop all listeners.
+- **`DredSubscription`** -- owns the listener task (auto-cancelled on drop).
+  Provides `take_receiver(channel)` for per-channel message streams.
+  Calling `update_channels(new)` spins up a new listener with the new
+  channel set, waits for it to connect, and only then cancels the old
+  listener. Both connections briefly coexist and route through the same
+  deduplicator, so no message is lost or duplicated across the rotation.
+  Receivers for channels present in both old and new lists are preserved.
+
+- **`DredListener`** -- internal streaming listener. Each has its own
+  child `CancellationToken` — cancel it to stop just that listener.
+  Holds an optional `connected_signal` oneshot that fires on first
+  parsed message, used by `DredSubscription::update_channels` to
+  sequence rotation.
 
 - **`Deduplicator`** -- two-generation rotating `HashSet` keyed on `ocid`. Rotates
   every 30 seconds: current generation becomes previous, previous is dropped. This
@@ -110,7 +124,7 @@ repository:
 
 ## Test coverage
 
-### Unit tests (20)
+### Unit tests (22)
 
 | Area | Tests |
 |------|-------|
@@ -120,9 +134,9 @@ repository:
 | Auto-traits | `Send + Sync` assertions for `DredError`, `Deduplicator`, `DredMessage`, `DredClient` |
 | ID generation | Crockford alphabet compliance, excluded letters never appear |
 | Client | shares dedup across listeners, clone shares state |
-| Listener | cancellation before connect, stops when receiver dropped |
+| Subscription | cancels on drop, cancellation stops listener, take_receiver behavior, update_channels fails on unreachable server |
 
-### Integration tests (12, against live DRED server)
+### Integration tests (14, against live DRED server)
 
 | Test | What it verifies |
 |------|-----------------|
@@ -130,7 +144,7 @@ repository:
 | `deduplicates_across_reconnections` | Shared dedup across two listener instances filters replayed messages |
 | `cancellation_stops_listener` | `CancellationToken` causes `run()` to return promptly |
 | `per_channel_routing` | Messages arrive only on their channel's receiver, not others |
-| `multiple_listeners_share_dedup` | Two listeners on same channel share dedup; exactly one receives each ocid |
+| `multiple_subscriptions_share_dedup` | Two subscriptions on same channel share dedup; exactly one receives each ocid |
 | `post_message_returns_id` | Server returns `{id, status, ocid}` on successful post |
 | `post_message_with_explicit_ocid` | Provided ocid is preserved through the round-trip |
 | `post_message_echo_suppressed` | Pre-dedup suppresses own posted messages from the sender's listener |
@@ -138,6 +152,8 @@ repository:
 | `create_channel_then_post_and_receive` | Create → list → subscribe → post end-to-end |
 | `create_channel_duplicate_fails` | Creating an existing channel returns an error |
 | `create_encrypted_channel_not_supported` | Encrypted channels error until NaCl signing lands |
+| `update_channels_adds_channel_without_losing_existing` | Rotation adds new channel while preserving existing receiver |
+| `update_channels_removes_channel` | Rotation removes a channel; remaining channel still receives |
 
 ## Dependencies
 
