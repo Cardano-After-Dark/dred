@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::fmt;
 use std::sync::{Arc, Mutex, PoisonError};
 use std::time::{Duration, Instant};
@@ -207,25 +207,26 @@ struct ChannelSubOptions {
 }
 
 /// A streaming DRED client that connects to a server's `/channels/listen`
-/// endpoint, deduplicates messages, and sends them to a `tokio::sync::mpsc`
-/// channel.
+/// endpoint, deduplicates messages, and routes them to per-channel
+/// `tokio::sync::mpsc` receivers.
 ///
 /// # Example
 /// ```no_run
 /// use sdc_rs::DredListener;
 ///
 /// # async fn run() {
-/// let (mut listener, mut rx) = DredListener::builder("http://localhost:3029")
+/// let (listener, mut rxs) = DredListener::builder("http://localhost:3029")
 ///     .channels(vec!["news".into(), "discussion".into()])
 ///     .build();
 ///
+/// let mut news_rx = rxs.remove("news").unwrap();
 /// let token = listener.cancellation_token();
 ///
 /// // Spawn the listener
 /// tokio::spawn(async move { listener.run().await });
 ///
-/// // Consume messages
-/// while let Some(msg) = rx.recv().await {
+/// // Consume messages from the news channel
+/// while let Some(msg) = news_rx.recv().await {
 ///     println!("{:?}", msg);
 /// }
 /// # }
@@ -236,7 +237,7 @@ pub struct DredListener {
     channels: Vec<String>,
     client: Client,
     dedup: Deduplicator,
-    tx: mpsc::Sender<DredMessage>,
+    senders: HashMap<String, mpsc::Sender<DredMessage>>,
     cancel: CancellationToken,
     backoff_initial: Duration,
     backoff_max: Duration,
@@ -298,21 +299,30 @@ impl DredListenerBuilder {
         self
     }
 
-    /// Build the listener and return it alongside the message receiver.
-    pub fn build(self) -> (DredListener, mpsc::Receiver<DredMessage>) {
-        let (tx, rx) = mpsc::channel(self.channel_buf);
+    /// Build the listener and return it alongside per-channel receivers.
+    ///
+    /// The returned `HashMap` has one `Receiver<DredMessage>` per channel name
+    /// passed to `.channels()`. Use `.remove("name")` to take ownership of each.
+    pub fn build(self) -> (DredListener, HashMap<String, mpsc::Receiver<DredMessage>>) {
+        let mut senders = HashMap::new();
+        let mut receivers = HashMap::new();
+        for ch in &self.channels {
+            let (tx, rx) = mpsc::channel(self.channel_buf);
+            senders.insert(ch.clone(), tx);
+            receivers.insert(ch.clone(), rx);
+        }
         let listener = DredListener {
             base_url: self.base_url,
             client_id: self.client_id.unwrap_or_else(gen_client_id),
             channels: self.channels,
             client: Client::new(),
             dedup: self.dedup.unwrap_or_default(),
-            tx,
+            senders,
             cancel: self.cancel.unwrap_or_default(),
             backoff_initial: self.backoff_initial,
             backoff_max: self.backoff_max,
         };
-        (listener, rx)
+        (listener, receivers)
     }
 }
 
@@ -439,10 +449,20 @@ impl DredListener {
                                     }
                                 }
 
-                                // If the receiver is dropped, stop streaming.
-                                if self.tx.send(msg).await.is_err() {
-                                    info!("receiver dropped, stopping");
-                                    return Err(DredError::Cancelled);
+                                // Route to per-channel receiver
+                                if let Some(tx) = msg.channel.as_deref()
+                                    .and_then(|ch| self.senders.get(ch))
+                                {
+                                    if tx.send(msg).await.is_err() {
+                                        // This channel's receiver was dropped;
+                                        // continue serving other channels.
+                                        debug!("receiver dropped for channel");
+                                    }
+                                } else {
+                                    debug!(
+                                        channel = msg.channel.as_deref().unwrap_or("(none)"),
+                                        "no receiver for channel, dropping message"
+                                    );
                                 }
                             }
                             Err(e) => {

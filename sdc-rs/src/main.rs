@@ -16,7 +16,7 @@ async fn main() {
 
     info!("sdc-rs starting — server: {base_url}, channels: {channels:?}");
 
-    let (listener, mut rx) = DredListener::builder(&base_url)
+    let (listener, mut rxs) = DredListener::builder(&base_url)
         .channels(channels)
         .build();
 
@@ -32,8 +32,21 @@ async fn main() {
     // Spawn the listener
     tokio::spawn(async move { listener.run().await });
 
-    // Print each message as JSON
-    while let Some(msg) = rx.recv().await {
+    // Merge all per-channel receivers into a single print loop
+    let (merged_tx, mut merged_rx) = tokio::sync::mpsc::channel(256);
+    for (_name, mut rx) in rxs.drain() {
+        let tx = merged_tx.clone();
+        tokio::spawn(async move {
+            while let Some(msg) = rx.recv().await {
+                if tx.send(msg).await.is_err() {
+                    break;
+                }
+            }
+        });
+    }
+    drop(merged_tx);
+
+    while let Some(msg) = merged_rx.recv().await {
         if let Ok(json) = serde_json::to_string(&msg) {
             println!("{json}");
         }
