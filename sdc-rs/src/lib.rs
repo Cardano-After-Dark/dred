@@ -169,6 +169,30 @@ impl Default for Deduplicator {
 // DredListener
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// ID generation — lowercase Crockford Base32
+// ---------------------------------------------------------------------------
+
+const CROCKFORD_LOWER: &[char] = &[
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k',
+    'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x',
+    'y', 'z',
+];
+
+fn gen_client_id() -> String {
+    nanoid::nanoid!(10, CROCKFORD_LOWER)
+}
+
+/// Generate a nanoid using lowercase Crockford Base32 alphabet.
+pub fn gen_id(len: usize) -> String {
+    nanoid::format(nanoid::rngs::default, CROCKFORD_LOWER, len)
+}
+
+// ---------------------------------------------------------------------------
+// Wire types
+// ---------------------------------------------------------------------------
+
 /// Channel subscription config sent to POST /channels/listen
 #[derive(Debug, Serialize)]
 struct ChannelSubConfig {
@@ -279,7 +303,7 @@ impl DredListenerBuilder {
         let (tx, rx) = mpsc::channel(self.channel_buf);
         let listener = DredListener {
             base_url: self.base_url,
-            client_id: self.client_id.unwrap_or_else(|| uuid::Uuid::new_v4().to_string()),
+            client_id: self.client_id.unwrap_or_else(gen_client_id),
             channels: self.channels,
             client: Client::new(),
             dedup: self.dedup.unwrap_or_default(),
@@ -570,6 +594,33 @@ mod tests {
             DredError::Protocol("bad json".into()).to_string(),
             "protocol error: bad json"
         );
+    }
+
+    #[test]
+    fn gen_id_uses_crockford_alphabet() {
+        let id = crate::gen_id(20);
+        assert_eq!(id.len(), 20);
+        let valid: &str = "0123456789abcdefghjkmnpqrstvwxyz";
+        for ch in id.chars() {
+            assert!(
+                valid.contains(ch),
+                "char '{ch}' not in crockford alphabet, id: {id}"
+            );
+        }
+    }
+
+    #[test]
+    fn gen_id_no_excluded_letters() {
+        // Generate many IDs and verify excluded letters never appear
+        for _ in 0..100 {
+            let id = crate::gen_id(16);
+            for excluded in ['i', 'l', 'o', 'u'] {
+                assert!(
+                    !id.contains(excluded),
+                    "id {id} contains excluded letter '{excluded}'"
+                );
+            }
+        }
     }
 
     #[tokio::test]
