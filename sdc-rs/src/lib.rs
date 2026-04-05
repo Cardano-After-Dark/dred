@@ -401,6 +401,107 @@ impl DredClient {
 
         Ok(result)
     }
+
+    /// List the channels currently available on the server.
+    ///
+    /// Returns only public channels (those whose names don't start with `_`).
+    pub async fn list_channels(&self) -> Result<Vec<String>, DredError> {
+        #[derive(Deserialize)]
+        struct ChannelsResp {
+            channels: Vec<String>,
+        }
+
+        let resp = self
+            .inner
+            .http
+            .get(format!("{}/channels", self.inner.base_url))
+            .header("clientid", &self.inner.client_id)
+            .send()
+            .await?;
+
+        if !resp.status().is_success() {
+            return Err(DredError::ServerStatus(resp.status()));
+        }
+
+        let result: ChannelsResp = resp
+            .json()
+            .await
+            .map_err(|e| DredError::Protocol(format!("invalid channels response: {e}")))?;
+
+        Ok(result.channels)
+    }
+
+    /// Create a new channel.
+    ///
+    /// For now only plaintext (unencrypted) channels are supported.
+    /// Encrypted channels require NaCl signing (see task 4).
+    pub async fn create_channel(
+        &self,
+        name: &str,
+        options: CreateChannelOptions,
+    ) -> Result<CreateChannelResponse, DredError> {
+        if options.encrypted {
+            return Err(DredError::Protocol(
+                "encrypted channels not yet supported (requires NaCl signing)".into(),
+            ));
+        }
+
+        let resp = self
+            .inner
+            .http
+            .post(format!("{}/channel/{}", self.inner.base_url, name))
+            .header("content-type", "application/json")
+            .header("accept", "application/json")
+            .header("clientid", &self.inner.client_id)
+            .json(&options)
+            .send()
+            .await?;
+
+        if !resp.status().is_success() {
+            return Err(DredError::ServerStatus(resp.status()));
+        }
+
+        let result: CreateChannelResponse = resp
+            .json()
+            .await
+            .map_err(|e| DredError::Protocol(format!("invalid create response: {e}")))?;
+
+        Ok(result)
+    }
+}
+
+/// Options for creating a channel.
+///
+/// Matches the server's ChannelOptions for the plaintext subset.
+#[derive(Debug, Clone, Default, Serialize)]
+pub struct CreateChannelOptions {
+    #[serde(default)]
+    pub encrypted: bool,
+    #[serde(skip_serializing_if = "Option::is_none", rename = "allowJoining")]
+    pub allow_joining: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none", rename = "memberLimit")]
+    pub member_limit: Option<u32>,
+    /// RFC 3339 timestamp string. Callers format their own timestamps
+    /// (no chrono dependency).
+    #[serde(skip_serializing_if = "Option::is_none", rename = "expiresAt")]
+    pub expires_at: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none", rename = "messageLifetime")]
+    pub message_lifetime: Option<u64>,
+}
+
+/// Server response to channel creation.
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct CreateChannelResponse {
+    pub id: String,
+    pub status: String,
+    #[serde(default, rename = "channelId")]
+    pub channel_id: Option<String>,
+    #[serde(default)]
+    pub members: Vec<String>,
+    #[serde(default, rename = "createdAt")]
+    pub created_at: Option<String>,
+    #[serde(flatten)]
+    pub extra: serde_json::Map<String, serde_json::Value>,
 }
 
 /// Server response to a posted message.

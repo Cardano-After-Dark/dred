@@ -5,7 +5,7 @@
 
 use std::time::Duration;
 
-use sdc_rs::{DredClient, DredMessage};
+use sdc_rs::{CreateChannelOptions, DredClient, DredMessage};
 
 fn server_url() -> String {
     std::env::var("DRED_URL").unwrap_or_else(|_| "http://localhost:3029".into())
@@ -284,6 +284,104 @@ async fn post_message_with_explicit_ocid() {
 
     assert_eq!(resp.ocid, my_ocid);
     assert_eq!(resp.status, "created");
+}
+
+#[tokio::test]
+async fn list_channels_returns_channels() {
+    if !server_available().await {
+        eprintln!("DRED server not running, skipping");
+        return;
+    }
+
+    let client = DredClient::builder(server_url()).build();
+    let channels = client.list_channels().await.expect("list_channels failed");
+
+    // The server has `news` and `discussion` as default channels
+    assert!(channels.iter().any(|c| c == "news"), "should include news");
+    assert!(
+        channels.iter().any(|c| c == "discussion"),
+        "should include discussion"
+    );
+
+    // System channels (prefixed with _) should be filtered out
+    assert!(
+        !channels.iter().any(|c| c.starts_with('_')),
+        "should not include system channels"
+    );
+}
+
+#[tokio::test]
+async fn create_channel_then_post_and_receive() {
+    if !server_available().await {
+        eprintln!("DRED server not running, skipping");
+        return;
+    }
+
+    let client = DredClient::builder(server_url()).build();
+
+    // Create a new channel with a unique name
+    let channel_name = format!("rust-test-{}", sdc_rs::gen_id(8));
+    let resp = client
+        .create_channel(&channel_name, CreateChannelOptions::default())
+        .await
+        .expect("create_channel failed");
+
+    assert_eq!(resp.id, channel_name);
+    assert_eq!(resp.status, "created");
+
+    // Verify it shows up in list_channels
+    let channels = client.list_channels().await.expect("list_channels failed");
+    assert!(
+        channels.iter().any(|c| c == &channel_name),
+        "new channel should appear in list"
+    );
+
+    // Subscribe and post a message to verify it works end-to-end
+    let (listener, mut rxs) = client.subscribe(vec![channel_name.clone()]);
+    let mut rx = rxs.remove(&channel_name).unwrap();
+    tokio::spawn(async move { listener.run().await });
+    tokio::time::sleep(Duration::from_millis(500)).await;
+
+    // Post from a different client so echo isn't suppressed
+    let other_client = DredClient::builder(server_url()).build();
+    let resp = other_client
+        .post_message(&channel_name, "hello new channel", "test", None)
+        .await
+        .expect("post_message failed");
+
+    let msg = wait_for_ocid(&mut rx, &resp.ocid, Duration::from_secs(5)).await;
+    assert!(msg.is_some(), "should receive posted message");
+
+    client.cancellation_token().cancel();
+}
+
+#[tokio::test]
+async fn create_channel_duplicate_fails() {
+    if !server_available().await {
+        eprintln!("DRED server not running, skipping");
+        return;
+    }
+
+    let client = DredClient::builder(server_url()).build();
+
+    // "news" already exists
+    let result = client
+        .create_channel("news", CreateChannelOptions::default())
+        .await;
+
+    assert!(result.is_err(), "creating existing channel should fail");
+}
+
+#[tokio::test]
+async fn create_encrypted_channel_not_supported() {
+    let client = DredClient::builder("http://127.0.0.1:1").build();
+    let opts = CreateChannelOptions {
+        encrypted: true,
+        ..Default::default()
+    };
+
+    let result = client.create_channel("x", opts).await;
+    assert!(result.is_err(), "encrypted channels should return an error");
 }
 
 #[tokio::test]
