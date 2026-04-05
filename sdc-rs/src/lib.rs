@@ -20,8 +20,13 @@ use tracing::{debug, error, info, warn};
 pub enum DredError {
     /// HTTP-level failure (connection refused, DNS, TLS, timeout).
     Transport(reqwest::Error),
-    /// Server returned a non-success status code.
-    ServerStatus(reqwest::StatusCode),
+    /// Server returned a non-success status code. `body` carries the server's
+    /// response payload (typically `{"error": "..."}`) when available; empty
+    /// string when the body could not be read.
+    ServerStatus {
+        status: reqwest::StatusCode,
+        body: String,
+    },
     /// Failed to decode a chunk as UTF-8 or parse a JSON line.
     Protocol(String),
     /// The stream was closed by the server.
@@ -34,7 +39,12 @@ impl fmt::Display for DredError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Transport(e) => write!(f, "transport error: {e}"),
-            Self::ServerStatus(code) => write!(f, "server returned {code}"),
+            Self::ServerStatus { status, body } if body.is_empty() => {
+                write!(f, "server returned {status}")
+            }
+            Self::ServerStatus { status, body } => {
+                write!(f, "server returned {status}: {body}")
+            }
             Self::Protocol(msg) => write!(f, "protocol error: {msg}"),
             Self::StreamEnded => write!(f, "stream ended"),
             Self::Cancelled => write!(f, "cancelled"),
@@ -55,6 +65,31 @@ impl From<reqwest::Error> for DredError {
     fn from(e: reqwest::Error) -> Self {
         Self::Transport(e)
     }
+}
+
+/// Check a response's status and return it unchanged on success. On error,
+/// read the body (best-effort) into `DredError::ServerStatus`.
+///
+/// Logging discipline: 4xx responses are normal caller-handleable feedback
+/// and propagate quietly. 5xx responses represent server-side failure and
+/// are logged at `warn!`. Body-read failures are also logged at `warn!`
+/// (something unexpected from the server).
+async fn check_status(resp: reqwest::Response) -> Result<reqwest::Response, DredError> {
+    let status = resp.status();
+    if status.is_success() {
+        return Ok(resp);
+    }
+    let body = match resp.text().await {
+        Ok(b) => b,
+        Err(e) => {
+            warn!(%status, error = %e, "failed to read server error body");
+            String::new()
+        }
+    };
+    if status.is_server_error() {
+        warn!(%status, body = %body, "server error response");
+    }
+    Err(DredError::ServerStatus { status, body })
 }
 
 // ---------------------------------------------------------------------------
@@ -563,14 +598,15 @@ impl DredClient {
             .send()
             .await?;
 
-        if !resp.status().is_success() {
-            return Err(DredError::ServerStatus(resp.status()));
-        }
+        let resp = check_status(resp).await?;
 
         let result: PostMessageResponse = resp
             .json()
             .await
-            .map_err(|e| DredError::Protocol(format!("invalid response json: {e}")))?;
+            .map_err(|e| {
+                warn!(error = %e, "post_message: invalid response json");
+                DredError::Protocol(format!("invalid response json: {e}"))
+            })?;
 
         Ok(result)
     }
@@ -592,14 +628,15 @@ impl DredClient {
             .send()
             .await?;
 
-        if !resp.status().is_success() {
-            return Err(DredError::ServerStatus(resp.status()));
-        }
+        let resp = check_status(resp).await?;
 
         let result: ChannelsResp = resp
             .json()
             .await
-            .map_err(|e| DredError::Protocol(format!("invalid channels response: {e}")))?;
+            .map_err(|e| {
+                warn!(error = %e, "list_channels: invalid response json");
+                DredError::Protocol(format!("invalid channels response: {e}"))
+            })?;
 
         Ok(result.channels)
     }
@@ -656,14 +693,15 @@ impl DredClient {
             .send()
             .await?;
 
-        if !resp.status().is_success() {
-            return Err(DredError::ServerStatus(resp.status()));
-        }
+        let resp = check_status(resp).await?;
 
         let result: CreateChannelResponse = resp
             .json()
             .await
-            .map_err(|e| DredError::Protocol(format!("invalid create response: {e}")))?;
+            .map_err(|e| {
+                warn!(error = %e, "create_channel: invalid response json");
+                DredError::Protocol(format!("invalid create response: {e}"))
+            })?;
 
         Ok(result)
     }
@@ -786,9 +824,7 @@ impl DredListener {
             .send()
             .await?;
 
-        if !resp.status().is_success() {
-            return Err(DredError::ServerStatus(resp.status()));
-        }
+        let resp = check_status(resp).await?;
 
         info!("connected, streaming messages");
 
@@ -1416,6 +1452,22 @@ mod tests {
         assert_eq!(
             DredError::Protocol("bad json".into()).to_string(),
             "protocol error: bad json"
+        );
+        assert_eq!(
+            DredError::ServerStatus {
+                status: reqwest::StatusCode::NOT_FOUND,
+                body: String::new(),
+            }
+            .to_string(),
+            "server returned 404 Not Found"
+        );
+        assert_eq!(
+            DredError::ServerStatus {
+                status: reqwest::StatusCode::BAD_REQUEST,
+                body: r#"{"error":"channel exists"}"#.to_string(),
+            }
+            .to_string(),
+            r#"server returned 400 Bad Request: {"error":"channel exists"}"#
         );
     }
 
