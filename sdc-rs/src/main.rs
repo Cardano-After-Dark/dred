@@ -1,4 +1,4 @@
-use sdc_rs::DredListener;
+use sdc_rs::DredClient;
 use tracing::info;
 
 #[tokio::main]
@@ -16,11 +16,10 @@ async fn main() {
 
     info!("sdc-rs starting — server: {base_url}, channels: {channels:?}");
 
-    let (listener, mut rxs) = DredListener::builder(&base_url)
-        .channels(channels)
-        .build();
+    let client = DredClient::builder(&base_url).build();
+    let token = client.cancellation_token();
 
-    let token = listener.cancellation_token();
+    let (listener, mut rxs) = client.listen(channels);
 
     // Cancel on Ctrl-C
     tokio::spawn(async move {

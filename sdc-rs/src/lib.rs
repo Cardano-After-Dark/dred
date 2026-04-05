@@ -166,10 +166,6 @@ impl Default for Deduplicator {
 }
 
 // ---------------------------------------------------------------------------
-// DredListener
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
 // ID generation — lowercase Crockford Base32
 // ---------------------------------------------------------------------------
 
@@ -206,21 +202,38 @@ struct ChannelSubOptions {
     bookmark: Option<String>,
 }
 
-/// A streaming DRED client that connects to a server's `/channels/listen`
-/// endpoint, deduplicates messages, and routes them to per-channel
-/// `tokio::sync::mpsc` receivers.
+// ---------------------------------------------------------------------------
+// DredClient
+// ---------------------------------------------------------------------------
+
+/// Shared state between the client and its listeners.
+#[derive(Debug, Clone)]
+struct SharedInner {
+    base_url: String,
+    client_id: String,
+    http: Client,
+    dedup: Deduplicator,
+    cancel: CancellationToken,
+    backoff_initial: Duration,
+    backoff_max: Duration,
+    channel_buf: usize,
+}
+
+/// A DRED client that connects to a server, spawns listeners for channel
+/// subscriptions, and will support publishing messages.
+///
+/// The client owns the shared connection pool, deduplicator, and config.
+/// Listeners created via `.listen()` share these resources.
 ///
 /// # Example
 /// ```no_run
-/// use sdc_rs::DredListener;
+/// use sdc_rs::DredClient;
 ///
 /// # async fn run() {
-/// let (listener, mut rxs) = DredListener::builder("http://localhost:3029")
-///     .channels(vec!["news".into(), "discussion".into()])
-///     .build();
+/// let client = DredClient::builder("http://localhost:3029").build();
 ///
+/// let (listener, mut rxs) = client.listen(vec!["news".into(), "discussion".into()]);
 /// let mut news_rx = rxs.remove("news").unwrap();
-/// let token = listener.cancellation_token();
 ///
 /// // Spawn the listener
 /// tokio::spawn(async move { listener.run().await });
@@ -231,22 +244,14 @@ struct ChannelSubOptions {
 /// }
 /// # }
 /// ```
-pub struct DredListener {
-    base_url: String,
-    client_id: String,
-    channels: Vec<String>,
-    client: Client,
-    dedup: Deduplicator,
-    senders: HashMap<String, mpsc::Sender<DredMessage>>,
-    cancel: CancellationToken,
-    backoff_initial: Duration,
-    backoff_max: Duration,
+#[derive(Debug, Clone)]
+pub struct DredClient {
+    inner: Arc<SharedInner>,
 }
 
-pub struct DredListenerBuilder {
+pub struct DredClientBuilder {
     base_url: String,
     client_id: Option<String>,
-    channels: Vec<String>,
     dedup: Option<Deduplicator>,
     cancel: Option<CancellationToken>,
     channel_buf: usize,
@@ -254,12 +259,11 @@ pub struct DredListenerBuilder {
     backoff_max: Duration,
 }
 
-impl DredListenerBuilder {
+impl DredClientBuilder {
     fn new(base_url: impl Into<String>) -> Self {
         Self {
             base_url: base_url.into(),
             client_id: None,
-            channels: Vec::new(),
             dedup: None,
             cancel: None,
             channel_buf: 256,
@@ -270,11 +274,6 @@ impl DredListenerBuilder {
 
     pub fn client_id(mut self, id: impl Into<String>) -> Self {
         self.client_id = Some(id.into());
-        self
-    }
-
-    pub fn channels(mut self, channels: Vec<String>) -> Self {
-        self.channels = channels;
         self
     }
 
@@ -299,50 +298,92 @@ impl DredListenerBuilder {
         self
     }
 
-    /// Build the listener and return it alongside per-channel receivers.
+    pub fn build(self) -> DredClient {
+        DredClient {
+            inner: Arc::new(SharedInner {
+                base_url: self.base_url,
+                client_id: self.client_id.unwrap_or_else(gen_client_id),
+                http: Client::new(),
+                dedup: self.dedup.unwrap_or_default(),
+                cancel: self.cancel.unwrap_or_default(),
+                backoff_initial: self.backoff_initial,
+                backoff_max: self.backoff_max,
+                channel_buf: self.channel_buf,
+            }),
+        }
+    }
+}
+
+impl DredClient {
+    pub fn builder(base_url: impl Into<String>) -> DredClientBuilder {
+        DredClientBuilder::new(base_url)
+    }
+
+    /// Get a cancellation token that can be used to shut down all listeners.
+    pub fn cancellation_token(&self) -> CancellationToken {
+        self.inner.cancel.clone()
+    }
+
+    /// Get a reference to the shared deduplicator.
+    pub fn dedup(&self) -> &Deduplicator {
+        &self.inner.dedup
+    }
+
+    /// Create a listener for the given channels.
     ///
-    /// The returned `HashMap` has one `Receiver<DredMessage>` per channel name
-    /// passed to `.channels()`. Use `.remove("name")` to take ownership of each.
-    pub fn build(self) -> (DredListener, HashMap<String, mpsc::Receiver<DredMessage>>) {
+    /// Returns a `DredListener` (spawn it with `tokio::spawn(listener.run())`)
+    /// and a `HashMap` of per-channel receivers.
+    pub fn listen(
+        &self,
+        channels: Vec<String>,
+    ) -> (DredListener, HashMap<String, mpsc::Receiver<DredMessage>>) {
         let mut senders = HashMap::new();
         let mut receivers = HashMap::new();
-        for ch in &self.channels {
-            let (tx, rx) = mpsc::channel(self.channel_buf);
+        for ch in &channels {
+            let (tx, rx) = mpsc::channel(self.inner.channel_buf);
             senders.insert(ch.clone(), tx);
             receivers.insert(ch.clone(), rx);
         }
         let listener = DredListener {
-            base_url: self.base_url,
-            client_id: self.client_id.unwrap_or_else(gen_client_id),
-            channels: self.channels,
-            client: Client::new(),
-            dedup: self.dedup.unwrap_or_default(),
+            cancel: self.inner.cancel.child_token(),
+            shared: Arc::clone(&self.inner),
+            channels,
             senders,
-            cancel: self.cancel.unwrap_or_default(),
-            backoff_initial: self.backoff_initial,
-            backoff_max: self.backoff_max,
         };
         (listener, receivers)
     }
 }
 
-impl DredListener {
-    pub fn builder(base_url: impl Into<String>) -> DredListenerBuilder {
-        DredListenerBuilder::new(base_url)
-    }
+// ---------------------------------------------------------------------------
+// DredListener
+// ---------------------------------------------------------------------------
 
-    /// Get a cancellation token that can be used to shut down the listener.
+/// A streaming listener spawned from a [`DredClient`].
+///
+/// Connects to the server's `/channels/listen` endpoint, deduplicates
+/// messages, and routes them to per-channel `mpsc` receivers. Handles
+/// reconnection with exponential backoff and heartbeat-based dead
+/// connection detection.
+///
+/// Each listener has its own `CancellationToken` (a child of the client's).
+/// Cancel the listener's token to stop just this listener; cancel the
+/// client's token to stop all listeners.
+pub struct DredListener {
+    shared: Arc<SharedInner>,
+    channels: Vec<String>,
+    senders: HashMap<String, mpsc::Sender<DredMessage>>,
+    cancel: CancellationToken,
+}
+
+impl DredListener {
+    /// Get a cancellation token for this listener.
+    /// Cancelling it stops only this listener; cancelling the client's token
+    /// stops all listeners.
     pub fn cancellation_token(&self) -> CancellationToken {
         self.cancel.clone()
     }
 
-    /// Get a reference to the deduplicator (e.g. to share with another listener).
-    pub fn dedup(&self) -> &Deduplicator {
-        &self.dedup
-    }
-
-    /// Run a single connection to the server. Returns when the stream ends,
-    /// an error occurs, cancellation is requested, or heartbeat times out.
+    /// Run a single connection to the server.
     async fn connect_once(&self) -> Result<(), DredError> {
         let subs: Vec<ChannelSubConfig> = self
             .channels
@@ -354,16 +395,17 @@ impl DredListener {
             .collect();
 
         info!(
-            url = %self.base_url,
+            url = %self.shared.base_url,
             channels = ?self.channels,
             "connecting to /channels/listen"
         );
 
         let resp = self
-            .client
-            .post(format!("{}/channels/listen", self.base_url))
+            .shared
+            .http
+            .post(format!("{}/channels/listen", self.shared.base_url))
             .header("content-type", "application/json")
-            .header("clientid", &self.client_id)
+            .header("clientid", &self.shared.client_id)
             .json(&subs)
             .send()
             .await?;
@@ -377,9 +419,6 @@ impl DredListener {
         let mut stream = resp.bytes_stream();
         let mut buf = String::new();
 
-        // Heartbeat watchdog: the server sends {"type":"heartbeat-info","timerInterval":7000}
-        // as its first message. We expect a heartbeat within 3x that interval; if not,
-        // the connection is dead.
         const HEARTBEAT_MULTIPLIER: u64 = 3;
         const DEFAULT_HEARTBEAT_TIMEOUT: Duration = Duration::from_secs(30);
         let mut heartbeat_deadline =
@@ -443,7 +482,7 @@ impl DredListener {
 
                                 // Dedup on ocid
                                 if let Some(ref ocid) = msg.ocid {
-                                    if !self.dedup.check(ocid) {
+                                    if !self.shared.dedup.check(ocid) {
                                         debug!(ocid, "duplicate, skipping");
                                         continue;
                                     }
@@ -454,8 +493,6 @@ impl DredListener {
                                     .and_then(|ch| self.senders.get(ch))
                                 {
                                     if tx.send(msg).await.is_err() {
-                                        // This channel's receiver was dropped;
-                                        // continue serving other channels.
                                         debug!("receiver dropped for channel");
                                     }
                                 } else {
@@ -476,8 +513,9 @@ impl DredListener {
     }
 
     /// Run the listener with auto-reconnect. Loops until cancelled.
-    pub async fn run(&self) -> DredError {
-        let mut backoff = self.backoff_initial;
+    pub async fn run(self) -> DredError {
+        let mut backoff = self.shared.backoff_initial;
+
         loop {
             let connected_at = tokio::time::Instant::now();
 
@@ -485,14 +523,12 @@ impl DredListener {
                 Err(DredError::Cancelled) => return DredError::Cancelled,
                 Err(DredError::StreamEnded) => {
                     info!("stream ended, reconnecting");
-                    backoff = self.backoff_initial;
+                    backoff = self.shared.backoff_initial;
                 }
                 Err(e) => {
                     error!("connection error: {e}");
-                    // If we were connected for a while, this isn't a persistent
-                    // failure — reset backoff so we reconnect quickly.
-                    if connected_at.elapsed() > self.backoff_max {
-                        backoff = self.backoff_initial;
+                    if connected_at.elapsed() > self.shared.backoff_max {
+                        backoff = self.shared.backoff_initial;
                     }
                 }
                 Ok(()) => unreachable!(),
@@ -500,7 +536,7 @@ impl DredListener {
 
             info!(
                 backoff_ms = backoff.as_millis(),
-                dedup_entries = self.dedup.len(),
+                dedup_entries = self.shared.dedup.len(),
                 "reconnecting"
             );
 
@@ -509,7 +545,7 @@ impl DredListener {
                 _ = tokio::time::sleep(backoff) => {}
             }
 
-            backoff = (backoff * 2).min(self.backoff_max);
+            backoff = (backoff * 2).min(self.shared.backoff_max);
         }
     }
 }
@@ -533,27 +569,19 @@ mod tests {
 
     #[test]
     fn dedup_rotation_drops_old_generation() {
-        // Use a tiny rotation interval so we can trigger it
         let d = Deduplicator::with_rotation_interval(Duration::from_millis(1));
 
         assert!(d.check("a"));
         assert!(d.check("b"));
         assert_eq!(d.len(), 2);
 
-        // Wait for rotation interval to pass
         std::thread::sleep(Duration::from_millis(5));
 
-        // "a" is still visible in the previous generation
         assert!(!d.check("a"), "should still be in previous generation");
-
-        // But "c" triggers rotation, moving current→previous
         assert!(d.check("c"));
 
-        // Wait again — next check triggers another rotation,
-        // which drops the generation containing "a" and "b"
         std::thread::sleep(Duration::from_millis(5));
 
-        // "a" should now be gone (was in previous, which got dropped)
         assert!(d.check("a"), "should be new after two rotations");
     }
 
@@ -582,7 +610,6 @@ mod tests {
         let d = Deduplicator::new();
         let d2 = d.clone();
 
-        // Poison the mutex by panicking while holding the lock
         let result = std::panic::catch_unwind(|| {
             let mut inner = d2.inner.lock().unwrap();
             inner.current.insert("before_panic".to_string());
@@ -590,7 +617,6 @@ mod tests {
         });
         assert!(result.is_err());
 
-        // The dedup should still work despite the poisoned mutex
         assert!(!d.check("before_panic"), "should see entry from before panic");
         assert!(d.check("after_panic"), "should accept new entries after poison");
     }
@@ -653,6 +679,12 @@ mod tests {
     }
 
     #[test]
+    fn client_is_send_sync() {
+        fn assert_send_sync<T: Send + Sync>() {}
+        assert_send_sync::<DredClient>();
+    }
+
+    #[test]
     fn error_display() {
         assert_eq!(DredError::StreamEnded.to_string(), "stream ended");
         assert_eq!(DredError::Cancelled.to_string(), "cancelled");
@@ -677,7 +709,6 @@ mod tests {
 
     #[test]
     fn gen_id_no_excluded_letters() {
-        // Generate many IDs and verify excluded letters never appear
         for _ in 0..100 {
             let id = crate::gen_id(16);
             for excluded in ['i', 'l', 'o', 'u'] {
@@ -689,32 +720,52 @@ mod tests {
         }
     }
 
+    #[test]
+    fn client_shares_dedup_across_listeners() {
+        let client = DredClient::builder("http://127.0.0.1:1").build();
+
+        // The dedup is shared — checking from the client affects all listeners
+        client.dedup().check("seen-via-client");
+
+        let (_listener, _rxs) = client.listen(vec!["ch".into()]);
+
+        // The dedup is the same instance
+        assert!(!client.dedup().check("seen-via-client"));
+    }
+
+    #[test]
+    fn client_clone_shares_state() {
+        let c1 = DredClient::builder("http://127.0.0.1:1").build();
+        let c2 = c1.clone();
+
+        c1.dedup().check("from-c1");
+        assert!(!c2.dedup().check("from-c1"), "clone should share dedup");
+    }
+
     #[tokio::test]
     async fn listener_cancellation_before_connect() {
-        let (listener, _rx) = DredListener::builder("http://127.0.0.1:1")
-            .channels(vec!["x".into()])
+        let client = DredClient::builder("http://127.0.0.1:1")
             .backoff(Duration::from_millis(10), Duration::from_millis(10))
             .build();
 
+        let (listener, _rxs) = client.listen(vec!["x".into()]);
         let token = listener.cancellation_token();
         token.cancel();
 
-        // Should return immediately with Cancelled, not loop forever
         let err = listener.run().await;
         assert!(matches!(err, DredError::Cancelled));
     }
 
     #[tokio::test]
     async fn listener_stops_when_receiver_dropped() {
-        let (listener, rx) = DredListener::builder("http://127.0.0.1:1")
-            .channels(vec!["x".into()])
+        let client = DredClient::builder("http://127.0.0.1:1")
             .backoff(Duration::from_millis(10), Duration::from_millis(10))
             .build();
 
+        let (listener, rxs) = client.listen(vec!["x".into()]);
         let token = listener.cancellation_token();
-        drop(rx);
+        drop(rxs);
 
-        // Give it a moment then cancel — it shouldn't hang
         let cancel = token.clone();
         tokio::spawn(async move {
             tokio::time::sleep(Duration::from_millis(200)).await;
