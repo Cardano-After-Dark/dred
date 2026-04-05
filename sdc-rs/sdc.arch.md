@@ -16,9 +16,9 @@
 
 **Maturity**:
 
-- vetted-in-experience: 41/51
-- draft: 9/51
-- stable: 1/51
+- vetted-in-experience: 41/52
+- draft: 10/52
+- stable: 1/52
 
 ## Components and Concerns
 
@@ -872,6 +872,8 @@ pub struct DredClient { inner: Arc<SharedInner> }. #[derive(Clone)] — Clone is
 - [ ] Should DredSubscription's connect_timeout be configurable on the initial subscribe() call, not just on update_channels? *(context: Today subscribe() spawns a DredListener and returns immediately; the subscription waits for nothing. The initial listener's first connection failure is absorbed into the reconnect loop silently. update_channels has a 10s connect_timeout. There may be use cases where consumers want a bounded wait-for-connected on initial subscribe as well.)*
 
 - [ ] Should ChannelSubOptions.bookmark be surfaced on subscribe() so consumers can replay from an offset? *(context: The wire-level ChannelSubConfig has an options.bookmark field (currently always None), matching the TS client's subscription contract. sdc-rs doesn't expose a way to pass a bookmark. If/when replay-from-offset matters to a consumer, this would have to be plumbed through DredClient::subscribe and DredSubscription::update_channels.)*
+
+- [ ] How should mutating client operations expose idempotent semantics — treat 'already exists'/'already member' errors as success, or surface them for the caller to handle? *(context: Raised during sdc-rs audit F2 (20260405.sdc-rs.structural-review.audit-result.md) while discussing DredError::ServerStatus body exposure. Two approaches considered: (A) internal swallow of known 'already done' errors — rejected because option-mismatches (different owner, different encryption, different initial members) should NOT be hidden from the caller; (B) opt-in disposition flag on mutating API (e.g. IfExists::Ok|Error on CreateChannelOptions) — preferred guidance. Default should remain strict rejection; idempotent tolerance is opt-in so the caller explicitly declares it. Cross-cutting: the same flag belongs in the TS DredClient and must align with DredServer response semantics for similar operations like joinChannel/addMember.)*
 
 
 
