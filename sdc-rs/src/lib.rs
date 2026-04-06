@@ -31,9 +31,6 @@ pub enum DredError {
     /// Caller-supplied bytes failed validation (wrong length, invalid base64,
     /// etc.). Raised before any network activity.
     InvalidInput(String),
-    /// Caller invoked the wrong API entry point for the intended operation
-    /// (e.g. calling `create_channel` with `encrypted: true`).
-    ApiUsage(String),
     /// A bounded wait elapsed without success — covers connection-setup
     /// timeouts and rotation-handoff failures in `update_channels`.
     Timeout(String),
@@ -57,7 +54,6 @@ impl fmt::Display for DredError {
                 write!(f, "server returned {status}: {body}")
             }
             Self::InvalidInput(msg) => write!(f, "invalid input: {msg}"),
-            Self::ApiUsage(msg) => write!(f, "api usage error: {msg}"),
             Self::Timeout(msg) => write!(f, "timeout: {msg}"),
             Self::Protocol(msg) => write!(f, "protocol error: {msg}"),
             Self::StreamEnded => write!(f, "stream ended"),
@@ -671,12 +667,13 @@ impl DredClient {
         name: &str,
         options: CreateChannelOptions,
     ) -> Result<CreateChannelResponse, DredError> {
-        if options.encrypted {
-            return Err(DredError::ApiUsage(
-                "use create_encrypted_channel for encrypted channels".into(),
-            ));
-        }
-        self.post_create_channel(name, &options).await
+        let wire = CreateChannelWireBody {
+            options: &options,
+            encrypted: None,
+            owner: None,
+            signature: None,
+        };
+        self.post_json(&format!("/channel/{name}"), &wire).await
     }
 
     /// Create an encrypted channel, signing the channel name with the
@@ -691,30 +688,25 @@ impl DredClient {
         &self,
         name: &str,
         identity: &Identity,
-        mut options: CreateChannelOptions,
+        options: CreateChannelOptions,
     ) -> Result<CreateChannelResponse, DredError> {
-        options.encrypted = true;
-        options.owner = Some(identity.public_key_base64());
-        options.signature = Some(identity.sign_string(name));
-        self.post_create_channel(name, &options).await
-    }
-
-    async fn post_create_channel(
-        &self,
-        name: &str,
-        options: &CreateChannelOptions,
-    ) -> Result<CreateChannelResponse, DredError> {
-        self.post_json(&format!("/channel/{name}"), options).await
+        let wire = CreateChannelWireBody {
+            options: &options,
+            encrypted: Some(true),
+            owner: Some(identity.public_key_base64()),
+            signature: Some(identity.sign_string(name)),
+        };
+        self.post_json(&format!("/channel/{name}"), &wire).await
     }
 }
 
-/// Options for creating a channel.
+/// Options for creating a channel (plaintext or encrypted).
 ///
-/// Matches the server's ChannelOptions for the plaintext subset.
+/// Callers supply only the channel-configuration fields.  Protocol-level
+/// fields (`encrypted`, `owner`, `signature`) are set internally by the
+/// client methods — invalid combinations are unrepresentable.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct CreateChannelOptions {
-    #[serde(default)]
-    pub encrypted: bool,
     #[serde(skip_serializing_if = "Option::is_none", rename = "allowJoining")]
     pub allow_joining: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "memberLimit")]
@@ -725,18 +717,24 @@ pub struct CreateChannelOptions {
     pub expires_at: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "messageLifetime")]
     pub message_lifetime: Option<u64>,
-    /// Base64 public key of the channel owner — set automatically by
-    /// `create_encrypted_channel`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub owner: Option<String>,
-    /// Base64 detached signature over the channel name — set automatically
-    /// by `create_encrypted_channel`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub signature: Option<String>,
-    /// Initial member list (base64 public keys). Required if `allow_joining`
-    /// is not true.
+    /// Initial member list (base64 public keys). Required for encrypted
+    /// channels if `allow_joining` is not true.
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub members: Vec<String>,
+}
+
+/// Wire body for channel creation — adds protocol fields to caller options.
+/// Not part of the public API.
+#[derive(Debug, Serialize)]
+struct CreateChannelWireBody<'a> {
+    #[serde(flatten)]
+    options: &'a CreateChannelOptions,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    encrypted: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    owner: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    signature: Option<String>,
 }
 
 /// Server response to channel creation.
@@ -1514,10 +1512,6 @@ mod tests {
         assert_eq!(
             DredError::InvalidInput("bad key".into()).to_string(),
             "invalid input: bad key"
-        );
-        assert_eq!(
-            DredError::ApiUsage("wrong method".into()).to_string(),
-            "api usage error: wrong method"
         );
         assert_eq!(
             DredError::Timeout("connect elapsed".into()).to_string(),

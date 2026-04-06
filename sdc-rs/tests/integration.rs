@@ -334,21 +334,10 @@ async fn create_channel_duplicate_fails() {
     assert!(result.is_err(), "creating existing channel should fail");
 }
 
-#[tokio::test]
-async fn create_channel_rejects_encrypted_opts_without_identity() {
-    let client = DredClient::builder("http://127.0.0.1:1").build();
-    let opts = CreateChannelOptions {
-        encrypted: true,
-        ..Default::default()
-    };
-
-    // create_channel (plaintext) rejects encrypted=true
-    let result = client.create_channel("x", opts).await;
-    assert!(
-        result.is_err(),
-        "create_channel should redirect to create_encrypted_channel"
-    );
-}
+// Test removed: `create_channel_rejects_encrypted_opts_without_identity`
+// was validating a runtime guard that F7 replaced with a compile-time
+// guarantee — CreateChannelOptions no longer has an `encrypted` field,
+// so the invalid state is unrepresentable.
 
 #[tokio::test]
 async fn create_encrypted_channel_with_signed_identity() {
@@ -382,29 +371,26 @@ async fn create_encrypted_channel_rejects_bad_signature() {
         return;
     }
 
-    let client = DredClient::builder(server_url()).build();
+    let _client = DredClient::builder(server_url()).build();
     let id1 = Identity::generate();
     let id2 = Identity::generate();
 
     let channel_name = format!("bad-sig-{}", sdc_rs::gen_id(8));
 
-    // Construct manually: sign with id1 but claim owner=id2's pubkey
-    let bad_opts = CreateChannelOptions {
-        encrypted: true,
-        owner: Some(id2.public_key_base64()),
-        signature: Some(id1.sign_string(&channel_name)),
-        allow_joining: Some(true),
-        ..Default::default()
-    };
+    // Construct manually: sign with id1 but claim owner=id2's pubkey.
+    // CreateChannelOptions no longer exposes encrypted/owner/signature,
+    // so we build the raw JSON body to test the server's rejection.
+    let bad_body = serde_json::json!({
+        "encrypted": true,
+        "owner": id2.public_key_base64(),
+        "signature": id1.sign_string(&channel_name),
+        "allowJoining": true,
+    });
 
-    // create_channel() won't accept encrypted=true, so we bypass it by
-    // calling the low-level HTTP directly. But we don't expose that. So
-    // use create_encrypted_channel with id2 but then... actually simpler:
-    // just use the server directly with curl-style body.
     let resp = reqwest::Client::new()
         .post(format!("{}/channel/{}", server_url(), channel_name))
         .header("content-type", "application/json")
-        .json(&bad_opts)
+        .json(&bad_body)
         .send()
         .await
         .expect("request failed");
