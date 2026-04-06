@@ -1,14 +1,31 @@
 
 # sdc-rs - Architecture
 
-> **🏗️ ARCHITECTURE TRIGGER: READ THIS FIRST**
->
-> This architecture document is strictly managed. Before interpreting, implementing, or discussing architectural decisions, you **MUST** read and apply the **Architecture Consumer Skill** at:
->
-> `architect/architect-consumer.SKILL.md`
->
-> **CRITICAL**: You are **FORBIDDEN** from modifying this file or making architectural changes until you have ingested the "Read-Only" constraints and "Escalation Protocol" defined in that skill.
-> NOTE: If you've already studied the full Architect skill (`architect/architect.SKILL.md`), you don't need the consumer skill.
+> ⚠️ Automatically generated from related JSONL file; maintain using the Eidos Architect skill.
+
+*local — ARCH-9bqqbc4atk*
+
+Rust client library for DRED — pragmatic subset of dred-client implementing channel subscription, message posting, channel management, Ed25519 ownership signing, and reliable reconnection.
+
+**Activities**:
+
+- Connect to DRED servers over NDJSON streaming and deliver per-channel async message streams
+- Post, list, and create channels (plaintext or Ed25519-signed encrypted)
+- Rotate connections gracefully when the subscribed channel set changes
+
+**Responsibilities**:
+
+- Deduplicate inbound messages by ocid across reconnections via shared two-generation rotating set
+- Suppress the sender's own echo by pre-registering posted ocids before transmission
+- Detect dead connections via heartbeat watchdog (3x server interval) and reconnect with exponential backoff
+- Route each NDJSON line to exactly one per-channel mpsc receiver
+- Preserve receivers for channels that persist across an update_channels rotation
+- Guarantee no message loss or duplication during connection rotation via shared deduplicator
+- Match the TypeScript client's StringNacl wire format for Ed25519 signatures and public keys
+- Expose Send+Sync-safe types so consumers can move the client freely across async tasks
+- Survive mutex poisoning in the deduplicator without bricking future dedup checks
+
+**Supports Requirements**: REQT-p5c4tcz2r7, REQT-hfmveq25qc
 
 
 
@@ -20,6 +37,26 @@
 - draft: 10/52
 - stable: 1/52
 
+## In this document
+
+[Actors](#actors)&nbsp;&nbsp; [Components and Concerns](#components-and-concerns)&nbsp;&nbsp; [Components](#components)&nbsp;&nbsp; [Related](#related)&nbsp;&nbsp; [Interactions](#interactions)&nbsp;&nbsp; [Data Flows](#data-flows)&nbsp;&nbsp; [Software Objects](#software-objects)&nbsp;&nbsp; [Decisions](#decisions)&nbsp;&nbsp; [Design Patterns](#design-patterns)&nbsp;&nbsp; [Files](#files)&nbsp;&nbsp; [Collaboration Summary](#collaboration-summary)&nbsp;&nbsp; [Interview Status](#interview-status)&nbsp;&nbsp; [Open Questions](#open-questions)&nbsp;&nbsp; [Discovery Notes](#discovery-notes)
+
+
+## Actors
+
+
+
+External participants who interact with the system:
+
+| ARCH-UUT | Name | Description |
+|----------|------|-------------|
+| ARCH-zmxjxzc2yp | dApp Consumer | Rust application code that links sdc-rs, constructs a DredClient, subscribes to channels, and posts messages. May hold the client across many async tasks (Clone is cheap) and consumes per-channel mpsc::Receivers. |
+| ARCH-x7dsqz1m41 | Other dApp instance | Another Rust application using sdc-rs (or any DRED client), running somewhere else, posting messages to the same channel our Consumer is subscribed to. |
+
+
+
+
+
 ## Components and Concerns
 
 
@@ -28,11 +65,8 @@
 - [Deduplicator](#deduplicator-arch-xqjpk4fzdg) (internal): Two-generation rotating HashSet keyed on ocid. Rotates every 30s: current → previous, previous dropped. Bounds memory to a 30-60s window while catching duplicates across reconnections.
 - [DredClient](#dredclient-arch-f8bv876rfx) (internal): Arc-backed shared state holder — HTTP connection pool, client_id, deduplicator, cancellation root, backoff config, channel buffer size. Provides request/response API and creates subscriptions.
 - [DredListener](#dredlistener-arch-afp408rkyz) (internal): Internal streaming worker. Maintains a persistent NDJSON connection to /channels/listen, parses lines, deduplicates by ocid, and routes messages to per-channel mpsc senders. Auto-reconnects on failure.
-- [DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket) (internal): Surrogate for the incoming DredListener spawned during a connection rotation. Architecturally the same component as ARCH-afp408rkyz — this proxy exists so the Graceful Connection Rotation dataflow can distinguish the new listener from the old one during their brief overlap.
-- [DredServer](#dredserver-arch-xakvgft09j) (remote): DRED node process (TypeScript) — Express HTTP + Redis Streams relay, channel management, server-side dedup, heartbeat emission.
 - [DredSubscription](#dredsubscription-arch-yhkfr4x56c) (internal): Managed subscription handle returned by DredClient::subscribe. Owns the current listener task, exposes per-channel receivers, and supports lossless channel-set rotation via update_channels.
 - [Identity](#identity-arch-6tqg5gvypa) (internal): Ed25519 signing keypair (via dryoc) used for channel-ownership proofs. Wire format matches the TS client's StringNacl: base64 64-byte detached signatures over UTF-8 bytes.
-- [sdc-rs](#sdc-rs-arch-9bqqbc4atk) (local): Rust client library for DRED — pragmatic subset of dred-client implementing channel subscription, message posting, channel management, Ed25519 ownership signing, and reliable reconnection.
 
 
 
@@ -60,17 +94,17 @@ Two-generation rotating HashSet keyed on ocid. Rotates every 30s: current → pr
 
 **Activities**:
 
-- Check-and-insert ocids against two generations of HashSet
+- Check-and-insert ocids via is_new() against two generations of HashSet
 - Rotate generations lazily when the rotation interval has elapsed
 - Clone cheaply via Arc<Mutex<_>> for sharing across reconnections and tasks
 
 
 **Concerns and Responsibilities**:
 - Owns: **OCID Dedup Set** - Two generations of HashSet<String>, rotated every 30s. Shared via Arc<Mutex<_>> across all listeners spawned from the same DredClient.
-- **Responsibility**: Return true exactly once per unique ocid observed within the 30-60s window
+- **Responsibility**: Return true from is_new() exactly once per unique ocid observed within the 30-60s window
 - **Responsibility**: Drop the previous generation on rotation so total memory stays bounded regardless of connection lifetime
 - **Responsibility**: Recover from mutex poisoning via PoisonError::into_inner so a panic in another thread doesn't brick future dedup checks
-- **Responsibility**: Perform rotation check on every call so rotation happens even if no external timer ticks
+- **Responsibility**: Perform rotation check on every is_new() call so rotation happens even if no external timer ticks
 
 
 **Interactions**: [Message Posting](#interaction-ARCH-h0jsqt24dr), [Connection Rotation](#interaction-ARCH-mv4sacp742)
@@ -157,59 +191,6 @@ Internal streaming worker. Maintains a persistent NDJSON connection to /channels
 
 ---
 
-<a id="dredlistener-replacement-arch-tgm3w99ket"></a>
-
-### Component: DredListener (replacement) (internal - ARCH-tgm3w99ket)
-
-Surrogate for the incoming DredListener spawned during a connection rotation. Architecturally the same component as ARCH-afp408rkyz — this proxy exists so the Graceful Connection Rotation dataflow can distinguish the new listener from the old one during their brief overlap.
-
-**Activities**:
-
-- POST to /channels/listen with the updated subscription config
-- Parse chunked NDJSON and fire connected_signal on first successful parse
-- Take over as the subscription's active listener after the handoff completes
-
-
-**Concerns and Responsibilities**:
-- **Responsibility**: Establish a live stream to DredServer before the old listener is cancelled, so no window exists in which neither listener is receiving
-- **Responsibility**: Route any messages received during the overlap through the shared Deduplicator, so the old listener's concurrent delivery of the same ocid is suppressed
-
-
-**Data Flows**: [Graceful Connection Rotation](#dataflow-ARCH-h2ehf4jh0w)
-
-
-
----
-
-<a id="dredserver-arch-xakvgft09j"></a>
-
-### Component: DredServer (remote - ARCH-xakvgft09j)
-
-DRED node process (TypeScript) — Express HTTP + Redis Streams relay, channel management, server-side dedup, heartbeat emission.
-
-**Activities**:
-
-- Ingest POSTed messages and stream them back via NDJSON /channels/listen
-- Validate channel-ownership signatures on encrypted channel creation
-- Emit periodic heartbeat frames to connected clients
-
-
-**Concerns and Responsibilities**:
-- Contributes to: **NDJSON Message Stream** - Emits each line of the NDJSON stream, including heartbeat-info, heartbeat, and channel messages
-- Contributes to: **Heartbeat Deadline** - Advances the deadline on every heartbeat-info and heartbeat frame the server emits
-- **Responsibility**: Emit the initial heartbeat-info frame with timerInterval, then periodic heartbeat frames
-- **Responsibility**: Deduplicate by composite channel/ocid per REQT-p5c4tcz2r7 before publishing to streams
-- **Responsibility**: Verify owner+signature against the posted channel name before creating an encrypted channel
-
-
-**Interactions**: [Streaming Subscription](#interaction-ARCH-xtk1154efq), [Message Posting](#interaction-ARCH-h0jsqt24dr), [Channel Management](#interaction-ARCH-gcazcky108), [Connection Rotation](#interaction-ARCH-mv4sacp742)
-
-**Data Flows**: [Inbound Message Flow](#dataflow-ARCH-w6hbze8gn2), [Outbound Message with Echo Suppression](#dataflow-ARCH-rq16c8ftaa), [Graceful Connection Rotation](#dataflow-ARCH-h2ehf4jh0w), [Encrypted Channel Creation](#dataflow-ARCH-y63gmb1p7q), [Reconnect with Exponential Backoff](#dataflow-ARCH-hfgcy3187z)
-
-
-
----
-
 <a id="dredsubscription-arch-yhkfr4x56c"></a>
 
 ### Component: DredSubscription (internal - ARCH-yhkfr4x56c)
@@ -273,38 +254,6 @@ Ed25519 signing keypair (via dryoc) used for channel-ownership proofs. Wire form
 
 ---
 
-<a id="sdc-rs-arch-9bqqbc4atk"></a>
-
-### Component: sdc-rs (local - ARCH-9bqqbc4atk)
-
-Rust client library for DRED — pragmatic subset of dred-client implementing channel subscription, message posting, channel management, Ed25519 ownership signing, and reliable reconnection.
-
-**Activities**:
-
-- Connect to DRED servers over NDJSON streaming and deliver per-channel async message streams
-- Post, list, and create channels (plaintext or Ed25519-signed encrypted)
-- Rotate connections gracefully when the subscribed channel set changes
-
-
-
-**Supports Requirements**: REQT-p5c4tcz2r7, REQT-hfmveq25qc
-
-**Concerns and Responsibilities**:
-- **Responsibility**: Deduplicate inbound messages by ocid across reconnections via shared two-generation rotating set
-- **Responsibility**: Suppress the sender's own echo by pre-registering posted ocids before transmission
-- **Responsibility**: Detect dead connections via heartbeat watchdog (3x server interval) and reconnect with exponential backoff
-- **Responsibility**: Route each NDJSON line to exactly one per-channel mpsc receiver
-- **Responsibility**: Preserve receivers for channels that persist across an update_channels rotation
-- **Responsibility**: Guarantee no message loss or duplication during connection rotation via shared deduplicator
-- **Responsibility**: Match the TypeScript client's StringNacl wire format for Ed25519 signatures and public keys
-- **Responsibility**: Expose Send+Sync-safe types so consumers can move the client freely across async tasks
-- **Responsibility**: Survive mutex poisoning in the deduplicator without bricking future dedup checks
-
-
-
-
----
-
 
 ### Nested Components
 
@@ -315,26 +264,39 @@ Rust client library for DRED — pragmatic subset of dred-client implementing ch
 | [Deduplicator](#deduplicator-arch-xqjpk4fzdg) | [sdc-rs](#sdc-rs-arch-9bqqbc4atk) | Two-generation rotating HashSet keyed on ocid. Rotates every 30s: current → previous, previous dropped. Bounds memory to a 30-60s window while catching duplicates across reconnections. |
 | [DredClient](#dredclient-arch-f8bv876rfx) | [sdc-rs](#sdc-rs-arch-9bqqbc4atk) | Arc-backed shared state holder — HTTP connection pool, client_id, deduplicator, cancellation root, backoff config, channel buffer size. Provides request/response API and creates subscriptions. |
 | [DredListener](#dredlistener-arch-afp408rkyz) | [sdc-rs](#sdc-rs-arch-9bqqbc4atk) | Internal streaming worker. Maintains a persistent NDJSON connection to /channels/listen, parses lines, deduplicates by ocid, and routes messages to per-channel mpsc senders. Auto-reconnects on failure. |
-| [DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket) | [sdc-rs](#sdc-rs-arch-9bqqbc4atk) | Surrogate for the incoming DredListener spawned during a connection rotation. Architecturally the same component as ARCH-afp408rkyz — this proxy exists so the Graceful Connection Rotation dataflow can distinguish the new listener from the old one during their brief overlap. |
 | [DredSubscription](#dredsubscription-arch-yhkfr4x56c) | [sdc-rs](#sdc-rs-arch-9bqqbc4atk) | Managed subscription handle returned by DredClient::subscribe. Owns the current listener task, exposes per-channel receivers, and supports lossless channel-set rotation via update_channels. |
 | [Identity](#identity-arch-6tqg5gvypa) | [sdc-rs](#sdc-rs-arch-9bqqbc4atk) | Ed25519 signing keypair (via dryoc) used for channel-ownership proofs. Wire format matches the TS client's StringNacl: base64 64-byte detached signatures over UTF-8 bytes. |
 
 
 
 
-## Actors
+## Related
+
+> Surrogate components — full records live in other `.arch.jsonl` files. Shown here with their context-scoped role in this subsystem.
+
+<a id="dredlistener-replacement-arch-tgm3w99ket"></a>
+
+### DredListener (replacement) (surrogate ARCH-tgm3w99ket of ARCH-afp408rkyz)
+
+Surrogate for the incoming DredListener spawned during a connection rotation. Architecturally the same component as ARCH-afp408rkyz — this proxy exists so the Graceful Connection Rotation dataflow can distinguish the new listener from the old one during their brief overlap.
+
+> During DredSubscription::update_channels the new listener is spawned and runs concurrently with the old one until its connected_signal fires. Both are instances of DredListener but they are distinct tokio tasks with distinct CancellationTokens. Diagrams for the rotation dataflow need to show the two participants separately; this surrogate represents the replacement instance while ARCH-afp408rkyz represents the outgoing one.
 
 
 
-External participants who interact with the system:
+---
 
-| ARCH-UUT | Name | Description |
-|----------|------|-------------|
-| ARCH-zmxjxzc2yp | dApp Consumer | Rust application code that links sdc-rs, constructs a DredClient, subscribes to channels, and posts messages. May hold the client across many async tasks (Clone is cheap) and consumes per-channel mpsc::Receivers. |
-| ARCH-x7dsqz1m41 | Other dApp instance | Another Rust application using sdc-rs (or any DRED client), running somewhere else, posting messages to the same channel our Consumer is subscribed to. |
+<a id="dredserver-arch-xakvgft09j"></a>
+
+### DredServer (surrogate ARCH-xakvgft09j of ARCH-ahm6njveq4)
+
+DRED node process (TypeScript) — Express HTTP + Redis Streams relay, channel management, server-side dedup, heartbeat emission.
+
+> sdc-rs is a client library that talks exclusively to a DredServer instance over HTTP. The authoritative DredServer record lives in the parent dred.arch.jsonl; this surrogate exists so interactions and dataflows in this arch can name the server as a participant.
 
 
 
+---
 
 
 ## Interactions
@@ -458,7 +420,7 @@ CancellationToken hierarchy: DredClient holds the root; each DredSubscription cr
 
 
 
-## Data Flow
+## Data Flows
 
 
 <a id="dataflow-ARCH-w6hbze8gn2"></a>
@@ -469,12 +431,12 @@ From NDJSON line on the wire to a message landing in the consumer's per-channel 
 **Trigger**: A chunk arrives on the bytes_stream from /channels/listen
 **Preconditions**: DredListener is connected and the NDJSON response body is being streamed; The shared Deduplicator and the per-channel sender map are both initialized
 
-1. **[DredServer](#dredserver-arch-xakvgft09j)** → **[DredListener](#dredlistener-arch-afp408rkyz)**: NDJSON chunk — Bytes arrive on bytes_stream; listener appends to its string buffer (may contain partial lines).
-2. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[DredListener](#dredlistener-arch-afp408rkyz)**: drain newline — Find '\n', drain up to it, trim, skip if empty.
+1. **[DredServer](#dredserver-arch-xakvgft09j)** → **[DredListener](#dredlistener-arch-afp408rkyz)**: NDJSON chunk — Bytes arrive on bytes_stream; listener appends to its byte buffer (may contain partial lines or split UTF-8).
+2. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[DredListener](#dredlistener-arch-afp408rkyz)**: drain newline — Find b'\n', drain up to it, decode complete line as UTF-8, trim, skip if empty.
 3. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[DredListener](#dredlistener-arch-afp408rkyz)**: parse as JSON — serde_json::from_str::<DredMessage>(line). *(on failure: Warn with raw line and continue — one bad line doesn't break the connection.)*
 4. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[DredListener](#dredlistener-arch-afp408rkyz)**: handle heartbeat-info — Read timerInterval; set heartbeat_interval and extend heartbeat_deadline. Continue (not forwarded).
-5. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[DredListener](#dredlistener-arch-afp408rkyz)**: handle heartbeat — Extend heartbeat_deadline to now + 3×interval. Continue (not forwarded).
-6. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[Deduplicator](#deduplicator-arch-xqjpk4fzdg)**: dedup.check(ocid) — Returns false (drop) if ocid already seen in either generation.
+5. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[DredListener](#dredlistener-arch-afp408rkyz)**: handle heartbeat — Extend heartbeat_deadline to now + 3x interval. Continue (not forwarded).
+6. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[Deduplicator](#deduplicator-arch-xqjpk4fzdg)**: dedup.is_new(ocid) — Returns false (drop) if ocid already seen in either generation.
 7. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[DredListener](#dredlistener-arch-afp408rkyz)**: route to sender — Look up senders[msg.channel]; drop with debug log if none. *(on failure: If receiver is dropped, send returns Err; log debug and continue.)*
 8. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[dApp Consumer](#actors)**: mpsc delivery — Consumer receives via rx.recv() on its take_receiver(channel).
 
@@ -497,10 +459,10 @@ A posted message is pre-registered in the Deduplicator before the HTTP POST, so 
 
 1. **[dApp Consumer](#actors)** → **[DredClient](#dredclient-arch-f8bv876rfx)**: post_message call — channel, msg, msg_type, optional ocid.
 2. **[DredClient](#dredclient-arch-f8bv876rfx)** → **[DredClient](#dredclient-arch-f8bv876rfx)**: generate ocid — gen_id(10) — 10-char Crockford nanoid.
-3. **[DredClient](#dredclient-arch-f8bv876rfx)** → **[Deduplicator](#deduplicator-arch-xqjpk4fzdg)**: dedup.check(ocid) — Pre-register. Return value ignored.
+3. **[DredClient](#dredclient-arch-f8bv876rfx)** → **[Deduplicator](#deduplicator-arch-xqjpk4fzdg)**: dedup.is_new(ocid) — Pre-register. Return value ignored.
 4. **[DredClient](#dredclient-arch-f8bv876rfx)** → **[DredServer](#dredserver-arch-xakvgft09j)**: POST /channel/{c}/msg — Body: {msg, type, ocid}. Response: {id, status, ocid}. *(on failure: Non-2xx → ServerStatus; transport → Transport; bad JSON → Protocol.)*
 5. **[DredServer](#dredserver-arch-xakvgft09j)** → **[DredListener](#dredlistener-arch-afp408rkyz)**: echo on NDJSON — Server streams the posted message back to the sender's own listener.
-6. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[Deduplicator](#deduplicator-arch-xqjpk4fzdg)**: dedup.check(ocid) — Returns false — ocid was pre-registered at step 3. Message dropped.
+6. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[Deduplicator](#deduplicator-arch-xqjpk4fzdg)**: dedup.is_new(ocid) — Returns false — ocid was pre-registered at step 3. Message dropped.
 
 **Postconditions**: Message is persisted to the server's Redis stream and visible to all other subscribers on the channel; The sender's own listener never forwards the echoed message to the consumer's mpsc::Receiver
 
@@ -519,20 +481,20 @@ update_channels sequencing shown alongside three message deliveries (before, dur
 
 1. **[Other dApp instance](#actors)** → **[DredServer](#dredserver-arch-xakvgft09j)**: post Message A — BEFORE switchover.
 2. **[DredServer](#dredserver-arch-xakvgft09j)** → **[DredListener](#dredlistener-arch-afp408rkyz)**: Message A
-3. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[Deduplicator](#deduplicator-arch-xqjpk4fzdg)**: dedup check A — Returns true (new).
+3. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[Deduplicator](#deduplicator-arch-xqjpk4fzdg)**: dedup is_new A — Returns true (new).
 4. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[dApp Consumer](#actors)**: deliver A
 5. **[dApp Consumer](#actors)** → **[DredSubscription](#dredsubscription-arch-yhkfr4x56c)**: update_channels(new) — SWITCHOVER BEGINS.
 6. **[DredSubscription](#dredsubscription-arch-yhkfr4x56c)** → **[DredSubscription](#dredsubscription-arch-yhkfr4x56c)**: diff + reuse senders — Clone existing senders; alloc new (tx,rx) for added channels.
 7. **[DredSubscription](#dredsubscription-arch-yhkfr4x56c)** → **[DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket)**: spawn replacement — child CancellationToken, connected_signal oneshot. CancelGuard armed.
 8. **[DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket)** → **[DredServer](#dredserver-arch-xakvgft09j)**: POST /channels/listen
-9. **[DredServer](#dredserver-arch-xakvgft09j)** → **[DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket)**: heartbeat-info — Replacement's stream is live. *(on failure: If replacement exits early, oneshot drops → update_channels returns Protocol error; CancelGuard cancels.)*
+9. **[DredServer](#dredserver-arch-xakvgft09j)** → **[DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket)**: heartbeat-info — Replacement's stream is live. *(on failure: If replacement exits early, oneshot drops → update_channels returns Timeout error; CancelGuard cancels.)*
 10. **[DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket)** → **[DredSubscription](#dredsubscription-arch-yhkfr4x56c)**: connected_signal
 11. **[Other dApp instance](#actors)** → **[DredServer](#dredserver-arch-xakvgft09j)**: post Message B — DURING overlap — both listeners live.
 12. **[DredServer](#dredserver-arch-xakvgft09j)** → **[DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket)**: Message B
-13. **[DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket)** → **[Deduplicator](#deduplicator-arch-xqjpk4fzdg)**: dedup check B — Returns true (new).
+13. **[DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket)** → **[Deduplicator](#deduplicator-arch-xqjpk4fzdg)**: dedup is_new B — Returns true (new).
 14. **[DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket)** → **[dApp Consumer](#actors)**: deliver B — Delivered exactly once.
 15. **[DredServer](#dredserver-arch-xakvgft09j)** → **[DredListener](#dredlistener-arch-afp408rkyz)**: Message B (again) — Server also streams to the outgoing listener (still connected).
-16. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[Deduplicator](#deduplicator-arch-xqjpk4fzdg)**: dedup check B — Returns false (dup) — outgoing drops it.
+16. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[Deduplicator](#deduplicator-arch-xqjpk4fzdg)**: dedup is_new B — Returns false (dup) — outgoing drops it.
 17. **[DredSubscription](#dredsubscription-arch-yhkfr4x56c)** → **[DredSubscription](#dredsubscription-arch-yhkfr4x56c)**: guard disarm
 18. **[DredSubscription](#dredsubscription-arch-yhkfr4x56c)** → **[DredListener](#dredlistener-arch-afp408rkyz)**: cancel outgoing
 19. **[DredSubscription](#dredsubscription-arch-yhkfr4x56c)** → **[DredSubscription](#dredsubscription-arch-yhkfr4x56c)**: swap handles — current_cancel/handle now point at replacement.
@@ -540,7 +502,7 @@ update_channels sequencing shown alongside three message deliveries (before, dur
 21. **[DredListener](#dredlistener-arch-afp408rkyz)** → **[DredListener](#dredlistener-arch-afp408rkyz)**: outgoing exits — DredError::Cancelled → task ends.
 22. **[Other dApp instance](#actors)** → **[DredServer](#dredserver-arch-xakvgft09j)**: post Message C — AFTER switchover.
 23. **[DredServer](#dredserver-arch-xakvgft09j)** → **[DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket)**: Message C
-24. **[DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket)** → **[Deduplicator](#deduplicator-arch-xqjpk4fzdg)**: dedup check C
+24. **[DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket)** → **[Deduplicator](#deduplicator-arch-xqjpk4fzdg)**: dedup is_new C
 25. **[DredListener (replacement)](#dredlistener-replacement-arch-tgm3w99ket)** → **[dApp Consumer](#actors)**: deliver C
 26. **[dApp Consumer](#actors)** → **[dApp Consumer](#actors)**: steady state — Rotation complete; single active listener.
 
@@ -623,10 +585,10 @@ Derives Debug + Clone + Deserialize + Serialize. Known fields are typed; everyth
 **Source**: `sdc-rs/src/lib.rs`
 
 ```
-enum DredError { Transport(reqwest::Error), ServerStatus(reqwest::StatusCode), Protocol(String), StreamEnded, Cancelled }
+enum DredError { Transport(reqwest::Error), ServerStatus { status: reqwest::StatusCode, body: String }, InvalidInput(String), Timeout(String), Protocol(String), StreamEnded, Cancelled }
 ```
 
-Send + Sync + 'static. Implements Display, std::error::Error, and From<reqwest::Error>. Transport preserves source() for error chaining; Protocol carries a context string.
+Send + Sync + 'static. Implements Display, std::error::Error, and From<reqwest::Error>. Transport preserves source() for error chaining. ServerStatus captures the response body for debugging. InvalidInput covers caller-supplied validation failures (bad base64, wrong key length). Timeout covers bounded waits (connection-setup, rotation handoff). Protocol is narrowed to genuine wire-protocol violations only.
 
 
 
@@ -662,10 +624,10 @@ Builder for DredClient. Fluent setters for client_id, dedup, cancellation_token,
 **Source**: `sdc-rs/src/lib.rs`
 
 ```
-struct CreateChannelOptions { encrypted: bool, allow_joining: Option<bool>, member_limit: Option<u32>, expires_at: Option<String>, message_lifetime: Option<u64>, owner: Option<String>, signature: Option<String>, members: Vec<String> }
+struct CreateChannelOptions { allow_joining: Option<bool>, member_limit: Option<u32>, expires_at: Option<String>, message_lifetime: Option<u64>, members: Vec<String> }
 ```
 
-Derives Serialize. Option fields skip serialization when None. owner and signature are populated automatically by create_encrypted_channel and should not be hand-set. expires_at is RFC 3339 as a string to avoid a chrono dependency.
+Derives Serialize+Default. Option fields skip serialization when None. Protocol fields (encrypted, owner, signature) are no longer on this struct — they are set internally by CreateChannelWireBody, making invalid state combinations unrepresentable. expires_at is RFC 3339 as a string to avoid a chrono dependency.
 
 
 

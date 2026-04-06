@@ -184,7 +184,8 @@ impl Deduplicator {
     }
 
     /// Returns `true` if this ocid is new (not a duplicate).
-    pub fn check(&self, ocid: &str) -> bool {
+    /// Inserts the ocid into the current generation as a side effect.
+    pub fn is_new(&self, ocid: &str) -> bool {
         let mut inner = lock_or_recover(&self.inner);
         inner.maybe_rotate();
         if inner.current.contains(ocid) || inner.previous.contains(ocid) {
@@ -635,7 +636,7 @@ impl DredClient {
             .unwrap_or_else(|| gen_id(10));
 
         // Pre-register in dedup so our own echo gets suppressed
-        self.inner.dedup.check(&ocid);
+        self.inner.dedup.is_new(&ocid);
 
         let body = serde_json::json!({
             "msg": msg,
@@ -812,7 +813,7 @@ fn classify_message(
 
     // Dedup on ocid
     if let Some(ref ocid) = msg.ocid {
-        if !dedup.check(ocid) {
+        if !dedup.is_new(ocid) {
             return MessageAction::Duplicate;
         }
     }
@@ -1294,9 +1295,9 @@ mod tests {
     #[test]
     fn dedup_basic_new_and_duplicate() {
         let d = Deduplicator::new();
-        assert!(d.check("a"), "first check should be new");
-        assert!(!d.check("a"), "second check should be duplicate");
-        assert!(d.check("b"), "different ocid should be new");
+        assert!(d.is_new("a"), "first check should be new");
+        assert!(!d.is_new("a"), "second check should be duplicate");
+        assert!(d.is_new("b"), "different ocid should be new");
         assert_eq!(d.len(), 2);
     }
 
@@ -1304,18 +1305,18 @@ mod tests {
     fn dedup_rotation_drops_old_generation() {
         let d = Deduplicator::with_rotation_interval(Duration::from_millis(1));
 
-        assert!(d.check("a"));
-        assert!(d.check("b"));
+        assert!(d.is_new("a"));
+        assert!(d.is_new("b"));
         assert_eq!(d.len(), 2);
 
         std::thread::sleep(Duration::from_millis(5));
 
-        assert!(!d.check("a"), "should still be in previous generation");
-        assert!(d.check("c"));
+        assert!(!d.is_new("a"), "should still be in previous generation");
+        assert!(d.is_new("c"));
 
         std::thread::sleep(Duration::from_millis(5));
 
-        assert!(d.check("a"), "should be new after two rotations");
+        assert!(d.is_new("a"), "should be new after two rotations");
     }
 
     #[test]
@@ -1324,7 +1325,7 @@ mod tests {
         assert!(d.is_empty());
         assert_eq!(d.len(), 0);
 
-        d.check("x");
+        d.is_new("x");
         assert!(!d.is_empty());
         assert_eq!(d.len(), 1);
     }
@@ -1334,8 +1335,8 @@ mod tests {
         let d1 = Deduplicator::new();
         let d2 = d1.clone();
 
-        assert!(d1.check("shared"));
-        assert!(!d2.check("shared"), "clone should see same state");
+        assert!(d1.is_new("shared"));
+        assert!(!d2.is_new("shared"), "clone should see same state");
     }
 
     #[test]
@@ -1350,8 +1351,8 @@ mod tests {
         });
         assert!(result.is_err());
 
-        assert!(!d.check("before_panic"), "should see entry from before panic");
-        assert!(d.check("after_panic"), "should accept new entries after poison");
+        assert!(!d.is_new("before_panic"), "should see entry from before panic");
+        assert!(d.is_new("after_panic"), "should accept new entries after poison");
     }
 
     // Simulates the buffer-drain pattern from DredListener::connect_once:
@@ -1566,12 +1567,12 @@ mod tests {
         let client = DredClient::builder("http://127.0.0.1:1").build();
 
         // The dedup is shared — checking from the client affects all listeners
-        client.dedup().check("seen-via-client");
+        client.dedup().is_new("seen-via-client");
 
         // Subscription spawns a listener but we don't need to inspect it here —
         // the point is the dedup is the same instance.
         let _sub = client.subscribe(vec!["ch".into()]);
-        assert!(!client.dedup().check("seen-via-client"));
+        assert!(!client.dedup().is_new("seen-via-client"));
     }
 
     #[test]
@@ -1579,8 +1580,8 @@ mod tests {
         let c1 = DredClient::builder("http://127.0.0.1:1").build();
         let c2 = c1.clone();
 
-        c1.dedup().check("from-c1");
-        assert!(!c2.dedup().check("from-c1"), "clone should share dedup");
+        c1.dedup().is_new("from-c1");
+        assert!(!c2.dedup().is_new("from-c1"), "clone should share dedup");
     }
 
     #[tokio::test]
@@ -1715,7 +1716,7 @@ mod tests {
     fn classify_duplicate_ocid() {
         let dedup = Deduplicator::new();
         let senders = test_senders(&["news"]);
-        dedup.check("dup1"); // seed
+        dedup.is_new("dup1"); // seed
         let msg = make_msg(Some("chat"), Some("news"), Some("dup1"));
         assert!(matches!(
             classify_message(msg, &dedup, &senders),
