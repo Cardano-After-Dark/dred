@@ -867,7 +867,7 @@ impl DredListener {
     }
 
     /// Run a single connection to the server.
-    async fn connect_once(&mut self) -> Result<(), DredError> {
+    async fn connect_once(&mut self) -> Result<std::convert::Infallible, DredError> {
         let subs: Vec<ChannelSubConfig> = self
             .channels
             .iter()
@@ -1016,19 +1016,21 @@ impl DredListener {
         loop {
             let connected_at = tokio::time::Instant::now();
 
-            match self.connect_once().await {
-                Err(DredError::Cancelled) => return DredError::Cancelled,
-                Err(DredError::StreamEnded) => {
+            // connect_once returns Result<Infallible, _> — Ok is
+            // uninhabited, so only the Err branch is reachable.
+            let Err(e) = self.connect_once().await;
+            match e {
+                DredError::Cancelled => return DredError::Cancelled,
+                DredError::StreamEnded => {
                     info!("stream ended, reconnecting");
                     backoff = self.shared.backoff_initial;
                 }
-                Err(e) => {
-                    error!("connection error: {e}");
+                other => {
+                    error!("connection error: {other}");
                     if connected_at.elapsed() > self.shared.backoff_max {
                         backoff = self.shared.backoff_initial;
                     }
                 }
-                Ok(()) => unreachable!(),
             }
 
             info!(
