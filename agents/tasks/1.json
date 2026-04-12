@@ -1,0 +1,11 @@
+{
+  "id": "1",
+  "subject": "1.1: Problem/opportunity this skill addresses",
+  "description": "Understand why a dred-client skill is needed and what gap it fills in the agent ecosystem.",
+  "status": "completed",
+  "blocks": [],
+  "blockedBy": [],
+  "metadata": {
+    "owner": "kenji"
+  }
+}

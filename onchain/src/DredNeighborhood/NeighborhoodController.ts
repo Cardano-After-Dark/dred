@@ -56,7 +56,7 @@ export class NeighborhoodController extends DelegatedDataContract<
     }
 
     get recordTypeName() {
-        return "DredNbh";
+        return "DredNbh" as const;
     }
 
     exampleData(): minimalNeighborhoodData {

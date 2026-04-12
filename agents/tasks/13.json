@@ -1,0 +1,11 @@
+{
+  "id": "13",
+  "subject": "4.1: Typical invocation scenarios",
+  "description": "How does an agent typically use this skill — what triggers loading it?",
+  "status": "completed",
+  "blocks": [],
+  "blockedBy": [],
+  "metadata": {
+    "owner": "kenji"
+  }
+}

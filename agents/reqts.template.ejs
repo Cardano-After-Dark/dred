@@ -1,0 +1,124 @@
+# About <%- module.name %>
+
+## MAINTAINERS MUST READ:
+> **AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY**
+>
+> This file is generated from the `.reqts.jsonl` source. To make changes:
+> 1. Edit the JSONL source file
+> 2. Run `node generate-reqts.mjs` to regenerate
+>
+> **COMPLIANCE TRIGGER**: Before interpreting these requirements, you **MUST** read:
+> `reqt-consumer.SKILL.md`
+>
+> **hash.notice.reqt-consumer**: 5dddc026e9370dc8
+
+<%- module.description %>
+
+The essential technologies are **<%- module.essential_techs.join(', ') %>**. Related technologies include <%- module.related_techs.join(', ') %>.
+<% if (module.background) { %>
+
+# Background
+
+<%- module.background %>
+<% } %>
+<% if (module.design_goals) { %>
+
+# Design Goals
+
+<%- module.design_goals %>
+<% } %>
+
+# Must Read: Special Skills and Know-how
+
+<% skills.forEach((skill, i) => { -%>
+<%- i + 1 %>. **<%- skill.focus_area %>**: <%- skill.trigger_condition %> → load `<%- skill.resource_path %>`
+<% }); -%>
+
+# Collaborators
+
+<% if (dependencies.length > 0) { -%>
+**NEEDS (this module depends on):**
+<% dependencies.forEach(dep => { -%>
+- `<%- dep.depends_on %>`: <%- dep.description %><% if (dep.needs && dep.needs.length > 0) { %>; needs <%- dep.needs.join(', ') %><% } %>
+<% }); -%>
+<% } -%>
+
+<% if (dependents.length > 0) { -%>
+**NEEDED BY (modules that depend on this):**
+<% dependents.forEach(dep => { -%>
+- `<%- dep.serves_module %>`: <%- dep.description || '' %><% if (dep.needs && dep.needs.length > 0) { %>; needs <%- dep.needs.map(id => reqtTitles[id] ? id + ' (' + reqtTitles[id] + ')' : id).join(', ') %><% } %>
+<% }); -%>
+<% } -%>
+
+**Expected users:** <%- module.expected_users %>
+
+# Functional Areas and Key Requirements
+
+<% areas.forEach(area => { -%>
+### <%- area.order %>. <%- area.name %>
+<% if (area.description) { -%>
+<%- area.description %>
+
+<% } -%>
+#### Key Requirements:
+<% const areaReqts = requirements.filter(r => (r.area_id || r.functional_area) === area.area_id && !r.parent_reqt); -%>
+<% areaReqts.forEach((r, i) => { -%>
+<%- i + 1 %>. **<%- r.title %>**<% if (r.functional) { %>: <%- r.functional %><% } else if (r.purpose) { %>: <%- r.purpose.split('.')[0] %>.<% } %>
+<% }); -%>
+
+<% }); -%>
+
+# Detailed Requirements
+
+<% areas.forEach(area => { -%>
+## Area <%- area.order %>: <%- area.name %>
+
+<% const topLevel = requirements.filter(r => (r.area_id || r.functional_area) === area.area_id && !r.parent_reqt); -%>
+<% topLevel.forEach(top => { -%>
+### **REQT-<%- top.outline %>/<%- top.reqt_id.replace('REQT-', '') %>**: **<%- top.impl_status %>**<% if (top.maturity) { %>/<%- top.maturity.status %><% } %>: **<%- top.title %>**
+<% if (top.purpose) { -%>
+#### Purpose: <%- top.purpose %>
+<% } -%>
+
+<% const children = requirements.filter(r => r.parent_reqt === top.reqt_id).sort((a,b) => compareOutlines(a.outline, b.outline)); -%>
+<% children.forEach(child => { -%>
+ - <%- child.outline %>: REQT-<%- child.reqt_id.replace('REQT-', '') %>: **<%- child.impl_status %>**<% if (child.maturity) { %>/<%- child.maturity.status %><% } %>: **<%- child.title %>**<% if (child.statement) { %> - <%- child.statement %><% } %>
+<% const grandchildren = requirements.filter(r => r.parent_reqt === child.reqt_id).sort((a,b) => compareOutlines(a.outline, b.outline)); -%>
+<% grandchildren.forEach(gc => { -%>
+     - <%- gc.outline %>: REQT-<%- gc.reqt_id.replace('REQT-', '') %>: **<%- gc.impl_status %>**<% if (gc.maturity) { %>/<%- gc.maturity.status %><% } %>: **<%- gc.title %>**<% if (gc.statement) { %> - <%- gc.statement %><% } %>
+<% const level4 = requirements.filter(r => r.parent_reqt === gc.reqt_id).sort((a,b) => compareOutlines(a.outline, b.outline)); -%>
+<% level4.forEach(l4 => { -%>
+         - <%- l4.outline %>: REQT-<%- l4.reqt_id.replace('REQT-', '') %>: **<%- l4.impl_status %>**<% if (l4.maturity) { %>/<%- l4.maturity.status %><% } %>: **<%- l4.title %>**<% if (l4.statement) { %> - <%- l4.statement %><% } %>
+<% }); -%>
+<% }); -%>
+<% }); -%>
+
+<% }); -%>
+<% }); -%>
+
+# Files
+
+<% files.forEach(file => { -%>
+- `<%- file.path %>` - <%- file.description %>
+<% }); -%>
+
+# Implementation Log
+
+> Maintainers MUST NOT modify past entries. Append new entries only.
+
+<%
+const versions = [...new Set(implLog.map(e => e.version))].sort();
+versions.forEach(version => {
+  const entries = implLog.filter(e => e.version === version);
+-%>
+### Version <%- version %>
+
+<% entries.forEach(entry => { -%>
+ - **<%- entry.action %>**: <%- entry.summary %><% if (entry.reqt_id) { %> (`<%- entry.reqt_id %>`)<% } %><% if (entry.impl_notes) { %> — <%- entry.impl_notes %><% } %>
+<% }); -%>
+
+<% }); -%>
+
+# Release Management Plan
+
+See `release-management-scope.md` for version criteria and lifecycle management.

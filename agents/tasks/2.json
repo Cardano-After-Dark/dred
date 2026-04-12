@@ -1,0 +1,11 @@
+{
+  "id": "2",
+  "subject": "1.2: Target users — who invokes this skill",
+  "description": "Identify whether this skill is for coding agents, app developers, or other consumers.",
+  "status": "completed",
+  "blocks": [],
+  "blockedBy": [],
+  "metadata": {
+    "owner": "kenji"
+  }
+}

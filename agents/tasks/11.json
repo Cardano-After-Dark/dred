@@ -1,0 +1,11 @@
+{
+  "id": "11",
+  "subject": "3.3: Explicit out-of-scope areas",
+  "description": "What should the skill explicitly NOT cover? Server-side, on-chain, replication internals?",
+  "status": "completed",
+  "blocks": [],
+  "blockedBy": [],
+  "metadata": {
+    "owner": "kenji"
+  }
+}

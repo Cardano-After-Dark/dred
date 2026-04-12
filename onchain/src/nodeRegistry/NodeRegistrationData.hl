@@ -29,7 +29,6 @@ enum DredNodeState {
         lastHeartbeat: Time
     }
     NeedsHeartbeats {
-        // datumHash: ByteArray
         validators: []ByteArray
     }
     Inactive

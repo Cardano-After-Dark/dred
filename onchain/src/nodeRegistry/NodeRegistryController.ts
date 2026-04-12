@@ -67,7 +67,7 @@ export class NodeRegistryController extends DelegatedDataContract<
     }
 
     get recordTypeName() {
-        return "DredNode";
+        return "DredNode" as const;
     }
 
     exampleData(): minimalNodeRegistrationData {
