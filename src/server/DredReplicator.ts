@@ -698,8 +698,17 @@ export class Replicant {
 
             const { msg, type, "content-type": contentType, encryptedMsg } = inboundMessage;
 
+            //! preserve the true origin when the message has already hopped: if the inbound
+            //! message carries an origSrvId from an upstream hop, keep it. In the 1-hop case
+            //! origSrvId would equal replFrom (our target), so omit it — replFrom carries that
+            //! information by itself.
+            const upstreamOrigin = inboundMessage.origSrvId;
+            const carryOrigin =
+                upstreamOrigin && upstreamOrigin !== this.targetHost.serverId
+                    ? { origSrvId: upstreamOrigin }
+                    : {};
+
             const replicatedMessage: DredMessage & ReplicatedMessage = {
-                // type: message.type || "replicated",'
                 msg,
                 type,
                 "content-type": contentType,
@@ -708,8 +717,7 @@ export class Replicant {
 
                 replFrom: this.targetHost.serverId,
                 replAt: new Date().getTime(),
-                origMsgId: messageId,
-                origSrvId: this.targetHost.serverId,
+                ...carryOrigin,
             };
 
             await this.addMessage(channel, mid, replicatedMessage);
