@@ -315,12 +315,14 @@ export class HostConnection extends StateMachineNg<
                     if (this.isAbortError(e)) {
                         // this.log("abort happened before fetch response headers");
                         aborted = true;
+                        res(false);
                     } else if ((e?.message || e?.toString() )?.match(/connection manager disconnect/)) {
                         aborted = true;
+                        res(false);
                     } else {
-                        debugger;
+                        //! reject so onEntry[connecting] can transition to "retry" and run the backoff loop.
                         this.warn(`fetch error; see debugger: %s`, e.stack || e.message || e);
-                        this.events.emit("failed", this.connectionFailureEvent(e));
+                        rej(e);
                     }
                 });
         }));
@@ -438,6 +440,9 @@ export class HostConnection extends StateMachineNg<
                         reason: e,
                     }),
                 );
+                this.lastError = e instanceof Error ? e : new Error(String(e));
+                connected = false;
+                this.transition("disconnected");
             }
             return undefined;
         };
@@ -528,7 +533,19 @@ export class HostConnection extends StateMachineNg<
 
         if (this.lastHeartbeat + 3 * this.heartbeatInterval < now) {
             console.error("Missed 3 expected heartbeats from server!!!", this.host.serverId);
-            //!!! todo: this.events.emit("dead")
+            //! abort the stalled reader and transition to disconnected so the
+            //  ConnectionManager's connectionDropped → reconnecting path kicks in.
+            this.lastError = new Error(
+                `missed 3 heartbeats from ${this.host.serverId} — host presumed dead`,
+            );
+            try {
+                this.abortController?.abort();
+            } catch {
+                /* ignore */
+            }
+            if (this.currentState === "connected") {
+                this.transition("disconnected");
+            }
         }
     }
 

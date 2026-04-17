@@ -621,7 +621,7 @@ export class Replicant {
     private async messageHandler(inboundMessage: FullDredMessage): Promise<void> {
         const { mid, channel, ocid } = inboundMessage;
         try {
-            this.trace(`received message`, { channel, mid });
+            this.trace(`received message`, { channel, mid, ocid });
             const messageId = ocid || mid || `${Date.now()}-${Math.random()}`;
 
             // Skip messages without ocid - they can't be properly deduplicated
@@ -725,7 +725,7 @@ export class Replicant {
             );
 
             if (result) {
-                this.logger.trace(`Message added to local server: ${result}`);
+                this.logger.trace(`Message added to local server: ${result} (ocid ${ocid}, channel ${channelId})`);
             } else {
                 this.debug(`already replicated: ${channelId}/ ${messageDetails.ocid}`);
             }
