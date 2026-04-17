@@ -5,6 +5,8 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import compression from "compression";
 
+import { statSync } from "fs";
+
 import { Redis, type RedisOptions } from "ioredis";
 import { nanoid } from "../util/nanoid.js";
 
@@ -253,14 +255,31 @@ export class DredServer {
         // this.log(`+server '${serverId}' with discovery type: ${this.discovery.constructor.name}`);
 
         this.api = this.createExpressServer();
-        const redisUrl = (this.redisUrl = process.env.REDIS_URL || "redis://localhost:6379");
+        const redisSocketPath = process.env.REDIS_SOCKET_PATH;
+        if (redisSocketPath) {
+            let st;
+            try {
+                st = statSync(redisSocketPath);
+            } catch (e: any) {
+                throw new Error(
+                    `REDIS_SOCKET_PATH=${redisSocketPath} not accessible: ${e.message}`,
+                );
+            }
+            if (!st.isSocket()) {
+                throw new Error(
+                    `REDIS_SOCKET_PATH=${redisSocketPath} exists but is not a unix socket`,
+                );
+            }
+        }
+        const redisUrl = (this.redisUrl =
+            redisSocketPath || process.env.REDIS_URL || "redis://localhost:6379");
 
         this.listener = null;
         this.verifier = new StringNacl(undefined, this.logger);
         this.producers = new Map();
         this.subscribers = new Map();
         this.redisDb = redisDb || 0;
-        this.setupRedis(redisUrl);
+        this.setupRedis(redisSocketPath ? undefined : redisUrl, redisSocketPath);
 
         // to be initialized only when replication is enabled
         // this.replicator = new DredReplicator(this, this.discovery);
@@ -270,17 +289,21 @@ export class DredServer {
         this.setupExpressHandlers();
     }
 
-    setupRedis(url: string | undefined) {
+    setupRedis(url: string | undefined, socketPath?: string) {
         if (this.redis) throw new Error(`redis connection is already set up`);
 
-        this.progress(`Setting up Redis connection: ${url || "default"}, db: ${this.redisDb}`);
+        this.progress(
+            `Setting up Redis connection: ${socketPath ? `unix:${socketPath}` : url || "default"}, db: ${this.redisDb}`,
+        );
 
         const options: RedisOptions = {
             db: this.redisDb,
             // keyPrefix: `${this.nbh}::`  //!!! todo vet this technique.
         };
 
-        if (url) {
+        if (socketPath) {
+            this.redis = new Redis({ ...options, path: socketPath });
+        } else if (url) {
             this.redis = new Redis(url, options);
         } else {
             this.redis = new Redis(options);
