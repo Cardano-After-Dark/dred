@@ -323,11 +323,10 @@ export class DredServer {
 
         this.channelConn = new RedisChannels({
             application: `${this.nbh}::`,
-            redis: {
-                url: url,
-                db: this.redisDb,
-            },
-            channels: { log },            
+            redis: socketPath
+                ? { path: socketPath, db: this.redisDb }
+                : { url: url, db: this.redisDb },
+            channels: { log },
         });
         this.progress("connected to redis");
         this.ensureDefaultChannels();
@@ -405,8 +404,9 @@ export class DredServer {
         if (!myInfo) throw new Error(`can't identify my own info`);
         const { port, address } = myInfo;
 
-        this.listener = this.api.listen(Number(port), address);
-        this.info(`listening at ${address}:${port}`);
+        const bindAddress = process.env.LISTEN_ADDRESS || address;
+        this.listener = this.api.listen(Number(port), bindAddress);
+        this.info(`listening at ${bindAddress}:${port} (advertised ${address}:${port})`);
 
         // Setup replication after all basic server setup is complete
         // at this point, "_chans" and "_auth" channels are already created
