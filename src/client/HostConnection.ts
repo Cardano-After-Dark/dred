@@ -402,7 +402,12 @@ export class HostConnection extends StateMachineNg<
 
         this.events.emit("failed", this.connectionFailureEvent(reason));
 
-        return Promise.reject(reason);
+        //! throw instead of returning Promise.reject() — the async wrapper handles
+        //! the rejection directly; returning a standalone rejected Promise creates
+        //! an extra Promise object that Zone.js tracks separately from the
+        //! assimilated async return, causing spurious "Unhandled Promise rejection"
+        //! reports (and can crash the process under Node's strict rejection mode).
+        throw reason;
     }
 
     async monitorSubscriptions(response: Response) {
@@ -664,8 +669,12 @@ export class HostConnection extends StateMachineNg<
             reconnect: {
                 to: "connecting",
                 onTransition: () => {
+                    //! clear stale promise so onEntry[connecting] creates a fresh one.
+                    //! do NOT call connect() here — its returned promise would be unhandled
+                    //! (onEntry attaches .then() to its own call; a duplicate call from
+                    //! onTransition wraps the same inner in a second outer whose rejection
+                    //! is orphaned, crashing the process on 502s).
                     this.connecting = undefined;
-                    this.connect();
                 },
             },
             abort: {
