@@ -198,6 +198,10 @@ interface SimpleRetryState {
     nextRetryTime?: Date;
     isRetrying: boolean;
     retryTimer?: NodeJS.Timeout;
+    //! consecutive failure count — drives exponential backoff and is reset on success
+    attempts: number;
+    //! when the current failure streak started, for "down for Ys" diagnostics
+    firstFailureTime?: Date;
 }
 
 type ReplicationEvents = {
@@ -254,6 +258,7 @@ export class Replicant {
         this.repClient = null;
         this.retryState = {
             isRetrying: false,
+            attempts: 0,
         };
     }
 
@@ -523,25 +528,51 @@ export class Replicant {
     }
 
     /**
-     * Schedule a retry attempt after the configured interval
+     * Schedule a retry attempt with exponential backoff (1.27^attempts, capped).
+     *
+     * Shape matches HostConnection's mid-stream retry loop so recovery behaves
+     * consistently across layers: fast initial attempts for transient failures
+     * (peer restarts) with polite backoff for sustained outages.
      */
     private scheduleRetry(): void {
         if (this.retryState.isRetrying) {
             return;
         }
 
-        const retryIntervalSeconds = parseInt(
-            process.env.REPLICATION_RETRY_INTERVAL_SECONDS || "60",
-            10,
+        const testEnv = process.env.NODE_ENV === "test";
+        //! in test env the unit is centiseconds (10ms) so tests stay fast
+        const unitMs = testEnv ? 10 : 1000;
+
+        const baseSec = parseFloat(process.env.REPLICATION_RETRY_BASE_SECONDS || "1");
+        const maxSec = parseFloat(
+            process.env.REPLICATION_RETRY_MAX_SECONDS ||
+                process.env.REPLICATION_RETRY_INTERVAL_SECONDS ||
+                "30",
         );
-        // in test env, we'll retry every 6 seconds instead by default.  Sorry this looks obscure.
-        const retryIntervalMs =
-            retryIntervalSeconds * (process.env.NODE_ENV === "test" ? 100 : 1000);
+
+        this.retryState.attempts += 1;
+        if (!this.retryState.firstFailureTime) {
+            this.retryState.firstFailureTime = new Date();
+        }
+
+        const attempts = this.retryState.attempts;
+        const rawMs = baseSec * unitMs * Math.pow(1.27, attempts - 1);
+        const retryIntervalMs = Math.min(rawMs, maxSec * unitMs);
 
         this.retryState.isRetrying = true;
         this.retryState.nextRetryTime = new Date(Date.now() + retryIntervalMs);
 
+        const downForMs = Date.now() - this.retryState.firstFailureTime.getTime();
+        this.warn(
+            `scheduled retry #${attempts} in ${(retryIntervalMs / unitMs).toFixed(2)}s ` +
+                `(down for ${(downForMs / unitMs).toFixed(1)}s, target=${this.targetHost.serverId})`,
+        );
+
         this.retryState.retryTimer = setTimeout(() => {
+            //! clear re-entry guard before the attempt so that if it fails again,
+            //! scheduleRetry() can schedule retry #N+1 instead of silently no-op'ing
+            this.retryState.isRetrying = false;
+            this.retryState.retryTimer = undefined;
             this.attemptConnection();
         }, retryIntervalMs);
     }
@@ -555,8 +586,17 @@ export class Replicant {
             this.retryState.retryTimer = undefined;
         }
 
+        if (this.retryState.attempts > 0 && this.retryState.firstFailureTime) {
+            const downForMs = Date.now() - this.retryState.firstFailureTime.getTime();
+            this.progress(
+                `recovered after ${this.retryState.attempts} attempt(s) / ${(downForMs / 1000).toFixed(1)}s`,
+            );
+        }
+
         this.retryState.isRetrying = false;
         this.retryState.nextRetryTime = undefined;
+        this.retryState.attempts = 0;
+        this.retryState.firstFailureTime = undefined;
     }
 
     private async findCommonChannels(
@@ -819,6 +859,8 @@ export class Replicant {
         // Reset retry state
         this.retryState.isRetrying = false;
         this.retryState.nextRetryTime = undefined;
+        this.retryState.attempts = 0;
+        this.retryState.firstFailureTime = undefined;
 
         if (this.repClient) {
             this.repClient.events.removeAllListeners();
