@@ -460,15 +460,17 @@ export class Replicant {
      * Check if the target server is available with a simple HTTP GET /channels
      */
     private async checkServerAvailability(): Promise<boolean> {
+        let url = "<unresolved>";
         try {
             let secureProtocol = "https";
             if (this.targetHost.insecure) {
-                if (process.env.NODE_ENV !== "test") {
-                    throw new Error("insecure replication is only allowed in test environment");
+                if (process.env.NODE_ENV !== "test" && process.env.IS_IN_SECURE_TUNNEL !== "1") {
+                    throw new Error("insecure replication requires NODE_ENV=test or IS_IN_SECURE_TUNNEL=1");
                 }
                 secureProtocol = "http";
             }
-            const url = `${secureProtocol}://${this.targetHost.address}:${this.targetHost.port}/channels`;
+            url = `${secureProtocol}://${this.targetHost.address}:${this.targetHost.port}/channels`;
+            this.progress(`checkServerAvailability GET ${url} (serverId=${this.targetHost.serverId}, insecure=${!!this.targetHost.insecure})`);
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
@@ -494,7 +496,8 @@ export class Replicant {
                 return false;
             }
         } catch (error: any) {
-            this.warn(error.cause.message || error.message);
+            const msg = error?.cause?.message || error?.message || String(error);
+            this.warn(`checkServerAvailability failed for ${url}: ${msg}`);
             this.warn(
                 `can't yet replicate from ${this.targetHost.address}:${this.targetHost.port} - will retry`,
             );
