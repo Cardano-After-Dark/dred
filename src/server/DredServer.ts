@@ -405,8 +405,9 @@ export class DredServer {
         const { port, address } = myInfo;
 
         const bindAddress = process.env.LISTEN_ADDRESS || address;
-        this.listener = this.api.listen(Number(port), bindAddress);
-        this.info(`listening at ${bindAddress}:${port} (advertised ${address}:${port})`);
+        const bindPort = Number(process.env.LISTEN_PORT || port);
+        this.listener = this.api.listen(bindPort, bindAddress);
+        this.info(`listening at ${bindAddress}:${bindPort} (advertised ${address}:${port})`);
 
         // Setup replication after all basic server setup is complete
         // at this point, "_chans" and "_auth" channels are already created
