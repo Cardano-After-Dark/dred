@@ -47,7 +47,13 @@ type ManagerEvents = {
     message: [DredChannelMessage];
 };
 
-type connStatus = "active" | "pending" | "disconnected" | "obsolete";
+//! connStatus per-connection:
+//    "pending"      — newly created, not yet connected
+//    "active"       — healthy connection, exchanging messages
+//    "dropped"      — died unexpectedly (stream reset, heartbeat miss) and needs replacement
+//    "obsolete"     — superseded by a newer HostConnection (replacedBy) — no replacement needed
+//    "disconnected" — finalized (retired and graveyarded); terminal
+type connStatus = "active" | "pending" | "dropped" | "obsolete" | "disconnected";
 type healthStatus = "unhealthy" | "partial" | "healthy";
 
 type cm = ConnectionManager;
@@ -163,6 +169,31 @@ const connectionManagerStates = {
         sufficient: "healthy",
         partial: "partiallyConnected",
         replaceSubs: "replacingSubs",
+        connectionDropped: "reconnecting",
+        disconnected: "disconnected",
+    },
+    reconnecting: {
+        //! entered when any active/pending connection drops unexpectedly.
+        //  Replaces every connection in "dropped" status in the background.
+        //  We do NOT call checkConnectionState() here — the newly spawned
+        //  connections are still pending, and a 0-active snapshot would falsely
+        //  route us to "disconnected". Instead, the replacement's own
+        //  "connected" event (→ healthyConnection → checkConnectionState) or
+        //  its eventual "failed" event will trigger the next transition.
+        async onEntry(this: cm) {
+            for (const [conn, status] of this.connStatus.entries()) {
+                if (status !== "dropped") continue;
+                if (this.hostToConn.get(conn.host) !== conn) continue;
+
+                this.progress("replacing dropped connection to %s", conn.host.address);
+                this.replaceHostConnection(conn.host).catch((err: any) => {
+                    this.warn("replaceHostConnection failed: %s", err?.message || err);
+                });
+            }
+        },
+        connectionDropped: { nextState: "reconnecting", reEntry: true },
+        sufficient: "healthy",
+        partial: "partiallyConnected",
         disconnected: "disconnected",
     },
     partiallyConnected: {
@@ -172,6 +203,8 @@ const connectionManagerStates = {
         // "connectedOne": "addedConnection",
         sufficient: "healthy",
         partial: "partiallyConnected",
+        disconnected: "disconnected",
+        connectionDropped: "reconnecting",
     },
     healthy: {
         async onEntry(this: cm) {
@@ -213,6 +246,7 @@ const connectionManagerStates = {
         disconnected: "disconnected",
         partial: "degraded",
         updatedHostList: "connecting",
+        connectionDropped: "reconnecting",
     },
     degraded: {
         async onEntry(this: cm) {
@@ -232,6 +266,8 @@ const connectionManagerStates = {
         },
         sufficient: "sufficient",
         updatedHostList: "connecting",
+        disconnected: "disconnected",
+        connectionDropped: "reconnecting",
     },
     disconnecting: {
         async onEntry(this: cm) {
@@ -242,6 +278,8 @@ const connectionManagerStates = {
             this.disconnect();
         },
         disconnected: "disconnected",
+        //! connection events may still fire as hosts tear down; absorb them cleanly.
+        connectionDropped: { nextState: "disconnecting", reEntry: false },
     },
     disconnected: {
         async onEntry(this: cm) {
@@ -256,7 +294,11 @@ const connectionManagerStates = {
             });
         },
         reconnect: "connecting",
-        sufficient: "disconnected",
+        //! a prior replacement connection succeeding → route out via healthy/partial.
+        sufficient: "healthy",
+        partial: "partiallyConnected",
+        //! a new drop occurring before recovery → re-enter reconnecting to spawn replacements.
+        connectionDropped: "reconnecting",
     },
 };
 
@@ -557,9 +599,11 @@ export class ConnectionManager extends StateMachine.withDefinition(
         });
         conn.events.once("connected", this.healthyConnection);
 
-        conn.events.once("disconnected", this.cleanupConnection);
-        conn.events.once("replacedBy", this.cleanupConnection);
-        conn.events.once("failed", this.cleanupConnection);
+        //! "disconnected" is unsolicited — mark as dropped so ensureReplacements spawns a new one.
+        //! "replacedBy" / "failed" — a newer conn already exists or this one is dead-dead; mark obsolete.
+        conn.events.once("disconnected", this.onConnectionDropped);
+        conn.events.once("replacedBy", this.onConnectionObsolete);
+        conn.events.once("failed", this.onConnectionObsolete);
 
         conn.events.on("message", this.notifySubscribers);
 
@@ -587,11 +631,29 @@ export class ConnectionManager extends StateMachine.withDefinition(
         this.checkConnectionState();
     }
 
+    //! kept for back-compat in case other callers still reference it;
+    //  defers to the new per-event handlers based on whether the prior status indicates replacement is needed.
     @autobind
     cleanupConnection(event: ConnectionEvent | DredError) {
-        const { connection, message } = event;
-        this.debug("cleanup: ", connection.host.address, message);
+        this.onConnectionObsolete(event);
+    }
 
+    //! unsolicited disconnect: mark dropped, fire connectionDropped transition.
+    //  The manager's state machine decides how to react (typically enters "reconnecting").
+    @autobind
+    onConnectionDropped(event: ConnectionEvent | DredError) {
+        const { connection, message } = event;
+        this.debug("dropped:", connection.host.address, message);
+        this.moveConnTo(connection, "dropped");
+        this.graveyard.add(connection);
+        this.transition("connectionDropped");
+    }
+
+    //! superseded by a newer connection or terminally failed: just finalize.
+    @autobind
+    onConnectionObsolete(event: ConnectionEvent | DredError) {
+        const { connection, message } = event;
+        this.debug("obsolete:", connection.host.address, message);
         this.moveConnTo(connection, "disconnected");
         this.graveyard.add(connection);
     }
@@ -741,7 +803,8 @@ export class ConnectionManager extends StateMachine.withDefinition(
         if (healthyConnectionCount > thresholds.minimal) {
             return this.transition("partial");
         }
-        return this.transition("unhealthy");
+        //! no healthy connections: surface via the canonical "disconnected" transition.
+        return this.transition("disconnected");
     }
 
     async freshenPeers(): PromisedHostDetails {
