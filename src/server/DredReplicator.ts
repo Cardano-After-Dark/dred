@@ -802,12 +802,11 @@ export class Replicant {
                 this.debug(`Skipping meta channel: %s`, channelId);
                 return;
             }
-            if (this.repClient!.channels.includes(channelId)) {
-                this.trace(`ignoring channel (already known): %s`, channelId);
-                return;
-            }
 
-            // Handle asynchronously but don't await to avoid blocking
+            //! dedup is handled inside replicateNewChannel against the home
+            //! server's channelList. Do NOT guard here against repClient.channels
+            //! (that list is the *target* peer's channels — gating on it would
+            //! skip exactly the channels we need to create locally).
             this.replicateNewChannel(channelId, options).catch((error) => {
                 this.warn(`Error handling channel addition: ${error}`);
             });
@@ -833,9 +832,13 @@ export class Replicant {
 
             this.log(`🆕 Creating channel %s on home server`, channelName);
 
-            // Create channel on home server using the same options
-            await this.homeServer.channelList.set(channelName, "1");
+            //! mirror createChannelHandler ordering: options → list → announce,
+            //! so anything reading channelList can already fetch options, and
+            //! local _chans subscribers see the same chanCreated shape the
+            //! target peer emitted (options object passed through verbatim).
             await this.homeServer.setChanOptions(channelName, options);
+            await this.homeServer.channelList.set(channelName, "1");
+            await this.homeServer.channelCreated(channelName, options);
 
             const commonChannels = await this.findCommonChannels("forceFreshen");
             await this.subscribeToCommonChannels(commonChannels);
