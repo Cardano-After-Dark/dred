@@ -198,6 +198,10 @@ interface SimpleRetryState {
     nextRetryTime?: Date;
     isRetrying: boolean;
     retryTimer?: NodeJS.Timeout;
+    //! consecutive failure count — drives exponential backoff and is reset on success
+    attempts: number;
+    //! when the current failure streak started, for "down for Ys" diagnostics
+    firstFailureTime?: Date;
 }
 
 type ReplicationEvents = {
@@ -254,6 +258,7 @@ export class Replicant {
         this.repClient = null;
         this.retryState = {
             isRetrying: false,
+            attempts: 0,
         };
     }
 
@@ -460,15 +465,17 @@ export class Replicant {
      * Check if the target server is available with a simple HTTP GET /channels
      */
     private async checkServerAvailability(): Promise<boolean> {
+        let url = "<unresolved>";
         try {
             let secureProtocol = "https";
             if (this.targetHost.insecure) {
-                if (process.env.NODE_ENV !== "test") {
-                    throw new Error("insecure replication is only allowed in test environment");
+                if (process.env.NODE_ENV !== "test" && process.env.IS_IN_SECURE_TUNNEL !== "1") {
+                    throw new Error("insecure replication requires NODE_ENV=test or IS_IN_SECURE_TUNNEL=1");
                 }
                 secureProtocol = "http";
             }
-            const url = `${secureProtocol}://${this.targetHost.address}:${this.targetHost.port}/channels`;
+            url = `${secureProtocol}://${this.targetHost.address}:${this.targetHost.port}/channels`;
+            this.progress(`checkServerAvailability GET ${url} (serverId=${this.targetHost.serverId}, insecure=${!!this.targetHost.insecure})`);
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
@@ -494,7 +501,8 @@ export class Replicant {
                 return false;
             }
         } catch (error: any) {
-            this.warn(error.cause.message || error.message);
+            const msg = error?.cause?.message || error?.message || String(error);
+            this.warn(`checkServerAvailability failed for ${url}: ${msg}`);
             this.warn(
                 `can't yet replicate from ${this.targetHost.address}:${this.targetHost.port} - will retry`,
             );
@@ -520,25 +528,51 @@ export class Replicant {
     }
 
     /**
-     * Schedule a retry attempt after the configured interval
+     * Schedule a retry attempt with exponential backoff (1.27^attempts, capped).
+     *
+     * Shape matches HostConnection's mid-stream retry loop so recovery behaves
+     * consistently across layers: fast initial attempts for transient failures
+     * (peer restarts) with polite backoff for sustained outages.
      */
     private scheduleRetry(): void {
         if (this.retryState.isRetrying) {
             return;
         }
 
-        const retryIntervalSeconds = parseInt(
-            process.env.REPLICATION_RETRY_INTERVAL_SECONDS || "60",
-            10,
+        const testEnv = process.env.NODE_ENV === "test";
+        //! in test env the unit is centiseconds (10ms) so tests stay fast
+        const unitMs = testEnv ? 10 : 1000;
+
+        const baseSec = parseFloat(process.env.REPLICATION_RETRY_BASE_SECONDS || "1");
+        const maxSec = parseFloat(
+            process.env.REPLICATION_RETRY_MAX_SECONDS ||
+                process.env.REPLICATION_RETRY_INTERVAL_SECONDS ||
+                "30",
         );
-        // in test env, we'll retry every 6 seconds instead by default.  Sorry this looks obscure.
-        const retryIntervalMs =
-            retryIntervalSeconds * (process.env.NODE_ENV === "test" ? 100 : 1000);
+
+        this.retryState.attempts += 1;
+        if (!this.retryState.firstFailureTime) {
+            this.retryState.firstFailureTime = new Date();
+        }
+
+        const attempts = this.retryState.attempts;
+        const rawMs = baseSec * unitMs * Math.pow(1.27, attempts - 1);
+        const retryIntervalMs = Math.min(rawMs, maxSec * unitMs);
 
         this.retryState.isRetrying = true;
         this.retryState.nextRetryTime = new Date(Date.now() + retryIntervalMs);
 
+        const downForMs = Date.now() - this.retryState.firstFailureTime.getTime();
+        this.warn(
+            `scheduled retry #${attempts} in ${(retryIntervalMs / unitMs).toFixed(2)}s ` +
+                `(down for ${(downForMs / unitMs).toFixed(1)}s, target=${this.targetHost.serverId})`,
+        );
+
         this.retryState.retryTimer = setTimeout(() => {
+            //! clear re-entry guard before the attempt so that if it fails again,
+            //! scheduleRetry() can schedule retry #N+1 instead of silently no-op'ing
+            this.retryState.isRetrying = false;
+            this.retryState.retryTimer = undefined;
             this.attemptConnection();
         }, retryIntervalMs);
     }
@@ -552,8 +586,17 @@ export class Replicant {
             this.retryState.retryTimer = undefined;
         }
 
+        if (this.retryState.attempts > 0 && this.retryState.firstFailureTime) {
+            const downForMs = Date.now() - this.retryState.firstFailureTime.getTime();
+            this.progress(
+                `recovered after ${this.retryState.attempts} attempt(s) / ${(downForMs / 1000).toFixed(1)}s`,
+            );
+        }
+
         this.retryState.isRetrying = false;
         this.retryState.nextRetryTime = undefined;
+        this.retryState.attempts = 0;
+        this.retryState.firstFailureTime = undefined;
     }
 
     private async findCommonChannels(
@@ -618,7 +661,7 @@ export class Replicant {
     private async messageHandler(inboundMessage: FullDredMessage): Promise<void> {
         const { mid, channel, ocid } = inboundMessage;
         try {
-            this.trace(`received message`, { channel, mid });
+            this.trace(`received message`, { channel, mid, ocid });
             const messageId = ocid || mid || `${Date.now()}-${Math.random()}`;
 
             // Skip messages without ocid - they can't be properly deduplicated
@@ -655,8 +698,17 @@ export class Replicant {
 
             const { msg, type, "content-type": contentType, encryptedMsg } = inboundMessage;
 
+            //! preserve the true origin when the message has already hopped: if the inbound
+            //! message carries an origSrvId from an upstream hop, keep it. In the 1-hop case
+            //! origSrvId would equal replFrom (our target), so omit it — replFrom carries that
+            //! information by itself.
+            const upstreamOrigin = inboundMessage.origSrvId;
+            const carryOrigin =
+                upstreamOrigin && upstreamOrigin !== this.targetHost.serverId
+                    ? { origSrvId: upstreamOrigin }
+                    : {};
+
             const replicatedMessage: DredMessage & ReplicatedMessage = {
-                // type: message.type || "replicated",'
                 msg,
                 type,
                 "content-type": contentType,
@@ -665,8 +717,7 @@ export class Replicant {
 
                 replFrom: this.targetHost.serverId,
                 replAt: new Date().getTime(),
-                origMsgId: messageId,
-                origSrvId: this.targetHost.serverId,
+                ...carryOrigin,
             };
 
             await this.addMessage(channel, mid, replicatedMessage);
@@ -722,7 +773,7 @@ export class Replicant {
             );
 
             if (result) {
-                this.logger.trace(`Message added to local server: ${result}`);
+                this.logger.trace(`Message added to local server: ${result} (ocid ${ocid}, channel ${channelId})`);
             } else {
                 this.debug(`already replicated: ${channelId}/ ${messageDetails.ocid}`);
             }
@@ -751,12 +802,11 @@ export class Replicant {
                 this.debug(`Skipping meta channel: %s`, channelId);
                 return;
             }
-            if (this.repClient!.channels.includes(channelId)) {
-                this.trace(`ignoring channel (already known): %s`, channelId);
-                return;
-            }
 
-            // Handle asynchronously but don't await to avoid blocking
+            //! dedup is handled inside replicateNewChannel against the home
+            //! server's channelList. Do NOT guard here against repClient.channels
+            //! (that list is the *target* peer's channels — gating on it would
+            //! skip exactly the channels we need to create locally).
             this.replicateNewChannel(channelId, options).catch((error) => {
                 this.warn(`Error handling channel addition: ${error}`);
             });
@@ -782,9 +832,13 @@ export class Replicant {
 
             this.log(`🆕 Creating channel %s on home server`, channelName);
 
-            // Create channel on home server using the same options
-            await this.homeServer.channelList.set(channelName, "1");
+            //! mirror createChannelHandler ordering: options → list → announce,
+            //! so anything reading channelList can already fetch options, and
+            //! local _chans subscribers see the same chanCreated shape the
+            //! target peer emitted (options object passed through verbatim).
             await this.homeServer.setChanOptions(channelName, options);
+            await this.homeServer.channelList.set(channelName, "1");
+            await this.homeServer.channelCreated(channelName, options);
 
             const commonChannels = await this.findCommonChannels("forceFreshen");
             await this.subscribeToCommonChannels(commonChannels);
@@ -816,6 +870,8 @@ export class Replicant {
         // Reset retry state
         this.retryState.isRetrying = false;
         this.retryState.nextRetryTime = undefined;
+        this.retryState.attempts = 0;
+        this.retryState.firstFailureTime = undefined;
 
         if (this.repClient) {
             this.repClient.events.removeAllListeners();

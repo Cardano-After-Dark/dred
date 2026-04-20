@@ -1,0 +1,7 @@
+{"id":"TERM-vqjkz385cg","type":"term","canonical":"heartbeat","scope":"project","definition":"Stream-control liveness ping emitted by the server on each open listen stream."}
+{"id":"TERM-g37mb9mm05","type":"term","canonical":"heartbeat-info","scope":"project","definition":"Stream-control frame sent once after a listen succeeds, carrying the expected heartbeat interval."}
+{"id":"TERM-4538j6fmez","type":"term","canonical":"error","scope":"project","definition":"Stream-control notification that a per-channel stream consumer failed."}
+{"id":"TERM-25crdbfqb3","type":"term","canonical":"warning","scope":"project","definition":"Stream-control advisory for a missing or expired channel in a multi-channel subscribe."}
+{"id":"TERM-514n2ty58h","type":"term","canonical":"channel:genesis","scope":"project","definition":"Protocol-event inception marker persisted on a channel's own stream at creation time."}
+{"id":"TERM-y3j6f7h88q","type":"term","canonical":"chanCreated","scope":"project","definition":"Protocol-event broadcast on the _chans meta-channel announcing a newly-created channel."}
+{"id":"TERM-q5rjyry02r","type":"term","canonical":"newId","scope":"project","definition":"Planned protocol-event on the _auth meta-channel for identity registration (not yet implemented)."}
