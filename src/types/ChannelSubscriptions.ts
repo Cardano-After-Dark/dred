@@ -164,8 +164,9 @@ export type DredChannelMessage = ConnectionEvent & ReplicatedMessage & {
 export type ReplicatedMessage = {
     replFrom?: string;
     replAt?: number;
+    //! only set on multi-hop replication (origSrvId !== replFrom); on single-hop the
+    //! original server is implied by replFrom, so this field is omitted.
     origSrvId?: string;
-    origMsgId?: string;
 };
 
 
