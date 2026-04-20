@@ -326,10 +326,10 @@ export class ConnectionManager extends StateMachine.withDefinition(
     bookmarkStorage: BookmarkStorage;
 
     //! it can map from the host object to a best-known Connection object for that host.
-    private hostToConn = new Map<DredHostDetails, HostConnection>();
+    hostToConn = new Map<DredHostDetails, HostConnection>();
 
     //! it keeps notes on the status of every connection it knows about, and can count the connections in each state
-    private connStatus = new Map<HostConnection, connStatus>();
+    connStatus = new Map<HostConnection, connStatus>();
 
     //! it keeps a graveyard of connections that can drop out of the set anytime they're garbage-collected,
     //  for connections that are known to be obsolete / replaced by newer versions, but which might still get / emit
