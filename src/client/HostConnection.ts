@@ -479,6 +479,13 @@ export class HostConnection extends StateMachineNg<
                 const { timerInterval } = value;
                 this.trace("heartbeat-info: expecting heartbeats every %d ms", timerInterval);
                 this.heartbeatInterval = timerInterval;
+                //! seed lastHeartbeat with the freshly-established stream's clock
+                //  and (re)arm the watchdog at the negotiated interval.  Without
+                //  this, the watchdog only ever arms after the first real
+                //  heartbeat — leaving a window where a stream that establishes
+                //  but never delivers a heartbeat is undetectable.
+                this.lastHeartbeat = new Date().getTime();
+                this.armWatchdog();
                 continue;
             }
             if ("warning" == value?.type) {
@@ -520,37 +527,54 @@ export class HostConnection extends StateMachineNg<
     heartbeatInterval: number = 10000;
     lastHeartbeat: number = new Date().getTime();
     private heartbeatTimer?: ReturnType<typeof setTimeout>;
-    heartbeatReceived() {
-        const now = new Date().getTime();
-        this.lastHeartbeat = now;
+
+    private armWatchdog() {
         if (this.heartbeatTimer) clearTimeout(this.heartbeatTimer);
         this.heartbeatTimer = setTimeout(this.watchdog, 3 * this.heartbeatInterval);
-        this.heartbeatTimer.unref && this.heartbeatTimer.unref();
+        this.heartbeatTimer.unref?.();
+    }
+
+    heartbeatReceived() {
+        this.lastHeartbeat = new Date().getTime();
+        this.armWatchdog();
     }
 
     @autobind
     watchdog() {
         const now = new Date().getTime();
 
-        if (this.lastHeartbeat + 1.1 * this.heartbeatInterval < now) {
-            console.warn("Missed expected heartbeat from server", this.host.serverId);
+        if (this.lastHeartbeat + 3 * this.heartbeatInterval >= now) {
+            //! spurious wake (e.g. a heartbeat landed between the timer being
+            //  scheduled and this firing).  re-arm and exit quietly.
+            this.armWatchdog();
+            return;
         }
 
-        if (this.lastHeartbeat + 3 * this.heartbeatInterval < now) {
-            console.error("Missed 3 expected heartbeats from server!!!", this.host.serverId);
-            //! abort the stalled reader and transition to disconnected so the
-            //  ConnectionManager's connectionDropped → reconnecting path kicks in.
-            this.lastError = new Error(
-                `missed 3 heartbeats from ${this.host.serverId} — host presumed dead`,
-            );
-            try {
-                this.abortController?.abort();
-            } catch {
-                /* ignore */
-            }
-            if (this.currentState === "connected") {
-                this.transition("disconnected");
-            }
+        const downForMs = now - this.lastHeartbeat;
+        this.warn(
+            `missed 3 heartbeats from ${this.host.serverId} — host presumed dead (down ${(downForMs / 1000).toFixed(1)}s)`,
+        );
+        this.lastError = new Error(
+            `missed 3 heartbeats from ${this.host.serverId} — host presumed dead`,
+        );
+
+        //! Order matters: transition BEFORE abort.  abortController.abort()
+        //  synchronously fires the abort handler, which calls
+        //  transition("abort") → state moves connected→aborted.  If we abort
+        //  first, two things go wrong: (a) the `currentState === "connected"`
+        //  guard below skips our disconnected transition, and (b) the
+        //  connected→disconnected onTransition has its own
+        //  `abortController.signal.aborted` guard that suppresses emission.
+        //  Result: CM never sees "disconnected", connStatus stays "active",
+        //  and a stuck connection is never replaced — exactly the symptom
+        //  observed after sleep/wake or NAT timeout.
+        if (this.currentState === "connected") {
+            this.transition("disconnected");
+        }
+        try {
+            this.abortController?.abort();
+        } catch {
+            /* ignore */
         }
     }
 
@@ -599,6 +623,12 @@ export class HostConnection extends StateMachineNg<
         },
         [`connected`]: () => {
             this.progress("message stream established");
+            //! seed the watchdog at connect time so a stream that establishes
+            //  but never delivers a heartbeat-info or a heartbeat is still
+            //  detectable.  heartbeat-info will (re)arm with the negotiated
+            //  interval; until then we use the default heartbeatInterval.
+            this.lastHeartbeat = new Date().getTime();
+            this.armWatchdog();
             this.ignoringListenerErrors("connected", () => {
                 this.events.emit("connected", {
                     connection: this,

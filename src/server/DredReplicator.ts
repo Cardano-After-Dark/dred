@@ -295,37 +295,45 @@ export class Replicant {
     }
 
     /**
-     * Check if the connection manager has any active connections
+     * Check if the connection manager has any active connections.
+     *
+     * Two-stage check:
+     *   1. Fast-fail on the ConnectionManager's own state — if the CM knows
+     *      it's disconnected/disconnecting/reconnecting/connecting, the per-
+     *      connection map is either empty or in flux and we should report
+     *      inactive.  This is the authoritative health signal: CM owns
+     *      replacement of dropped connections, so its state is the source of
+     *      truth for whether the client has a stable view of the world.
+     *   2. Otherwise, walk the connStatus map and require at least one
+     *      non-graveyarded connection in "active" status.
+     *
+     * Previously this method had a fall-through `if (!isRetrying) return true`
+     * that reported active whenever the replicant had successfully connected
+     * once — even if every underlying connection had since gone "dropped" or
+     * "disconnected".  That fall-through is gone.
      */
     private hasActiveConnections(connManager: any): boolean {
         try {
-            // Simple approach: if we have a repClient and it was successfully established, consider it active
-            if (this.repClient) {
-                const clientConnManager = (this.repClient as any).connManager;
-
-                // Check if the client's connection manager has active connections
-                if (clientConnManager) {
-                    const clientConnStatus = (clientConnManager as any).connStatus;
-                    if (clientConnStatus && clientConnStatus.size > 0) {
-                        for (const [conn, status] of clientConnStatus.entries()) {
-                            const graveyard = (clientConnManager as any).graveyard;
-                            if (graveyard && graveyard.has(conn)) {
-                                continue; // Skip graveyard connections
-                            }
-                            if (status === "active") {
-                                return true;
-                            }
-                        }
-                    }
-                }
-
-                // If we have a repClient that was successfully created and hasn't been cleaned up,
-                // and we're not in a retry state, assume it's active
-                if (!this.retryState.isRetrying) {
-                    return true;
-                }
+            const cmState = connManager?.currentState as string | undefined;
+            if (
+                cmState === "disconnected" ||
+                cmState === "disconnecting" ||
+                cmState === "reconnecting" ||
+                cmState === "connecting" ||
+                cmState === "pendingSetup" ||
+                cmState === "discoveringNbh"
+            ) {
+                return false;
             }
 
+            const clientConnStatus = connManager?.connStatus;
+            if (!clientConnStatus || clientConnStatus.size === 0) return false;
+
+            const graveyard = connManager.graveyard;
+            for (const [conn, status] of clientConnStatus.entries()) {
+                if (graveyard?.has(conn)) continue;
+                if (status === "active") return true;
+            }
             return false;
         } catch (error) {
             return false;
