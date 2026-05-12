@@ -1,6 +1,11 @@
 import dotenv from 'dotenv/config'
 import { readFileSync } from 'node:fs';
 
+// Side-effect import: installs Promise.withResolvers shim onto the zoned-cls
+// ZoneAwarePromise. Must run after @poshplum/utils (which imports zoned-cls)
+// so the shim attaches to the patched global, not the native Promise.
+import "../src/util/cancellablePromise.js";
+
 // HACK: ref'd keepalive — event loop drains otherwise despite ref'd HTTP listener.
 // Suspected cause: zoned-cls Promise patching interacting with listener handle refs.
 setInterval(() => {}, 60000);

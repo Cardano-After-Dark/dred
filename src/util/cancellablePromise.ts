@@ -2,6 +2,10 @@
 /**
  * copied from stellar-contracts
  */
+// Ensure zoned-cls's Promise patch is in place before we probe Promise.withResolvers —
+// otherwise we'd shim the native Promise (already has it) and miss ZoneAwarePromise.
+import "@poshplum/utils";
+
 type TimeoutId = ReturnType<typeof setTimeout>;
 
 if (typeof Promise.withResolvers !== 'function') {
