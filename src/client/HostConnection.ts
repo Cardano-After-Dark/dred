@@ -117,16 +117,14 @@ export class HostConnection extends StateMachineNg<
     private startTime = new Date().getTime();
     private scheduledRetry?: ReturnType<typeof setTimeout>;
     private logger: Logger;
-    private _status!: string; // assigned by state-machine
     private _destroyed = false; // Flag to track if connection is being destroyed
     private _disconnecting = false; // Flag to track if disconnection is in progress
 
-    set currentState(v: string) {
-        this._status = v;
-    }
-
-    get currentState() {
-        return this._status;
+    //! mirror $state (the StateMachine base-class field that actually tracks
+    //  current state) so external readers and our own watchdog can ask for
+    //  currentState without knowing the base class's field name.
+    get currentState(): HostConnectionStates {
+        return this.$state;
     }
 
     resetState() {}
@@ -184,6 +182,7 @@ export class HostConnection extends StateMachineNg<
 
         if (this.abortController) this.abortController.abort(`disconnect(): ${reason}`);
         this.stopRetries();
+        this.clearWatchdog();
 
         // Mark as destroyed after disconnect operations
         this._destroyed = true;
@@ -534,6 +533,11 @@ export class HostConnection extends StateMachineNg<
         this.heartbeatTimer.unref?.();
     }
 
+    private clearWatchdog() {
+        if (this.heartbeatTimer) clearTimeout(this.heartbeatTimer);
+        this.heartbeatTimer = undefined;
+    }
+
     heartbeatReceived() {
         this.lastHeartbeat = new Date().getTime();
         this.armWatchdog();
@@ -541,6 +545,14 @@ export class HostConnection extends StateMachineNg<
 
     @autobind
     watchdog() {
+        //! defensive guard: armWatchdog is not cleared on exit from
+        //  "connected", so a stale timer can fire while we're elsewhere.
+        //  Drop it on the floor and stop re-arming.
+        if (this.currentState !== "connected") {
+            this.clearWatchdog();
+            return;
+        }
+
         const now = new Date().getTime();
 
         if (this.lastHeartbeat + 3 * this.heartbeatInterval >= now) {
@@ -558,19 +570,19 @@ export class HostConnection extends StateMachineNg<
             `missed 3 heartbeats from ${this.host.serverId} — host presumed dead`,
         );
 
-        //! Order matters: transition BEFORE abort.  abortController.abort()
-        //  synchronously fires the abort handler, which calls
-        //  transition("abort") → state moves connected→aborted.  If we abort
-        //  first, two things go wrong: (a) the `currentState === "connected"`
-        //  guard below skips our disconnected transition, and (b) the
-        //  connected→disconnected onTransition has its own
-        //  `abortController.signal.aborted` guard that suppresses emission.
-        //  Result: CM never sees "disconnected", connStatus stays "active",
-        //  and a stuck connection is never replaced — exactly the symptom
-        //  observed after sleep/wake or NAT timeout.
-        if (this.currentState === "connected") {
-            this.transition("disconnected");
-        }
+        //! Order matters: transition BEFORE abort.  transition("disconnected")
+        //  synchronously emits the "disconnected" event that CM's
+        //  onConnectionDropped listens for (→ marks dropped → reconnecting
+        //  → spawn replacement).  abortController.abort() fires the abort
+        //  handler → transition("abort"); from the new "disconnected" state,
+        //  transitionTable[disconnected][abort] keeps us in "disconnected".
+        //
+        //  Reversing the order would defeat the whole flatline-response
+        //  pipeline: the abort handler would run transition("abort") from
+        //  "connected" first → state "aborted", and the
+        //  connected→disconnected onTransition's `signal.aborted` guard
+        //  would suppress the event even if we then tried to transition.
+        this.transition("disconnected");
         try {
             this.abortController?.abort();
         } catch {
@@ -663,6 +675,10 @@ export class HostConnection extends StateMachineNg<
 
         [`disconnected`]: () => {
             this.stopRetries();
+            this.clearWatchdog();
+        },
+        [`aborted`]: () => {
+            this.clearWatchdog();
         },
     };
 
