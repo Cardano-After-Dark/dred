@@ -143,4 +143,153 @@ describe("Replication race scenarios", () => {
             expect(c2Receipts[0].ocid).toBe(ocid);
         });
     });
+
+    describe("staggered inbound (cross-source arrival ordering)", () => {
+        it("delivers exactly once when the cross-replication path arrives before the direct path", async () => {
+            //! Scenario: c1 posts M to dred1. Both dred2.replicantOfDred1 and
+            //  dred3.replicantOfDred1 are subscribed to dred1's stream. We
+            //  pause dred2.replicantOfDred1's inbound, so dred3 receives and
+            //  publishes M first; dred2.replicantOfDred3 then brings M to
+            //  dred2 via the cross-replication path — BEFORE the original
+            //  direct path is released. When we finally release dred2's
+            //  inbound from dred1, the atomic SADD should see the ocid
+            //  already present and drop the duplicate.
+            //
+            //  This exercises the same code we just made atomic, but via a
+            //  different arrival ordering than scenario 1. Both should hold
+            //  exactly-once delivery.
+
+            const gate = new Gate();
+            dred2.testGate = gate;
+
+            //! Hold dred2's direct-from-first path at the inbound chokepoint.
+            const holdDirect = gate.pause(
+                `${dred2.serverId}:replicant:${dred1.serverId}:inbound`,
+            );
+
+            const c2Receipts: FullDredMessage[] = [];
+            await c2.subscribeToChannels({
+                [CHANNEL]: (message) => {
+                    c2Receipts.push(message);
+                    console.error(
+                        `📥 c2 (staggered) received: ocid=${message.ocid} mid=${message.mid} replFrom=${(message as any).replFrom}`,
+                    );
+                },
+            });
+
+            const ocid = "race-staggered-001";
+            await c1.postMessage(CHANNEL, {
+                msg: "staggered payload",
+                type: "race-test-staggered",
+                ocid,
+            });
+
+            //! Wait for the direct path to arrive at the gate so we know the
+            //  pause has been consumed by the right call.
+            await holdDirect.arrived;
+
+            //! Give the cross-path time to traverse: dred3 receives,
+            //  publishes, dred2.replicantOfDred3 picks it up, publishes on
+            //  dred2. By the time we release the direct path, dred2's
+            //  knownMessages already has the ocid.
+            await asyncDelay(200);
+
+            const receiptsBeforeRelease = c2Receipts.length;
+            console.error(
+                `c2 receipts BEFORE releasing direct path: ${receiptsBeforeRelease}`,
+            );
+
+            //! Release the held direct path. Its ensureMessageProcessedOnce
+            //  should atomic-SADD, see added===0, and drop.
+            holdDirect.release();
+
+            await asyncDelay(200);
+
+            console.error(
+                `c2 receipts AFTER releasing direct path: ${c2Receipts.length}`,
+            );
+
+            //! Expected outcome: c2 sees the ocid exactly once. The
+            //  cross-source arrival path published it; the direct path
+            //  arrived later, saw it already known, and dropped.
+            expect(c2Receipts.length).toBe(1);
+            expect(c2Receipts[0].ocid).toBe(ocid);
+            //! And the receipt came BEFORE we released the direct path,
+            //  proving the cross-replication route delivered it.
+            expect(receiptsBeforeRelease).toBe(1);
+        });
+    });
+
+    describe("two-message ordering under staggered inbound", () => {
+        it("preserves M1-before-M2 order even when both arrive via the cross-replication path", async () => {
+            //! Two messages posted in order to dred1, with dred2's direct
+            //  inbound held until both should have traversed the cross-path
+            //  (via dred3). Verify c2 sees them in order (M1 then M2).
+            //
+            //  The cross-path delivers via dred3 → dred2.replicantOfDred3.
+            //  As long as that single consumer processes events in stream
+            //  order, ordering is preserved. The pause on the direct path
+            //  ensures cross-path is the actual delivery route here.
+
+            const gate = new Gate();
+            dred2.testGate = gate;
+
+            //! Two pauses on the inbound — one per inbound message arrival.
+            const holdM1Direct = gate.pause(
+                `${dred2.serverId}:replicant:${dred1.serverId}:inbound`,
+            );
+            const holdM2Direct = gate.pause(
+                `${dred2.serverId}:replicant:${dred1.serverId}:inbound`,
+            );
+
+            const c2Receipts: FullDredMessage[] = [];
+            await c2.subscribeToChannels({
+                [CHANNEL]: (message) => {
+                    c2Receipts.push(message);
+                    console.error(
+                        `📥 c2 (ordered) received: ocid=${message.ocid} mid=${message.mid}`,
+                    );
+                },
+            });
+
+            const ocidM1 = "race-ordered-msg1";
+            const ocidM2 = "race-ordered-msg2";
+
+            await c1.postMessage(CHANNEL, {
+                msg: "first",
+                type: "race-test-ordered",
+                ocid: ocidM1,
+            });
+            await c1.postMessage(CHANNEL, {
+                msg: "second",
+                type: "race-test-ordered",
+                ocid: ocidM2,
+            });
+
+            //! Wait for both direct-path arrivals to hit their gates.
+            await Promise.all([holdM1Direct.arrived, holdM2Direct.arrived]);
+
+            //! Let cross-path complete delivery for both messages.
+            await asyncDelay(250);
+
+            console.error(
+                `c2 receipts BEFORE releasing direct path: ${c2Receipts.length}, ocids=${c2Receipts.map((r) => r.ocid).join(",")}`,
+            );
+
+            //! Both messages should have arrived via cross-path by now.
+            expect(c2Receipts.length).toBe(2);
+            expect(c2Receipts[0].ocid).toBe(ocidM1);
+            expect(c2Receipts[1].ocid).toBe(ocidM2);
+
+            //! Release the direct paths; atomic SADD should drop both.
+            holdM1Direct.release();
+            holdM2Direct.release();
+            await asyncDelay(200);
+
+            //! Still exactly two — no duplicates from the released direct paths.
+            expect(c2Receipts.length).toBe(2);
+            expect(c2Receipts[0].ocid).toBe(ocidM1);
+            expect(c2Receipts[1].ocid).toBe(ocidM2);
+        });
+    });
 });
