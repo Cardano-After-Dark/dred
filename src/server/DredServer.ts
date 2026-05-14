@@ -940,9 +940,22 @@ export class DredServer {
     }
 
     getChannels: express.RequestHandler = async (req, res, next) => {
-        const found: string[] = (await this.channelList.keys()) as string[];
-        const channels = found.filter((x) => x[0] !== "_");
-        res.status(200).json({ channels });
+        //! channelList.keys() can reject if the RedisHash was disconnected
+        //  beneath this in-flight handler (e.g. teardown race). Contain so
+        //  the rejection doesn't escape to the route wrapper.
+        try {
+            const found: string[] = (await this.channelList.keys()) as string[];
+            const channels = found.filter((x) => x[0] !== "_");
+            res.status(200).json({ channels });
+        } catch (err: any) {
+            this.reqLogger(res).error(
+                "getChannels failed",
+                err?.stack || err?.message || err,
+            );
+            if (!res.headersSent) {
+                res.status(500).json({ error: "channel list unavailable" });
+            }
+        }
         next();
     };
     createChannel: express.RequestHandler = async (req, res, next) => {
@@ -1287,6 +1300,13 @@ export class DredServer {
         res.useChunkedEncodingByDefault = false;
         // res.setHeader("x-hi", "there");
         const reqLogger = this.reqLogger(res);
+        //! Pin channelConn to the instance this handler subscribed against.
+        //  If reset() (test) replaces this.channelConn while this handler is
+        //  still mid-flight, the cleanup closure must unsubscribe on the same
+        //  instance it subscribed on — not a new one, not undefined. The old
+        //  instance's own `closing` flag turns the unsubscribe into a silent
+        //  no-op after its cleanup() ran.
+        const channelConn = this.channelConn;
 
         reqLogger.progress("listening: %d channels: %s", subscriptions.length, subscriptions.map(s => `${s.channel}^${s.options.bookmark}`).join(", "));
         //!!! todo: it validates authorization as appropriate for each requested channel
@@ -1319,12 +1339,23 @@ export class DredServer {
         }, timerInterval);
         timer.unref(); //! the heartbeat-timer never blocks the process from exiting when it's otherwise done
 
+        //! Sentinel set by cleanup() before it unsubscribes consumers. The
+        //  unsubscribe disconnects the consumer's redis connection, which
+        //  causes any in-flight consume() on that connection to throw. That
+        //  throw isn't a real fault — it's the natural end of a stream we
+        //  ourselves just closed. notifyConsumeError consults this flag so it
+        //  doesn't log the expected case at error level or push a phantom
+        //  in-stream error event to a client that has already disconnected.
+        let unsubscribingOurselves = false;
+
         const cleanup = () => {
             reqLogger.debug("cleanup");
-            //! it cleans up all the internal subscriptions
+            unsubscribingOurselves = true;
+            //! it cleans up all the internal subscriptions on the channelConn
+            //  the handler subscribed against (captured at handler start).
             for (const mySub of myStreamListeners) {
                 const { channel, stream } = mySub;
-                this.channelConn.unsubscribe(stream);
+                channelConn.unsubscribe(stream);
             }
             clearInterval(timer);
         };
@@ -1338,70 +1369,100 @@ export class DredServer {
         };
 
         const notifyConsumeError: consumerErrorNotifier = (res, channel, consumeError) => {
-            if (!cancelled) {
-
-                sendUpdate(0,{
-                    channel,
-                    type: "error",
-                    message: "internal stream consumer failed",
-                    reason: consumeError.message,
-                });
-                this.reqLogger(res).error(
-                    `${channel} consume error; TODO: reconnect/retry`,
-                    consumeError.stack || consumeError.message || consumeError,
+            if (cancelled) return;
+            if (unsubscribingOurselves) {
+                //! self-initiated unsubscribe; consume throw is expected
+                this.reqLogger(res).debug(
+                    `${channel} consume ended (self-initiated unsubscribe)`,
                 );
                 cleanup();
                 next();
+                return;
             }
+
+            sendUpdate(0, {
+                channel,
+                type: "error",
+                message: "internal stream consumer failed",
+                reason: consumeError.message,
+            });
+            this.reqLogger(res).error(
+                `${channel} consume error; TODO: reconnect/retry`,
+                consumeError.stack || consumeError.message || consumeError,
+            );
+            cleanup();
+            next();
         };
 
         let anySuccesses = 0;
         let warnings: any[] = [];
-        for (const sub of subscriptions) {
-            const { channel, options: {
-                maxLatency=defaultMaxDelayMs,
-                bookmark,
-                filter,
-            } } = sub;
+        //! Setup-phase awaits (channelList.has, channelConn.use/subscribe via
+        //  listenOneChannel) can reject from transient Redis/channel-manager
+        //  faults or from teardown disconnecting state mid-call. Contain those
+        //  rejections here so they become a proper 500 (or stream close, if
+        //  the response had already started) instead of escaping to the route
+        //  wrapper as an unhandled promise rejection.
+        try {
+            for (const sub of subscriptions) {
+                const { channel, options: {
+                    maxLatency=defaultMaxDelayMs,
+                    bookmark,
+                    filter,
+                } } = sub;
 
-            const found = await this.channelList.has(channel);
-            if (!found) {
-                //! sends a warning note but does not fail unless there are no valid subscriptions
-                warnings.push({
-                    //!!! todo: review & craft the shape of this for consistency with other warnings that may be necessary to send to clients
-                    channel,
-                    type: "warning",
-                    message: "invalid or expired channel",
-                });
+                const found = await this.channelList.has(channel);
+                if (!found) {
+                    //! sends a warning note but does not fail unless there are no valid subscriptions
+                    warnings.push({
+                        //!!! todo: review & craft the shape of this for consistency with other warnings that may be necessary to send to clients
+                        channel,
+                        type: "warning",
+                        message: "invalid or expired channel",
+                    });
+                }
+
+                // !!! todo: support inbound bookmarks for each channel and "from end" or "from start" cues
+                //  - this will allow clients to pick up where they left off, or to start from the beginning
+                //    of a channel's history.  "from end" will be the default.
+                // for "bookmark" and "from start" options, this can be implemented as a "from end"
+                //   subscription that picks up the responsibility after a one-off and temporary
+                //  "from then to ‹current›" subscription has flushed its backlog.
+
+                this.trace("  -- listening one: ", sub.channel);
+                const subscriber = await this.listenOneChannel(
+                    res,
+                    sub,
+                    sendUpdate.bind(this, maxLatency),
+                    notifyConsumeError,
+                );
+                myStreamListeners.push({ channel, stream: subscriber });
+                if (subscriber) anySuccesses += 1;
             }
-
-            // !!! todo: support inbound bookmarks for each channel and "from end" or "from start" cues
-            //  - this will allow clients to pick up where they left off, or to start from the beginning
-            //    of a channel's history.  "from end" will be the default.
-            // for "bookmark" and "from start" options, this can be implemented as a "from end"
-            //   subscription that picks up the responsibility after a one-off and temporary
-            //  "from then to ‹current›" subscription has flushed its backlog.
-
-            this.trace("  -- listening one: ", sub.channel);
-            const subscriber = await this.listenOneChannel(
-                res,
-                sub,
-                sendUpdate.bind(this, maxLatency),
-                notifyConsumeError,
+            if (!anySuccesses) {
+                res.status(404).json({ error: "no valid subscriptions in request" });
+                return cancel();
+            } else if (warnings.length) {
+                sendUpdate(0, ...warnings);
+            }
+            reqLogger.debug("  👷listening in %d channels", subscriptions.length);
+            reqLogger.trace(`  👷channels: ${subscriptions.map(s => s.channel).join(", ")}`);
+            //! it tells clients how frequently they should expect a heartbeat
+            sendUpdate(0, { type: "heartbeat-info", timerInterval });
+        } catch (err: any) {
+            reqLogger.error(
+                "subscription setup failed",
+                err?.stack || err?.message || err,
             );
-            myStreamListeners.push({ channel, stream: subscriber });
-            if (subscriber) anySuccesses += 1;
+            cancelled = true;
+            if (!res.headersSent) {
+                res.status(500).json({ error: "subscription setup failed" });
+            } else {
+                //! response was already mid-stream; close it cleanly
+                try { res.end(); } catch { /* ignore */ }
+            }
+            cleanup();
+            next();
         }
-        if (!anySuccesses) {
-            res.status(404).json({ error: "no valid subscriptions in request" });
-            return cancel();
-        } else if (warnings.length) {
-            sendUpdate(0, ...warnings);
-        }
-        reqLogger.debug("  👷listening in %d channels", subscriptions.length);
-        reqLogger.trace(`  👷channels: ${subscriptions.map(s => s.channel).join(", ")}`);
-        //! it tells clients how frequently they should expect a heartbeat
-        sendUpdate(0, { type: "heartbeat-info", timerInterval });
     };
 
     async listenToNeighborhood() {

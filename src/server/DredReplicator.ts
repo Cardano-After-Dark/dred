@@ -915,8 +915,23 @@ export class Replicant {
      * @returns
      */
     private async weHaveChannel(channelId: string, messageId: string): Promise<boolean> {
-        // Check if channel still exists on home server
-        const channelExists = await this.homeServer.channelList.has(channelId);
+        // Check if channel still exists on home server.
+        //
+        // homeServer.channelList can be disconnected or null'd if the home
+        // server is mid-teardown while this replicator callback fires from
+        // a still-open subscription. Treat any rejection as "channel not
+        // available" so the caller skips the message instead of propagating
+        // a TypeError to the EventEmitter that invoked us.
+        let channelExists: boolean;
+        try {
+            channelExists = await this.homeServer.channelList.has(channelId);
+        } catch (err: any) {
+            this.debug(
+                `weHaveChannel: home server state unavailable for ${channelId}; skipping`,
+                err?.message || err,
+            );
+            return false;
+        }
 
         // NOTE: we might have issues here, as we probably need to trigger the getChannelList()
         // if, so, it is better to have a cache of channels and subscribe to the _chans channel
