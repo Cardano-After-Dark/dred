@@ -214,6 +214,9 @@ export class HostConnection extends StateMachineNg<
             retryMaxIntervalMs: 30000,
             maxRetries: Infinity,
             connectionWaitTimeMs: 7000,
+            //! 0 disables the per-attempt timeout (falls back to undici's
+            //  ~2-minute default).  Replicants override with 10_000.
+            connectAttemptTimeoutMs: 0,
             watchChannels: false,
             ...partialSettings,
         };
@@ -276,28 +279,81 @@ export class HostConnection extends StateMachineNg<
             }
         };
 
-        // if (channelSubs.length > 1) {
-        //     this.logger.warn("connect: channelSubs", channelSubs);
-        //     debugger;
-        // }
         const channelListeners = this.channelSubs;
 
         signal.addEventListener("abort", abortHandler);
+        const attemptNum = this.attempts + 1;
+        const startTime = Date.now();
+        const proto = this.host.insecure ? "http" : "https";
+        const target = `${proto}://${this.host.address}:${this.host.port}`;
+
+        //! One-shot connect-attempt timeout.
+        //
+        //  We compose the user-abort signal with a separate timeoutController's
+        //  signal.  AbortSignal.any aborts when EITHER fires, so fetch unblocks
+        //  at min(user-abort, timeout).
+        //
+        //  Critical: this signal stays attached to the fetch for its ENTIRE
+        //  lifetime — including streaming body read.  A naive
+        //  `AbortSignal.timeout(N)` would fire N ms after success too, killing
+        //  the live stream (observed: every 10s the established connection died
+        //  with `server disconnected`, CM cycled reconnecting↔healthy forever,
+        //  graveyard accumulated entries).  Solution: disarm the timer the
+        //  moment headers arrive, so post-success only the user-abort path can
+        //  trigger the composed signal.
+        //
+        //  Distinguishing abort cause in .catch matters too: timeout aborts
+        //  should be retryable (rej → onEntry[connecting] catches → transition
+        //  to retrying → backoff), while user aborts are stop-with-intent
+        //  (preserve existing res(false) path).  timeoutCtl.signal.aborted
+        //  tells us which signal won.
+        const timeoutMs = this.settings.connectAttemptTimeoutMs;
+        let timeoutCtl: AbortController | undefined;
+        let timeoutTimer: ReturnType<typeof setTimeout> | undefined;
+        let fetchSignal: AbortSignal = signal;
+        if (timeoutMs > 0) {
+            timeoutCtl = new AbortController();
+            timeoutTimer = setTimeout(() => {
+                timeoutCtl!.abort(new Error(`connect timeout after ${timeoutMs}ms`));
+            }, timeoutMs);
+            fetchSignal = (AbortSignal as any).any([signal, timeoutCtl.signal]);
+        }
+        const disarmTimeout = () => {
+            if (timeoutTimer !== undefined) {
+                clearTimeout(timeoutTimer);
+                timeoutTimer = undefined;
+            }
+        };
+
         const myself = (this.connecting = new Promise((res, rej) => {
             let aborted = false;
-            this.logger.debug(`connecting to server ${this.host.serverId}`);
+            //! per-attempt diagnostic: name the target, attempt number, and
+            //  subscription count so the retry loop is legible from the log.
+            this.info(
+                "attempt #%d -> %s (server=%s, %d subs, timeout=%s)",
+                attemptNum,
+                target,
+                this.host.serverId,
+                channelListeners.length,
+                timeoutMs > 0 ? `${timeoutMs}ms` : "none",
+            );
             this.logger.trace("channelListeners", channelListeners);
 
             this.fetch(`/channels/listen`, {
                 body: JSON.stringify(this.channelSubs, null, 2),
                 method: "POST",
-                signal,
+                signal: fetchSignal,
                 headers: {
                     "content-type": "application/json",
                     clientid: this.clientid,
                 },
             })
                 .then((response: Response) => {
+                    //! Headers received — disarm the timeout so a slow stream
+                    //  (or one that simply lives a long time) doesn't get
+                    //  aborted by a stale connect-attempt timer.
+                    disarmTimeout();
+
                     if (aborted) return false;
                     if (this.abortController?.signal.aborted) return false;
 
@@ -305,27 +361,118 @@ export class HostConnection extends StateMachineNg<
                     // note: this callback happens only after all events seen in the stream
                     // are processed - which may be a LONG time after the connection is established.
 
-                    this.logger.progress("connect: listening for %d channels", channelListeners.length );
+                    const elapsedMs = Date.now() - startTime;
+                    this.progress(
+                        "attempt #%d -> %s: stream headers in %dms; listening on %d channels",
+                        attemptNum,
+                        this.host.serverId,
+                        elapsedMs,
+                        channelListeners.length,
+                    );
                     this.logger.debug("channelListeners: ", channelListeners.map(x => x.channel));
                     //!!! todo: check to see if we should reject with an empty / non-existent response here
                     res(true);
                 })
                 .catch((e) => {
+                    //! Disarm first (whatever the failure mode, the timer is
+                    //  done doing useful work).
+                    disarmTimeout();
+                    const elapsedMs = Date.now() - startTime;
+
+                    //! Timeout vs user-abort: if our timeout controller fired
+                    //  AND the user didn't separately abort, treat this as a
+                    //  retryable connect-attempt failure.  Reject so
+                    //  onEntry[connecting]'s catch path transitions to retry.
+                    if (
+                        timeoutCtl?.signal.aborted &&
+                        !signal.aborted &&
+                        this.isAbortError(e)
+                    ) {
+                        const msg = `connect attempt timed out after ${timeoutMs}ms`;
+                        this.warn(
+                            "attempt #%d -> %s: %s",
+                            attemptNum,
+                            this.host.serverId,
+                            msg,
+                        );
+                        rej(new Error(msg));
+                        return;
+                    }
+
                     if (this.isAbortError(e)) {
-                        // this.log("abort happened before fetch response headers");
+                        this.debug(
+                            "attempt #%d -> %s: aborted after %dms",
+                            attemptNum,
+                            this.host.serverId,
+                            elapsedMs,
+                        );
                         aborted = true;
                         res(false);
                     } else if ((e?.message || e?.toString() )?.match(/connection manager disconnect/)) {
+                        this.debug(
+                            "attempt #%d -> %s: disconnect requested after %dms",
+                            attemptNum,
+                            this.host.serverId,
+                            elapsedMs,
+                        );
                         aborted = true;
                         res(false);
                     } else {
                         //! reject so onEntry[connecting] can transition to "retry" and run the backoff loop.
-                        this.warn(`fetch error; see debugger: %s`, e.stack || e.message || e);
+                        const causeStr = HostConnection.describeFetchError(e);
+                        this.warn(
+                            "attempt #%d -> %s: failed in %dms — %s",
+                            attemptNum,
+                            this.host.serverId,
+                            elapsedMs,
+                            causeStr,
+                        );
                         rej(e);
                     }
                 });
         }));
         return myself;
+    }
+
+    /**
+     * Unwrap Node 18+ / undici TypeError("fetch failed") wrappers and surface
+     * the underlying cause's `code` / `syscall` / `errno` / `message`. Without
+     * this, every connection error logs as the same opaque "fetch failed"
+     * string with no way to tell ECONNREFUSED from ETIMEDOUT from EHOSTUNREACH.
+     */
+    static describeFetchError(e: any): string {
+        if (!e) return "‹no error object›";
+        const cause: any = e.cause;
+        const parts: string[] = [];
+        let top: string | undefined;
+        if (typeof e === "string") {
+            top = e;
+        } else if (e.message || e.code) {
+            top = e.message || e.code;
+        } else if (typeof e === "object") {
+            // HTTP error responses parsed from JSON arrive as plain objects.
+            // Stringify their key fields (error/status/statusText/etc.) so we
+            // don't log "[object Object]" and lose the actionable detail.
+            const bits: string[] = [];
+            for (const key of ["error", "status", "statusText", "code", "message", "reason"]) {
+                if ((e as any)[key] !== undefined) {
+                    bits.push(`${key}=${(e as any)[key]}`);
+                }
+            }
+            top = bits.length ? bits.join(", ") : JSON.stringify(e).slice(0, 200);
+        }
+        if (top) parts.push(top);
+        if (cause) {
+            const causeBits: string[] = [];
+            if (cause.code) causeBits.push(cause.code);
+            if (cause.syscall) causeBits.push(`syscall=${cause.syscall}`);
+            if (cause.errno !== undefined) causeBits.push(`errno=${cause.errno}`);
+            if (cause.address) causeBits.push(`addr=${cause.address}${cause.port ? `:${cause.port}` : ""}`);
+            const cm = cause.message;
+            if (cm && cm !== top) causeBits.push(cm);
+            if (causeBits.length) parts.push(`cause: ${causeBits.join(", ")}`);
+        }
+        return parts.join(" | ");
     }
 
     mkEvent<T extends Pick<DredError, "message" | typeof devMessage> & Record<any, any>>(
@@ -399,7 +546,18 @@ export class HostConnection extends StateMachineNg<
             return new Error(`${result.status} ${result.statusText} for ${path}`);
         });
 
-        this.events.emit("failed", this.connectionFailureEvent(reason));
+        //! intentionally NOT emitting "failed" here.  HC's own state machine
+        //  treats transient HTTP errors as retryable (onEntry[connecting]
+        //  catches the throw → transition("retry") → backoff → reconnect).
+        //  Emitting "failed" externally for every 502 caused CM's
+        //  onConnectionObsolete listener to graveyard the conn permanently;
+        //  when HC later recovered, healthyConnection moved the conn to
+        //  "active" but its graveyard membership made checkConnectionState
+        //  count it as 0, transitioning CM to the terminal "disconnected"
+        //  state from which the only exit (connectionDropped) requires a
+        //  live HC drop that never comes.  "failed" is reserved for HC's
+        //  actual failed state (onEntry[failed]), which fires only when
+        //  maxRetries is exhausted — that IS terminal and SHOULD graveyard.
 
         //! throw instead of returning Promise.reject() — the async wrapper handles
         //! the rejection directly; returning a standalone rejected Promise creates
@@ -427,12 +585,16 @@ export class HostConnection extends StateMachineNg<
                 this.debug("disconnected on command from connection manager");
                 this.transition("disconnected");
             } else {
-                console.warn(`fetch error during read; see debugger - `, e);
-                debugger;
+                const causeStr = HostConnection.describeFetchError(e);
+                this.warn(
+                    "stream read error from %s — %s",
+                    this.host.serverId,
+                    causeStr,
+                );
                 this.events.emit(
                     "warning",
                     this.mkEvent({
-                        message: "fetch error during read",
+                        message: `fetch error during read: ${causeStr}`,
                         [devMessage]: [
                             "probably this is caused by a network connection error",
                             " ... or server-side idle timeout, though we'd hope to get a toodleoo first.",

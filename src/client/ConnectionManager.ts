@@ -713,16 +713,22 @@ export class ConnectionManager extends StateMachine.withDefinition(
                     this.debug("replaceHostConnection: NOT resolving new connection after timeout");
                 }
             });
-            //! if the new connection doesn't connect promptly, it...
-            //   * moves the old connection to obsolete
-            //   * adds the pending connection to pending
-            //   * triggers replacedBy event on the prior connection
-            //   * has a clear outlet/codepath for completing the resolution of the new connection (same as for any connection)
+            //! Safety timer's only job: stop awaiting the outer promise so
+            //  callers don't hang.  It MUST NOT mutate connStatus.  The
+            //  replacement's status is authoritative as set by connectTo
+            //  ("pending") and only HostConnection event signals should
+            //  change it: "connected" -> active (via the listener above and
+            //  healthyConnection), "disconnected" -> dropped (via
+            //  onConnectionDropped), "failed" or "replacedBy" -> disconnected
+            //  (via onConnectionObsolete).
+            //
+            //  Previous bug: the timer unconditionally called moveConnTo
+            //  back to "pending" connectionWaitTimeMs after replacement
+            //  began.  If the new connection succeeded inside that window,
+            //  the timer reverted it from "active" to "pending", and the
+            //  Replicant's health check saw 0 actives even though CM state
+            //  was still "healthy" and messages were flowing.
             asyncDelay(this.connectionSettings.connectionWaitTimeMs).then(() => {
-                this.moveConnTo(replacement, "pending");
-                const oldConnection = replacingConn;
-                this.debug("replaceHostConnection: moving old connection to obsolete");
-                oldConnection && this.moveConnTo(oldConnection, "obsolete");
                 if (timeout !== false) {
                     timeout = true;
                     this.progress("replaceHostConnection: resolving new connection after timeout");

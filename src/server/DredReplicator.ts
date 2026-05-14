@@ -79,6 +79,16 @@ export class DredReplicator {
         return this.replicants.filter((replicant) => replicant.isActive());
     }
 
+    /**
+     * Get every replicant — active or not. Used by the periodic status
+     * logger to attach a substate string (retry attempts, cmState, etc.)
+     * to each non-connected peer so "Replication: ENABLED (0/1)" stops
+     * being an unexplained binary.
+     */
+    getAllReplicants(): Replicant[] {
+        return [...this.replicants];
+    }
+
     log(message: string, ...args: any[]) {
         this.logger.info(message, ...args);
     }
@@ -202,6 +212,9 @@ interface SimpleRetryState {
     attempts: number;
     //! when the current failure streak started, for "down for Ys" diagnostics
     firstFailureTime?: Date;
+    //! most recent error from a failed attempt, surfaced in describeStatus() so
+    //  the periodic OPS line tells you *why* a peer is non-connected.
+    lastError?: Error;
 }
 
 type ReplicationEvents = {
@@ -269,6 +282,86 @@ export class Replicant {
         return this.targetHost;
     }
 
+    /** human-readable display name for status output */
+    getName(): string {
+        return this.name;
+    }
+
+    //! Replicant-level resilience: when the underlying client gets wedged
+    //  (CM enters terminal "disconnected"), we can't recover at the client
+    //  layer.  Dispose the stuck client and re-enter the attempt loop with
+    //  exponential backoff.  Idempotent: a second call while teardown is
+    //  in flight is a no-op.
+    private _handlingStuck = false;
+    private handleClientStuck(reason: string): void {
+        if (this._handlingStuck) return;
+        this._handlingStuck = true;
+
+        this.warn("client stuck — re-attempting: %s", reason);
+        this.retryState.lastError = new Error(`client stuck: ${reason}`);
+
+        if (this.repClient) {
+            try {
+                this.repClient.events.removeAllListeners();
+                this.repClient.disconnect();
+            } catch (e) {
+                /* ignore teardown errors */
+            }
+            this.repClient = null;
+        }
+
+        this._handlingStuck = false;
+        this.scheduleRetry();
+    }
+
+    /**
+     * Human-readable substate string for diagnostic logs.
+     *
+     * Covers the gap exposed when "Replication: ENABLED (0/1)" appears with
+     * no visible reason. Reports: which step the replicant is on (active,
+     * retrying, connecting, etc), the underlying ConnectionManager state
+     * (the source of truth per hasActiveConnections), the in-flight retry
+     * counter + most-recent-error + next-retry ETA when applicable.
+     */
+    describeStatus(): string {
+        const active = this.isActive();
+        const cmState = (this.repClient as any)?.connManager?.currentState as
+            | string
+            | undefined;
+        if (active) {
+            return `active, cmState=${cmState ?? "‹unknown›"}`;
+        }
+
+        const parts: string[] = [];
+        if (!this.repClient) {
+            parts.push("no client yet");
+        } else {
+            parts.push(`cmState=${cmState ?? "‹unknown›"}`);
+        }
+        if (this.retryState.attempts > 0) {
+            parts.push(`attempts=${this.retryState.attempts}`);
+        }
+        if (this.retryState.firstFailureTime) {
+            const downSec = (
+                (Date.now() - this.retryState.firstFailureTime.getTime()) /
+                1000
+            ).toFixed(1);
+            parts.push(`down=${downSec}s`);
+        }
+        if (this.retryState.nextRetryTime) {
+            const nextInSec = (
+                (this.retryState.nextRetryTime.getTime() - Date.now()) /
+                1000
+            ).toFixed(1);
+            parts.push(`nextRetry=+${nextInSec}s`);
+        }
+        const err = (this.retryState as any).lastError as Error | undefined;
+        if (err) {
+            parts.push(`lastErr=${err.message || err}`);
+        }
+        return parts.join(", ");
+    }
+
     /**
      * Check if this replicant is active (has a connected client)
      */
@@ -327,17 +420,73 @@ export class Replicant {
             }
 
             const clientConnStatus = connManager?.connStatus;
-            if (!clientConnStatus || clientConnStatus.size === 0) return false;
+            if (!clientConnStatus || clientConnStatus.size === 0) {
+                this.logUnexpectedInactive(connManager, cmState, "connStatus is empty");
+                return false;
+            }
 
             const graveyard = connManager.graveyard;
             for (const [conn, status] of clientConnStatus.entries()) {
                 if (graveyard?.has(conn)) continue;
                 if (status === "active") return true;
             }
+            this.logUnexpectedInactive(
+                connManager,
+                cmState,
+                "no non-graveyarded connection in 'active' status",
+            );
             return false;
-        } catch (error) {
+        } catch (error: any) {
+            this.warn(
+                "hasActiveConnections threw: %s",
+                error?.stack || error?.message || error,
+            );
             return false;
         }
+    }
+
+    //! diagnostic: rate-limited log when hasActiveConnections disagrees with
+    //  the CM's own state machine. Prevents the "(0/1)" / cmState=healthy
+    //  mystery from being silent again. Logs only on transition into the
+    //  unexpected condition, not on every poll.
+    private _lastUnexpectedInactiveKey: string | undefined;
+    private logUnexpectedInactive(
+        connManager: any,
+        cmState: string | undefined,
+        why: string,
+    ) {
+        if (
+            cmState !== "healthy" &&
+            cmState !== "partiallyConnected" &&
+            cmState !== "degraded" &&
+            cmState !== "replacingSubs"
+        ) {
+            // expected to be inactive — no diagnostic needed
+            this._lastUnexpectedInactiveKey = undefined;
+            return;
+        }
+        const connStatus = connManager?.connStatus;
+        const graveyard = connManager?.graveyard;
+        const entries: string[] = [];
+        if (connStatus) {
+            for (const [conn, status] of connStatus.entries()) {
+                const inGrave = graveyard?.has?.(conn) ? "[graveyard]" : "";
+                const hcState = (conn as any)?.currentState ?? "‹?›";
+                const host = (conn as any)?.host?.serverId ?? "‹?›";
+                entries.push(`${host}: ${status}${inGrave} hc=${hcState}`);
+            }
+        }
+        // throttle: only log on transition to this specific (state, count, reason)
+        const key = `${cmState}|${entries.length}|${why}`;
+        if (key === this._lastUnexpectedInactiveKey) return;
+        this._lastUnexpectedInactiveKey = key;
+        this.warn(
+            "isActive=false but cmState=%s — %s. connStatus[%d]: { %s }",
+            cmState,
+            why,
+            entries.length,
+            entries.join(", ") || "‹empty›",
+        );
     }
 
     /**
@@ -389,8 +538,9 @@ export class Replicant {
             });
 
             // Create client and attempt connection with timeout
+            const homeArgs: any = this.homeServer.clientArgs;
             this.repClient = new DredClient({
-                ...this.homeServer.clientArgs,
+                ...homeArgs,
                 name: this.name,
                 neighborhood: this.homeServer.nbh,
                 discovery: focusedDiscovery,
@@ -399,6 +549,16 @@ export class Replicant {
                     this.targetHost.serverId,
                     this.homeServer.redis!,
                 ),
+                //! per-attempt timeout + bounded retries so a peer reboot
+                //  doesn't waste minutes on a hung fetch.  10s/3 means the
+                //  HostConnection gives up after ~40s of futile attempts;
+                //  Replicant's own scheduleRetry then takes over with its
+                //  exponential backoff to retry from scratch.
+                connectionSettings: {
+                    ...(homeArgs?.connectionSettings || {}),
+                    connectAttemptTimeoutMs: 10_000,
+                    maxRetries: 3,
+                },
             });
 
             this.repClient!.events.on("channel:created", this.channelWasAdded, this);
@@ -408,16 +568,25 @@ export class Replicant {
             // });
 
             // Set max listeners to prevent memory leak warnings on various components
-            if (this.repClient) {
-                const connManager = (this.repClient as any).connManager;
-                if (connManager && connManager.setMaxListeners) {
-                    connManager.setMaxListeners(20);
-                }
+            const connManager = (this.repClient as any).connManager;
+            if (connManager && connManager.setMaxListeners) {
+                connManager.setMaxListeners(20);
+            }
+            if ((this.repClient as any).setMaxListeners) {
+                (this.repClient as any).setMaxListeners(20);
+            }
 
-                // Also set on the client itself if it supports it
-                if ((this.repClient as any).setMaxListeners) {
-                    (this.repClient as any).setMaxListeners(20);
-                }
+            //! Resilience: if the CM ever lands in its terminal "disconnected"
+            //  state (e.g. via checkConnectionState finding 0 healthy), the
+            //  underlying client is stuck — its only exit is connectionDropped,
+            //  which requires a live HostConnection to drop.  Replicant takes
+            //  over: tear down this repClient and re-enter the attempt loop
+            //  with Replicant-level backoff.  Uses .once so we don't re-fire
+            //  during the teardown's own disconnect call.
+            if (connManager && typeof connManager.events?.once === "function") {
+                connManager.events.once("disconnected", () => {
+                    this.handleClientStuck("CM entered terminal disconnected state");
+                });
             }
 
             let success = false;
@@ -450,8 +619,10 @@ export class Replicant {
 
                 this.log(`replicating`);
             }
-        } catch (error) {
-            // Error already logged in checkServerAvailability with semantic format
+        } catch (error: any) {
+            // record for describeStatus() / periodic OPS diagnostics
+            this.retryState.lastError =
+                error instanceof Error ? error : new Error(String(error));
 
             // Clean up failed client
             if (this.repClient) {

@@ -705,23 +705,49 @@ export class DredServer {
             }
 
             const allPeers = this.discovery.hosts.filter((h) => h.serverId !== this.serverId);
-            const activeReplicants = this.replicator.getActiveReplicants
-                ? this.replicator.getActiveReplicants()
-                : [];
+            const allReplicants = this.replicator.getAllReplicants
+                ? this.replicator.getAllReplicants()
+                : this.replicator.getActiveReplicants
+                  ? this.replicator.getActiveReplicants()
+                  : [];
 
-            // Get connected peers
-            const connectedPeers = activeReplicants.map((rep) => {
-                const targetHost = rep.getTargetHost();
-                return `${targetHost.serverId.slice(-8)}@${targetHost.address}:${targetHost.port}`;
-            });
+            // Connected peers — short ID for the bullet line
+            const connectedPeers = allReplicants
+                .filter((rep) => rep.isActive())
+                .map((rep) => {
+                    const targetHost = rep.getTargetHost();
+                    return `${targetHost.serverId.slice(-8)}@${targetHost.address}:${targetHost.port}`;
+                });
 
-            // Get non-connected peers
+            // Non-connected peers — annotate with the substate so the reader
+            // knows WHY each is non-connected without grepping the log.
+            const nonConnectedReplicants = allReplicants.filter((rep) => !rep.isActive());
             const connectedServerIds = new Set(
-                activeReplicants.map((rep) => rep.getTargetHost().serverId),
+                allReplicants
+                    .filter((rep) => rep.isActive())
+                    .map((rep) => rep.getTargetHost().serverId),
             );
-            const nonConnectedPeers = allPeers
-                .filter((h) => !connectedServerIds.has(h.serverId))
-                .map((h) => `${h.serverId.slice(-8)}@${h.address}:${h.port}`);
+            const nonConnectedPeers: string[] = [];
+            for (const rep of nonConnectedReplicants) {
+                const h = rep.getTargetHost();
+                const short = `${h.serverId.slice(-8)}@${h.address}:${h.port}`;
+                const substate = rep.describeStatus
+                    ? rep.describeStatus()
+                    : "‹no status›";
+                nonConnectedPeers.push(`${short} {${substate}}`);
+            }
+            // Also include discovered peers that have no replicant at all
+            // (shouldn't happen under normal init, but worth surfacing).
+            const replicantTargetIds = new Set(
+                allReplicants.map((rep) => rep.getTargetHost().serverId),
+            );
+            for (const h of allPeers) {
+                if (replicantTargetIds.has(h.serverId)) continue;
+                if (connectedServerIds.has(h.serverId)) continue;
+                nonConnectedPeers.push(
+                    `${h.serverId.slice(-8)}@${h.address}:${h.port} {no replicant}`,
+                );
+            }
 
             // Get channel details
             let channels: string[] = [];
