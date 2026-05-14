@@ -1029,6 +1029,13 @@ export class Replicant {
      */
     private async replicateNewChannel(channelName: string, options: any): Promise<void> {
         try {
+            //! Race-test chokepoint: pauses the local channel-creation on
+            //  the home server. Useful for probing whether messages on the
+            //  new channel can reach this server's messageHandler before
+            //  channelList has been updated (the TODO at line 884).
+            await this.homeServer.testGate?.waitAt(
+                `${this.homeServer.serverId}:replicant:${this.targetHost.serverId}:newChannel:${channelName}`,
+            );
             // Check if home server already has this channel
             const hasChannel = await this.homeServer.channelList.has(channelName);
 

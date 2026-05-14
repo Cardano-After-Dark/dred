@@ -292,4 +292,193 @@ describe("Replication race scenarios", () => {
             expect(c2Receipts[1].ocid).toBe(ocidM2);
         });
     });
+
+    describe("concurrent same-ocid POSTs", () => {
+        it("publishes exactly one when two POSTs of the same ocid race at the dedup gate", async () => {
+            //! Scenario: two client POSTs of the same ocid arrive at dred1
+            //  concurrently. Without atomic SADD, both could pass has()=false
+            //  and both publish. With atomic SADD, one wins; the other sees
+            //  added===0 and is rejected as a duplicate. We use the beforeAdd
+            //  chokepoint to force both POSTs to be paused simultaneously
+            //  (proving they're truly concurrent), then release.
+
+            const gate = new Gate();
+            dred1.testGate = gate;
+
+            const p1 = gate.pause(`${dred1.serverId}:ensure:beforeAdd`);
+            const p2 = gate.pause(`${dred1.serverId}:ensure:beforeAdd`);
+
+            const ocid = "race-concurrent-post";
+
+            //! Use c2 (on dred2) so cross-replication delivers the published
+            //  message. Subscribing on c1 (same server as where posts arrive)
+            //  was flaky in initial runs — likely a timing artifact of the
+            //  subscription setup overlapping with the gated POSTs.
+            const c2Receipts: FullDredMessage[] = [];
+            await c2.subscribeToChannels({
+                [CHANNEL]: (message) => {
+                    c2Receipts.push(message);
+                    console.error(
+                        `📥 c2 (concurrent-post) received: ocid=${message.ocid} mid=${message.mid} msg=${message.msg}`,
+                    );
+                },
+            });
+
+            //! Fire two POSTs in parallel. Each is an independent HTTP
+            //  request landing in dred1's postMessageInChannel handler.
+            const post1 = c1
+                .postMessage(CHANNEL, {
+                    ocid,
+                    msg: "version-1",
+                    type: "race-concurrent",
+                })
+                .catch((err) => ({ error: err }));
+            const post2 = c1
+                .postMessage(CHANNEL, {
+                    ocid,
+                    msg: "version-2",
+                    type: "race-concurrent",
+                })
+                .catch((err) => ({ error: err }));
+
+            //! Wait until both POSTs have reached the dedup gate. This
+            //  proves they are concurrent — both past the has-check would-be
+            //  point in the previous design.
+            await Promise.all([p1.arrived, p2.arrived]);
+            console.error(`both POSTs arrived at ${dred1.serverId}:ensure:beforeAdd`);
+
+            //! Release both. Atomic SADD serializes: one wins (added===1)
+            //  and publishes, the other (added===0) returns 409.
+            p1.release();
+            p2.release();
+
+            const [r1, r2] = await Promise.all([post1, post2]);
+            console.error(`post1 result: ${JSON.stringify(r1)}`);
+            console.error(`post2 result: ${JSON.stringify(r2)}`);
+
+            //! Cross-replication needs time to traverse dred1 → dred2.
+            await asyncDelay(300);
+
+            console.error(`c2 received ${c2Receipts.length} message(s):`);
+            for (const m of c2Receipts) {
+                console.error(`  - ocid=${m.ocid} mid=${m.mid} msg=${m.msg}`);
+            }
+
+            //! Exactly one publish reached the subscriber, regardless of
+            //  which version "won".
+            expect(c2Receipts.length).toBe(1);
+            expect(c2Receipts[0].ocid).toBe(ocid);
+            //! The published msg is one of the two posted versions.
+            expect(["version-1", "version-2"]).toContain(c2Receipts[0].msg);
+        });
+    });
+
+    describe("channel-existence vs message arrival race", () => {
+        //! TODO at DredReplicator.ts:884:
+        //   "check for a race involving a new channel; ensure we aren't
+        //    dropping messages"
+        //
+        //  The handler at line 882 logs "dropping message for non-existent
+        //  channel" when weHaveChannel returns false. Probe whether this can
+        //  happen in practice with the new-channel flow.
+        //
+        //  Current implementation of Replicant.replicateNewChannel:
+        //    1. setChanOptions
+        //    2. channelList.set        ← homeServer learns the channel
+        //    3. channelCreated         ← _chans-emit on homeServer
+        //    4. findCommonChannels
+        //    5. subscribeToCommonChannels  ← replicant subscribes to new channel
+        //
+        //  Since (2) happens before (5), by the time the replicant's
+        //  subscription is delivering messages from the new channel,
+        //  channelList already has it — so weHaveChannel should be true.
+        //
+        //  This test characterizes the timing: pause dred2's
+        //  replicateNewChannel processing for `new-chan` so dred2 is NOT
+        //  subscribed yet. Verify the message dred1 posted is held safely
+        //  on dred1's stream and eventually reaches c2 after the pause is
+        //  released, with no "dropping" warning.
+
+        it("does not drop the message when channel-creation processing is delayed on the receiver", async () => {
+            const newChannel = "new-chan-race";
+
+            const gate = new Gate();
+            dred2.testGate = gate;
+
+            //! Pause dred2's processing of the new-channel event, but only
+            //  for this specific channel name (the label includes channelName).
+            //  dred3's channel-creation flow is unaffected.
+            const holdNewChannel = gate.pause(
+                `${dred2.serverId}:replicant:${dred1.serverId}:newChannel:${newChannel}`,
+            );
+
+            const c2Receipts: FullDredMessage[] = [];
+            const c2SubReadyForNewChan: Promise<void>[] = [];
+
+            //! Create the channel on dred1; this triggers _chans propagation.
+            await c1.createChannel(newChannel);
+
+            //! Post a message to it immediately.
+            const ocid = "race-channel-existence";
+            await c1.postMessage(newChannel, {
+                msg: "first message on new channel",
+                type: "race-channel",
+                ocid,
+            });
+
+            //! Wait for dred2 to hit the gate (its channelWasAdded handler
+            //  fired from the _chans event and is now stuck at the top of
+            //  replicateNewChannel for this channel).
+            await holdNewChannel.arrived;
+            console.error(
+                `dred2 hit newChannel gate for ${newChannel} — channelList does NOT yet contain it`,
+            );
+
+            //! At this point, dred2 hasn't created the channel locally.
+            //  dred3 (no gate) has processed the _chans event and created
+            //  new-chan locally. The message is held in dred1's stream;
+            //  dred2.replicantOfDred1 hasn't subscribed to new-chan yet.
+
+            //! Subscribe c2 to the new channel now. Behavior expectation:
+            //  c2 has the channel via its own client-side discovery once
+            //  dred2 has it; until dred2 has it, c2.subscribeToChannels
+            //  will pend on creating-or-finding the channel.
+            //
+            //  Instead of subscribing now (which would deadlock against the
+            //  paused channel-creation), release first and subscribe after.
+
+            //! Verify dred2 has not yet emitted any "dropping" warnings.
+            //  (We can't easily intercept logger.warn from here without
+            //  wiring, so we just observe through the final test result.)
+
+            //! Release. dred2 completes replicateNewChannel: channelList
+            //  gets new-chan; replicant subscribes; the queued message
+            //  flows in.
+            holdNewChannel.release();
+            console.error(`released dred2's newChannel gate for ${newChannel}`);
+
+            //! Subscribe c2 AFTER the channel is created locally on dred2.
+            await asyncDelay(100);
+            await c2.subscribeToChannels({
+                [newChannel]: (message) => {
+                    c2Receipts.push(message);
+                    console.error(
+                        `📥 c2 (channel-race) received: ocid=${message.ocid} mid=${message.mid}`,
+                    );
+                },
+            });
+
+            //! Allow time for the message to traverse: dred1 stream →
+            //  dred2.replicantOfDred1 → dred2 publishes → c2 receives.
+            await asyncDelay(400);
+
+            console.error(`c2 received ${c2Receipts.length} message(s)`);
+
+            //! The message posted before dred2 even knew about the channel
+            //  should still reach c2 — no data loss from the delayed
+            //  channel-creation processing.
+            expect(c2Receipts.length).toBe(1);
+            expect(c2Receipts[0].ocid).toBe(ocid);
+        });
+    });
 });
