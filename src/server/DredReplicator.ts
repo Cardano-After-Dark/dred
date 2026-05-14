@@ -292,8 +292,17 @@ export class Replicant {
     //  layer.  Dispose the stuck client and re-enter the attempt loop with
     //  exponential backoff.  Idempotent: a second call while teardown is
     //  in flight is a no-op.
+    //! Sticky shutdown flag. Set true in cleanup(); never reset. Reconnect-
+    //  scheduling paths (scheduleRetry, handleClientStuck, attemptConnection)
+    //  must early-return when set. Prevents the .once("disconnected") listener
+    //  that fires DURING cleanup's own disconnect call from scheduling a retry
+    //  after cleanup has already wound state down — a fresh Replicant instance
+    //  is required to replicate again.
+    private disposed = false;
+
     private _handlingStuck = false;
     private handleClientStuck(reason: string): void {
+        if (this.disposed) return;
         if (this._handlingStuck) return;
         this._handlingStuck = true;
 
@@ -518,6 +527,7 @@ export class Replicant {
      * Attempt to establish connection and set up replication (async, non-blocking)
      */
     private async attemptConnection(): Promise<void> {
+        if (this.disposed) return;
         // todo: audit the downstream code to see how it may already do retry behavior
         // without the need for this layer to fuss with it.  Refactor this code to just make the client
         // and initialize it simply.  Maybe listen to some events it emits if we need to react
@@ -714,6 +724,7 @@ export class Replicant {
      * (peer restarts) with polite backoff for sustained outages.
      */
     private scheduleRetry(): void {
+        if (this.disposed) return;
         if (this.retryState.isRetrying) {
             return;
         }
@@ -1053,6 +1064,11 @@ export class Replicant {
      */
     async cleanup(): Promise<void> {
         this.trace(`cleaning up replicant`);
+        //! set disposed FIRST so any reconnect path that fires during the
+        //  disconnect below (e.g. the .once("disconnected") listener on the
+        //  connManager) sees disposed=true and early-returns instead of
+        //  scheduling a fresh retry after we've cleared state.
+        this.disposed = true;
 
         // Clear any pending retry timers
         if (this.retryState.retryTimer) {
