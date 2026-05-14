@@ -299,6 +299,13 @@ const connectionManagerStates = {
         partial: "partiallyConnected",
         //! a new drop occurring before recovery → re-enter reconnecting to spawn replacements.
         connectionDropped: "reconnecting",
+        //! Self-loop: callers (checkConnectionState after onConnectionObsolete,
+        //  the public disconnect() method, etc.) can independently arrive at
+        //  the conclusion that we're disconnected.  The transition is
+        //  idempotent at the state-machine layer so they don't need to
+        //  coordinate or guard calls — re-entering disconnected is a no-op
+        //  (no onEntry side-effect re-fires; see reEntry semantics).
+        disconnected: { nextState: "disconnected", reEntry: false },
     },
 };
 
@@ -649,13 +656,26 @@ export class ConnectionManager extends StateMachine.withDefinition(
         this.transition("connectionDropped");
     }
 
-    //! superseded by a newer connection or terminally failed: just finalize.
+    //! superseded by a newer connection or terminally failed: finalize, then
+    //  re-check overall health.  Without the re-check, a HostConnection that
+    //  exhausts its own maxRetries and fires "failed" gets graveyarded — but
+    //  CM stays in whatever state it was in (typically "reconnecting"), with
+    //  no live conns to drop and no path to transition out.  The Replicant's
+    //  resilience handler watches for CM's "disconnected" event; that event
+    //  only fires when checkConnectionState transitions us there.
+    //
+    //  Layered retry composition: when HC's internal budget exhausts and no
+    //  other healthy conns remain, CM surfaces "disconnected" and the
+    //  Replicant's outer scheduleRetry takes the baton.
     @autobind
     onConnectionObsolete(event: ConnectionEvent | DredError) {
         const { connection, message } = event;
         this.debug("obsolete:", connection.host.address, message);
         this.moveConnTo(connection, "disconnected");
         this.graveyard.add(connection);
+        this.checkConnectionState().catch((e: any) => {
+            this.warn("checkConnectionState after obsolete: %s", e?.message || e);
+        });
     }
 
     @autobind

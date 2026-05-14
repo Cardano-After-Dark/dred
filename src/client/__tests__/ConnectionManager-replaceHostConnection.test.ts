@@ -184,6 +184,50 @@ describe("ConnectionManager.replaceHostConnection", () => {
         await expect(promise).resolves.toBe(newConn);
     });
 
+    it("on 'failed' event: onConnectionObsolete graveyards AND re-checks health (composes outer retry budget)", async () => {
+        //! When HostConnection's own maxRetries budget exhausts, it emits
+        //  "failed".  onConnectionObsolete graveyards it.  Without the
+        //  follow-up checkConnectionState, CM stays in "reconnecting"
+        //  forever with no live conn to drop — and the Replicant's
+        //  resilience handler (which watches for CM's "disconnected"
+        //  event) never fires.  This test pins down: after the obsolete
+        //  graveyarding, CM must invoke checkConnectionState so the
+        //  baton can pass to the outer retry layer.
+
+        // Override the beforeEach spy so we can observe the call.
+        vi.restoreAllMocks();
+        const checkSpy = vi.spyOn(cm as any, "checkConnectionState").mockResolvedValue(undefined);
+
+        // Re-attach the connectTo stub the beforeEach set up (was restored).
+        newConn = makeFakeConn(host);
+        vi.spyOn(cm as any, "connectTo").mockImplementation((h: any) => {
+            newConn.events.once("connected", (cm as any).healthyConnection);
+            newConn.events.once("disconnected", (cm as any).onConnectionDropped);
+            newConn.events.once("replacedBy", (cm as any).onConnectionObsolete);
+            newConn.events.once("failed", (cm as any).onConnectionObsolete);
+            (cm as any).hostToConn.set(h, newConn);
+            (cm as any).moveConnTo(newConn, "pending");
+            return newConn;
+        });
+
+        // Spawn the replacement (so it has CM-side wiring).
+        cm.replaceHostConnection(host);
+        expect((cm as any).connStatus.get(newConn)).toBe("pending");
+
+        // Simulate HostConnection exhausting maxRetries → "failed" event.
+        const failedBefore = checkSpy.mock.calls.length;
+        newConn.events.emit("failed", {
+            connection: newConn,
+            message: "giving up after 3 retries",
+        });
+
+        //! Graveyarded + status updated
+        expect((cm as any).connStatus.get(newConn)).toBe("disconnected");
+        expect((cm as any).graveyard.has(newConn)).toBe(true);
+        //! AND checkConnectionState was invoked (the layered-retry handoff)
+        expect(checkSpy.mock.calls.length).toBeGreaterThan(failedBefore);
+    });
+
     it("late connect: 'connected' arrives AFTER safety timer fired; healthyConnection still moves to 'active'", async () => {
         vi.useFakeTimers();
 
