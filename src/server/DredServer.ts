@@ -831,7 +831,18 @@ export class DredServer {
         if (listener) {
             listener.closeAllConnections?.();
             await new Promise<void>((resolve, reject) => {
-                listener.close((err) => (err ? reject(err) : resolve()));
+                listener.close((err) => {
+                    //! ERR_SERVER_NOT_RUNNING means the listener was never
+                    //  bound or has already been closed — close()'s
+                    //  postcondition (server is closed) is already
+                    //  satisfied. Treat as a successful close rather than
+                    //  surfacing this as an exception and masking any real
+                    //  error in the caller's finally chain.
+                    if (err && (err as any).code !== "ERR_SERVER_NOT_RUNNING") {
+                        return reject(err);
+                    }
+                    resolve();
+                });
             });
         }
 

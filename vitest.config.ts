@@ -12,7 +12,11 @@ export default defineConfig({
     //   CARDANO_NETWORK: 'preprod'
     // },
     include: ['src/**/*.test.ts'],
-    exclude: ['**/node_modules/**', 'dist/**', 'src/redis/streams/**'],
+    //! Exclude the `skillz` symlink: it points to /home/san/dev/odin/skillz,
+    //  which contains its own `skillz -> ./` self-link. Walking through
+    //  it (file discovery, dependency scan, watcher) ELOOPs after ~40
+    //  recursive hops. See server.watch.ignored below for the watcher.
+    exclude: ['**/node_modules/**', 'dist/**', 'src/redis/streams/**', 'skillz/**', '**/skillz/**'],
     mockReset: true,
     restoreMocks: true,
     // change timeouts based on test needs
@@ -47,6 +51,13 @@ export default defineConfig({
       '@platform': path.resolve(__dirname, 'platform/server/'),
     },
     extensions: ['.mjs', '.js', '.ts', '.json', '.node']
+  },
+  //! Stop Vite's file watcher from following the `skillz` symlink
+  //  (see test.exclude above for the rationale).
+  server: {
+    watch: {
+      ignored: ['**/skillz/**'],
+    },
   },
   // For compatibility with Node.js module resolution
   optimizeDeps: {
