@@ -860,21 +860,16 @@ export class Replicant {
                 return;
             }
 
-            // CRITICAL: Prevent replication loops
-
+            // Loop prevention:
+            //   * If this message originated here, ignore it — we already have it.
+            //   * Otherwise, rely on knownMessages dedup inside addMessage()
+            //     to catch any further duplicates that arrive via cross-server
+            //     paths. This lets ring topologies work (A→B→C→D, no direct
+            //     A↔D edge) while still preventing infinite forwarding: every
+            //     cycle eventually visits a server that already has the
+            //     message, where ensureMessageProcessedOnce drops it.
             if (inboundMessage.origSrvId === this.homeServer.serverId) {
                 this.debug(`Skipping message originating from here: %s`, messageId);
-                return;
-            }
-
-            // Check if this message already came from replication (has replication metadata)
-            if (inboundMessage.replFrom && inboundMessage.replFrom !== undefined) {
-                this.warn(
-                    `---- UNEXPECTED: Skipping message: already replicated (from ${inboundMessage.replFrom})`,
-                );
-                this.warn(
-                    `TODO: !!! ensure a ring topology doesn't drop messages due to this policy`,
-                );
                 return;
             }
 
