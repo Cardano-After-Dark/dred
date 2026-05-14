@@ -71,6 +71,7 @@ import { StaticHostDiscovery } from "../peers/StaticHostDiscovery.js";
 import { zonedLogger } from "@poshplum/utils";
 import { DredReplicator } from "./DredReplicator.js";
 import type { Logger } from "../types/Logger.js";
+import type { TestGate } from "../testing/Gate.js";
 
 const logging = parseInt(process.env.LOGGING || "0");
 export interface ExpressWithRedis extends express.Application {
@@ -166,6 +167,11 @@ export class DredServer {
 
     // Optional replicator, to be initialized only when replication is enabled
     replicator?: DredReplicator;
+
+    //! Optional test gate. Production: undefined → all waitAt() calls are
+    //  optional-chained to no-ops. Tests: attach a Gate instance to install
+    //  pauses at labeled chokepoints (see src/testing/Gate.ts).
+    testGate?: TestGate;
 
     // Periodic status logging
     private statusLoggingTimer?: NodeJS.Timeout;
@@ -466,6 +472,9 @@ export class DredServer {
             // Check if we've already processed this exact message
             const alreadyProcessed = await this.knownMessages.has(deduplicationKey);
 
+            //! Race-test chokepoint: tests may pause here to interleave a
+            //  second messageHandler call past `has()` before `add()` lands.
+            await this.testGate?.waitAt(`${this.serverId}:ensure:hasAdd`);
 
             if (alreadyProcessed) {
                 this.trace(
@@ -1516,9 +1525,10 @@ export class DredServer {
                         sub.channel,
                         e.data.length,
                     );
-                    // eslint-disable-next-line no-debugger
-                    // debugger;
-                    // const parsed = JSON.parse(data);
+                    //! Race-test chokepoint: tests may pause here to control
+                    //  per-subscriber fan-out timing (e.g. let cross-replication
+                    //  arrive at C before C sees A's original delivery).
+                    await this.testGate?.waitAt(`${this.serverId}:send:${sub.channel}`);
                     //!!! todo: apply filters from the subscription
                     sendUpdate({
                         mid,

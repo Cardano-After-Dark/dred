@@ -851,6 +851,13 @@ export class Replicant {
     private async messageHandler(inboundMessage: FullDredMessage): Promise<void> {
         const { mid, channel, ocid } = inboundMessage;
         try {
+            //! Race-test chokepoint: tests may pause here to simulate network
+            //  delay between A→B delivery and B's first processing step.
+            //  Label includes the receiving home and the sending target so
+            //  tests can stagger A→B vs A→C independently.
+            await this.homeServer.testGate?.waitAt(
+                `${this.homeServer.serverId}:replicant:${this.targetHost.serverId}:inbound`,
+            );
             this.trace(`received message`, { channel, mid, ocid });
             const messageId = ocid || mid || `${Date.now()}-${Math.random()}`;
 
