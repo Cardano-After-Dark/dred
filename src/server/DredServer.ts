@@ -810,14 +810,27 @@ export class DredServer {
 
     async close() {
         this.cancelSubscribers();
-        await this.cleanupRedisConnections()
-        // Cleanup replication client
+
+        // Drain the HTTP listener before touching Redis-backed state:
+        // in-flight handlers (getChannels, listenOnChannels) read from
+        // channelList, which cleanupRedisConnections() nulls. closeAllConnections()
+        // forces pending long-poll sockets to terminate; the awaited close()
+        // resolves once all handlers have unwound.
+        const listener = this.listener;
+        if (listener) {
+            listener.closeAllConnections?.();
+            await new Promise<void>((resolve, reject) => {
+                listener.close((err) => (err ? reject(err) : resolve()));
+            });
+        }
+
+        // Stop the replicator before Redis: weHaveChannel() reads
+        // homeServer.channelList, which cleanupRedisConnections() nulls.
         await this.cleanupReplication();
 
-        // Stop periodic status logging
-        this.stopPeriodicStatusLogging();
+        await this.cleanupRedisConnections();
 
-        this.listener?.close();
+        this.stopPeriodicStatusLogging();
     }
     async listenDetails() {}
 
