@@ -11,7 +11,7 @@
  *
  * Production code's chokepoints (all optional-chained via testGate?.waitAt):
  *
- *   - `${serverId}:ensure:hasAdd`               between knownMessages.has() and add()
+ *   - `${serverId}:ensure:beforeAdd`               between knownMessages.has() and add()
  *   - `${serverId}:send:${channel}`             per-event outbound to a subscriber
  *   - `${serverId}:replicant:${target}:inbound` top of replicant messageHandler
  */
@@ -72,8 +72,8 @@ describe("Replication race scenarios", () => {
 
             //! Pre-install two pauses. The chokepoint produces a FIFO queue
             //  per label, so the first arrival takes p1 and the second p2.
-            const p1 = gate.pause(`${dred2.serverId}:ensure:hasAdd`);
-            const p2 = gate.pause(`${dred2.serverId}:ensure:hasAdd`);
+            const p1 = gate.pause(`${dred2.serverId}:ensure:beforeAdd`);
+            const p2 = gate.pause(`${dred2.serverId}:ensure:beforeAdd`);
 
             //! Subscribe c2 to count what actually reaches the client. Same
             //  msgId twice triggers the listener's msgId dedup; same ocid /
@@ -105,7 +105,7 @@ describe("Replication race scenarios", () => {
             const bothArrived = result !== "timeout";
 
             console.error(
-                `gate arrivals on ${dred2.serverId}:ensure:hasAdd — bothArrived=${bothArrived}`,
+                `gate arrivals on ${dred2.serverId}:ensure:beforeAdd — bothArrived=${bothArrived}`,
             );
 
             //! Release whichever pauses arrived (release is a no-op when not arrived;

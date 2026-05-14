@@ -248,7 +248,14 @@ export class ChannelSubscriptionListener {
 
         const seen = this.recentMsgs;
         if (!seen.has(originalClientId!) && !seen.has(msgId)) {
+            //! Record both ids so subsequent arrivals with the same ocid
+            //  but a different msgId (e.g. cross-replication produced two
+            //  stream entries before atomic dedup landed) are still
+            //  recognized as duplicates and dropped at the hasSeen(ocid)
+            //  check above. Without adding ocid here, the check at line
+            //  240 above can never return true.
             seen.add(msgId);
+            if (originalClientId) seen.add(originalClientId);
             this.logger.trace("msg %s", originalClientId);
             this.listener(event);
         }

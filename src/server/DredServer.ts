@@ -469,22 +469,24 @@ export class DredServer {
             const deduplicationKey = this.messageKey(channel, msgId);
 
 
-            // Check if we've already processed this exact message
-            const alreadyProcessed = await this.knownMessages.has(deduplicationKey);
+            //! Race-test chokepoint: tests may pause here to force
+            //  concurrent contenders to attempt the dedup add together.
+            //  Below the gate, SADD is atomic — only one contender will
+            //  see added===1; others see added===0 and short-circuit.
+            await this.testGate?.waitAt(`${this.serverId}:ensure:beforeAdd`);
 
-            //! Race-test chokepoint: tests may pause here to interleave a
-            //  second messageHandler call past `has()` before `add()` lands.
-            await this.testGate?.waitAt(`${this.serverId}:ensure:hasAdd`);
+            //! Atomic check-and-set: SADD returns 1 if newly added, 0 if
+            //  the key was already present. This collapses the previous
+            //  has() → add() pair (whose window was non-atomic) into a
+            //  single Redis round-trip with strong ordering semantics.
+            const added = await this.knownMessages.add(deduplicationKey);
 
-            if (alreadyProcessed) {
+            if (added !== 1) {
                 this.trace(
                     `skipping duplicate message: ${deduplicationKey}`,
                 );
                 return undefined; // Signal that message was not posted (duplicate)
             }
-
-            // prevent racing double-post by pre-adding:
-            await this.knownMessages.add(deduplicationKey);
             this.trace(
                 `+known messages: ${deduplicationKey}`,
             );
